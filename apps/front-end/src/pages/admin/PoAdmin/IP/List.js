@@ -2,21 +2,40 @@ import {
   AdminTypo,
   IconByName,
   PoAdminLayout,
+  cohortService,
+  getSelectedProgramId,
   organisationService,
-  tableCustomStyles,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
+import { Button, HStack, Input, Select, VStack, Menu } from "native-base";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
-import { HStack, Input, VStack } from "native-base";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+
+export const CustomStyles = {
+  rows: {
+    style: {
+      minHeight: "72px",
+    },
+  },
+  headCells: {
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+};
 
 const columns = (t, navigate) => [
   {
@@ -29,11 +48,25 @@ const columns = (t, navigate) => [
     compact: true,
   },
   {
-    name: t("NAME"),
+    name: t("IP_NAME"),
     selector: (row) => row?.name,
     sortable: true,
     sortField: "name",
     width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("ORGANISATION_EMAIL"),
+    selector: (row) => row?.email_id || "-",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("LEARNER_TARGET"),
+    selector: (row) => row?.program_organisations?.[0]?.learner_target || "-",
     wrap: true,
     left: true,
     compact: true,
@@ -51,24 +84,24 @@ const columns = (t, navigate) => [
     selector: (row) => row?.contact_person || "-",
     compact: true,
   },
-  {
-    minWidth: "140px",
-    name: t("ACTION"),
-    selector: (row) => (
-      <AdminTypo.Secondarybutton
-        background="white"
-        px="1.5"
-        my="1"
-        h="6"
-        onPress={() => {
-          navigate(`/poadmin/ips/${row?.id}`);
-        }}
-      >
-        {t("VIEW")}
-      </AdminTypo.Secondarybutton>
-    ),
-    center: true,
-  },
+  // {
+  //   minWidth: "140px",
+  //   name: t("ACTION"),
+  //   selector: (row) => (
+  //     <AdminTypo.Secondarybutton
+  //       background="white"
+  //       px="3"
+  //       my="2"
+  //       h="8"
+  //       onPress={() => {
+  //         navigate(`/poadmin/ips/${row?.id}`);
+  //       }}
+  //     >
+  //       {t("VIEW")}
+  //     </AdminTypo.Secondarybutton>
+  //   ),
+  //   center: true,
+  // },
 ];
 const pagination = [10, 15, 25, 50, 100];
 
@@ -77,11 +110,9 @@ export default function List() {
   const [loading, setLoading] = useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = useState();
   const [organisations, setOrganisations] = useState();
+  const [programList, setProgramList] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
-  const ref = useRef(null);
-
   const navigate = useNavigate();
-
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   useEffect(
@@ -92,7 +123,6 @@ export default function List() {
           ...filter,
         });
         setOrganisations(data.data);
-
         setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
@@ -100,6 +130,24 @@ export default function List() {
     },
     [filter]
   );
+
+  useEffect(async () => {
+    const data = await cohortService.getProgramList();
+    setProgramList(data?.data);
+    const localData = await getSelectedProgramId();
+    if (localData === null) {
+      const obj = data?.data?.[0];
+      const defaultData = {
+        program_id: obj?.id,
+        name: obj?.name,
+        state_name: obj?.state?.state_name,
+      };
+      setSelectedProgramId(defaultData);
+      setFilter({ ...filter, program_id: obj?.id });
+    } else {
+      setFilter({ ...filter, program_id: localData?.program_id });
+    }
+  }, []);
 
   const handleSort = (column, sort) => {
     if (column?.sortField) {
@@ -110,14 +158,28 @@ export default function List() {
     }
   };
 
-  const handleSearch = useCallback(
-    (e) => {
-      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-    },
-    [filter]
-  );
+  const handleSearch = (e) => {
+    setFilter((item) => ({ ...item, search: e.nativeEvent.text, page: 1 }));
+  };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
+
+  const handleRowClick = useCallback(
+    (row) => {
+      navigate(`/poadmin/ips/${row?.id}`);
+    },
+    [navigate]
+  );
+
+  const handleProgramChange = async (selectedItem) => {
+    const data = programList.find((e) => e.id == selectedItem);
+    await setSelectedProgramId({
+      program_id: data?.id,
+      program_name: data?.name,
+      state_name: data?.state?.state_name,
+    });
+    setFilter({ ...filter, program_id: selectedItem });
+  };
 
   return (
     <PoAdminLayout {...{ loading }}>
@@ -128,12 +190,11 @@ export default function List() {
           justifyContent="space-between"
           flexWrap="wrap"
           gridGap="2"
-          ref={ref}
         >
           <HStack
             justifyContent={"space-between"}
-            space={"4"}
             alignItems="center"
+            space="2"
           >
             <HStack
               justifyContent="space-between"
@@ -161,18 +222,59 @@ export default function List() {
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          <AdminTypo.PrimaryButton
-            onPress={(e) => navigate("/poadmin/ips/create")}
+          <Menu
+            w="160"
+            trigger={(triggerProps) => (
+              <Button
+                {...triggerProps}
+                borderRadius="100px"
+                background="Darkmaroonprimarybutton.400"
+                shadow="RedFillShadow"
+                rounded="full"
+                py="10px"
+                color="white"
+                _text={{
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                }}
+              >
+                {t("ADD_A_IP")}
+              </Button>
+            )}
           >
-            {t("ADD_A_IP")}
-          </AdminTypo.PrimaryButton>
+            <Menu.Item onPress={(e) => navigate("/poadmin/ips/create")}>
+              {t("ADD_NEW_IP_USER")}
+            </Menu.Item>
+            <Menu.Item onPress={(e) => navigate("/poadmin/ips/exist/create")}>
+              {t("EXISTING_IP_USER")}
+            </Menu.Item>
+          </Menu>
+          <Select
+            minH="40px"
+            maxH="40px"
+            selectedValue={`${filter?.program_id}`}
+            minWidth="200"
+            accessibilityLabel="Choose Service"
+            placeholder={t("SELECT")}
+            mt={1}
+            onValueChange={handleProgramChange}
+          >
+            {programList?.map((item) => (
+              <Select.Item
+                key={item?.id}
+                label={item?.state?.state_name}
+                value={`${item?.id}`}
+              />
+            ))}
+          </Select>
         </HStack>
         <DataTable
           customStyles={{
-            ...tableCustomStyles,
+            ...CustomStyles,
             rows: {
               style: {
-                minHeight: "20px", // override the row height
+                minHeight: "50px", // override the row height
                 cursor: "pointer",
               },
             },
@@ -201,6 +303,7 @@ export default function List() {
             },
             [setFilter, filter]
           )}
+          onRowClicked={handleRowClick}
         />
       </VStack>
     </PoAdminLayout>
