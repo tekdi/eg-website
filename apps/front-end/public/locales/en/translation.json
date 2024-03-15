@@ -1495,5 +1495,9 @@
   "USER_ROLE": "User role",
   "IP/ORGANISATION_LIST": "IP/Organisation List",
   "IP_NAME": "IP Name",
-  "EXISTING_IP_USER": "Existing IP User"
+  "EXISTING_IP_USER": "Existing IP User",
+  "LEARNERS_TARGET": "Learner's Target",
+  "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
+  "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
+  "MONTHLY_UTILIZATION": "Monthly utilization certificate"
 }
