@@ -5,14 +5,13 @@ import {
   AdminTypo,
   organisationService,
   getOptions,
-  getSelectedProgramId,
   cohortService,
 } from "@shiksha/common-lib";
 import { VStack, HStack, Button } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { useNavigate, useParams } from "react-router-dom";
-import { widgets, templates, FileUpload } from "component/BaseInput";
+import { widgets, templates } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 
 const Schema = {
