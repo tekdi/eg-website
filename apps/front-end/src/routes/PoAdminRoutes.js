@@ -89,7 +89,6 @@ export default [
     path: "/poadmin/learners/duplicates/:aadhaarNo",
     component: PoDuplicateView,
   },
-  { path: "/", component: Home },
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
@@ -98,5 +97,6 @@ export default [
     path: "/poadmin/ips/:id/list",
     component: UserList,
   },
+  { path: "/", component: Home },
   { path: "*", component: NotFound },
 ];

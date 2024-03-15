@@ -13,28 +13,27 @@ import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
 function View(props) {
-  const { userId } = useParams();
   const { id } = useParams();
-  const [useDetails, setUserDetails] = useState();
-  const [orgDetails, setOrgDetails] = useState();
+  const [user, setUser] = useState();
+  const [organisation, setOrganisation] = useState();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   useEffect(async () => {
     const result = await organisationService.userDetails({
-      id: userId,
+      id,
     });
-    setUserDetails(result?.data?.[0]);
+    const reData = result?.data?.[0];
+    setUser(reData);
+
+    if (reData.program_users?.[0].organisation_id) {
+      setOrganisation({
+        name: reData.program_users?.[0].organisation?.name,
+        id: reData.program_users?.[0].organisation_id,
+      });
+    }
   }, []);
 
-  useEffect(async () => {
-    const data = await organisationService.getDetailsOfIP({ id });
-    setOrgDetails(data?.data?.[0]);
-  }, [id]);
-
-  const localData = JSON.parse(localStorage.getItem("program"));
-
-  console.log({ orgDetails });
   return (
     <PoAdminLayout>
       <VStack flex={1} space={"5"} p="2">
@@ -46,14 +45,14 @@ function View(props) {
             textOverflow="ellipsis"
             bold
           >
-            {orgDetails?.first_name} {orgDetails?.last_name}
+            {organisation?.name}
           </AdminTypo.H4>
           <IconByName
             size="sm"
             name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/poadmin/ips/${id}`)}
+            onPress={(e) => navigate(`/poadmin/ips/${organisation?.id}`)}
           />
-          <Chip textAlign="center" lineHeight="15px" label={orgDetails?.id} />
+          <Chip textAlign="center" lineHeight="15px" label={id} />
         </HStack>
         <VStack p={4}>
           <CardComponent
@@ -62,9 +61,10 @@ function View(props) {
             _vstack={{ space: 0 }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={{
-              ...useDetails,
-              role: useDetails?.program_users?.[0]?.role_slug,
-              state: localData?.program?.state?.state_name,
+              ...user,
+              id: organisation?.id,
+              role: user?.program_users?.[0]?.role_slug,
+              state: user?.program_users?.[0]?.program?.state?.state_name,
             }}
             title={t("BASIC_DETAILS")}
             label={[

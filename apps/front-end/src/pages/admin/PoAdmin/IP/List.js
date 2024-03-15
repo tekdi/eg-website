@@ -1,31 +1,14 @@
 import {
   AdminTypo,
-  FrontEndTypo,
   IconByName,
   PoAdminLayout,
   cohortService,
   getSelectedProgramId,
   organisationService,
-  setSelectedOrgId,
   setSelectedProgramId,
 } from "@shiksha/common-lib";
-import {
-  Button,
-  CheckIcon,
-  HStack,
-  Input,
-  Select,
-  VStack,
-  Menu,
-  Pressable,
-} from "native-base";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Button, HStack, Input, Select, VStack, Menu } from "native-base";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -75,17 +58,15 @@ const columns = (t, navigate) => [
     compact: true,
   },
   {
-    name: t("Organisation Email"),
-    selector: (row) => row?.name,
-    // width: "150px",
+    name: t("ORGANISATION_EMAIL"),
+    selector: (row) => row?.email_id || "-",
     wrap: true,
     left: true,
     compact: true,
   },
   {
-    name: t("Learner Target"),
-    selector: (row) => row?.name,
-    // width: "150px",
+    name: t("LEARNER_TARGET"),
+    selector: (row) => row?.program_organisations?.[0]?.learner_target || "-",
     wrap: true,
     left: true,
     compact: true,
@@ -131,10 +112,7 @@ export default function List() {
   const [organisations, setOrganisations] = useState();
   const [programList, setProgramList] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
-  const ref = useRef(null);
-
   const navigate = useNavigate();
-
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   useEffect(
@@ -145,7 +123,6 @@ export default function List() {
           ...filter,
         });
         setOrganisations(data.data);
-
         setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
@@ -153,11 +130,11 @@ export default function List() {
     },
     [filter]
   );
+
   useEffect(async () => {
     const data = await cohortService.getProgramList();
     setProgramList(data?.data);
     const localData = await getSelectedProgramId();
-    console.log({ localData });
     if (localData === null) {
       const obj = data?.data?.[0];
       const defaultData = {
@@ -181,12 +158,9 @@ export default function List() {
     }
   };
 
-  const handleSearch = useCallback(
-    (e) => {
-      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-    },
-    [filter]
-  );
+  const handleSearch = (e) => {
+    setFilter((item) => ({ ...item, search: e.nativeEvent.text, page: 1 }));
+  };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
@@ -196,14 +170,14 @@ export default function List() {
     },
     [navigate]
   );
+
   const handleProgramChange = async (selectedItem) => {
-    console.log({ selectedItem });
+    const data = programList.find((e) => e.id == selectedItem);
     await setSelectedProgramId({
-      program_id: selectedItem,
-      // program_name: selectedItem?.name,
-      // state_name: selectedItem?.state?.state_name,
+      program_id: data?.id,
+      program_name: data?.name,
+      state_name: data?.state?.state_name,
     });
-    // setSelectedOrgId({ org_id: cohortValue?.org_id });
     setFilter({ ...filter, program_id: selectedItem });
   };
 
@@ -216,7 +190,6 @@ export default function List() {
           justifyContent="space-between"
           flexWrap="wrap"
           gridGap="2"
-          ref={ref}
         >
           <HStack
             justifyContent={"space-between"}
@@ -277,35 +250,21 @@ export default function List() {
               {t("EXISTING_IP_USER")}
             </Menu.Item>
           </Menu>
-          {console.log(filter?.program_id)}
           <Select
-            key={filter?.program_id}
             minH="40px"
             maxH="40px"
-            selectedValue={"2"}
+            selectedValue={`${filter?.program_id}`}
             minWidth="200"
             accessibilityLabel="Choose Service"
             placeholder={t("SELECT")}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
             mt={1}
-            onValueChange={(itemValue) => handleProgramChange(itemValue)}
+            onValueChange={handleProgramChange}
           >
-            {console.log({ programList })}
             {programList?.map((item) => (
-              // ?.map((item) => item.state.state_name) // Extract state names from each item
-              // .filter((value, index, self) => self.indexOf(value) === index) // Filter out duplicate state names
-              // .map((stateName, index) => {
-              //   const itemWithStateName = programList.find(
-              //     (item) => item.state.state_name === stateName
-              //   );
-
               <Select.Item
                 key={item?.id}
                 label={item?.state?.state_name}
-                value={item?.id}
+                value={`${item?.id}`}
               />
             ))}
           </Select>
@@ -323,7 +282,6 @@ export default function List() {
           }}
           columns={columnsMemoized}
           data={organisations || []}
-          filter={filter}
           progressPending={loading}
           pagination
           paginationRowsPerPageOptions={pagination}

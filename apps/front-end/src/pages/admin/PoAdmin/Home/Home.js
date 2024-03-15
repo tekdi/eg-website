@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AdminTypo,
   BoxBlue,
   IconByName,
   PoAdminLayout,
-  setSelectedOrgId,
   setSelectedAcademicYear,
-  setSelectedProgramId,
   cohortService,
   getSelectedAcademicYear,
 } from "@shiksha/common-lib";
@@ -20,7 +18,6 @@ import {
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { uniqBy } from "lodash";
 
 function Home() {
   const { t } = useTranslation();
@@ -28,13 +25,9 @@ function Home() {
 
   // cohort modal
   const [modal, setModal] = useState(true);
-  const [orgData, setOrgData] = useState();
-  const [cohortData, setCohortData] = useState();
-  const [academicData, setAcademicData] = useState();
   const [academicYearData, setAcademicYearData] = useState();
-  const [programData, setProgramData] = useState();
   const [cohortValue, setCohortValue] = useState();
-  const [loading, setLoading] = useState(true);
+  const [menus, setMenus] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,145 +39,54 @@ function Home() {
     fetchData();
   }, []);
 
-  const getCohortData = useCallback(async () => {
-    setLoading(true);
-    const result = await cohortService.getOrganisationId();
-    setOrgData(result?.data);
-    setLoading(false);
-  }, [modal]);
-
-  useEffect(() => {
-    getCohortData();
-  }, [modal]);
-
-  const handleOrgChange = async (itemValue) => {
-    setCohortValue({ ...cohortValue, org_id: itemValue });
-    const data = await cohortService.getPoAcademicYear({
-      organisation_id: itemValue,
-    });
-    setCohortData(data?.data);
-    const uData = uniqBy(data?.data || [], (e) => e.academic_year_id);
-    setAcademicData(uData);
-  };
-
-  const handleAcademicYearChange = async (itemValue) => {
-    setCohortValue({ ...cohortValue, academic_year_id: itemValue });
-    const uData = uniqBy(cohortData || [], (e) => e.program_id);
-    setProgramData(uData);
-  };
-
-  const handleProgramChange = (itemValue) => {
-    const data = JSON.parse(itemValue);
-    setCohortValue({ ...cohortValue, data });
-  };
-
   const handleCohortSubmit = () => {
-    setSelectedAcademicYear({
-      academic_year_id: cohortValue?.academic_year_id,
-    });
-    // setSelectedProgramId({
-    //   ...cohortValue?.data,
-    //   program_id: cohortValue?.data?.program_id,
-    // });
-    // setSelectedOrgId({ org_id: cohortValue?.org_id });
+    setSelectedAcademicYear(cohortValue);
     setModal(false);
   };
 
-  const handleAcademicYearData = (itemValue) => {
-    setCohortValue({ ...cohortValue, academic_year_id: itemValue });
+  const handleAcademicYearData = async (itemValue) => {
+    const data = academicYearData.find((e) => e?.id == itemValue);
+    const newData = {
+      ...cohortValue,
+      academic_year_id: data?.id,
+      academic_year_name: data?.name,
+    };
+    console.log(newData);
+    setCohortValue(newData);
   };
+
   useEffect(async () => {
     const data = await cohortService.getUpdatedAcademicYearList();
     setAcademicYearData(data?.data);
   }, []);
 
-  console.log(academicYearData);
   return (
-    <PoAdminLayout>
-      <VStack
-        flex={1}
-        direction={["column", "column", "row"]}
-        justifyContent="center"
-        alignItems="center"
-        p={4}
-      >
-        <HStack direction={["column", "column", "row"]} space={8}>
-          <Pressable
-            onPress={() => {
-              navigate("/poadmin/ips");
-            }}
-          >
-            <BoxBlue
-              width={"250px"}
-              height={"200px"}
-              justifyContent="center"
-              pl="3"
+    <PoAdminLayout getMenus={(e) => setMenus(e)}>
+      <VStack justifyContent="center" alignItems="center" p={4} space={4}>
+        <HStack flexWrap={"wrap"}>
+          {menus.map((item) => (
+            <Pressable
+              p="4"
+              key={item?.title}
+              onPress={() => {
+                navigate(item?.route);
+              }}
             >
-              <VStack alignItems={"center"}>
-                <IconByName name="GroupLineIcon" />
-                <AdminTypo.H6 bold pt="4">
-                  {t("IP")}
-                </AdminTypo.H6>
-              </VStack>
-            </BoxBlue>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              navigate("/poadmin/facilitators");
-            }}
-          >
-            <BoxBlue
-              width={"250px"}
-              height={"200px"}
-              justifyContent="center"
-              pl="3"
-            >
-              <VStack alignItems={"center"}>
-                <IconByName name="GroupLineIcon" />
-                <AdminTypo.H6 bold pt="4">
-                  {t("PRERAK")}
-                </AdminTypo.H6>
-              </VStack>
-            </BoxBlue>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              navigate("/poadmin/learners");
-            }}
-          >
-            <BoxBlue
-              width={"250px"}
-              height={"200px"}
-              justifyContent="center"
-              pl="3"
-            >
-              <VStack alignItems={"center"}>
-                <IconByName name="GraduationCap" />
-                <AdminTypo.H6 bold pt="4">
-                  {t("LEARNERS")}
-                </AdminTypo.H6>
-              </VStack>
-            </BoxBlue>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              navigate("/poadmin/camps");
-            }}
-          >
-            <BoxBlue
-              width={"250px"}
-              height={"200px"}
-              justifyContent="center"
-              pl="3"
-            >
-              <VStack alignItems={"center"}>
-                <IconByName name="CommunityLineIcon" />
-                <AdminTypo.H6 bold pt="4">
-                  {t("CAMPS")}
-                </AdminTypo.H6>
-              </VStack>
-            </BoxBlue>
-          </Pressable>
+              <BoxBlue
+                width={"250px"}
+                height={"200px"}
+                justifyContent="center"
+                pl="3"
+              >
+                <VStack alignItems={"center"}>
+                  <IconByName name={item?.icon} />
+                  <AdminTypo.H6 bold pt="4">
+                    {t(item?.title)}
+                  </AdminTypo.H6>
+                </VStack>
+              </BoxBlue>
+            </Pressable>
+          ))}
         </HStack>
       </VStack>
       <Modal isOpen={modal} safeAreaTop={true} size="xl">
@@ -196,38 +98,6 @@ function Home() {
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
-              {/* <HStack
-                space="5"
-                borderBottomWidth={1}
-                borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <AdminTypo.H4> {t("ORGANISATION")}</AdminTypo.H4>
-                <Select
-                  selectedValue={cohortValue?.org_id}
-                  minWidth="200"
-                  accessibilityLabel="Choose Service"
-                  placeholder={t("SELECT")}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) => handleOrgChange(itemValue)}
-                >
-                  {orgData?.map((item) => {
-                    return (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.name}
-                        value={`${item?.id}`}
-                      />
-                    );
-                  })}
-                </Select>
-              </HStack> */}
               <HStack
                 space="5"
                 borderBottomWidth={1}
@@ -237,7 +107,6 @@ function Home() {
                 justifyContent={"space-between"}
               >
                 <AdminTypo.H4> {t("ACADEMIC_YEAR")}</AdminTypo.H4>
-
                 <Select
                   selectedValue={cohortValue?.academic_year_id}
                   minWidth="200"
@@ -248,53 +117,17 @@ function Home() {
                     endIcon: <CheckIcon size="5" />,
                   }}
                   mt={1}
-                  onValueChange={(itemValue) =>
-                    handleAcademicYearData(itemValue)
-                  }
+                  onValueChange={handleAcademicYearData}
                 >
-                  {Array.isArray(academicYearData) &&
-                    academicYearData.map((item) => (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.name}
-                        value={`${item?.id}`}
-                        // value={JSON.stringify(item)}
-                      />
-                    ))}
+                  {academicYearData?.map((item) => (
+                    <Select.Item
+                      key={item.id}
+                      label={item?.name}
+                      value={item?.id}
+                    />
+                  ))}
                 </Select>
               </HStack>
-              {/* <HStack
-                space="5"
-                borderBottomWidth={1}
-                borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <AdminTypo.H4> {t("STATE")}</AdminTypo.H4>
-                <Select
-                  selectedValue={cohortValue?.program_id}
-                  minWidth="200"
-                  accessibilityLabel="Choose Service"
-                  placeholder={t("SELECT")}
-                  _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="5" />,
-                  }}
-                  mt={1}
-                  onValueChange={(itemValue) => handleProgramChange(itemValue)}
-                >
-                  {programData?.map((item) => {
-                    return (
-                      <Select.Item
-                        key={item.id}
-                        label={item?.program?.state?.state_name}
-                        value={JSON.stringify(item)}
-                      />
-                    );
-                  })}
-                </Select>
-              </HStack> */}
               {cohortValue?.academic_year_id && (
                 <VStack alignItems={"center"}>
                   <AdminTypo.Dangerbutton onPress={handleCohortSubmit}>

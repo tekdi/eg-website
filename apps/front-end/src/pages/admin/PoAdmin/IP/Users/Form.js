@@ -3,7 +3,7 @@ import {
   AdminTypo,
   IconByName,
   PoAdminLayout,
-  geolocationRegistryService,
+  cohortService,
   getOptions,
   organisationService,
   t,
@@ -82,10 +82,22 @@ function UserForm() {
           ...newSchema.properties,
           state: {
             ...newSchema.properties.state,
-            default: localData?.program?.state?.state_name,
+            default: `${localData?.program_id}`,
           },
         },
       };
+      const { data } = await cohortService.getProgramList();
+      const newData = data.map((e) => ({
+        ...e,
+        state_name: `${e?.state?.state_name}`,
+      }));
+      newSchema = getOptions(newSchema, {
+        key: "state",
+        arr: newData,
+        title: "state_name",
+        value: "id",
+      });
+      setSchema(newSchema);
     }
     if (schema?.properties?.role) {
       newSchema = getOptions(newSchema, {
@@ -97,10 +109,10 @@ function UserForm() {
     }
     setSchema(newSchema);
   }, []);
-
+  console.log(schema);
   useEffect(async () => {
-    const data = await organisationService.getDetailsOfIP({ id });
-    setDataIp(data?.data?.[0]);
+    const data = await organisationService.getOne({ id });
+    setDataIp(data?.data);
   }, [id]);
 
   const onSubmit = async (data) => {
@@ -122,7 +134,7 @@ function UserForm() {
     delete newDataToSend.ip_id;
     delete newDataToSend.state;
 
-    const result = await organisationService.createIp(newDataToSend);
+    const result = await organisationService.createIpUser(newDataToSend);
     if (result?.success === true) {
       navigate(`/poadmin/ips/${id}/user/${result?.data?.user?.id}`);
     }
