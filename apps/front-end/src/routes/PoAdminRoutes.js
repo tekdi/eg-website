@@ -21,11 +21,28 @@ const PrerakViewDetails = lazy(() => import("pages/admin/PoAdmin/Prerak/View"));
 const PoProfileDetails = lazy(() => import("pages/admin/PoAdmin/Profile"));
 const Home = lazy(() => import("pages/admin/PoAdmin/Home/Home"));
 const UserList = lazy(() => import("pages/admin/PoAdmin/IP/UserList"));
+const IpUserForm = lazy(() => import("pages/admin/PoAdmin/IP/Users/Form"));
+const IpUserView = lazy(() => import("pages/admin/PoAdmin/IP/Users/View"));
+const ExistingIpForm = lazy(() =>
+  import("pages/admin/PoAdmin/IP/ExistingIP/Form")
+);
 
 export default [
   {
     path: "/poadmin/profile",
     component: PoProfileDetails,
+  },
+  {
+    path: "/poadmin/ips/:id/user-create",
+    component: IpUserForm,
+  },
+  {
+    path: "/poadmin/ips/exist/create",
+    component: ExistingIpForm,
+  },
+  {
+    path: "/poadmin/ips/user/:id",
+    component: IpUserView,
   },
   {
     path: "/poadmin/ips",
@@ -72,7 +89,6 @@ export default [
     path: "/poadmin/learners/duplicates/:aadhaarNo",
     component: PoDuplicateView,
   },
-  { path: "/", component: Home },
   {
     path: "/assessment/:context/:context_id/:do_id",
     component: Assessment,
@@ -81,5 +97,6 @@ export default [
     path: "/poadmin/ips/:id/list",
     component: UserList,
   },
+  { path: "/", component: Home },
   { path: "*", component: NotFound },
 ];
