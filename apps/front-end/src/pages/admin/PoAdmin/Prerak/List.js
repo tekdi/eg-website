@@ -29,6 +29,7 @@ import {
   getSelectedProgramId,
   getSelectedAcademicYear,
 } from "@shiksha/common-lib";
+import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
 const uiSchema = {
   district: {
@@ -112,8 +113,6 @@ function PrerakList({ userTokenInfo }) {
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [enumOptions, setEnumOptions] = useState({});
-  const [program, setProgram] = useState();
-  const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [urlFilterApply, setUrlFilterApply] = useState(false);
 
@@ -124,9 +123,6 @@ function PrerakList({ userTokenInfo }) {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let academic_Id = await getSelectedAcademicYear();
-      setAcademicYear(academic_Id);
-      setProgram(programResult);
       let name = programResult?.program?.state?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
@@ -200,7 +196,7 @@ function PrerakList({ userTokenInfo }) {
     };
 
     fetchFilteredData();
-  }, [filter]);
+  }, [filter, localStorage.getItem("program"), localStorage.getItem("org_id")]);
 
   const setFilterObject = useCallback(
     (data) => {
@@ -260,41 +256,38 @@ function PrerakList({ userTokenInfo }) {
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
-    <PoAdminLayout _sidebar={setRefAppBar}>
-      <Box mt={4} position="relative">
-        <HStack
-          justifyContent="start"
-          alignItems="center"
-          space="2"
-          position="absolute"
-          left="0"
-          top="0"
-        >
+    <PoAdminLayout _sidebar={setRefAppBar} loading={loading}>
+      <HStack p="4" space={4} justifyContent={"space-between"}>
+        <HStack justifyContent="start" alignItems="center" space="2">
           <IconByName name="GroupLineIcon" size="md" />
           <AdminTypo.H4 bold>{t("ALL_PRERAKS")}</AdminTypo.H4>
         </HStack>
-        <Input
-          size={"xs"}
-          minH="40px"
-          maxH="40px"
-          onScroll={false}
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-            />
-          }
-          placeholder={t("SEARCH_BY_PRERAK_NAME")}
-          variant="outline"
-          onChange={debouncedHandleSearch}
-          textAlign="center"
-          mx="auto"
-        />
-      </Box>
 
-      <HStack ml="-1">
+        <HStack justifyContent="start" alignItems="center" space={"4"}>
+          <Input
+            size={"xs"}
+            minH="40px"
+            maxH="40px"
+            onScroll={false}
+            InputLeftElement={
+              <IconByName
+                color="coolGray.500"
+                name="SearchLineIcon"
+                isDisabled
+                pl="2"
+              />
+            }
+            placeholder={t("SEARCH_BY_PRERAK_NAME")}
+            variant="outline"
+            onChange={debouncedHandleSearch}
+            textAlign="center"
+            mx="auto"
+          />
+          <SelectProgramOrganisation />
+        </HStack>
+      </HStack>
+
+      <HStack>
         <Stack style={{ position: "relative", overflowX: "hidden" }}>
           <Stack
             style={{
