@@ -5,6 +5,8 @@ import {
   PoAdminLayout,
   cohortService,
   getOptions,
+  getSelectedAcademicYear,
+  getSelectedProgramId,
   organisationService,
   t,
 } from "@shiksha/common-lib";
@@ -17,7 +19,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Schema = {
   type: "object",
-  required: ["ip_id", "first_name", "role", "mobile_number"],
+  required: ["ip_id", "first_name", "role", "mobile"],
   properties: {
     ip_id: {
       type: "string",
@@ -44,7 +46,7 @@ const Schema = {
       title: "USER_ROLE",
       format: "select",
     },
-    mobile_number: {
+    mobile: {
       type: "string",
       title: "MOBILE_NUMBER",
       format: "MobileNumber",
@@ -57,6 +59,7 @@ function UserForm() {
   const [schema, setSchema] = useState(Schema);
   const [dataIp, setDataIp] = useState();
   const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
@@ -109,7 +112,7 @@ function UserForm() {
     }
     setSchema(newSchema);
   }, []);
-  console.log(schema);
+
   useEffect(async () => {
     const data = await organisationService.getOne({ id });
     setDataIp(data?.data);
@@ -118,25 +121,33 @@ function UserForm() {
   const onSubmit = async (data) => {
     setLoading(true);
     let newFormData = data.formData;
-    const localData = JSON.parse(localStorage.getItem("program"));
+    const programLocal = await getSelectedProgramId();
+    const academicYearLocal = await getSelectedAcademicYear();
+    const { first_name, mobile, role } = newFormData;
     const newDataToSend = {
-      ...newFormData,
-      mobile: newFormData?.mobile_number,
-      role: newFormData?.role,
+      first_name,
+      mobile,
+      role: "staff",
       role_fields: {
-        role_slug: newFormData?.role,
-        organisation_id: localData?.organisation_id,
-        program_id: localData?.program_id,
-        academic_year_id: localData?.academic_year_id,
+        role_slug: role,
+        organisation_id: id,
+        program_id: programLocal?.program_id,
+        academic_year_id: academicYearLocal?.academic_year_id,
       },
     };
 
-    delete newDataToSend.ip_id;
-    delete newDataToSend.state;
-
     const result = await organisationService.createIpUser(newDataToSend);
     if (result?.success === true) {
-      navigate(`/poadmin/ips/${id}/user/${result?.data?.user?.id}`);
+      navigate(`/poadmin/ips/user/${result?.data?.user?.id}`);
+    } else {
+      setFormData(newFormData);
+      setErrors({
+        [result?.key || "other"]: {
+          __errors: Array.isArray(result?.message)
+            ? result?.message
+            : [result?.message],
+        },
+      });
     }
     setLoading(false);
   };
@@ -165,6 +176,7 @@ function UserForm() {
             schema={schema || {}}
             {...{
               widgets,
+              formData,
               templates,
               validator,
               onSubmit,
