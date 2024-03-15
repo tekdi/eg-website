@@ -26,6 +26,9 @@ const IpUserView = lazy(() => import("pages/admin/PoAdmin/IP/Users/View"));
 const ExistingIpForm = lazy(() =>
   import("pages/admin/PoAdmin/IP/ExistingIP/Form")
 );
+const ExitingUser = lazy(() =>
+  import("pages/admin/PoAdmin/IP/ExistingUser/Form")
+);
 
 export default [
   {
@@ -35,6 +38,10 @@ export default [
   {
     path: "/poadmin/ips/:id/user-create",
     component: IpUserForm,
+  },
+  {
+    path: "/poadmin/ips/:id/existing/user-create",
+    component: ExitingUser,
   },
   {
     path: "/poadmin/ips/exist/create",
