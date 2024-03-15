@@ -4,6 +4,7 @@ import {
   AdminTypo,
   IconByName,
   PoAdminLayout,
+  cohortService,
   getOptions,
   organisationService,
 } from "@shiksha/common-lib";
@@ -53,7 +54,7 @@ function ExitingUser(props) {
   const { t } = useTranslation();
 
   useEffect(async () => {
-    const data = await organisationService.getDetailsOfIP({ id });
+    const data = await organisationService.getOne({ id });
     setDataIp(data?.data?.[0]);
   }, [id]);
 
@@ -88,19 +89,30 @@ function ExitingUser(props) {
         },
       };
     }
-    // if (Schema.properties.state) {
-    //   const localData = JSON.parse(localStorage.getItem("program"));
-    //   newSchema = {
-    //     ...newSchema,
-    //     properties: {
-    //       ...newSchema.properties,
-    //       state: {
-    //         ...newSchema.properties.state,
-    //         default: localData?.program?.state?.state_name,
-    //       },
-    //     },
-    //   };
-    // }
+    if (Schema.properties.state) {
+      const localData = JSON.parse(localStorage.getItem("program"));
+      newSchema = {
+        ...newSchema,
+        properties: {
+          ...newSchema.properties,
+          state: {
+            ...newSchema.properties.state,
+            default: `${localData?.program_id}`,
+          },
+        },
+      };
+      const { data } = await cohortService.getProgramList();
+      const newData = data.map((e) => ({
+        ...e,
+        state_name: `${e?.state?.state_name}`,
+      }));
+      newSchema = getOptions(newSchema, {
+        key: "state",
+        arr: newData,
+        title: "state_name",
+        value: "id",
+      });
+    }
     if (schema?.properties?.role_slug) {
       newSchema = getOptions(newSchema, {
         key: "role_slug",
