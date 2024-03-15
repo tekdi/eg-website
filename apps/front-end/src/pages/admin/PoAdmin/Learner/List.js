@@ -36,6 +36,7 @@ import { useTranslation } from "react-i18next";
 import { debounce, uniq, uniqBy } from "lodash";
 import Table from "./Table";
 import { MultiCheck } from "../../../../component/BaseInput";
+import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
 function LearnerList({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -62,7 +63,7 @@ function LearnerList({ userTokenInfo }) {
       );
       setLoading(false);
     }
-  }, [filter]);
+  }, [filter, localStorage.getItem("program"), localStorage.getItem("org_id")]);
 
   useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
@@ -93,7 +94,7 @@ function LearnerList({ userTokenInfo }) {
           <IconByName name="GraduationCap" />
           <AdminTypo.H4 bold>{t("All_AG_LEARNERS")}</AdminTypo.H4>
         </HStack>
-        <HStack justifyContent="center" alignItems="center" flex="1">
+        <HStack justifyContent="start" alignItems="center" space={"4"}>
           <Input
             size={"xs"}
             minH="42px"
@@ -110,6 +111,7 @@ function LearnerList({ userTokenInfo }) {
             variant="outline"
             onChange={debouncedHandleSearch}
           />
+          <SelectProgramOrganisation />
         </HStack>
       </HStack>
 
