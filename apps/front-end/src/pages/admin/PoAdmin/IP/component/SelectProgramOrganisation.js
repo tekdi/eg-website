@@ -10,11 +10,16 @@ import { HStack, Select } from "native-base";
 import React, { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-function SelectProgramOrganisation({ _hstack }) {
+function SelectProgramOrganisation({ _hstack, getValue }) {
   const { t } = useTranslation();
   const [programList, setProgramList] = useState();
   const [organisations, setOrganisations] = useState();
   const [cohortValue, setCohortValue] = useState();
+
+  const setCohort = (data) => {
+    setCohortValue(data);
+    if (getValue) getValue(data);
+  };
 
   useEffect(async () => {
     const proData = await cohortService.getProgramList();
@@ -28,9 +33,9 @@ function SelectProgramOrganisation({ _hstack }) {
         state_name: obj?.state?.state_name,
       };
       await setSelectedProgramId(defaultData);
-      setCohortValue({ ...cohortValue, program_id: obj?.id });
+      setCohort({ ...cohortValue, program_id: obj?.id });
     } else {
-      setCohortValue({ ...cohortValue, program_id: localData?.program_id });
+      setCohort({ ...cohortValue, program_id: localData?.program_id });
     }
   }, []);
 
@@ -45,14 +50,13 @@ function SelectProgramOrganisation({ _hstack }) {
       if (selectOrgId === null) {
         const obj = orgData?.data?.[0];
         const defaultData = {
-          org_id: obj?.org_id,
+          org_id: obj?.id,
           name: obj?.name,
-          state_name: obj?.state?.state_name,
         };
         await setSelectedOrgId(defaultData);
-        setCohortValue({ ...cohortValue, org_id: obj?.id });
+        setCohort({ ...cohortValue, org_id: obj?.id });
       } else {
-        setCohortValue({ ...cohortValue, org_id: selectOrgId?.org_id });
+        setCohort({ ...cohortValue, org_id: selectOrgId?.org_id });
       }
     }
   }, [cohortValue?.program_id]);
@@ -64,16 +68,16 @@ function SelectProgramOrganisation({ _hstack }) {
       program_name: data?.name,
       state_name: data?.state?.state_name,
     });
-    setCohortValue({ ...cohortValue, program_id: selectedItem });
+    setCohort({ ...cohortValue, program_id: selectedItem });
   };
 
   const handleOrgListData = async (selectedItem) => {
     await setSelectedOrgId({
       org_id: selectedItem,
     });
-    setCohortValue({ ...cohortValue, org_id: selectedItem });
+    setCohort({ ...cohortValue, org_id: selectedItem });
   };
-  console.log(cohortValue);
+
   return (
     <HStack space="4" alignItems="center" {..._hstack}>
       <Select

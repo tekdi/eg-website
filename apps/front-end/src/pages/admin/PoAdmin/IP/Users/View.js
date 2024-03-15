@@ -28,7 +28,7 @@ function View(props) {
 
     if (reData.program_users?.[0].organisation_id) {
       setOrganisation({
-        name: reData.program_users?.[0].organisation?.name,
+        name: reData.program_users?.[0].organisations?.name,
         id: reData.program_users?.[0].organisation_id,
       });
     }
@@ -64,7 +64,7 @@ function View(props) {
               ...user,
               id: organisation?.id,
               role: user?.program_users?.[0]?.role_slug,
-              state: user?.program_users?.[0]?.program?.state?.state_name,
+              state: user?.program_users?.[0]?.programs?.state?.state_name,
             }}
             title={t("BASIC_DETAILS")}
             label={[

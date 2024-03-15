@@ -382,6 +382,7 @@
   "CREATE_BENEFICIARIES": "Create Beneficiaries",
   "CREATE_CAMP": "Create Camp",
   "CREATE_IP": "Create IP (organisation)",
+  "CREATE_EXISTING_IP": "Create existing IP (organisation)",
   "ADD_EXISTING_IP": "Add Existing IP (organisation)",
   "CREATIVE": "Creative",
   "CURRENT_PRERAK": "Current Prerak Name",
@@ -1504,5 +1505,9 @@
   "USER_ROLE": "User role",
   "IP/ORGANISATION_LIST": "IP/Organisation List",
   "IP_NAME": "IP Name",
-  "EXISTING_IP_USER": "Existing IP User"
+  "EXISTING_IP_USER": "Existing IP User",
+  "LEARNERS_TARGET": "Learner's Target",
+  "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
+  "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
+  "MONTHLY_UTILIZATION": "Monthly utilization certificate"
 }

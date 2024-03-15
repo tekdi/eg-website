@@ -109,6 +109,7 @@ function CampList({ userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = useState([]);
   const [enumOptions, setEnumOptions] = useState({});
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [cohortValue, setCohortValue] = useState();
 
   useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
@@ -160,7 +161,7 @@ function CampList({ userTokenInfo }) {
             <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
         </HStack>
-        <SelectProgramOrganisation />
+        <SelectProgramOrganisation getValue={(e) => setCohortValue(e)} />
       </HStack>
       <HStack>
         <Box

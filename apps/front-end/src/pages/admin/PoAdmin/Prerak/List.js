@@ -115,6 +115,7 @@ function PrerakList({ userTokenInfo }) {
   const [enumOptions, setEnumOptions] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [urlFilterApply, setUrlFilterApply] = useState(false);
+  const [cohortValue, setCohortValue] = useState();
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -196,7 +197,7 @@ function PrerakList({ userTokenInfo }) {
     };
 
     fetchFilteredData();
-  }, [filter, localStorage.getItem("program"), localStorage.getItem("org_id")]);
+  }, [filter, cohortValue]);
 
   const setFilterObject = useCallback(
     (data) => {
@@ -283,7 +284,7 @@ function PrerakList({ userTokenInfo }) {
             textAlign="center"
             mx="auto"
           />
-          <SelectProgramOrganisation />
+          <SelectProgramOrganisation getValue={(e) => setCohortValue(e)} />
         </HStack>
       </HStack>
 
