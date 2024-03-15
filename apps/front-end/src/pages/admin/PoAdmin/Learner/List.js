@@ -50,6 +50,7 @@ function LearnerList({ userTokenInfo }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [cohortValue, setCohortValue] = useState();
 
   useEffect(async () => {
     if (urlFilterApply) {
@@ -63,7 +64,7 @@ function LearnerList({ userTokenInfo }) {
       );
       setLoading(false);
     }
-  }, [filter, localStorage.getItem("program"), localStorage.getItem("org_id")]);
+  }, [filter, cohortValue]);
 
   useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
@@ -111,7 +112,7 @@ function LearnerList({ userTokenInfo }) {
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          <SelectProgramOrganisation />
+          <SelectProgramOrganisation getValue={(e) => setCohortValue(e)} />
         </HStack>
       </HStack>
 
