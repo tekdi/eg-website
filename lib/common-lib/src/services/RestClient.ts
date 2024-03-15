@@ -1,5 +1,6 @@
 import axios from 'axios'
-import {getSelectedOrgId,
+import {
+  getSelectedOrgId,
   getSelectedAcademicYear,
   getSelectedProgramId
 } from '../components/helper'
@@ -7,19 +8,19 @@ import {getSelectedOrgId,
 const getHeaders = async () => {
   let commonHeader: any = await addCommonHeader()
   const keys = Object.keys(commonHeader)
- let data = {};
- keys.forEach(key => {
-  if(commonHeader?.[key]) {
-  if(key === "org_id") {
-   data = {...data,'x-ip-org-id': commonHeader?.[key]}
-  } else if(key === "program_id") {
-      data = {...data,'x-program-id': commonHeader?.[key]}     
-  } else if(key === "academic_year_id") {
-    data = {...data,'x-academic-year-id': commonHeader?.[key]}     
-  }}
-});
+  let data = {}
+  keys.forEach((key) => {
+    if (commonHeader?.[key]) {
+      if (key === 'org_id') {
+        data = { ...data, 'x-ip-org-id': commonHeader?.[key] }
+      } else if (key === 'program_id') {
+        data = { ...data, 'x-program-id': commonHeader?.[key] }
+      } else if (key === 'academic_year_id') {
+        data = { ...data, 'x-academic-year-id': commonHeader?.[key] }
+      }
+    }
+  })
   return data
-  
 }
 
 export async function get(url: string, headers: any = {}) {
@@ -28,7 +29,7 @@ export async function get(url: string, headers: any = {}) {
     ...headers,
     headers: {
       ...headers?.headers,
-     ...commonHeader
+      ...commonHeader
     }
   })
 }

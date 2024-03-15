@@ -32,6 +32,7 @@ import {
   getFilterLocalStorage,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
+import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
 const filterName = "camp_filter";
 
@@ -133,7 +134,7 @@ function CampList({ userTokenInfo }) {
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
-  }, [filter]);
+  }, [filter, localStorage.getItem("program"), localStorage.getItem("org_id")]);
 
   const handleRowClick = (row) => {
     navigate(`/poadmin/camps/${row.id}`);
@@ -159,6 +160,7 @@ function CampList({ userTokenInfo }) {
             <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
         </HStack>
+        <SelectProgramOrganisation />
       </HStack>
       <HStack>
         <Box
@@ -450,6 +452,7 @@ export const Filter = ({ filter, setFilter }) => {
         variant="outline"
         onChange={debouncedHandleSearch}
       />
+
       <MultiCheck
         value={filter?.facilitator ? filter?.facilitator : []}
         onChange={(e) => {
