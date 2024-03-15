@@ -379,6 +379,7 @@
   "CREATE_BENEFICIARIES": "Create Beneficiaries",
   "CREATE_CAMP": "Create Camp",
   "CREATE_IP": "Create IP (organisation)",
+  "CREATE_EXISTING_IP": "Create existing IP (organisation)",
   "ADD_EXISTING_IP": "Add Existing IP (organisation)",
   "CREATIVE": "Creative",
   "CURRENT_PRERAK": "Current Prerak Name",

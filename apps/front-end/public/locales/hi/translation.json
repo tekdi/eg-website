@@ -1499,5 +1499,6 @@
   "LEARNERS_TARGET": "शिक्षार्थियों का लक्ष्य",
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "उचित परिश्रम , हस्ताक्षरित प्रस्ताव",
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
-  "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र"
+  "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
+  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ"
 }

@@ -6,11 +6,10 @@ import {
   IconByName,
   organisationService,
 } from "@shiksha/common-lib";
-import { HStack, Stack, VStack } from "native-base";
-import Chip from "component/Chip";
+import { Box, Button, HStack, Menu, Stack, VStack } from "native-base";
+import Chip, { ChipStatus } from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import UserList from "./UserList";
 import DataTable from "react-data-table-component";
 
 export const CustomStyles = {
@@ -229,11 +228,50 @@ const DataList = memo(() => {
         <AdminTypo.H6 bold color={"textGreyColor.500"}>
           {t("IP_TEAM_LIST")}
         </AdminTypo.H6>
-        <AdminTypo.Secondarybutton
+        {/* <AdminTypo.Secondarybutton
           onPress={() => navigate(`/poadmin/ips/${id}/user-create`)}
         >
           {t("ADD_NEW_IP_USER")}
-        </AdminTypo.Secondarybutton>
+        </AdminTypo.Secondarybutton> */}
+        <Menu
+          w="160"
+          trigger={(triggerProps) => (
+            <Button
+              {...triggerProps}
+              background="white"
+              shadow="RedOutlineShadow"
+              borderRadius="100px"
+              borderColor="textMaroonColor.400"
+              borderWidth="1"
+              py="6px"
+              rounded="full"
+              _text={{
+                color: "textGreyColor.900",
+                fontSize: "14px",
+              }}
+              rightIcon={
+                <IconByName
+                  color="black"
+                  _icon={{ size: "18px" }}
+                  name="AddBoxLineIcon"
+                />
+              }
+            >
+              {t("ADD_A_IP")}
+            </Button>
+          )}
+        >
+          <Menu.Item
+            onPress={(e) => navigate(`/poadmin/ips/${id}/user-create`)}
+          >
+            {t("ADD_NEW_IP_USER")}
+          </Menu.Item>
+          <Menu.Item
+            onPress={(e) => navigate(`/poadmin/ips/${id}/existing/user-create`)}
+          >
+            {t("EXISTING_IP_USER")}
+          </Menu.Item>
+        </Menu>
       </HStack>
       <VStack pt={0} p={6}>
         <DataTable
