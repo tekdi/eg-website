@@ -47,6 +47,11 @@ function App() {
         user = await facilitatorRegistryService.getInfo();
       }
 
+      if (user?.status == 401) {
+        logout();
+        window.location.reload();
+      }
+
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
 

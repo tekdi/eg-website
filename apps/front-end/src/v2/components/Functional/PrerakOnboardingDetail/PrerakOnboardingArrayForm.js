@@ -161,6 +161,8 @@ export default function PrerakOnboardingArrayForm({
       //const result = await facilitatorRegistryService.getOne({ id });
 
       //get offline data
+      setLoading(true);
+      setData([]);
       const result = await getOnboardingData(id);
       console.log("getOnboardingData", result);
 
@@ -172,6 +174,7 @@ export default function PrerakOnboardingArrayForm({
       } else if (type === "experience") {
         setData(result?.experience);
       }
+      setLoading(false);
     }
   };
 
@@ -330,6 +333,8 @@ export default function PrerakOnboardingArrayForm({
         type,
       });
       //get offline data
+      setLoading(true);
+      setData([]);
       const result = await getOnboardingData(userid);
       console.log("getOnboardingData", result);
       setfacilitator(result);
@@ -340,6 +345,7 @@ export default function PrerakOnboardingArrayForm({
       } else if (type === "experience") {
         setData(result?.experience);
       }
+      setLoading(false);
       setAddMore(false);
     }
   };

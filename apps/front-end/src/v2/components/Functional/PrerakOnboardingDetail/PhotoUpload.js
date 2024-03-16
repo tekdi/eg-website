@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Image, VStack } from "native-base";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
 import { OfflineFileUpload } from "v2/components/Static/FormBaseInput/FormBaseInput";
+import { updateOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
+import { useNavigate } from "react-router-dom";
 
-export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
+export default function PhotoUpload({
+  userid,
+  facilitator,
+  aadhar_no,
+  formData,
+  navigatePage,
+}) {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { photoNo } = useParams();
   const page = photoNo ? parseInt(photoNo) : 1;
@@ -22,8 +31,36 @@ export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
       // }
 
       navigatePage(`/profile`, "");
+    } else {
+      setFileValue(
+        facilitator?.[`profile_photo_${page}`]?.base64
+          ? facilitator[`profile_photo_${page}`].base64
+          : ""
+      );
     }
   }, [page, formData]);
+
+  const [fileValue, setFileValue] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (fileValue) {
+        let newdata = {};
+        newdata[`profile_photo_${page}`] = {
+          base64: fileValue,
+          id: "",
+          name: "",
+          document_type: "profile_photo",
+          document_sub_type: `profile_photo_${page}`,
+          path: "",
+        };
+        //offline data submit
+        await updateOnboardingData(userid, newdata);
+      }
+    }
+    fetchData();
+  }, [fileValue]);
 
   return (
     <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
@@ -42,16 +79,16 @@ export default function PhotoUpload({ aadhar_no, formData, navigatePage }) {
               <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
             ),
           }}
-          value={formData?.[`profile_photo_${page}`]?.id}
+          value={fileValue}
           key={formData?.[`profile_photo_${page}`]?.id}
-          onChange={(e) => console.log(e)}
+          onChange={(e) => setFileValue(e)}
         />
 
         <FrontEndTypo.Primarybutton
           p="4"
           mt="4"
           onPress={() => {
-            navigatePage(`/profile/edit/upload/${page + 1}`, "upload");
+            navigate(`/profile/edit/upload/${page + 1}`);
           }}
         >
           {t("SAVE_AND_NEXT")}

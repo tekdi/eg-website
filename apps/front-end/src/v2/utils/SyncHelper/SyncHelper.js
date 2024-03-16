@@ -38,7 +38,11 @@ export async function setIpUserInfo(id) {
     const currentTime = moment().toString();
     const data = await facilitatorRegistryService.getInfo();
     let commonHeader = await getHeaderDetails();
-    if (commonHeader?.program_id && commonHeader?.academic_year_id) {
+    if (
+      commonHeader?.program_id &&
+      commonHeader?.academic_year_id &&
+      data?.status != 401
+    ) {
       setIndexedDBItem(
         `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`,
         data

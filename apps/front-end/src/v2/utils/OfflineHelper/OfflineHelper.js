@@ -120,7 +120,7 @@ export async function getOnboardingData(id) {
         qualification_master_id:
           userMergedInfo?.qualifications?.qualification_master_id,
         qualification_reference_document_id:
-          userMergedInfo?.qualifications?.qualification_reference_document_id,
+          userMergedInfo?.qualifications?.documents?.base64,
         qualification_master:
           userMergedInfo?.qualifications?.qualification_master,
       },
@@ -132,8 +132,38 @@ export async function getOnboardingData(id) {
         diploma_details: userMergedInfo?.core_faciltator?.diploma_details,
       },
       //step 10 profile photo 1
+      profile_photo_1: {
+        base64: userMergedInfo?.users?.profile_photo_1?.documents?.base64,
+        id: userMergedInfo?.users?.profile_photo_1?.documents?.document_id,
+        name: userMergedInfo?.users?.profile_photo_1?.documents?.name,
+        doument_type:
+          userMergedInfo?.users?.profile_photo_1?.documents?.doument_type,
+        document_sub_type:
+          userMergedInfo?.users?.profile_photo_1?.documents?.document_sub_type,
+        path: userMergedInfo?.users?.profile_photo_1?.documents?.path,
+      },
       //step 11 profile photo 2
+      profile_photo_2: {
+        base64: userMergedInfo?.users?.profile_photo_2?.documents?.base64,
+        id: userMergedInfo?.users?.profile_photo_2?.documents?.document_id,
+        name: userMergedInfo?.users?.profile_photo_2?.documents?.name,
+        doument_type:
+          userMergedInfo?.users?.profile_photo_2?.documents?.doument_type,
+        document_sub_type:
+          userMergedInfo?.users?.profile_photo_2?.documents?.document_sub_type,
+        path: userMergedInfo?.users?.profile_photo_2?.documents?.path,
+      },
       //step 12 profile photo 3
+      profile_photo_3: {
+        base64: userMergedInfo?.users?.profile_photo_3?.documents?.base64,
+        id: userMergedInfo?.users?.profile_photo_3?.documents?.document_id,
+        name: userMergedInfo?.users?.profile_photo_3?.documents?.name,
+        doument_type:
+          userMergedInfo?.users?.profile_photo_3?.documents?.doument_type,
+        document_sub_type:
+          userMergedInfo?.users?.profile_photo_3?.documents?.document_sub_type,
+        path: userMergedInfo?.users?.profile_photo_3?.documents?.path,
+      },
       //Aadhaar_Details
       aadhaar_verification_mode:
         userMergedInfo?.users?.aadhaar_verification_mode,
@@ -242,22 +272,68 @@ export async function updateOnboardingData(id, onboardingData) {
     ? (qualifications.qualification_reference_document_id =
         onboardingData.qualification_reference_document_id)
     : null;
+  onboardingData?.qualification_reference_document_id
+    ? (qualifications.documents = {
+        base64: onboardingData.qualification_reference_document_id,
+      })
+    : null;
   onboardingData?.qualification_ids
     ? (program_faciltators.qualification_ids = JSON.stringify(
         onboardingData.qualification_ids
       ))
     : null;
-  onboardingData?.has_diploma
-    ? (core_faciltator.has_diploma = onboardingData.has_diploma)
-    : (core_faciltator.has_diploma = false);
-  onboardingData?.has_diploma
-    ? onboardingData?.diploma_details
-      ? (core_faciltator.diploma_details = onboardingData.diploma_details)
-      : null
-    : (core_faciltator.diploma_details = "");
+  if (onboardingData?.qualification_ids) {
+    onboardingData?.has_diploma
+      ? (core_faciltator.has_diploma = onboardingData.has_diploma)
+      : (core_faciltator.has_diploma = false);
+    onboardingData?.has_diploma
+      ? onboardingData?.diploma_details
+        ? (core_faciltator.diploma_details = onboardingData.diploma_details)
+        : null
+      : (core_faciltator.diploma_details = "");
+  }
   //step 10 profile photo 1
+  onboardingData?.profile_photo_1?.base64
+    ? (users.profile_photo_1 = {
+        name: onboardingData.profile_photo_1?.name,
+        documents: {
+          base64: onboardingData.profile_photo_1?.base64,
+          document_id: onboardingData.profile_photo_1?.id,
+          name: onboardingData.profile_photo_1?.name,
+          document_type: onboardingData.profile_photo_1?.document_type,
+          document_sub_type: onboardingData.profile_photo_1?.document_sub_type,
+          path: onboardingData.profile_photo_1?.path,
+        },
+      })
+    : null;
   //step 11 profile photo 2
+  onboardingData?.profile_photo_2?.base64
+    ? (users.profile_photo_2 = {
+        name: onboardingData.profile_photo_2?.name,
+        documents: {
+          base64: onboardingData.profile_photo_2?.base64,
+          document_id: onboardingData.profile_photo_2?.id,
+          name: onboardingData.profile_photo_2?.name,
+          document_type: onboardingData.profile_photo_2?.document_type,
+          document_sub_type: onboardingData.profile_photo_2?.document_sub_type,
+          path: onboardingData.profile_photo_2?.path,
+        },
+      })
+    : null;
   //step 12 profile photo 3
+  onboardingData?.profile_photo_3?.base64
+    ? (users.profile_photo_3 = {
+        name: onboardingData.profile_photo_3?.name,
+        documents: {
+          base64: onboardingData.profile_photo_3?.base64,
+          document_id: onboardingData.profile_photo_3?.id,
+          name: onboardingData.profile_photo_3?.name,
+          document_type: onboardingData.profile_photo_3?.document_type,
+          document_sub_type: onboardingData.profile_photo_3?.document_sub_type,
+          path: onboardingData.profile_photo_3?.path,
+        },
+      })
+    : null;
   //merge two arrays
   let userUpdatedInfo = await getUserUpdatedInfo(id);
   console.log("userUpdatedInfo", userUpdatedInfo);

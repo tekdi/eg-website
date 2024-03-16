@@ -303,7 +303,7 @@ export default function PrerakOnboardingForm({
         if (schema?.properties?.designation) {
           //get local enum
           const ListOfEnum = await getIndexedDBItem("enums");
-    
+
           newSchema = getOptions(newSchema, {
             key: "designation",
             arr: ListOfEnum?.FACILITATOR_REFERENCE_DESIGNATION,
@@ -314,7 +314,7 @@ export default function PrerakOnboardingForm({
         if (schema?.["properties"]?.["marital_status"]) {
           //get local enum
           const ListOfEnum = await getIndexedDBItem("enums");
-    
+
           newSchema = getOptions(newSchema, {
             key: "social_category",
             arr: ListOfEnum?.FACILITATOR_SOCIAL_STATUS,
@@ -333,7 +333,7 @@ export default function PrerakOnboardingForm({
         if (schema?.["properties"]?.["device_type"]) {
           //get local enum
           const ListOfEnum = await getIndexedDBItem("enums");
-    
+
           newSchema = getOptions(newSchema, {
             key: "device_type",
             arr: ListOfEnum?.MOBILE_TYPE,
@@ -967,6 +967,8 @@ export default function PrerakOnboardingForm({
       <PhotoUpload
         key={facilitator}
         {...{
+          userid,
+          facilitator,
           formData,
           cameraFile,
           setCameraFile,

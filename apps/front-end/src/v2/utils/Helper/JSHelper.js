@@ -1,7 +1,10 @@
 import React, { useState, useLayoutEffect } from "react";
 import { changeLanguage } from "i18next";
 import { get, set } from "idb-keyval";
-import { getSelectedAcademicYear, getSelectedProgramId } from "@shiksha/common-lib";
+import {
+  getSelectedAcademicYear,
+  getSelectedProgramId,
+} from "@shiksha/common-lib";
 
 export function getWindowSize(maxWidth = "1080") {
   const [size, setSize] = useState([]);
@@ -95,20 +98,53 @@ export const fetchFileUrlAsBlob = async (url) => {
 };
 
 export const getHeaderDetails = async () => {
-  let commonHeader = {}
-  let academic_year_id = null
-  let program_id = null
+  let commonHeader = {};
+  let academic_year_id = null;
+  let program_id = null;
   try {
-    let academic_year = await getSelectedAcademicYear()
-    academic_year_id = academic_year?.academic_year_id
+    let academic_year = await getSelectedAcademicYear();
+    academic_year_id = academic_year?.academic_year_id;
   } catch (e) {}
   try {
-    let program = await getSelectedProgramId()
-    program_id = program?.program_id
+    let program = await getSelectedProgramId();
+    program_id = program?.program_id;
   } catch (e) {}
   commonHeader = {
     academic_year_id: academic_year_id,
-    program_id: program_id
+    program_id: program_id,
+  };
+  return commonHeader;
+};
+
+export const getFileTypeFromBase64 = async (base64String) => {
+  // Extract base64 header which contains the file type
+  // Split the base64 string by comma
+  if (base64String) {
+    //console.log("base64String", base64String);
+    const parts = base64String.split(",");
+
+    // Extract the header portion containing the file type
+    const header = parts[0];
+
+    // Extract the file type from the header
+    const fileType = header.split(":")[1].split(";")[0];
+
+    return fileType;
   }
-  return commonHeader
+  return null;
+};
+
+export function convertFileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result;
+      resolve(base64String);
+    };
+
+    reader.onerror = (error) => reject(error);
+
+    reader.readAsDataURL(file);
+  });
 }
