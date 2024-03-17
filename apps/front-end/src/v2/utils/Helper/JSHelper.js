@@ -148,3 +148,34 @@ export function convertFileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+export function arraysAreEqual(array1, array2) {
+  // Check if arrays have the same length
+  if (array1.length !== array2.length) {
+    return false;
+  }
+
+  // Iterate over the elements of the arrays and compare them
+  for (let i = 0; i < array1.length; i++) {
+    if (array1[i] !== array2[i]) {
+      // If corresponding elements are not equal, arrays are not equal
+      return false;
+    }
+  }
+
+  // If all corresponding elements are equal, arrays are equal
+  return true;
+}
+
+export function generateUniqueRandomNumber() {
+  // Get the current timestamp
+  const timestamp = Date.now().toString();
+
+  // Generate a random number between 0 and 9999
+  const randomNumber = Math.floor(Math.random() * 10000);
+
+  // Concatenate the timestamp with the random number
+  const uniqueNumber = timestamp + randomNumber;
+
+  return parseInt(uniqueNumber);
+}

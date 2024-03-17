@@ -364,13 +364,22 @@ export default function PrerakOnboardingArrayForm({
     setAddMore(true);
   };
 
-  const onDelete = async (id) => {
-    if (type === "reference_details") {
+  const onDelete = async (deletedata) => {
+    //online delete
+    /*if (type === "reference_details") {
       await facilitatorRegistryService.referenceDelete({ id });
     } else {
       await facilitatorRegistryService.experienceDelete({ id });
-    }
-    setData(data.filter((e) => e.id !== id));
+    }*/
+    //offline delete
+    await updateOnboardingData(userid, {
+      ...deletedata,
+      type,
+      arr_id: deletedata?.id,
+      status: "delete",
+    });
+
+    setData(data.filter((e) => e.id !== deletedata.id));
   };
 
   const onClickSubmit = (data) => {
@@ -403,7 +412,10 @@ export default function PrerakOnboardingArrayForm({
                     type_of_document,
                     document_id,
                   } = item?.reference || {};
-                  return (
+
+                  return item?.status == "delete" ? (
+                    <></>
+                  ) : (
                     <Box key={name}>
                       <CardComponent
                         schema={schema}
@@ -420,7 +432,7 @@ export default function PrerakOnboardingArrayForm({
                             : {}),
                         }}
                         onEdit={(e) => onEdit(e)}
-                        onDelete={(e) => onDelete(e.id)}
+                        onDelete={(e) => onDelete(e)}
                         arr={keys}
                         label={labels}
                       />

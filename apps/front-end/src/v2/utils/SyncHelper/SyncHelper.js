@@ -124,6 +124,7 @@ export async function getUserInfo(id) {
     const getUserInfo = await getIndexedDBItem(
       `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
     );
+    console.log("getUserInfo getUserInfo", getUserInfo);
     if (getUserInfo) {
       return getUserInfo;
     } else {
@@ -270,7 +271,7 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
   return NewObject;
 }*/
 
-export async function mergeOnlyChanged(obj1, obj2) {
+export const mergeOnlyChanged = async (obj1, obj2) => {
   const merged = { ...obj1 };
 
   for (const key in obj2) {
@@ -280,7 +281,7 @@ export async function mergeOnlyChanged(obj1, obj2) {
         merged[key] = await mergeOnlyChanged(obj1[key] || {}, obj2[key]);
       } else if (Array.isArray(obj2[key])) {
         // If the value is an array, concatenate or replace it
-        merged[key] = obj1[key] ? obj1[key].concat(obj2[key]) : obj2[key];
+        //merged[key] = obj1[key] ? obj1[key].concat(obj2[key]) : obj2[key];
       } else {
         // Otherwise, simply assign the value
         merged[key] = obj2[key];
@@ -289,4 +290,63 @@ export async function mergeOnlyChanged(obj1, obj2) {
   }
 
   return merged;
-}
+};
+
+export const mergeExperiences = async (get_obj, update_obj, type) => {
+  let merged = [];
+  console.log("get_obj ", get_obj);
+  console.log("update_obj ", update_obj);
+  if (get_obj && get_obj.length > 0) {
+    merged = get_obj;
+  }
+  //compair with get
+  if (update_obj && update_obj.length > 0) {
+    for (let i = 0; i < update_obj.length; i++) {
+      let temp_update_obj = update_obj[i];
+      console.log("i", i);
+      console.log("temp_update_obj", temp_update_obj);
+      if (type == "update" && temp_update_obj?.status == "insert") {
+        merged.push(temp_update_obj);
+      } else {
+        if (merged.length > 0) {
+          let isPush = false;
+          for (let j = 0; j < merged.length; j++) {
+            console.log("merged.length", merged.length);
+            if (
+              (type == "update" &&
+                (temp_update_obj?.status == "delete" ||
+                  temp_update_obj?.status == "update") &&
+                temp_update_obj?.id != "" &&
+                temp_update_obj?.id == merged[j]?.id) ||
+              (type == "update" &&
+                (temp_update_obj?.status == "delete" ||
+                  temp_update_obj?.status == "update") &&
+                temp_update_obj?.id == "" &&
+                temp_update_obj?.unique_key == merged[j]?.unique_key) ||
+              (temp_update_obj?.id != "" &&
+                temp_update_obj?.id == merged[j]?.id) ||
+              (temp_update_obj?.id == "" &&
+                temp_update_obj?.unique_key == merged[j]?.unique_key)
+            ) {
+              merged[j] = temp_update_obj;
+              isPush = false;
+              break;
+            }
+            else{
+              isPush = true;
+            }
+          }
+          if (isPush) {
+            merged.push(temp_update_obj);
+          }
+        } else {
+          merged.push(temp_update_obj);
+        }
+      }
+    }
+  }
+
+  console.log("merged", merged);
+
+  return merged;
+};

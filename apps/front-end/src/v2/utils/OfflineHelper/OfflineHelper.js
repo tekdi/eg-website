@@ -1,19 +1,32 @@
+import { isArray } from "lodash";
 import {
   getUserInfo,
   getUserUpdatedInfo,
   getOnlyChanged,
   mergeOnlyChanged,
   setPrerakUpdateInfo,
+  mergeExperiences,
 } from "../SyncHelper/SyncHelper";
+import { arraysAreEqual, generateUniqueRandomNumber } from "../Helper/JSHelper";
 
 export async function getOnboardingData(id) {
   try {
-    let userInfo = await getUserInfo(id);
-    let userUpdatedInfo = await getUserUpdatedInfo(id);
-    let userMergedInfo = await mergeOnlyChanged(userInfo, userUpdatedInfo);
-    /*console.log(userInfo);
-    console.log(userUpdatedInfo);
-    console.log("userMergedInfo", userMergedInfo);*/
+    const userGetInfo = await getUserInfo(id);
+    const userUpdatedInfo = await getUserUpdatedInfo(id);
+    console.log("userGetInfo getOnboardingData", userGetInfo);
+    console.log("userUpdatedInfo getOnboardingData", userUpdatedInfo);
+    const userMergedInfo = await mergeOnlyChanged(userGetInfo, userUpdatedInfo);
+    console.log("userMergedInfo getOnboardingData", userMergedInfo);
+    //experience
+    const userMergedInfo_experience = await mergeExperiences(
+      userGetInfo?.experience,
+      userUpdatedInfo?.experience,
+      ""
+    );
+    console.log(
+      "userMergedInfo_experience getOnboardingData",
+      userMergedInfo_experience
+    );
     //preprocess data
     //qualification id
     let qualification_id_arr = null;
@@ -30,7 +43,7 @@ export async function getOnboardingData(id) {
     let vo_experience = [];
     let experience = [];
     try {
-      let experience_obj = userMergedInfo?.experience;
+      let experience_obj = userMergedInfo_experience;
       //console.log("experience_obj", experience_obj);
       //console.log("experience_obj.length", experience_obj.length);
       if (experience_obj) {
@@ -61,6 +74,8 @@ export async function getOnboardingData(id) {
                 path: experience_obj[i]?.references?.documents?.path,
               },
             },
+            status: experience_obj[i]?.status,
+            unique_key: experience_obj[i]?.unique_key,
           };
           //console.log("temp_obj_experience", temp_obj_experience);
           if (experience_obj[i]?.type == "vo_experience") {
@@ -180,6 +195,10 @@ export async function getOnboardingData(id) {
 }
 
 export async function updateOnboardingData(id, onboardingData) {
+  let userInfo = await getUserInfo(id);
+  //console.log("userInfo", userInfo);
+  let userUpdatedInfo = await getUserUpdatedInfo(id);
+  //console.log("userUpdatedInfo", userUpdatedInfo);
   let users = new Object();
   let core_faciltator = new Object();
   let extended_users = new Object();
@@ -190,65 +209,140 @@ export async function updateOnboardingData(id, onboardingData) {
   console.log("onboardingData", onboardingData);
   //step 1 basic_details
   onboardingData?.first_name
-    ? (users.first_name = onboardingData.first_name)
+    ? onboardingData.first_name != userInfo?.users?.first_name
+      ? (users.first_name = onboardingData.first_name)
+      : delete userUpdatedInfo?.users?.first_name
     : null;
   onboardingData?.last_name
-    ? (users.last_name = onboardingData.last_name)
+    ? onboardingData.last_name != userInfo?.users?.last_name
+      ? (users.last_name = onboardingData.last_name)
+      : delete userUpdatedInfo?.users?.last_name
     : null;
   onboardingData?.middle_name
-    ? (users.middle_name = onboardingData.middle_name)
+    ? onboardingData.middle_name != userInfo?.users?.middle_name
+      ? (users.middle_name = onboardingData.middle_name)
+      : delete userUpdatedInfo?.users?.middle_name
     : null;
-  onboardingData?.dob ? (users.dob = onboardingData.dob) : null;
+  onboardingData?.dob
+    ? onboardingData.dob != userInfo?.users?.dob
+      ? (users.dob = onboardingData.dob)
+      : delete userUpdatedInfo?.users?.dob
+    : null;
   //step 2 contact_details
-  onboardingData?.mobile ? (users.mobile = onboardingData.mobile) : null;
-  onboardingData?.email_id ? (users.email_id = onboardingData.email_id) : null;
+  onboardingData?.mobile
+    ? onboardingData.mobile != userInfo?.users?.mobile
+      ? (users.mobile = onboardingData.mobile)
+      : delete userUpdatedInfo?.users?.mobile
+    : null;
+  onboardingData?.email_id
+    ? onboardingData.email_id != userInfo?.users?.email_id
+      ? (users.email_id = onboardingData.email_id)
+      : delete userUpdatedInfo?.users?.email_id
+    : null;
   onboardingData?.device_type
-    ? (core_faciltator.device_type = onboardingData.device_type)
+    ? onboardingData.device_type != userInfo?.core_faciltator?.device_type
+      ? (core_faciltator.device_type = onboardingData.device_type)
+      : delete userUpdatedInfo?.core_faciltator?.device_type
     : null;
   onboardingData?.device_ownership
-    ? (core_faciltator.device_ownership = onboardingData.device_ownership)
+    ? onboardingData.device_ownership !=
+      userInfo?.core_faciltator?.device_ownership
+      ? (core_faciltator.device_ownership = onboardingData.device_ownership)
+      : delete userUpdatedInfo?.core_faciltator?.device_ownership
     : null;
   onboardingData?.alternative_mobile_number
-    ? (users.alternative_mobile_number =
-        onboardingData.alternative_mobile_number)
-    : null;
-  onboardingData?.alternative_mobile_number
-    ? (users.alternative_mobile_number =
-        onboardingData.alternative_mobile_number)
+    ? onboardingData.alternative_mobile_number !=
+      userInfo?.users?.alternative_mobile_number
+      ? (users.alternative_mobile_number =
+          onboardingData.alternative_mobile_number)
+      : delete userUpdatedInfo?.users?.alternative_mobile_number
     : null;
   //step 3 address_details
-  onboardingData?.block ? (users.block = onboardingData.block) : null;
-  onboardingData?.district ? (users.district = onboardingData.district) : null;
-  onboardingData?.grampanchayat
-    ? (users.grampanchayat = onboardingData.grampanchayat)
+  onboardingData?.block
+    ? onboardingData.block != userInfo?.users?.block
+      ? (users.block = onboardingData.block)
+      : delete userUpdatedInfo?.users?.block
     : null;
-  onboardingData?.pincode ? (users.pincode = onboardingData.pincode) : null;
-  onboardingData?.state ? (users.state = onboardingData.state) : null;
-  onboardingData?.village ? (users.village = onboardingData.village) : null;
+  onboardingData?.district
+    ? onboardingData.district != userInfo?.users?.district
+      ? (users.district = onboardingData.district)
+      : delete userUpdatedInfo?.users?.district
+    : null;
+  onboardingData?.grampanchayat
+    ? onboardingData.grampanchayat != userInfo?.users?.grampanchayat
+      ? (users.grampanchayat = onboardingData.grampanchayat)
+      : delete userUpdatedInfo?.users?.grampanchayat
+    : null;
+  onboardingData?.pincode
+    ? onboardingData.pincode != userInfo?.users?.pincode
+      ? (users.pincode = onboardingData.pincode)
+      : delete userUpdatedInfo?.users?.pincode
+    : null;
+  onboardingData?.state
+    ? onboardingData.state != userInfo?.users?.state
+      ? (users.state = onboardingData.state)
+      : delete userUpdatedInfo?.users?.state
+    : null;
+  onboardingData?.village
+    ? onboardingData.village != userInfo?.users?.village
+      ? (users.village = onboardingData.village)
+      : delete userUpdatedInfo?.users?.village
+    : null;
   //step 4 personal_details
-  onboardingData?.gender ? (users.gender = onboardingData.gender) : null;
+  onboardingData?.gender
+    ? onboardingData.gender != userInfo?.users?.gender
+      ? (users.gender = onboardingData.gender)
+      : delete userUpdatedInfo?.users?.gender
+    : null;
   onboardingData?.marital_status
-    ? (extended_users.marital_status = onboardingData.marital_status)
+    ? onboardingData.marital_status != userInfo?.extended_users?.marital_status
+      ? (extended_users.marital_status = onboardingData.marital_status)
+      : delete userUpdatedInfo?.extended_users?.marital_status
     : null;
   onboardingData?.social_category
-    ? (extended_users.social_category = onboardingData.social_category)
+    ? onboardingData.social_category !=
+      userInfo?.extended_users?.social_category
+      ? (extended_users.social_category = onboardingData.social_category)
+      : delete userUpdatedInfo?.extended_users?.social_category
     : null;
   //step 5 reference_details
   onboardingData?.contact_number
-    ? (references.contact_number = onboardingData.contact_number)
+    ? onboardingData.contact_number != userInfo?.references?.contact_number
+      ? (references.contact_number = onboardingData.contact_number)
+      : delete userUpdatedInfo?.references?.contact_number
     : null;
   onboardingData?.designation
-    ? (references.designation = onboardingData.designation)
+    ? onboardingData.designation != userInfo?.references?.designation
+      ? (references.designation = onboardingData.designation)
+      : delete userUpdatedInfo?.references?.designation
     : null;
-  onboardingData?.name ? (references.name = onboardingData.name) : null;
+  onboardingData?.name
+    ? onboardingData.name != userInfo?.references?.name
+      ? (references.name = onboardingData.name)
+      : delete userUpdatedInfo?.references?.name
+    : null;
   //step 6 work_availability_details
   onboardingData?.availability
-    ? (program_faciltators.availability = onboardingData.availability)
+    ? onboardingData.availability != userInfo?.program_faciltators?.availability
+      ? (program_faciltators.availability = onboardingData.availability)
+      : delete userUpdatedInfo?.program_faciltators?.availability
     : null;
   //step 7 work_experience_details vo_experience //step 8 work_experience_details experience
-  onboardingData?.role_title
-    ? experience.push({
-        id: null,
+  /* change experience CRUD */
+  if (onboardingData?.role_title) {
+    if (onboardingData?.status && onboardingData.status == "delete") {
+      //delete
+      experience.push({
+        id: onboardingData?.arr_id ? onboardingData.arr_id : "",
+        status: onboardingData?.status,
+        unique_key: onboardingData?.unique_key,
+        type: onboardingData?.type,
+      });
+    } else {
+      //edit //insert
+      let unique_key = generateUniqueRandomNumber();
+      experience.push({
+        id: onboardingData?.arr_id ? onboardingData.arr_id : "",
         type: onboardingData?.type,
         role_title: onboardingData?.role_title,
         organization: onboardingData?.organization,
@@ -256,87 +350,171 @@ export async function updateOnboardingData(id, onboardingData) {
         experience_in_years: onboardingData?.experience_in_years,
         related_to_teaching: onboardingData?.related_to_teaching,
         references: {
-          id: null,
+          id: onboardingData?.reference_details?.id
+            ? onboardingData.reference_details.id
+            : "",
           name: onboardingData?.reference_details?.name,
           contact_number: onboardingData?.reference_details?.contact_number,
           type_of_document: onboardingData?.reference_details?.type_of_document,
         },
-      })
-    : null;
+        status: onboardingData?.status
+          ? onboardingData.status
+          : onboardingData?.arr_id
+          ? "update"
+          : "insert",
+        unique_key: !onboardingData?.arr_id ? unique_key : null,
+      });
+    }
+  }
   //step 9 qualification_details
   onboardingData?.qualification_master_id
-    ? (qualifications.qualification_master_id =
-        onboardingData.qualification_master_id)
+    ? onboardingData.qualification_master_id !=
+      userInfo?.qualifications?.qualification_master_id
+      ? (qualifications.qualification_master_id =
+          onboardingData.qualification_master_id)
+      : delete userUpdatedInfo?.qualifications?.qualification_master_id
     : null;
-  onboardingData?.qualification_reference_document_id
-    ? (qualifications.qualification_reference_document_id =
-        onboardingData.qualification_reference_document_id)
-    : null;
-  onboardingData?.qualification_reference_document_id
-    ? (qualifications.documents = {
-        base64: onboardingData.qualification_reference_document_id,
-      })
-    : null;
-  onboardingData?.qualification_ids
-    ? (program_faciltators.qualification_ids = JSON.stringify(
-        onboardingData.qualification_ids
-      ))
-    : null;
+  //qualification document
+  if (onboardingData?.qualification_reference_document_id) {
+    if (
+      onboardingData.qualification_reference_document_id !=
+      userInfo?.qualifications?.documents?.base64
+    ) {
+      //doc changed
+      qualifications.qualification_reference_document_id = "";
+      qualifications.documents = {
+        base64: onboardingData?.qualification_reference_document_id,
+        context: "",
+        context_id: "",
+        document_id: "",
+        name: "",
+        path: "",
+        provider: "",
+      };
+    } else {
+      //doc not change or upload already existing
+      delete userUpdatedInfo?.qualifications?.documents;
+      delete userUpdatedInfo?.qualifications
+        ?.qualification_reference_document_id;
+    }
+  }
   if (onboardingData?.qualification_ids) {
-    onboardingData?.has_diploma
-      ? (core_faciltator.has_diploma = onboardingData.has_diploma)
-      : (core_faciltator.has_diploma = false);
-    onboardingData?.has_diploma
-      ? onboardingData?.diploma_details
-        ? (core_faciltator.diploma_details = onboardingData.diploma_details)
+    let onBoard_qualification_id_arr = null;
+    try {
+      onBoard_qualification_id_arr = onboardingData?.qualification_ids;
+      if (onBoard_qualification_id_arr) {
+        onBoard_qualification_id_arr = onBoard_qualification_id_arr.map((str) =>
+          parseInt(str)
+        );
+      }
+      onBoard_qualification_id_arr = onBoard_qualification_id_arr.toString();
+      onBoard_qualification_id_arr = onBoard_qualification_id_arr
+        .split(",")
+        .map((numString) => parseInt(numString, 10));
+    } catch (e) {}
+    let userInfo_qualification_id_arr = null;
+    try {
+      userInfo_qualification_id_arr = JSON.parse(
+        userInfo?.program_faciltators?.qualification_ids
+      );
+      if (userInfo_qualification_id_arr) {
+        userInfo_qualification_id_arr = userInfo_qualification_id_arr.map(
+          (str) => parseInt(str)
+        );
+      }
+      userInfo_qualification_id_arr = userInfo_qualification_id_arr.toString();
+      userInfo_qualification_id_arr = userInfo_qualification_id_arr
+        .split(",")
+        .map((numString) => parseInt(numString, 10));
+    } catch (e) {}
+    if (
+      arraysAreEqual(
+        onBoard_qualification_id_arr,
+        userInfo_qualification_id_arr
+      )
+    ) {
+      delete userUpdatedInfo?.program_faciltators?.qualification_ids;
+    } else {
+      program_faciltators.qualification_ids = JSON.stringify(
+        onboardingData.qualification_ids
+      );
+    }
+    //diploma and its value
+    onboardingData?.has_diploma == true || onboardingData?.has_diploma == false
+      ? onboardingData.has_diploma != userInfo?.core_faciltator?.has_diploma
+        ? (core_faciltator.has_diploma = onboardingData.has_diploma)
+        : delete userUpdatedInfo?.core_faciltator?.has_diploma
+      : null;
+    onboardingData?.has_diploma == true || onboardingData?.has_diploma == false
+      ? onboardingData?.has_diploma == true
+        ? onboardingData?.diploma_details
+          ? onboardingData.diploma_details !=
+            userInfo?.core_faciltator?.diploma_details
+            ? (core_faciltator.diploma_details = onboardingData.diploma_details)
+            : delete userUpdatedInfo?.core_faciltator?.diploma_details
+          : null
+        : onboardingData?.has_diploma == false
+        ? "" != userInfo?.core_faciltator?.diploma_details
+          ? (core_faciltator.diploma_details = "")
+          : delete userUpdatedInfo?.core_faciltator?.diploma_details
         : null
-      : (core_faciltator.diploma_details = "");
+      : null;
   }
   //step 10 profile photo 1
   onboardingData?.profile_photo_1?.base64
-    ? (users.profile_photo_1 = {
-        name: onboardingData.profile_photo_1?.name,
-        documents: {
-          base64: onboardingData.profile_photo_1?.base64,
-          document_id: onboardingData.profile_photo_1?.id,
+    ? onboardingData.profile_photo_1.base64 !=
+      userInfo?.users?.profile_photo_1?.documents?.base64
+      ? (users.profile_photo_1 = {
           name: onboardingData.profile_photo_1?.name,
-          document_type: onboardingData.profile_photo_1?.document_type,
-          document_sub_type: onboardingData.profile_photo_1?.document_sub_type,
-          path: onboardingData.profile_photo_1?.path,
-        },
-      })
+          documents: {
+            base64: onboardingData.profile_photo_1?.base64,
+            document_id: onboardingData.profile_photo_1?.id,
+            name: onboardingData.profile_photo_1?.name,
+            document_type: onboardingData.profile_photo_1?.document_type,
+            document_sub_type:
+              onboardingData.profile_photo_1?.document_sub_type,
+            path: onboardingData.profile_photo_1?.path,
+          },
+        })
+      : delete userUpdatedInfo?.users?.profile_photo_1
     : null;
   //step 11 profile photo 2
   onboardingData?.profile_photo_2?.base64
-    ? (users.profile_photo_2 = {
-        name: onboardingData.profile_photo_2?.name,
-        documents: {
-          base64: onboardingData.profile_photo_2?.base64,
-          document_id: onboardingData.profile_photo_2?.id,
+    ? onboardingData.profile_photo_2.base64 !=
+      userInfo?.users?.profile_photo_2?.documents?.base64
+      ? (users.profile_photo_2 = {
           name: onboardingData.profile_photo_2?.name,
-          document_type: onboardingData.profile_photo_2?.document_type,
-          document_sub_type: onboardingData.profile_photo_2?.document_sub_type,
-          path: onboardingData.profile_photo_2?.path,
-        },
-      })
+          documents: {
+            base64: onboardingData.profile_photo_2?.base64,
+            document_id: onboardingData.profile_photo_2?.id,
+            name: onboardingData.profile_photo_2?.name,
+            document_type: onboardingData.profile_photo_2?.document_type,
+            document_sub_type:
+              onboardingData.profile_photo_2?.document_sub_type,
+            path: onboardingData.profile_photo_2?.path,
+          },
+        })
+      : delete userUpdatedInfo?.users?.profile_photo_2
     : null;
   //step 12 profile photo 3
   onboardingData?.profile_photo_3?.base64
-    ? (users.profile_photo_3 = {
-        name: onboardingData.profile_photo_3?.name,
-        documents: {
-          base64: onboardingData.profile_photo_3?.base64,
-          document_id: onboardingData.profile_photo_3?.id,
+    ? onboardingData.profile_photo_3.base64 !=
+      userInfo?.users?.profile_photo_3?.documents?.base64
+      ? (users.profile_photo_3 = {
           name: onboardingData.profile_photo_3?.name,
-          document_type: onboardingData.profile_photo_3?.document_type,
-          document_sub_type: onboardingData.profile_photo_3?.document_sub_type,
-          path: onboardingData.profile_photo_3?.path,
-        },
-      })
+          documents: {
+            base64: onboardingData.profile_photo_3?.base64,
+            document_id: onboardingData.profile_photo_3?.id,
+            name: onboardingData.profile_photo_3?.name,
+            document_type: onboardingData.profile_photo_3?.document_type,
+            document_sub_type:
+              onboardingData.profile_photo_3?.document_sub_type,
+            path: onboardingData.profile_photo_3?.path,
+          },
+        })
+      : delete userUpdatedInfo?.users?.profile_photo_3
     : null;
   //merge two arrays
-  let userUpdatedInfo = await getUserUpdatedInfo(id);
-  console.log("userUpdatedInfo", userUpdatedInfo);
   //generate final object
   let temp_update_obj = {
     users: users,
@@ -354,6 +532,12 @@ export async function updateOnboardingData(id, onboardingData) {
       userUpdatedInfo,
       temp_update_obj
     );
+    let userMergedInfo_experience = await mergeExperiences(
+      userUpdatedInfo?.experience,
+      temp_update_obj?.experience,
+      "update"
+    );
+    userMergedInfo.experience = userMergedInfo_experience;
     console.log("userMergedInfo", userMergedInfo);
     //set prerak update object
     await setPrerakUpdateInfo(id, userMergedInfo);
