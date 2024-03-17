@@ -164,7 +164,7 @@ export default function PrerakOnboardingArrayForm({
       setLoading(true);
       setData([]);
       const result = await getOnboardingData(id);
-      console.log("getOnboardingData", result);
+      //console.log("getOnboardingData", result);
 
       setfacilitator(result);
       if (type === "reference_details") {
@@ -316,6 +316,8 @@ export default function PrerakOnboardingArrayForm({
       const newdata = filterObject(newFormData, [
         ...Object.keys(schema?.properties),
         "arr_id",
+        "status",
+        "unique_key",
       ]);
 
       //online data submit
@@ -351,7 +353,9 @@ export default function PrerakOnboardingArrayForm({
   };
 
   const onAdd = () => {
-    setFormData();
+    setFormData({
+      status: "insert",
+    });
     setAddMore(true);
   };
 
@@ -360,6 +364,7 @@ export default function PrerakOnboardingArrayForm({
       ...item,
       reference_details: item?.reference ? item?.reference : {},
       arr_id: item?.id,
+      status: "update",
     });
     setAddMore(true);
   };

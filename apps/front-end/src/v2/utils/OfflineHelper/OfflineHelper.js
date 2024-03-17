@@ -13,20 +13,20 @@ export async function getOnboardingData(id) {
   try {
     const userGetInfo = await getUserInfo(id);
     const userUpdatedInfo = await getUserUpdatedInfo(id);
-    console.log("userGetInfo getOnboardingData", userGetInfo);
-    console.log("userUpdatedInfo getOnboardingData", userUpdatedInfo);
+    //console.log("userGetInfo getOnboardingData", userGetInfo);
+    //console.log("userUpdatedInfo getOnboardingData", userUpdatedInfo);
     const userMergedInfo = await mergeOnlyChanged(userGetInfo, userUpdatedInfo);
-    console.log("userMergedInfo getOnboardingData", userMergedInfo);
+    //console.log("userMergedInfo getOnboardingData", userMergedInfo);
     //experience
     const userMergedInfo_experience = await mergeExperiences(
       userGetInfo?.experience,
       userUpdatedInfo?.experience,
       ""
     );
-    console.log(
+    /*console.log(
       "userMergedInfo_experience getOnboardingData",
       userMergedInfo_experience
-    );
+    );*/
     //preprocess data
     //qualification id
     let qualification_id_arr = null;
@@ -61,7 +61,7 @@ export async function getOnboardingData(id) {
               name: experience_obj[i]?.references?.name,
               contact_number: experience_obj[i]?.references?.contact_number,
               type_of_document: experience_obj[i]?.references?.type_of_document,
-              document_id: experience_obj[i]?.references?.document_id,
+              document_id: experience_obj[i]?.references?.documents?.base64,
               document_reference: {
                 base64: experience_obj[i]?.references?.documents?.base64,
                 id: experience_obj[i]?.references?.documents?.document_id,
@@ -206,7 +206,7 @@ export async function updateOnboardingData(id, onboardingData) {
   let program_faciltators = new Object();
   let experience = [];
   let qualifications = new Object();
-  console.log("onboardingData", onboardingData);
+  //console.log("onboardingData", onboardingData);
   //step 1 basic_details
   onboardingData?.first_name
     ? onboardingData.first_name != userInfo?.users?.first_name
@@ -337,6 +337,12 @@ export async function updateOnboardingData(id, onboardingData) {
         status: onboardingData?.status,
         unique_key: onboardingData?.unique_key,
         type: onboardingData?.type,
+        references: {
+          id: onboardingData?.reference?.id ? onboardingData.reference.id : "",
+          documents: {
+            document_id: onboardingData?.reference?.document_reference?.id,
+          },
+        },
       });
     } else {
       //edit //insert
@@ -356,13 +362,32 @@ export async function updateOnboardingData(id, onboardingData) {
           name: onboardingData?.reference_details?.name,
           contact_number: onboardingData?.reference_details?.contact_number,
           type_of_document: onboardingData?.reference_details?.type_of_document,
+          document_id: "",
+          documents: {
+            base64: onboardingData?.reference_details?.document_id,
+            document_id: "",
+            name: onboardingData?.reference_details?.document_reference?.name,
+            document_sub_type:
+              onboardingData?.reference_details?.document_reference
+                ?.document_sub_type,
+            document_type:
+              onboardingData?.reference_details?.document_reference
+                ?.document_type,
+            provider:
+              onboardingData?.reference_details?.document_reference?.provider,
+            path: onboardingData?.reference_details?.document_reference?.path,
+          },
         },
         status: onboardingData?.status
           ? onboardingData.status
           : onboardingData?.arr_id
           ? "update"
           : "insert",
-        unique_key: !onboardingData?.arr_id ? unique_key : null,
+        unique_key: !onboardingData?.arr_id
+          ? onboardingData?.unique_key
+            ? onboardingData.unique_key
+            : unique_key
+          : null,
       });
     }
   }
@@ -525,7 +550,7 @@ export async function updateOnboardingData(id, onboardingData) {
     experience: experience,
     qualifications: qualifications,
   };
-  console.log("temp_update_obj", temp_update_obj);
+  //console.log("temp_update_obj", temp_update_obj);
   //update in system
   try {
     let userMergedInfo = await mergeOnlyChanged(
@@ -538,7 +563,7 @@ export async function updateOnboardingData(id, onboardingData) {
       "update"
     );
     userMergedInfo.experience = userMergedInfo_experience;
-    console.log("userMergedInfo", userMergedInfo);
+    //console.log("userMergedInfo", userMergedInfo);
     //set prerak update object
     await setPrerakUpdateInfo(id, userMergedInfo);
   } catch (e) {

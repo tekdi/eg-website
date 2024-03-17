@@ -124,7 +124,6 @@ export async function getUserInfo(id) {
     const getUserInfo = await getIndexedDBItem(
       `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
     );
-    console.log("getUserInfo getUserInfo", getUserInfo);
     if (getUserInfo) {
       return getUserInfo;
     } else {
@@ -294,8 +293,6 @@ export const mergeOnlyChanged = async (obj1, obj2) => {
 
 export const mergeExperiences = async (get_obj, update_obj, type) => {
   let merged = [];
-  console.log("get_obj ", get_obj);
-  console.log("update_obj ", update_obj);
   if (get_obj && get_obj.length > 0) {
     merged = get_obj;
   }
@@ -303,15 +300,12 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
   if (update_obj && update_obj.length > 0) {
     for (let i = 0; i < update_obj.length; i++) {
       let temp_update_obj = update_obj[i];
-      console.log("i", i);
-      console.log("temp_update_obj", temp_update_obj);
       if (type == "update" && temp_update_obj?.status == "insert") {
         merged.push(temp_update_obj);
       } else {
         if (merged.length > 0) {
           let isPush = false;
           for (let j = 0; j < merged.length; j++) {
-            console.log("merged.length", merged.length);
             if (
               (type == "update" &&
                 (temp_update_obj?.status == "delete" ||
@@ -331,8 +325,7 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
               merged[j] = temp_update_obj;
               isPush = false;
               break;
-            }
-            else{
+            } else {
               isPush = true;
             }
           }
@@ -345,8 +338,6 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
       }
     }
   }
-
-  console.log("merged", merged);
 
   return merged;
 };
