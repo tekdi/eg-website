@@ -74,6 +74,14 @@ function FacilitatorOnboarding() {
     fetchData();
   }, [countLoad]);
 
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      //alert(step);
+    }
+    fetchData();
+  }, [step]);
+
   const funBackButton = () => {
     if (step == "basic_details") {
       setActiveScreenName("");

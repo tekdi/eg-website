@@ -1,7 +1,10 @@
 import React, { useState, useLayoutEffect } from "react";
 import { changeLanguage } from "i18next";
 import { get, set } from "idb-keyval";
-import { getSelectedAcademicYear, getSelectedProgramId } from "@shiksha/common-lib";
+import {
+  getSelectedAcademicYear,
+  getSelectedProgramId,
+} from "@shiksha/common-lib";
 
 export function getWindowSize(maxWidth = "1080") {
   const [size, setSize] = useState([]);
@@ -95,20 +98,84 @@ export const fetchFileUrlAsBlob = async (url) => {
 };
 
 export const getHeaderDetails = async () => {
-  let commonHeader = {}
-  let academic_year_id = null
-  let program_id = null
+  let commonHeader = {};
+  let academic_year_id = null;
+  let program_id = null;
   try {
-    let academic_year = await getSelectedAcademicYear()
-    academic_year_id = academic_year?.academic_year_id
+    let academic_year = await getSelectedAcademicYear();
+    academic_year_id = academic_year?.academic_year_id;
   } catch (e) {}
   try {
-    let program = await getSelectedProgramId()
-    program_id = program?.program_id
+    let program = await getSelectedProgramId();
+    program_id = program?.program_id;
   } catch (e) {}
   commonHeader = {
     academic_year_id: academic_year_id,
-    program_id: program_id
+    program_id: program_id,
+  };
+  return commonHeader;
+};
+
+export const getFileTypeFromBase64 = async (base64String) => {
+  // Extract base64 header which contains the file type
+  // Split the base64 string by comma
+  if (base64String) {
+    //console.log("base64String", base64String);
+    const parts = base64String.split(",");
+
+    // Extract the header portion containing the file type
+    const header = parts[0];
+
+    // Extract the file type from the header
+    const fileType = header.split(":")[1].split(";")[0];
+
+    return fileType;
   }
-  return commonHeader
+  return null;
+};
+
+export function convertFileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result;
+      resolve(base64String);
+    };
+
+    reader.onerror = (error) => reject(error);
+
+    reader.readAsDataURL(file);
+  });
+}
+
+export function arraysAreEqual(array1, array2) {
+  // Check if arrays have the same length
+  if (array1.length !== array2.length) {
+    return false;
+  }
+
+  // Iterate over the elements of the arrays and compare them
+  for (let i = 0; i < array1.length; i++) {
+    if (array1[i] !== array2[i]) {
+      // If corresponding elements are not equal, arrays are not equal
+      return false;
+    }
+  }
+
+  // If all corresponding elements are equal, arrays are equal
+  return true;
+}
+
+export function generateUniqueRandomNumber() {
+  // Get the current timestamp
+  const timestamp = Date.now().toString();
+
+  // Generate a random number between 0 and 9999
+  const randomNumber = Math.floor(Math.random() * 10000);
+
+  // Concatenate the timestamp with the random number
+  const uniqueNumber = timestamp + randomNumber;
+
+  return parseInt(uniqueNumber);
 }

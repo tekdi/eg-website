@@ -161,8 +161,10 @@ export default function PrerakOnboardingArrayForm({
       //const result = await facilitatorRegistryService.getOne({ id });
 
       //get offline data
+      setLoading(true);
+      setData([]);
       const result = await getOnboardingData(id);
-      console.log("getOnboardingData", result);
+      //console.log("getOnboardingData", result);
 
       setfacilitator(result);
       if (type === "reference_details") {
@@ -172,6 +174,7 @@ export default function PrerakOnboardingArrayForm({
       } else if (type === "experience") {
         setData(result?.experience);
       }
+      setLoading(false);
     }
   };
 
@@ -313,6 +316,8 @@ export default function PrerakOnboardingArrayForm({
       const newdata = filterObject(newFormData, [
         ...Object.keys(schema?.properties),
         "arr_id",
+        "status",
+        "unique_key",
       ]);
 
       //online data submit
@@ -329,12 +334,28 @@ export default function PrerakOnboardingArrayForm({
         ...newdata,
         type,
       });
+      //get offline data
+      setLoading(true);
+      setData([]);
+      const result = await getOnboardingData(userid);
+      console.log("getOnboardingData", result);
+      setfacilitator(result);
+      if (type === "reference_details") {
+        setData(result?.references);
+      } else if (type === "vo_experience") {
+        setData(result?.vo_experience);
+      } else if (type === "experience") {
+        setData(result?.experience);
+      }
+      setLoading(false);
       setAddMore(false);
     }
   };
 
   const onAdd = () => {
-    setFormData();
+    setFormData({
+      status: "insert",
+    });
     setAddMore(true);
   };
 
@@ -343,17 +364,27 @@ export default function PrerakOnboardingArrayForm({
       ...item,
       reference_details: item?.reference ? item?.reference : {},
       arr_id: item?.id,
+      status: "update",
     });
     setAddMore(true);
   };
 
-  const onDelete = async (id) => {
-    if (type === "reference_details") {
+  const onDelete = async (deletedata) => {
+    //online delete
+    /*if (type === "reference_details") {
       await facilitatorRegistryService.referenceDelete({ id });
     } else {
       await facilitatorRegistryService.experienceDelete({ id });
-    }
-    setData(data.filter((e) => e.id !== id));
+    }*/
+    //offline delete
+    await updateOnboardingData(userid, {
+      ...deletedata,
+      type,
+      arr_id: deletedata?.id,
+      status: "delete",
+    });
+
+    setData(data.filter((e) => e.id !== deletedata.id));
   };
 
   const onClickSubmit = (data) => {
@@ -386,7 +417,10 @@ export default function PrerakOnboardingArrayForm({
                     type_of_document,
                     document_id,
                   } = item?.reference || {};
-                  return (
+
+                  return item?.status == "delete" ? (
+                    <></>
+                  ) : (
                     <Box key={name}>
                       <CardComponent
                         schema={schema}
@@ -403,7 +437,7 @@ export default function PrerakOnboardingArrayForm({
                             : {}),
                         }}
                         onEdit={(e) => onEdit(e)}
-                        onDelete={(e) => onDelete(e.id)}
+                        onDelete={(e) => onDelete(e)}
                         arr={keys}
                         label={labels}
                       />

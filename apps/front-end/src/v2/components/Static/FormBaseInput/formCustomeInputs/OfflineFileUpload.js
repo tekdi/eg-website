@@ -1,7 +1,6 @@
 import {
   FrontEndTypo,
   IconByName,
-  ImageView,
   uploadRegistryService,
 } from "@shiksha/common-lib";
 import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
@@ -9,6 +8,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 import { convertImageToBase64 } from "../FormBaseInput";
+import FilePreview from "../../FilePreview/FilePreview";
+import { convertFileToBase64 } from "v2/utils/Helper/JSHelper";
 
 const OfflineFileUpload = ({ value, onChange, schema }) => {
   const {
@@ -32,32 +33,14 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
   const { t } = useTranslation();
   const uploadProfile = async (file) => {
     setLoading(true);
-    setProgress(0);
-    const form_data = new FormData();
-    const item = {
-      file,
-      document_type,
-      document_sub_type: document_sub_type || "",
-      user_id: userId || localStorage.getItem("id"), // localStorage id of the logged-in user
-    };
-    for (let key in item) {
-      form_data.append(key, item[key]);
-    }
-    const result = await uploadRegistryService.uploadFile(
-      form_data,
-      {},
-      (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        let percent = Math.floor((loaded * 100) / total);
-        setProgress(percent);
-      }
-    );
-    setLoading(false);
-    const document_id = result?.data?.insert_documents?.returning?.[0]?.id;
-    const base64String = await convertImageToBase64(file);
-    console.log(base64String);
+    const base64String = await convertFileToBase64(file);
+    //console.log("base64String", base64String);
+    value = base64String;
+    /*console.log("value", value);
+    console.log("schema", schema);*/
     onChange(base64String);
     setFile(base64String);
+    setLoading(false);
   };
 
   const handleFileInputChange = async (e) => {
@@ -166,11 +149,12 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
 
           <Box alignItems="center">
             {file ? (
-              <ImageView
+              <FilePreview
+                base64={file}
                 // source={{
                 //   document_id: file,
                 // }}
-                urlObject={{ file }}
+                //urlObject={{ file }}
                 alt={`Alternate ${t(label)}`}
                 width={"190px"}
                 height={"190px"}
