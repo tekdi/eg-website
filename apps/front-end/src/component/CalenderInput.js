@@ -31,7 +31,7 @@ function CalenderInput({ schema, value, onChange }) {
   return (
     <DateRange
       minDate={minDate}
-      maxDate={selectedDate?.startDate && maxDateData.toDate()}
+      maxDate={selectedDate?.startDate && maxDateData?.toDate()}
       ranges={[
         {
           startDate: moment().toDate(),
