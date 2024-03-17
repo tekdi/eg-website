@@ -11,6 +11,7 @@ import imageCompression from "browser-image-compression";
 
 const FileUpload = ({ value, onChange, schema }) => {
   const {
+    type,
     label,
     title,
     uploadTitle,
@@ -53,7 +54,11 @@ const FileUpload = ({ value, onChange, schema }) => {
     );
     setLoading(false);
     const document_id = result?.data?.insert_documents?.returning?.[0]?.id;
-    onChange(document_id);
+    if (type == "number") {
+      onChange(document_id);
+    } else {
+      onChange(`${document_id}`);
+    }
     setFile(document_id);
   };
 
