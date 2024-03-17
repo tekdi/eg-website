@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { objProps } from "@shiksha/common-lib";
+import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser;
@@ -49,7 +50,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   }, [facilitator]);
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.getOne({ id });
+    const result = await getOnboardingData(id);
     setFacilitator(result);
   }, []);
 

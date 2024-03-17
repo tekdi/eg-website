@@ -26,6 +26,14 @@ import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 import accessControl from "./AccessControl.js";
 import AadhaarNumberValidation from "./AadhaarNumberValidation.js";
+import {
+  setIndexedDBItem,
+  getIndexedDBItem,
+} from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
+import {
+  getOnboardingData,
+  updateOnboardingData,
+} from "v2/utils/OfflineHelper/OfflineHelper.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -64,11 +72,18 @@ export default function PrerakOnboardingForm({
       try {
         const id = userid;
         if (id) {
-          const result = await facilitatorRegistryService.getOne({ id });
+          //get online data
+          //const result = await facilitatorRegistryService.getOne({ id });
+
+          //get offline data
+          const result = await getOnboardingData(id);
+          //console.log("form offline data", result);
+
           setFacilitator(result);
-          const ListOfEnum = await enumRegistryService.listOfEnum();
+          const ListOfEnum = await getIndexedDBItem("enums");
+          // const ListOfEnum = await enumRegistryService.listOfEnum();
           if (!ListOfEnum?.error) {
-            setEnumObj(ListOfEnum?.data);
+            setEnumObj(ListOfEnum);
           }
           if (step === "qualification_details") {
             updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
@@ -98,7 +113,9 @@ export default function PrerakOnboardingForm({
             };
             setFormData({
               ...newData,
-              has_diploma: result?.core_faciltator?.has_diploma || undefined,
+              has_diploma: result?.core_faciltator?.has_diploma
+                ? result?.core_faciltator?.has_diploma
+                : false, // || undefined,
               diploma_details:
                 result?.core_faciltator?.diploma_details || undefined,
             });
@@ -143,7 +160,7 @@ export default function PrerakOnboardingForm({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const qData = await facilitatorRegistryService.getQualificationAll();
+        const qData = await getIndexedDBItem("qualification");
         setQualifications(qData);
       } catch (error) {
         console.log(error);
@@ -156,12 +173,9 @@ export default function PrerakOnboardingForm({
 
   const getEditAccess = async () => {
     const id = userid;
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
+
     try {
-      const result = await facilitatorRegistryService.getEditRequests(obj);
+      const result = await getIndexedDBItem("editRequest");
       let field;
       const parseField = result?.data?.[0]?.fields;
       if (parseField && typeof parseField === "string") {
@@ -228,6 +242,7 @@ export default function PrerakOnboardingForm({
   };
 
   const setSchemaData = (newSchema) => {
+    //window.alert(JSON.stringify(newSchema));
     setSchema(accessControl(newSchema, fields));
   };
 
@@ -286,33 +301,42 @@ export default function PrerakOnboardingForm({
           }
         }
         if (schema?.properties?.designation) {
+          //get local enum
+          const ListOfEnum = await getIndexedDBItem("enums");
+
           newSchema = getOptions(newSchema, {
             key: "designation",
-            arr: enumObj?.FACILITATOR_REFERENCE_DESIGNATION,
+            arr: ListOfEnum?.FACILITATOR_REFERENCE_DESIGNATION,
             title: "title",
             value: "value",
           });
         }
         if (schema?.["properties"]?.["marital_status"]) {
+          //get local enum
+          const ListOfEnum = await getIndexedDBItem("enums");
+
           newSchema = getOptions(newSchema, {
             key: "social_category",
-            arr: enumObj?.FACILITATOR_SOCIAL_STATUS,
+            arr: ListOfEnum?.FACILITATOR_SOCIAL_STATUS,
             title: "title",
             value: "value",
           });
 
           newSchema = getOptions(newSchema, {
             key: "marital_status",
-            arr: enumObj?.MARITAL_STATUS,
+            arr: ListOfEnum?.MARITAL_STATUS,
             title: "title",
             value: "value",
           });
         }
 
         if (schema?.["properties"]?.["device_type"]) {
+          //get local enum
+          const ListOfEnum = await getIndexedDBItem("enums");
+
           newSchema = getOptions(newSchema, {
             key: "device_type",
-            arr: enumObj?.MOBILE_TYPE,
+            arr: ListOfEnum?.MOBILE_TYPE,
             title: "title",
             value: "value",
           });
@@ -924,8 +948,13 @@ export default function PrerakOnboardingForm({
         {},
         ""
       );
+      //console.log("new updated Form Data", newdata);
 
-      await formSubmitUpdate(newdata);
+      //online data submit
+      //await formSubmitUpdate(newdata);
+
+      //offline data submit
+      await updateOnboardingData(userid, newdata);
       if (localStorage.getItem("backToProfile") === "false") {
         nextPreviewStep();
       } else {
@@ -938,6 +967,8 @@ export default function PrerakOnboardingForm({
       <PhotoUpload
         key={facilitator}
         {...{
+          userid,
+          facilitator,
           formData,
           cameraFile,
           setCameraFile,

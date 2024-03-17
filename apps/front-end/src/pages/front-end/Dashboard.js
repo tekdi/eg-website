@@ -17,6 +17,8 @@ import {
   getOnboardingMobile,
   setSelectedAcademicYear,
   getSelectedProgramId,
+  enumRegistryService,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -33,7 +35,18 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import {
+  getIndexedDBItem,
+  setIndexedDBItem,
+} from "../../../src/v2/utils/Helper/JSHelper";
 import PropTypes from "prop-types";
+import {
+  checkPrerakOfflineTimeInterval,
+  getIpUserInfo,
+  getUserInfoNull,
+  setIpUserInfo,
+  setPrerakOfflineInfo,
+} from "v2/utils/SyncHelper/SyncHelper";
 
 const styles = {
   inforBox: {
@@ -81,6 +94,121 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
 
+  //store common api indexed db based on internet connection - start
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
+
+  const saveDataToIndexedDB = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    try {
+      const [ListOfEnum, qualification, editRequest] = await Promise.all([
+        enumRegistryService.listOfEnum(),
+        enumRegistryService.getQualificationAll(),
+        facilitatorRegistryService.getEditRequests(obj),
+        // enumRegistryService.userInfo(),
+      ]);
+      const currentTime = moment().toString();
+      await Promise.all([
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("qualification", qualification),
+        setIndexedDBItem("lastFetchTime", currentTime),
+        setIndexedDBItem("editRequest", editRequest),
+      ]);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await checkUserToIndex();
+    };
+
+    fetchData();
+  }, [isOnline]);
+
+  const checkUserToIndex = async () => {
+    const GetSyncTime = await getIndexedDBItem("GetSyncTime");
+    const offlinePrerakData = await getUserInfoNull(fa_id);
+    const IpUserInfo = await getIpUserInfo(fa_id);
+    const timeExpired = await checkPrerakOfflineTimeInterval();
+    let academic_Id = await getSelectedAcademicYear();
+    if (
+      isOnline &&
+      academic_Id &&
+      (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo)
+    ) {
+      await setIpUserInfo(fa_id);
+      await setPrerakOfflineInfo(fa_id);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await checkUserToIndex();
+    };
+
+    if (academicYear) {
+      fetchData();
+    }
+  }, [academicYear]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await checkDataToIndex();
+    };
+
+    fetchData();
+  }, [isOnline]);
+
+  const checkDataToIndex = async () => {
+    // Online Data Fetch Time Interval
+    const timeInterval = 30;
+    const enums = await getIndexedDBItem("enums");
+    const qualification = await getIndexedDBItem("qualification");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const editRequest = await getIndexedDBItem("editRequest");
+    let timeExpired = false;
+    if (lastFetchTime) {
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= timeInterval) {
+        timeExpired = true;
+      }
+    }
+    if (
+      isOnline &&
+      (!enums ||
+        !qualification ||
+        !editRequest ||
+        timeExpired ||
+        !lastFetchTime ||
+        editRequest?.status === 400)
+    ) {
+      await saveDataToIndexedDB();
+    }
+  };
+
+  //end
+
   useEffect(() => {
     async function fetchData() {
       // ...async operation
@@ -92,8 +220,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         //do page load first operation
         //get user info
         if (userTokenInfo) {
-          const fa_data = await facilitatorRegistryService.getInfo();
-          setFacilitator(fa_data);
+          const IpUserInfo = await getIpUserInfo(fa_id);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
         }
         setLoading(false);
         //end do page load first operation
@@ -203,6 +336,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           setCohortData(onboardingURLData?.cohortData);
           setProgramData(onboardingURLData?.programData);
           //get program id and store in localstorage
+
           const user_program_id = facilitator?.program_faciltators?.program_id;
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
@@ -304,6 +438,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const selectAcademicYear = async () => {
     setSelectCohortForm(false);
+    await checkDataToIndex();
+    await checkUserToIndex();
   };
 
   const removeRegisterExist = async () => {
@@ -356,6 +492,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       localStorage.setItem("loadCohort", "yes");
       if (user_cohort_list?.data.length == 1) {
         setSelectCohortForm(false);
+        await checkDataToIndex();
+        await checkUserToIndex();
       } else {
         setSelectCohortForm(true);
       }
