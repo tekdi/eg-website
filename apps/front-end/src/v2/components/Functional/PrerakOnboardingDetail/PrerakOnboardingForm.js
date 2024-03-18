@@ -34,6 +34,7 @@ import {
   getOnboardingData,
   updateOnboardingData,
 } from "v2/utils/OfflineHelper/OfflineHelper.js";
+import AddressOffline from "./AddressOffline.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -60,6 +61,22 @@ export default function PrerakOnboardingForm({
   const [otpButton, setOtpButton] = useState(false);
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     setLang(localStorage.getItem("lang"));
@@ -989,6 +1006,18 @@ export default function PrerakOnboardingForm({
     }
     localStorage.setItem("backToProfile", backToProfile);
   };
+
+  if (step === "address_details") {
+    if (!isOnline) {
+      return (
+        <AddressOffline
+          alert={"ADDRESS_ALERT"}
+          navigatePage={navigatePage}
+          facilitator={facilitator}
+        />
+      );
+    }
+  }
   return (
     <Box py={6} px={4} mb={5}>
       {alert && (
