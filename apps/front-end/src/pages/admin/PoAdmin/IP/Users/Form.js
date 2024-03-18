@@ -13,7 +13,7 @@ import {
 import { Button, HStack, VStack } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { widgets, templates } from "component/BaseInput";
+import { widgets, templates, transformErrors } from "component/BaseInput";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -173,6 +173,7 @@ function UserForm() {
             validator={validator}
             extraErrors={errors}
             noHtml5Validate={true}
+            showErrorList={false}
             schema={schema || {}}
             {...{
               widgets,
@@ -180,6 +181,7 @@ function UserForm() {
               templates,
               validator,
               onSubmit,
+              transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
             <Button display={"none"} type="submit"></Button>

@@ -120,7 +120,7 @@ function View() {
         <HStack space={4}>
           <CardComponent
             _header={{ bg: "light.100" }}
-            _vstack={{ space: 0, flex: 2, bg: "light.100" }}
+            _vstack={{ space: 0, flex: 1, bg: "light.100" }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={organisation}
             title={t("BASIC_DETAILS")}
@@ -155,9 +155,9 @@ function View() {
             title={t("DOCUMENT_DETAILS")}
             label={[
               "STATE",
-              "DOC_PER_COHORT",
-              "DOC_PER_MONTHLY",
-              "DOC_QUARTERLY",
+              "DUE_DILIGENCE_SIGNED_PROPOSAL",
+              "QUARTELY_CA_CERTIFIED",
+              "MONTHLY_UTILIZATION",
               "LEARNER_TARGET",
             ]}
             arr={[

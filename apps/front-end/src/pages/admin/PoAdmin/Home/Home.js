@@ -64,29 +64,31 @@ function Home() {
     <PoAdminLayout getMenus={(e) => setMenus(e)}>
       <VStack justifyContent="center" alignItems="center" p={4} space={4}>
         <HStack flexWrap={"wrap"}>
-          {menus.map((item) => (
-            <Pressable
-              p="4"
-              key={item?.title}
-              onPress={() => {
-                navigate(item?.route);
-              }}
-            >
-              <BoxBlue
-                width={"250px"}
-                height={"200px"}
-                justifyContent="center"
-                pl="3"
+          {menus
+            .filter((e) => e.title.toLowerCase() !== "home")
+            .map((item) => (
+              <Pressable
+                p="4"
+                key={item?.title}
+                onPress={() => {
+                  navigate(item?.route);
+                }}
               >
-                <VStack alignItems={"center"}>
-                  <IconByName name={item?.icon} />
-                  <AdminTypo.H6 bold pt="4">
-                    {t(item?.title)}
-                  </AdminTypo.H6>
-                </VStack>
-              </BoxBlue>
-            </Pressable>
-          ))}
+                <BoxBlue
+                  width={"250px"}
+                  height={"200px"}
+                  justifyContent="center"
+                  pl="3"
+                >
+                  <VStack alignItems={"center"}>
+                    <IconByName name={item?.icon} _icon={{ size: 35 }} />
+                    <AdminTypo.H6 bold pt="4">
+                      {t(item?.title)}
+                    </AdminTypo.H6>
+                  </VStack>
+                </BoxBlue>
+              </Pressable>
+            ))}
         </HStack>
       </VStack>
       <Modal isOpen={modal} safeAreaTop={true} size="xl">

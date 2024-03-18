@@ -25,7 +25,6 @@ function View(props) {
     });
     const reData = result?.data?.[0];
     setUser(reData);
-
     if (reData.program_users?.[0].organisation_id) {
       setOrganisation({
         name: reData.program_users?.[0].organisations?.name,

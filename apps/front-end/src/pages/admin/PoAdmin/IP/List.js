@@ -227,17 +227,24 @@ export default function List() {
             trigger={(triggerProps) => (
               <Button
                 {...triggerProps}
+                background="white"
+                shadow="RedOutlineShadow"
                 borderRadius="100px"
-                background="Darkmaroonprimarybutton.400"
-                shadow="RedFillShadow"
+                borderColor="textMaroonColor.400"
+                borderWidth="1"
+                py="6px"
                 rounded="full"
-                py="10px"
-                color="white"
                 _text={{
-                  color: "#ffffff",
-                  fontSize: "12px",
-                  fontWeight: "700",
+                  color: "textGreyColor.900",
+                  fontSize: "14px",
                 }}
+                rightIcon={
+                  <IconByName
+                    color="black"
+                    _icon={{ size: "18px" }}
+                    name="AddLineIcon"
+                  />
+                }
               >
                 {t("ADD_A_IP")}
               </Button>

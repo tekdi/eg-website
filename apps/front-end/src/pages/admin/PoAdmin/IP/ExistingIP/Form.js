@@ -11,12 +11,13 @@ import { VStack, HStack, Button } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { useNavigate, useParams } from "react-router-dom";
-import { widgets, templates } from "component/BaseInput";
+import { widgets, templates, transformErrors } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 
 const Schema = {
   type: "object",
   required: [
+    "state",
     "organisation_id",
     "doc_per_cohort_id",
     "doc_quarterly_id",
@@ -148,6 +149,7 @@ function ExistingIpForm() {
             ref={formRef}
             validator={validator}
             extraErrors={errors}
+            showErrorList={false}
             noHtml5Validate={true}
             schema={schema || {}}
             {...{
@@ -155,32 +157,32 @@ function ExistingIpForm() {
               templates,
               validator,
               onSubmit,
+              transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
-            <Button display={"none"} type="submit"></Button>
+            <HStack pt={6} space={6}>
+              <AdminTypo.Secondarybutton
+                icon={
+                  <IconByName
+                    color="black"
+                    _icon={{ size: "18px" }}
+                    name="DeleteBinLineIcon"
+                  />
+                }
+                onPress={(e) => navigate(`/poadmin/ips`)}
+              >
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.Dangerbutton
+                isLoading={loading}
+                onPress={() => {
+                  formRef?.current?.submit();
+                }}
+              >
+                {t("SAVE")}
+              </AdminTypo.Dangerbutton>
+            </HStack>
           </Form>
-          <HStack pt={6} space={6} alignSelf={"center"}>
-            <AdminTypo.Secondarybutton
-              icon={
-                <IconByName
-                  color="black"
-                  _icon={{ size: "18px" }}
-                  name="DeleteBinLineIcon"
-                />
-              }
-              onPress={(e) => navigate(`/poadmin/ips`)}
-            >
-              {t("CANCEL")}
-            </AdminTypo.Secondarybutton>
-            <AdminTypo.Dangerbutton
-              isLoading={loading}
-              onPress={() => {
-                formRef?.current?.submit();
-              }}
-            >
-              {t("SAVE")}
-            </AdminTypo.Dangerbutton>
-          </HStack>
         </VStack>
       </VStack>
     </PoAdminLayout>
