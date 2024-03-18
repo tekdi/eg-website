@@ -1209,7 +1209,7 @@
   "SEARCH_BY_LEARNER_NAME": "शिक्षार्थी के नाम से खोजें",
   "SEARCH_BY_NAME": "नाम द्वारा खोजें",
   "SEARCH_BY_PRERAK_NAME": "प्रेरक के नाम से खोजें",
-  "SELECT_MIN_MAX_ERROR":"कृपया न्युनतम 1 और अधिकतम 3 विकल्पो का चयन करे",
+  "SELECT_MIN_MAX_ERROR": "कृपया न्युनतम 1 और अधिकतम 3 विकल्पो का चयन करे",
   "SELECT": "चुनें",
   "SELECT_ACADEMIC_YEAR": "शैक्षणिक वर्ष चुनें",
   "SELECT_ALL": "सबका चयन करें",
@@ -1512,5 +1512,6 @@
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "उचित परिश्रम , हस्ताक्षरित प्रस्ताव",
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
-  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ"
+  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
+  "ADDRESS_ALERT": "पता बदलने के लिए आपको ऑनलाइन होना होगा , कृपया अपना इंटरनेट चालू करें ।"
 }

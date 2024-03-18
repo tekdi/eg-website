@@ -1512,5 +1512,6 @@
   "LEARNERS_TARGET": "Learner's Target",
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
   "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
-  "MONTHLY_UTILIZATION": "Monthly utilization certificate"
+  "MONTHLY_UTILIZATION": "Monthly utilization certificate",
+  "ADDRESS_ALERT": "In order to change the address you will need to be online, please turn on your internet."
 }
