@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   AdminTypo,
+  Breadcrumb,
   CardComponent,
   IconByName,
   PoAdminLayout,
@@ -33,26 +34,56 @@ function View(props) {
     }
   }, []);
 
+  console.log({ user });
   return (
     <PoAdminLayout>
-      <VStack flex={1} space={"5"} p="2">
-        <HStack alignItems={"center"} space="1" pt="3">
-          <IconByName name="GroupLineIcon" size="md" />
-          <AdminTypo.H4
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            bold
-          >
-            {organisation?.name}
-          </AdminTypo.H4>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/poadmin/ips/${organisation?.id}`)}
-          />
-          <Chip textAlign="center" lineHeight="15px" label={id} />
-        </HStack>
+      <VStack flex={1} pt="3" space={"5"} p="2">
+        <Breadcrumb
+          drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+          data={[
+            {
+              title: (
+                <HStack>
+                  <IconByName name="GroupLineIcon" size="md" />
+                  <AdminTypo.H4 bold color="Activatedcolor.400">
+                    {t("ALL_IPS")}
+                  </AdminTypo.H4>
+                </HStack>
+              ),
+              link: "/poadmin/ips",
+              icon: "GroupLineIcon",
+            },
+            {
+              title: (
+                <Chip
+                  textAlign="center"
+                  lineHeight="15px"
+                  label={organisation?.id}
+                />
+              ),
+              link: `/poadmin/ips/${organisation?.id}`,
+            },
+            {
+              title: (
+                <AdminTypo.H4
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  bold
+                >
+                  {t("USER")}
+                </AdminTypo.H4>
+              ),
+              link: `/poadmin/ips/${organisation?.id}`,
+            },
+            {
+              title: (
+                <Chip textAlign="center" lineHeight="15px" label={user?.id} />
+              ),
+            },
+          ]}
+        />
+
         <VStack p={4}>
           <CardComponent
             _body={{ bg: "light.100" }}

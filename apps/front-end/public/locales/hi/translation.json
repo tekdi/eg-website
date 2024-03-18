@@ -1501,5 +1501,10 @@
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "उचित परिश्रम , हस्ताक्षरित प्रस्ताव",
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
-  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ"
+  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
+  "USER": "उपयोगकर्ता",
+  "USER_CREATE": "उपयोगकर्ता बनाएँ",
+  "CREATE": "बनाएँ",
+  "EXISTING_IP": "मौजूदा IP",
+  "EXISTING_USER": "मौजूदा उपयोगकर्ता"
 }
