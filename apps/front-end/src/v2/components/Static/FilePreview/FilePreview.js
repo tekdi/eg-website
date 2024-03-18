@@ -2,7 +2,7 @@ import { t } from "i18next";
 import { Avatar, Button, Image, Box, Modal, HStack, Center } from "native-base";
 import React, { useEffect, useState } from "react";
 import { IconByName, useWindowSize } from "@shiksha/common-lib";
-import { getFileTypeFromBase64 } from "v2/utils/Helper/JSHelper";
+import { base64toBlob, getFileTypeFromBase64 } from "v2/utils/Helper/JSHelper";
 
 export default function FilePreview({
   base64,
@@ -17,6 +17,7 @@ export default function FilePreview({
   ...props
 }) {
   const [data, setData] = useState();
+  const [pdf, setPdf] = useState();
   const [modalUrl, setModalUrl] = useState();
   const [type, setType] = useState("");
   const [width, height] = useWindowSize();
@@ -31,6 +32,9 @@ export default function FilePreview({
       if (base64) {
         let temp_type = await getFileTypeFromBase64(base64);
         setType(temp_type);
+        const pdfBlob = await base64toBlob(base64);
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        setPdf(pdfUrl);
         //console.log("type", temp_type);
       }
     }
@@ -49,7 +53,7 @@ export default function FilePreview({
           />
         ) : type.includes("application/pdf") ? (
           <iframe
-            src={base64}
+            src={pdf}
             width="100%"
             height="500px"
             title="PDF Preview"
