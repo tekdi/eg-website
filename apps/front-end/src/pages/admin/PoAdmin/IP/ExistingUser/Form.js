@@ -11,13 +11,18 @@ import {
 import { Button, HStack, VStack } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { widgets, templates, FileUpload } from "component/BaseInput";
+import {
+  widgets,
+  templates,
+  FileUpload,
+  transformErrors,
+} from "component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
 const Schema = {
   type: "object",
-  required: ["organisation_id", "user_id", "role_slug"],
+  required: ["state", "organisation_id", "user_id", "role_slug"],
   properties: {
     organisation_id: {
       type: "string",
@@ -162,12 +167,14 @@ function ExitingUser(props) {
             validator={validator}
             extraErrors={errors}
             noHtml5Validate={true}
+            showErrorList={false}
             schema={schema || {}}
             {...{
               widgets,
               templates,
               validator,
               onSubmit,
+              transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
             <Button display={"none"} type="submit"></Button>
