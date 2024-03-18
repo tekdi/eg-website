@@ -7,6 +7,7 @@ import { getFileTypeFromBase64 } from "v2/utils/Helper/JSHelper";
 export default function FilePreview({
   base64,
   source,
+  borderRadius,
   text,
   isImageTag,
   isIframeTag,
@@ -40,7 +41,12 @@ export default function FilePreview({
     <Box {..._box}>
       {base64 &&
         (type.includes("image") ? (
-          <img alt="Image not found" {...props} src={base64} />
+          <img
+            alt="Image not found"
+            style={{ borderRadius: borderRadius }}
+            {...props}
+            src={base64}
+          />
         ) : type.includes("application/pdf") ? (
           <iframe
             src={base64}
