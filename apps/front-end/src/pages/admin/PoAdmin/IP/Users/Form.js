@@ -118,6 +118,16 @@ function UserForm() {
     setDataIp(data?.data);
   }, [id]);
 
+  const validate = (data, key) => {
+    let error = {};
+    if (key === "mobile") {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
+        error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+      }
+    }
+    return error;
+  };
+
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
     arr.forEach((key) => {
@@ -129,15 +139,6 @@ function UserForm() {
     });
 
     return err;
-  };
-  const validate = (data, key) => {
-    let error = {};
-    if (key === "mobile") {
-      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
-        error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
-      }
-    }
-    return error;
   };
 
   const onSubmit = async (data) => {
