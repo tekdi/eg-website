@@ -9,8 +9,9 @@ import {
   getSelectedProgramId,
   organisationService,
   t,
+  validation,
 } from "@shiksha/common-lib";
-import { Button, HStack, VStack } from "native-base";
+import { Alert, Button, HStack, VStack } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { widgets, templates, transformErrors } from "component/BaseInput";
@@ -19,7 +20,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Schema = {
   type: "object",
-  required: ["ip_id", "first_name", "role", "mobile"],
+  required: ["ip_id", "state", "first_name", "role", "mobile"],
   properties: {
     ip_id: {
       type: "string",
@@ -118,6 +119,20 @@ function UserForm() {
     setDataIp(data?.data);
   }, [id]);
 
+  const customValidate = (data, err) => {
+    if (data?.mobile) {
+      const isValid = validation({
+        data: data?.mobile,
+        key: "mobile",
+        type: "mobile",
+      });
+      if (isValid) {
+        err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
+      }
+    }
+    return err;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     let newFormData = data.formData;
@@ -167,7 +182,17 @@ function UserForm() {
         <AdminTypo.H6 color={"textGreyColor.500"} bold>
           {t("CREATE_IP")}
         </AdminTypo.H6>
-        <VStack pt={4}>
+        <VStack pt={4} space={"4"}>
+          {errors?.other && (
+            <Alert status="warning" alignItems={"start"}>
+              <HStack alignItems="center" space="2">
+                <Alert.Icon />
+                <AdminTypo.H6 bold>
+                  {errors?.other?.__errors?.join(",")}
+                </AdminTypo.H6>
+              </HStack>
+            </Alert>
+          )}
           <Form
             ref={formRef}
             validator={validator}
@@ -180,6 +205,7 @@ function UserForm() {
               formData,
               templates,
               validator,
+              customValidate,
               onSubmit,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}

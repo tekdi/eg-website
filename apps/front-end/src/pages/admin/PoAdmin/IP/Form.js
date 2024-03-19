@@ -6,6 +6,7 @@ import {
   IconByName,
   cohortService,
   setSelectedProgramId,
+  validation,
 } from "@shiksha/common-lib";
 import { Button, HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -111,7 +112,6 @@ export default function App() {
         ...e,
         state_name: `${e?.state?.state_name}`,
       }));
-      console.log(data);
       let newSchema = Schema;
       if (Schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
@@ -133,11 +133,25 @@ export default function App() {
       });
     }
   };
+
+  const customValidate = (data, err) => {
+    if (data?.mobile) {
+      const isValid = validation({
+        data: data?.mobile,
+        key: "mobile",
+        type: "mobile",
+      });
+      if (isValid) {
+        err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
+      }
+    }
+    return err;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data.formData;
     const result = await organisationService.createOrg(newData);
-
     if (!result.error) {
       navigate("/poadmin/ips");
     } else {
@@ -180,6 +194,7 @@ export default function App() {
               onError,
               onSubmit,
               onChange,
+              customValidate,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
@@ -201,10 +216,7 @@ export default function App() {
                 type="submit"
                 p="4"
                 onPress={() => {
-                  console.log("hello", formRef.current.validateForm());
-                  // if (formRef.current.validateForm()) {
                   formRef?.current?.submit();
-                  // }
                 }}
               >
                 {t("SUBMIT")}
