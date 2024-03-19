@@ -133,6 +133,29 @@ export default function App() {
       });
     }
   };
+
+  const customValidate = (data, err) => {
+    const arr = Object.keys(err);
+    arr.forEach((key) => {
+      const isValid = validate(data, key);
+      if (isValid?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValid[key]))
+          err?.[key]?.addError(isValid[key]);
+      }
+    });
+
+    return err;
+  };
+  const validate = (data, key) => {
+    let error = {};
+    if (key === "mobile") {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
+        error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+      }
+    }
+    return error;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data.formData;
@@ -180,6 +203,7 @@ export default function App() {
               onError,
               onSubmit,
               onChange,
+              customValidate,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
@@ -201,7 +225,6 @@ export default function App() {
                 type="submit"
                 p="4"
                 onPress={() => {
-                  console.log("hello", formRef.current.validateForm());
                   // if (formRef.current.validateForm()) {
                   formRef?.current?.submit();
                   // }

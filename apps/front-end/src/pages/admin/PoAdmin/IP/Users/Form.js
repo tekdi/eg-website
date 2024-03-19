@@ -118,6 +118,28 @@ function UserForm() {
     setDataIp(data?.data);
   }, [id]);
 
+  const customValidate = (data, err) => {
+    const arr = Object.keys(err);
+    arr.forEach((key) => {
+      const isValid = validate(data, key);
+      if (isValid?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValid[key]))
+          err?.[key]?.addError(isValid[key]);
+      }
+    });
+
+    return err;
+  };
+  const validate = (data, key) => {
+    let error = {};
+    if (key === "mobile") {
+      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
+        error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+      }
+    }
+    return error;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     let newFormData = data.formData;
@@ -180,6 +202,7 @@ function UserForm() {
               formData,
               templates,
               validator,
+              customValidate,
               onSubmit,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
