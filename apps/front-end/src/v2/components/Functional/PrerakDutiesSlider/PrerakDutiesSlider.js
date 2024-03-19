@@ -87,7 +87,7 @@ export default function PrerakDutiesSlider({
           alignItems="left"
         >
           <Text style={stylesheet.headerText}>{header[currentImage].text}</Text>
-          <Text  color={"textGreyColor.700"}  mb={2}>
+          <Text color={"textGreyColor.700"} mb={2}>
             {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
           </Text>
         </Box>

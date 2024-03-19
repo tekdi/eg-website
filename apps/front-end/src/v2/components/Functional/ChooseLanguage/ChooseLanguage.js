@@ -15,7 +15,6 @@ import { FrontEndTypo, TitleCard } from "@shiksha/common-lib";
 import { setLanguage, getLanguage } from "v2/utils/Helper/JSHelper";
 import Motif_EG from "../../../assets/Images/Logo/Motif_EG.svg";
 
-
 export default function ChooseLanguage({ t, languageChanged }) {
   const [code, setCode] = useState(getLanguage());
   const [langChanged, setLangChanged] = useState(false);
@@ -30,18 +29,24 @@ export default function ChooseLanguage({ t, languageChanged }) {
 
   return (
     <HStack flexDirection={"column"}>
-      <Image source={{
-        uri: Motif_EG
-      }}
-        width={'100%'}
-        padding={'20px 0px'}
-        height={'100%'}
+      <Image
+        source={{
+          uri: Motif_EG,
+        }}
+        width={"100%"}
+        padding={"20px 0px"}
+        height={"100%"}
       />
       <Box p="5">
         <FrontEndTypo.H1 bold textAlign={"center"}>
           {t("CHOOSE_LANGUAGE")}
         </FrontEndTypo.H1>
-        <FrontEndTypo.H3 pt="5" color="textGreyColor.750" textAlign={"center"} lineHeight="21px">
+        <FrontEndTypo.H3
+          pt="5"
+          color="textGreyColor.750"
+          textAlign={"center"}
+          lineHeight="21px"
+        >
           {t("PREFERED_LANGUAGE")}
         </FrontEndTypo.H3>
 
@@ -51,10 +56,9 @@ export default function ChooseLanguage({ t, languageChanged }) {
               setCode("en");
               setLangChanged(true);
             }}
-            title={<FrontEndTypo.H3 color="white">{t("En")}</FrontEndTypo.H3>}>
-            <FrontEndTypo.H3>
-              {t("ENGLISH")}
-            </FrontEndTypo.H3>
+            title={<FrontEndTypo.H3 color="white">{t("En")}</FrontEndTypo.H3>}
+          >
+            <FrontEndTypo.H3>{t("ENGLISH")}</FrontEndTypo.H3>
           </TitleCard>
 
           <TitleCard
@@ -62,10 +66,9 @@ export default function ChooseLanguage({ t, languageChanged }) {
               setCode("hi");
               setLangChanged(true);
             }}
-            title={<FrontEndTypo.H3 color="white">{t("HIN")}</FrontEndTypo.H3>}>
-            <FrontEndTypo.H3>
-              {t("HINDI")}
-            </FrontEndTypo.H3>
+            title={<FrontEndTypo.H3 color="white">{t("HIN")}</FrontEndTypo.H3>}
+          >
+            <FrontEndTypo.H3>{t("HINDI")}</FrontEndTypo.H3>
           </TitleCard>
         </HStack>
       </Box>
