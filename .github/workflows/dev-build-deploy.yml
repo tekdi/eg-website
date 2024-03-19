@@ -55,7 +55,7 @@ jobs:
           script: |
             cd /var/www/html/
             rm -rf *
-            rm -rf .
+            # rm -rf .
             cd /home/ubuntu
             tar -xvf eg-website.tar -C /var/www/html/
 
