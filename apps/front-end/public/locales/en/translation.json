@@ -1500,5 +1500,7 @@
   "LEARNERS_TARGET": "Learner's Target",
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
   "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
-  "MONTHLY_UTILIZATION": "Monthly utilization certificate"
+  "MONTHLY_UTILIZATION": "Monthly utilization certificate",
+  "LEARNERS_PER_TARGET": "Average learners per camp",
+  "TARGET_CAMP": "Target Camp"
 }

@@ -1501,5 +1501,7 @@
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "उचित परिश्रम , हस्ताक्षरित प्रस्ताव",
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
-  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ"
+  "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
+  "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
+  "TARGET_CAMP": "शिविर लक्ष्य"
 }
