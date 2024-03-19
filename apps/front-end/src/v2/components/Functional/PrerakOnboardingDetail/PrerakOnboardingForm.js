@@ -94,7 +94,7 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-          //console.log("form offline data", result);
+          console.log("form offline data", result);
 
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
@@ -951,32 +951,36 @@ export default function PrerakOnboardingForm({
   };
 
   const onSubmit = async (data) => {
-    let newFormData = data.formData;
-    if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
-      };
-    }
-    if (_.isEmpty(errors)) {
-      const newdata = filterObject(
-        newFormData,
-        Object.keys(schema?.properties),
-        {},
-        ""
-      );
-      //console.log("new updated Form Data", newdata);
-
-      //online data submit
-      //await formSubmitUpdate(newdata);
-
-      //offline data submit
-      await updateOnboardingData(userid, newdata);
-      if (localStorage.getItem("backToProfile") === "false") {
-        nextPreviewStep();
-      } else {
-        navigatePage("/profile", "");
+    try {
+      let newFormData = data.formData;
+      if (schema?.properties?.first_name) {
+        newFormData = {
+          ...newFormData,
+          ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        };
       }
+      if (_.isEmpty(errors)) {
+        const newdata = filterObject(
+          newFormData,
+          Object.keys(schema?.properties),
+          {},
+          ""
+        );
+        //console.log("new updated Form Data", newdata);
+
+        //online data submit
+        //await formSubmitUpdate(newdata);
+
+        //offline data submit
+        await updateOnboardingData(userid, newdata);
+        if (localStorage.getItem("backToProfile") === "false") {
+          nextPreviewStep();
+        } else {
+          navigatePage("/profile", "");
+        }
+      }
+    } catch (e) {
+      console.log("error in submit", e);
     }
   };
   if (page === "upload") {
