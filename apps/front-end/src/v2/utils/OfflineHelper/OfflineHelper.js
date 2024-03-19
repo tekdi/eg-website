@@ -122,7 +122,6 @@ export async function getOnboardingData(id) {
       program_faciltators: {
         availability: userMergedInfo?.program_faciltators?.availability,
         status: userMergedInfo?.program_faciltators?.status,
-        parent_ip: userMergedInfo?.program_faciltators?.parent_ip,
         //step 9 qualification_details
         qualification_ids: qualification_id_arr,
       },
