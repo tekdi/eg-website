@@ -423,67 +423,80 @@ export async function updateOnboardingData(id, onboardingData) {
         ?.qualification_reference_document_id;
     }
   }
-  if (onboardingData?.qualification_ids) {
-    let onBoard_qualification_id_arr = null;
-    try {
-      onBoard_qualification_id_arr = onboardingData?.qualification_ids;
-      if (onBoard_qualification_id_arr) {
-        onBoard_qualification_id_arr = onBoard_qualification_id_arr.map((str) =>
-          parseInt(str)
+  try {
+    if (onboardingData?.qualification_ids) {
+      let onBoard_qualification_id_arr = null;
+      try {
+        onBoard_qualification_id_arr = onboardingData?.qualification_ids;
+        if (onBoard_qualification_id_arr) {
+          onBoard_qualification_id_arr = onBoard_qualification_id_arr.map(
+            (str) => parseInt(str)
+          );
+        }
+        onBoard_qualification_id_arr = onBoard_qualification_id_arr.toString();
+        onBoard_qualification_id_arr = onBoard_qualification_id_arr
+          .split(",")
+          .map((numString) => parseInt(numString, 10));
+      } catch (e) {
+        console.log("qualification array id e", e);
+      }
+      let userInfo_qualification_id_arr = null;
+      try {
+        userInfo_qualification_id_arr = JSON.parse(
+          userInfo?.program_faciltators?.qualification_ids
+        );
+        if (userInfo_qualification_id_arr) {
+          userInfo_qualification_id_arr = userInfo_qualification_id_arr.map(
+            (str) => parseInt(str)
+          );
+        }
+        userInfo_qualification_id_arr =
+          userInfo_qualification_id_arr.toString();
+        userInfo_qualification_id_arr = userInfo_qualification_id_arr
+          .split(",")
+          .map((numString) => parseInt(numString, 10));
+      } catch (e) {
+        console.log("qualification array id e test", e);
+      }
+      if (
+        userInfo_qualification_id_arr &&
+        arraysAreEqual(
+          onBoard_qualification_id_arr,
+          userInfo_qualification_id_arr
+        )
+      ) {
+        delete userUpdatedInfo?.program_faciltators?.qualification_ids;
+      } else {
+        program_faciltators.qualification_ids = JSON.stringify(
+          onboardingData.qualification_ids
         );
       }
-      onBoard_qualification_id_arr = onBoard_qualification_id_arr.toString();
-      onBoard_qualification_id_arr = onBoard_qualification_id_arr
-        .split(",")
-        .map((numString) => parseInt(numString, 10));
-    } catch (e) {}
-    let userInfo_qualification_id_arr = null;
-    try {
-      userInfo_qualification_id_arr = JSON.parse(
-        userInfo?.program_faciltators?.qualification_ids
-      );
-      if (userInfo_qualification_id_arr) {
-        userInfo_qualification_id_arr = userInfo_qualification_id_arr.map(
-          (str) => parseInt(str)
-        );
-      }
-      userInfo_qualification_id_arr = userInfo_qualification_id_arr.toString();
-      userInfo_qualification_id_arr = userInfo_qualification_id_arr
-        .split(",")
-        .map((numString) => parseInt(numString, 10));
-    } catch (e) {}
-    if (
-      arraysAreEqual(
-        onBoard_qualification_id_arr,
-        userInfo_qualification_id_arr
-      )
-    ) {
-      delete userUpdatedInfo?.program_faciltators?.qualification_ids;
-    } else {
-      program_faciltators.qualification_ids = JSON.stringify(
-        onboardingData.qualification_ids
-      );
-    }
-    //diploma and its value
-    onboardingData?.has_diploma == true || onboardingData?.has_diploma == false
-      ? onboardingData.has_diploma != userInfo?.core_faciltator?.has_diploma
-        ? (core_faciltator.has_diploma = onboardingData.has_diploma)
-        : delete userUpdatedInfo?.core_faciltator?.has_diploma
-      : null;
-    onboardingData?.has_diploma == true || onboardingData?.has_diploma == false
-      ? onboardingData?.has_diploma == true
-        ? onboardingData?.diploma_details
-          ? onboardingData.diploma_details !=
-            userInfo?.core_faciltator?.diploma_details
-            ? (core_faciltator.diploma_details = onboardingData.diploma_details)
+      //diploma and its value
+      onboardingData?.has_diploma == true ||
+      onboardingData?.has_diploma == false
+        ? onboardingData.has_diploma != userInfo?.core_faciltator?.has_diploma
+          ? (core_faciltator.has_diploma = onboardingData.has_diploma)
+          : delete userUpdatedInfo?.core_faciltator?.has_diploma
+        : null;
+      onboardingData?.has_diploma == true ||
+      onboardingData?.has_diploma == false
+        ? onboardingData?.has_diploma == true
+          ? onboardingData?.diploma_details
+            ? onboardingData.diploma_details !=
+              userInfo?.core_faciltator?.diploma_details
+              ? (core_faciltator.diploma_details =
+                  onboardingData.diploma_details)
+              : delete userUpdatedInfo?.core_faciltator?.diploma_details
+            : null
+          : onboardingData?.has_diploma == false
+          ? "" != userInfo?.core_faciltator?.diploma_details
+            ? (core_faciltator.diploma_details = "")
             : delete userUpdatedInfo?.core_faciltator?.diploma_details
           : null
-        : onboardingData?.has_diploma == false
-        ? "" != userInfo?.core_faciltator?.diploma_details
-          ? (core_faciltator.diploma_details = "")
-          : delete userUpdatedInfo?.core_faciltator?.diploma_details
-        : null
-      : null;
+        : null;
+    }
+  } catch (e) {
+    console.log("error in qualification", e);
   }
   //step 10 profile photo 1
   onboardingData?.profile_photo_1?.base64
