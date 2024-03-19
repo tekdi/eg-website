@@ -224,9 +224,7 @@ export default function App() {
                 type="submit"
                 p="4"
                 onPress={() => {
-                  // if (formRef.current.validateForm()) {
                   formRef?.current?.submit();
-                  // }
                 }}
               >
                 {t("SUBMIT")}
