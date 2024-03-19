@@ -53,12 +53,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            cd /var/www/html/
+            rm -rf *
+            rm -rf .
             cd /home/ubuntu
             tar -xvf eg-website.tar -C /var/www/html/
-            #cp eg-website.tar /var/www/html2
-            #rm -rf *
-            #cp ../eg-website.tar ./
-            #tar -xvf eg-website.tar .
 
       - name: Notify on Slack channel
         uses: iRoachie/slack-github-actions@v2.3.2
