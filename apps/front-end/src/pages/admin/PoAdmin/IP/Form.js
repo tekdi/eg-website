@@ -6,6 +6,7 @@ import {
   IconByName,
   cohortService,
   setSelectedProgramId,
+  validation,
 } from "@shiksha/common-lib";
 import { Button, HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -133,25 +134,17 @@ export default function App() {
     }
   };
 
-  const validate = (data, key) => {
-    let error = {};
-    if (key === "mobile") {
-      if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
-        error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+  const customValidate = (data, err) => {
+    if (data?.mobile) {
+      const isValid = validation({
+        data: data?.mobile,
+        key: "mobile",
+        type: "mobile",
+      });
+      if (isValid) {
+        err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
       }
     }
-    return error;
-  };
-  const customValidate = (data, err) => {
-    const arr = Object.keys(err);
-    arr.forEach((key) => {
-      const isValid = validate(data, key);
-      if (isValid?.[key]) {
-        if (!err?.[key]?.__errors.includes(isValid[key]))
-          err?.[key]?.addError(isValid[key]);
-      }
-    });
-
     return err;
   };
 
@@ -159,7 +152,6 @@ export default function App() {
     setLoading(true);
     const newData = data.formData;
     const result = await organisationService.createOrg(newData);
-
     if (!result.error) {
       navigate("/poadmin/ips");
     } else {
