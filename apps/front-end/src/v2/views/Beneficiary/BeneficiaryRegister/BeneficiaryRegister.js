@@ -109,7 +109,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     let program = await getSelectedProgramId();
     let acadamic = await getSelectedAcademicYear();
     let org_id = await getOnboardingData(authUser?.id);
-    console.log({ org_id });
     const formDataNew = {
       ...formData,
       role_fields: {
@@ -119,7 +118,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         org_id: org_id?.program_faciltators?.parent_ip,
       },
     };
-    console.log({ formDataNew });
     let url = await AgRegistryService.createBeneficiary(formDataNew);
 
     if (url?.data) {
