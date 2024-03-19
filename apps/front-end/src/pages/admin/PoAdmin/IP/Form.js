@@ -6,6 +6,7 @@ import {
   IconByName,
   cohortService,
   setSelectedProgramId,
+  Breadcrumb,
   validation,
 } from "@shiksha/common-lib";
 import { Button, HStack, VStack } from "native-base";
@@ -20,6 +21,7 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import Chip from "component/Chip";
 
 const Schema = {
   // title: "CREATE_IP",
@@ -168,15 +170,37 @@ export default function App() {
   return (
     <PoAdminLayout _appBar={{ setLang }}>
       <VStack p={4}>
-        <HStack pt={4} space={2} alignItems={"center"}>
-          <IconByName name="CommunityLineIcon" />
-          <AdminTypo.H2>{t("CREATE_IP")}</AdminTypo.H2>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={() => navigate("/poadmin/ips")}
+        <VStack pt={4}>
+          <Breadcrumb
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+            data={[
+              {
+                title: (
+                  <HStack>
+                    <IconByName name="GroupLineIcon" size="md" />
+                    <AdminTypo.H4 bold color="Activatedcolor.400">
+                      {t("ALL_IPS")}
+                    </AdminTypo.H4>
+                  </HStack>
+                ),
+                link: "/poadmin/ips",
+                icon: "GroupLineIcon",
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {t("CREATE")}
+                  </AdminTypo.H4>
+                ),
+              },
+            ]}
           />
-        </HStack>
+        </VStack>
 
         <VStack p="4" space={4}>
           <Form
