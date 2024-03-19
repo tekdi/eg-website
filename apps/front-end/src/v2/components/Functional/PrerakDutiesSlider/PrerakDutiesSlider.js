@@ -76,7 +76,7 @@ export default function PrerakDutiesSlider({
           padding={4}
           backgroundColor="white"
           borderRadius={8}
-          shadow={5}
+          // shadow={5}
           bg="white"
           mb="5"
           py="5"
@@ -87,7 +87,7 @@ export default function PrerakDutiesSlider({
           alignItems="left"
         >
           <Text style={stylesheet.headerText}>{header[currentImage].text}</Text>
-          <Text color="gray.500" mb={2}>
+          <Text  color={"textGreyColor.700"}  mb={2}>
             {t("TO_PURSUE_10_SCHOOL_FROM_OPEN_SCHOOL")}
           </Text>
         </Box>

@@ -56,9 +56,9 @@ export default function IntroductionPage({
           style={stylesheet.image}
         />
         <Box bg="white" width="100%" px="5">
-          <Center my="6">
+          <Center my="8">
             <Pressable onPress={showPrerakDuties}>
-              <FrontEndTypo.H3 style={stylesheet.text1}>
+              <FrontEndTypo.H3 style={stylesheet.text1} color={"linkColor"}>
                 {" "}
                 {t("KNOW_PRERAK_DUTIES")}
               </FrontEndTypo.H3>
@@ -68,7 +68,7 @@ export default function IntroductionPage({
             {t("APPLY_NOW")}
           </FrontEndTypo.Primarybutton>
         </Box>
-        <Center>
+        <Center my={8}>
           <Pressable onPress={() => showLogin()}>
             <Text style={stylesheet.text1}>
               {" "}

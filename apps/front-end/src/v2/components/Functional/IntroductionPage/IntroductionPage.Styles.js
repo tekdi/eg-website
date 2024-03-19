@@ -19,7 +19,7 @@ export const stylesheet = {
     fontWeight: "400",
     fontSize: "14px",
     lineHeight: "26px",
-    color: "#3F8BF1",
+    color: "#0500FF",
     textDecoration: "underline",
   },
   text2: {

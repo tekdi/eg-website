@@ -308,9 +308,10 @@ const DEFAULT_THEME = {
         height: 3
       },
       shadowOpacity: 1,
-      shadowRadius: 3,
+      shadowRadius: 0,
       elevation: 0
     },
+
 
     RedOutlineShadow: {
       shadowColor: '#000',
@@ -333,6 +334,18 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+
+    TitleCardShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 0 // Elevation does not have a direct equivalent in box-shadow, set it as per your requirements
+    },
+
     RedBlackShadow: {
       shadowColor: '#000000',
       shadowOffset: {
@@ -623,6 +636,7 @@ const DEFAULT_THEME = {
       600: '#727271',
       650: '#666666',
       700: '#828282',
+      750: '#4F4F4F',
       800: '#212121',
       900: '#1E1E1E'
     },
@@ -713,6 +727,8 @@ const DEFAULT_THEME = {
       900: '#010e18'
     },
     grayInLight: '#9ca3af',
+    grayTitleCard: "#484848",
+    garyTitleCardBorder: '#DDDDDD',
     grayIndark: '#18181b',
     btnGray: {
       100: '#e0e0e0'
@@ -721,6 +737,7 @@ const DEFAULT_THEME = {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
+      350 : '#D53546',
       400: '#ff0000',
       500: '#ff000047'
     },
@@ -736,15 +753,15 @@ const DEFAULT_THEME = {
     },
     textBlue: {
       100: '#a8e3fd',
-      200:'#0038FF'
+      200: '#0038FF'
     },
     text: {
       100: '#a8e3fd'
     },
-    zambezi:'#5A5A5A',
+    zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',
     greenIconColor: '#008C0E',
-    whiteSomke:'#F9F9F9'
+    whiteSomke: '#F9F9F9',
   }
 }
 
