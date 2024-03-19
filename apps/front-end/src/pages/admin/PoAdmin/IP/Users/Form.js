@@ -153,7 +153,6 @@ function UserForm() {
     }
     setLoading(false);
   };
-  console.log({ dataIp });
   return (
     <PoAdminLayout>
       <VStack p={4}>

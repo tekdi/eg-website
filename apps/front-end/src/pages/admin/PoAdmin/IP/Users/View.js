@@ -34,7 +34,6 @@ function View(props) {
     }
   }, []);
 
-  console.log({ user });
   return (
     <PoAdminLayout>
       <VStack flex={1} pt="3" space={"5"} p="2">
