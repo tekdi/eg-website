@@ -111,7 +111,6 @@ export default function App() {
         ...e,
         state_name: `${e?.state?.state_name}`,
       }));
-      console.log(data);
       let newSchema = Schema;
       if (Schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
