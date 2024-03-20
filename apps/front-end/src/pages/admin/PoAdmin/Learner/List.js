@@ -22,6 +22,7 @@ import {
   urlData,
   tableCustomStyles,
   getSelectedProgramId,
+  setSelectedOrgId,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -54,8 +55,13 @@ function LearnerList({ userTokenInfo }) {
   useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
+      const data = await getSelectedProgramId();
+      const programResult = await setSelectedOrgId({
+        org_id: data?.program_id,
+      });
       const result = await benificiaryRegistoryService.beneficiariesFilter(
-        filter
+        filter,
+        programResult
       );
       setData(result.data?.data);
       setPaginationTotalRows(
@@ -244,7 +250,7 @@ export const Filter = ({ filter, setFilter }) => {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let name = programResult?.program?.state?.state_name;
+      let name = programResult?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });

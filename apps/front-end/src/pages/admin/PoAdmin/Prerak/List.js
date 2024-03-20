@@ -27,7 +27,7 @@ import {
   urlData,
   getOptions,
   getSelectedProgramId,
-  getSelectedAcademicYear,
+  setSelectedOrgId,
 } from "@shiksha/common-lib";
 import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
@@ -123,7 +123,7 @@ function PrerakList({ userTokenInfo }) {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let name = programResult?.program?.state?.state_name;
+      let name = programResult?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
@@ -182,9 +182,14 @@ function PrerakList({ userTokenInfo }) {
   useEffect(() => {
     const fetchFilteredData = async () => {
       if (urlFilterApply) {
+        const data = await getSelectedProgramId();
+        const programResult = await setSelectedOrgId({
+          org_id: data?.program_id,
+        });
         setTableLoading(true);
         const result = await facilitatorRegistryService.filter({
           ...filter,
+          org_id: programResult?.program_id,
           limit: filter?.limit || 10,
         });
 
