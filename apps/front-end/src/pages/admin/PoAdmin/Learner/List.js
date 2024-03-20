@@ -55,13 +55,8 @@ function LearnerList({ userTokenInfo }) {
   useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
-      const data = await getSelectedProgramId();
-      const programResult = await setSelectedOrgId({
-        org_id: data?.program_id,
-      });
       const result = await benificiaryRegistoryService.beneficiariesFilter(
-        filter,
-        programResult
+        filter
       );
       setData(result.data?.data);
       setPaginationTotalRows(

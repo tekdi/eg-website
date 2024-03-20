@@ -182,14 +182,9 @@ function PrerakList({ userTokenInfo }) {
   useEffect(() => {
     const fetchFilteredData = async () => {
       if (urlFilterApply) {
-        const data = await getSelectedProgramId();
-        const programResult = await setSelectedOrgId({
-          org_id: data?.program_id,
-        });
         setTableLoading(true);
         const result = await facilitatorRegistryService.filter({
           ...filter,
-          org_id: programResult?.program_id,
           limit: filter?.limit || 10,
         });
 
