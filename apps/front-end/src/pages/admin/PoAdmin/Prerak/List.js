@@ -27,7 +27,6 @@ import {
   urlData,
   getOptions,
   getSelectedProgramId,
-  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
@@ -123,7 +122,7 @@ function PrerakList({ userTokenInfo }) {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let name = programResult?.program?.state?.state_name;
+      let name = programResult?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });
