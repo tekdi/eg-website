@@ -13,6 +13,7 @@ import {
   validation,
   campService,
   jsonParse,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -98,7 +99,6 @@ export default function App({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, []);
 
-
   React.useEffect(async () => {
     setLoading(true);
     if (step === "edit_camp_location") {
@@ -177,12 +177,12 @@ export default function App({ userTokenInfo, footerLinks }) {
       });
     }
     if (schema?.properties?.state) {
-      const qData = await geolocationRegistryService.getStates();
-
+      // const qData = await geolocationRegistryService.getStates();
+      const result = await getSelectedProgramId();
       if (schema?.["properties"]?.["state"]) {
         newSchema = getOptions(newSchema, {
           key: "state",
-          arr: qData?.states,
+          arr: [result],
           title: "state_name",
           value: "state_name",
         });
