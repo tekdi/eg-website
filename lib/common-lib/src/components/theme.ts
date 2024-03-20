@@ -264,12 +264,12 @@ const DEFAULT_THEME = {
     AlertShadow: {
       shadowColor: '#00000040',
       shadowOffset: {
-        width: 1,
-        height: 3
+        width: 2,
+        height: 2
       },
-      shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowOpacity: 0.5,
+      shadowRadius: 5,
+      elevation: 0
     },
     BlueOutlineShadow: {
       shadowColor: '#8B7171',
@@ -292,14 +292,14 @@ const DEFAULT_THEME = {
       elevation: 1
     },
     FooterShadow: {
-      shadowColor: '#e0e0e066',
+      shadowColor: '#E0E0E066',
       shadowOffset: {
-        width: 1,
-        height: 3
+        width: 0,
+        height: -4
       },
-      shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowOpacity: 0.5,
+      shadowRadius: 8,
+      elevation: 0
     },
     RedFillShadow: {
       shadowColor: '#000000',
@@ -311,7 +311,6 @@ const DEFAULT_THEME = {
       shadowRadius: 0,
       elevation: 0
     },
-
 
     RedOutlineShadow: {
       shadowColor: '#000',
@@ -405,8 +404,10 @@ const DEFAULT_THEME = {
       colors: ['#CAE9FF', '#CAE9FF', '#CAE9FF'],
       start: [0, 0],
       end: [1, 0]
-    }
+    },
+    gradients: 'linear-gradient(360deg, #DC3644 2%, #1F1D76 147%)'
   },
+
   colors: {
     footer: {
       boxBorder: '#FF0000'
@@ -467,6 +468,9 @@ const DEFAULT_THEME = {
       500: '#B9FBC0',
       800: '#5B7E5F'
     },
+    infoAlert: {
+      500: '#D6E8FF'
+    },
     successAlert: {
       500: '#B9FBC0'
     },
@@ -491,6 +495,9 @@ const DEFAULT_THEME = {
     },
     timeTablemiddle: {
       500: '#A1D6B6'
+    },
+    floatingLabelColor: {
+      500: '#1F1D76'
     },
     attendanceCard: {
       500: '#C9AFF4',
@@ -638,6 +645,7 @@ const DEFAULT_THEME = {
       700: '#828282',
       750: '#4F4F4F',
       800: '#212121',
+      850: '#535353',
       900: '#1E1E1E'
     },
     textMaroonColor: {
@@ -727,17 +735,18 @@ const DEFAULT_THEME = {
       900: '#010e18'
     },
     grayInLight: '#9ca3af',
-    grayTitleCard: "#484848",
+    grayTitleCard: '#484848',
     garyTitleCardBorder: '#DDDDDD',
     grayIndark: '#18181b',
     btnGray: {
       100: '#e0e0e0'
     },
+    footerBorderGray: '#D4D4D4',
     textRed: {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
-      350 : '#D53546',
+      350: '#D53546',
       400: '#ff0000',
       500: '#ff000047'
     },
@@ -761,7 +770,7 @@ const DEFAULT_THEME = {
     zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',
     greenIconColor: '#008C0E',
-    whiteSomke: '#F9F9F9',
+    whiteSomke: '#F9F9F9'
   }
 }
 

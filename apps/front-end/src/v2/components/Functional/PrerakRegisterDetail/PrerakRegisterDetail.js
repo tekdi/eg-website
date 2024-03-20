@@ -469,16 +469,20 @@ export default function PrerakRegisterDetail({
       ) : (
         <VStack flex={3} space={5}>
           <Box py={6} px={4} mb={5}>
-            <FrontEndTypo.H1 bold> {t("SIGN_UP_IN_TWO_STEPS")}</FrontEndTypo.H1>
+            <FrontEndTypo.H3 bold color="textGreyColor.750">
+              {" "}
+              {t("SIGN_UP_IN_TWO_STEPS")}
+            </FrontEndTypo.H3>
             <Alert
               status="info"
               shadow="AlertShadow"
               alignItems={"start"}
               mb="3"
+              colorScheme={"infoAlert"}
               mt="4"
             >
               <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
+                <IconByName name="InformationLineIcon" />
                 <FrontEndTypo.H3>
                   {programData?.program_name
                     ? t("REGISTER_MESSAGE")
