@@ -22,9 +22,10 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
         <Chip
           textAlign="center"
           lineHeight="14px"
+          bg="gray.100"
           label={
             <GetEnumValue
-              fontSize="10px"
+              fontSize="14px"
               key={index}
               t={t}
               enumOptionValue={item}
