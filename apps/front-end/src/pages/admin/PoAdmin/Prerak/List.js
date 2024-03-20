@@ -27,7 +27,6 @@ import {
   urlData,
   getOptions,
   getSelectedProgramId,
-  setSelectedOrgId,
 } from "@shiksha/common-lib";
 import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
