@@ -21,6 +21,7 @@ import {
   enrollmentDateOfBirth,
   getUiSchema,
   BodyMedium,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
@@ -275,7 +276,7 @@ export default function EnrollmentForm() {
           <Image
             source={{ uri: "/payment-receipt.jpeg" }}
             size="200"
-            height={"20vh"}   
+            height={"20vh"}
             width={"70vw"}
             maxWidth={400}
             alt="background image"
@@ -411,7 +412,15 @@ export default function EnrollmentForm() {
   }, [page]);
 
   const enrollmentNumberExist = async (enrollment_number) => {
-    if (enrollment_number.length === 11) {
+    let { state_name } = await getSelectedProgramId();
+    console.log(
+      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
+        (state_name === "BIHAR" && enrollment_number.length === 9)
+    );
+    if (
+      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
+      (state_name === "BIHAR" && enrollment_number.length === 9)
+    ) {
       const result = await benificiaryRegistoryService.isExistEnrollment(
         userId,
         {
@@ -429,12 +438,21 @@ export default function EnrollmentForm() {
         return true;
       }
     } else {
-      setErrors({
-        ...errors,
-        enrollment_number: {
-          __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
-        },
-      });
+      if (state_name === "RAJASTHAN") {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
+          },
+        });
+      } else {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_9_DIGIT")],
+          },
+        });
+      }
     }
     return false;
   };
@@ -442,7 +460,6 @@ export default function EnrollmentForm() {
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
-
     switch (id) {
       case "root_enrollment_number":
         let { enrollment_number, ...otherError } = errors || {};
