@@ -537,7 +537,10 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         }
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
+      } else if (["minItems", "maxItems"].includes(error.name)) {
+        error.message = `${t("SELECT_MIN_MAX_ERROR")}`;
       }
+
       return error;
     });
   };
