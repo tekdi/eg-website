@@ -268,7 +268,6 @@ export default function EnrollmentForm() {
     let { state_name } = await getSelectedProgramId();
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
-    console.log({ state_name });
     let newSchema = getOptions(schemaData, {
       key: "payment_receipt_document_id",
       extra: {
@@ -420,10 +419,7 @@ export default function EnrollmentForm() {
 
   const enrollmentNumberExist = async (enrollment_number) => {
     let { state_name } = await getSelectedProgramId();
-    console.log(
-      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
-        (state_name === "BIHAR" && enrollment_number.length === 9)
-    );
+
     if (
       (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
       (state_name === "BIHAR" && enrollment_number.length === 9)
