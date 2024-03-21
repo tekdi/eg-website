@@ -81,7 +81,10 @@ export default {
       },
     },
     edit_enrollement_details: {
-      title: "ENROLLMENT_RECEIPT_DETAILS",
+      title:
+        state?.state_name === "RAJASTHAN"
+          ? "ENROLLMENT_RECEIPT"
+          : "ENROLLMENT_RECEIPT_DETAILS",
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
       properties: {
@@ -90,7 +93,10 @@ export default {
           title: "FIRST_NAME",
           label: "FIRST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          description: "AS_PER_APPLICATION_RECEIPT",
+          description:
+            state?.state_name === "RAJASTHAN"
+              ? "AS_PER_ENROLLMENT_RECEIPT"
+              : "AS_PER_APPLICATION_RECEIPT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],
@@ -107,7 +113,10 @@ export default {
         enrollment_dob: {
           type: "string",
           format: "alt-date",
-          label: "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "DATE_OF_BIRTH_AS_PER_ENROLLMENT"
+              : "DATE_OF_BIRTH_AS_PER_APPLICATION",
           help: "hello",
         },
       },
