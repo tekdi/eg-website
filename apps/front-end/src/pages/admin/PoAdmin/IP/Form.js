@@ -38,6 +38,8 @@ const Schema = {
     "doc_quarterly_id",
     "email_id",
     "state",
+    "camp_target",
+    "learner_per_camp",
   ],
   properties: {
     name: {
@@ -72,6 +74,16 @@ const Schema = {
     learner_target: {
       title: "LEARNER_TARGET",
       type: "string",
+    },
+    learner_per_camp: {
+      title: "LEARNERS_PER_TARGET",
+      format: "select",
+      enum: ["15", "16", "17", "18", "19", "20"],
+    },
+    camp_target: {
+      type: ["string", "number"],
+      title: "TARGET_CAMP",
+      readOnly: true,
     },
     doc_per_cohort_id: {
       type: "string",
@@ -123,6 +135,7 @@ export default function App() {
           value: "id",
         });
       }
+
       setSchema(newSchema);
     }
   }, []);
@@ -133,6 +146,15 @@ export default function App() {
       setSelectedProgramId({
         program_id: newData?.state,
       });
+    }
+
+    if (id === "root_learner_target" || id === "root_learner_per_camp") {
+      const avgCount = Math.ceil(
+        newData?.learner_target / newData?.learner_per_camp
+      );
+      const updatedFormData = { ...newData };
+      updatedFormData.camp_target = avgCount;
+      setFormData(updatedFormData);
     }
   };
 
