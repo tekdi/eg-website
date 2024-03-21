@@ -265,6 +265,7 @@ export default function EnrollmentForm() {
   };
 
   const getEnrollmentStatus = async (schemaData) => {
+    let { state_name } = await getSelectedProgramId();
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let newSchema = getOptions(schemaData, {
@@ -274,10 +275,15 @@ export default function EnrollmentForm() {
         document_type: "enrollment_receipt",
         iconComponent: (
           <Image
-            source={{ uri: "/payment-receipt.jpeg" }}
+            source={{
+              uri:
+                state_name === "RAJASTHAN"
+                  ? "/enrollment-receipt.jpeg"
+                  : "/payment-receipt.jpeg",
+            }}
             size="200"
             height={"20vh"}
-            width={"70vw"}
+            width={"60vw"}
             maxWidth={400}
             alt="background image"
           />
@@ -413,10 +419,7 @@ export default function EnrollmentForm() {
 
   const enrollmentNumberExist = async (enrollment_number) => {
     let { state_name } = await getSelectedProgramId();
-    console.log(
-      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
-        (state_name === "BIHAR" && enrollment_number.length === 9)
-    );
+
     if (
       (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
       (state_name === "BIHAR" && enrollment_number.length === 9)
