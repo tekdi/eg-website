@@ -70,8 +70,10 @@ function ExitingUser(props) {
     let newSchema = Schema;
 
     if (Schema?.properties?.user_id) {
-      const data = await organisationService.getExistingUserList();
-      const arrWithFullName = data.data.map((item) => ({
+      const data = await organisationService.getExistingUserList({
+        organisation_id: id,
+      });
+      const arrWithFullName = data?.data?.map((item) => ({
         ...item,
         full_name: item.last_name
           ? `${item.first_name} ${item.last_name}`
