@@ -1,3 +1,8 @@
+import { jsonParse } from "@shiksha/common-lib";
+
+let state = jsonParse(localStorage.getItem("program"));
+console.log({ state });
+
 export default {
   description: "1.AG Enrollment Details",
   type: "step",
@@ -27,7 +32,10 @@ export default {
         },
         enrollment_number: {
           type: "string",
-          label: "APPLICATION_ID",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_NO"
+              : "APPLICATION_ID",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
@@ -42,7 +50,10 @@ export default {
 
         enrollment_date: {
           type: "string",
-          label: "FEES_PAID_DATE",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_DATE"
+              : "FEES_PAID_DATE",
           format: "DMY",
         },
         subjects: {
@@ -56,8 +67,14 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "APPLICATION_RECEIPT",
-          description: "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_RECIEPT"
+              : "APPLICATION_RECEIPT",
+          description:
+            state?.state_name === "RAJASTHAN"
+              ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"
+              : "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
           uploadTitle: " ",
           type: ["string", "number"],
           format: "FileUpload",
