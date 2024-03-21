@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import {
   AdminTypo,
+  Breadcrumb,
   IconByName,
   PoAdminLayout,
   cohortService,
@@ -19,6 +20,7 @@ import {
 } from "component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
+import Chip from "component/Chip";
 
 const Schema = {
   type: "object",
@@ -60,7 +62,7 @@ function ExitingUser(props) {
 
   useEffect(async () => {
     const data = await organisationService.getOne({ id });
-    setDataIp(data?.data?.[0]);
+    setDataIp(data?.data);
   }, [id]);
 
   useEffect(async () => {
@@ -149,18 +151,48 @@ function ExitingUser(props) {
   return (
     <PoAdminLayout>
       <VStack p={4}>
-        <HStack pt={4} pb={4} space={2} alignItems={"center"}>
-          <IconByName name="CommunityLineIcon" />
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={() => navigate(`/poadmin/ips/${id}`)}
+        <VStack pt={4} pb={4}>
+          <Breadcrumb
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+            data={[
+              {
+                title: (
+                  <HStack>
+                    <IconByName name="GroupLineIcon" size="md" />
+                    <AdminTypo.H4 bold color="Activatedcolor.400">
+                      {t("ALL_IPS")}
+                    </AdminTypo.H4>
+                  </HStack>
+                ),
+                link: "/poadmin/ips",
+                icon: "GroupLineIcon",
+              },
+              {
+                title: (
+                  <Chip
+                    textAlign="center"
+                    lineHeight="15px"
+                    label={dataIp?.id}
+                  />
+                ),
+                link: `/poadmin/ips/${id}`,
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {t("EXISTING_USER")}
+                  </AdminTypo.H4>
+                ),
+              },
+            ]}
           />
-          {dataIp?.first_name}
-        </HStack>
-        <AdminTypo.H6 color={"textGreyColor.500"} bold>
-          {t("CREATE_EXISTING_IP")}
-        </AdminTypo.H6>
+        </VStack>
+
         <VStack pt={4}>
           <Form
             ref={formRef}

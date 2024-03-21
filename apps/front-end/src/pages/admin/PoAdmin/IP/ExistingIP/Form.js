@@ -6,6 +6,7 @@ import {
   organisationService,
   getOptions,
   cohortService,
+  Breadcrumb,
 } from "@shiksha/common-lib";
 import { VStack, HStack, Button } from "native-base";
 import Form from "@rjsf/core";
@@ -132,18 +133,38 @@ function ExistingIpForm() {
   return (
     <PoAdminLayout>
       <VStack p={4}>
-        <HStack pt={4} pb={4} space={2} alignItems={"center"}>
-          <IconByName name="CommunityLineIcon" />
-          <AdminTypo.H2>{t("IP/ORGANISATION_LIST")}</AdminTypo.H2>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={() => navigate("/poadmin/ips")}
+        <VStack pt={4} pb={4}>
+          <Breadcrumb
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+            data={[
+              {
+                title: (
+                  <HStack>
+                    <IconByName name="GroupLineIcon" size="md" />
+                    <AdminTypo.H4 bold color="Activatedcolor.400">
+                      {t("ALL_IPS")}
+                    </AdminTypo.H4>
+                  </HStack>
+                ),
+                link: "/poadmin/ips",
+                icon: "GroupLineIcon",
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {t("EXISTING_IP")}
+                  </AdminTypo.H4>
+                ),
+              },
+            ]}
           />
-        </HStack>
-        <AdminTypo.H6 color={"textGreyColor.500"} bold>
-          {t("ADD_EXISTING_IP")}
-        </AdminTypo.H6>
+        </VStack>
+
         <VStack p={4}>
           <Form
             ref={formRef}

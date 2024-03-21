@@ -1503,5 +1503,10 @@
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
   "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
   "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
-  "TARGET_CAMP": "शिविर लक्ष्य"
+  "TARGET_CAMP": "शिविर लक्ष्य",
+  "USER": "उपयोगकर्ता",
+  "USER_CREATE": "उपयोगकर्ता बनाएँ",
+  "CREATE": "बनाएँ",
+  "EXISTING_IP": "मौजूदा IP",
+  "EXISTING_USER": "मौजूदा उपयोगकर्ता"
 }
