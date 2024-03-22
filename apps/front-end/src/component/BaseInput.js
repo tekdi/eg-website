@@ -422,7 +422,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value
+            ...(value || true
               ? {
                   top: "0",
                   opacity: 1,

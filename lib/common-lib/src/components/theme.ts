@@ -690,7 +690,7 @@ const DEFAULT_THEME = {
       400: '#BDBDBD'
     },
     Disablecolor: {
-      400: '#BDBDBD'
+      400: '#A7A7A7'
     },
     Defaultcolor: {
       400: '#616161'
