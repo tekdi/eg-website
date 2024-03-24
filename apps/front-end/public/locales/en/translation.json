@@ -1513,6 +1513,9 @@
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
   "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
   "MONTHLY_UTILIZATION": "Monthly utilization certificate",
+  "EPCP_ACTIVITIES": "e-PCP Activities",
+  "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
+  "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
   "EPCP": {
     "TITLE": "Learner's Use of the RSOS App",
     "HAS_LOGGED_RSOS_APP": {
@@ -1530,7 +1533,7 @@
       "YES": "yes",
       "NO": "no"
     },
-    "TOOK_E-PCP_EXAM_ON_RSOS APP": {
+    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
       "TITLE": "Are you taking practice tests on the RSOS App?",
       "YES": "yes",
       "NO": "no"

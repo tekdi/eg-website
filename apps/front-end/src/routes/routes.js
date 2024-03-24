@@ -27,6 +27,11 @@ const BenificiaryListView = lazy(() =>
   import("v2/views/Beneficiary/BenificiaryListView/BenificiaryListView")
 );
 
+const EpcpForm = lazy(() => import("v2/components/Functional/EPCP/EpcpForm"));
+const EpcpLearnerList = lazy(() =>
+  import("v2/components/Functional/EPCP/EpcpLearnerList")
+);
+
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
@@ -220,5 +225,14 @@ export default [
     path: "/beneficiary/list",
     component: BenificiaryListView,
   },
+  {
+    path: "/camps/EpcpLearnerList",
+    component: EpcpLearnerList,
+  },
+  {
+    path: "/camps/EpcpLearnerList/:id",
+    component: EpcpForm,
+  },
+
   //end v2 code
 ];

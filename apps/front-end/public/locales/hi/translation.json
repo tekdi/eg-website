@@ -1513,6 +1513,7 @@
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
   "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
+  "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
   "EPCP": {
     "TITLE": "शिक्षार्थियों द्वारा RSOS app का उपयोग",
     "HAS_LOGGED_RSOS_APP": {
@@ -1530,7 +1531,7 @@
       "YES": "हाँ",
       "NO": "नहीं"
     },
-    "TOOK_E-PCP_EXAM_ON_RSOS APP": {
+    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
       "TITLE": "RSOS App पर  e-PCP परीक्षा दी?",
       "YES": "हाँ",
       "NO": "नहीं"
