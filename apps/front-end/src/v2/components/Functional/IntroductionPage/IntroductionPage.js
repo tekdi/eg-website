@@ -64,7 +64,7 @@ export default function IntroductionPage({
               </FrontEndTypo.H3>
             </Pressable>
           </Center>
-          <FrontEndTypo.Primarybutton onPress={showApplyNow}>
+          <FrontEndTypo.Primarybutton width="60%" mx="auto" onPress={showApplyNow}>
             {t("APPLY_NOW")}
           </FrontEndTypo.Primarybutton>
         </Box>

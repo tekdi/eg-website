@@ -110,7 +110,7 @@ export default function PrerakDutiesSlider({
       {currentImage === images.length - 1 ? (
         <FrontEndTypo.Primarybutton
           justifyContent={"center"}
-          width="85%"
+          width="60%"
           onPress={() => showApplyNow()}
           my="4"
         >
@@ -120,7 +120,7 @@ export default function PrerakDutiesSlider({
         <>
           <FrontEndTypo.Primarybutton
             justifyContent={"center"}
-            width="85%"
+            width="60%"
             onPress={onPressButton}
           >
             {t("PRERAK_PROCEED_BTN")}

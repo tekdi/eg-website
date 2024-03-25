@@ -415,6 +415,9 @@ const DEFAULT_THEME = {
     formBg: {
       500: '#F4F4F7'
     },
+    inputValueColor:{
+      500: '#1F1B13'
+    },
     widgetColor: {
       400: '#7F9DAC',
       500: '#DDD8F3',
@@ -468,8 +471,20 @@ const DEFAULT_THEME = {
       500: '#B9FBC0',
       800: '#5B7E5F'
     },
-    infoAlert: {
-      500: '#D6E8FF'
+    customAlertinfo: {
+      50: '#f0f9ff',
+      100: '#e0f2fe',
+      200: '#D6E8FF',
+      300: '#7dd3fc',
+      400: '#38bdf8',
+      500: '#0ea5e9',
+      600: '#0284c7',
+      700: '#0369a1',
+      800: '#075985',
+      900: '#0c4a6e'
+    },
+    customAlertdanger:{
+      200: '#FFBEC5',
     },
     successAlert: {
       500: '#B9FBC0'
@@ -498,6 +513,9 @@ const DEFAULT_THEME = {
     },
     floatingLabelColor: {
       500: '#1F1D76'
+    },
+    inputBorderColor: {
+      500: '#7F7667'
     },
     attendanceCard: {
       500: '#C9AFF4',

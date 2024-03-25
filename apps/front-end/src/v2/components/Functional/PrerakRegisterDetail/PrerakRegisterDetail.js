@@ -1,4 +1,12 @@
-import { VStack, HStack, Box, Modal, Alert, Checkbox } from "native-base";
+import {
+  VStack,
+  HStack,
+  Box,
+  Modal,
+  Alert,
+  Checkbox,
+  Button,
+} from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,6 +20,7 @@ import {
   removeOnboardingMobile,
   login,
   useWindowSize,
+  CustomAlert,
   Loading,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
@@ -473,7 +482,7 @@ export default function PrerakRegisterDetail({
               {" "}
               {t("SIGN_UP_IN_TWO_STEPS")}
             </FrontEndTypo.H3>
-            <Alert
+            {/* <Alert
               status="info"
               shadow="AlertShadow"
               alignItems={"start"}
@@ -491,7 +500,15 @@ export default function PrerakRegisterDetail({
                     : ""}
                 </FrontEndTypo.H3>
               </HStack>
-            </Alert>
+            </Alert> */}
+            <CustomAlert status={''} title=
+                {programData?.program_name
+                  ? t('REGISTER_MESSAGE')
+                      .replace('{{state}}', programData?.program_name)
+                      .replace('{{year}}', cohortData?.academic_year_name)
+                  : ''}
+            />
+          
             <Form
               key={lang}
               ref={formRef}
@@ -515,6 +532,8 @@ export default function PrerakRegisterDetail({
             >
               {currentForm === 1 ? (
                 <FrontEndTypo.Primarybutton
+                  width="60%"
+                  mx="auto"
                   mt="3"
                   variant={"primary"}
                   type="submit"
@@ -527,6 +546,8 @@ export default function PrerakRegisterDetail({
               ) : (
                 <VStack>
                   <FrontEndTypo.Primarybutton
+                    width="90%"
+                    mx="auto"
                     isLoading={loading}
                     type="submit"
                     p="4"
@@ -678,29 +699,35 @@ export default function PrerakRegisterDetail({
             isOpen={isConsentModal}
             _backdrop={{ opacity: "0.7" }}
           >
-            <Modal.Content>
-              <Modal.Body p="5" pb="10">
+            <Modal.Content borderRadius={"5px"}>
+              <Modal.Body
+                p="5"
+                pb="10"
+                style={{
+                  overflowY: "auto",
+                  msOverflowStyle: "none",
+                  scrollbarWidth: "none",
+                  WebkitOverflowScrolling: "touch",
+                  "::-webkit-scrollbar": { display: "none" },
+                }}
+              >
                 <SetConsentLang />
                 <VStack space="5">
-                  <HStack space={6} justifyContent={"center"}>
-                    <Checkbox
-                      isChecked={noChecked}
-                      value={noChecked}
-                      onChange={() => {
+                  <HStack space={5} justifyContent={"center"}>
+                    <FrontEndTypo.Secondarybutton
+                      onPress={() => {
                         handleCheckboxChange(false);
                       }}
                     >
                       {t("NO_GO_BACK")}
-                    </Checkbox>
-                    <Checkbox
-                      isChecked={yesChecked}
-                      value={yesChecked}
-                      onChange={() => {
+                    </FrontEndTypo.Secondarybutton>
+                    <FrontEndTypo.Primarybutton
+                      onPress={() => {
                         handleCheckboxChange(true);
                       }}
                     >
                       {t("YES_GO_FORWARD")}
-                    </Checkbox>
+                    </FrontEndTypo.Primarybutton>
                   </HStack>
                 </VStack>
               </Modal.Body>

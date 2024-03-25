@@ -17,6 +17,7 @@ export default function PageHeader({
   t,
   showHelpButton,
   funBackButton,
+  _backBtn,
   showLangChange,
   funLangChange,
 }) {
@@ -24,21 +25,27 @@ export default function PageHeader({
   const [helpModal, setHelpModal] = useState(false);
   return (
     <Box
-      style={{ height: 60 }}
+      style={{
+        height: 60,
+        background:
+          "linear-gradient(360deg, rgb(220, 54, 68) 1%, rgb(31, 29, 118) 250%)",
+      }}
+      borderBottomLeftRadius={"10px"}
+      borderBottomRightRadius={"10px"}
       shadow={5}
       flexDirection="row"
       alignItems="center"
       justifyContent="space-between"
       paddingX={4}
     >
-      <Button
-        py="1"
-        px="1"
-        variant="greyOutlineBtn"
+      <IconByName
+        size="sm"
+        pl="0"
+        name="ArrowLeftLineIcon"
+        _icon={{ color: "white" }}
+        {..._backBtn}
         onPress={() => funBackButton()}
-      >
-        <IconByName size="sm" name="ArrowLeftSLineIcon" />
-      </Button>
+      />
       {showLangChange ? (
         <Button
           py="1"
