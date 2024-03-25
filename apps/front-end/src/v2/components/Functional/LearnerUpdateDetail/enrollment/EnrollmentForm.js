@@ -1,15 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
-import {
-  Alert,
-  Box,
-  HStack,
-  Image,
-  Modal,
-  VStack,
-  AspectRatio,
-} from "native-base";
+import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
 import {
   Layout,
   enumRegistryService,
@@ -364,6 +356,17 @@ export default function EnrollmentForm() {
           BoardSchema,
           page
         );
+
+        if (updatedSchema?.newSchema?.properties?.enrollment_number?.regex) {
+          let { state_name } = await getSelectedProgramId();
+          if (state_name === "BIHAR") {
+            updatedSchema.newSchema.properties.enrollment_number.regex =
+              /^\d{0,9}$/;
+          } else {
+            updatedSchema.newSchema.properties.enrollment_number.regex =
+              /^\d{0,11}$/;
+          }
+        }
         setSchema(updatedSchema?.newSchema);
         const newdata = filterObject(
           updatedSchema?.newData,
@@ -419,7 +422,6 @@ export default function EnrollmentForm() {
 
   const enrollmentNumberExist = async (enrollment_number) => {
     let { state_name } = await getSelectedProgramId();
-
     if (
       (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
       (state_name === "BIHAR" && enrollment_number.length === 9)
@@ -434,10 +436,18 @@ export default function EnrollmentForm() {
         setErrors({
           ...errors,
           enrollment_number: {
-            __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
+            __errors: [
+              t(
+                state_name === "RAJASTHAN"
+                  ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
+                  : "APPLICATION_ID_ALREADY_EXISTS"
+              ),
+            ],
           },
         });
       } else {
+        const { enrollment_number, ...otherErrors } = errors;
+        setErrors(otherErrors);
         return true;
       }
     } else {
@@ -452,7 +462,7 @@ export default function EnrollmentForm() {
         setErrors({
           ...errors,
           enrollment_number: {
-            __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_9_DIGIT")],
+            __errors: [t("APPLICATION_ID_SHOULD_BE_OF_9_DIGIT")],
           },
         });
       }
@@ -569,12 +579,17 @@ export default function EnrollmentForm() {
       }
     }
     if (keys?.length > 0) {
+      let { state_name } = await getSelectedProgramId();
       const errorData = ["enrollment_number"].filter((e) => keys.includes(e));
       if (errorData.length > 0) {
         if (
           errorData.includes("enrollment_number") &&
           !errors.enrollment_number?.__errors?.includes(
-            t("ENROLLMENT_NUMBER_ALREADY_EXISTS")
+            t(
+              state_name === "RAJASTHAN"
+                ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
+                : "APPLICATION_ID_ALREADY_EXISTS"
+            )
           )
         ) {
           setNotMatched(errorData.filter((e) => e !== "enrollment_number"));
