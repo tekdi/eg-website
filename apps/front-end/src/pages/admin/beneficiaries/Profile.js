@@ -13,7 +13,6 @@ import {
   facilitatorRegistryService,
   CardComponent,
   jsonParse,
-  generateUUID,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -45,8 +44,7 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
-import { memo } from "react";
-import { useWindowDimensions } from "react-native-web";
+import Scholarship from "component/Scholarship";
 
 const columns = (t) => [
   {
@@ -670,7 +668,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 <HStack space="4">
                   {userTokenInfo?.authUser?.program_faciltators?.program_id ==
                     1 && (
-                    <Scolership {...{ item: data, jsonData, setJsonData }} />
+                    <Scholarship {...{ item: data, jsonData, setJsonData }} />
                   )}
                   <AdminTypo.Secondarybutton
                     onPress={() => {
@@ -2062,99 +2060,3 @@ const SelectAllCheckBox = ({
 
   return <Checkbox onChange={handleCheckboxChange}>{title}</Checkbox>;
 };
-
-const Scolership = memo(({ item, jsonData, setJsonData }) => {
-  const { t } = useTranslation();
-  // const width = useS;
-  const { width, height } = useWindowDimensions();
-
-  React.useEffect(() => {
-    window.addEventListener(
-      "message",
-      (event) => {
-        handleEvent(event);
-      },
-      false
-    );
-
-    return () => {
-      window.removeEventListener("message", (val) => {});
-    };
-  }, []);
-
-  const handleEvent = (event) => {
-    if (event?.data?.orderId) {
-      setJsonData();
-    }
-  };
-
-  useEffect(() => {
-    const iframe = document.getElementById("preview");
-    console.log(iframe);
-    if (iframe) {
-      // iframe.onload = function () {
-      //   const iframeDocument =
-      //     iframe.contentDocument || iframe.contentWindow.document;
-      //   const iframeBody = iframeDocument.body;
-      //   console.log(iframeBody);
-      //   // Apply CSS styles to the iframe content
-      //   iframeBody.style.backgroundColor = "lightblue";
-      //   iframeBody.style.color = "red";
-      // };
-    }
-  }, [jsonData]);
-
-  return (
-    <Stack>
-      <AdminTypo.Secondarybutton
-        onPress={() => {
-          setJsonData(
-            btoa(
-              JSON.stringify({
-                name: [item?.first_name, item?.middle_name, item?.last_name]
-                  .filter((e) => e)
-                  .join(" "),
-                gender: item?.gender == "male" ? "M" : "F",
-                date_of_birth: item?.dob || "",
-                mobile: item?.mobile || "",
-                email: item?.email_id || `${item?.first_name || "demo"}@g.com`,
-                address: [
-                  item?.state,
-                  item?.district,
-                  item?.block,
-                  item?.village,
-                  item?.grampanchayat,
-                ]
-                  .filter((e) => e)
-                  .join(", "),
-              })
-            )
-          );
-        }}
-      >
-        {t("APPLY_SCHOLARSHIP")}
-      </AdminTypo.Secondarybutton>
-      <Modal isOpen={jsonData} avoidKeyboard size={"xl"}>
-        <Modal.Body bg="white" p="0">
-          <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <AdminTypo.H4 p="4">{t("APPLY_SCHOLARSHIP")}</AdminTypo.H4>
-            <IconByName
-              name="CloseCircleLineIcon"
-              onPress={(e) => setJsonData()}
-            />
-          </HStack>
-          <iframe
-            style={{ border: "none" }}
-            title={t("APPLY_SCHOLARSHIP")}
-            id="preview"
-            {...{ width: width - 50, height: height - 80 }}
-            src={`${
-              process.env.REACT_APP_SCHOLARSHIP_URL
-            }/${generateUUID()}?jsonData=${jsonData}`}
-            allowFullScreen
-          />
-        </Modal.Body>
-      </Modal>
-    </Stack>
-  );
-});
