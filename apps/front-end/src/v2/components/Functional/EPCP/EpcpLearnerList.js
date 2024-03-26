@@ -121,7 +121,6 @@ const EpcpLearnerList = ({ footerLinks }) => {
                           {data?.user?.last_name || ""}
                         </FrontEndTypo.H3>
                       </HStack>
-                      {console.log(data)}
                       <Avatar
                         bg={
                           data?.status == "completed"
