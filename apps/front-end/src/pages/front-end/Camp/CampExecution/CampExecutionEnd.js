@@ -94,7 +94,6 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
   }, [todaysActivity?.id, navigate]);
 
   const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
-  console.log({ disable });
   return (
     <Layout
       _appBar={{
