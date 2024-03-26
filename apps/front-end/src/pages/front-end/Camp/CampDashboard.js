@@ -243,6 +243,28 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
             </Alert>
           )}
         </VStack>
+        <VStack
+          bg="boxBackgroundColour.200"
+          borderColor="btnGray.100"
+          borderRadius="10px"
+          borderWidth="1px"
+          padding="4"
+          shadow="AlertShadow"
+        >
+          <Stack space={4}>
+            <FrontEndTypo.H3 color="textMaroonColor.400">
+              {t("EPCP_ACTIVITIES")}
+            </FrontEndTypo.H3>
+            <FrontEndTypo.H4 color="textMaroonColor.400">
+              {t("EPCP_INFO")}
+            </FrontEndTypo.H4>
+            <FrontEndTypo.Secondarybutton
+              onPress={(e) => navigate("/camps/EpcpLearnerList")}
+            >
+              {t("EPCP.TITLE")}
+            </FrontEndTypo.Secondarybutton>
+          </Stack>
+        </VStack>
         <VStack>
           <AdminTypo.H3 color="textMaroonColor.400" bold>
             {t("HOW_TO_START_CAMP")}

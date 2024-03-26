@@ -359,7 +359,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly } = schema || {};
+  const { label, format, readOnly, direction } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -380,7 +380,7 @@ export const RadioBtn = ({
       >
         <Stack
           direction={{
-            base: "column",
+            base: direction || "column",
             sm: directionColumn || "row",
           }}
           alignItems={{
@@ -887,6 +887,7 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
+  console.log({ errors });
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
   const getMessage = (error) => {
@@ -906,6 +907,8 @@ const transformErrors = (errors, schema, t) => {
         return t("SELECT_MAXIMUM", error?.params?.limit, title);
       case "enum":
         return t("SELECT_MESSAGE");
+      case "type":
+        return "";
       case "format":
         const { format } = error?.params || {};
         const messageKey =
