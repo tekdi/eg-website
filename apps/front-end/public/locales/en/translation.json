@@ -1513,6 +1513,7 @@
   "DUE_DILIGENCE_SIGNED_PROPOSAL": "Due diligence, Signed proposal",
   "QUARTELY_CA_CERTIFIED": "Quarterly CA certified utilization certificate",
   "MONTHLY_UTILIZATION": "Monthly utilization certificate",
+  "ADDRESS_ALERT": "In order to change the address you will need to be online, please turn on your internet.",
   "EPCP_ACTIVITIES": "e-PCP Activities",
   "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
   "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
