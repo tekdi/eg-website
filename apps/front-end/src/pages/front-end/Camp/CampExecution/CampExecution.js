@@ -354,6 +354,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     return (
       <Suspense fallback={<Loading />}>
         <CampTodayActivities
+          campType={campType}
           footerLinks={footerLinks}
           setAlert={setAlert}
           activityId={activityId}
