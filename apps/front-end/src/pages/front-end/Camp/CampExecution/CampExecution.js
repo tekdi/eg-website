@@ -24,7 +24,13 @@ import {
   Spinner,
   Progress,
 } from "native-base";
-import React from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import CampExecutionEnd from "./CampExecutionEnd";
@@ -34,25 +40,25 @@ import CampTodayActivities from "./CampTodayActivities";
 export default function CampExecution({ footerLinks, setAlert }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [error, setError] = React.useState();
-  const [data, setData] = React.useState({});
-  const [facilitator, setFacilitator] = React.useState();
-  const [start, setStart] = React.useState(false);
-  const [cameraFile, setCameraFile] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [activityId, setActivityId] = React.useState();
-  const [todaysActivity, setTodaysActivity] = React.useState();
+  const [error, setError] = useState();
+  const [data, setData] = useState({});
+  const [facilitator, setFacilitator] = useState();
+  const [start, setStart] = useState(false);
+  const [cameraFile, setCameraFile] = useState();
+  const [cameraUrl, setCameraUrl] = useState();
+  const [activityId, setActivityId] = useState();
+  const [todaysActivity, setTodaysActivity] = useState();
   const navigate = useNavigate();
   const [latData, longData] = useLocationData() || [];
-  const [loading, setLoading] = React.useState(true);
-  const [learnerCount, setLearnerCount] = React.useState();
-  const [moodList, setMoodList] = React.useState();
-  const [activeChip, setActiveChip] = React.useState(null);
-  const [page, setPage] = React.useState("");
-  const [progress, setProgress] = React.useState(0);
+  const [loading, setLoading] = useState(true);
+  const [learnerCount, setLearnerCount] = useState();
+  const [moodList, setMoodList] = useState();
+  const [activeChip, setActiveChip] = useState(null);
+  const [page, setPage] = useState("");
+  const [progress, setProgress] = useState(0);
   const [campType, setCampType] = useState("");
 
-  const campDetails = React.useCallback(async () => {
+  const campDetails = useCallback(async () => {
     if (!["attendance"].includes(step)) {
       const result = await campService.getCampDetails({ id });
       setCampType(result?.data);
@@ -70,11 +76,11 @@ export default function CampExecution({ footerLinks, setAlert }) {
     setLoading(false);
   }, [navigate, setTodaysActivity]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     campDetails();
   }, [campDetails]);
 
-  const enumData = React.useCallback(async () => {
+  const enumData = useCallback(async () => {
     if (cameraFile && cameraUrl?.url) {
       const listOfEnum = await enumRegistryService.listOfEnum();
       const newMoodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
@@ -94,22 +100,22 @@ export default function CampExecution({ footerLinks, setAlert }) {
     }
   }, [cameraFile, cameraUrl]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     enumData();
   }, [enumData]);
 
-  const handleChipClick = React.useCallback(
+  const handleChipClick = useCallback(
     (item) => {
       setActiveChip(item);
     },
     [setActiveChip]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setData({ ...data, lat: `${latData}`, long: `${longData}` });
   }, [latData]);
 
-  const startCamp = React.useCallback(async () => {
+  const startCamp = useCallback(async () => {
     setLoading(true);
     if (activeChip && cameraFile) {
       const payLoad = {
@@ -133,13 +139,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
   }, [activeChip, id, setLoading, setTodaysActivity]);
 
   // start Camp
-  const closeCamera = React.useCallback(() => {
+  const closeCamera = useCallback(() => {
     try {
       setStart(false);
     } catch (e) {}
   }, [setStart]);
 
-  const campBegin = React.useCallback(() => {
+  const campBegin = useCallback(() => {
     setStart(true);
   }, [setStart]);
 
@@ -162,7 +168,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
   //   setCameraUrl();
   // };
 
-  const getAccess = React.useCallback(async () => {
+  const getAccess = useCallback(async () => {
     if (
       todaysActivity?.camp_day_happening === "no" ||
       todaysActivity?.end_date !== null ||
@@ -175,15 +181,15 @@ export default function CampExecution({ footerLinks, setAlert }) {
     }
   }, [step, todaysActivity, setPage]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getAccess();
   }, [getAccess]);
 
-  const airplaneImageUri = React.useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
 
   if (start && data?.lat && data?.long && !loading) {
     return (
-      <React.Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
         <Camera
           messageComponent={
             <VStack>
@@ -246,13 +252,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
             cameraSide: true,
           }}
         />
-      </React.Suspense>
+      </Suspense>
     );
   }
 
   if (cameraFile) {
     return (
-      <React.Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
         <Layout
           _appBar={{ name: t("CAMP_EXECUTION") }}
           loading={loading}
@@ -330,29 +336,29 @@ export default function CampExecution({ footerLinks, setAlert }) {
             </FrontEndTypo.Primarybutton>
           </VStack>
         </Layout>
-      </React.Suspense>
+      </Suspense>
     );
   } else if (page === "endcamp") {
     return (
-      <React.Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
         <CampExecutionEnd {...{ learnerCount, todaysActivity, facilitator }} />
-      </React.Suspense>
+      </Suspense>
     );
   } else if (page === "attendance") {
     return (
-      <React.Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
         <CampAttendance activityId={activityId} />
-      </React.Suspense>
+      </Suspense>
     );
   } else if (page === "activities") {
     return (
-      <React.Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading />}>
         <CampTodayActivities
           footerLinks={footerLinks}
           setAlert={setAlert}
           activityId={activityId}
         />
-      </React.Suspense>
+      </Suspense>
     );
   }
 
