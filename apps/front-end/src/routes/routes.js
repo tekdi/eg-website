@@ -132,6 +132,7 @@ export default [
   { path: "/profile", component: Profile },
   { path: "/certificate", component: Certificate },
   //old facilitator onboarding
+  { path: "/results", component: Certificate },
   /*{ path: "/profile/edit/array-form/:type", component: ArrayForm },*/
   /*{ path: "/profile/edit/:step", component: EditForm },*/
   {

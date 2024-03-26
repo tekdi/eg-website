@@ -2,7 +2,7 @@ name: Deploy to DEV S3
 on:
   push:
     branches:
-      - feat-leaner-revamp
+      - release-1.7.3
 
 defaults:
   run:
