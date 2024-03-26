@@ -107,7 +107,10 @@ export function finalPayload(id, formData, field) {
       field_id: "",
       fields_sequence: 9,
       observation_fields_id: "",
-      response_value: formData?.RSOS_DOCUMENT_IMAGE || "",
+      response_value:
+        formData?.TOOK_EPCP_EXAM_ON_RSOS_APP === "YES"
+          ? formData?.RSOS_DOCUMENT_IMAGE
+          : "",
     },
   ];
 
