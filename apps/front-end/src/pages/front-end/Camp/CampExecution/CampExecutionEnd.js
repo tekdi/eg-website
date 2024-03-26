@@ -47,7 +47,7 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
       setdisableTodayAct(false);
     }
     if (
-      result?.data?.beneficairesAttendaceCount?.aggregate?.count > 1 &&
+      result?.data?.beneficairesAttendaceCount?.aggregate?.count >= 1 &&
       (result?.data?.misc_activities?.misc_activities?.length > 0 ||
         result?.data?.today_session_count?.aggregate?.count > 0)
     ) {
@@ -94,7 +94,7 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
   }, [todaysActivity?.id, navigate]);
 
   const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
-
+  console.log({ disable });
   return (
     <Layout
       _appBar={{
