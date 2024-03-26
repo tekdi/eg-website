@@ -13,6 +13,8 @@ import {
   facilitatorRegistryService,
   CardComponent,
   jsonParse,
+  getSelectedProgramId,
+  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -180,10 +182,10 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [aadhaarerror, setAadhaarError] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [benificiary, setBeneficiary] = useState();
-  const [contextId, setcontextId] = useState();
-  const [auditLogs, setauditLogs] = useState([]);
-  const [auditMonth, setauditMonth] = useState([]);
-  const [auditYear, setauditYear] = useState([]);
+  const [contextId, setContextId] = useState();
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditMonth, setAuditMonth] = useState([]);
+  const [auditYear, setAuditYear] = useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = useState();
   const [loading, setLoading] = useState(true);
   const [editAccessModalVisible, setEditAccessModalVisible] = useState(false);
@@ -202,6 +204,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [isDisable, setIsDisable] = useState(false);
   const [boardName, setBoardName] = useState({});
   const [jsonData, setJsonData] = useState();
+  const [programUser, setProgramUser] = useState();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -235,7 +238,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           const month = parsedDate.format("MMMM");
           const year = parsedDate.format("YYYY");
 
-          setauditLogs((prevState) => [
+          setAuditLogs((prevState) => [
             ...prevState,
             {
               status: JSON.parse(item?.new_data),
@@ -260,8 +263,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         { dates: [], months: [], years: [] }
       );
 
-      setauditMonth(uniqueDates?.months);
-      setauditYear(uniqueDates?.years);
+      setAuditMonth(uniqueDates?.months);
+      setAuditYear(uniqueDates?.years);
     }
   }, [contextId]);
 
@@ -304,7 +307,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         });
         setEnrollmentSubjects(subjectNames);
       }
-      setcontextId(newData?.result?.program_beneficiaries?.id);
+      setContextId(newData?.result?.program_beneficiaries?.id);
       setBeneficiary(newData);
       if (newData?.result?.program_beneficiaries?.documents_status) {
         setStatus(
@@ -514,8 +517,15 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     }
   }, [checkedFields, getRequestData, id]);
 
-  useEffect(() => {
+  useEffect(async () => {
     fetchData();
+    const { program_id } = (await getSelectedProgramId()) || {};
+    const { academic_year_id } = (await getSelectedAcademicYear()) || {};
+    const data = userTokenInfo?.authUser?.program_users.find(
+      (e) =>
+        e.program_id == program_id && e.academic_year_id == academic_year_id
+    );
+    setProgramUser(data);
   }, [fetchData]);
 
   return (
@@ -666,10 +676,17 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               </AdminTypo.H4>
               <HStack>
                 <HStack space="4">
-                  {userTokenInfo?.authUser?.program_faciltators?.program_id ==
-                    1 && (
-                    <Scholarship {...{ item: data, jsonData, setJsonData }} />
-                  )}
+                  {programUser?.organisation_id == 1 &&
+                    programUser?.program_id == 2 && (
+                      <Scholarship
+                        {...{
+                          item: data,
+                          setItem: setData,
+                          jsonData,
+                          setJsonData,
+                        }}
+                      />
+                    )}
                   <AdminTypo.Secondarybutton
                     onPress={() => {
                       setModalVisible(true);
