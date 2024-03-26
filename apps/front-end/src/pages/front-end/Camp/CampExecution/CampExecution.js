@@ -50,10 +50,12 @@ export default function CampExecution({ footerLinks, setAlert }) {
   const [activeChip, setActiveChip] = React.useState(null);
   const [page, setPage] = React.useState("");
   const [progress, setProgress] = React.useState(0);
+  const [campType, setCampType] = useState("");
 
   const campDetails = React.useCallback(async () => {
     if (!["attendance"].includes(step)) {
       const result = await campService.getCampDetails({ id });
+      setCampType(result?.data);
       setFacilitator(result?.data?.faciltator?.[0] || {});
       setLearnerCount(result?.data?.group_users?.length);
     }
@@ -116,6 +118,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
         mood: activeChip,
         ...data,
         photo_1: `${cameraFile}`,
+        camp_type: campType?.type,
       };
       const result = await campService.campActivity(payLoad);
       const activitiesData = result?.insert_camp_days_activities_tracker_one;

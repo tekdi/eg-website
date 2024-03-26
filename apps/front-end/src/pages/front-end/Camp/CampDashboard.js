@@ -73,7 +73,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space="5">
-        {campList?.main_camp?.length < 2 && (
+        {campList?.camps?.length < 2 && (
           <VStack
             bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
@@ -207,14 +207,14 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                       );
                     })}
                     {campList?.pcr_camp?.length < 2 ||
-                      (campList?.main_camp?.length > 1 && (
+                      (campList?.camps?.length > 1 && (
                         <FrontEndTypo.Secondarybutton
                           onPress={() => {
                             navigate(`/camps/new/learners`, { state: "camp" });
                           }}
                         >
                           <FrontEndTypo.H3 color="textMaroonColor.400">
-                            {campList?.main_camp?.length === 0
+                            {campList?.camps?.length === 0
                               ? t("START_FIRST_CAMP_REGISTER")
                               : t("START_SECOND_CAMP_REGISTER")}
                           </FrontEndTypo.H3>
@@ -252,7 +252,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
             )}
           </VStack>
         )}
-        {campList?.main_camp && (
+        {campList?.camps && (
           <VStack
             bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
@@ -273,7 +273,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
                     >
                       <FrontEndTypo.H2>{t("MAIN_CAMP")}</FrontEndTypo.H2>
                     </HStack>
-                    {campList?.main_camp?.map((item, i) => {
+                    {campList?.camps?.map((item, i) => {
                       const index = i + 1;
                       return (
                         <Pressable
@@ -371,23 +371,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
             )}
           </VStack>
         )}
-        <VStack>
-          <AdminTypo.H3 color="textMaroonColor.400" bold>
-            {t("HOW_TO_START_CAMP")}
-          </AdminTypo.H3>
-          <HStack mt={4}>
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/LPjsnW5LKWs?si=wbkJgHcLP3mMuH2W"
-              title={t("HOW_TO_START_CAMP")}
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
-          </HStack>
-        </VStack>
       </VStack>
       <Modal
         isOpen={campSelected}
