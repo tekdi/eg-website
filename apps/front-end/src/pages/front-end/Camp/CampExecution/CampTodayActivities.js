@@ -50,8 +50,6 @@ export default function CampTodayActivities({
       start_date: moment(new Date()).format("YYYY-MM-DD"),
     };
     const result = await campService.getActivity(obj);
-    console.log("53", result);
-
     if (result?.data?.camp_days_activities_tracker?.[0]?.misc_activities) {
       setSelectValue(
         result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
@@ -72,7 +70,6 @@ export default function CampTodayActivities({
       misc_activities: selectValue,
     };
     const activities_response = await campService.addMoodActivity(dataToSave);
-    console.log({ activities_response });
     if (activities_response) {
       getActivity();
       setEnums();
@@ -114,7 +111,6 @@ export default function CampTodayActivities({
     setEnums();
   };
 
-  console.log({ campType });
   return (
     <Layout
       _appBar={t("ADD_TODAYS_ACTIVITIES")}
