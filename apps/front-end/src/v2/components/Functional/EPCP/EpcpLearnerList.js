@@ -18,7 +18,10 @@ const EpcpLearnerList = ({ footerLinks }) => {
   useEffect(() => {
     const fetchData = async () => {
       const list = await ObservationService.getCampLearnerList();
-      const report = await ObservationService.getReport();
+      const userIds = list?.data.flatMap((group) =>
+        group.group.group_users.map((user) => user.user.user_id)
+      );
+      const report = await ObservationService.getReport(userIds);
       const finalData = FilterStatusAndLearner(list, report);
       setLeanerList(finalData);
       setLoading(false);
@@ -29,21 +32,30 @@ const EpcpLearnerList = ({ footerLinks }) => {
   const FilterStatusAndLearner = (list, report) => {
     const payload = Object.keys(list?.data).length === 0 ? [] : list?.data;
     const field = report?.data;
-    const updatedPayload = payload?.map((payloadItem) => {
-      const correspondingField = field.find(
-        (fieldItem) =>
-          parseInt(fieldItem?.context_id) ===
-          payloadItem.group?.group_users?.[0]?.user?.user_id
+    const updatedPayload = payload.map((payloadItem) => {
+      const updatedGroupUsers = payloadItem.group.group_users.map(
+        (groupUser) => {
+          const correspondingField = field.find(
+            (fieldItem) => fieldItem.context_id == groupUser.user.user_id
+          );
+          if (correspondingField) {
+            return {
+              ...groupUser,
+              status: correspondingField.status,
+            };
+          } else {
+            return groupUser;
+          }
+        }
       );
 
-      if (correspondingField) {
-        return {
-          ...payloadItem,
-          status: correspondingField?.status,
-        };
-      } else {
-        return payloadItem;
-      }
+      return {
+        ...payloadItem,
+        group: {
+          ...payloadItem.group,
+          group_users: updatedGroupUsers,
+        },
+      };
     });
     return updatedPayload;
   };
@@ -82,56 +94,48 @@ const EpcpLearnerList = ({ footerLinks }) => {
           </HStack>
           <VStack>
             {leanerList?.map((item) => {
-              return (
-                <Pressable
-                  key={item?.group?.group_id}
-                  borderBottomWidth={1}
-                  borderColor={"gray.300"}
-                  p={4}
-                  onPress={() => {
-                    navigate(
-                      `/camps/EpcpLearnerList/${item?.group?.group_users?.[0]?.user?.user_id}`
-                    );
-                  }}
-                >
-                  <HStack
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
+              return item?.group?.group_users?.map((data) => {
+                return (
+                  <Pressable
+                    key={data?.user?.user_id}
+                    borderBottomWidth={1}
+                    borderColor={"gray.300"}
+                    p={4}
+                    onPress={() => {
+                      navigate(`/camps/EpcpLearnerList/${data?.user?.user_id}`);
+                    }}
                   >
-                    <HStack space={4}>
-                      <FrontEndTypo.H3>
-                        {item?.group?.group_users?.[0]?.user?.user_id}
-                      </FrontEndTypo.H3>
-                      <FrontEndTypo.H3>
-                        {item?.group?.group_users?.[0]?.user?.first_name}
-                      </FrontEndTypo.H3>
-                      {item?.group?.group_users?.[0]?.user?.last_name ? (
-                        <>
-                          <FrontEndTypo.H3>
-                            {item?.group?.group_users?.[0]?.user?.middle_name ||
-                              ""}
-                          </FrontEndTypo.H3>
-                          <FrontEndTypo.H3>
-                            {item?.group?.group_users?.[0]?.user?.last_name}
-                          </FrontEndTypo.H3>
-                        </>
-                      ) : (
-                        ""
-                      )}
+                    <HStack
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <HStack space={4}>
+                        <FrontEndTypo.H3>{data?.user?.user_id}</FrontEndTypo.H3>
+                        <FrontEndTypo.H3>
+                          {data?.user?.first_name}
+                        </FrontEndTypo.H3>
+                        <FrontEndTypo.H3>
+                          {data?.user?.middle_name || ""}
+                        </FrontEndTypo.H3>
+                        <FrontEndTypo.H3>
+                          {data?.user?.last_name || ""}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                      {console.log(data)}
+                      <Avatar
+                        bg={
+                          data?.status == "completed"
+                            ? "green.300"
+                            : data?.status == "in_complete"
+                            ? "amber.300"
+                            : "textRed.300"
+                        }
+                        size={["15px", "30px"]}
+                      />
                     </HStack>
-                    <Avatar
-                      bg={
-                        item?.status == "completed"
-                          ? "green.300"
-                          : item?.status == "in_progress"
-                          ? "amber.300"
-                          : "textRed.300"
-                      }
-                      size={["15px", "30px"]}
-                    />
-                  </HStack>
-                </Pressable>
-              );
+                  </Pressable>
+                );
+              });
             })}
           </VStack>
         </VStack>
