@@ -1513,5 +1513,73 @@
   "QUARTELY_CA_CERTIFIED": "त्रैमासिक CA प्रमाणित उपयोग प्रमाण पत्र",
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
   "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
-  "ADDRESS_ALERT": "पता बदलने के लिए आपको ऑनलाइन होना होगा , कृपया अपना इंटरनेट चालू करें ।"
+  "ADDRESS_ALERT": "पता बदलने के लिए आपको ऑनलाइन होना होगा , कृपया अपना इंटरनेट चालू करें ।",
+  "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
+  "EPCP": {
+    "TITLE": "शिक्षार्थियों द्वारा RSOS app का उपयोग",
+    "HAS_LOGGED_RSOS_APP": {
+      "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ? ",
+      "YES": "हाँ",
+      "NO": "नहीं"
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
+      "TITLE": "शिक्षार्थी RSOS App पर विडियो/ई-बूक से पढ़ाई करती हैं",
+      "YES": "हाँ",
+      "NO": "नहीं"
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
+      "TITLE": "RSOS App पर अभ्यास टेस्ट दे रहे है?",
+      "YES": "हाँ",
+      "NO": "नहीं"
+    },
+    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
+      "TITLE": "RSOS App पर  e-PCP परीक्षा दी?",
+      "YES": "हाँ",
+      "NO": "नहीं"
+    },
+    "RSOS_DOCUMENT_IMAGE": {
+      "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
+      "TITLE": "एक कारण चुनें",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नह आता",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डेटा ज्यादा खच होना",
+      "LACK_OF_TIME": "समय का अभाव",
+      "NO_SMARTPHONE_AT_HOME": "घर में स्मार्टफोन नहीं है",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "मोबाइल से पढ़के समझना कठिन है ",
+      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "सहायक सामग्री समझना कठिन है "
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
+      "TITLE": "एक कारण चुनें",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नह आता",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डेटा ज्यादा खच होना",
+      "LACK_OF_TIME": "समय का अभाव",
+      "NO_SMARTPHONE_AT_HOME": "घर में स्मार्टफोन नहीं है",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "अभ्यास टेस्ट देने में आत्मविश्वास की कमी",
+      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "सहायक सामग्री या सवाल समझ नहीं आए"
+    },
+    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
+      "TITLE": "एक कारण चुनें",
+      "DIDNT_WATCH_ALL_VIDEOS": "सभी विडियो नहीं देखि",
+      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "e-PCP देने में आत्मविश्वास की कमी",
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "WILL_GIVE_SOON": " जल्द ही देंगे"
+    },
+    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
+      "TITLE": "एक कारण चुनें",
+      "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
+      "DONT_KNOW_ABOUT_APPLICATION": "एप्लीकेशन के बारे में पता नहीं है",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नह आता",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "DONT_HAVE_INTERNET_RECHARGE": "इंटरनेट का रिचार्ज नही है",
+      "LACK_OF_TIME": "समय का अभाव",
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती "
+    }
+  }
 }
