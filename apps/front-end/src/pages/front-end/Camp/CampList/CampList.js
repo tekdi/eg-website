@@ -64,7 +64,6 @@ export default function List({ userTokenInfo }) {
     setLoading(false);
   }, []);
 
-  console.log({ userTokenInfo, ipStatus });
   return (
     <Stack>
       <VStack p="4" space="5">
