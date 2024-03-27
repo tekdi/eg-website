@@ -16,7 +16,7 @@ self.addEventListener("install", (event) => {
       // Cache initial files
       return cache.addAll([
         "/",
-        "/index.html",
+        "/index.html?version=1", // Append a version query parameter
         "/styles/main.css",
         "/scripts/main.js",
         // Add other initial files to cache
