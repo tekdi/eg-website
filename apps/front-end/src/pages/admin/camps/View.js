@@ -25,6 +25,7 @@ import {
   Pressable,
   Stack,
   ScrollView,
+  useToast,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -207,6 +208,9 @@ export default function View({ footerLinks }) {
   const { id } = useParams();
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const toast = useToast();
+
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
       const campConsent = await campService.getCampAdminConsent({
@@ -290,6 +294,35 @@ export default function View({ footerLinks }) {
     },
     [setSelectedRows]
   );
+  const updatePCRCamp = async () => {
+    setIsButtonLoading(true);
+    const result = await campService.closePcrCamp({ camp_id: id });
+    if (result?.success === true) {
+      setModalVisible(false);
+      toast.show({
+        render: () => (
+          <Alert status="success" alignItems="start" mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon size={"lg"} />
+              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+            </HStack>
+          </Alert>
+        ),
+      });
+    } else {
+      setModalVisible(false);
+      toast.show({
+        render: () => (
+          <Alert status="warning" alignItems="start" mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon size={"lg"} />
+              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+            </HStack>
+          </Alert>
+        ),
+      });
+    }
+  };
 
   // Table component
   return (
@@ -324,23 +357,45 @@ export default function View({ footerLinks }) {
             </HStack>
           </Alert>
         )}
-        <HStack alignItems={"center"} space="1" pt="3">
-          <IconByName name="UserLineIcon" size="md" />
-          <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/camps`)}
-          />
-          <AdminTypo.H4
-            bold
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            enumOptions
+        <HStack alignItems={"center"} justifyContent={"space-between"}>
+          <HStack alignItems={"center"} space="1" pt="3">
+            <IconByName name="UserLineIcon" size="md" />
+            <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(`/admin/camps`)}
+            />
+            <AdminTypo.H4
+              bold
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              enumOptions
+            >
+              {data?.id}
+            </AdminTypo.H4>
+          </HStack>
+          {data?.type === "pcr" && (
+            <AdminTypo.PrimaryButton onPress={(e) => setModalVisible(true)}>
+              {t("CLOSE_PCR")}
+            </AdminTypo.PrimaryButton>
+          )}
+          <AdminTypo.Secondarybutton
+            background="white"
+            _text={{
+              color: "blueText.400",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+            my="2"
+            mx="1"
+            onPress={() => {
+              navigate(`/admin/camps/${id}/reassignPrerak/${facilitator?.id}`);
+            }}
           >
-            {data?.id}
-          </AdminTypo.H4>
+            {t("REASSIGNE_CAMP")}
+          </AdminTypo.Secondarybutton>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -368,7 +423,7 @@ export default function View({ footerLinks }) {
                               {facilitator?.mobile}
                             </AdminTypo.H5>
                           </VStack>
-                          <IconByName
+                          {/* <IconByName
                             name="EditBoxLineIcon"
                             color="iconColor.100"
                             onPress={(e) =>
@@ -376,7 +431,7 @@ export default function View({ footerLinks }) {
                                 `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
                               )
                             }
-                          />
+                          /> */}
                         </HStack>
                       }
                       subTitle={
@@ -647,6 +702,44 @@ export default function View({ footerLinks }) {
                   isDisabled={isButtonLoading}
                   onPress={() => {
                     updateCampStatus();
+                  }}
+                >
+                  {t("CONFIRM")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+        <Modal
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          size="lg"
+        >
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>{t("CONFIRMATION")}</Modal.Header>
+            <Modal.Body>
+              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+                <HStack alignItems={"center"} space="2" color>
+                  <Alert.Icon size={"lg"} />
+                  <AdminTypo.H3>{t("PCR_CLOSE_MESSAGE")}</AdminTypo.H3>
+                </HStack>
+              </Alert>
+            </Modal.Body>
+            <Modal.Footer>
+              <HStack justifyContent="space-between" width="100%">
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    setModalVisible(false);
+                  }}
+                >
+                  {t("CANCEL")}
+                </AdminTypo.PrimaryButton>
+
+                <AdminTypo.Secondarybutton
+                  isDisabled={isButtonLoading}
+                  onPress={() => {
+                    updatePCRCamp();
                   }}
                 >
                   {t("CONFIRM")}
