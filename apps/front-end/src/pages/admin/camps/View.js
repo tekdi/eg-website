@@ -381,6 +381,21 @@ export default function View({ footerLinks }) {
               {t("CLOSE_PCR")}
             </AdminTypo.PrimaryButton>
           )}
+          <AdminTypo.Secondarybutton
+            background="white"
+            _text={{
+              color: "blueText.400",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+            my="2"
+            mx="1"
+            onPress={() => {
+              navigate(`/admin/camps/${id}/reassignPrerak/${facilitator?.id}`);
+            }}
+          >
+            {t("REASSIGNE_CAMP")}
+          </AdminTypo.Secondarybutton>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -408,7 +423,7 @@ export default function View({ footerLinks }) {
                               {facilitator?.mobile}
                             </AdminTypo.H5>
                           </VStack>
-                          <IconByName
+                          {/* <IconByName
                             name="EditBoxLineIcon"
                             color="iconColor.100"
                             onPress={(e) =>
@@ -416,7 +431,7 @@ export default function View({ footerLinks }) {
                                 `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
                               )
                             }
-                          />
+                          /> */}
                         </HStack>
                       }
                       subTitle={

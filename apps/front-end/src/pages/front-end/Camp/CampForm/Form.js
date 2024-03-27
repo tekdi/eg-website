@@ -48,6 +48,13 @@ export default function App({ footerLinks }) {
   const [enumOptions, setEnumOptions] = useState({});
   const programSelected = jsonParse(localStorage.getItem("program"));
 
+  useEffect(async () => {
+    setLoading(true);
+    const result = await campService.getCampDetails({ id });
+    setCampDetails(result?.data);
+    setLoading(false);
+  }, [id, page]);
+
   const getLocation = async () => {
     setLoading(true);
     const { lat, long } = campDetails?.properties || {};
@@ -64,13 +71,6 @@ export default function App({ footerLinks }) {
     });
     setLoading(false);
   };
-
-  useEffect(async () => {
-    setLoading(true);
-    const result = await campService.getCampDetails({ id });
-    setCampDetails(result?.data);
-    setLoading(false);
-  }, []);
 
   useEffect(async () => {
     setLoading(true);
@@ -115,7 +115,7 @@ export default function App({ footerLinks }) {
       }
     }
     setLoading(false);
-  }, [step, campDetails]);
+  }, [campDetails, step]);
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
