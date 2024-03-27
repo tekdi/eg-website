@@ -135,7 +135,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
         setDisabledBtn([
           "quit",
           "rejected",
-          "selected_for_training",
+          "selected_for_onboarding",
           "rusticate",
           "on_hold",
         ]);
@@ -182,6 +182,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
         break;
       default:
         setDisabledBtn([
+          "pragati_mobilizer",
           "application_screened",
           "rejected",
           "quit",

@@ -27,6 +27,7 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
+  jsonParse,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -58,6 +59,30 @@ export function LabelMobileWidget() {
         {t("PLEASE_MOBILE_NUMBER")}
       </Text>
     </>
+  );
+}
+export function EnrollmentLabelMobileWidget() {
+  let state = jsonParse(localStorage.getItem("program"));
+  const { t } = useTranslation();
+  return (
+    <>
+      <FrontEndTypo.H2 color="textMaroonColor.400">
+        {t("ENROLLMENT_MOBILE_NO")}
+      </FrontEndTypo.H2>
+      <Text color="textMaroonColor.400" mb={1}>
+        {state?.state_name === "RAJASTHAN"
+          ? t("AS_PER_ENROLLMENT_RECEIPT")
+          : t("AS_PER_APPLICATION_RECEIPT")}
+      </Text>
+    </>
+  );
+}
+export function AlreadyOpenLabelWidget() {
+  const { t } = useTranslation();
+  return (
+    <Text color="textMaroonColor.400" mb={1}>
+      {t("ALREADY_OPEN_LABEL")}
+    </Text>
   );
 }
 
@@ -811,6 +836,8 @@ const widgets = {
   //v2 widget
   LabelNameWidget,
   LabelMobileWidget,
+  EnrollmentLabelMobileWidget,
+  AlreadyOpenLabelWidget,
   LabelAddressWidget,
   LabelVerifyNameWidget,
   MobileNumberReadOnly,

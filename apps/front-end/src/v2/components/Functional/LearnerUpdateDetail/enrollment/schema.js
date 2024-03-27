@@ -1,14 +1,19 @@
+import { jsonParse } from "@shiksha/common-lib";
+
+let state = jsonParse(localStorage.getItem("program"));
+
 export default {
   description: "1.AG Enrollment Details",
   type: "step",
   properties: {
     edit_enrollement: {
+      title: "ENROLLMENT_DETAILS",
       type: "object",
       required: [
         "enrollment_status",
         "enrolled_for_board",
         "enrollment_number",
-        "enrollment_aadhaar_no",
+        "enrollment_mobile_no",
         "subjects",
         "enrollment_date",
         "payment_receipt_document_id",
@@ -23,26 +28,32 @@ export default {
           type: "string",
           label: "BOARD_OF_ENROLLMENT",
           format: "radio",
-          enumNames: ["RSOS", "NIOS"], //title
-          enum: ["rsos", "nios"], //values
         },
         enrollment_number: {
           type: "string",
-          label: "ENROLLMENT_NUMBER",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_NO"
+              : "APPLICATION_ID",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
-        enrollment_aadhaar_no: {
-          title: "AADHAAR_NUMBER",
-          description: "AS_PER_ENROLLMENT_RECEIPT",
-          label: "AADHAAR_NUMBER",
+        enrollmentlabelMobile: {
           type: "string",
-          regex: /^\d{0,12}$/,
         },
+        enrollment_mobile_no: {
+          type: "string",
+          title: "MOBILE_NUMBER",
+          format: "MobileNumber",
+        },
+
         enrollment_date: {
           type: "string",
-          label: "ENROLLMENT_DATE",
-          format: "alt-date",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_DATE"
+              : "FEES_PAID_DATE",
+          format: "DMY",
         },
         subjects: {
           minItems: 1,
@@ -55,16 +66,25 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "APPLICATION_RECEIPT",
-          description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: "",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_RECIEPT"
+              : "APPLICATION_RECEIPT",
+          description:
+            state?.state_name === "RAJASTHAN"
+              ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"
+              : "PLEASE_MERGE_DRAFT_APPLICATION_LETTER",
+          uploadTitle: " ",
           type: ["string", "number"],
           format: "FileUpload",
         },
       },
     },
     edit_enrollement_details: {
-      title: "ENROLLMENT_RECEIPT_DETAILS",
+      title:
+        state?.state_name === "RAJASTHAN"
+          ? "ENROLLMENT_RECEIPT"
+          : "ENROLLMENT_RECEIPT_DETAILS",
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
       properties: {
@@ -72,25 +92,31 @@ export default {
           type: "string",
           title: "FIRST_NAME",
           label: "FIRST_NAME",
-          description: "AS_PER_ENROLLMENT_RECEIPT",
-          regex: /^[A-Za-z]+$/,
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+          description:
+            state?.state_name === "RAJASTHAN"
+              ? "AS_PER_ENROLLMENT_RECEIPT"
+              : "AS_PER_APPLICATION_RECEIPT",
         },
         enrollment_middle_name: {
           type: ["string", "null"],
           title: "MIDDLE_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
           label: "MIDDLE_NAME",
-          regex: /^[A-Za-z]+$/,
         },
         enrollment_last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
+          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
           label: "LAST_NAME",
-          regex: /^[A-Za-z]+$/,
         },
         enrollment_dob: {
           type: "string",
           format: "alt-date",
-          label: "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "DATE_OF_BIRTH_AS_PER_ENROLLMENT"
+              : "DATE_OF_BIRTH_AS_PER_APPLICATION",
           help: "hello",
         },
       },
