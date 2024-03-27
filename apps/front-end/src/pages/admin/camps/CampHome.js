@@ -294,7 +294,11 @@ export const Filter = ({ filter, setFilter }) => {
     debounce(handleSearch, 1000),
     []
   );
-
+  const campTypes = [
+    { title: "ALL_CAMPS", value: "all" },
+    { title: "MAIN_CAMP", value: "main" },
+    { title: "PCR_CAMP", value: "pcr" },
+  ];
   const schema = {
     type: "object",
     properties: {
@@ -467,6 +471,35 @@ export const Filter = ({ filter, setFilter }) => {
           enumOptions: facilitator,
         }}
       />
+      <AdminTypo.H5>{t("CAMP_TYPE")}</AdminTypo.H5>
+      <VStack space={3}>
+        {Array?.isArray(campTypes) &&
+          campTypes?.map((item) => {
+            return (
+              <AdminTypo.H6
+                key={"table"}
+                color={
+                  filter?.type === t(item?.value) ||
+                  (filter?.type === "" && item?.value === "all")
+                    ? "textMaroonColor.600"
+                    : ""
+                }
+                bold={
+                  filter?.type === t(item?.value) ||
+                  (filter?.type === "" && item?.value === "all")
+                }
+                cursor={"pointer"}
+                mx={3}
+                onPress={() => {
+                  const newType = item.value === "all" ? "" : item.value;
+                  setFilter({ ...filter, type: newType, page: 1 });
+                }}
+              >
+                {t(item?.title)}
+              </AdminTypo.H6>
+            );
+          })}
+      </VStack>
     </VStack>
   );
 };

@@ -258,6 +258,7 @@
   "CAMP_REGISTER": "Camp Registration",
   "CAMP_SETTINGS_ALERT": "Camp setting is not for daily update. This information is to tell everyone the time when you will be conducting camp of daily basis and for infoming the weekly off so that everyone knows the camp is not functional on that day.",
   "CAMP_STATUS": "Camp Status",
+  "CAMP_TYPE": "Camp Type",
   "CAMP_VALIDATION_MESSAGE_CREATING_CAMP_DETAILS": "Camp registration failed.",
   "CAMP_VALIDATION_MESSAGE_CREATING_USER_FOR_CAMP": "Error occured during creating group user.",
   "CAMP_VALIDATION_MESSAGE_FACILITATOR_DIDNT_SHORTLISTED_FOR_ORIENTATION": "Faciltator access denied",
