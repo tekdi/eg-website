@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   AdminTypo,
+  Breadcrumb,
   IconByName,
   PoAdminLayout,
   cohortService,
@@ -9,17 +10,19 @@ import {
   getSelectedProgramId,
   organisationService,
   t,
+  validation,
 } from "@shiksha/common-lib";
-import { Button, HStack, VStack } from "native-base";
+import { Alert, Button, HStack, VStack } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { widgets, templates, transformErrors } from "component/BaseInput";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
+import Chip from "component/Chip";
 
 const Schema = {
   type: "object",
-  required: ["ip_id", "first_name", "role", "mobile"],
+  required: ["ip_id", "state", "first_name", "role", "mobile"],
   properties: {
     ip_id: {
       type: "string",
@@ -118,6 +121,20 @@ function UserForm() {
     setDataIp(data?.data);
   }, [id]);
 
+  const customValidate = (data, err) => {
+    if (data?.mobile) {
+      const isValid = validation({
+        data: data?.mobile,
+        key: "mobile",
+        type: "mobile",
+      });
+      if (isValid) {
+        err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
+      }
+    }
+    return err;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     let newFormData = data.formData;
@@ -154,20 +171,58 @@ function UserForm() {
   return (
     <PoAdminLayout>
       <VStack p={4}>
-        <HStack pt={4} pb={4} space={2} alignItems={"center"}>
-          <IconByName name="CommunityLineIcon" />
-          <AdminTypo.H2>{t("IP/ORGANISATION_LIST")}</AdminTypo.H2>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={() => navigate(`/poadmin/ips/${id}`)}
+        <VStack pt={4} pb={4}>
+          <Breadcrumb
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+            data={[
+              {
+                title: (
+                  <HStack>
+                    <IconByName name="GroupLineIcon" size="md" />
+                    <AdminTypo.H4 bold color="Activatedcolor.400">
+                      {t("ALL_IPS")}
+                    </AdminTypo.H4>
+                  </HStack>
+                ),
+                link: "/poadmin/ips",
+                icon: "GroupLineIcon",
+              },
+              {
+                title: (
+                  <Chip
+                    textAlign="center"
+                    lineHeight="15px"
+                    label={dataIp?.id}
+                  />
+                ),
+                link: `/poadmin/ips/${id}`,
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {t("USER_CREATE")}
+                  </AdminTypo.H4>
+                ),
+              },
+            ]}
           />
-          {dataIp?.first_name}
-        </HStack>
-        <AdminTypo.H6 color={"textGreyColor.500"} bold>
-          {t("CREATE_IP")}
-        </AdminTypo.H6>
-        <VStack pt={4}>
+        </VStack>
+        <VStack pt={4} space={4}>
+          {errors?.other && (
+            <Alert status="warning" alignItems={"start"}>
+              <HStack alignItems="center" space="2">
+                <Alert.Icon />
+                <AdminTypo.H6 bold>
+                  {errors?.other?.__errors?.join(",")}
+                </AdminTypo.H6>
+              </HStack>
+            </Alert>
+          )}
           <Form
             ref={formRef}
             validator={validator}
@@ -180,6 +235,7 @@ function UserForm() {
               formData,
               templates,
               validator,
+              customValidate,
               onSubmit,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
