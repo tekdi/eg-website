@@ -259,6 +259,7 @@
   "CAMP_REGISTER": "शिविर रजिस्ट्रेशन",
   "CAMP_SETTINGS_ALERT": "शिविर सेटिंग रोज दर्ज ना करें। यह सूचना आपके शिविर संचालन के प्लान को दर्शाता है जो की दैनिक आधार पर पालन किया जाएगा।  अगर आवश्यक है तो सेटिंग शिक्षार्थियों की सहमति होने पर ही बदलें.",
   "CAMP_STATUS": "शिविर की स्थिति",
+  "CAMP_TYPE": "शिविर का प्रकार",
   "CAMP_VALIDATION_MESSAGE_CREATING_CAMP_DETAILS": "शिविर रजिस्ट्रेशन विफल रहा।",
   "CAMP_VALIDATION_MESSAGE_CREATING_USER_FOR_CAMP": "समूह उपयोगकर्ता बनाने के दौरान त्रुटि हुई",
   "CAMP_VALIDATION_MESSAGE_FACILITATOR_DIDNT_SHORTLISTED_FOR_ORIENTATION": "शिक्षार्थी पक्ष से इनकार किया गया",

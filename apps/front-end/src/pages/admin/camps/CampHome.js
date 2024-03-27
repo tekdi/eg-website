@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { MultiCheck } from "../../../component/BaseInput";
+import { MultiCheck, select } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -298,6 +298,14 @@ export const Filter = ({ filter, setFilter }) => {
   const schema = {
     type: "object",
     properties: {
+      type: {
+        type: "string",
+        title: t("CAMP_TYPE"),
+        isHideFloatingLabel: true,
+        format: "select",
+        enum: ["all", "main", "pcr"],
+        enumNames: ["ALL_CAMPS", "MAIN_CAMP", "PCR_CAMP"],
+      },
       district: {
         type: "array",
         title: t("DISTRICT"),
@@ -369,10 +377,16 @@ export const Filter = ({ filter, setFilter }) => {
 
   const onChange = React.useCallback(
     async (data) => {
-      const { district: newDistrict, block: newBlock } = data?.formData || {};
-      const { district, block, ...remainData } = filter || {};
+      const {
+        district: newDistrict,
+        block: newBlock,
+        type,
+      } = data?.formData || {};
+      const { district, block, type: atype, ...remainData } = filter || {};
+
       setFilterObject({
         ...remainData,
+        ...(["pcr", "main"].includes(type) ? { type } : {}),
         ...(newDistrict && newDistrict?.length > 0
           ? {
               district: newDistrict,
@@ -383,7 +397,7 @@ export const Filter = ({ filter, setFilter }) => {
     },
     [filter, setFilterObject]
   );
-
+  console.log({ filter });
   const clearFilter = () => {
     setFilter({});
     setFilterObject({});
@@ -439,6 +453,7 @@ export const Filter = ({ filter, setFilter }) => {
           onChange={onChange}
           validator={validator}
           formData={filter}
+          widgets={{ select }}
         >
           <Button display={"none"} type="submit"></Button>
         </Form>
