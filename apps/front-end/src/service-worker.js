@@ -9,7 +9,7 @@ import { precacheAndRoute } from "workbox-precaching";
 precacheAndRoute(self.__WB_MANIFEST);
 
 // Define the cache name
-const CACHE_NAME = "eg-pragati-cache-v1";
+const CACHE_NAME = "eg-pragati-cache-v2";
 
 // List of URLs to cache
 const urlsToCache = [
