@@ -10,48 +10,46 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 const CACHE_NAME = "eg-pragati-cache-v1";
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", function (event) {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      // Cache initial files
+    caches.open(CACHE_NAME).then(function (cache) {
       return cache.addAll([
-        "/",
         "/index.html?version=1", // Append a version query parameter
         "/styles/main.css",
         "/scripts/main.js",
-        // Add other initial files to cache
+        // Add other assets to cache
       ]);
     })
   );
 });
 
-self.addEventListener("fetch", (event) => {
+self.addEventListener("fetch", function (event) {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Cache hit - return response
-      if (response) {
-        return response;
-      }
-
-      // Clone the request because it's a stream and can be consumed only once
-      let fetchRequest = event.request.clone();
-
-      return fetch(fetchRequest).then((response) => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== "basic") {
-          return response;
-        }
-
-        // Dynamically cache the script bundle files
-        if (fetchRequest.url.includes("/scripts/")) {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-
-        return response;
-      });
+    caches.match(event.request).then(function (response) {
+      // Cache-first strategy
+      return response || fetch(event.request);
     })
   );
+});
+
+self.addEventListener("activate", function (event) {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener("fetch", function (event) {
+  // Cache-busting for index.html
+  if (event.request.url.endsWith("/index.html")) {
+    event.respondWith(
+      caches.match(event.request.url + "?v=2").then(function (response) {
+        return response || fetch(event.request);
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(function (response) {
+        // Cache-first strategy
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
