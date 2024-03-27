@@ -407,7 +407,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
                 {process.env.PUBLIC_URL}
                 <br />
-                Hello World New Changes version 2
+                Hello World New Changes version 3
                 <br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
