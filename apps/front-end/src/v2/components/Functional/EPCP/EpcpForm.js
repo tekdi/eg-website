@@ -330,15 +330,15 @@ const EpcpForm = ({ footerLinks }) => {
     } else if (id === "root_TOOK_EPCP_EXAM_ON_RSOS_APP") {
       if (
         data?.TOOK_EPCP_EXAM_ON_RSOS_APP === "YES" &&
-        data?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION === "YES"
+        data?.HAS_LOGGED_RSOS_APP === "YES"
       ) {
         setFormData({
           ...newData,
           TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: "",
         });
       } else if (
-        data?.TOOK_EPCP_EXAM_ON_RSOS_APP === "YES" &&
-        data?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION === "NO"
+        data?.TOOK_EPCP_EXAM_ON_RSOS_APP === "NO" &&
+        data?.HAS_LOGGED_RSOS_APP === "YES"
       ) {
         setFormData({
           ...newData,

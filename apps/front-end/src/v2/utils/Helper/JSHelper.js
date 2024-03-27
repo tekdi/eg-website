@@ -97,6 +97,29 @@ export const fetchFileUrlAsBlob = async (url) => {
   }
 };
 
+export async function base64toBlob(
+  base64Data,
+  contentType = "application/pdf"
+) {
+  const byteCharacters = atob(base64Data.split(",")[1]);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, { type: contentType });
+  return blob;
+}
+
 export const getHeaderDetails = async () => {
   let commonHeader = {};
   let academic_year_id = null;
