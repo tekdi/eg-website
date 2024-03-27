@@ -27,6 +27,7 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
+  jsonParse,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -62,6 +63,7 @@ export function LabelMobileWidget() {
   );
 }
 export function EnrollmentLabelMobileWidget() {
+  let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
   return (
     <>
@@ -69,7 +71,9 @@ export function EnrollmentLabelMobileWidget() {
         {t("ENROLLMENT_MOBILE_NO")}
       </FrontEndTypo.H2>
       <Text color="textMaroonColor.400" mb={1}>
-        {t("AS_PER_APPLICATION_RECEIPT")}
+        {state?.state_name === "RAJASTHAN"
+          ? t("AS_PER_ENROLLMENT_RECEIPT")
+          : t("AS_PER_APPLICATION_RECEIPT")}
       </Text>
     </>
   );
