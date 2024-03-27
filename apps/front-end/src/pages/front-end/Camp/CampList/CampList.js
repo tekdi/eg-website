@@ -43,7 +43,7 @@ export default function List({ userTokenInfo }) {
   const [communityLength, setCommunityLength] = useState(0);
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
-  const [campType, setCampType] = useState("");
+  const [campCount, setCampCount] = useState();
 
   useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -61,6 +61,9 @@ export default function List({ userTokenInfo }) {
     setEnumOptions(enums?.data || {});
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data);
+    setCampCount(
+      campList?.data?.pcr_camp?.length + campList?.data?.camps?.length
+    );
     setLoading(false);
   }, []);
 
@@ -200,20 +203,20 @@ export default function List({ userTokenInfo }) {
                         </Pressable>
                       );
                     })}
-                    {campList?.pcr_camp?.length < 2 ||
-                      (campList?.camps?.length > 1 && (
-                        <FrontEndTypo.Secondarybutton
-                          onPress={() => {
-                            navigate(`/camps/new/learners`, { state: "camp" });
-                          }}
-                        >
-                          <FrontEndTypo.H3 color="textMaroonColor.400">
-                            {campList?.camps?.length === 0
-                              ? t("START_FIRST_CAMP_REGISTER")
-                              : t("START_SECOND_CAMP_REGISTER")}
-                          </FrontEndTypo.H3>
-                        </FrontEndTypo.Secondarybutton>
-                      ))}
+                    {campCount >= 0 && campCount < 2 && (
+                      <FrontEndTypo.Secondarybutton
+                        onPress={() => {
+                          navigate(`/camps/new/learners`, { state: "camp" });
+                        }}
+                      >
+                        <FrontEndTypo.H3 color="textMaroonColor.400">
+                          {campCount == 0
+                            ? t("START_FIRST_CAMP_REGISTER")
+                            : t("START_SECOND_CAMP_REGISTER")}
+                        </FrontEndTypo.H3>
+                      </FrontEndTypo.Secondarybutton>
+                    )}
+
                     <Alert status="warning" alignItems={"start"} width={"100%"}>
                       <HStack alignItems="center" space="2" color>
                         <Alert.Icon />
