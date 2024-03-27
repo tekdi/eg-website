@@ -24,6 +24,8 @@ const Schema = {
     "doc_quarterly_id",
     "doc_per_monthly_id",
     "learner_target",
+    "learner_per_camp",
+    "camp_target",
   ],
   properties: {
     state: {
@@ -38,8 +40,18 @@ const Schema = {
       // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
     learner_target: {
-      type: "number",
-      title: "LEARNERS_TARGET",
+      title: "LEARNER_TARGET",
+      type: "string",
+    },
+    learner_per_camp: {
+      title: "LEARNERS_PER_TARGET",
+      format: "select",
+      enum: ["15", "16", "17", "18", "19", "20"],
+    },
+    camp_target: {
+      type: ["string", "number"],
+      title: "TARGET_CAMP",
+      readOnly: true,
     },
     doc_per_cohort_id: {
       label: "DUE_DILIGENCE_SIGNED_PROPOSAL",
@@ -73,6 +85,7 @@ function ExistingIpForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation();
+  const [formData, setFormData] = useState();
 
   useEffect(async () => {
     let newSchema = Schema;
@@ -113,6 +126,18 @@ function ExistingIpForm() {
     }
     setSchema(newSchema);
   }, []);
+
+  const onChange = async (e, id) => {
+    const newData = e.formData;
+    if (id === "root_learner_target" || id === "root_learner_per_camp") {
+      const avgCount = Math.ceil(
+        newData?.learner_target / newData?.learner_per_camp
+      );
+      const updatedFormData = { ...newData };
+      updatedFormData.camp_target = avgCount;
+      setFormData(updatedFormData);
+    }
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -178,6 +203,8 @@ function ExistingIpForm() {
               templates,
               validator,
               onSubmit,
+              formData,
+              onChange,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
