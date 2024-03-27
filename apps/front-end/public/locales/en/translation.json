@@ -947,6 +947,7 @@
   "NOT_AVAILABLE": "Not Available",
   "NOT_BAD": "Not Bad",
   "NOT_ELIGIBLE": "Not eligible",
+  "NOT_ENTERED": "Not Entered",
   "NOT_ENROLLED": "Not enrolled",
   "NOT_FOUND": "Not Found",
   "NOT_INTERESTED": "Not interested",
@@ -1559,7 +1560,7 @@
       "TITLE": "Upload an Image of your Document "
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason *",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
       "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
       "LACK_OF_TIME": "Lack of time",
@@ -1571,7 +1572,7 @@
       "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "Videos,E-bboks are difficult to understand"
     },
     "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason *",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
       "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
       "LACK_OF_TIME": "Lack of time",
@@ -1583,7 +1584,7 @@
       "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "Did not understand supporting material or question"
     },
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason *",
       "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
       "LACK_OF_CONFIDENCE_GIVING_E_PCP": "Lack of confidence in giving e-PCP",
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",

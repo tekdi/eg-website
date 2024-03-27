@@ -271,7 +271,7 @@ const EpcpForm = ({ footerLinks }) => {
 
       {
         required: [
-          "RSOS_APP",
+          "HAS_LOGGED_RSOS_APP",
           "TOOK_EPCP_EXAM_ON_RSOS_APP",
           "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP",
           "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION",
