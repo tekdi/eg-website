@@ -1599,5 +1599,12 @@
       "LACK_OF_TIME": "Lack of time",
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly"
     }
-  }
+  },
+  "LEARNERS_PER_TARGET": "Average learners per camp",
+  "TARGET_CAMP": "Target Camp",
+  "USER": "User",
+  "USER_CREATE": "User Create",
+  "CREATE": "Create",
+  "EXISTING_IP": "Existing IP",
+  "EXISTING_USER": "Existing User"
 }

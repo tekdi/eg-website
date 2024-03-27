@@ -1598,5 +1598,12 @@
       "LACK_OF_TIME": "समय का अभाव",
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती "
     }
-  }
+  },
+  "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
+  "TARGET_CAMP": "शिविर लक्ष्य",
+  "USER": "उपयोगकर्ता",
+  "USER_CREATE": "उपयोगकर्ता बनाएँ",
+  "CREATE": "बनाएँ",
+  "EXISTING_IP": "मौजूदा IP",
+  "EXISTING_USER": "मौजूदा उपयोगकर्ता"
 }
