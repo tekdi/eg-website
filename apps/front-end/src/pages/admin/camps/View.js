@@ -26,6 +26,7 @@ import {
   Stack,
   ScrollView,
   useToast,
+  Menu,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -324,6 +325,34 @@ export default function View({ footerLinks }) {
     }
   };
 
+  const actiondropDown = (triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack
+          rounded={"full"}
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderRadius="full"
+          borderWidth="1px"
+          borderColor="blueText.400"
+          p="2"
+          space={4}
+        >
+          <AdminTypo.H5
+            _text={{
+              color: "blueText.400",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+          >
+            {t("ACTIONS")}
+          </AdminTypo.H5>
+          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  };
+
   // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
@@ -376,26 +405,31 @@ export default function View({ footerLinks }) {
               {data?.id}
             </AdminTypo.H4>
           </HStack>
-          {data?.type === "pcr" && (
-            <AdminTypo.PrimaryButton onPress={(e) => setModalVisible(true)}>
-              {t("CLOSE_PCR")}
-            </AdminTypo.PrimaryButton>
-          )}
-          <AdminTypo.Secondarybutton
-            background="white"
-            _text={{
-              color: "blueText.400",
-              fontSize: "14px",
-              fontWeight: "700",
-            }}
-            my="2"
-            mx="1"
-            onPress={() => {
-              navigate(`/admin/camps/${id}/reassignPrerak/${facilitator?.id}`);
-            }}
+
+          <Menu
+            placement="bottom right"
+            trigger={(triggerProps) => actiondropDown(triggerProps, t)}
           >
-            {t("REASSIGNE_CAMP")}
-          </AdminTypo.Secondarybutton>
+            <Menu.Item
+              onPress={() => {
+                navigate(
+                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                );
+              }}
+            >
+              {t("REASSIGN_CAMP")}
+            </Menu.Item>
+            {data?.type === "pcr" && (
+              <Menu.Item onPress={(e) => setModalVisible(true)}>
+                {t("CLOSE_PCR")}
+              </Menu.Item>
+            )}
+            {data?.group?.status === "camp_ip_verified" && (
+              <Menu.Item onPress={() => setStatus("change_required")}>
+                {t("MODIFY")}
+              </Menu.Item>
+            )}
+          </Menu>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -641,24 +675,15 @@ export default function View({ footerLinks }) {
                 >
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
-                <AdminTypo.Secondarybutton
-                  status="warning"
-                  isDisabled={isButtonLoading}
-                  onPress={() => setStatus("change_required")}
-                >
-                  {t("CHANGE_REQUIRED")}
-                </AdminTypo.Secondarybutton>
-              </HStack>
-            )}
-
-            {data?.group?.status === "camp_ip_verified" && (
-              <HStack space={4} justifyContent={"center"}>
-                <AdminTypo.Secondarybutton
-                  isDisabled={isButtonLoading}
-                  onPress={() => setStatus("change_required")}
-                >
-                  {t("MODIFY")}
-                </AdminTypo.Secondarybutton>
+                {data?.group?.status !== "change_required" && (
+                  <AdminTypo.Secondarybutton
+                    status="warning"
+                    isDisabled={isButtonLoading}
+                    onPress={() => setStatus("change_required")}
+                  >
+                    {t("CHANGE_REQUIRED")}
+                  </AdminTypo.Secondarybutton>
+                )}
               </HStack>
             )}
           </Stack>
