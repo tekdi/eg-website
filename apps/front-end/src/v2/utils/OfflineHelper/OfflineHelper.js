@@ -236,49 +236,49 @@ export async function updateOnboardingData(id, onboardingData) {
   let qualifications = new Object();
   console.log("onboardingData", onboardingData);
   //step 1 basic_details
-  onboardingData?.first_name
+  onboardingData?.first_name || onboardingData?.first_name == ""
     ? onboardingData.first_name != userInfo?.users?.first_name
       ? (users.first_name = onboardingData.first_name)
       : delete userUpdatedInfo?.users?.first_name
     : null;
-  onboardingData?.last_name
+  onboardingData?.last_name || onboardingData?.last_name == ""
     ? onboardingData.last_name != userInfo?.users?.last_name
       ? (users.last_name = onboardingData.last_name)
       : delete userUpdatedInfo?.users?.last_name
     : null;
-  onboardingData?.middle_name
+  onboardingData?.middle_name || onboardingData?.middle_name == ""
     ? onboardingData.middle_name != userInfo?.users?.middle_name
       ? (users.middle_name = onboardingData.middle_name)
       : delete userUpdatedInfo?.users?.middle_name
     : null;
-  onboardingData?.dob
+  onboardingData?.dob || onboardingData?.dob == ""
     ? onboardingData.dob != userInfo?.users?.dob
       ? (users.dob = onboardingData.dob)
       : delete userUpdatedInfo?.users?.dob
     : null;
   //step 2 contact_details
-  onboardingData?.mobile
+  onboardingData?.mobile || onboardingData?.mobile == ""
     ? onboardingData.mobile != userInfo?.users?.mobile
       ? (users.mobile = onboardingData.mobile)
       : delete userUpdatedInfo?.users?.mobile
     : null;
-  onboardingData?.email_id
+  onboardingData?.email_id || onboardingData?.email_id == ""
     ? onboardingData.email_id != userInfo?.users?.email_id
       ? (users.email_id = onboardingData.email_id)
       : delete userUpdatedInfo?.users?.email_id
     : null;
-  onboardingData?.device_type
+  onboardingData?.device_type || onboardingData?.device_type == ""
     ? onboardingData.device_type != userInfo?.core_faciltator?.device_type
       ? (core_faciltator.device_type = onboardingData.device_type)
       : delete userUpdatedInfo?.core_faciltator?.device_type
     : null;
-  onboardingData?.device_ownership
+  onboardingData?.device_ownership || onboardingData?.device_ownership == ""
     ? onboardingData.device_ownership !=
       userInfo?.core_faciltator?.device_ownership
       ? (core_faciltator.device_ownership = onboardingData.device_ownership)
       : delete userUpdatedInfo?.core_faciltator?.device_ownership
     : null;
-  onboardingData?.alternative_mobile_number
+  onboardingData?.alternative_mobile_number || onboardingData?.alternative_mobile_number == ""
     ? onboardingData.alternative_mobile_number !=
       userInfo?.users?.alternative_mobile_number
       ? (users.alternative_mobile_number =
@@ -286,71 +286,71 @@ export async function updateOnboardingData(id, onboardingData) {
       : delete userUpdatedInfo?.users?.alternative_mobile_number
     : null;
   //step 3 address_details
-  onboardingData?.block
+  onboardingData?.block || onboardingData?.block == ""
     ? onboardingData.block != userInfo?.users?.block
       ? (users.block = onboardingData.block)
       : delete userUpdatedInfo?.users?.block
     : null;
-  onboardingData?.district
+  onboardingData?.district || onboardingData?.district == ""
     ? onboardingData.district != userInfo?.users?.district
       ? (users.district = onboardingData.district)
       : delete userUpdatedInfo?.users?.district
     : null;
-  onboardingData?.grampanchayat
+  onboardingData?.grampanchayat || onboardingData?.grampanchayat == ""
     ? onboardingData.grampanchayat != userInfo?.users?.grampanchayat
       ? (users.grampanchayat = onboardingData.grampanchayat)
       : delete userUpdatedInfo?.users?.grampanchayat
     : null;
-  onboardingData?.pincode
+  onboardingData?.pincode || onboardingData?.pincode == ""
     ? onboardingData.pincode != userInfo?.users?.pincode
       ? (users.pincode = onboardingData.pincode)
       : delete userUpdatedInfo?.users?.pincode
     : null;
-  onboardingData?.state
+  onboardingData?.state || onboardingData?.state == ""
     ? onboardingData.state != userInfo?.users?.state
       ? (users.state = onboardingData.state)
       : delete userUpdatedInfo?.users?.state
     : null;
-  onboardingData?.village
+  onboardingData?.village || onboardingData?.village == ""
     ? onboardingData.village != userInfo?.users?.village
       ? (users.village = onboardingData.village)
       : delete userUpdatedInfo?.users?.village
     : null;
   //step 4 personal_details
-  onboardingData?.gender
+  onboardingData?.gender || onboardingData?.gender == ""
     ? onboardingData.gender != userInfo?.users?.gender
       ? (users.gender = onboardingData.gender)
       : delete userUpdatedInfo?.users?.gender
     : null;
-  onboardingData?.marital_status
+  onboardingData?.marital_status || onboardingData?.marital_status == ""
     ? onboardingData.marital_status != userInfo?.extended_users?.marital_status
       ? (extended_users.marital_status = onboardingData.marital_status)
       : delete userUpdatedInfo?.extended_users?.marital_status
     : null;
-  onboardingData?.social_category
+  onboardingData?.social_category || onboardingData?.social_category == ""
     ? onboardingData.social_category !=
       userInfo?.extended_users?.social_category
       ? (extended_users.social_category = onboardingData.social_category)
       : delete userUpdatedInfo?.extended_users?.social_category
     : null;
   //step 5 reference_details
-  onboardingData?.contact_number
+  onboardingData?.contact_number || onboardingData?.contact_number == ""
     ? onboardingData.contact_number != userInfo?.references?.contact_number
       ? (references.contact_number = onboardingData.contact_number)
       : delete userUpdatedInfo?.references?.contact_number
     : null;
-  onboardingData?.designation
+  onboardingData?.designation || onboardingData?.designation == ""
     ? onboardingData.designation != userInfo?.references?.designation
       ? (references.designation = onboardingData.designation)
       : delete userUpdatedInfo?.references?.designation
     : null;
-  onboardingData?.name
+  onboardingData?.name || onboardingData?.name == ""
     ? onboardingData.name != userInfo?.references?.name
       ? (references.name = onboardingData.name)
       : delete userUpdatedInfo?.references?.name
     : null;
   //step 6 work_availability_details
-  onboardingData?.availability
+  onboardingData?.availability || onboardingData?.availability == ""
     ? onboardingData.availability != userInfo?.program_faciltators?.availability
       ? (program_faciltators.availability = onboardingData.availability)
       : delete userUpdatedInfo?.program_faciltators?.availability
