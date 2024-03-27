@@ -8,48 +8,63 @@ import { precacheAndRoute } from "workbox-precaching";
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST);
 
+// Define the cache name
 const CACHE_NAME = "eg-pragati-cache-v1";
 
-self.addEventListener("install", function (event) {
+// List of URLs to cache
+const urlsToCache = [
+  "/",
+  "/index.html",
+  "/styles/main.css",
+  "/scripts/main.js",
+  // Add other static assets to cache
+];
+
+// Install service worker and cache static assets
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
-      return cache.addAll([
-        "/index.html?version=1", // Append a version query parameter
-        "/styles/main.css",
-        "/scripts/main.js",
-        // Add other assets to cache
-      ]);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener("fetch", function (event) {
+// Serve cached resources when offline
+self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then(function (response) {
-      // Cache-first strategy
-      return response || fetch(event.request);
-    })
+    caches
+      .match(event.request)
+      .then((response) => {
+        // Return cached response if found
+        if (response) {
+          return response;
+        }
+        // Fetch from network if not cached
+        return fetch(event.request);
+      })
+      .catch(() => {
+        // If offline and request for HTML, fetch from network
+        if (event.request.url.endsWith("/index.html")) {
+          return fetch(event.request);
+        }
+        // Return a custom offline response for other requests
+        return new Response("Offline", {
+          status: 503,
+          statusText: "Service Unavailable",
+        });
+      })
   );
 });
 
-self.addEventListener("activate", function (event) {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener("fetch", function (event) {
-  // Cache-busting for index.html
-  if (event.request.url.endsWith("/index.html")) {
-    event.respondWith(
-      caches.match(event.request.url + "?v=2").then(function (response) {
-        return response || fetch(event.request);
-      })
-    );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then(function (response) {
-        // Cache-first strategy
-        return response || fetch(event.request);
-      })
-    );
-  }
+// Update service worker and clear old caches
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
