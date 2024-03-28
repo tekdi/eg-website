@@ -460,7 +460,7 @@ const EpcpForm = ({ footerLinks }) => {
     } else {
       const payload = finalPayload(id, formData, data);
       PostData(payload);
-      navigate("/camps/EpcpLearnerList/");
+      navigate("/camps/epcplearnerlist/");
     }
   };
 

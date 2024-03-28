@@ -233,9 +233,8 @@ const EpcpForm = ({ footerLinks }) => {
       setErrors(newErrors);
     } else {
       const payload = finalPayload(id, formData, data);
-      console.log({ payload });
       PostData(payload);
-      navigate("/camps/examlearnerlist/");
+      navigate("/camps/exampreparation");
     }
   };
 

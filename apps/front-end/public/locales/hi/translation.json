@@ -1537,6 +1537,7 @@
   "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
   "LIST_OF_LEARNERS": "शिक्षार्थियों की सूची",
   "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
+  "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
   "EPCP": {
     "TITLE": "शिक्षार्थियों द्वारा RSOS app का उपयोग",
     "HAS_LOGGED_RSOS_APP": {

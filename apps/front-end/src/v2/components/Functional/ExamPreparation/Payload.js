@@ -1,5 +1,4 @@
 export function finalPayload(id, formData, field) {
-  console.log({ formData, field });
   const payload = [
     {
       observation_id: field?.[0]?.observation_id,

@@ -37,12 +37,16 @@ const EpcpLearnerList = ({ footerLinks }) => {
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
+      let observation = "EPCP";
       const listData = await ObservationService.getCampLearnerList();
       const flattenedList = flattenList(listData?.data);
       const userIds = listData?.data.flatMap((group) =>
         group.group.group_users.map((user) => user.user.user_id)
       );
-      const data = await ObservationService.getSubmissionData(userIds);
+      const data = await ObservationService.getSubmissionData(
+        userIds,
+        observation
+      );
       const report = data?.data?.[0]?.observation_fields;
       mergingData(flattenedList, report);
       setLoading(false);
@@ -173,7 +177,7 @@ const EpcpLearnerList = ({ footerLinks }) => {
                   borderColor={"gray.300"}
                   p={4}
                   onPress={() => {
-                    navigate(`/camps/EpcpLearnerList/${item.user_id}`);
+                    navigate(`/camps/epcplearnerlist/${item.user_id}`);
                   }}
                 >
                   <HStack
