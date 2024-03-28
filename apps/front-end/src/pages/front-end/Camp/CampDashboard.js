@@ -24,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Chip from "component/BeneficiaryStatus";
+import EpcpCard from "./CampList/EpcpCard";
+import ExamPreparationCard from "./CampList/ExamPreparationCard";
 
 const campSettingData = (item) => {
   return (
@@ -243,45 +245,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
             </Alert>
           )}
         </VStack>
-        <VStack
-          bg="boxBackgroundColour.200"
-          borderColor="btnGray.100"
-          borderRadius="10px"
-          borderWidth="1px"
-          padding="4"
-          shadow="AlertShadow"
-        >
-          <Stack space={4}>
-            <FrontEndTypo.H3 color="textMaroonColor.400">
-              {t("EPCP_ACTIVITIES")}
-            </FrontEndTypo.H3>
-            <FrontEndTypo.H4 color="textMaroonColor.400">
-              {t("EPCP_INFO")}
-            </FrontEndTypo.H4>
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => navigate("/camps/EpcpLearnerList")}
-            >
-              {t("EPCP.TITLE")}
-            </FrontEndTypo.Secondarybutton>
-          </Stack>
-        </VStack>
-        <VStack>
-          <AdminTypo.H3 color="textMaroonColor.400" bold>
-            {t("HOW_TO_START_CAMP")}
-          </AdminTypo.H3>
-          <HStack mt={4}>
-            <iframe
-              width="100%"
-              height="315"
-              src="https://www.youtube.com/embed/LPjsnW5LKWs?si=wbkJgHcLP3mMuH2W"
-              title={t("HOW_TO_START_CAMP")}
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
-          </HStack>
-        </VStack>
+        <EpcpCard />
+        <ExamPreparationCard />
       </VStack>
       <Modal
         isOpen={campSelected}

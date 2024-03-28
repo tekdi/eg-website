@@ -31,6 +31,12 @@ const EpcpForm = lazy(() => import("v2/components/Functional/EPCP/EpcpForm"));
 const EpcpLearnerList = lazy(() =>
   import("v2/components/Functional/EPCP/EpcpLearnerList")
 );
+const ExamLearnerList = lazy(() =>
+  import("v2/components/Functional/ExamPreparation/ExamLearnerList")
+);
+const ExamForm = lazy(() =>
+  import("v2/components/Functional/ExamPreparation/ExamForm")
+);
 
 //end v2 code
 
@@ -225,13 +231,26 @@ export default [
     path: "/beneficiary/list",
     component: BenificiaryListView,
   },
+
+  // EPCP
   {
-    path: "/camps/EpcpLearnerList",
+    path: "/camps/epcplearnerlist",
     component: EpcpLearnerList,
   },
   {
-    path: "/camps/EpcpLearnerList/:id",
+    path: "/camps/epcplearnerlist/:id",
     component: EpcpForm,
+  },
+
+  //Exam Preparation
+
+  {
+    path: "/camps/exampreparation",
+    component: ExamLearnerList,
+  },
+  {
+    path: "/camps/exampreparation/:id",
+    component: ExamForm,
   },
 
   //end v2 code

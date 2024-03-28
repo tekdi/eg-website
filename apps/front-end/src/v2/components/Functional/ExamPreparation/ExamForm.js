@@ -1,0 +1,345 @@
+import React, { useState, useRef, useEffect } from "react";
+import Form from "@rjsf/core";
+import {
+  templates,
+  widgets,
+  validator,
+  transformErrors,
+  onError,
+} from "../../Static/FormBaseInput/FormBaseInput.js";
+
+import { useTranslation } from "react-i18next";
+import {
+  FrontEndTypo,
+  Layout,
+  ObservationService,
+  jsonParse,
+} from "@shiksha/common-lib";
+import { Box } from "native-base";
+import { finalPayload } from "./Payload.js";
+import { useNavigate, useParams } from "react-router-dom";
+
+const EpcpForm = ({ footerLinks }) => {
+  const formRef = useRef();
+  const [formData, setFormData] = useState();
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [errors, setErrors] = useState({});
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const { id } = useParams();
+
+  const onPressBackButton = () => {
+    navigate(-1);
+  };
+
+  const sortEnums = (prefix, index) => {
+    const Newdata = data?.[index]
+      ? jsonParse(data?.[index]?.fields?.[0]?.enum)
+      : [];
+    const prefixedData = Newdata?.map((item) => prefix + item);
+
+    return prefixedData;
+  };
+
+  const schema = {
+    type: "object",
+    properties: {
+      WILL_LEARNER_APPEAR_FOR_EXAM: {
+        label: `EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE`,
+        type: "string",
+        direction: "row",
+        format: "RadioBtn",
+        enum: sortEnums("", 0),
+        default: null,
+      },
+    },
+    allOf: [
+      {
+        // if  WILL_LEARNER_APPEAR_FOR_EXAM is "YES" view all the options
+        if: {
+          properties: {
+            WILL_LEARNER_APPEAR_FOR_EXAM: {
+              const: "YES",
+            },
+          },
+        },
+        then: {
+          properties: {
+            DID_LEARNER_RECEIVE_ADMIT_CARD: {
+              label: "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
+              type: ["string", "null"],
+              direction: "row",
+              format: "RadioBtn",
+              enum: sortEnums("", 0),
+              default: null,
+            },
+            HAS_LEARNER_PREPARED_PRACTICAL_FILE: {
+              label:
+                "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.TITLE",
+              type: ["string", "null"],
+              direction: "row",
+              format: "RadioBtn",
+              enum: sortEnums("", 3),
+              default: null,
+            },
+            LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: {
+              label:
+                "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.TITLE",
+              type: ["string", "null"],
+              direction: "row",
+              format: "RadioBtn",
+              enum: sortEnums("", 3),
+              default: null,
+            },
+            LEARNER_RECEIVED_EXAM_TIME_TABLE: {
+              label: "EXAM_PREPARATION.LEARNER_RECEIVED_EXAM_TIME_TABLE.TITLE",
+              type: ["string", "null"],
+              direction: "row",
+              format: "RadioBtn",
+              enum: sortEnums("", 0),
+              default: null,
+            },
+          },
+        },
+      },
+      // if  WILL_LEARNER_APPEAR_FOR_EXAM is "no" hide all the options and view reason
+      {
+        if: {
+          properties: {
+            WILL_LEARNER_APPEAR_FOR_EXAM: {
+              const: "NO",
+            },
+          },
+        },
+        then: {
+          properties: {
+            WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: {
+              label:
+                "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.TITLE",
+              type: "string",
+              format: "RadioBtn",
+              enum: sortEnums(
+                "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.",
+                1
+              ),
+            },
+          },
+          required: ["WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS"],
+        },
+      },
+
+      {
+        required: [
+          "WILL_LEARNER_APPEAR_FOR_EXAM",
+          "DID_LEARNER_RECEIVE_ADMIT_CARD",
+          "HAS_LEARNER_PREPARED_PRACTICAL_FILE",
+          "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER",
+          "LEARNER_RECEIVED_EXAM_TIME_TABLE",
+        ],
+      },
+    ],
+  };
+
+  const onChange = async (e, id) => {
+    const data = e.formData;
+    setErrors();
+    const newData = { ...formData, ...data };
+    if (id === "root_WILL_LEARNER_APPEAR_FOR_EXAM") {
+      if (data?.WILL_LEARNER_APPEAR_FOR_EXAM === "YES") {
+        setFormData({
+          ...newData,
+          WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: "",
+        });
+      } else if (data?.WILL_LEARNER_APPEAR_FOR_EXAM === "NO") {
+        setFormData({
+          ...newData,
+          DID_LEARNER_RECEIVE_ADMIT_CARD: null,
+          HAS_LEARNER_PREPARED_PRACTICAL_FILE: null,
+          LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: null,
+          LEARNER_RECEIVED_EXAM_TIME_TABLE: null,
+        });
+      }
+    } else {
+      setFormData(newData);
+    }
+  };
+
+  const validation = () => {
+    let newFormData = formData;
+    if (!newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM) {
+      const newErrors = {
+        WILL_LEARNER_APPEAR_FOR_EXAM: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (
+      newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM === "NO" &&
+      !newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS
+    ) {
+      const newErrors = {
+        WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (
+      newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM === "YES" &&
+      !newFormData?.DID_LEARNER_RECEIVE_ADMIT_CARD
+    ) {
+      const newErrors = {
+        DID_LEARNER_RECEIVE_ADMIT_CARD: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (
+      newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM &&
+      newFormData?.DID_LEARNER_RECEIVE_ADMIT_CARD &&
+      !newFormData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE
+    ) {
+      const newErrors = {
+        HAS_LEARNER_PREPARED_PRACTICAL_FILE: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (
+      newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM &&
+      newFormData?.DID_LEARNER_RECEIVE_ADMIT_CARD &&
+      newFormData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE &&
+      !newFormData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER
+    ) {
+      const newErrors = {
+        LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    } else if (
+      newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM &&
+      newFormData?.DID_LEARNER_RECEIVE_ADMIT_CARD &&
+      newFormData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE &&
+      newFormData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER &&
+      !newFormData?.LEARNER_RECEIVED_EXAM_TIME_TABLE
+    ) {
+      const newErrors = {
+        LEARNER_RECEIVED_EXAM_TIME_TABLE: {
+          __errors: [t("REQUIRED_MESSAGE")],
+        },
+      };
+      setErrors(newErrors);
+    } else {
+      const payload = finalPayload(id, formData, data);
+      console.log({ payload });
+      PostData(payload);
+      navigate("/camps/examlearnerlist/");
+    }
+  };
+
+  const PostData = async (payload) => {
+    await ObservationService.postBulkData(payload);
+  };
+
+  const onSubmit = async () => {
+    validation();
+  };
+
+  const getFieldResponseByTitle = (title) => {
+    // Find the object in data array where fields title matches the given title
+    const field = data.find((item) => item.fields[0].title === title);
+    // If field is found, return its field_responses data, otherwise return null
+    return field?.field_responses?.[0]?.response_value || "";
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    let observation = "EXAM_PREPARATION";
+    const fetchData = async () => {
+      const getData = await ObservationService.getSubmissionData(
+        id,
+        observation
+      );
+      setData(getData?.data?.[0]?.observation_fields);
+    };
+    fetchData();
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setFormData({
+      ...formData,
+
+      WILL_LEARNER_APPEAR_FOR_EXAM: getFieldResponseByTitle(
+        "WILL_LEARNER_APPEAR_FOR_EXAM"
+      ),
+      WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: getFieldResponseByTitle(
+        "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS"
+      )
+        ? `EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.${getFieldResponseByTitle(
+            "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS"
+          )}`
+        : "",
+      DID_LEARNER_RECEIVE_ADMIT_CARD: getFieldResponseByTitle(
+        "DID_LEARNER_RECEIVE_ADMIT_CARD"
+      ),
+      HAS_LEARNER_PREPARED_PRACTICAL_FILE: getFieldResponseByTitle(
+        "HAS_LEARNER_PREPARED_PRACTICAL_FILE"
+      ),
+      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: getFieldResponseByTitle(
+        "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER"
+      ),
+
+      LEARNER_RECEIVED_EXAM_TIME_TABLE: getFieldResponseByTitle(
+        "LEARNER_RECEIVED_EXAM_TIME_TABLE"
+      ),
+    });
+    setLoading(false);
+  }, [data]);
+
+  return (
+    <Layout
+      loading={loading}
+      _appBar={{
+        onPressBackButton,
+        onlyIconsShow: ["backBtn", "langBtn"],
+      }}
+      _footer={{ menues: footerLinks }}
+    >
+      <Box p={4}>
+        <Form
+          key={schema}
+          ref={formRef}
+          extraErrors={errors}
+          showErrorList={false}
+          noHtml5Validate={true}
+          {...{
+            widgets,
+            templates,
+            validator,
+            schema: schema || {},
+            //uiSchema,
+            formData,
+            onChange,
+            onSubmit,
+            onError,
+            transformErrors: (errors) => transformErrors(errors, schema, t),
+          }}
+        >
+          <FrontEndTypo.Primarybutton
+            isLoading={loading}
+            type="submit"
+            onPress={() => onSubmit()}
+          >
+            {t("SUBMIT")}
+          </FrontEndTypo.Primarybutton>
+        </Form>
+      </Box>
+    </Layout>
+  );
+};
+
+export default EpcpForm;

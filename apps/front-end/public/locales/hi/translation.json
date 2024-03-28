@@ -1514,6 +1514,8 @@
   "MONTHLY_UTILIZATION": "मासिक उपयोग प्रमाण पत्र",
   "CREATE_EXISTING_IP": "मौजूदा IP ( संगठन ) बनाएँ",
   "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
+  "LIST_OF_LEARNERS": "शिक्षार्थियों की सूची",
+  "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
   "EPCP": {
     "TITLE": "शिक्षार्थियों द्वारा RSOS app का उपयोग",
     "HAS_LOGGED_RSOS_APP": {
@@ -1540,7 +1542,7 @@
       "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "एक कारण चुनें",
+      "TITLE": "एक कारण चुनें *",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नह आता",
       "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डेटा ज्यादा खच होना",
       "LACK_OF_TIME": "समय का अभाव",
@@ -1552,7 +1554,7 @@
       "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "सहायक सामग्री समझना कठिन है "
     },
     "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
-      "TITLE": "एक कारण चुनें",
+      "TITLE": "एक कारण चुनें *",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नह आता",
       "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डेटा ज्यादा खच होना",
       "LACK_OF_TIME": "समय का अभाव",
@@ -1564,14 +1566,14 @@
       "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "सहायक सामग्री या सवाल समझ नहीं आए"
     },
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "एक कारण चुनें",
+      "TITLE": "एक कारण चुनें *",
       "DIDNT_WATCH_ALL_VIDEOS": "सभी विडियो नहीं देखि",
       "LACK_OF_CONFIDENCE_GIVING_E_PCP": "e-PCP देने में आत्मविश्वास की कमी",
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
       "WILL_GIVE_SOON": " जल्द ही देंगे"
     },
     "HAS_LOGGED_RSOS_APP_NO_REASONS": {
-      "TITLE": "एक कारण चुनें",
+      "TITLE": "एक कारण चुनें *",
       "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
       "DONT_KNOW_ABOUT_APPLICATION": "एप्लीकेशन के बारे में पता नहीं है",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नह आता",
@@ -1579,6 +1581,46 @@
       "DONT_HAVE_INTERNET_RECHARGE": "इंटरनेट का रिचार्ज नही है",
       "LACK_OF_TIME": "समय का अभाव",
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती "
+    }
+  },
+  "EXAM_PREPARATION": {
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "TITLE": "क्या शिक्षार्थी परीक्षा में उपस्थित होगा ?",
+      "YES": "हाँ",
+      "NO": "नहीं"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "TITLE": "एक कारण चुनें",
+      "DISTANCE_OF_EXAM_CENTER": "परीक्षा केंद्र की दूरी",
+      "FAMILY_RESTRICTIONS": "पारिवारिक प्रतिबंध",
+      "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
+      "GETTING_MARRIED/HAD_BABY": "शादी करना / बच्चा होना",
+      "ILLNESS": "बीमारी ।",
+      "TRAVEL_ISSUES": "यात्रा संबंधी समस्याएं",
+      "EXAM_FEAR": "परीक्षा का डर",
+      "ADMIT_CARD_NOT_RECEIVED": "प्रवेश पत्र प्राप्त नहीं हुआ"
+    },
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
+      "YES": "हाँ",
+      "NO": "नहीं"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
+      "YES": "हाँ",
+      "NO": "नहीं",
+      "NOT_APPLICABLE": "लागू नहीं होता है"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "TITLE": "क्या शिक्षार्थी के पास परीक्षा केंद्र तक जाने की व्यवस्था है ?",
+      "YES": "हाँ",
+      "NO": "नहीं",
+      "NOT_APPLICABLE": "लागू नहीं होता है"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "TITLE": "क्या शिक्षार्थी को परीक्षा की समय सारणी प्राप्त हुई थी ?",
+      "YES": "हाँ",
+      "NO": "नहीं"
     }
   }
 }

@@ -1516,6 +1516,9 @@
   "EPCP_ACTIVITIES": "e-PCP Activities",
   "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
   "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
+  "LIST_OF_LEARNERS": "List of Learners",
+  "PREPARATION_FOR_EXAM": "Preparation for Exam",
+  "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
   "EPCP": {
     "TITLE": "Learner's Use of the RSOS App",
     "HAS_LOGGED_RSOS_APP": {
@@ -1542,7 +1545,7 @@
       "TITLE": "Upload an Image of your Document "
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason *",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
       "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
       "LACK_OF_TIME": "Lack of time",
@@ -1554,7 +1557,7 @@
       "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "Videos,E-bboks are difficult to understand"
     },
     "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason *",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
       "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
       "LACK_OF_TIME": "Lack of time",
@@ -1566,14 +1569,14 @@
       "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "Did not understand supporting material or question"
     },
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason *",
       "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
       "LACK_OF_CONFIDENCE_GIVING_E_PCP": "Lack of confidence in giving e-PCP",
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
       "WILL_GIVE_SOON": "Will give soon"
     },
     "HAS_LOGGED_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason ",
       "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
       "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
@@ -1581,6 +1584,47 @@
       "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
       "LACK_OF_TIME": "Lack of time",
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly"
+    }
+  },
+
+  "EXAM_PREPARATION": {
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "TITLE": "Will the learner appear for the exam?",
+      "YES": "yes",
+      "NO": "no"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "TITLE": "Choose the reason ",
+      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
+      "FAMILY_RESTRICTIONS": "Family restrictions",
+      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
+      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
+      "ILLNESS": "Illness",
+      "TRAVEL_ISSUES": "Travel Issues",
+      "EXAM_FEAR": "Exam Fear",
+      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received"
+    },
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "TITLE": "Did the learner receive the  admit card?",
+      "YES": "yes",
+      "NO": "no"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "TITLE": "Has the learner prepared the practical file?",
+      "YES": "yes",
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "TITLE": "Does the learner have the travel arrangements to the exam center?",
+      "YES": "yes",
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "TITLE": "Did the learner receive the Exam Time Table?",
+      "YES": "yes",
+      "NO": "no"
     }
   }
 }
