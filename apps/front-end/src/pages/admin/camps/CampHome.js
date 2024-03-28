@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, select } from "../../../component/BaseInput";
@@ -11,6 +11,9 @@ import {
   VStack,
   Input,
   Pressable,
+  Modal,
+  Alert,
+  useToast,
 } from "native-base";
 import {
   AdminTypo,
@@ -95,6 +98,48 @@ const columns = (t, navigate) => [
   },
 ];
 
+const closePcrColuman = (t) => [
+  {
+    name: t("CAMP_ID"),
+    selector: (row) => row?.id,
+    sortable: true,
+    width: "100px",
+  },
+  {
+    name: t("PRERAK_ID"),
+    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
+    sortable: true,
+    width: "120px",
+  },
+  {
+    name: t("PRERAK"),
+    selector: (row) =>
+      row?.faciltator?.user?.first_name +
+      " " +
+      row?.faciltator?.user?.last_name,
+    sortable: true,
+  },
+  {
+    name: t("ADDRESS_DETAILS"),
+    selector: (row) =>
+      [row?.properties?.district, row?.properties?.block]
+        .filter((e) => e)
+        .join(", "),
+    sortable: true,
+  },
+  {
+    name: t("CAMP_STATUS"),
+    selector: (row) => (
+      <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
+        <CampChipStatus status={row?.group?.status} />
+      </Pressable>
+    ),
+    sortable: true,
+    wrap: true,
+    attr: "CAMP_STATUS",
+  },
+];
+
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const [filter, setFilter] = React.useState({ limit: 10 });
@@ -107,6 +152,11 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const toast = useToast();
+  const [debounced, setDebounced] = useState(false);
 
   React.useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
@@ -121,7 +171,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     setEnumOptions(data?.data ? data?.data : {});
   }, []);
 
-  React.useEffect(async () => {
+  const getData = async () => {
     let newFilter = filter;
     if (urlFilterApply) {
       if (filter?.status === "all") {
@@ -132,11 +182,74 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
+  };
+
+  React.useEffect(() => {
+    getData();
   }, [filter]);
 
   const handleRowClick = (row) => {
     navigate(`/admin/camps/${row.id}`);
   };
+  const handleRowCheck = async ({ selectedRows: row }) => {
+    setSelectedRows(row);
+  };
+
+  const showToast = (props) => {
+    if (!debounced) {
+      toast.show({
+        title: "Hello, world!",
+        status: "info",
+        duration: 3000,
+        ...props,
+        onCloseComplete: () => setDebounced(false),
+      });
+      setDebounced(true);
+
+      // Set debounced to false after a delay (e.g., 3 seconds) to allow showing the toast again
+      setTimeout(() => {
+        setDebounced(false);
+      }, 3000);
+    }
+  };
+
+  const handleClosePcr = async () => {
+    setIsButtonLoading(true);
+    const camp_ids = selectedRows?.map((e) => e?.id);
+    const result = await campService?.multipleClosePcr({
+      camp_id: camp_ids,
+    });
+
+    if (result?.success === true) {
+      await getData();
+      setSelectedRows([]);
+      setModalVisible(false);
+      showToast({
+        render: () => (
+          <Alert status="success" alignItems="start" mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon size={"lg"} />
+              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+            </HStack>
+          </Alert>
+        ),
+      });
+    } else {
+      setModalVisible(false);
+      showToast({
+        render: () => (
+          <Alert status="warning" alignItems="start" mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon size={"lg"} />
+              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+            </HStack>
+          </Alert>
+        ),
+      });
+    }
+    setIsButtonLoading(false);
+  };
+
   return (
     <Layout
       test={Width}
@@ -162,6 +275,28 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
         </HStack>
+        {filter?.type === "pcr" && (
+          <AdminTypo.Secondarybutton
+            onPress={(e) => {
+              if (selectedRows?.length > 0) {
+                setModalVisible(true);
+              } else {
+                showToast({
+                  render: () => (
+                    <Alert status="warning" alignItems="start" mb="3" mt="4">
+                      <HStack alignItems="center" space="2" color>
+                        <Alert.Icon size={"lg"} />
+                        <AdminTypo.H4>{t("PLEASE_SELECT_CAMP")}</AdminTypo.H4>
+                      </HStack>
+                    </Alert>
+                  ),
+                });
+              }
+            }}
+          >
+            {t("CLOSE_PCR")}
+          </AdminTypo.Secondarybutton>
+        )}
       </HStack>
       <HStack>
         <Box
@@ -246,6 +381,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   },
                   [setFilter, filter]
                 )}
+                selectableRows={filter?.type === "pcr" && true}
+                onSelectedRowsChange={handleRowCheck}
                 onRowClicked={handleRowClick}
                 dense
                 highlightOnHover
@@ -254,6 +391,51 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
           </ScrollView>
         </Box>
       </HStack>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        // size="lg"
+      >
+        <Modal.Content maxWidth="90%">
+          <Modal.CloseButton />
+          <Modal.Header>{t("CONFIRMATION")}</Modal.Header>
+          <Modal.Body>
+            <VStack space={4}>
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems={"center"} space="2" color>
+                  <Alert.Icon size={"lg"} />
+                  <AdminTypo.H6 bold>{t("PCR_CLOSE_MESSAGE")}</AdminTypo.H6>
+                </HStack>
+              </Alert>
+              <DataTable
+                columns={[...closePcrColuman(t)]}
+                defaultSortAsc
+                data={selectedRows}
+                highlightOnHover
+              />
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack justifyContent="space-between" width="100%">
+              <AdminTypo.PrimaryButton
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                {t("CANCEL")}
+              </AdminTypo.PrimaryButton>
+              <AdminTypo.Secondarybutton
+                isDisabled={isButtonLoading}
+                onPress={() => {
+                  handleClosePcr();
+                }}
+              >
+                {t("CONFIRM")}
+              </AdminTypo.Secondarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
@@ -397,7 +579,6 @@ export const Filter = ({ filter, setFilter }) => {
     },
     [filter, setFilterObject]
   );
-  console.log({ filter });
   const clearFilter = () => {
     setFilter({});
     setFilterObject({});
