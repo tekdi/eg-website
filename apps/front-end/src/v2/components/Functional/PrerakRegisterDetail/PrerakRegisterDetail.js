@@ -6,6 +6,7 @@ import {
   Alert,
   Checkbox,
   Button,
+  Text,
 } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -478,7 +479,20 @@ export default function PrerakRegisterDetail({
       ) : (
         <VStack flex={3} space={5}>
           <Box py={6} px={4} mb={5}>
-            <FrontEndTypo.H3 bold color="textGreyColor.750">
+            <Text
+              color={"textGreyColor.900"}
+              fontSize={"20px"}
+              lineHeight={"24px"}
+              fontWeight={"600"}
+              mb={4}
+            >
+              {t("HELLO")}
+            </Text>
+            <FrontEndTypo.H3
+              fontWeight={"600"}
+              style={{ fontWeight: "600" }}
+              color="textGreyColor.750"
+            >
               {" "}
               {t("SIGN_UP_IN_TWO_STEPS")}
             </FrontEndTypo.H3>
@@ -501,14 +515,17 @@ export default function PrerakRegisterDetail({
                 </FrontEndTypo.H3>
               </HStack>
             </Alert> */}
-            <CustomAlert status={''} title=
-                {programData?.program_name
-                  ? t('REGISTER_MESSAGE')
-                      .replace('{{state}}', programData?.program_name)
-                      .replace('{{year}}', cohortData?.academic_year_name)
-                  : ''}
+            <CustomAlert
+              status={""}
+              title={
+                programData?.program_name
+                  ? t("REGISTER_MESSAGE")
+                      .replace("{{state}}", programData?.program_name)
+                      .replace("{{year}}", cohortData?.academic_year_name)
+                  : ""
+              }
             />
-          
+
             <Form
               key={lang}
               ref={formRef}
@@ -562,177 +579,179 @@ export default function PrerakRegisterDetail({
               )}
             </Form>
           </Box>
-          <Modal
-            isOpen={isUserExistModal}
-            safeAreaTop={true}
-            size="xl"
-            _backdrop={{ opacity: "0.7" }}
-          >
-            <Modal.Content>
-              <Modal.Body p="5" pb="10">
-                <VStack space="5">
-                  <FrontEndTypo.H1 textAlign="center">
-                    <Alert.Icon />
-                  </FrontEndTypo.H1>
-                  <FrontEndTypo.H2 textAlign="center">
-                    {isUserExistModalText}
-                  </FrontEndTypo.H2>
-                  <HStack space="5" pt="5">
-                    <FrontEndTypo.Primarybutton
-                      flex={1}
-                      onPress={async (e) => {
-                        userExistClick();
-                      }}
-                    >
-                      {isLoginShow ? t("LOGIN") : t("OK")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                </VStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-          <Modal
-            isOpen={credentials}
-            safeAreaTop={true}
-            size="xl"
-            _backdrop={{ opacity: "0.7" }}
-          >
-            <Modal.Content>
-              <Modal.Header p="5" borderBottomWidth="0">
-                <FrontEndTypo.H1 textAlign="center">
-                  {t("STORE_YOUR_CREDENTIALS")}
-                </FrontEndTypo.H1>
-              </Modal.Header>
-              <Modal.Body pt="0" p="5" pb="10">
-                {imageLoading && <Loading height="100%" width="100%" />}
-                {!imageLoading && (
+          <HStack>
+            <Modal
+              isOpen={isUserExistModal}
+              safeAreaTop={true}
+              size="xl"
+              _backdrop={{ opacity: "0.7" }}
+            >
+              <Modal.Content>
+                <Modal.Body p="5" pb="10">
                   <VStack space="5">
-                    <VStack
-                      space="2"
-                      bg="gray.100"
-                      p="1"
-                      rounded="lg"
-                      borderWidth={1}
-                      borderColor="gray.300"
-                      w="100%"
-                    >
-                      <HStack alignItems="center" space="1" flex="1">
-                        <FrontEndTypo.H3 flex="0.3">
-                          {t("USERNAME")}
-                        </FrontEndTypo.H3>
-                        <FrontEndTypo.H4
-                          py="1"
-                          px="2"
-                          flex="0.7"
-                          wordWrap="break-word"
-                          whiteSpace="break-spaces"
-                          overflow="hidden"
-                          bg="success.100"
-                          borderWidth="1"
-                          borderColor="success.500"
-                        >
-                          {credentials?.username}
-                        </FrontEndTypo.H4>
-                      </HStack>
-                      <HStack alignItems="center" space="1" flex="1">
-                        <FrontEndTypo.H3 flex="0.3">
-                          {t("PASSWORD")}
-                        </FrontEndTypo.H3>
-                        <FrontEndTypo.H4
-                          py="1"
-                          px="2"
-                          flex="0.7"
-                          wordWrap="break-word"
-                          whiteSpace="break-spaces"
-                          overflow="hidden"
-                          bg="success.100"
-                          borderWidth="1"
-                          borderColor="success.500"
-                        >
-                          {credentials?.password}
-                        </FrontEndTypo.H4>
-                      </HStack>
-                    </VStack>
-                    <VStack alignItems="center">
-                      <Clipboard
-                        text={`username: ${credentials?.username}, password: ${credentials?.password}`}
-                        onPress={(e) => {
-                          setCredentials({ ...credentials, copy: true });
-                          downloadImage();
-                        }}
-                      >
-                        <HStack space="3">
-                          <IconByName
-                            name="FileCopyLineIcon"
-                            isDisabled
-                            rounded="full"
-                            color="blue.300"
-                          />
-                          <FrontEndTypo.H3 color="blue.300">
-                            {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                          </FrontEndTypo.H3>
-                        </HStack>
-                      </Clipboard>
-                    </VStack>
+                    <FrontEndTypo.H1 textAlign="center">
+                      <Alert.Icon />
+                    </FrontEndTypo.H1>
+                    <FrontEndTypo.H2 textAlign="center">
+                      {isUserExistModalText}
+                    </FrontEndTypo.H2>
                     <HStack space="5" pt="5">
                       <FrontEndTypo.Primarybutton
                         flex={1}
-                        isDisabled={!credentials?.copy}
                         onPress={async (e) => {
-                          const { copy, ...cData } = credentials;
-                          await login(cData);
-                          navigate("/");
-                          navigate(0);
+                          userExistClick();
                         }}
                       >
-                        {t("LOGIN")}
+                        {isLoginShow ? t("LOGIN") : t("OK")}
                       </FrontEndTypo.Primarybutton>
                     </HStack>
                   </VStack>
-                )}
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+            <Modal
+              isOpen={credentials}
+              safeAreaTop={true}
+              size="xl"
+              _backdrop={{ opacity: "0.7" }}
+            >
+              <Modal.Content>
+                <Modal.Header p="5" borderBottomWidth="0">
+                  <FrontEndTypo.H1 textAlign="center">
+                    {t("STORE_YOUR_CREDENTIALS")}
+                  </FrontEndTypo.H1>
+                </Modal.Header>
+                <Modal.Body pt="0" p="5" pb="10">
+                  {imageLoading && <Loading height="100%" width="100%" />}
+                  {!imageLoading && (
+                    <VStack space="5">
+                      <VStack
+                        space="2"
+                        bg="gray.100"
+                        p="1"
+                        rounded="lg"
+                        borderWidth={1}
+                        borderColor="gray.300"
+                        w="100%"
+                      >
+                        <HStack alignItems="center" space="1" flex="1">
+                          <FrontEndTypo.H3 flex="0.3">
+                            {t("USERNAME")}
+                          </FrontEndTypo.H3>
+                          <FrontEndTypo.H4
+                            py="1"
+                            px="2"
+                            flex="0.7"
+                            wordWrap="break-word"
+                            whiteSpace="break-spaces"
+                            overflow="hidden"
+                            bg="success.100"
+                            borderWidth="1"
+                            borderColor="success.500"
+                          >
+                            {credentials?.username}
+                          </FrontEndTypo.H4>
+                        </HStack>
+                        <HStack alignItems="center" space="1" flex="1">
+                          <FrontEndTypo.H3 flex="0.3">
+                            {t("PASSWORD")}
+                          </FrontEndTypo.H3>
+                          <FrontEndTypo.H4
+                            py="1"
+                            px="2"
+                            flex="0.7"
+                            wordWrap="break-word"
+                            whiteSpace="break-spaces"
+                            overflow="hidden"
+                            bg="success.100"
+                            borderWidth="1"
+                            borderColor="success.500"
+                          >
+                            {credentials?.password}
+                          </FrontEndTypo.H4>
+                        </HStack>
+                      </VStack>
+                      <VStack alignItems="center">
+                        <Clipboard
+                          text={`username: ${credentials?.username}, password: ${credentials?.password}`}
+                          onPress={(e) => {
+                            setCredentials({ ...credentials, copy: true });
+                            downloadImage();
+                          }}
+                        >
+                          <HStack space="3">
+                            <IconByName
+                              name="FileCopyLineIcon"
+                              isDisabled
+                              rounded="full"
+                              color="blue.300"
+                            />
+                            <FrontEndTypo.H3 color="blue.300">
+                              {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
+                            </FrontEndTypo.H3>
+                          </HStack>
+                        </Clipboard>
+                      </VStack>
+                      <HStack space="5" pt="5">
+                        <FrontEndTypo.Primarybutton
+                          flex={1}
+                          isDisabled={!credentials?.copy}
+                          onPress={async (e) => {
+                            const { copy, ...cData } = credentials;
+                            await login(cData);
+                            navigate("/");
+                            navigate(0);
+                          }}
+                        >
+                          {t("LOGIN")}
+                        </FrontEndTypo.Primarybutton>
+                      </HStack>
+                    </VStack>
+                  )}
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
 
-          <Modal
-            size={"xl"}
-            isOpen={isConsentModal}
-            _backdrop={{ opacity: "0.7" }}
-          >
-            <Modal.Content borderRadius={"5px"}>
-              <Modal.Body
-                p="5"
-                pb="10"
-                style={{
-                  overflowY: "auto",
-                  msOverflowStyle: "none",
-                  scrollbarWidth: "none",
-                  WebkitOverflowScrolling: "touch",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                <SetConsentLang />
-                <VStack space="5">
-                  <HStack space={5} justifyContent={"center"}>
-                    <FrontEndTypo.Secondarybutton
-                      onPress={() => {
-                        handleCheckboxChange(false);
-                      }}
-                    >
-                      {t("NO_GO_BACK")}
-                    </FrontEndTypo.Secondarybutton>
-                    <FrontEndTypo.Primarybutton
-                      onPress={() => {
-                        handleCheckboxChange(true);
-                      }}
-                    >
-                      {t("YES_GO_FORWARD")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                </VStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
+            <Modal
+              size={"xl"}
+              isOpen={isConsentModal}
+              _backdrop={{ opacity: "0.7" }}
+            >
+              <Modal.Content borderRadius={"5px"}>
+                <Modal.Body
+                  p="5"
+                  pb="10"
+                  style={{
+                    overflowY: "auto",
+                    msOverflowStyle: "none",
+                    scrollbarWidth: "none",
+                    WebkitOverflowScrolling: "touch",
+                    "::-webkit-scrollbar": { display: "none" },
+                  }}
+                >
+                  <SetConsentLang />
+                  <VStack space="5">
+                    <HStack space={5} justifyContent={"center"}>
+                      <FrontEndTypo.Secondarybutton
+                        onPress={() => {
+                          handleCheckboxChange(false);
+                        }}
+                      >
+                        {t("NO_GO_BACK")}
+                      </FrontEndTypo.Secondarybutton>
+                      <FrontEndTypo.Primarybutton
+                        onPress={() => {
+                          handleCheckboxChange(true);
+                        }}
+                      >
+                        {t("YES_GO_FORWARD")}
+                      </FrontEndTypo.Primarybutton>
+                    </HStack>
+                  </VStack>
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+          </HStack>
         </VStack>
       )}
     </>

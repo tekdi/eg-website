@@ -68,7 +68,7 @@ fieldset {
   border: 0;
 }
 legend {
-  font-family: "Inter", sans-serif;
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -84,7 +84,7 @@ label {
   margin-bottom: 5px;
   margin-top: 8px;
   color: #212121;
-  font-family: "Inter", sans-serif;
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-size: 12px;

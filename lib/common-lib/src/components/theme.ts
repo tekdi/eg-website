@@ -1,4 +1,5 @@
-const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
+const fontFamily =
+  localStorage.getItem('lang') === 'hi' ? "'Poppins'" : 'Poppins'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '' : ''
 
 let red = {
@@ -291,6 +292,16 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+    SliderCardShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 0
+    },
     FooterShadow: {
       shadowColor: '#E0E0E066',
       shadowOffset: {
@@ -415,7 +426,7 @@ const DEFAULT_THEME = {
     formBg: {
       500: '#F4F4F7'
     },
-    inputValueColor:{
+    inputValueColor: {
       500: '#1F1B13'
     },
     widgetColor: {
@@ -483,8 +494,8 @@ const DEFAULT_THEME = {
       800: '#075985',
       900: '#0c4a6e'
     },
-    customAlertdanger:{
-      200: '#FFBEC5',
+    customAlertdanger: {
+      200: '#FFBEC5'
     },
     successAlert: {
       500: '#B9FBC0'
@@ -510,6 +521,9 @@ const DEFAULT_THEME = {
     },
     timeTablemiddle: {
       500: '#A1D6B6'
+    },
+    SlickDotsBg: {
+      500: '#D2D1FF'
     },
     floatingLabelColor: {
       500: '#1F1D76'
@@ -784,6 +798,9 @@ const DEFAULT_THEME = {
     },
     text: {
       100: '#a8e3fd'
+    },
+    bgRed: {
+      500: '#D53546'
     },
     zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',

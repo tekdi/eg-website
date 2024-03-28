@@ -30,9 +30,7 @@ export default function PageHeader({
         background:
           "linear-gradient(360deg, rgb(220, 54, 68) 1%, rgb(31, 29, 118) 250%)",
       }}
-      borderBottomLeftRadius={"10px"}
-      borderBottomRightRadius={"10px"}
-      shadow={5}
+      roundedBottom={15}
       flexDirection="row"
       alignItems="center"
       justifyContent="space-between"
