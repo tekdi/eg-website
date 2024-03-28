@@ -1,68 +1,17 @@
-import {
-  AdminTypo,
-  BodyMedium,
-  FrontEndTypo,
-  GetEnumValue,
-  IconByName,
-  Layout,
-  campService,
-  enumRegistryService,
-  benificiaryRegistoryService,
-} from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Pressable,
-  Center,
-  Avatar,
-  Alert,
-  Modal,
-  Stack,
-} from "native-base";
-import React, { useEffect, useState } from "react";
+import { FrontEndTypo, Layout } from "@shiksha/common-lib";
+import { Stack, VStack } from "native-base";
+import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import List from "./CampList/CampList";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Chip from "component/BeneficiaryStatus";
 import EpcpCard from "./CampList/EpcpCard";
 import ExamPreparationCard from "./CampList/ExamPreparationCard";
 
-const campSettingData = (item) => {
-  return (
-    item?.preferred_start_time === null &&
-    item?.preferred_end_time === null &&
-    item?.week_off === null
-  );
-};
 export default function CampDashboard({ footerLinks, userTokenInfo }) {
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [nonRegisteredUser, setNonRegisteredUser] = useState([]);
-  const [campList, setCampList] = useState();
-  const [enumOptions, setEnumOptions] = useState();
-  const [communityLength, setCommunityLength] = useState(0);
-  const [ipStatus, setIpStatus] = useState();
-  const [campSelected, setCampSelected] = useState("");
-
-  useEffect(async () => {
-    const result = await campService.campNonRegisteredUser();
-    const campList = await campService.campList();
-    const enums = await enumRegistryService.listOfEnum();
-    if (campList?.data?.camps?.length === 0) {
-      const getData = await benificiaryRegistoryService.getCommunityReferences({
-        context: "community.user",
-      });
-      setCommunityLength(getData?.data?.community_response?.length || 0);
-    } else {
-      setCommunityLength(2);
-    }
-    setIpStatus(userTokenInfo?.authUser?.program_faciltators?.status);
-    setEnumOptions(enums?.data || {});
-    setNonRegisteredUser(result?.data?.user || []);
-    setCampList(campList?.data?.camps);
-    setLoading(false);
-  }, []);
+  const navigate = useNavigate();
 
   return (
     <Layout
@@ -70,9 +19,9 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         name: t("MY_CAMP"),
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
-      loading={loading}
       _footer={{ menues: footerLinks }}
     >
+      <List userTokenInfo={userTokenInfo} />
       <VStack p="4" space="5">
         <VStack
           bg="boxBackgroundColour.200"
@@ -248,59 +197,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         <EpcpCard />
         <ExamPreparationCard />
       </VStack>
-      <Modal
-        isOpen={campSelected}
-        onClose={() => setCampSelected()}
-        safeAreaTop={true}
-        size="xl"
-      >
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Body p={5} marginTop={"20px"}>
-            <VStack space={4}>
-              <FrontEndTypo.Primarybutton
-                m="2"
-                onPress={() => {
-                  navigate(`/camps/${campSelected?.id}`);
-                }}
-              >
-                {t("CAMP_PROFILE")}
-              </FrontEndTypo.Primarybutton>
-              {["registered", "camp_ip_verified"].includes(
-                campSelected?.group?.status
-              ) && (
-                <Stack space={4}>
-                  <FrontEndTypo.Secondarybutton
-                    onPress={() => {
-                      navigate(`/camps/${campSelected?.id}/settings`);
-                    }}
-                  >
-                    {t("CAMP_SETTINGS")}
-                  </FrontEndTypo.Secondarybutton>
-                  {campSettingData(campSelected) ? (
-                    <Alert mt={4} status="warning">
-                      <HStack space={2}>
-                        <Alert.Icon />
-                        <FrontEndTypo.H3>
-                          {t("CAMP_EXECUTION_MESSAGE")}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                    </Alert>
-                  ) : (
-                    <FrontEndTypo.Primarybutton
-                      onPress={() => {
-                        navigate(`/camps/${campSelected?.id}/campexecution`);
-                      }}
-                    >
-                      {t("CAMP_EXECUTION")}
-                    </FrontEndTypo.Primarybutton>
-                  )}
-                </Stack>
-              )}
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }
