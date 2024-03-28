@@ -344,8 +344,6 @@ const EpcpForm = ({ footerLinks }) => {
           ...newData,
           RSOS_DOCUMENT_IMAGE: "",
         });
-      } else {
-        setFormData(newData);
       }
     } else {
       setFormData(newData);
@@ -462,7 +460,7 @@ const EpcpForm = ({ footerLinks }) => {
     } else {
       const payload = finalPayload(id, formData, data);
       PostData(payload);
-      navigate("/camps/EpcpLearnerList/");
+      navigate("/camps/epcplearnerlist/");
     }
   };
 
@@ -482,8 +480,12 @@ const EpcpForm = ({ footerLinks }) => {
   };
 
   useEffect(() => {
+    let observation = "EPCP";
     const fetchData = async () => {
-      const getData = await ObservationService.getSubmissionData(id);
+      const getData = await ObservationService.getSubmissionData(
+        id,
+        observation
+      );
       setData(getData?.data?.[0]?.observation_fields);
     };
     fetchData();

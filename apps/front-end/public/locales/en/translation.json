@@ -1534,6 +1534,9 @@
   "EPCP_ACTIVITIES": "e-PCP Activities",
   "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
   "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
+  "LIST_OF_LEARNERS": "List of Learners",
+  "PREPARATION_FOR_EXAM": "Preparation for Exam",
+  "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
   "EPCP": {
     "TITLE": "Learner's Use of the RSOS App",
     "HAS_LOGGED_RSOS_APP": {
@@ -1591,7 +1594,7 @@
       "WILL_GIVE_SOON": "Will give soon"
     },
     "HAS_LOGGED_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason",
+      "TITLE": "Choose the reason ",
       "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
       "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
       "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
@@ -1599,6 +1602,47 @@
       "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
       "LACK_OF_TIME": "Lack of time",
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly"
+    }
+  },
+
+  "EXAM_PREPARATION": {
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "TITLE": "Will the learner appear for the exam?",
+      "YES": "yes",
+      "NO": "no"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "TITLE": "Choose the reason ",
+      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
+      "FAMILY_RESTRICTIONS": "Family restrictions",
+      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
+      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
+      "ILLNESS": "Illness",
+      "TRAVEL_ISSUES": "Travel Issues",
+      "EXAM_FEAR": "Exam Fear",
+      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received"
+    },
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "TITLE": "Did the learner receive the  admit card?",
+      "YES": "yes",
+      "NO": "no"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "TITLE": "Has the learner prepared the practical file?",
+      "YES": "yes",
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "TITLE": "Does the learner have the travel arrangements to the exam center?",
+      "YES": "yes",
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "TITLE": "Did the learner receive the Exam Time Table?",
+      "YES": "yes",
+      "NO": "no"
     }
   }
 }
