@@ -1644,5 +1644,12 @@
       "YES": "yes",
       "NO": "no"
     }
-  }
+  },
+  "LEARNERS_PER_TARGET": "Average learners per camp",
+  "TARGET_CAMP": "Target Camp",
+  "USER": "User",
+  "USER_CREATE": "User Create",
+  "CREATE": "Create",
+  "EXISTING_IP": "Existing IP",
+  "EXISTING_USER": "Existing User"
 }

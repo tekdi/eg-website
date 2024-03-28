@@ -347,7 +347,7 @@ export const Filter = ({ filter, setFilter }) => {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let name = programResult?.program?.state?.state_name;
+      let name = programResult?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
       });

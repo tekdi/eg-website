@@ -526,7 +526,7 @@ export default function Orientation({ footerLinks }) {
                   center: "title",
                   right: "timeGridDay,timeGridWeek,dayGridMonth",
                 }}
-                initialView="timeGridDay"
+                initialView="timeGridWeek"
                 editable={true}
                 selectable={true}
                 selectMirror={true}
