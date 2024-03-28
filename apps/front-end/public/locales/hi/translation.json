@@ -1652,5 +1652,6 @@
   "USER_CREATE": "उपयोगकर्ता बनाएँ",
   "CREATE": "बनाएँ",
   "EXISTING_IP": "मौजूदा IP",
-  "EXISTING_USER": "मौजूदा उपयोगकर्ता"
+  "EXISTING_USER": "मौजूदा उपयोगकर्ता",
+  "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें"
 }
