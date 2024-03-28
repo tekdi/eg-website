@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, Avatar, HStack, Pressable, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
 
-const EpcpLearnerList = ({ footerLinks }) => {
+const ExamLearnerList = ({ footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const [leanerList, setLeanerList] = useState([]);
 
@@ -37,7 +37,7 @@ const EpcpLearnerList = ({ footerLinks }) => {
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
-      let observation = "EPCP";
+      let observation = "EXAM_PREPARATION";
       const listData = await ObservationService.getCampLearnerList();
       const flattenedList = flattenList(listData?.data);
       const userIds = listData?.data.flatMap((group) =>
@@ -85,12 +85,20 @@ const EpcpLearnerList = ({ footerLinks }) => {
   };
 
   const getStatus = (responses) => {
-    const response1 = responses.find((response) => response.field_id === 1);
-    const response2 = responses.find((response) => response.field_id === 2);
-    const response3 = responses.find((response) => response.field_id === 3);
-    const response5 = responses.find((response) => response.field_id === 5);
-    const response7 = responses.find((response) => response.field_id === 7);
-    if (!response1 || !response2 || !response3 || !response5 || !response7) {
+    const response1 = responses.find((response) => response.field_id === 10);
+    const response2 = responses.find((response) => response.field_id === 11);
+    const response3 = responses.find((response) => response.field_id === 12);
+    const response4 = responses.find((response) => response.field_id === 13);
+    const response5 = responses.find((response) => response.field_id === 14);
+    const response6 = responses.find((response) => response.field_id === 15);
+    if (
+      !response1 ||
+      !response2 ||
+      !response3 ||
+      !response4 ||
+      !response5 ||
+      !response6
+    ) {
       return "not_entered";
     } else if (
       response1.response_value === "NO" &&
@@ -101,15 +109,19 @@ const EpcpLearnerList = ({ footerLinks }) => {
     } else if (
       response1.response_value === "YES" &&
       (response3.response_value === "NO" ||
+        response4.response_value === "NO" ||
         response5.response_value === "NO" ||
-        response7.response_value === "NO")
+        response6.response_value === "NO")
     ) {
       return "in_progress";
     } else if (
       response1.response_value === "YES" &&
       response3.response_value === "YES" &&
-      response5.response_value === "YES" &&
-      response7.response_value === "YES"
+      (response4.response_value === "YES" ||
+        response4.response_value === "NOT_APPLICABLE") &&
+      (response5.response_value === "YES" ||
+        response5.response_value === "NOT_APPLICABLE") &&
+      response6.response_value === "YES"
     ) {
       return "completed";
     } else if (responses.every((response) => response.response_value === "")) {
@@ -177,7 +189,7 @@ const EpcpLearnerList = ({ footerLinks }) => {
                   borderColor={"gray.300"}
                   p={4}
                   onPress={() => {
-                    navigate(`/camps/epcplearnerlist/${item.user_id}`);
+                    navigate(`/camps/exampreparation/${item.user_id}`);
                   }}
                 >
                   <HStack
@@ -215,4 +227,4 @@ const EpcpLearnerList = ({ footerLinks }) => {
   );
 };
 
-export default EpcpLearnerList;
+export default ExamLearnerList;
