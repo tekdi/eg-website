@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, select } from "../../../component/BaseInput";
@@ -11,6 +11,9 @@ import {
   VStack,
   Input,
   Pressable,
+  Modal,
+  Alert,
+  useToast,
 } from "native-base";
 import {
   AdminTypo,
@@ -107,6 +110,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = React.useState([]);
   const [enumOptions, setEnumOptions] = React.useState({});
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const toast = useToast();
 
   React.useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
@@ -137,6 +144,45 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const handleRowClick = (row) => {
     navigate(`/admin/camps/${row.id}`);
   };
+  const handleRowCheck = async (row) => {
+    const obj = row?.selectedRows?.map((e) => e?.id);
+    setSelectedRows(obj);
+  };
+  const handleClosePcr = async () => {
+    setIsButtonLoading(true);
+    const result = await campService?.multipleClosePcr({
+      camp_id: selectedRows,
+    });
+    if (result?.success == true) {
+      setIsButtonLoading(true);
+      const result = await campService.closePcrCamp({ camp_id: id });
+      if (result?.success === true) {
+        setModalVisible(false);
+        toast.show({
+          render: () => (
+            <Alert status="success" alignItems="start" mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon size={"lg"} />
+                <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+              </HStack>
+            </Alert>
+          ),
+        });
+      } else {
+        setModalVisible(false);
+        toast.show({
+          render: () => (
+            <Alert status="warning" alignItems="start" mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon size={"lg"} />
+                <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+              </HStack>
+            </Alert>
+          ),
+        });
+      }
+    }
+  };
   return (
     <Layout
       test={Width}
@@ -162,6 +208,28 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
         </HStack>
+        {filter?.type === "pcr" && (
+          <AdminTypo.Secondarybutton
+            onPress={(e) => {
+              if (selectedRows?.length > 0) {
+                setModalVisible(true);
+              } else {
+                toast.show({
+                  render: () => (
+                    <Alert status="warning" alignItems="start" mb="3" mt="4">
+                      <HStack alignItems="center" space="2" color>
+                        <Alert.Icon size={"lg"} />
+                        <AdminTypo.H4>{t("PLEASE_SELECT_CAMP")}</AdminTypo.H4>
+                      </HStack>
+                    </Alert>
+                  ),
+                });
+              }
+            }}
+          >
+            {t("CLOSE_PCR")}
+          </AdminTypo.Secondarybutton>
+        )}
       </HStack>
       <HStack>
         <Box
@@ -246,6 +314,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   },
                   [setFilter, filter]
                 )}
+                selectableRows={filter?.type === "pcr" && true}
+                onSelectedRowsChange={handleRowCheck}
                 onRowClicked={handleRowClick}
                 dense
                 highlightOnHover
@@ -254,6 +324,43 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
           </ScrollView>
         </Box>
       </HStack>
+      <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        size="lg"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>{t("CONFIRMATION")}</Modal.Header>
+          <Modal.Body>
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems={"center"} space="2" color>
+                <Alert.Icon size={"lg"} />
+                <AdminTypo.H3>{t("PCR_CLOSE_MESSAGE")}</AdminTypo.H3>
+              </HStack>
+            </Alert>
+          </Modal.Body>
+          <Modal.Footer>
+            <HStack justifyContent="space-between" width="100%">
+              <AdminTypo.PrimaryButton
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                {t("CANCEL")}
+              </AdminTypo.PrimaryButton>
+              <AdminTypo.Secondarybutton
+                isDisabled={isButtonLoading}
+                onPress={() => {
+                  handleClosePcr();
+                }}
+              >
+                {t("CONFIRM")}
+              </AdminTypo.Secondarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
@@ -397,7 +504,6 @@ export const Filter = ({ filter, setFilter }) => {
     },
     [filter, setFilterObject]
   );
-  console.log({ filter });
   const clearFilter = () => {
     setFilter({});
     setFilterObject({});

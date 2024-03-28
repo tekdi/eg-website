@@ -25,7 +25,6 @@ import {
   Pressable,
   Stack,
   ScrollView,
-  useToast,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -208,8 +207,6 @@ export default function View({ footerLinks }) {
   const { id } = useParams();
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const toast = useToast();
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
@@ -294,35 +291,6 @@ export default function View({ footerLinks }) {
     },
     [setSelectedRows]
   );
-  const updatePCRCamp = async () => {
-    setIsButtonLoading(true);
-    const result = await campService.closePcrCamp({ camp_id: id });
-    if (result?.success === true) {
-      setModalVisible(false);
-      toast.show({
-        render: () => (
-          <Alert status="success" alignItems="start" mb="3" mt="4">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon size={"lg"} />
-              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
-            </HStack>
-          </Alert>
-        ),
-      });
-    } else {
-      setModalVisible(false);
-      toast.show({
-        render: () => (
-          <Alert status="warning" alignItems="start" mb="3" mt="4">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon size={"lg"} />
-              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
-            </HStack>
-          </Alert>
-        ),
-      });
-    }
-  };
 
   // Table component
   return (
@@ -376,11 +344,7 @@ export default function View({ footerLinks }) {
               {data?.id}
             </AdminTypo.H4>
           </HStack>
-          {data?.type === "pcr" && (
-            <AdminTypo.PrimaryButton onPress={(e) => setModalVisible(true)}>
-              {t("CLOSE_PCR")}
-            </AdminTypo.PrimaryButton>
-          )}
+
           <AdminTypo.Secondarybutton
             background="white"
             _text={{
@@ -702,44 +666,6 @@ export default function View({ footerLinks }) {
                   isDisabled={isButtonLoading}
                   onPress={() => {
                     updateCampStatus();
-                  }}
-                >
-                  {t("CONFIRM")}
-                </AdminTypo.Secondarybutton>
-              </HStack>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-        <Modal
-          isOpen={modalVisible}
-          onClose={() => setModalVisible(false)}
-          size="lg"
-        >
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>{t("CONFIRMATION")}</Modal.Header>
-            <Modal.Body>
-              <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                <HStack alignItems={"center"} space="2" color>
-                  <Alert.Icon size={"lg"} />
-                  <AdminTypo.H3>{t("PCR_CLOSE_MESSAGE")}</AdminTypo.H3>
-                </HStack>
-              </Alert>
-            </Modal.Body>
-            <Modal.Footer>
-              <HStack justifyContent="space-between" width="100%">
-                <AdminTypo.PrimaryButton
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  {t("CANCEL")}
-                </AdminTypo.PrimaryButton>
-
-                <AdminTypo.Secondarybutton
-                  isDisabled={isButtonLoading}
-                  onPress={() => {
-                    updatePCRCamp();
                   }}
                 >
                   {t("CONFIRM")}
