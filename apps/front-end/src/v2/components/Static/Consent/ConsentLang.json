@@ -1,11 +1,13 @@
 {
   "en": {
+    "TITLE": "Consent Letter",
     "TEXT_1": "I would like to extend my personal support to be a part of the Educate Girls Project Pragati going on in our area. Through this written consent form, I declare that I give permission to securely store my personal information in the database of Project Pragati's PMS. This information will be in the context of my volunteer engagement and will be shared with the organization only. It will be used for internal purposes only. My personal information includes my name, contact details, Aadhaar number, education, family background, related skills, and photo, etc. By digitally signing this consent form, I acknowledge that I have read this information. I have freely consented to undergo this procedure and I have no objections to this procedure.",
     "TEXT_2": "Thank you",
     "TEXT_3": "Do you agree ?",
     "TEXT_4": "If you disagree, your information will not be saved, and you will be redirected to the beginning."
   },
   "hi": {
+    "TITLE":"सहमति पत्र",
     "TEXT_1": "हमारे क्षेत्र में चल रहे एज्यूकैट गर्ल्स प्रोजेक्ट प्रगति का हिस्सा बनने के लिए मैं अपनी व्यक्तिगत जानकारी साझा कर रहा/रही हूँ | इस लिखित सहमति पत्र के माध्यम से घोषणा करता/करती हूँ कि मै अपनी व्यक्तिगत जानकारी को प्रोजेक्ट प्रगति के पीएमएस के डेटाबेस में सुरक्षित रूप से स्टोर करने की अनुमति देता/देती हूँ। यह जानकारी मेरे स्वयंसेवा संलग्नता के संदर्भ में होगी और इसे केवल संगठन के आंतरिक उद्देश्यों के लिए ही इस्तेमाल किया जाएगा। मेरी व्यक्तिगत जानकारी में मेरा नाम, संपर्क जानकारी, आधार नंबर, शिक्षा, पारिवारिक पृष्ठभूमि, और संबंधित कौशल व फोटो इत्यादि शामिल हो सकते हैं। इस सहमति पत्र को डिजिटली हस्ताक्षर करके, मैं यह स्वीकार करता/करती हूँ कि मैंने इस जानकारी को देने की अपनी स्वतंत्र सहमति दी है और मुझे इस प्रक्रिया के खिलाफ कोई आपत्ति नहीं है।",
     "TEXT_2": "धन्यवाद।",
     "TEXT_3": "क्या आप सहमत हैं?",

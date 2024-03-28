@@ -38,10 +38,10 @@ export function LabelNameWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <Heading size="xs" mb={1} color="textGreyColor.750">
         {t("TELL_US_YOUR_NAME")}
       </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text fontSize={'12px'} color="textGreyColor.750" mb={1}>
         {" "}
         {t("AS_PER_AADHAAR")}
       </Text>
@@ -52,10 +52,10 @@ export function LabelMobileWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <Heading size="xs" mb={1} color="textGreyColor.750">
         {t("HOW_CAN_CONTACT_YOU")}
       </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text fontSize={'12px'} color="textGreyColor.750" mb={1}>
         {t("PLEASE_MOBILE_NUMBER")}
       </Text>
     </>
@@ -101,10 +101,10 @@ export function LabelVerifyNameWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <Heading size="xs" mb={6} color="textGreyColor.750">
         {t("VERIFY_CONTACT_NUMBER")}
       </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text fontSize={'12px'} lineHeight={'14.63px'} fontWeight={600} color="textGreyColor.750" mb={1}>
         {t("PLEASE_ENTER_OTP")}
       </Text>
     </>
@@ -167,7 +167,7 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
     <VStack pb="3">
-      <BodySmall id={id} color="textMaroonColor.400">
+      <BodySmall id={id} color="textGreyColor.750">
         {t(description)}
       </BodySmall>
     </VStack>
@@ -461,7 +461,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value
+            ...(value || true
               ? {
                   top: "0",
                   opacity: 1,

@@ -1,4 +1,5 @@
-const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
+const fontFamily =
+  localStorage.getItem('lang') === 'hi' ? "'Poppins'" : 'Poppins'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '' : ''
 
 let red = {
@@ -264,12 +265,12 @@ const DEFAULT_THEME = {
     AlertShadow: {
       shadowColor: '#00000040',
       shadowOffset: {
-        width: 1,
-        height: 3
+        width: 2,
+        height: 2
       },
-      shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowOpacity: 0.5,
+      shadowRadius: 5,
+      elevation: 0
     },
     BlueOutlineShadow: {
       shadowColor: '#8B7171',
@@ -291,15 +292,25 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
-    FooterShadow: {
-      shadowColor: '#e0e0e066',
+    SliderCardShadow: {
+      shadowColor: '#000000',
       shadowOffset: {
-        width: 1,
-        height: 3
+        width: 0,
+        height: 4
       },
-      shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 0
+    },
+    FooterShadow: {
+      shadowColor: '#E0E0E066',
+      shadowOffset: {
+        width: 0,
+        height: -4
+      },
+      shadowOpacity: 0.5,
+      shadowRadius: 8,
+      elevation: 0
     },
     RedFillShadow: {
       shadowColor: '#000000',
@@ -308,7 +319,7 @@ const DEFAULT_THEME = {
         height: 3
       },
       shadowOpacity: 1,
-      shadowRadius: 3,
+      shadowRadius: 0,
       elevation: 0
     },
 
@@ -333,6 +344,18 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+
+    TitleCardShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 0 // Elevation does not have a direct equivalent in box-shadow, set it as per your requirements
+    },
+
     RedBlackShadow: {
       shadowColor: '#000000',
       shadowOffset: {
@@ -392,14 +415,19 @@ const DEFAULT_THEME = {
       colors: ['#CAE9FF', '#CAE9FF', '#CAE9FF'],
       start: [0, 0],
       end: [1, 0]
-    }
+    },
+    gradients: 'linear-gradient(360deg, #DC3644 2%, #1F1D76 147%)'
   },
+
   colors: {
     footer: {
       boxBorder: '#FF0000'
     },
     formBg: {
       500: '#F4F4F7'
+    },
+    inputValueColor: {
+      500: '#1F1B13'
     },
     widgetColor: {
       400: '#7F9DAC',
@@ -454,6 +482,21 @@ const DEFAULT_THEME = {
       500: '#B9FBC0',
       800: '#5B7E5F'
     },
+    customAlertinfo: {
+      50: '#f0f9ff',
+      100: '#e0f2fe',
+      200: '#D6E8FF',
+      300: '#7dd3fc',
+      400: '#38bdf8',
+      500: '#0ea5e9',
+      600: '#0284c7',
+      700: '#0369a1',
+      800: '#075985',
+      900: '#0c4a6e'
+    },
+    customAlertdanger: {
+      200: '#FFBEC5'
+    },
     successAlert: {
       500: '#B9FBC0'
     },
@@ -478,6 +521,15 @@ const DEFAULT_THEME = {
     },
     timeTablemiddle: {
       500: '#A1D6B6'
+    },
+    SlickDotsBg: {
+      500: '#D2D1FF'
+    },
+    floatingLabelColor: {
+      500: '#1F1D76'
+    },
+    inputBorderColor: {
+      500: '#7F7667'
     },
     attendanceCard: {
       500: '#C9AFF4',
@@ -623,7 +675,9 @@ const DEFAULT_THEME = {
       600: '#727271',
       650: '#666666',
       700: '#828282',
+      750: '#4F4F4F',
       800: '#212121',
+      850: '#535353',
       900: '#1E1E1E'
     },
     textMaroonColor: {
@@ -668,7 +722,7 @@ const DEFAULT_THEME = {
       400: '#BDBDBD'
     },
     Disablecolor: {
-      400: '#BDBDBD'
+      400: '#A7A7A7'
     },
     Defaultcolor: {
       400: '#616161'
@@ -713,14 +767,18 @@ const DEFAULT_THEME = {
       900: '#010e18'
     },
     grayInLight: '#9ca3af',
+    grayTitleCard: '#484848',
+    garyTitleCardBorder: '#DDDDDD',
     grayIndark: '#18181b',
     btnGray: {
       100: '#e0e0e0'
     },
+    footerBorderGray: '#D4D4D4',
     textRed: {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
+      350: '#D53546',
       400: '#ff0000',
       500: '#ff000047'
     },
@@ -736,15 +794,18 @@ const DEFAULT_THEME = {
     },
     textBlue: {
       100: '#a8e3fd',
-      200:'#0038FF'
+      200: '#0038FF'
     },
     text: {
       100: '#a8e3fd'
     },
-    zambezi:'#5A5A5A',
+    bgRed: {
+      500: '#D53546'
+    },
+    zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',
     greenIconColor: '#008C0E',
-    whiteSomke:'#F9F9F9'
+    whiteSomke: '#F9F9F9'
   }
 }
 
