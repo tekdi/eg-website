@@ -1651,5 +1651,6 @@
   "USER_CREATE": "User Create",
   "CREATE": "Create",
   "EXISTING_IP": "Existing IP",
-  "EXISTING_USER": "Existing User"
+  "EXISTING_USER": "Existing User",
+  "PLEASE_SELECT_CAMP": "Please select camp"
 }
