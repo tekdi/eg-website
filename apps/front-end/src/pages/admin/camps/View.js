@@ -388,11 +388,7 @@ export default function View({ footerLinks }) {
             >
               {t("REASSIGN_CAMP")}
             </Menu.Item>
-            {data?.type === "pcr" && (
-              <Menu.Item onPress={(e) => setModalVisible(true)}>
-                {t("CLOSE_PCR")}
-              </Menu.Item>
-            )}
+
             {data?.group?.status === "camp_ip_verified" && (
               <Menu.Item onPress={() => setStatus("change_required")}>
                 {t("MODIFY")}
