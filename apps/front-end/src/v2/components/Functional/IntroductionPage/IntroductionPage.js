@@ -52,7 +52,7 @@ export default function IntroductionPage({
           <FrontEndTypo.Primarybutton width="60%" onPress={showApplyNow}>
             {t("APPLY_NOW")}
           </FrontEndTypo.Primarybutton>
-          <FrontEndTypo.Secondarybutton width="60%" onPress={showPrerakDuties}>
+          <FrontEndTypo.Secondarybutton minW="60%" onPress={showPrerakDuties}>
             {t("KNOW_PRERAK_DUTIES")}
           </FrontEndTypo.Secondarybutton>
 
