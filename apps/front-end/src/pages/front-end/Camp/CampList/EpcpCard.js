@@ -15,18 +15,21 @@ const EpcpCard = () => {
       borderWidth="1px"
       padding="4"
       shadow="AlertShadow"
+      background={"bgYellowColor.400"}
     >
       <Stack space={4}>
-        <FrontEndTypo.H3 color="textMaroonColor.400">
+        <FrontEndTypo.H2 color="textMaroonColor.400">
           {t("EPCP_ACTIVITIES")}
-        </FrontEndTypo.H3>
+        </FrontEndTypo.H2>
         <FrontEndTypo.H4 color="textMaroonColor.400">
           {t("EPCP_INFO")}
         </FrontEndTypo.H4>
         <FrontEndTypo.Secondarybutton
           onPress={(e) => navigate("/camps/epcplearnerlist")}
         >
-          {t("EPCP.TITLE")}
+          <FrontEndTypo.H3 color="textMaroonColor.400">
+            {t("EPCP.TITLE")}
+          </FrontEndTypo.H3>
         </FrontEndTypo.Secondarybutton>
       </Stack>
     </VStack>
