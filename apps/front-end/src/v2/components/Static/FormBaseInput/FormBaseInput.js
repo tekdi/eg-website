@@ -27,6 +27,8 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
+  H3,
+  H4,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -41,7 +43,7 @@ export function LabelNameWidget() {
       <Heading size="xs" mb={1} color="textGreyColor.750">
         {t("TELL_US_YOUR_NAME")}
       </Heading>
-      <Text fontSize={'12px'} color="textGreyColor.750" mb={1}>
+      <Text fontSize={"12px"} color="textGreyColor.750" mb={1}>
         {" "}
         {t("AS_PER_AADHAAR")}
       </Text>
@@ -55,7 +57,7 @@ export function LabelMobileWidget() {
       <Heading size="xs" mb={1} color="textGreyColor.750">
         {t("HOW_CAN_CONTACT_YOU")}
       </Heading>
-      <Text fontSize={'12px'} color="textGreyColor.750" mb={1}>
+      <Text fontSize={"12px"} color="textGreyColor.750" mb={1}>
         {t("PLEASE_MOBILE_NUMBER")}
       </Text>
     </>
@@ -87,12 +89,12 @@ export function LabelAddressWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <FrontEndTypo.H3 color="textGreyColor.750">
         {t("ADDRESS")}
-      </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      </FrontEndTypo.H3>
+      <FrontEndTypo.H4 color="textGreyColor.750" mb={1}>
         {t("ADDRESS_DESCRIPTION")}
-      </Text>
+      </FrontEndTypo.H4>
     </>
   );
 }
@@ -104,7 +106,13 @@ export function LabelVerifyNameWidget() {
       <Heading size="xs" mb={6} color="textGreyColor.750">
         {t("VERIFY_CONTACT_NUMBER")}
       </Heading>
-      <Text fontSize={'12px'} lineHeight={'14.63px'} fontWeight={600} color="textGreyColor.750" mb={1}>
+      <Text
+        fontSize={"12px"}
+        lineHeight={"14.63px"}
+        fontWeight={600}
+        color="textGreyColor.750"
+        mb={1}
+      >
         {t("PLEASE_ENTER_OTP")}
       </Text>
     </>
@@ -288,10 +296,10 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <H2 color="textMaroonColor.400">
+                  <H4 color="textGreyColor.750">
                     {t(schema?.label ? schema?.label : label)}
-                  </H2>
-                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                  </H4>
+                  <H3 color="textGreyColor.750">{required ? "*" : null}</H3>
                 </HStack>
               </label>
             )}

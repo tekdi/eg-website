@@ -7,6 +7,7 @@ import {
   HStack,
   Button,
   Modal,
+  Pressable,
   Image,
 } from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";

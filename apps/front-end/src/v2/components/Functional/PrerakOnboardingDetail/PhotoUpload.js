@@ -64,7 +64,7 @@ export default function PhotoUpload({
 
   return (
     <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
-      <FrontEndTypo.H2 color="textMaroonColor.400">
+      <FrontEndTypo.H2 color="textGreyColor.750">
         {t("ADD_ID_PHOTOS")}
       </FrontEndTypo.H2>
       <VStack space={2}>

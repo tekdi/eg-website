@@ -408,6 +408,16 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 1.0,
       elevation: 1
+    },
+    LearnerProfileViewShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 4
     }
   },
   bg: {
@@ -667,7 +677,6 @@ const DEFAULT_THEME = {
       150: '#61646B',
       350: '#EAEAEB',
       300: '#888888',
-
       400: '#F5F5F5',
       450: '#464646',
       500: '#424242',
@@ -698,6 +707,7 @@ const DEFAULT_THEME = {
       350: '#CAE9FF',
       400: '#084B82',
       450: '#3F8BF1',
+      500: '#0500FF',
       700: '#004AAD'
     },
     bgPinkColor: {
@@ -791,6 +801,21 @@ const DEFAULT_THEME = {
       400: '#232020',
       600: '#488C04',
       700: '#0F6C41'
+    },
+    SelectBorderColor: {
+      500: '#C6C6C6'
+    },
+    CardComponentBorderColor: {
+      500: '#EAEAEA'
+    },
+    LeanerListCardIDBorder: {
+      500: '#676767'
+    },
+    LearnerListCardNumber: {
+      500: '#929292'
+    },
+    LearnerListCardLink: {
+      500: '#0D34FF'
     },
     textBlue: {
       100: '#a8e3fd',
