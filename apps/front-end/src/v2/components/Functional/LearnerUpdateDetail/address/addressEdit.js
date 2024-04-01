@@ -59,8 +59,9 @@ export default function AddressEdit({ ip }) {
       village: finalData?.village,
       grampanchayat:
         finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
-      pincode: finalData?.pincode == "null" ? "" : finalData?.pincode,
+      pincode: finalData?.pincode === null ? "" : finalData?.pincode,
     });
+    console.log({ formData });
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
@@ -401,7 +402,11 @@ export default function AddressEdit({ ip }) {
       }
     }
     if (id === "root_pincode") {
-      if (data?.pincode?.toString()?.length !== 6 && data?.pincode) {
+      const regex = /^[0-9]*$/;
+      if (
+        data?.pincode &&
+        (data.pincode.toString().length !== 6 || !regex.test(data.pincode))
+      ) {
         const newErrors = {
           pincode: {
             __errors: [t("PINCODE_ERROR")],
@@ -420,15 +425,17 @@ export default function AddressEdit({ ip }) {
   };
 
   const onSubmit = async (data) => {
-    setIsDisable(true);
-    const obj = {
-      ...formData,
-      lat: formData?.location?.lat,
-      long: formData?.location?.long,
-    };
+    if (_.isEmpty(errors)) {
+      setIsDisable(true);
+      const obj = {
+        ...formData,
+        lat: formData?.location?.lat,
+        long: formData?.location?.long,
+      };
 
-    await AgRegistryService.updateAg(obj, userId);
-    navigate(`/beneficiary/${userId}/addressdetails`);
+      await AgRegistryService.updateAg(obj, userId);
+      navigate(`/beneficiary/${userId}/addressdetails`);
+    }
   };
 
   const setSchemaData = (newSchema) => {
