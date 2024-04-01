@@ -61,7 +61,6 @@ export default function AddressEdit({ ip }) {
         finalData?.grampanchayat == "null" ? "" : finalData?.grampanchayat,
       pincode: finalData?.pincode === null ? "" : finalData?.pincode,
     });
-    console.log({ formData });
     const obj = {
       edit_req_for_context: "users",
       edit_req_for_context_id: id,
