@@ -209,6 +209,7 @@ export default function View({ footerLinks }) {
   const { id } = useParams();
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [facilitator, setFacilitator] = useState({});
 
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
@@ -236,6 +237,7 @@ export default function View({ footerLinks }) {
       const campId = camp?.id;
       const facilitatorId = camp?.faciltator[0]?.id;
       getConsentDetailsWithParams(campId, facilitatorId);
+      setFacilitator(camp?.faciltator?.[0]);
     } catch (error) {
       console.error("An error occurred:", error);
     }
