@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - feat-leaner-revamp
+      - release-1.8.1
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
