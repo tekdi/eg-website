@@ -204,8 +204,6 @@ export default function FacilitatorQualification({ userTokenInfo }) {
                     {t("TEACHING_DEGREE")}
                   </FrontEndTypo.H3>
 
-                  {console.log(qualifications?.map((e) => e.name).join(", "))}
-
                   <FrontEndTypo.H3
                     color="textGreyColor.800"
                     fontWeight="400"
