@@ -68,8 +68,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     const { result } = await benificiaryRegistoryService.getOne(id?.id);
     let programSelected = jsonParse(localStorage.getItem("program"));
 
-    console.log();
-
     if (result) {
       setFormData({
         ...formData,
