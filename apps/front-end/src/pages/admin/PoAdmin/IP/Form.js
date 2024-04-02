@@ -6,6 +6,8 @@ import {
   IconByName,
   cohortService,
   setSelectedProgramId,
+  Breadcrumb,
+  validation,
 } from "@shiksha/common-lib";
 import { Button, HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -19,6 +21,7 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import Chip from "component/Chip";
 
 const Schema = {
   // title: "CREATE_IP",
@@ -35,6 +38,8 @@ const Schema = {
     "doc_quarterly_id",
     "email_id",
     "state",
+    "camp_target",
+    "learner_per_camp",
   ],
   properties: {
     name: {
@@ -69,6 +74,16 @@ const Schema = {
     learner_target: {
       title: "LEARNER_TARGET",
       type: "string",
+    },
+    learner_per_camp: {
+      title: "LEARNERS_PER_TARGET",
+      format: "select",
+      enum: ["15", "16", "17", "18", "19", "20"],
+    },
+    camp_target: {
+      type: ["string", "number"],
+      title: "TARGET_CAMP",
+      readOnly: true,
     },
     doc_per_cohort_id: {
       type: "string",
@@ -111,7 +126,6 @@ export default function App() {
         ...e,
         state_name: `${e?.state?.state_name}`,
       }));
-      console.log(data);
       let newSchema = Schema;
       if (Schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
@@ -121,6 +135,7 @@ export default function App() {
           value: "id",
         });
       }
+
       setSchema(newSchema);
     }
   }, []);
@@ -132,12 +147,35 @@ export default function App() {
         program_id: newData?.state,
       });
     }
+
+    if (id === "root_learner_target" || id === "root_learner_per_camp") {
+      const avgCount = Math.ceil(
+        newData?.learner_target / newData?.learner_per_camp
+      );
+      const updatedFormData = { ...newData };
+      updatedFormData.camp_target = avgCount;
+      setFormData(updatedFormData);
+    }
   };
+
+  const customValidate = (data, err) => {
+    if (data?.mobile) {
+      const isValid = validation({
+        data: data?.mobile,
+        key: "mobile",
+        type: "mobile",
+      });
+      if (isValid) {
+        err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
+      }
+    }
+    return err;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data.formData;
     const result = await organisationService.createOrg(newData);
-
     if (!result.error) {
       navigate("/poadmin/ips");
     } else {
@@ -154,15 +192,37 @@ export default function App() {
   return (
     <PoAdminLayout _appBar={{ setLang }}>
       <VStack p={4}>
-        <HStack pt={4} space={2} alignItems={"center"}>
-          <IconByName name="CommunityLineIcon" />
-          <AdminTypo.H2>{t("CREATE_IP")}</AdminTypo.H2>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={() => navigate("/poadmin/ips")}
+        <VStack pt={4}>
+          <Breadcrumb
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+            data={[
+              {
+                title: (
+                  <HStack>
+                    <IconByName name="GroupLineIcon" size="md" />
+                    <AdminTypo.H4 bold color="Activatedcolor.400">
+                      {t("ALL_IPS")}
+                    </AdminTypo.H4>
+                  </HStack>
+                ),
+                link: "/poadmin/ips",
+                icon: "GroupLineIcon",
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {t("CREATE")}
+                  </AdminTypo.H4>
+                ),
+              },
+            ]}
           />
-        </HStack>
+        </VStack>
 
         <VStack p="4" space={4}>
           <Form
@@ -180,6 +240,7 @@ export default function App() {
               onError,
               onSubmit,
               onChange,
+              customValidate,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
@@ -201,10 +262,7 @@ export default function App() {
                 type="submit"
                 p="4"
                 onPress={() => {
-                  console.log("hello", formRef.current.validateForm());
-                  // if (formRef.current.validateForm()) {
                   formRef?.current?.submit();
-                  // }
                 }}
               >
                 {t("SUBMIT")}

@@ -90,101 +90,129 @@ export async function getOnboardingData(id) {
     let format_result = {
       id: id,
       //step 1 basic_details
-      first_name: userMergedInfo?.users?.first_name,
-      last_name: userMergedInfo?.users?.last_name,
-      middle_name: userMergedInfo?.users?.middle_name,
-      dob: userMergedInfo?.users?.dob,
+      first_name: userMergedInfo?.users?.first_name || undefined,
+      last_name: userMergedInfo?.users?.last_name || undefined,
+      middle_name: userMergedInfo?.users?.middle_name || undefined,
+      dob: userMergedInfo?.users?.dob || undefined,
       //step 2 contact_details
-      mobile: userMergedInfo?.users?.mobile,
-      email_id: userMergedInfo?.users?.email_id,
-      device_type: userMergedInfo?.core_faciltator?.device_type,
-      device_ownership: userMergedInfo?.core_faciltator?.device_ownership,
+      mobile: userMergedInfo?.users?.mobile || undefined,
+      email_id: userMergedInfo?.users?.email_id || undefined,
+      device_type: userMergedInfo?.core_faciltator?.device_type || undefined,
+      device_ownership:
+        userMergedInfo?.core_faciltator?.device_ownership || undefined,
       alternative_mobile_number:
-        userMergedInfo?.users?.alternative_mobile_number,
+        userMergedInfo?.users?.alternative_mobile_number || undefined,
       //step 3 address_details
-      block: userMergedInfo?.users?.block,
-      district: userMergedInfo?.users?.district,
-      grampanchayat: userMergedInfo?.users?.grampanchayat,
-      pincode: userMergedInfo?.users?.pincode,
-      state: userMergedInfo?.users?.state,
-      village: userMergedInfo?.users?.village,
+      block: userMergedInfo?.users?.block || undefined,
+      district: userMergedInfo?.users?.district || undefined,
+      grampanchayat: userMergedInfo?.users?.grampanchayat || undefined,
+      pincode: userMergedInfo?.users?.pincode || undefined,
+      state: userMergedInfo?.users?.state || undefined,
+      village: userMergedInfo?.users?.village || undefined,
       //step 4 personal_details
-      gender: userMergedInfo?.users?.gender,
-      marital_status: userMergedInfo?.extended_users?.marital_status,
-      social_category: userMergedInfo?.extended_users?.social_category,
+      gender: userMergedInfo?.users?.gender || undefined,
+      marital_status:
+        userMergedInfo?.extended_users?.marital_status || undefined,
+      social_category:
+        userMergedInfo?.extended_users?.social_category || undefined,
       //step 5 reference_details
       references: {
-        contact_number: userMergedInfo?.references?.contact_number,
-        designation: userMergedInfo?.references?.designation,
-        name: userMergedInfo?.references?.name,
+        contact_number: userMergedInfo?.references?.contact_number || undefined,
+        designation: userMergedInfo?.references?.designation || undefined,
+        name: userMergedInfo?.references?.name || undefined,
       },
       //step 6 work_availability_details
       program_faciltators: {
-        availability: userMergedInfo?.program_faciltators?.availability,
-        status: userMergedInfo?.program_faciltators?.status,
+        availability:
+          userMergedInfo?.program_faciltators?.availability || undefined,
+        status: userMergedInfo?.program_faciltators?.status || undefined,
         //step 9 qualification_details
-        qualification_ids: qualification_id_arr,
+        qualification_ids: qualification_id_arr || undefined,
       },
-      availability: userMergedInfo?.program_faciltators?.availability,
+      availability:
+        userMergedInfo?.program_faciltators?.availability || undefined,
       //step 7 work_experience_details vo_experience
-      vo_experience: vo_experience,
+      vo_experience: vo_experience || undefined,
       //step 8 work_experience_details experience
-      experience: experience,
+      experience: experience || undefined,
       //step 9 qualification_details
       qualifications: {
         qualification_master_id:
-          userMergedInfo?.qualifications?.qualification_master_id,
+          userMergedInfo?.qualifications?.qualification_master_id || undefined,
         qualification_reference_document_id:
-          userMergedInfo?.qualifications?.documents?.base64,
+          userMergedInfo?.qualifications?.documents?.base64 || undefined,
         qualification_master:
-          userMergedInfo?.qualifications?.qualification_master,
+          userMergedInfo?.qualifications?.qualification_master || undefined,
       },
-      qualification_ids: qualification_id_arr,
+      qualification_ids: qualification_id_arr || undefined,
       core_faciltator: {
         has_diploma: userMergedInfo?.core_faciltator?.has_diploma
           ? userMergedInfo?.core_faciltator?.has_diploma
           : false,
-        diploma_details: userMergedInfo?.core_faciltator?.diploma_details,
+        diploma_details:
+          userMergedInfo?.core_faciltator?.diploma_details || undefined,
       },
       //step 10 profile photo 1
       profile_photo_1: {
-        base64: userMergedInfo?.users?.profile_photo_1?.documents?.base64,
-        id: userMergedInfo?.users?.profile_photo_1?.documents?.document_id,
-        name: userMergedInfo?.users?.profile_photo_1?.documents?.name,
+        base64:
+          userMergedInfo?.users?.profile_photo_1?.documents?.base64 ||
+          undefined,
+        id:
+          userMergedInfo?.users?.profile_photo_1?.documents?.document_id ||
+          undefined,
+        name:
+          userMergedInfo?.users?.profile_photo_1?.documents?.name || undefined,
         doument_type:
-          userMergedInfo?.users?.profile_photo_1?.documents?.doument_type,
+          userMergedInfo?.users?.profile_photo_1?.documents?.doument_type ||
+          undefined,
         document_sub_type:
-          userMergedInfo?.users?.profile_photo_1?.documents?.document_sub_type,
-        path: userMergedInfo?.users?.profile_photo_1?.documents?.path,
+          userMergedInfo?.users?.profile_photo_1?.documents
+            ?.document_sub_type || undefined,
+        path:
+          userMergedInfo?.users?.profile_photo_1?.documents?.path || undefined,
       },
       //step 11 profile photo 2
       profile_photo_2: {
-        base64: userMergedInfo?.users?.profile_photo_2?.documents?.base64,
-        id: userMergedInfo?.users?.profile_photo_2?.documents?.document_id,
-        name: userMergedInfo?.users?.profile_photo_2?.documents?.name,
+        base64:
+          userMergedInfo?.users?.profile_photo_2?.documents?.base64 ||
+          undefined,
+        id:
+          userMergedInfo?.users?.profile_photo_2?.documents?.document_id ||
+          undefined,
+        name:
+          userMergedInfo?.users?.profile_photo_2?.documents?.name || undefined,
         doument_type:
-          userMergedInfo?.users?.profile_photo_2?.documents?.doument_type,
+          userMergedInfo?.users?.profile_photo_2?.documents?.doument_type ||
+          undefined,
         document_sub_type:
-          userMergedInfo?.users?.profile_photo_2?.documents?.document_sub_type,
-        path: userMergedInfo?.users?.profile_photo_2?.documents?.path,
+          userMergedInfo?.users?.profile_photo_2?.documents
+            ?.document_sub_type || undefined,
+        path:
+          userMergedInfo?.users?.profile_photo_2?.documents?.path || undefined,
       },
       //step 12 profile photo 3
       profile_photo_3: {
-        base64: userMergedInfo?.users?.profile_photo_3?.documents?.base64,
+        base64:
+          userMergedInfo?.users?.profile_photo_3?.documents?.base64 ||
+          undefined,
         id: userMergedInfo?.users?.profile_photo_3?.documents?.document_id,
-        name: userMergedInfo?.users?.profile_photo_3?.documents?.name,
+        name:
+          userMergedInfo?.users?.profile_photo_3?.documents?.name || undefined,
         doument_type:
-          userMergedInfo?.users?.profile_photo_3?.documents?.doument_type,
+          userMergedInfo?.users?.profile_photo_3?.documents?.doument_type ||
+          undefined,
         document_sub_type:
-          userMergedInfo?.users?.profile_photo_3?.documents?.document_sub_type,
-        path: userMergedInfo?.users?.profile_photo_3?.documents?.path,
+          userMergedInfo?.users?.profile_photo_3?.documents
+            ?.document_sub_type || undefined,
+        path:
+          userMergedInfo?.users?.profile_photo_3?.documents?.path || undefined,
       },
       //Aadhaar_Details
       aadhaar_verification_mode:
-        userMergedInfo?.users?.aadhaar_verification_mode,
-      aadhar_no: userMergedInfo?.users?.aadhar_no,
-      aadhar_token: userMergedInfo?.users?.aadhar_token,
-      aadhar_verified: userMergedInfo?.users?.aadhar_verified,
+        userMergedInfo?.users?.aadhaar_verification_mode || undefined,
+      aadhar_no: userMergedInfo?.users?.aadhar_no || undefined,
+      aadhar_token: userMergedInfo?.users?.aadhar_token || undefined,
+      aadhar_verified: userMergedInfo?.users?.aadhar_verified || undefined,
     };
 
     return format_result;
@@ -206,7 +234,6 @@ export async function updateOnboardingData(id, onboardingData) {
   let program_faciltators = new Object();
   let experience = [];
   let qualifications = new Object();
-  //console.log("onboardingData", onboardingData);
   //step 1 basic_details
   onboardingData?.first_name
     ? onboardingData.first_name != userInfo?.users?.first_name

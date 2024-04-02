@@ -5,6 +5,7 @@ import {
   CardComponent,
   IconByName,
   organisationService,
+  Breadcrumb,
 } from "@shiksha/common-lib";
 import { Box, Button, HStack, Menu, Stack, VStack } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
@@ -90,32 +91,30 @@ function View() {
 
   return (
     <PoAdminLayout>
-      <VStack flex={1} space={4} p="2">
-        <HStack alignItems={"center"} space="1" pt="3">
-          <IconByName name="GroupLineIcon" size="md" />
-          <AdminTypo.H4 bold color="Activatedcolor.400">
-            {t("ALL_IPS")}
-          </AdminTypo.H4>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/poadmin/ips`)}
-          />
-          <AdminTypo.H4
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            bold
-          >
-            {organisation?.name}
-          </AdminTypo.H4>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/poadmin/ips`)}
-          />
-          <Chip textAlign="center" lineHeight="15px" label={organisation?.id} />
-        </HStack>
+      <VStack flex={1} pt="3" space={4} p="2">
+        <Breadcrumb
+          drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+          data={[
+            {
+              title: (
+                <HStack>
+                  <IconByName name="GroupLineIcon" size="md" />
+                  <AdminTypo.H4 bold color="Activatedcolor.400">
+                    {t("ALL_IPS")}
+                  </AdminTypo.H4>
+                </HStack>
+              ),
+              link: "/poadmin/ips",
+              icon: "GroupLineIcon",
+            },
+
+            <Chip
+              textAlign="center"
+              lineHeight="15px"
+              label={organisation?.id}
+            />,
+          ]}
+        />
 
         <HStack space={4}>
           <CardComponent

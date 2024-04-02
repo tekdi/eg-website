@@ -27,6 +27,17 @@ const BenificiaryListView = lazy(() =>
   import("v2/views/Beneficiary/BenificiaryListView/BenificiaryListView")
 );
 
+const EpcpForm = lazy(() => import("v2/components/Functional/EPCP/EpcpForm"));
+const EpcpLearnerList = lazy(() =>
+  import("v2/components/Functional/EPCP/EpcpLearnerList")
+);
+const ExamLearnerList = lazy(() =>
+  import("v2/components/Functional/ExamPreparation/ExamLearnerList")
+);
+const ExamForm = lazy(() =>
+  import("v2/components/Functional/ExamPreparation/ExamForm")
+);
+
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
@@ -130,6 +141,8 @@ export default [
     component: AdharKyc,
   },
   { path: "/profile", component: Profile },
+  { path: "/certificate", component: Certificate },
+  //old facilitator onboarding
   { path: "/results", component: Certificate },
   /*{ path: "/profile/edit/array-form/:type", component: ArrayForm },*/
   /*{ path: "/profile/edit/:step", component: EditForm },*/
@@ -220,5 +233,27 @@ export default [
     path: "/beneficiary/list",
     component: BenificiaryListView,
   },
+
+  // EPCP
+  {
+    path: "/camps/epcplearnerlist",
+    component: EpcpLearnerList,
+  },
+  {
+    path: "/camps/epcplearnerlist/:id",
+    component: EpcpForm,
+  },
+
+  //Exam Preparation
+
+  {
+    path: "/camps/exampreparation",
+    component: ExamLearnerList,
+  },
+  {
+    path: "/camps/exampreparation/:id",
+    component: ExamForm,
+  },
+
   //end v2 code
 ];

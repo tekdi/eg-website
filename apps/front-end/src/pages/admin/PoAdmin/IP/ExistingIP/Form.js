@@ -6,6 +6,7 @@ import {
   organisationService,
   getOptions,
   cohortService,
+  Breadcrumb,
 } from "@shiksha/common-lib";
 import { VStack, HStack, Button } from "native-base";
 import Form from "@rjsf/core";
@@ -23,6 +24,8 @@ const Schema = {
     "doc_quarterly_id",
     "doc_per_monthly_id",
     "learner_target",
+    "learner_per_camp",
+    "camp_target",
   ],
   properties: {
     state: {
@@ -37,8 +40,18 @@ const Schema = {
       // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
     learner_target: {
-      type: "number",
-      title: "LEARNERS_TARGET",
+      title: "LEARNER_TARGET",
+      type: "string",
+    },
+    learner_per_camp: {
+      title: "LEARNERS_PER_TARGET",
+      format: "select",
+      enum: ["15", "16", "17", "18", "19", "20"],
+    },
+    camp_target: {
+      type: ["string", "number"],
+      title: "TARGET_CAMP",
+      readOnly: true,
     },
     doc_per_cohort_id: {
       label: "DUE_DILIGENCE_SIGNED_PROPOSAL",
@@ -72,6 +85,7 @@ function ExistingIpForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation();
+  const [formData, setFormData] = useState();
 
   useEffect(async () => {
     let newSchema = Schema;
@@ -113,6 +127,18 @@ function ExistingIpForm() {
     setSchema(newSchema);
   }, []);
 
+  const onChange = async (e, id) => {
+    const newData = e.formData;
+    if (id === "root_learner_target" || id === "root_learner_per_camp") {
+      const avgCount = Math.ceil(
+        newData?.learner_target / newData?.learner_per_camp
+      );
+      const updatedFormData = { ...newData };
+      updatedFormData.camp_target = avgCount;
+      setFormData(updatedFormData);
+    }
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data?.formData;
@@ -132,18 +158,38 @@ function ExistingIpForm() {
   return (
     <PoAdminLayout>
       <VStack p={4}>
-        <HStack pt={4} pb={4} space={2} alignItems={"center"}>
-          <IconByName name="CommunityLineIcon" />
-          <AdminTypo.H2>{t("IP/ORGANISATION_LIST")}</AdminTypo.H2>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={() => navigate("/poadmin/ips")}
+        <VStack pt={4} pb={4}>
+          <Breadcrumb
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
+            data={[
+              {
+                title: (
+                  <HStack>
+                    <IconByName name="GroupLineIcon" size="md" />
+                    <AdminTypo.H4 bold color="Activatedcolor.400">
+                      {t("ALL_IPS")}
+                    </AdminTypo.H4>
+                  </HStack>
+                ),
+                link: "/poadmin/ips",
+                icon: "GroupLineIcon",
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {t("EXISTING_IP")}
+                  </AdminTypo.H4>
+                ),
+              },
+            ]}
           />
-        </HStack>
-        <AdminTypo.H6 color={"textGreyColor.500"} bold>
-          {t("ADD_EXISTING_IP")}
-        </AdminTypo.H6>
+        </VStack>
+
         <VStack p={4}>
           <Form
             ref={formRef}
@@ -157,6 +203,8 @@ function ExistingIpForm() {
               templates,
               validator,
               onSubmit,
+              formData,
+              onChange,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
