@@ -2,6 +2,7 @@ import { IconByName, ImageView } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import FilePreview from "v2/components/Static/FilePreview/FilePreview";
 
 export default function ProfilePhoto({
   profile_photo_1,
@@ -25,11 +26,12 @@ export default function ProfilePhoto({
           />
         )}
 
-        {profile_photo_1?.id ? (
-          <ImageView
-            w="120"
-            h="120"
-            source={{ document_id: profile_photo_1?.id }}
+        {profile_photo_1?.base64 ? (
+          <FilePreview
+            base64={profile_photo_1?.base64}
+            width={"190px"}
+            height={"190px"}
+            borderRadius="50%"
           />
         ) : (
           <IconByName
@@ -45,14 +47,13 @@ export default function ProfilePhoto({
       <HStack alignItems="center" space="6">
         {[profile_photo_1, profile_photo_2, profile_photo_3].map(
           (photo) =>
-            photo?.id && (
-              <ImageView
-                key={photo}
-                w="60"
-                h="60"
-                source={{
-                  document_id: photo?.id,
-                }}
+            photo?.base64 && (
+              <FilePreview
+                key={photo?.id}
+                base64={photo?.base64}
+                width={"60px"}
+                height={"60px"}
+                borderRadius="50%"
               />
             )
         )}

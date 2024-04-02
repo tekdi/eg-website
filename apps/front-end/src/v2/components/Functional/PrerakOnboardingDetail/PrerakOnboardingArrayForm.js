@@ -46,7 +46,8 @@ export default function PrerakOnboardingArrayForm({
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [data, setData] = useState();
+  const [dataExperience, setDataExperience] = useState([]);
+  const [data, setData] = useState([]);
   const [facilitator, setfacilitator] = useState();
   const [addMore, setAddMore] = useState();
   const [keys, setKeys] = useState([]);
@@ -80,6 +81,15 @@ export default function PrerakOnboardingArrayForm({
       );
     }
   };
+  useEffect(() => {
+    if (facilitator) {
+      //console.log("type facilitator", type);
+      if (type == "experience") {
+        setData(dataExperience);
+      }
+      //console.log("dataExperience", dataExperience);
+    }
+  }, [facilitator]);
 
   useEffect(async () => {
     const id = userid;
@@ -149,7 +159,7 @@ export default function PrerakOnboardingArrayForm({
         }
       }
 
-      getData();
+      await getData();
       setFormData();
       setAddMore();
     }
@@ -163,10 +173,7 @@ export default function PrerakOnboardingArrayForm({
 
       //get offline data
       setLoading(true);
-      setData([]);
       const result = await getOnboardingData(id);
-      //console.log("getOnboardingData", result);
-
       setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
@@ -175,6 +182,7 @@ export default function PrerakOnboardingArrayForm({
       } else if (type === "experience") {
         setData(result?.experience);
       }
+      setDataExperience(result?.experience);
       setLoading(false);
     }
   };
@@ -188,7 +196,7 @@ export default function PrerakOnboardingArrayForm({
         ...(overide || {}),
         id: id,
       });
-      getData();
+      await getData();
       setLoading(false);
       return result;
     }
@@ -337,9 +345,7 @@ export default function PrerakOnboardingArrayForm({
       });
       //get offline data
       setLoading(true);
-      setData([]);
       const result = await getOnboardingData(userid);
-      console.log("getOnboardingData", result);
       setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
@@ -348,6 +354,7 @@ export default function PrerakOnboardingArrayForm({
       } else if (type === "experience") {
         setData(result?.experience);
       }
+      setDataExperience(result?.experience);
       setLoading(false);
       setAddMore(false);
     }
@@ -409,42 +416,79 @@ export default function PrerakOnboardingArrayForm({
         <Box py={6} px={4} mb={5}>
           {!addMore ? (
             <VStack space={"4"}>
-              {data &&
-                data.constructor.name === "Array" &&
-                data?.map((item, index) => {
-                  const {
-                    name,
-                    contact_number,
-                    type_of_document,
-                    document_id,
-                  } = item?.reference || {};
+              {type == "vo_experience"
+                ? data &&
+                  data.constructor.name === "Array" &&
+                  data?.map((item, index) => {
+                    const {
+                      name,
+                      contact_number,
+                      type_of_document,
+                      document_id,
+                    } = item?.reference || {};
 
-                  return item?.status == "delete" ? (
-                    <></>
-                  ) : (
-                    <Box key={name}>
-                      <CardComponent
-                        schema={schema}
-                        index={index + 1}
-                        item={{
-                          ...item,
-                          ...(item?.reference?.constructor.name === "Object"
-                            ? {
-                                name,
-                                contact_number,
-                                type_of_document,
-                                document_id,
-                              }
-                            : {}),
-                        }}
-                        onEdit={(e) => onEdit(e)}
-                        onDelete={(e) => onDelete(e)}
-                        arr={keys}
-                        label={labels}
-                      />
-                    </Box>
-                  );
-                })}
+                    return item?.status == "delete" ? (
+                      <></>
+                    ) : (
+                      <Box key={name}>
+                        <CardComponent
+                          schema={schema}
+                          index={index + 1}
+                          item={{
+                            ...item,
+                            ...(item?.reference?.constructor.name === "Object"
+                              ? {
+                                  name,
+                                  contact_number,
+                                  type_of_document,
+                                  document_id,
+                                }
+                              : {}),
+                          }}
+                          onEdit={(e) => onEdit(e)}
+                          onDelete={(e) => onDelete(e)}
+                          arr={keys}
+                          label={labels}
+                        />
+                      </Box>
+                    );
+                  })
+                : dataExperience &&
+                  dataExperience.constructor.name === "Array" &&
+                  dataExperience?.map((item, index) => {
+                    const {
+                      name,
+                      contact_number,
+                      type_of_document,
+                      document_id,
+                    } = item?.reference || {};
+
+                    return item?.status == "delete" ? (
+                      <></>
+                    ) : (
+                      <Box key={name}>
+                        <CardComponent
+                          schema={schema}
+                          index={index + 1}
+                          item={{
+                            ...item,
+                            ...(item?.reference?.constructor.name === "Object"
+                              ? {
+                                  name,
+                                  contact_number,
+                                  type_of_document,
+                                  document_id,
+                                }
+                              : {}),
+                          }}
+                          onEdit={(e) => onEdit(e)}
+                          onDelete={(e) => onDelete(e)}
+                          arr={keys}
+                          label={labels}
+                        />
+                      </Box>
+                    );
+                  })}
               <Button variant={"link"} colorScheme="info" onPress={onAdd}>
                 <FrontEndTypo.H5
                   color="blueText.500"

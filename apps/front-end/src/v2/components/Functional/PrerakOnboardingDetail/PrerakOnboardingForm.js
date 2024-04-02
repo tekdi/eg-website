@@ -34,6 +34,7 @@ import {
   getOnboardingData,
   updateOnboardingData,
 } from "v2/utils/OfflineHelper/OfflineHelper.js";
+import AddressOffline from "./AddressOffline.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -60,6 +61,22 @@ export default function PrerakOnboardingForm({
   const [otpButton, setOtpButton] = useState(false);
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     setLang(localStorage.getItem("lang"));
@@ -77,7 +94,6 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-          //console.log("form offline data", result);
 
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
@@ -102,12 +118,12 @@ export default function PrerakOnboardingForm({
             const newData = {
               ...dataF,
               qualification_reference_document_id:
-                dataF?.qualification_reference_document_id || "",
+                dataF?.qualification_reference_document_id || undefined,
               qualification_ids: arrData,
               qualification_master_id: `${
                 dataF?.qualification_master_id
                   ? dataF?.qualification_master_id
-                  : ""
+                  : undefined
               }`,
               type_of_document: dataF?.document_reference?.doument_type,
             };
@@ -261,7 +277,12 @@ export default function PrerakOnboardingForm({
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
       const required = constantSchema?.required.filter((item) =>
-        ["has_diploma", "qualification_ids"].includes(item)
+        [
+          "has_diploma",
+          "qualification_ids",
+          "qualification_master_id",
+          "qualification_reference_document_id",
+        ].includes(item)
       );
       setSchemaData({ ...constantSchema, properties, required });
     } else if (hasDiploma) {
@@ -934,32 +955,36 @@ export default function PrerakOnboardingForm({
   };
 
   const onSubmit = async (data) => {
-    let newFormData = data.formData;
-    if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
-      };
-    }
-    if (_.isEmpty(errors)) {
-      const newdata = filterObject(
-        newFormData,
-        Object.keys(schema?.properties),
-        {},
-        ""
-      );
-      //console.log("new updated Form Data", newdata);
-
-      //online data submit
-      //await formSubmitUpdate(newdata);
-
-      //offline data submit
-      await updateOnboardingData(userid, newdata);
-      if (localStorage.getItem("backToProfile") === "false") {
-        nextPreviewStep();
-      } else {
-        navigatePage("/profile", "");
+    try {
+      let newFormData = data.formData;
+      if (schema?.properties?.first_name) {
+        newFormData = {
+          ...newFormData,
+          ["first_name"]: newFormData?.first_name.replaceAll(" ", ""),
+        };
       }
+      if (_.isEmpty(errors)) {
+        const newdata = filterObject(
+          newFormData,
+          Object.keys(schema?.properties),
+          {},
+          ""
+        );
+        //console.log("new updated Form Data", newdata);
+
+        //online data submit
+        //await formSubmitUpdate(newdata);
+
+        //offline data submit
+        await updateOnboardingData(userid, newdata);
+        if (localStorage.getItem("backToProfile") === "false") {
+          nextPreviewStep();
+        } else {
+          navigatePage("/profile", "");
+        }
+      }
+    } catch (e) {
+      console.log("error in submit", e);
     }
   };
   if (page === "upload") {
@@ -989,6 +1014,18 @@ export default function PrerakOnboardingForm({
     }
     localStorage.setItem("backToProfile", backToProfile);
   };
+
+  if (step === "address_details") {
+    if (!isOnline) {
+      return (
+        <AddressOffline
+          alert={"ADDRESS_ALERT"}
+          navigatePage={navigatePage}
+          facilitator={facilitator}
+        />
+      );
+    }
+  }
   return (
     <Box py={6} px={4} mb={5}>
       {alert && (

@@ -7,8 +7,8 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Modal, ScrollView, VStack } from "native-base";
-import React from "react";
+import { Alert, HStack, Modal, ScrollView, Stack, VStack } from "native-base";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import SessionActions, { SessionList } from "./CampSessionModal";
@@ -25,20 +25,26 @@ const checkNext = (status, updated_at) => {
 export default function CampSessionList({ footerLinks }) {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [sessionList, setSessionList] = React.useState([]);
-  const [sessionActive, setSessionActive] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [modalVisible, setModalVisible] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [sessionDetails, setSessionDetails] = React.useState();
-  const [previousSessionDetails, setPreviousSessionDetails] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
-  const [submitStatus, setSubmitStatus] = React.useState();
-  const [error, setError] = React.useState();
+  const [sessionList, setSessionList] = useState([]);
+  const [sessionActive, setSessionActive] = useState();
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState();
+  const [enumOptions, setEnumOptions] = useState({});
+  const [sessionDetails, setSessionDetails] = useState();
+  const [previousSessionDetails, setPreviousSessionDetails] = useState();
+  const [isDisable, setIsDisable] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState();
+  const [error, setError] = useState();
   const navigate = useNavigate();
-  const [bodyHeight, setBodyHeight] = React.useState();
+  const [bodyHeight, setBodyHeight] = useState();
+  const [campType, setCampType] = useState();
 
-  const getData = React.useCallback(async () => {
+  useEffect(async () => {
+    const result = await campService.getCampDetails({ id });
+    setCampType(result?.data?.type);
+  }, [id]);
+
+  const getData = useCallback(async () => {
     if (modalVisible) {
       const result = await campService.getCampSessionDetails({
         id: modalVisible,
@@ -54,7 +60,7 @@ export default function CampSessionList({ footerLinks }) {
     }
   }, [modalVisible]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const completeItem = sessionList.filter(
       (item) => item?.session_tracks?.[0]?.status === "complete"
     );
@@ -69,14 +75,14 @@ export default function CampSessionList({ footerLinks }) {
     }, 2000);
   }, [sessionList]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       await getData();
     };
     fetchData();
   }, [modalVisible]);
 
-  // const handleStartSession = React.useCallback(
+  // const handleStartSession = useCallback(
   //   async (modalVisible) => {
   //     setIsDisable(true);
   //     await campService.creatCampSession({
@@ -89,7 +95,7 @@ export default function CampSessionList({ footerLinks }) {
   //   [getData, submitStatus]
   // );
 
-  const handlePartiallyDone = React.useCallback(async () => {
+  const handlePartiallyDone = useCallback(async () => {
     setError();
     setIsDisable(true);
     if (submitStatus?.reason) {
@@ -200,7 +206,7 @@ export default function CampSessionList({ footerLinks }) {
     setSessionActive(getSessionCount(data));
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     await getCampSessionsList();
     const enumData = await enumRegistryService.listOfEnum();
     setEnumOptions(enumData?.data ? enumData?.data : {});
@@ -222,62 +228,74 @@ export default function CampSessionList({ footerLinks }) {
       _footer={{ menues: footerLinks }}
       getBodyHeight={(e) => setBodyHeight(e)}
     >
-      <VStack flex={1} space={"5"} p="5">
-        <HStack space="2">
-          <IconByName name="BookOpenLineIcon" />
-          <FrontEndTypo.H2 color="textMaroonColor.400">
-            {t("SESSION")}
-          </FrontEndTypo.H2>
-        </HStack>
-        <ScrollView maxH={bodyHeight - 150} p="4">
-          <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
-        </ScrollView>
-      </VStack>
-      {!sessionActive?.ordering && (
-        <VStack px="4">
-          <FrontEndTypo.Primarybutton
-            onPress={() => {
-              navigate(`/camps/${id}/campexecution/activities`);
-            }}
-          >
-            {t("SUBMIT")}
-          </FrontEndTypo.Primarybutton>
-        </VStack>
+      {campType === "pcr" ? (
+        <Alert status="warning" alignItems="start" mb="3" mt="4">
+          <HStack alignItems="center" space="2">
+            <Alert.Icon />
+            <FrontEndTypo.H3>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H3>
+          </HStack>
+        </Alert>
+      ) : (
+        <Stack>
+          <VStack flex={1} space="5" p="5">
+            <HStack space="2">
+              <IconByName name="BookOpenLineIcon" />
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("SESSION")}
+              </FrontEndTypo.H2>
+            </HStack>
+            <ScrollView maxH={bodyHeight - 150} p="4">
+              <SessionList
+                {...{ sessionList, sessionActive, setModalVisible }}
+              />
+            </ScrollView>
+          </VStack>
+          {!sessionActive?.ordering && (
+            <VStack px="4">
+              <FrontEndTypo.Primarybutton
+                onPress={() => {
+                  navigate(`/camps/${id}/campexecution/activities`);
+                }}
+              >
+                {t("SUBMIT")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
+          )}
+          <Modal isOpen={modalVisible} avoidKeyboard size="xl">
+            <Modal.Content>
+              <Modal.Header>
+                <FrontEndTypo.H3
+                  textAlign="center"
+                  color="textMaroonColor.400"
+                  bold
+                >
+                  {t("LESSON")} {sessionDetails?.ordering}
+                </FrontEndTypo.H3>
+                <Modal.CloseButton
+                  onPress={() => {
+                    setModalVisible();
+                    setSubmitStatus();
+                  }}
+                />
+              </Modal.Header>
+              <Modal.Body p="6">
+                <SessionActions
+                  {...{
+                    sessionActive,
+                    isDisable,
+                    enumOptions,
+                    submitStatus,
+                    setSubmitStatus,
+                    handlePartiallyDone,
+                    handleCancel,
+                    error,
+                  }}
+                />
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        </Stack>
       )}
-
-      <Modal isOpen={modalVisible} avoidKeyboard size="xl">
-        <Modal.Content>
-          <Modal.Header>
-            <FrontEndTypo.H3
-              textAlign={"Center"}
-              color="textMaroonColor.400"
-              bold
-            >
-              {t("LESSON")} {sessionDetails?.ordering}
-            </FrontEndTypo.H3>
-            <Modal.CloseButton
-              onPress={() => {
-                setModalVisible();
-                setSubmitStatus();
-              }}
-            />
-          </Modal.Header>
-          <Modal.Body p="6">
-            <SessionActions
-              {...{
-                sessionActive,
-                isDisable,
-                enumOptions,
-                submitStatus,
-                setSubmitStatus,
-                handlePartiallyDone,
-                handleCancel,
-                error,
-              }}
-            />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

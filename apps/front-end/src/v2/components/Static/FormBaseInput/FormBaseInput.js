@@ -27,6 +27,7 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
+  jsonParse,
   H3,
   H4,
 } from "@shiksha/common-lib";
@@ -64,13 +65,14 @@ export function LabelMobileWidget() {
   );
 }
 export function EnrollmentLabelMobileWidget() {
+  let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
   return (
     <>
       <FrontEndTypo.H2 color="textGreyColor.750">
         {t("ENROLLMENT_MOBILE_NO")}
       </FrontEndTypo.H2>
-      <Text color="textGreyColor.750" mb={1}>
+      <Text color="textMaroonColor.400" mb={1}>
         {t("AS_PER_APPLICATION_RECEIPT")}
       </Text>
     </>
@@ -367,7 +369,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, _stack } = schema || {};
+  const { label, format, readOnly } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -388,7 +390,7 @@ export const RadioBtn = ({
       >
         <Stack
           direction={{
-            base: "column",
+            base: direction || "column",
             sm: directionColumn || "row",
           }}
           alignItems={{
@@ -903,6 +905,7 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
+  console.log({ errors });
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
   const getMessage = (error) => {
@@ -922,6 +925,8 @@ const transformErrors = (errors, schema, t) => {
         return t("SELECT_MAXIMUM", error?.params?.limit, title);
       case "enum":
         return t("SELECT_MESSAGE");
+      case "type":
+        return "";
       case "format":
         const { format } = error?.params || {};
         const messageKey =

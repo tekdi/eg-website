@@ -196,8 +196,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           shadow="AlertShadow"
           borderRadius="10px"
           onPress={async () => {
-            disableEdit() &&
-              navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
+            navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
           }}
         >
           <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
@@ -210,14 +209,13 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
 
               <FrontEndTypo.H3 ml={5}>{t("UPDATE_LEARNER")}</FrontEndTypo.H3>
             </HStack>
-            {disableEdit() && (
-              <IconByName
-                isDisabled
-                name="ArrowRightSLineIcon"
-                _icon={{ size: "30px" }}
-                color="textBlack.500"
-              />
-            )}
+
+            <IconByName
+              isDisabled
+              name="ArrowRightSLineIcon"
+              _icon={{ size: "30px" }}
+              color="textBlack.500"
+            />
           </HStack>
         </Pressable>
 

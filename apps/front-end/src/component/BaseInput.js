@@ -406,12 +406,12 @@ export const Aadhaar = (props) => {
 // rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label, title, readOnly } = schema || {};
+  const { label, title, readOnly, isHideFloatingLabel } = schema || {};
   const { t } = useTranslation();
 
   return (
     <FormControl gap="4">
-      {(label || (!label && title)) && (
+      {(label || (!label && title)) && !isHideFloatingLabel && (
         <FormControl.Label
           rounded="sm"
           position="absolute"

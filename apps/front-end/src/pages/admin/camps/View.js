@@ -25,6 +25,8 @@ import {
   Pressable,
   Stack,
   ScrollView,
+  useToast,
+  Menu,
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
@@ -207,6 +209,8 @@ export default function View({ footerLinks }) {
   const { id } = useParams();
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [facilitator, setFacilitator] = useState({});
+
   const getConsentDetailsWithParams = async (campId, facilitatorId) => {
     try {
       const campConsent = await campService.getCampAdminConsent({
@@ -233,6 +237,7 @@ export default function View({ footerLinks }) {
       const campId = camp?.id;
       const facilitatorId = camp?.faciltator[0]?.id;
       getConsentDetailsWithParams(campId, facilitatorId);
+      setFacilitator(camp?.faciltator?.[0]);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -291,6 +296,34 @@ export default function View({ footerLinks }) {
     [setSelectedRows]
   );
 
+  const actiondropDown = (triggerProps, t) => {
+    return (
+      <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        <HStack
+          rounded={"full"}
+          background="white"
+          shadow="BlueOutlineShadow"
+          borderRadius="full"
+          borderWidth="1px"
+          borderColor="blueText.400"
+          p="2"
+          space={4}
+        >
+          <AdminTypo.H5
+            _text={{
+              color: "blueText.400",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+          >
+            {t("ACTIONS")}
+          </AdminTypo.H5>
+          <IconByName pr="0" name="ArrowDownSLineIcon" isDisabled={true} />
+        </HStack>
+      </Pressable>
+    );
+  };
+
   // Table component
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
@@ -324,23 +357,46 @@ export default function View({ footerLinks }) {
             </HStack>
           </Alert>
         )}
-        <HStack alignItems={"center"} space="1" pt="3">
-          <IconByName name="UserLineIcon" size="md" />
-          <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/camps`)}
-          />
-          <AdminTypo.H4
-            bold
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            enumOptions
+        <HStack alignItems={"center"} justifyContent={"space-between"}>
+          <HStack alignItems={"center"} space="1" pt="3">
+            <IconByName name="UserLineIcon" size="md" />
+            <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
+            <IconByName
+              size="sm"
+              name="ArrowRightSLineIcon"
+              onPress={(e) => navigate(`/admin/camps`)}
+            />
+            <AdminTypo.H4
+              bold
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              enumOptions
+            >
+              {data?.id}
+            </AdminTypo.H4>
+          </HStack>
+
+          <Menu
+            placement="bottom right"
+            trigger={(triggerProps) => actiondropDown(triggerProps, t)}
           >
-            {data?.id}
-          </AdminTypo.H4>
+            <Menu.Item
+              onPress={() => {
+                navigate(
+                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                );
+              }}
+            >
+              {t("REASSIGN_CAMP")}
+            </Menu.Item>
+
+            {data?.group?.status === "camp_ip_verified" && (
+              <Menu.Item onPress={() => setStatus("change_required")}>
+                {t("MODIFY")}
+              </Menu.Item>
+            )}
+          </Menu>
         </HStack>
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
@@ -368,7 +424,7 @@ export default function View({ footerLinks }) {
                               {facilitator?.mobile}
                             </AdminTypo.H5>
                           </VStack>
-                          <IconByName
+                          {/* <IconByName
                             name="EditBoxLineIcon"
                             color="iconColor.100"
                             onPress={(e) =>
@@ -376,7 +432,7 @@ export default function View({ footerLinks }) {
                                 `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
                               )
                             }
-                          />
+                          /> */}
                         </HStack>
                       }
                       subTitle={
@@ -586,24 +642,15 @@ export default function View({ footerLinks }) {
                 >
                   {t("VERIFY")}
                 </AdminTypo.StatusButton>
-                <AdminTypo.Secondarybutton
-                  status="warning"
-                  isDisabled={isButtonLoading}
-                  onPress={() => setStatus("change_required")}
-                >
-                  {t("CHANGE_REQUIRED")}
-                </AdminTypo.Secondarybutton>
-              </HStack>
-            )}
-
-            {data?.group?.status === "camp_ip_verified" && (
-              <HStack space={4} justifyContent={"center"}>
-                <AdminTypo.Secondarybutton
-                  isDisabled={isButtonLoading}
-                  onPress={() => setStatus("change_required")}
-                >
-                  {t("MODIFY")}
-                </AdminTypo.Secondarybutton>
+                {data?.group?.status !== "change_required" && (
+                  <AdminTypo.Secondarybutton
+                    status="warning"
+                    isDisabled={isButtonLoading}
+                    onPress={() => setStatus("change_required")}
+                  >
+                    {t("CHANGE_REQUIRED")}
+                  </AdminTypo.Secondarybutton>
+                )}
               </HStack>
             )}
           </Stack>

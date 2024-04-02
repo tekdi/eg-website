@@ -209,7 +209,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
                     fontWeight="400"
                     flex="0.4"
                   >
-                    {qualifications?.map((e) => e.name).join(", ")}
+                    {t(`${qualifications?.map((e) => e.name).join(", ")}`)}
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
