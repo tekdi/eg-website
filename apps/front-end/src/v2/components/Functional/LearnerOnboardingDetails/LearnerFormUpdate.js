@@ -71,33 +71,38 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     if (result) {
       setFormData({
         ...formData,
-        device_ownership: result?.core_beneficiaries?.device_ownership,
-        device_type: result?.core_beneficiaries?.device_type,
-        state: programSelected?.state_name,
-        district: result?.district,
-        address: result?.address == "null" ? "" : result?.address,
-        block: result?.block,
-        village: result?.village,
-        grampanchayat:
-          result?.grampanchayat == "null" ? "" : result?.grampanchayat,
+        device_ownership:
+          result?.core_beneficiaries?.device_ownership || undefined,
+        device_type: result?.core_beneficiaries?.device_type || undefined,
+        state: programSelected?.state_name || undefined,
+        district: result?.district || undefined,
+        address: result?.address || undefined,
+        block: result?.block || undefined,
+        village: result?.village || undefined,
+        grampanchayat: result?.grampanchayat || undefined,
         pincode: result?.pincode || undefined,
-        marital_status: result?.extended_users?.marital_status,
-        social_category: result?.extended_users?.social_category,
-        type_of_learner: result?.core_beneficiaries?.type_of_learner,
+        marital_status: result?.extended_users?.marital_status || undefined,
+        social_category: result?.extended_users?.social_category || undefined,
+        type_of_learner:
+          result?.core_beneficiaries?.type_of_learner || undefined,
         last_standard_of_education_year:
-          result?.core_beneficiaries?.last_standard_of_education_year,
+          result?.core_beneficiaries?.last_standard_of_education_year ||
+          undefined,
         last_standard_of_education:
-          result?.core_beneficiaries?.last_standard_of_education,
-        previous_school_type: result?.core_beneficiaries?.previous_school_type,
+          result?.core_beneficiaries?.last_standard_of_education || undefined,
+        previous_school_type:
+          result?.core_beneficiaries?.previous_school_type || undefined,
         reason_of_leaving_education:
-          result?.core_beneficiaries?.reason_of_leaving_education,
-        learning_level: result?.program_beneficiaries?.learning_level,
-        learning_motivation: getUniqueArray(
-          result?.program_beneficiaries?.learning_motivation
-        ),
-        type_of_support_needed: getUniqueArray(
-          result?.program_beneficiaries?.type_of_support_needed
-        ),
+          result?.core_beneficiaries?.reason_of_leaving_education || undefined,
+        learning_level:
+          result?.program_beneficiaries?.learning_level || undefined,
+        learning_motivation:
+          getUniqueArray(result?.program_beneficiaries?.learning_motivation) ||
+          undefined,
+        type_of_support_needed:
+          getUniqueArray(
+            result?.program_beneficiaries?.type_of_support_needed
+          ) || undefined,
       });
     }
   }, []);
