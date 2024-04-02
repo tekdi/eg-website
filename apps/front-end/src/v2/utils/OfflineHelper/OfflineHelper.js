@@ -234,7 +234,6 @@ export async function updateOnboardingData(id, onboardingData) {
   let program_faciltators = new Object();
   let experience = [];
   let qualifications = new Object();
-  console.log("onboardingData", onboardingData);
   //step 1 basic_details
   onboardingData?.first_name
     ? onboardingData.first_name != userInfo?.users?.first_name
