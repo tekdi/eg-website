@@ -454,7 +454,7 @@ export default function PrerakOnboardingArrayForm({
                 >
                   <IconByName
                     name="AddLineIcon"
-                    size="sm"
+                    _icon={{ size: "16px" }}
                     style={{ fontSize: "8px", marginRight: "4px" }}
                   />
                   {`${t(stepLabel)}`}

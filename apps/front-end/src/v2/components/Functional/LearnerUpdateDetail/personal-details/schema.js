@@ -9,12 +9,12 @@ export default {
         marital_status: {
           label: "MARITAL_STATUS",
           type: "string",
-          format: "CustomR",
+          format: "RadioBtn",
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
-          format: "CustomR",
+          format: "RadioBtn",
         },
       },
     },

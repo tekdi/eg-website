@@ -23,7 +23,7 @@ export default {
         device_type: {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
-          format: "CustomR",
+          format: "RadioBtn",
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },
@@ -41,7 +41,7 @@ export default {
         },
         alternative_device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
-          format: "CustomR",
+          format: "RadioBtn",
           type: "string",
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],

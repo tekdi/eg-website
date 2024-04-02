@@ -67,10 +67,10 @@ export function EnrollmentLabelMobileWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H2 color="textMaroonColor.400">
+      <FrontEndTypo.H2 color="textGreyColor.750">
         {t("ENROLLMENT_MOBILE_NO")}
       </FrontEndTypo.H2>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text color="textGreyColor.750" mb={1}>
         {t("AS_PER_APPLICATION_RECEIPT")}
       </Text>
     </>
@@ -367,7 +367,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly } = schema || {};
+  const { label, format, readOnly, _stack } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -379,7 +379,7 @@ export const RadioBtn = ({
         </FormControl.Label>
       )}
       <Radio.Group
-        colorScheme="red"
+        colorScheme="eg-blue"
         key={items}
         pb="4"
         value={value}
@@ -398,13 +398,14 @@ export const RadioBtn = ({
           space={4}
           w="75%"
           gap="4"
+          {..._stack}
         >
           {items?.map((item) => (
             <Radio
               key={item?.value}
               value={item?.value}
-              size="lg"
-              colorScheme="red"
+              size="sm"
+              colorScheme="eg-blue"
               _text={{ fontSize: 12, fontWeight: 500 }}
               isDisabled={readOnly}
             >
@@ -484,7 +485,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
                 }),
           }}
         >
-          <Text fontSize="12" fontWeight="400">
+          <Text color={"floatingLabelColor.500"} fontSize="12" fontWeight="400">
             {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
@@ -563,21 +564,26 @@ export const Location = ({ value, onChange, required, schema }) => {
   }, [value]);
   return (
     <HStack alignItems={"center"} space={2}>
-      <VStack space={2}>
+      <HStack space={2}>
         {[lat, long]?.map((item, index) => {
           return (
             <HStack alignItems={"center"} space={2} key={item}>
-              <FrontEndTypo.H3 bold color="textMaroonColor.400">
-                {index ? t("LONGITUDE") : t("LATITUDE")}
-              </FrontEndTypo.H3>
-              <Text>:{value?.[item]}</Text>
+              <FrontEndTypo.H4 bold color="floatingLabelColor.500">
+                {index ? t("LONGITUDE") : t("LATITUDE")}:
+              </FrontEndTypo.H4>
+              <FrontEndTypo.H4 color={"grayTitleCard"}>
+                {value?.[item]}
+              </FrontEndTypo.H4>
             </HStack>
           );
         })}
-
         {t(error)}
-      </VStack>
-      <Button onPress={updateValue}>{t("UPDATE")}</Button>
+      </HStack>
+      <IconByName
+        _icon={{ color: "#484848" }}
+        name="PencilFillIcon"
+        onPress={updateValue}
+      />
     </HStack>
   );
 };
@@ -696,7 +702,9 @@ export const MultiCheck = ({
                       {...icons[key]}
                       isDisabled
                       color={
-                        value === item?.value ? "secondaryBlue.500" : "gray.500"
+                        value === item?.value
+                          ? "floatingLabelColor.500"
+                          : "gray.500"
                       }
                       _icon={{
                         ...(icons?.[key]?.["_icon"]

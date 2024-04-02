@@ -5,6 +5,7 @@ import {
   FrontEndTypo,
   BodyMedium,
   getBeneficaryDocumentationStatus,
+  SelectStyle,
 } from "@shiksha/common-lib";
 import React, { useState } from "react";
 import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
@@ -116,14 +117,9 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
         </Alert>
       ) : (
         <VStack width={"90%"} margin={"auto"} mt={3}>
-          <FrontEndTypo.H3
-            fontSize="sm"
-            mt={3}
-            bold
-            color="textMaroonColor.900"
-          >
+          <FrontEndTypo.H1 bold color="textGreyColor.900" mt="3">
             {t("MANDATORY")}
-          </FrontEndTypo.H3>
+          </FrontEndTypo.H1>
           {/* <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
             <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
               {t("JAN_AADHAAR_CARD")}
@@ -189,18 +185,14 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
             </Select>
           </HStack> */}
 
-          <HStack
-            mt={8}
-            space="2"
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={4} space="2">
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("PHOTO")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.photo || ""}
               accessibilityLabel="Select"
+              borderRadius="5px"
               placeholder={status?.photo || "Select"}
               _selectedItem={{
                 bg: "teal.600",
@@ -220,16 +212,17 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("MOBILE_NUMBER")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.mobile || ""}
               accessibilityLabel="Select"
+              borderRadius="5px"
               placeholder={status?.mobile || "Select"}
               _selectedItem={{
                 bg: "teal.600",
@@ -249,22 +242,22 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("MARKSHEET")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.marksheet || ""}
-              accessibilityLabel="Select"
               placeholder={status?.marksheet || "Select"}
               _selectedItem={{
                 bg: "teal.600",
                 endIcon: <CheckIcon size="5" />,
               }}
               mt={1}
+              borderRadius="5px"
               onValueChange={(itemValue) =>
                 setStatus({ ...status, marksheet: itemValue })
               }
@@ -278,16 +271,17 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("BANK_PASSBOOK")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.bank || ""}
               accessibilityLabel="Select"
+              borderRadius="5px"
               placeholder={status?.bank || "Select"}
               _selectedItem={{
                 bg: "teal.600",
@@ -307,19 +301,14 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack
-            mt={8}
-            mb={10}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8} mb={10}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("BIRTH_CERTIFICATE")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.birth || ""}
               accessibilityLabel="Select"
               placeholder={status?.birth || "Select"}
@@ -327,6 +316,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                 bg: "teal.600",
                 endIcon: <CheckIcon size="5" />,
               }}
+              borderRadius="5px"
               mt={1}
               onValueChange={(itemValue) =>
                 setStatus({ ...status, birth: itemValue })
@@ -341,18 +331,19 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
-          <FrontEndTypo.H3 fontSize="sm" bold color="textMaroonColor.900">
+            </SelectStyle>
+          </VStack>
+          <FrontEndTypo.H1 bold color="textGreyColor.900">
             {t("MAY_BE_REQUIRED")}
-          </FrontEndTypo.H3>
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          </FrontEndTypo.H1>
+          <VStack mt={4}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("CASTE_CERTIFICATE")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.caste || ""}
               accessibilityLabel="Select"
+              borderRadius="5px"
               placeholder={status?.caste || "Select"}
               _selectedItem={{
                 bg: "teal.600",
@@ -372,16 +363,17 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("TRANSFER_CERTIFICATE")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.transfer || ""}
               accessibilityLabel="Select"
+              borderRadius="5px"
               placeholder={status?.transfer || "Select"}
               _selectedItem={{
                 bg: "teal.600",
@@ -401,14 +393,14 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("AFFIDAVIT")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.notary || ""}
               accessibilityLabel="Select"
               placeholder={status?.notary || "Select"}
@@ -416,6 +408,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                 bg: "teal.600",
                 endIcon: <CheckIcon size="5" />,
               }}
+              borderRadius="5px"
               mt={1}
               onValueChange={(itemValue) =>
                 setStatus({ ...status, notary: itemValue })
@@ -430,14 +423,14 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("CBOSIGN")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.cbo || ""}
               accessibilityLabel="Select"
               placeholder={status?.cbo || "Select"}
@@ -446,6 +439,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                 endIcon: <CheckIcon size="5" />,
               }}
               mt={1}
+              borderRadius="5px"
               onValueChange={(itemValue) =>
                 setStatus({ ...status, cbo: itemValue })
               }
@@ -459,19 +453,14 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
 
-          <HStack
-            mt={8}
-            mb={8}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+          <VStack mt={8} mb={8}>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("CBOSIGNTRANSFER")}
-            </FrontEndTypo.H3>
-            <Select
+            </FrontEndTypo.H4>
+            <SelectStyle
               selectedValue={status?.cbo_sign || ""}
               accessibilityLabel="Select"
               placeholder={status?.cbo_sign || "Select"}
@@ -479,6 +468,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                 bg: "teal.600",
                 endIcon: <CheckIcon size="5" />,
               }}
+              borderRadius="5px"
               mt={1}
               onValueChange={(itemValue) =>
                 setStatus({ ...status, cbo_sign: itemValue })
@@ -493,8 +483,8 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
                   />
                 );
               })}
-            </Select>
-          </HStack>
+            </SelectStyle>
+          </VStack>
           {checkList ? (
             buttonPress ? (
               <FrontEndTypo.ColourPrimaryButton

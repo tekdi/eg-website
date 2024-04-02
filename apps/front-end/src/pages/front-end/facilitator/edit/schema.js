@@ -135,13 +135,13 @@ export default {
         marital_status: {
           label: "MARITAL_STATUS",
           type: "string",
-          format: "RadioBtn",
+          format: "CustomR",
           grid: 2,
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
-          format: "RadioBtn",
+          format: "CustomR",
           grid: 2,
         },
       },

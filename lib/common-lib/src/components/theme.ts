@@ -418,6 +418,16 @@ const DEFAULT_THEME = {
       shadowOpacity: 0.4,
       shadowRadius: 4,
       elevation: 4
+    },
+    CardComponentShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 4
     }
   },
   bg: {
@@ -430,11 +440,23 @@ const DEFAULT_THEME = {
   },
 
   colors: {
+    'eg-blue': {
+      50: '#eff6ff',
+      100: '#dbeafe',
+      200: '#bfdbfe',
+      300: '#93c5fd',
+      400: '#60a5fa',
+      500: '#3b82f6',
+      600: '#1F1D76',
+      700: '#1d4ed8',
+      800: '#1e40af',
+      900: '#1e3a8a'
+    },
     footer: {
       boxBorder: '#FF0000'
     },
     formBg: {
-      500: '#F4F4F7'
+      500: '#FFFFFF'
     },
     inputValueColor: {
       500: '#1F1B13'
@@ -534,6 +556,9 @@ const DEFAULT_THEME = {
     },
     SlickDotsBg: {
       500: '#D2D1FF'
+    },
+    UploadFileBorder: {
+      500: '#B7B7B7'
     },
     floatingLabelColor: {
       500: '#1F1D76'

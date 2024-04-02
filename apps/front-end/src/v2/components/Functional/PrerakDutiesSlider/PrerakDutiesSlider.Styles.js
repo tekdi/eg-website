@@ -47,7 +47,6 @@ export const stylesheet = {
   defaulutLanguageButtonText: {
     color: "var(--Gray-80, #424242)",
     textAlign: "center",
-    fontFamily: "Inter",
     fontSize: 12,
     fontStyle: "normal",
     fontWeight: "500",

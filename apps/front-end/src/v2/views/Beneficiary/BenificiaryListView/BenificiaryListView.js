@@ -389,6 +389,20 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
               />
               <VStack flex="0.8"> */}
             <FrontEndTypo.Secondarybutton
+              onPress={(e) => {
+                if (
+                  [
+                    "pragati_mobilizer",
+                    "selected_prerak",
+                    "selected_for_training",
+                    "selected_for_onboarding",
+                  ].includes(facilitator.status)
+                ) {
+                  navigate(`/beneficiary`);
+                } else {
+                  navigate("/beneficiary");
+                }
+              }}
               // rightIcon={}
               mx="auto"
               my="2"

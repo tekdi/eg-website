@@ -534,16 +534,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Alert>
               )}
             <HStack py="4" flex="1" px="4">
-              <Image
+              {/* <Image
                 source={{
                   uri: "/hello.svg",
                 }}
                 alt="Add AG"
                 size={"30px"}
                 resizeMode="contain"
-              />
-              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                {t("WELCOME")} {facilitator?.first_name},
+              /> */}
+              <FrontEndTypo.H1 color="textGreyColor.900" pl="1">
+                {t("HELLO_HOME")}, {facilitator?.first_name}!
               </FrontEndTypo.H1>
             </HStack>
             {isEventActive
@@ -702,9 +702,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <Stack px="3">
                 {facilitator?.program_faciltators?.status ===
                   "pragati_mobilizer" && (
-                  <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
+                  <FrontEndTypo.H3
+                    bold
+                    color="textGreyColor.750"
+                    pb="5px"
+                    pt="10"
+                  >
                     {t("ITS_TIME_TO_START_MOBILIZING")}
-                  </FrontEndTypo.H2>
+                  </FrontEndTypo.H3>
                 )}
               </Stack>
             </Stack>

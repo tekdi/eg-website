@@ -68,12 +68,12 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     >
       <VStack bg="bgGreyColor.200" pb="10">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-          <FrontEndTypo.H1 color="textMaroonColor.400" pt="5" bold>
-            {t("WELCOME")} {facilitator?.first_name}
+          <FrontEndTypo.H1 color="textGreyColor.900" pt="5" bold>
+            {t("HELLO")} {facilitator?.first_name}
           </FrontEndTypo.H1>
 
           <Box paddingBottom="20px">
-            <FrontEndTypo.H2 color="textGreyColor.900">
+            <FrontEndTypo.H2 color="textGreyColor.7500">
               {progress !== 300
                 ? t("COMPLETE_YOUR_PROFILE")
                 : t("PROFILE_COMPLETED")}

@@ -22,8 +22,9 @@ export default {
         },
         enrolled_for_board: {
           type: "string",
+          _stack: { direction: "row", justifyContent: "space-between" },
           label: "BOARD_OF_ENROLLMENT",
-          format: "radio",
+          format: "RadioBtn",
         },
         enrollment_number: {
           type: "string",
