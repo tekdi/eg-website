@@ -27,7 +27,6 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
-  jsonParse,
   H3,
   H4,
 } from "@shiksha/common-lib";
@@ -65,11 +64,10 @@ export function LabelMobileWidget() {
   );
 }
 export function EnrollmentLabelMobileWidget() {
-  let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H2 color="textGreyColor.750">
+      <FrontEndTypo.H2 color="textMaroonColor.400">
         {t("ENROLLMENT_MOBILE_NO")}
       </FrontEndTypo.H2>
       <Text color="textMaroonColor.400" mb={1}>
@@ -369,7 +367,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly } = schema || {};
+  const { label, format, readOnly, _stack } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -390,7 +388,7 @@ export const RadioBtn = ({
       >
         <Stack
           direction={{
-            base: direction || "column",
+            base: "column",
             sm: directionColumn || "row",
           }}
           alignItems={{
@@ -570,7 +568,7 @@ export const Location = ({ value, onChange, required, schema }) => {
         {[lat, long]?.map((item, index) => {
           return (
             <HStack alignItems={"center"} space={2} key={item}>
-              <FrontEndTypo.H4 bold color="floatingLabelColor.500">
+              <FrontEndTypo.H4 bold color="floatingLabelColor.400">
                 {index ? t("LONGITUDE") : t("LATITUDE")}:
               </FrontEndTypo.H4>
               <FrontEndTypo.H4 color={"grayTitleCard"}>
@@ -579,13 +577,11 @@ export const Location = ({ value, onChange, required, schema }) => {
             </HStack>
           );
         })}
+
         {t(error)}
       </HStack>
-      <IconByName
-        _icon={{ color: "#484848" }}
-        name="PencilFillIcon"
-        onPress={updateValue}
-      />
+      {/* <Button onPress={updateValue}></Button> */}
+      <IconByName name="PencilLineIcon" onPress={updateValue} />
     </HStack>
   );
 };
@@ -905,7 +901,6 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
-  console.log({ errors });
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
   const getMessage = (error) => {
@@ -925,8 +920,6 @@ const transformErrors = (errors, schema, t) => {
         return t("SELECT_MAXIMUM", error?.params?.limit, title);
       case "enum":
         return t("SELECT_MESSAGE");
-      case "type":
-        return "";
       case "format":
         const { format } = error?.params || {};
         const messageKey =
