@@ -568,10 +568,10 @@ export const Location = ({ value, onChange, required, schema }) => {
         {[lat, long]?.map((item, index) => {
           return (
             <HStack alignItems={"center"} space={2} key={item}>
-              <FrontEndTypo.H4 bold color="floatingLabelColor.400">
+              <FrontEndTypo.H4 bold color="floatingLabelColor.500">
                 {index ? t("LONGITUDE") : t("LATITUDE")}:
               </FrontEndTypo.H4>
-              <FrontEndTypo.H4 color={"grayTitleCard"}>
+              <FrontEndTypo.H4 color={"#484848"}>
                 {value?.[item]}
               </FrontEndTypo.H4>
             </HStack>
