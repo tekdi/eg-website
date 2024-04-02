@@ -521,7 +521,7 @@ export default function BenificiaryProfileView(props) {
                   color="#790000"
                   size="sm"
                   onPress={(e) => {
-                    navigate(`/beneficiary/${id}/BenificiaryJourney`);
+                    navigate(`/beneficiary/${id}/benificiaryJourney`);
                   }}
                 />
               </HStack>
