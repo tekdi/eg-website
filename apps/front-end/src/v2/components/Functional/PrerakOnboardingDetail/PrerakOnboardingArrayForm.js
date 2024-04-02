@@ -173,8 +173,6 @@ export default function PrerakOnboardingArrayForm({
       //get offline data
       setLoading(true);
       const result = await getOnboardingData(id);
-      console.log("getOnboardingData", result);
-
       setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
@@ -347,7 +345,6 @@ export default function PrerakOnboardingArrayForm({
       //get offline data
       setLoading(true);
       const result = await getOnboardingData(userid);
-      console.log("getOnboardingData", result);
       setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);

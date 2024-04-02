@@ -41,6 +41,7 @@ export default function PhotoUpload({
   }, [page, formData]);
 
   const [fileValue, setFileValue] = useState(null);
+  const [error, setError] = useState();
 
   useEffect(() => {
     async function fetchData() {
@@ -61,6 +62,18 @@ export default function PhotoUpload({
     }
     fetchData();
   }, [fileValue]);
+
+  const handleProfilePhoto = (label) => {
+    if (fileValue) {
+      if (label === "profile") {
+        navigatePage("/profile", "");
+      } else {
+        navigate(`/profile/edit/upload/${page + 1}`);
+      }
+    } else {
+      setError(`REQUIRED_MESSAGE`);
+    }
+  };
 
   return (
     <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
@@ -84,11 +97,17 @@ export default function PhotoUpload({
           onChange={(e) => setFileValue(e)}
         />
 
+        {error && (
+          <FrontEndTypo.H2 mt={3} color={"textMaroonColor.400"}>
+            {t(`ADD_FRONT_VIEW_${page}`)}
+          </FrontEndTypo.H2>
+        )}
+
         <FrontEndTypo.Primarybutton
           p="4"
           mt="4"
           onPress={() => {
-            navigate(`/profile/edit/upload/${page + 1}`);
+            handleProfilePhoto("next");
           }}
         >
           {t("SAVE_AND_NEXT")}
@@ -97,7 +116,7 @@ export default function PhotoUpload({
         <FrontEndTypo.Secondarybutton
           p="4"
           mt="4"
-          onPress={() => navigatePage("/profile", "")}
+          onPress={() => handleProfilePhoto("profile")}
         >
           {t("SAVE_AND_PROFILE")}
         </FrontEndTypo.Secondarybutton>

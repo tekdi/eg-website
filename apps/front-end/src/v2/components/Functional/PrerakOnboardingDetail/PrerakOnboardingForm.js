@@ -94,7 +94,6 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-          console.log("form offline data", result);
 
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
@@ -119,12 +118,12 @@ export default function PrerakOnboardingForm({
             const newData = {
               ...dataF,
               qualification_reference_document_id:
-                dataF?.qualification_reference_document_id || "",
+                dataF?.qualification_reference_document_id || undefined,
               qualification_ids: arrData,
               qualification_master_id: `${
                 dataF?.qualification_master_id
                   ? dataF?.qualification_master_id
-                  : ""
+                  : undefined
               }`,
               type_of_document: dataF?.document_reference?.doument_type,
             };
@@ -278,7 +277,12 @@ export default function PrerakOnboardingForm({
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
       const required = constantSchema?.required.filter((item) =>
-        ["has_diploma", "qualification_ids"].includes(item)
+        [
+          "has_diploma",
+          "qualification_ids",
+          "qualification_master_id",
+          "qualification_reference_document_id",
+        ].includes(item)
       );
       setSchemaData({ ...constantSchema, properties, required });
     } else if (hasDiploma) {
