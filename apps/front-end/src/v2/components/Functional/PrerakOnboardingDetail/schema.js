@@ -33,7 +33,7 @@ export default {
       step_name: "CONTACT_DETAILS",
       title: "CONTACT_INFORMATION",
       type: "object",
-      required: ["mobile"],
+      required: ["mobile", "device_ownership", "device_type"],
       properties: {
         mobile: {
           type: "number",
@@ -179,6 +179,7 @@ export default {
     work_availability_details: {
       step_name: "OTHER_DETAILS",
       type: "object",
+      required: ["availability"],
       properties: {
         availability: {
           label: "YOUR_WORK_AVAILABILITY_WILL_BE",
@@ -192,12 +193,17 @@ export default {
     },
     qualification_details: {
       step_name: "QUALIFICATION_DETAILS",
-      title: "YOUR_HIGHEST_QUALIFICATION",
-      required: ["qualification_ids", "has_diploma", "diploma_details"],
+      required: [
+        "qualification_master_id",
+        "qualification_reference_document_id",
+        "qualification_ids",
+        "has_diploma",
+        "diploma_details",
+      ],
       type: "object",
       properties: {
         qualification_master_id: {
-          //label: "YOUR_HIGHEST_QUALIFICATION",
+          label: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string", "number"],
           format: "CustomR",
           grid: 2,
