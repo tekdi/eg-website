@@ -78,7 +78,6 @@ export default function List({ userTokenInfo }) {
             borderWidth="1px"
             padding="4"
             shadow="AlertShadow"
-            background={"bgYellowColor.400"}
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
               ipStatus
@@ -90,14 +89,12 @@ export default function List({ userTokenInfo }) {
                       justifyContent={"space-between"}
                       alignItems={"center"}
                     >
-                      <VStack flex={1} space={2}>
-                        <FrontEndTypo.H2 color="textMaroonColor.400">
-                          {t("PCR_CAMP")}
-                        </FrontEndTypo.H2>
-                        <FrontEndTypo.H3 color="textMaroonColor.400">
+                      <VStack flex={1}>
+                        <FrontEndTypo.H2>{t("PCR_CAMP")}</FrontEndTypo.H2>
+                        <AdminTypo.H4 color="textMaroonColor.400">
                           {`${nonRegisteredUser?.length} `}
                           {t("UNMAPPED_LEARNERS")}
-                        </FrontEndTypo.H3>
+                        </AdminTypo.H4>
                       </VStack>
                       <Center>
                         {nonRegisteredUser.length > 0 && (
@@ -152,12 +149,15 @@ export default function List({ userTokenInfo }) {
                             alignItems={"center"}
                             justifyContent={"space-between"}
                           >
+                            <Chip rounded="full" alignItems={"center"}>
+                              {item?.id}
+                            </Chip>
                             <VStack flex={"0.9"}>
-                              <FrontEndTypo.H3 color="textMaroonColor.400">
+                              <FrontEndTypo.H3>
                                 {`${t("CAMP")} ${String(index).padStart(
                                   2,
                                   "0"
-                                )} (${t("ID")} : ${item?.id})`}
+                                )}`}
                               </FrontEndTypo.H3>
                               {item?.group?.description && (
                                 <FrontEndTypo.H6>
@@ -165,7 +165,7 @@ export default function List({ userTokenInfo }) {
                                 </FrontEndTypo.H6>
                               )}
                             </VStack>
-                            <HStack alignItems={"center"}>
+                            <HStack>
                               <IconByName
                                 isDisabled
                                 name={
@@ -197,7 +197,6 @@ export default function List({ userTokenInfo }) {
                                     : "textMaroonColor.400"
                                 }
                                 ml={2}
-                                fontSize={"12px"}
                               />
                             </HStack>
                           </HStack>
@@ -258,7 +257,6 @@ export default function List({ userTokenInfo }) {
             borderWidth="1px"
             padding="4"
             shadow="AlertShadow"
-            background={"bgYellowColor.400"}
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
               ipStatus
@@ -270,9 +268,7 @@ export default function List({ userTokenInfo }) {
                       justifyContent={"space-between"}
                       alignItems={"center"}
                     >
-                      <FrontEndTypo.H2 color="textMaroonColor.400">
-                        {t("MAIN_CAMP")}
-                      </FrontEndTypo.H2>
+                      <FrontEndTypo.H2>{t("MAIN_CAMP")}</FrontEndTypo.H2>
                     </HStack>
                     {campList?.camps?.map((item, i) => {
                       const index = i + 1;
@@ -292,12 +288,15 @@ export default function List({ userTokenInfo }) {
                             alignItems={"center"}
                             justifyContent={"space-between"}
                           >
+                            <Chip rounded="full" alignItems={"center"}>
+                              {item?.id}
+                            </Chip>
                             <VStack flex={"0.9"}>
-                              <FrontEndTypo.H3 color="textMaroonColor.400">
+                              <FrontEndTypo.H3>
                                 {`${t("CAMP")} ${String(index).padStart(
                                   2,
                                   "0"
-                                )} (${t("ID")} : ${item?.id})`}
+                                )}`}
                               </FrontEndTypo.H3>
                               {item?.group?.description && (
                                 <FrontEndTypo.H6>
@@ -337,7 +336,6 @@ export default function List({ userTokenInfo }) {
                                     : "textMaroonColor.400"
                                 }
                                 ml={2}
-                                fontSize={"12px"}
                               />
                             </HStack>
                           </HStack>
