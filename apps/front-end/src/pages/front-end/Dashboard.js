@@ -81,6 +81,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
 
+  const [env_name] = useState(process.env.NODE_ENV);
+
   useEffect(() => {
     async function fetchData() {
       // ...async operation
@@ -405,7 +407,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 resizeMode="contain"
               />
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                Cache Fix Version 4<br />
+                env = {env_name}
+                <br />
+                Cache Fix Version 5<br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
