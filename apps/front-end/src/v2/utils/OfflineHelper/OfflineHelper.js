@@ -284,6 +284,11 @@ export async function updateOnboardingData(id, onboardingData) {
           onboardingData.alternative_mobile_number)
       : delete userUpdatedInfo?.users?.alternative_mobile_number
     : null;
+  onboardingData?.aadhar_no
+    ? onboardingData.aadhar_no != userInfo?.users?.aadhar_no
+      ? (users.aadhar_no = onboardingData.aadhar_no)
+      : delete userUpdatedInfo?.users?.aadhar_no
+    : null;
   //step 3 address_details
   onboardingData?.block
     ? onboardingData.block != userInfo?.users?.block
