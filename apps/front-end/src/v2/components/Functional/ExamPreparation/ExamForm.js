@@ -46,14 +46,15 @@ const EpcpForm = ({ footerLinks }) => {
 
   const schema = {
     type: "object",
-    title: `${learnerData?.first_name} ${
-      learnerData?.last_name
-        ? `${learnerData?.middle_name} ${learnerData?.last_name}`
-        : ""
-    } ${t("EXAM_PREPARATION.TITLE")}`,
     properties: {
       WILL_LEARNER_APPEAR_FOR_EXAM: {
-        label: `EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE`,
+        label: `${t("EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1")} ${
+          learnerData?.first_name
+        } ${
+          learnerData?.last_name
+            ? `${learnerData?.middle_name} ${learnerData?.last_name}`
+            : ""
+        } ${t("EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE2")}`,
         type: "string",
         direction: "row",
         format: "RadioBtn",

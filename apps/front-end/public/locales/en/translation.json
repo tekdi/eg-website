@@ -1606,9 +1606,9 @@
   },
 
   "EXAM_PREPARATION": {
-    "TITLE": "'s Exam Status",
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE": "Will the learner appear for the exam?",
+      "TITLE1": "Will",
+      "TITLE2": "appear for the exam?",
       "YES": "yes",
       "NO": "no"
     },
