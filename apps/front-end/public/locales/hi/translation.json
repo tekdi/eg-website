@@ -1539,7 +1539,7 @@
   "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
   "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
   "EPCP": {
-    "TITLE": "शिक्षार्थियों द्वारा RSOS app का उपयोग",
+    "TITLE": " द्वारा RSOS app का उपयोग",
     "HAS_LOGGED_RSOS_APP": {
       "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
       "YES": "हाँ",
@@ -1607,6 +1607,7 @@
     }
   },
   "EXAM_PREPARATION": {
+    "TITLE": "की परीक्षा की स्थिति",
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
       "TITLE": "क्या शिक्षार्थी परीक्षा में उपस्थित होगा ?",
       "YES": "हाँ",

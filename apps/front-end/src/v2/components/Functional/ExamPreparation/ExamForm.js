@@ -17,7 +17,7 @@ import {
 } from "@shiksha/common-lib";
 import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const EpcpForm = ({ footerLinks }) => {
   const formRef = useRef();
@@ -27,7 +27,8 @@ const EpcpForm = ({ footerLinks }) => {
   const [errors, setErrors] = useState({});
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const user = useLocation();
+  const [learnerData, setLearnertData] = useState(user?.state);
   const { id } = useParams();
 
   const onPressBackButton = () => {
@@ -45,6 +46,11 @@ const EpcpForm = ({ footerLinks }) => {
 
   const schema = {
     type: "object",
+    title: `${learnerData?.first_name} ${
+      learnerData?.last_name
+        ? `${learnerData?.middle_name} ${learnerData?.last_name}`
+        : ""
+    } ${t("EXAM_PREPARATION.TITLE")}`,
     properties: {
       WILL_LEARNER_APPEAR_FOR_EXAM: {
         label: `EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE`,
@@ -308,6 +314,7 @@ const EpcpForm = ({ footerLinks }) => {
       }}
       _footer={{ menues: footerLinks }}
     >
+      <FrontEndTypo.H2 p={4} color={"textMaroonColor.400"}></FrontEndTypo.H2>
       <Box p={4}>
         <Form
           key={schema}
