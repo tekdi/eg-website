@@ -7,7 +7,16 @@ import {
   arrList,
   BodyMedium,
 } from "@shiksha/common-lib";
-import { HStack, Pressable, Image, Avatar, Alert, VStack } from "native-base";
+import {
+  HStack,
+  Pressable,
+  Image,
+  Avatar,
+  Alert,
+  VStack,
+  Progress,
+  Box,
+} from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -165,6 +174,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       navigate("/camps");
     }
   };
+  console.log({ campDetails });
 
   return (
     <Layout
@@ -177,97 +187,113 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       }}
     >
       <VStack p="4" space={4}>
-        <HStack margin={"auto"} mt={3} space={4}>
-          <HStack space={2} alignItems={"center"}>
-            <Avatar bg="gray.300" size={["15px", "30px"]} />
-            <FrontEndTypo.H3>{t("NOT_STARTED")}</FrontEndTypo.H3>
-          </HStack>
-          <HStack space={2} alignItems={"center"}>
-            <Avatar bg="amber.300" size={["15px", "30px"]} />
-            <FrontEndTypo.H3>{t("IN_PROGRESS")}</FrontEndTypo.H3>
-          </HStack>
-          <HStack space={2} alignItems={"center"}>
-            <Avatar bg="green.300" size={["15px", "30px"]} />
-            <FrontEndTypo.H3>{t("COMPLETED")}</FrontEndTypo.H3>
-          </HStack>
-        </HStack>
-        <Pressable
-          bg="boxBackgroundColour.100"
-          shadow="AlertShadow"
+        <FrontEndTypo.H1>{t("CAMP_PROFILE")}</FrontEndTypo.H1>
+        <VStack>
+          <FrontEndTypo.H3 bold color={"textGreyColor.750"}>{`${t("CAMP_ID")}:${
+            campDetails?.id
+          }`}</FrontEndTypo.H3>
+        </VStack>
+        <VStack>
+          <Progress
+            value={arrList(
+              {
+                ...campDetails,
+                location: [
+                  campDetails?.properties?.district,
+                  campDetails?.properties?.block,
+                  campDetails?.properties?.grampanchayat,
+                  campDetails?.properties?.village,
+                  campDetails?.properties?.property_type,
+                ],
+                camp_photo: [
+                  campDetails?.properties?.property_photo_building,
+                  campDetails?.properties?.property_photo_classroom,
+                  campDetails?.properties?.property_photo_other,
+                ],
+                facilities: [campDetails?.properties?.property_facilities],
+              },
+              ["location", "camp_photo", "facilities", "kit_received"]
+            )}
+            size="sm"
+            colorScheme="warning"
+          />
+        </VStack>
+        <VStack
+          borderColor="btnGray.100"
           borderRadius="10px"
-          onPress={async () => {
-            navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
-          }}
+          borderWidth="1px"
+          shadow="AlertShadow"
+          // space={2}
         >
-          <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
-            <HStack alignItems={"center"}>
-              <IconByName
-                isDisabled
-                name={"GraduationCap"}
-                _icon={{ size: "30px" }}
-              />
-
-              <FrontEndTypo.H3 ml={5}>{t("UPDATE_LEARNER")}</FrontEndTypo.H3>
-            </HStack>
-
-            <IconByName
-              isDisabled
-              name="ArrowRightSLineIcon"
-              _icon={{ size: "30px" }}
-              color="textBlack.500"
-            />
-          </HStack>
-        </Pressable>
-
-        {navdata.map((item) => {
-          return (
-            <NavigationBox
-              key={item}
-              camp_id={camp_id}
-              IconName={item?.Icon}
-              NavName={item?.Name}
-              step={item?.step}
-              color={item?.color}
-              disableEdit={disableEdit(["inactive"])}
-            />
-          );
-        })}
-        {campDetails?.kit_received === "yes" && (
           <Pressable
             bg="boxBackgroundColour.100"
-            shadow="AlertShadow"
-            borderRadius="10px"
+            // shadow="AlertShadow"
+            borderBottomColor={"garyTitleCardBorder"}
+            borderBottomStyle={"solid"}
+            borderBottomWidth={"2px"}
             onPress={async () => {
-              navigate(`/camps/${camp_id?.id}/kit_material_details`);
+              disableEdit() &&
+                navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
             }}
           >
-            <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
+            <HStack w={"100%"} py={3} px={2} justifyContent={"space-between"}>
               <HStack alignItems={"center"}>
-                <Image
-                  source={{
-                    uri: "/boxline.svg",
-                  }}
-                  alt=""
-                  size={"28px"}
-                  resizeMode="contain"
-                />
-
-                <FrontEndTypo.H3 ml={5}>
-                  {["registered", "inactive", "verified"].includes(campStatus)
-                    ? t("UPDATE_CAMP_KIT_DETAILS")
-                    : t("CAMP_KIT_MATERIAL_DETAILS")}
+                <FrontEndTypo.H3 color="floatingLabelColor.500" bold ml={5}>
+                  {t("UPDATE_LEARNER")}
                 </FrontEndTypo.H3>
               </HStack>
-
-              <IconByName
-                isDisabled
-                name="ArrowRightSLineIcon"
-                _icon={{ size: "30px" }}
-                color="textBlack.500"
-              />
+              {disableEdit() && (
+                <IconByName
+                  isDisabled
+                  name="ArrowRightSLineIcon"
+                  _icon={{ size: "30px" }}
+                  color="textBlack.500"
+                />
+              )}
             </HStack>
           </Pressable>
-        )}
+
+          {navdata.map((item) => {
+            return (
+              <NavigationBox
+                key={item}
+                camp_id={camp_id}
+                // IconName={item?.Icon}
+                NavName={item?.Name}
+                step={item?.step}
+                color={item?.color}
+                disableEdit={disableEdit(["inactive"])}
+              />
+            );
+          })}
+          {campDetails?.kit_received === "yes" && (
+            <Pressable
+              bg="boxBackgroundColour.100"
+              // shadow="AlertShadow"
+              borderRadius="10px"
+              onPress={async () => {
+                navigate(`/camps/${camp_id?.id}/kit_material_details`);
+              }}
+            >
+              <HStack w={"100%"} py={3} px={2} justifyContent={"space-between"}>
+                <HStack alignItems={"center"}>
+                  <FrontEndTypo.H3 bold color="floatingLabelColor.500" ml={5}>
+                    {["registered", "inactive", "verified"].includes(campStatus)
+                      ? t("UPDATE_CAMP_KIT_DETAILS")
+                      : t("CAMP_KIT_MATERIAL_DETAILS")}
+                  </FrontEndTypo.H3>
+                </HStack>
+
+                <IconByName
+                  isDisabled
+                  name="ArrowRightSLineIcon"
+                  _icon={{ size: "30px" }}
+                  color="textBlack.500"
+                />
+              </HStack>
+            </Pressable>
+          )}
+        </VStack>
         {campStatus === "registered" && (
           <Alert
             status="warning"
@@ -283,7 +309,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           </Alert>
         )}
         <HStack my={3} mx={"auto"} w={"90%"}>
-          <FrontEndTypo.Primarybutton
+          <FrontEndTypo.Secondarybutton
             isDisabled={isDisable}
             width={"100%"}
             onPress={() => {
@@ -291,7 +317,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
             }}
           >
             {t("SUBMIT_FOR_REGISTRATION")}
-          </FrontEndTypo.Primarybutton>
+          </FrontEndTypo.Secondarybutton>
         </HStack>
       </VStack>
     </Layout>
@@ -324,28 +350,13 @@ const NavigationBox = ({
       borderLeftWidth={10}
       borderLeftColor={color}
       borderRadius="10px"
+      borderBottomColor={"garyTitleCardBorder"}
+      borderBottomStyle={"solid"}
+      borderBottomWidth={"2px"}
     >
-      <HStack w={"100%"} py={3} px={5} justifyContent={"space-between"}>
+      <HStack w={"100%"} py={3} justifyContent={"space-between"}>
         <HStack alignItems={"center"}>
-          {NavName === "KIT" ? (
-            <Image
-              source={{
-                uri: "/boxline.svg",
-              }}
-              alt=""
-              size={"28px"}
-              resizeMode="contain"
-            />
-          ) : (
-            <IconByName
-              isDisabled
-              name={IconName}
-              //color="amber.400"
-              _icon={{ size: "30px" }}
-            />
-          )}
-
-          <FrontEndTypo.H3 ml={5}>
+          <FrontEndTypo.H3 color="floatingLabelColor.500" bold ml={5}>
             {t(NavName)}
             {!["FAMILY_CONSENT"].includes(NavName) && (
               <FrontEndTypo.H3 color={"textMaroonColor.400"}>*</FrontEndTypo.H3>

@@ -55,13 +55,14 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
       _footer={{ menues: footerLinks }}
     >
       <VStack space={2} padding={5}>
-        <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
+        <FrontEndTypo.H1>{t("CAMP_EXECUTION")}</FrontEndTypo.H1>
+        <FrontEndTypo.H3 alignSelf={"center"} color={"textGreyColor.750"}>
           {t("CAMP_OTHER_PLAN")}
-        </FrontEndTypo.H1>
-        <VStack borderWidth={1} alignItems={"center"} padding={5} space={4}>
-          <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
+        </FrontEndTypo.H3>
+        <VStack pt={5} space={4}>
+          <FrontEndTypo.H2 color={"textGreyColor.750"}>
             {t("WHATS_YOUR_PLAN_TODAY")}
-          </FrontEndTypo.H1>
+          </FrontEndTypo.H2>
           <RadioBtn
             directionColumn={"column"}
             value={reason || []}
@@ -85,9 +86,9 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
               {t("SELECT_MESSAGE")}
             </FrontEndTypo.H3>
           )}
-          <FrontEndTypo.Primarybutton px={5} onPress={submitReason}>
+          <FrontEndTypo.Secondarybutton px={5} onPress={submitReason}>
             {t("SAVE_AND_PROFILE")}
-          </FrontEndTypo.Primarybutton>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </VStack>
     </Layout>
