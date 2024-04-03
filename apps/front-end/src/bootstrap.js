@@ -24,7 +24,7 @@ reportWebVitals();
 
 //cache clear 1.5.13
 
-/*if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/service-worker.js")
     .then((registration) => {
@@ -33,4 +33,4 @@ reportWebVitals();
     .catch((error) => {
       console.error("Service Worker registration failed:", error);
     });
-}*/
+}
