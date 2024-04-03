@@ -315,7 +315,6 @@ const EpcpForm = ({ footerLinks }) => {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <FrontEndTypo.H2 p={4} color={"textMaroonColor.400"}></FrontEndTypo.H2>
       <Box p={4}>
         <Form
           key={schema}
