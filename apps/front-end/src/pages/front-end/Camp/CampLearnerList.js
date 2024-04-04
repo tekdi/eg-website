@@ -54,6 +54,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
     if (selectedIds.length !== 0) {
       const ids = {
         learner_ids: selectedIds,
+        org_id: userTokenInfo?.program_faciltators?.parent_ip,
       };
       const result = await campService.campRegister(ids);
       const camp_id = result?.data?.camp?.id;
