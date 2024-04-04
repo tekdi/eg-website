@@ -409,7 +409,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
                 env = {env_name}
                 <br />
-                Cache Fix Version 7<br />
+                Cache Fix Version 8<br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
