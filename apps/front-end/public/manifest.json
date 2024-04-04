@@ -1,9 +1,11 @@
 {
+  "name": "EG - Project Pragati",
   "short_name": "EG - Project Pragati",
-  "start_url": ".",
-  "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "images/logos/favicon.ico",
