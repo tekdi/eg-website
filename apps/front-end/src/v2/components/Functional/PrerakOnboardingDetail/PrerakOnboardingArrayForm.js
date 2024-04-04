@@ -504,23 +504,27 @@ export default function PrerakOnboardingArrayForm({
                   {`${t(stepLabel)}`}
                 </FrontEndTypo.H5>
               </Button>
-              <FrontEndTypo.Primarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(false)}
-              >
-                {t("PRERAK_PROCEED_BTN")}
-              </FrontEndTypo.Primarybutton>
+              <Box alignItems={"center"}>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  minWidth="60%"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("PRERAK_PROCEED_BTN")}
+                </FrontEndTypo.Primarybutton>
 
-              <FrontEndTypo.Secondarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(true)}
-              >
-                {t("GO_TO_PROFILE")}
-              </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  minWidth="60%"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
             </VStack>
           ) : (
             <Box>

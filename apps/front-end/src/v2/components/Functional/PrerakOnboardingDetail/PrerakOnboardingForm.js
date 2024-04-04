@@ -1068,10 +1068,11 @@ export default function PrerakOnboardingForm({
               {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
             </FrontEndTypo.Primarybutton>
           ) : (
-            <Box>
+            <Box alignItems={"center"}>
               <FrontEndTypo.Primarybutton
                 isLoading={loading}
                 p="4"
+                minWidth="60%"
                 mt="4"
                 onPress={() => onClickSubmit(false)}
               >

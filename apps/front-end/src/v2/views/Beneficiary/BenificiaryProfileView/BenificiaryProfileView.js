@@ -155,9 +155,7 @@ export default function BenificiaryProfileView(props) {
                       "rejected" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
-                        onPress={(e) => {
-                          navigate(`/beneficiary/${id}/basicdetails`);
-                        }}
+                        onPress={(e) => setIsOpenDropOut(true)}
                         _icon={{ size: "20", color: "#D53546" }}
                       />
                     )}
@@ -227,9 +225,7 @@ export default function BenificiaryProfileView(props) {
                       "rejected" && (
                       <IconByName
                         name="ArrowRightSLineIcon"
-                        onPress={(e) => {
-                          navigate(`/beneficiary/${id}/basicdetails`);
-                        }}
+                        onPress={(e) => setIsOpenReject(true)}
                         _icon={{ size: "20", color: "#D53546" }}
                       />
                     )}
