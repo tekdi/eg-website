@@ -26,6 +26,7 @@ const BenificiaryProfileView = lazy(() =>
 const BenificiaryListView = lazy(() =>
   import("v2/views/Beneficiary/BenificiaryListView/BenificiaryListView")
 );
+const OfflinePage = lazy(() => import("v2/views/OfflinePage/OfflinePage"));
 
 //end v2 code
 
@@ -222,5 +223,11 @@ export default [
     path: "/beneficiary/list",
     component: BenificiaryListView,
   },
+  //offlinepage
+  {
+    path: "/offline",
+    component: OfflinePage,
+  },
+
   //end v2 code
 ];

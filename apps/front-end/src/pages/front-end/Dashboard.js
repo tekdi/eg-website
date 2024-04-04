@@ -31,7 +31,7 @@ import {
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import PropTypes from "prop-types";
 
@@ -410,7 +410,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 env = {env_name} <br />
                 Offline Page Custom
                 <br />
-                Cache Fix Version 13
+                Cache Fix Version 15
+                <br />
+                <Link to={"/offline"}>go to offline</Link>
                 <br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
