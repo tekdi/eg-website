@@ -535,7 +535,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </HStack>
                 </Alert>
               )}
-            <HStack py="4" flex="1" px="4">
+            <HStack py="4" flex="1" px="4" pb={0}>
               {/* <Image
                 source={{
                   uri: "/hello.svg",
@@ -680,7 +680,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_for_training",
             "selected_for_onboarding",
           ].includes(facilitator.status) && (
-            <Stack py={4} px={4} pb={0}>
+            <Stack py={0} px={4}>
               <TitleCard
                 _icon=""
                 icon={
@@ -723,7 +723,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
-            <Stack p="5" space={4}>
+            <Stack p="5" pt={0} space={4}>
               {[undefined].includes(facilitator?.aadhar_no) && (
                 <Stack space="3">
                   <Alert status="warning" alignItems={"start"}>

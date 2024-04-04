@@ -535,22 +535,22 @@ export const select = ({ options, value, onChange, required, schema }) => {
 };
 
 // rjsf custom readOnly field
-export const ReadOnly = ({ value, onChange, required, schema }) => {
+export const ReadOnly = ({ value, onChange, _stack, required, schema }) => {
   const { title } = schema || {};
   const { t } = useTranslation();
   return (
     <HStack gap="2">
-      <FrontEndTypo.H3 bold color="textMaroonColor.400">
+      <FrontEndTypo.H4 bold color="floatingLabelColor.500" {..._stack}>
         {t(title)}
-      </FrontEndTypo.H3>
+      </FrontEndTypo.H4>
       <Text fontSize="14" fontWeight="400">
         {required && <Text color={"danger.500"}>*</Text>}
         {value && (
           <Text
             marginLeft={"5px"}
-            fontWeight="700"
-            fontSize={14}
-            color={"#9E9E9E"}
+            fontWeight="600"
+            fontSize={12}
+            color={"grayTitleCard"}
           >
             : {value}
           </Text>
