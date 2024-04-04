@@ -114,19 +114,37 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request).then((response) => {
-          return response || caches.match("/index.html"); // Serve the custom offline page
-        });
-      })
-  );
-});
+  self.addEventListener('fetch', event => {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          // If resource is cached, return it
+          if (response) {
+            return response;
+          }
+          // If offline and request for HTML, return cached index.html
+          if (!navigator.onLine && event.request.url.endsWith('/index.html')) {
+            return caches.match('/index.html');
+          }
+          // If offline and request for other resources, return custom offline response
+          if (!navigator.onLine) {
+            return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+          }
+          // If online and resource not found in cache, fetch from network
+          return fetch(event.request).then(networkResponse => {
+            const clonedResponse = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, clonedResponse);
+            });
+            return networkResponse;
+          });
+        })
+        .catch(() => {
+          // If fetch fails and resource not in cache, return custom offline response
+          if (event.request.url.endsWith('/index.html')) {
+            return caches.match('/index.html');
+          }
+          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+        })
+    );
+  });

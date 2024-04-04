@@ -410,7 +410,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 env = {env_name} <br />
                 Offline Page Custom
                 <br />
-                Cache Fix Version 10
+                Cache Fix Version 11
                 <br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
