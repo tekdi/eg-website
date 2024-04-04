@@ -125,7 +125,7 @@ self.addEventListener("fetch", (event) => {
       })
       .catch(() => {
         return caches.match(event.request).then((response) => {
-          return response || caches.match("/offline.html"); // Serve the custom offline page
+          return response || caches.match("/index.html"); // Serve the custom offline page
         });
       })
   );
