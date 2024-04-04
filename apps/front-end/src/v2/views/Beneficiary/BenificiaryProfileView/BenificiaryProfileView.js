@@ -130,12 +130,41 @@ export default function BenificiaryProfileView(props) {
       // case "enrolled_ip_verified":
       case null:
         return (
-          <FrontEndTypo.Secondarybutton
-            onPress={(e) => setIsOpenDropOut(true)}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="garyTitleCardBorder"
+            borderRadius="5px"
+            borderWidth="1px"
+            shadow={"LearnerProfileViewShadow"}
           >
-            {t("MARK_AS_DROPOUT")}
-          </FrontEndTypo.Secondarybutton>
+            <VStack p={2}>
+              <VStack space="2">
+                <HStack alignItems="Center" justifyContent="space-between">
+                  <HStack space="md" alignItems="Center">
+                    <FrontEndTypo.H3
+                      onPress={(e) => setIsOpenDropOut(true)}
+                      bold
+                      color="textRed.350"
+                    >
+                      {t("MARK_AS_DROPOUT")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/basicdetails`);
+                        }}
+                        _icon={{ size: "20", color: "#D53546" }}
+                      />
+                    )}
+                </HStack>
+              </VStack>
+            </VStack>
+          </Box>
         );
       default:
         return <React.Fragment></React.Fragment>;
@@ -171,12 +200,48 @@ export default function BenificiaryProfileView(props) {
       // case "enrolled_ip_verified":
       case null:
         return (
-          <FrontEndTypo.Secondarybutton
-            onPress={(e) => setIsOpenReject(true)}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          <Box
+            bg="boxBackgroundColour.100"
+            borderColor="garyTitleCardBorder"
+            borderRadius="5px"
+            borderWidth="1px"
+            shadow={"LearnerProfileViewShadow"}
+            // pb="4"
           >
-            {t("REJECT")}
-          </FrontEndTypo.Secondarybutton>
+            <VStack p={2}>
+              <VStack space="2">
+                <HStack alignItems="Center" justifyContent="space-between">
+                  <HStack space="md" alignItems="Center">
+                    {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
+                    <FrontEndTypo.H3
+                      onPress={(e) => setIsOpenReject(true)}
+                      bold
+                      color="textRed.350"
+                    >
+                      {t("REJECT")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => {
+                          navigate(`/beneficiary/${id}/basicdetails`);
+                        }}
+                        _icon={{ size: "20", color: "#D53546" }}
+                      />
+                    )}
+                </HStack>
+              </VStack>
+              {/* <Divider
+                orientation="horizontal"
+                bg="btnGray.100"
+                thickness="1"
+              /> */}
+            </VStack>
+          </Box>
         );
       default:
         return <React.Fragment></React.Fragment>;
@@ -211,8 +276,8 @@ export default function BenificiaryProfileView(props) {
                       document_id: benificiary?.profile_photo_1?.id,
                     }}
                     // alt="Alternate Text"
-                    width={"190px"}
-                    height={"190px"}
+                    width={"64px"}
+                    height={"64px"}
                   />
                 ) : (
                   <IconByName
@@ -281,6 +346,51 @@ export default function BenificiaryProfileView(props) {
                 </HStack>
               </Alert>
             )}
+            <Box>
+              <FrontEndTypo.H3 bold color="textGreyColor.750">
+                {t("PROFILE_PROGRESS")}
+              </FrontEndTypo.H3>
+              <Box mt={3}>
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      ...(res?.references?.[0] ? res?.references?.[0] : {}),
+                    },
+                    [
+                      "email_id",
+                      "mobile",
+                      "alternative_mobile_number",
+                      "device_type",
+                      "device_ownership",
+                      "mark_as_whatsapp_number",
+                      "father_first_name",
+                      "father_middle_name",
+                      "father_last_name",
+                      "mother_first_name",
+                      "mother_middle_name",
+                      "mother_last_name",
+                      "social_category",
+                      "marital_status",
+                      "first_name",
+                      "middle_name",
+                      "last_name",
+                      "relation",
+                      "contact_number",
+                      "district",
+                      "state",
+                      "block",
+                      "village",
+                      "aadhar_no",
+                      "aadhaar_verification_mode",
+                      "aadhar_verified",
+                    ]
+                  )}
+                  size="xs"
+                  colorScheme="danger"
+                />
+              </Box>
+            </Box>
             <FrontEndTypo.H3 bold color="textGreyColor.750">
               {t("PROFILE_DETAILS")}
             </FrontEndTypo.H3>
@@ -293,46 +403,6 @@ export default function BenificiaryProfileView(props) {
               pb="6"
             >
               <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <Box paddingTop="2">
-                  <Progress
-                    value={arrList(
-                      {
-                        ...res,
-                        ...(res?.references?.[0] ? res?.references?.[0] : {}),
-                      },
-                      [
-                        "email_id",
-                        "mobile",
-                        "alternative_mobile_number",
-                        "device_type",
-                        "device_ownership",
-                        "mark_as_whatsapp_number",
-                        "father_first_name",
-                        "father_middle_name",
-                        "father_last_name",
-                        "mother_first_name",
-                        "mother_middle_name",
-                        "mother_last_name",
-                        "social_category",
-                        "marital_status",
-                        "first_name",
-                        "middle_name",
-                        "last_name",
-                        "relation",
-                        "contact_number",
-                        "district",
-                        "state",
-                        "block",
-                        "village",
-                        "aadhar_no",
-                        "aadhaar_verification_mode",
-                        "aadhar_verified",
-                      ]
-                    )}
-                    size="xs"
-                    colorScheme="danger"
-                  />
-                </Box>
                 <VStack space="2" paddingTop="5">
                   <HStack alignItems="Center" justifyContent="space-between">
                     <HStack space="md" alignItems="Center">
@@ -350,7 +420,7 @@ export default function BenificiaryProfileView(props) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/basicdetails`);
                           }}
-                          color="floatingLabelColor.500"
+                          _icon={{ size: "20", color: "#1F1D76" }}
                         />
                       )}
                   </HStack>
@@ -378,7 +448,7 @@ export default function BenificiaryProfileView(props) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/addressdetails`);
                           }}
-                          color="textMaroonColor.400"
+                          _icon={{ size: "20", color: "#1F1D76" }}
                         />
                       )}
                   </HStack>
@@ -453,7 +523,7 @@ export default function BenificiaryProfileView(props) {
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/docschecklist`);
                     }}
-                    color="textMaroonColor.400"
+                    _icon={{ size: "20", color: "#1F1D76" }}
                   />
                 )}
               </HStack>
@@ -473,7 +543,7 @@ export default function BenificiaryProfileView(props) {
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/educationdetails`);
                       }}
-                      color="textMaroonColor.400"
+                      _icon={{ size: "20", color: "#1F1D76" }}
                     />
                   )}
               </HStack>
@@ -503,7 +573,7 @@ export default function BenificiaryProfileView(props) {
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/enrollmentdetails`);
                       }}
-                      color="textMaroonColor.400"
+                      _icon={{ size: "20", color: "#1F1D76" }}
                     />
                   )}
               </HStack>
@@ -524,6 +594,7 @@ export default function BenificiaryProfileView(props) {
                   onPress={(e) => {
                     navigate(`/beneficiary/${id}/pcrview`);
                   }}
+                  _icon={{ size: "20", color: "#1F1D76" }}
                 />
               </HStack>
               <HStack
@@ -542,6 +613,7 @@ export default function BenificiaryProfileView(props) {
                   onPress={(e) => {
                     navigate(`/beneficiary/${id}/benificiaryJourney`);
                   }}
+                  _icon={{ size: "20", color: "#1F1D76" }}
                 />
               </HStack>
             </VStack>

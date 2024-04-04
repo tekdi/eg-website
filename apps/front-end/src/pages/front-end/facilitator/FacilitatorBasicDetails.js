@@ -99,20 +99,55 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
       ) : (
         <VStack paddingBottom="64px" bg="bgGreyColor.200">
           <VStack p="4" space="24px">
-            <ProfilePhoto
-              profile_photo_1={facilitator?.profile_photo_1}
-              profile_photo_2={facilitator?.profile_photo_2}
-              profile_photo_3={facilitator?.profile_photo_3}
-              isProfileEdit={isProfileEdit()}
-            />
-            <VStack>
-              <HStack justifyContent="space-between" alignItems="Center">
-                <FrontEndTypo.H1 color="textGreyColor.200" fontWeight="700">
-                  {`${facilitator?.first_name ? facilitator?.first_name : ""} ${
-                    facilitator?.middle_name ? facilitator?.middle_name : ""
-                  } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
-                </FrontEndTypo.H1>
+            <HStack
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              space={4}
+            >
+              <HStack space={4} alignItems={"center"}>
+                <VStack>
+                  <ProfilePhoto
+                    profile_photo_1={facilitator?.profile_photo_1}
+                    // profile_photo_2={facilitator?.profile_photo_2}
+                    // profile_photo_3={facilitator?.profile_photo_3}
+                    // isProfileEdit={isProfileEdit()}
+                  />
+                </VStack>
+                <VStack>
+                  <HStack justifyContent="space-between" alignItems="Center">
+                    <FrontEndTypo.H3 color="textGreyColor.200" fontWeight="700">
+                      {`${
+                        facilitator?.first_name ? facilitator?.first_name : ""
+                      } ${
+                        facilitator?.middle_name ? facilitator?.middle_name : ""
+                      } ${
+                        facilitator?.last_name ? facilitator?.last_name : ""
+                      }`}
+                    </FrontEndTypo.H3>
 
+                    {/* {isNameEdit() && (
+                      <IconByName
+                        name="PencilLineIcon"
+                        color="iconColor.200"
+                        _icon={{ size: "20" }}
+                        onPress={(e) => {
+                          navigate(`/profile/edit/basic_details`);
+                        }}
+                      />
+                    )} */}
+                  </HStack>
+                  <HStack alignItems="Center">
+                    {/* <IconByName name="Cake2LineIcon" color="iconColor.300" /> */}
+                    <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
+                      {facilitator?.dob &&
+                      moment(facilitator?.dob, "YYYY-MM-DD", true).isValid()
+                        ? moment(facilitator?.dob).format("DD/MM/YYYY")
+                        : "-"}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                </VStack>
+              </HStack>
+              <HStack>
                 {isNameEdit() && (
                   <IconByName
                     name="PencilLineIcon"
@@ -124,26 +159,17 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                   />
                 )}
               </HStack>
-              <HStack alignItems="Center">
-                <IconByName name="Cake2LineIcon" color="iconColor.300" />
-                <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                  {facilitator?.dob &&
-                  moment(facilitator?.dob, "YYYY-MM-DD", true).isValid()
-                    ? moment(facilitator?.dob).format("DD/MM/YYYY")
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
+            </HStack>
             <CardComponent
               _vstack={{ space: 0 }}
               _hstack={{ borderBottomWidth: 0 }}
               title={t("CONTACT_DETAILS")}
               label={["SELF", "ALTERNATIVE_NUMBER", "EMAIL"]}
-              icon={[
-                { name: "CellphoneLineIcon", color: "iconColor.100" },
-                { name: "SmartphoneLineIcon", color: "iconColor.100" },
-                { name: "MailLineIcon", color: "iconColor.100" },
-              ]}
+              // icon={[
+              //   { name: "CellphoneLineIcon", color: "iconColor.100" },
+              //   { name: "SmartphoneLineIcon", color: "iconColor.100" },
+              //   { name: "MailLineIcon", color: "iconColor.100" },
+              // ]}
               item={facilitator}
               arr={["mobile", "alternative_mobile_number", "email_id"]}
               onEdit={

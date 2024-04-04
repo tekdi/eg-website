@@ -1125,6 +1125,7 @@
   "PROFILE": "Profile",
   "PROFILE_COMPLETED": "Profile Completed",
   "PROFILE_DETAILS": "Profile Details",
+  "PROFILE_PROGRESS": "Profile Progress",
   "PROFILE_EXIST": "A Profile for this learner already exists. Looks like you are creating a duplicate Profile. Do you still want to continue?",
   "PROFILE_NEEDS_TO_BE_COMPLETED": "Profile needs to be completed",
   "PROFILE_PHOTO": "Profile Photo",

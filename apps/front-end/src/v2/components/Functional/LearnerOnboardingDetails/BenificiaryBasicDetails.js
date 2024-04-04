@@ -73,47 +73,69 @@ export default function BenificiaryBasicDetails() {
     <Layout _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}>
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
-          <ProfilePhoto
-            isProfileEdit={true}
-            editLink={edit}
-            profile_photo_1={benificiary?.profile_photo_1}
-            profile_photo_2={benificiary?.profile_photo_2}
-            profile_photo_3={benificiary?.profile_photo_3}
-          />
-          <VStack>
-            <HStack justifyContent="space-between" alignItems="Center">
-              <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">
-                {benificiary?.first_name ? benificiary?.first_name : "-"}
-                &nbsp;
-                {benificiary?.middle_name?.trim() === "null"
-                  ? ""
-                  : benificiary?.middle_name}
-                &nbsp;
-                {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
-              </FrontEndTypo.H1>
-              {benificiary?.program_beneficiaries?.status ===
-              "enrolled_ip_verified" ? (
-                <></>
-              ) : (
-                <IconByName
-                  name="PencilLineIcon"
-                  color="iconColor.200"
-                  _icon={{ size: "20" }}
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${id}/basic-info`);
-                  }}
+          <HStack
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            space={4}
+          >
+            <HStack space={4} alignItems={"center"}>
+              <VStack>
+                <ProfilePhoto
+                  // isProfileEdit={true}
+                  // editLink={edit}
+                  profile_photo_1={benificiary?.profile_photo_1}
+                  // profile_photo_2={benificiary?.profile_photo_2}
+                  // profile_photo_3={benificiary?.profile_photo_3}
                 />
-              )}
+              </VStack>
+              <VStack>
+                <HStack justifyContent="space-between" alignItems="Center">
+                  <FrontEndTypo.H3 color="textGreyColor.750" bold>
+                    {benificiary?.first_name ? benificiary?.first_name : "-"}
+                    &nbsp;
+                    {benificiary?.middle_name?.trim() === "null"
+                      ? ""
+                      : benificiary?.middle_name}
+                    &nbsp;
+                    {benificiary?.last_name == "null"
+                      ? ""
+                      : benificiary?.last_name}
+                  </FrontEndTypo.H3>
+                  {/* {benificiary?.program_beneficiaries?.status ===
+                  "enrolled_ip_verified" ? (
+                    <></>
+                  ) : (
+                    <IconByName
+                      name="PencilLineIcon"
+                      color="iconColor.200"
+                      _icon={{ size: "20" }}
+                      onPress={(e) => {
+                        navigate(`/beneficiary/edit/${id}/basic-info`);
+                      }}
+                    />
+                  )} */}
+                </HStack>
+                <HStack alignItems="Center">
+                  {/* <IconByName name="Cake2LineIcon" color="iconColor.300" /> */}
+                  <FrontEndTypo.H3 color="textGreyColor.750" fontWeight="500">
+                    {moment(benificiary?.dob).format("DD/MM/YYYY")
+                      ? moment(benificiary?.dob).format("DD/MM/YYYY")
+                      : "-"}
+                  </FrontEndTypo.H3>
+                </HStack>
+              </VStack>
             </HStack>
-            <HStack alignItems="Center">
-              <IconByName name="Cake2LineIcon" color="iconColor.300" />
-              <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                {moment(benificiary?.dob).format("DD/MM/YYYY")
-                  ? moment(benificiary?.dob).format("DD/MM/YYYY")
-                  : "-"}
-              </FrontEndTypo.H3>
+            <HStack>
+              <IconByName
+                name="PencilLineIcon"
+                color="iconColor.200"
+                _icon={{ size: "20" }}
+                onPress={(e) => {
+                  navigate(`/beneficiary/edit/${id}/basic-info`);
+                }}
+              />
             </HStack>
-          </VStack>
+          </HStack>
 
           <CardComponent
             _vstack={{ space: 0 }}

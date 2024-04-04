@@ -185,6 +185,7 @@ export default {
           label: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
           format: "RadioBtn",
+          _stack: { direction: "row", justifyContent: "space-between" },
           grid: 2,
           enum: ["part_time", "full_time"],
           enumNames: ["PART_TIME", "FACILITATOR_FULL_TIME"],
@@ -232,6 +233,7 @@ export default {
           label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
           type: "boolean",
           format: "RadioBtn",
+          _stack: { direction: "row", justifyContent: "space-between" },
         },
         diploma_details: {
           label: "NAME_OF_THE_DIPLOMA",

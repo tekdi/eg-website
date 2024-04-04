@@ -81,20 +81,21 @@ export default function Profile({ userTokenInfo, footerLinks }) {
           </Box>
           <Box
             bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
+            borderColor="garyTitleCardBorder"
+            borderRadius="5px"
             borderWidth="1px"
+            shadow={"CardComponentShadow"}
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3 color="floatingLabelColor.500" bold>
                   {t("BASIC_DETAILS")}
                 </FrontEndTypo.H3>
                 {!["quit"].includes(facilitator?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
-                    color="textMaroonColor.400"
+                    _icon={{ size: "25px", color: "#1F1D76" }}
                     onPress={(e) => {
                       navigate(`/facilitatorbasicdetail`);
                     }}
@@ -123,13 +124,14 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
           <Box
             bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
+            borderColor="garyTitleCardBorder"
+            borderRadius="5px"
             borderWidth="1px"
+            shadow={"CardComponentShadow"}
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-              <FrontEndTypo.H3 color="textGreyColor.800" bold>
+              <FrontEndTypo.H3 color="floatingLabelColor.500" bold>
                 {t("EDUCATION_AND_WORK_DETAILS")}
               </FrontEndTypo.H3>
               <Box paddingTop="2">
@@ -149,16 +151,16 @@ export default function Profile({ userTokenInfo, footerLinks }) {
               <VStack space="2" paddingTop="5">
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
-                    <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
+                    {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
 
-                    <FrontEndTypo.H3 color="textGreyColor.800">
+                    <FrontEndTypo.H3 color="floatingLabelColor.500">
                       {t("QUALIFICATION_DETAILS")}
                     </FrontEndTypo.H3>
                   </HStack>
                   {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
-                      color="textMaroonColor.400"
+                      _icon={{ size: "25px", color: "#1F1D76" }}
                       onPress={(e) => {
                         navigate(`/facilitatorqualification`);
                       }}
@@ -172,16 +174,16 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
-                    <IconByName name="HeartLineIcon" _icon={{ size: "20" }} />
+                    {/* <IconByName name="HeartLineIcon" _icon={{ size: "20" }} /> */}
 
-                    <FrontEndTypo.H3 color="textGreyColor.800">
+                    <FrontEndTypo.H3 color="floatingLabelColor.500">
                       {t("VOLUNTEER_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
                   {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
-                      color="textMaroonColor.400"
+                      _icon={{ size: "25px", color: "#1F1D76" }}
                       onPress={(e) => {
                         navigate(`/profile/edit/vo_experience`);
                       }}
@@ -195,18 +197,18 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                 />
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack alignItems="Center" space="md">
-                    <IconByName
+                    {/* <IconByName
                       name="SuitcaseLineIcon"
                       _icon={{ size: "20" }}
-                    />
-                    <FrontEndTypo.H3 color="textGreyColor.800">
+                    /> */}
+                    <FrontEndTypo.H3 color="floatingLabelColor.500">
                       {t("WORK_EXPERIENCE")}
                     </FrontEndTypo.H3>
                   </HStack>
                   {!["quit"].includes(facilitator?.status) && (
                     <IconByName
                       name="ArrowRightSLineIcon"
-                      color="textMaroonColor.400"
+                      _icon={{ size: "25px", color: "#1F1D76" }}
                       onPress={(e) => {
                         navigate(`/profile/edit/experience`);
                       }}
@@ -219,20 +221,22 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
           <Box
             bg="boxBackgroundColour.100"
-            borderColor="btnGray.100"
-            borderRadius="10px"
+            borderColor="garyTitleCardBorder"
+            borderRadius="5px"
             borderWidth="1px"
+            shadow={"CardComponentShadow"}
             paddingBottom="24px"
           >
             <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
               <HStack alignItems="Center" justifyContent="space-between">
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3 color="floatingLabelColor.500" bold>
                   {t("AADHAAR_DETAILS")}
                 </FrontEndTypo.H3>
                 {!["quit"].includes(facilitator?.status) && (
                   <IconByName
                     name="ArrowRightSLineIcon"
                     color="textMaroonColor.400"
+                    _icon={{ size: "25px", color: "#1F1D76" }}
                     onPress={(e) => {
                       navigate(`/profile/${facilitator?.id}/aadhaardetails`);
                     }}

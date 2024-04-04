@@ -19,6 +19,7 @@ import {
   getSelectedProgramId,
   enumRegistryService,
   getSelectedAcademicYear,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -515,7 +516,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
+      <VStack pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
           {facilitator?.status === "applied" && (
             <InfoBox status={facilitator?.status} progress={progress} />
@@ -754,14 +755,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 facilitator?.aadhaar_verification_mode
               ) && (
                 <Stack space="3">
-                  <Alert status="warning" alignItems={"start"}>
-                    <HStack alignItems="center" space="2" color>
-                      <Alert.Icon />
-                      <BodyMedium>
-                        {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-                      </BodyMedium>
-                    </HStack>
-                  </Alert>
+                  <CustomAlert
+                    title={t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+                    status={"danger"}
+                  />
                   <FrontEndTypo.Primarybutton
                     onPress={(e) =>
                       navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {

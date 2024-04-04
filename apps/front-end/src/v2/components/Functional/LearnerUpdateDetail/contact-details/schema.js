@@ -16,7 +16,7 @@ export default {
           type: "string",
           label: "MARK_AS_WHATSAPP_REGISTER",
           format: "RadioBtn",
-
+          _stack: { direction: "row", justifyContent: "space-between" },
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
@@ -24,6 +24,7 @@ export default {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
           format: "RadioBtn",
+          _stack: { direction: "row", justifyContent: "space-between" },
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },
