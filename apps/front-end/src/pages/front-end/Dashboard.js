@@ -407,9 +407,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 resizeMode="contain"
               />
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                env = {env_name}
+                env = {env_name} <br />
+                Offline Page Custom
                 <br />
-                Cache Fix Version 8<br />
+                Cache Fix Version 9<br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
