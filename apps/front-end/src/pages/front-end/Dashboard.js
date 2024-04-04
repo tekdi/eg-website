@@ -20,6 +20,7 @@ import {
   enumRegistryService,
   getSelectedAcademicYear,
   CustomAlert,
+  TitleCard,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -679,27 +680,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_for_training",
             "selected_for_onboarding",
           ].includes(facilitator.status) && (
-            <Stack>
-              <RedOutlineButton
-                background="bgYellowColor.400"
-                mx="5"
-                p="10"
-                width="40%"
-                shadow="RedBlackShadow"
+            <Stack py={4} px={4} pb={0}>
+              <TitleCard
+                _icon=""
+                icon={
+                  <IconByName _icon={{ color: "white" }} name="Book2LineIcon" />
+                }
                 onPress={(e) => navigate("/beneficiary")}
               >
-                <Image
-                  source={{
-                    uri: "/images/learner/add_learner.png",
-                  }}
-                  alt="Add AG"
-                  size={"sm"}
-                  resizeMode="contain"
-                />
-                <FrontEndTypo.H4 mt="2" color="textBlack.500" bold>
-                  {t("ADD_AN_AG")}
-                </FrontEndTypo.H4>
-              </RedOutlineButton>
+                <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
+              </TitleCard>
               <Stack px="3">
                 {facilitator?.program_faciltators?.status ===
                   "pragati_mobilizer" && (

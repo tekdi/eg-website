@@ -108,8 +108,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 <VStack>
                   <ProfilePhoto
                     profile_photo_1={facilitator?.profile_photo_1}
-                    // profile_photo_2={facilitator?.profile_photo_2}
-                    // profile_photo_3={facilitator?.profile_photo_3}
+                    profile_photo_2={facilitator?.profile_photo_2}
+                    profile_photo_3={facilitator?.profile_photo_3}
                     // isProfileEdit={isProfileEdit()}
                   />
                 </VStack>

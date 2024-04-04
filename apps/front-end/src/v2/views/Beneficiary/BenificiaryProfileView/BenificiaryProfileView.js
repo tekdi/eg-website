@@ -271,7 +271,7 @@ export default function BenificiaryProfileView(props) {
                     source={{
                       document_id: benificiary?.profile_photo_1?.id,
                     }}
-                    // alt="Alternate Text"
+                    alt="Beneficiary Profile Photo"
                     width={"64px"}
                     height={"64px"}
                   />
@@ -399,10 +399,9 @@ export default function BenificiaryProfileView(props) {
               pb="6"
             >
               <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <VStack space="2" paddingTop="5">
+                <VStack space="2">
                   <HStack alignItems="Center" justifyContent="space-between">
                     <HStack space="md" alignItems="Center">
-                      {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
                       <FrontEndTypo.H3 bold color="floatingLabelColor.500">
                         {t("BASIC_DETAILS")}
                       </FrontEndTypo.H3>

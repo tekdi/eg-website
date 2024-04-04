@@ -125,7 +125,7 @@ export default {
           icons: [
             {
               name: "Female",
-              _icon: { size: "30" },
+              _icon: { size: "30", color: "white" },
             },
             {
               name: "Male",

@@ -84,8 +84,8 @@ export default function BenificiaryBasicDetails() {
                   // isProfileEdit={true}
                   // editLink={edit}
                   profile_photo_1={benificiary?.profile_photo_1}
-                  // profile_photo_2={benificiary?.profile_photo_2}
-                  // profile_photo_3={benificiary?.profile_photo_3}
+                  profile_photo_2={benificiary?.profile_photo_2}
+                  profile_photo_3={benificiary?.profile_photo_3}
                 />
               </VStack>
               <VStack>
