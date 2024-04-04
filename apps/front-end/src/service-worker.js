@@ -81,7 +81,7 @@ self.addEventListener("message", (event) => {
 });*/
 
 //new code
-const CACHE_NAME = "eg-pragati-v1";
+/*const CACHE_NAME = "eg-pragati-v1";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -153,4 +153,4 @@ self.addEventListener("fetch", (event) => {
         });
       })
   );
-});
+});*/
