@@ -149,7 +149,11 @@ const List = ({ data }) => {
                     <FrontEndTypo.H4 color="LearnerListCardLink.500">
                       {t("COMPLETE_THE_DOCUMENTATION")}
                     </FrontEndTypo.H4>
-                    <IconByName name="ArrowRightSLineIcon" py="0" />
+                    <IconByName
+                      color="LearnerListCardLink.500"
+                      name="ArrowRightSLineIcon"
+                      py="0"
+                    />
                   </HStack>
                 </Pressable>
               )}
