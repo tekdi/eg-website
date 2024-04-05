@@ -76,7 +76,7 @@ export default function PhotoUpload({
   };
 
   return (
-    <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
+    <VStack py={6} px={4} mb={5} space="6">
       <FrontEndTypo.H2 color="textGreyColor.750">
         {t("ADD_ID_PHOTOS")}
       </FrontEndTypo.H2>
@@ -103,23 +103,27 @@ export default function PhotoUpload({
           </FrontEndTypo.H2>
         )}
 
-        <FrontEndTypo.Primarybutton
-          p="4"
-          mt="4"
-          onPress={() => {
-            handleProfilePhoto("next");
-          }}
-        >
-          {t("SAVE_AND_NEXT")}
-        </FrontEndTypo.Primarybutton>
+        <VStack alignItems={"center"}>
+          <FrontEndTypo.Primarybutton
+            p="4"
+            mt="4"
+            minW={"60%"}
+            onPress={() => {
+              handleProfilePhoto("next");
+            }}
+          >
+            {t("SAVE_AND_NEXT")}
+          </FrontEndTypo.Primarybutton>
 
-        <FrontEndTypo.Secondarybutton
-          p="4"
-          mt="4"
-          onPress={() => handleProfilePhoto("profile")}
-        >
-          {t("SAVE_AND_PROFILE")}
-        </FrontEndTypo.Secondarybutton>
+          <FrontEndTypo.Secondarybutton
+            p="4"
+            mt="4"
+            minW={"60%"}
+            onPress={() => handleProfilePhoto("profile")}
+          >
+            {t("SAVE_AND_PROFILE")}
+          </FrontEndTypo.Secondarybutton>
+        </VStack>
       </VStack>
     </VStack>
   );
