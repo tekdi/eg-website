@@ -8,32 +8,27 @@ import {
   campService,
   enumRegistryService,
   benificiaryRegistoryService,
+  CustomAlert,
+  TitleCard,
+  ObservationService,
 } from "@shiksha/common-lib";
 import {
-  HStack,
-  VStack,
-  Pressable,
-  Center,
-  Avatar,
   Alert,
+  Avatar,
+  Center,
+  HStack,
   Modal,
   Stack,
+  VStack,
 } from "native-base";
-import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Chip from "component/BeneficiaryStatus";
+import { Chart } from "react-google-charts";
+import { useEffect, useState } from "react";
 
-const campSettingData = (item) => {
-  return (
-    item?.preferred_start_time === null &&
-    item?.preferred_end_time === null &&
-    item?.week_off === null
-  );
-};
-
-export default function List({ userTokenInfo }) {
+export default function List({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -44,6 +39,16 @@ export default function List({ userTokenInfo }) {
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
   const [campCount, setCampCount] = useState();
+  const [chartData, SetChartData] = useState();
+  const [leanerList, setLeanerList] = useState([]);
+
+  const campSettingData = (item) => {
+    return (
+      item?.preferred_start_time === null &&
+      item?.preferred_end_time === null &&
+      item?.week_off === null
+    );
+  };
 
   useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -67,18 +72,150 @@ export default function List({ userTokenInfo }) {
     setLoading(false);
   }, []);
 
+  const flattenList = (list) => {
+    let flattenedArray = [];
+    list.forEach((item) => {
+      item.group.group_users.forEach((userObj) => {
+        const { user_id, first_name, middle_name, last_name } = userObj.user;
+        flattenedArray.push({
+          user_id,
+          first_name,
+          middle_name: middle_name || "",
+          last_name: last_name || "",
+          group_id: item.group.group_id,
+          camp_id: item.camp_id,
+        });
+      });
+    });
+
+    return flattenedArray;
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      let observation = "EPCP";
+      const listData = await ObservationService.getCampLearnerList();
+      const flattenedList = flattenList(listData?.data);
+      const userIds = listData?.data.flatMap((group) =>
+        group.group.group_users.map((user) => user.user.user_id)
+      );
+      const data = await ObservationService.getSubmissionData(
+        userIds,
+        observation
+      );
+
+      const report = data?.data?.[0]?.observation_fields;
+
+      mergingData(flattenedList, report);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const mergingData = (flattenedList, report) => {
+    const mergedArray = flattenedList?.map((user) => {
+      const userData = { ...user };
+      const responses = report.reduce((acc, observation) => {
+        const fieldResponse = observation.field_responses.find(
+          (response) => response.context_id === user.user_id
+        );
+        if (fieldResponse) {
+          acc.push({
+            field_id: observation.field_id,
+            response_value: fieldResponse.response_value,
+          });
+        }
+        return acc;
+      }, []);
+      userData.responses = responses;
+      return userData;
+    });
+    const data = ProcessData(mergedArray);
+    setLeanerList(data);
+  };
+  const getStatus = (responses) => {
+    const response1 = responses.find((response) => response.field_id === 1);
+    const response2 = responses.find((response) => response.field_id === 2);
+    const response3 = responses.find((response) => response.field_id === 3);
+    const response5 = responses.find((response) => response.field_id === 5);
+    const response7 = responses.find((response) => response.field_id === 7);
+    if (!response1 || !response2 || !response3 || !response5 || !response7) {
+      return t("NOT_ENTERED");
+    } else if (
+      response1.response_value === "NO" &&
+      response2 &&
+      response2.response_value !== ""
+    ) {
+      return t("NOT_STARTED");
+    } else if (
+      response1.response_value === "YES" &&
+      (response3.response_value === "NO" ||
+        response5.response_value === "NO" ||
+        response7.response_value === "NO")
+    ) {
+      return t("IN_PROGRESS");
+    } else if (
+      response1.response_value === "YES" &&
+      response3.response_value === "YES" &&
+      response5.response_value === "YES" &&
+      response7.response_value === "YES"
+    ) {
+      return t("COMPLETED");
+    } else if (responses.every((response) => response.response_value === "")) {
+      return t("NOT_ENTERED");
+    } else {
+      return "unknown";
+    }
+  };
+
+  const ProcessData = (mergedArray) => {
+    const newData = mergedArray?.map((user) => {
+      const status = getStatus(user.responses);
+      return { ...user, status };
+    });
+    countStatus(newData);
+    return newData;
+  };
+
+  const countStatus = (data) => {
+    let statusCounts = {};
+    data.forEach((item) => {
+      const status = item.status;
+      statusCounts[status] = (statusCounts[status] || 0) + 1;
+    });
+    SetChartData(statusCounts);
+    return statusCounts;
+  };
+
+  const statusArray = [["Task", "Hours per Day"]];
+
+  if (chartData) {
+    Object.entries(chartData).forEach(([status, count]) => {
+      statusArray.push([status, count]);
+    });
+  }
+
+  const options = {
+    title: `${t("TOTAL_STUDENTS")} : ${leanerList?.length}`,
+    // pieHole: 0.3,
+    is3D: true,
+  };
   return (
     <Stack>
       <VStack p="4" space="5">
-        {campList?.camps?.length < 2 && (
+        <AdminTypo.H3>
+          {`${t("HELLO")}, ${userTokenInfo?.authUser?.first_name}!`}
+        </AdminTypo.H3>
+
+        {campList?.pcr_camp?.length < 2 && (
           <VStack
-            bg="boxBackgroundColour.200"
+            // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             padding="4"
             shadow="AlertShadow"
-            background={"bgYellowColor.400"}
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
               ipStatus
@@ -90,287 +227,247 @@ export default function List({ userTokenInfo }) {
                       justifyContent={"space-between"}
                       alignItems={"center"}
                     >
-                      <VStack flex={1} space={2}>
-                        <FrontEndTypo.H2 color="textMaroonColor.400">
-                          {t("PCR_CAMP")}
+                      <VStack flex={1}>
+                        <FrontEndTypo.H2 bold color={"textGreyColor.750"}>
+                          {t("PCR_CAMPS")}
                         </FrontEndTypo.H2>
-                        <FrontEndTypo.H3 color="textMaroonColor.400">
-                          {`${nonRegisteredUser?.length} `}
-                          {t("UNMAPPED_LEARNERS")}
-                        </FrontEndTypo.H3>
-                      </VStack>
-                      <Center>
-                        {nonRegisteredUser.length > 0 && (
-                          <Avatar.Group
-                            _avatar={{
-                              size: "sm",
-                            }}
-                            max={3}
+                        <HStack justifyContent={"space-between"}>
+                          <FrontEndTypo.H3
+                            mt="4"
+                            bold
+                            color="textGreyColor.750"
                           >
-                            {nonRegisteredUser?.map((item) => {
-                              return (
-                                <Avatar
-                                  key={item}
-                                  bg="red.500"
-                                  {...(item?.profile_photo_1?.fileUrl
-                                    ? {
-                                        source: {
-                                          uri: item?.profile_photo_1?.fileUrl,
-                                        },
-                                      }
-                                    : {})}
-                                >
-                                  {item?.program_beneficiaries[0]
-                                    ?.enrollment_first_name
-                                    ? item?.program_beneficiaries[0]?.enrollment_first_name?.substring(
-                                        0,
-                                        2
-                                      )
-                                    : "NA"}
-                                </Avatar>
-                              );
-                            })}
-                          </Avatar.Group>
-                        )}
-                      </Center>
+                            {`${nonRegisteredUser?.length} `}
+                            {t("UNMAPPED_LEARNERS")}
+                          </FrontEndTypo.H3>
+                          <Center>
+                            {nonRegisteredUser.length > 0 && (
+                              <Avatar.Group
+                                _avatar={{
+                                  size: "sm",
+                                }}
+                                max={3}
+                              >
+                                {nonRegisteredUser?.map((item) => {
+                                  return (
+                                    <Avatar
+                                      key={item}
+                                      bg="red.500"
+                                      {...(item?.profile_photo_1?.fileUrl
+                                        ? {
+                                            source: {
+                                              uri: item?.profile_photo_1
+                                                ?.fileUrl,
+                                            },
+                                          }
+                                        : {})}
+                                    >
+                                      {item?.program_beneficiaries[0]
+                                        ?.enrollment_first_name
+                                        ? item?.program_beneficiaries[0]?.enrollment_first_name?.substring(
+                                            0,
+                                            2
+                                          )
+                                        : "NA"}
+                                    </Avatar>
+                                  );
+                                })}
+                              </Avatar.Group>
+                            )}
+                          </Center>
+                        </HStack>
+
+                        <CustomAlert
+                          status={""}
+                          title={t("PCR_CAMP_ALERT_MESSAGE")}
+                        />
+                      </VStack>
                     </HStack>
                     {campList?.pcr_camp?.map((item, i) => {
                       const index = i + 1;
                       return (
-                        <Pressable
-                          key={item}
-                          onPress={() => {
-                            setCampSelected(item);
-                          }}
-                          bg="boxBackgroundColour.100"
-                          shadow="AlertShadow"
-                          borderRadius="10px"
-                          py={3}
-                          px={5}
-                        >
-                          <HStack
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
+                        <HStack space={2}>
+                          <TitleCard
+                            onPress={() => {
+                              setCampSelected(item);
+                            }}
+                            title={
+                              <FrontEndTypo.H1 bold color={"white"}>
+                                {`C${String(index).padStart(2)}`}
+                              </FrontEndTypo.H1>
+                            }
                           >
-                            <VStack flex={"0.9"}>
-                              <FrontEndTypo.H3 color="textMaroonColor.400">
-                                {`${t("CAMP")} ${String(index).padStart(
-                                  2,
-                                  "0"
-                                )} (${t("ID")} : ${item?.id})`}
-                              </FrontEndTypo.H3>
-                              {item?.group?.description && (
-                                <FrontEndTypo.H6>
-                                  {item?.group?.description}
-                                </FrontEndTypo.H6>
-                              )}
-                            </VStack>
-                            <HStack alignItems={"center"}>
-                              <IconByName
-                                isDisabled
-                                name={
-                                  ["camp_ip_verified"].includes(
-                                    item?.group?.status
-                                  )
-                                    ? "CheckLineIcon"
-                                    : "ErrorWarningLineIcon"
-                                }
-                                color={
-                                  ["camp_ip_verified"].includes(
-                                    item?.group?.status
-                                  )
-                                    ? "textGreen.700"
-                                    : "textMaroonColor.400"
-                                }
-                                _icon={{ size: "20px" }}
-                              />
-                              <GetEnumValue
-                                t={t}
-                                enumType={"GROUPS_STATUS"}
-                                enumOptionValue={item?.group?.status}
-                                enumApiData={enumOptions}
-                                color={
-                                  ["camp_ip_verified"].includes(
-                                    item?.group?.status
-                                  )
-                                    ? "textGreen.700"
-                                    : "textMaroonColor.400"
-                                }
-                                ml={2}
-                                fontSize={"12px"}
-                              />
+                            <HStack
+                              // direction={["column", "row", "row"]}
+                              alignItems={"center"}
+                              justifyContent={"space-between"}
+                            >
+                              <VStack>
+                                <FrontEndTypo.H3>{`${t(
+                                  "CAMP_ID"
+                                )} `}</FrontEndTypo.H3>
+                                {item?.group?.description && (
+                                  <FrontEndTypo.H6>
+                                    {item?.group?.description}
+                                  </FrontEndTypo.H6>
+                                )}
+                                <FrontEndTypo.H3>{item?.id}</FrontEndTypo.H3>
+                              </VStack>
+
+                              <HStack>
+                                <IconByName
+                                  isDisabled
+                                  name={
+                                    ["camp_ip_verified"].includes(
+                                      item?.group?.status
+                                    )
+                                      ? "CheckLineIcon"
+                                      : "ErrorWarningLineIcon"
+                                  }
+                                  color={
+                                    ["camp_ip_verified"].includes(
+                                      item?.group?.status
+                                    )
+                                      ? "textGreen.700"
+                                      : "textMaroonColor.400"
+                                  }
+                                  _icon={{ size: "20px" }}
+                                />
+                                <GetEnumValue
+                                  t={t}
+                                  enumType={"GROUPS_STATUS"}
+                                  enumOptionValue={item?.group?.status}
+                                  enumApiData={enumOptions}
+                                  color={
+                                    ["camp_ip_verified"].includes(
+                                      item?.group?.status
+                                    )
+                                      ? "textGreen.700"
+                                      : "textMaroonColor.400"
+                                  }
+                                  ml={2}
+                                />
+                              </HStack>
                             </HStack>
-                          </HStack>
-                        </Pressable>
+                          </TitleCard>
+                        </HStack>
                       );
                     })}
-                    {campCount >= 0 && campCount < 2 && (
-                      <FrontEndTypo.Secondarybutton
-                        onPress={() => {
-                          navigate(`/camps/new/learners`, { state: "camp" });
-                        }}
-                      >
-                        <FrontEndTypo.H3 color="textMaroonColor.400">
-                          {campCount == 0
-                            ? t("START_FIRST_CAMP_REGISTER")
-                            : t("START_SECOND_CAMP_REGISTER")}
-                        </FrontEndTypo.H3>
-                      </FrontEndTypo.Secondarybutton>
-                    )}
-
-                    <Alert status="warning" alignItems={"start"} width={"100%"}>
-                      <HStack alignItems="center" space="2" color>
-                        <Alert.Icon />
-                        <BodyMedium>{t("CAMP_WARNING")}</BodyMedium>
-                      </HStack>
-                    </Alert>
+                    {campList?.pcr_camp?.length < 2 ||
+                      (campList?.camps?.length > 1 && (
+                        <FrontEndTypo.Secondarybutton
+                          onPress={() => {
+                            navigate(`/camps/new/learners`, { state: "camp" });
+                          }}
+                        >
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
+                            {campCount == 0
+                              ? t("START_FIRST_CAMP_REGISTER")
+                              : t("START_SECOND_CAMP_REGISTER")}
+                          </FrontEndTypo.H3>
+                        </FrontEndTypo.Secondarybutton>
+                      ))}
+                    <CustomAlert status={"warning"} title={t("CAMP_WARNING")} />
                   </VStack>
                 ) : (
-                  <Alert status="warning" alignItems={"start"} width={"100%"}>
-                    <HStack alignItems="center" space="2" color>
-                      <Alert.Icon />
-                      <BodyMedium>{t("COMMUNITY_MIN_ERROR")}</BodyMedium>
-                    </HStack>
-                  </Alert>
+                  <CustomAlert
+                    status={"warning"}
+                    title={t("COMMUNITY_MIN_ERROR")}
+                  />
                 )}
               </VStack>
             ) : (
-              <Alert
-                status="warning"
-                alignItems={"start"}
-                mb="3"
-                mt="4"
-                width={"100%"}
-              >
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
-                </HStack>
-              </Alert>
+              <CustomAlert status={"warning"} title={t("CAMP_ACCESS_ERROR")} />
             )}
           </VStack>
         )}
+
         {campList?.camps && (
           <VStack
-            bg="boxBackgroundColour.200"
+            // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             padding="4"
             shadow="AlertShadow"
-            background={"bgYellowColor.400"}
           >
-            {["selected_for_onboarding", "selected_prerak"].includes(
-              ipStatus
-            ) ? (
-              <VStack>
-                {communityLength >= 2 ? (
-                  <VStack space={5}>
-                    <HStack
-                      justifyContent={"space-between"}
-                      alignItems={"center"}
-                    >
-                      <FrontEndTypo.H2 color="textMaroonColor.400">
-                        {t("MAIN_CAMP")}
-                      </FrontEndTypo.H2>
-                    </HStack>
-                    {campList?.camps?.map((item, i) => {
-                      const index = i + 1;
-                      return (
-                        <Pressable
-                          key={item}
-                          onPress={() => {
-                            setCampSelected(item);
-                          }}
-                          bg="boxBackgroundColour.100"
-                          shadow="AlertShadow"
-                          borderRadius="10px"
-                          py={3}
-                          px={5}
-                        >
-                          <HStack
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                          >
-                            <VStack flex={"0.9"}>
-                              <FrontEndTypo.H3 color="textMaroonColor.400">
-                                {`${t("CAMP")} ${String(index).padStart(
-                                  2,
-                                  "0"
-                                )} (${t("ID")} : ${item?.id})`}
-                              </FrontEndTypo.H3>
-                              {item?.group?.description && (
-                                <FrontEndTypo.H6>
-                                  {item?.group?.description}
-                                </FrontEndTypo.H6>
-                              )}
-                            </VStack>
-                            <HStack>
-                              <IconByName
-                                isDisabled
-                                name={
-                                  ["camp_ip_verified"].includes(
-                                    item?.group?.status
-                                  )
-                                    ? "CheckLineIcon"
-                                    : "ErrorWarningLineIcon"
-                                }
-                                color={
-                                  ["camp_ip_verified"].includes(
-                                    item?.group?.status
-                                  )
-                                    ? "textGreen.700"
-                                    : "textMaroonColor.400"
-                                }
-                                _icon={{ size: "20px" }}
-                              />
-                              <GetEnumValue
-                                t={t}
-                                enumType={"GROUPS_STATUS"}
-                                enumOptionValue={item?.group?.status}
-                                enumApiData={enumOptions}
-                                color={
-                                  ["camp_ip_verified"].includes(
-                                    item?.group?.status
-                                  )
-                                    ? "textGreen.700"
-                                    : "textMaroonColor.400"
-                                }
-                                ml={2}
-                                fontSize={"12px"}
-                              />
-                            </HStack>
-                          </HStack>
-                        </Pressable>
-                      );
-                    })}
+            <VStack>
+              <VStack space={5}>
+                <HStack justifyContent={"space-between"} alignItems={"center"}>
+                  <VStack flex={1}>
+                    <FrontEndTypo.H2 bold color={"textGreyColor.750"}>
+                      {t("MAIN_CAMPS")}
+                    </FrontEndTypo.H2>
                   </VStack>
-                ) : (
-                  <Alert status="warning" alignItems={"start"} width={"100%"}>
-                    <HStack alignItems="center" space="2" color>
-                      <Alert.Icon />
-                      <BodyMedium>{t("COMMUNITY_MIN_ERROR")}</BodyMedium>
-                    </HStack>
-                  </Alert>
-                )}
-              </VStack>
-            ) : (
-              <Alert
-                status="warning"
-                alignItems={"start"}
-                mb="3"
-                mt="4"
-                width={"100%"}
-              >
-                <HStack alignItems="center" space="2" color>
-                  <Alert.Icon />
-                  <BodyMedium>{t("CAMP_ACCESS_ERROR")}</BodyMedium>
                 </HStack>
-              </Alert>
-            )}
+                {campList?.camps?.map((item, i) => {
+                  const index = i + 1;
+                  return (
+                    <TitleCard
+                      onPress={() => {
+                        setCampSelected(item);
+                      }}
+                      title={
+                        <FrontEndTypo.H1 bold color={"white"}>
+                          {`C${String(index).padStart(2)}`}
+                        </FrontEndTypo.H1>
+                      }
+                    >
+                      <HStack
+                        // direction={["column", "row", "row"]}
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
+                      >
+                        <VStack>
+                          <FrontEndTypo.H3>{`${t(
+                            "CAMP_ID"
+                          )} `}</FrontEndTypo.H3>
+                          {item?.group?.description && (
+                            <FrontEndTypo.H6>
+                              {item?.group?.description}
+                            </FrontEndTypo.H6>
+                          )}
+                          <FrontEndTypo.H3>{item?.id}</FrontEndTypo.H3>
+                        </VStack>
+
+                        <HStack>
+                          <IconByName
+                            isDisabled
+                            name={
+                              ["camp_ip_verified"].includes(item?.group?.status)
+                                ? "CheckLineIcon"
+                                : "ErrorWarningLineIcon"
+                            }
+                            color={
+                              ["camp_ip_verified"].includes(item?.group?.status)
+                                ? "textGreen.700"
+                                : "textMaroonColor.400"
+                            }
+                            _icon={{ size: "20px" }}
+                          />
+                          <GetEnumValue
+                            t={t}
+                            enumType={"GROUPS_STATUS"}
+                            enumOptionValue={item?.group?.status}
+                            enumApiData={enumOptions}
+                            color={
+                              ["camp_ip_verified"].includes(item?.group?.status)
+                                ? "textGreen.700"
+                                : "textMaroonColor.400"
+                            }
+                            ml={2}
+                          />
+                        </HStack>
+                      </HStack>
+                    </TitleCard>
+                  );
+                })}
+              </VStack>
+            </VStack>
           </VStack>
         )}
       </VStack>
+      <Chart chartType="PieChart" data={statusArray} options={options} />
       <Modal
         isOpen={campSelected}
         onClose={() => setCampSelected()}
@@ -381,6 +478,11 @@ export default function List({ userTokenInfo }) {
           <Modal.CloseButton />
           <Modal.Body p={5} marginTop={"20px"}>
             <VStack space={4}>
+              <Stack alignItems={"center"}>
+                <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
+                  "CAMP_ID"
+                )} : ${campSelected?.id}`}</FrontEndTypo.H4>
+              </Stack>
               <FrontEndTypo.Primarybutton
                 m="2"
                 onPress={() => {
@@ -405,14 +507,10 @@ export default function List({ userTokenInfo }) {
                       : t("MAIN_CAMP_SETTINGS")}
                   </FrontEndTypo.Secondarybutton>
                   {campSettingData(campSelected) ? (
-                    <Alert mt={4} status="warning">
-                      <HStack space={2}>
-                        <Alert.Icon />
-                        <FrontEndTypo.H3>
-                          {t("CAMP_EXECUTION_MESSAGE")}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                    </Alert>
+                    <CustomAlert
+                      status={"warning"}
+                      title={t("CAMP_EXECUTION_MESSAGE")}
+                    />
                   ) : (
                     <FrontEndTypo.Primarybutton
                       onPress={() => {
@@ -434,4 +532,7 @@ export default function List({ userTokenInfo }) {
   );
 }
 
-List.propTypes = {};
+List.PropTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

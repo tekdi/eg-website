@@ -5,9 +5,18 @@ import {
   campService,
   Loading,
   enumRegistryService,
+  arrList,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Alert, HStack, Modal, ScrollView, Stack, VStack } from "native-base";
+import {
+  Alert,
+  HStack,
+  Modal,
+  Progress,
+  ScrollView,
+  Stack,
+  VStack,
+} from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -217,6 +226,10 @@ export default function CampSessionList({ footerLinks }) {
     return <Loading />;
   }
 
+  const calculateProgress = (completedSessions, totalSessions) => {
+    if (totalSessions === 0) return 0; // to avoid division by zero
+    return (completedSessions / totalSessions) * 100;
+  };
   return (
     <Layout
       _appBar={{
@@ -238,12 +251,28 @@ export default function CampSessionList({ footerLinks }) {
       ) : (
         <Stack>
           <VStack flex={1} space="5" p="5">
-            <HStack space="2">
-              <IconByName name="BookOpenLineIcon" />
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t("SESSION")}
-              </FrontEndTypo.H2>
-            </HStack>
+            <FrontEndTypo.H2>{t("SESSION")}</FrontEndTypo.H2>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
+              "CAMP_ID"
+            )} : ${id}`}</FrontEndTypo.H4>
+            <VStack>
+              <HStack space={4} alignItems={"center"}>
+                <FrontEndTypo.H3 bold color="textGreyColor.750">
+                  {t("COMPLETED_SESSIONS")} :
+                </FrontEndTypo.H3>
+                <FrontEndTypo.H2 bold color="textGreyColor.750">
+                  {sessionActive?.countSession}/{sessionList?.length}
+                </FrontEndTypo.H2>
+              </HStack>
+              <Progress
+                value={calculateProgress(
+                  sessionActive?.countSession,
+                  sessionList?.length
+                )}
+                size="sm"
+                colorScheme="warning"
+              />
+            </VStack>
             <ScrollView maxH={bodyHeight - 150} p="4">
               <SessionList
                 {...{ sessionList, sessionActive, setModalVisible }}

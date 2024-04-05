@@ -855,7 +855,9 @@
   "LONGITUDE": "लॉन्गिट्यूड",
   "MAIN_CAMP": "मुख्य शिविर",
   "MAIN_CAMP_EXECUTION": "मुख्य शिविर संचालन",
+  "CAMP_EXECUTION": "शिविर संचालन",
   "MAIN_CAMP_PROFILE": "मुख्य शिविर प्रोफाइल",
+  "CAMP_PROFILE": "शिविर प्रोफाइल",
   "MAIN_CAMP_SETTINGS": "मुख्य शिविर सेटिंग",
   "MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS": "सुनिश्चित करें कि जब आप ओरिएंटेशन में भाग लें तो आपके पास दस्तावेजों की निम्नलिखित सूची हो",
   "MALE": "पुरुष",
@@ -944,7 +946,7 @@
   "NO_I_USE_A_FAMILY_MEMBERS": "नहीं, परिवार के किसी सदस्य का मोबाइल उपयोग करते हैं",
   "NO_ONE": " कोई नहीं",
   "NO_PLAN": "नहीं, आज कुछ और प्लान है",
-  "HELLO" : "नमस्ते!",
+  "HELLO": "नमस्ते",
   "NOT_APPLICABLE": "लागू नहीं",
   "NOT_AVAILABLE": "उपलब्ध नहीं है",
   "NOT_BAD": "बुरा नहीं",
@@ -1654,5 +1656,7 @@
   "CREATE": "बनाएँ",
   "EXISTING_IP": "मौजूदा IP",
   "EXISTING_USER": "मौजूदा उपयोगकर्ता",
-  "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें"
+  "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें",
+  "CHANGE_LANGUGAE": "भाषा बदलें",
+  "TOTAL_STUDENTS": "कुल शिक्षार्थी"
 }

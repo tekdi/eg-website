@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CheckIcon,
+  Checkbox,
   FormControl,
   HStack,
   Image,
@@ -313,7 +314,7 @@ export const RadioBtn = ({
 }) => {
   const items = options?.enumOptions;
   const { label, format, readOnly } = schema || {};
-
+  console.log({ items, value });
   const { t } = useTranslation();
   return (
     <FormControl gap="4">
@@ -324,7 +325,6 @@ export const RadioBtn = ({
         </FormControl.Label>
       )}
       <Radio.Group
-        colorScheme="eG_Blue"
         key={items}
         pb="4"
         value={value}
@@ -349,7 +349,7 @@ export const RadioBtn = ({
               key={item?.value}
               value={item?.value}
               size="lg"
-              colorScheme="eG_Blue"
+              colorScheme="blue"
               _text={{ fontSize: 12, fontWeight: 500 }}
               isDisabled={readOnly}
             >
