@@ -46,8 +46,10 @@ const LearnerMessage = ({ program_beneficiaries }) => {
   };
 
   return (
-    <HStack color="blueText.450" alignItems="center">
-      <FrontEndTypo.H4 color="blueText.450">{getTitle()}</FrontEndTypo.H4>
+    <HStack color="LearnerListCardLink.500" alignItems="center">
+      <FrontEndTypo.H4 color="LearnerListCardLink.500">
+        {getTitle()}
+      </FrontEndTypo.H4>
     </HStack>
   );
 };
@@ -136,7 +138,7 @@ const List = ({ data }) => {
                 </VStack>
               </HStack>
             </Pressable>
-            <VStack bg="white" alignItems={"end"}>
+            <VStack px={2} bg="white" alignItems={"end"}>
               {item?.program_beneficiaries?.status === "identified" && (
                 <Pressable
                   onPress={() => {
@@ -144,7 +146,7 @@ const List = ({ data }) => {
                   }}
                 >
                   <HStack color="LearnerListCardLink.500" alignItems="center">
-                    <FrontEndTypo.H4 color="blueText.450">
+                    <FrontEndTypo.H4 color="LearnerListCardLink.500">
                       {t("COMPLETE_THE_DOCUMENTATION")}
                     </FrontEndTypo.H4>
                     <IconByName name="ArrowRightSLineIcon" py="0" />
@@ -157,7 +159,7 @@ const List = ({ data }) => {
                     navigate(`/beneficiary/${item?.id}/docschecklist`);
                   }}
                 >
-                  <HStack color="blueText.450" alignItems="center">
+                  <HStack color="LearnerListCardLink.500" alignItems="center">
                     <FrontEndTypo.H4 color="blueText.450">
                       {t("CONTINUE_ENROLLMENT")}
                     </FrontEndTypo.H4>
@@ -171,7 +173,7 @@ const List = ({ data }) => {
                     navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
                   }}
                 >
-                  <HStack color="blueText.450" alignItems="center">
+                  <HStack color="LearnerListCardLink.500" alignItems="center">
                     <FrontEndTypo.H4 color="blueText.450">
                       {t("ENTER_THE_ENROLLMENT_DETAILS")}
                     </FrontEndTypo.H4>
@@ -182,7 +184,11 @@ const List = ({ data }) => {
               {["duplicated", "enrolled_ip_verified"]?.includes(
                 item?.program_beneficiaries?.status
               ) && (
-                <HStack color="blueText.450" alignItems="center" mb="2">
+                <HStack
+                  color="LearnerListCardLink.500"
+                  alignItems="center"
+                  mb="2"
+                >
                   <FrontEndTypo.H4 color="blueText.450">
                     {item?.program_beneficiaries?.status === "duplicated"
                       ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
