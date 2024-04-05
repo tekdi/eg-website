@@ -45,24 +45,47 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [openModal, setOpenModal] = React.useState(false);
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const [boardName, setBoardName] = useState({});
+  const [localStorageData] = useState(
+    jsonParse(localStorage?.getItem("program"))
+  );
+  const [paymentDocId, setPaymentDocId] = useState([]);
 
-  const profileDetails = React.useCallback(async () => {
-    const { result } = await benificiaryRegistoryService.getOne(id);
-    const value = result?.program_beneficiaries?.enrolled_for_board;
-    setData(result);
+  const profileDetails = React.useCallback(
+    async (selectedId = null) => {
+      console.log({ selectedId });
 
-    const { subjects } = await enumRegistryService.subjectsList(value);
-    const boardName = await enumRegistryService.boardName(value);
-    setBoardName(boardName?.name);
-    const newResult = await uploadRegistryService.getOne({
-      document_id: result?.program_beneficiaries?.payment_receipt_document_id,
-    });
-    setReceiptUrl(newResult);
-    setFileType(newResult?.key?.split(".").pop());
-    const subject = jsonParse(result?.program_beneficiaries.subjects, []);
-    setSubjects(subjects?.filter((e) => subject?.includes(`${e.subject_id}`)));
-    setLoading(false);
-  }, [id]);
+      const { result } = await benificiaryRegistoryService.getOne(id);
+      const value = result?.program_beneficiaries?.enrolled_for_board;
+      setData(result);
+
+      const { subjects } = await enumRegistryService.subjectsList(value);
+      const boardName = await enumRegistryService.boardName(value);
+      setBoardName(boardName?.name);
+
+      const payment_receipt_document_id = [70384, 30744, 18597];
+      setPaymentDocId(payment_receipt_document_id); //like this i got ids from result?.program_beneficiaries?.payment_receipt_document_id
+      const newResult = await uploadRegistryService.getOne({
+        document_id: selectedId || payment_receipt_document_id?.[0], // Use selectedId if available, otherwise use default id from obj
+      });
+      // const newResult = await uploadRegistryService.getOne({
+      //   // document_id: result?.program_beneficiaries?.payment_receipt_document_id,
+      // });
+      setReceiptUrl(newResult);
+      setFileType(newResult?.key?.split(".").pop());
+      const subject = jsonParse(result?.program_beneficiaries.subjects, []);
+      setSubjects(
+        subjects?.filter((e) => subject?.includes(`${e.subject_id}`))
+      );
+      setLoading(false);
+    },
+    [id]
+  );
+
+  const handleButtonClick = async (selectedId) => {
+    setLoading(true);
+    console.log({ selectedId });
+    await profileDetails(selectedId);
+  };
 
   React.useEffect(() => {
     profileDetails();
@@ -98,7 +121,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     },
     [checkValidation, createSearchParams, filter, id, navigate, reason]
   );
-
+  console.log({ paymentDocId });
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
@@ -136,7 +159,29 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             <AdminTypo.H5 color="textGreyColor.800" bold>
               {t("ENROLLMENT_DETAILS_VERIFICATION")}
             </AdminTypo.H5>
-
+            <HStack m={4} space={2}>
+              <AdminTypo.Secondarybutton
+                onPress={() => {
+                  handleButtonClick(paymentDocId[0]);
+                }}
+              >
+                {t("Payment Receipt")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.Secondarybutton
+                onPress={() => {
+                  handleButtonClick(paymentDocId[1]);
+                }}
+              >
+                {t("Application Form")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.Secondarybutton
+                onPress={() => {
+                  handleButtonClick(paymentDocId[2]);
+                }}
+              >
+                {t("Application Login ID Screenshot")}
+              </AdminTypo.Secondarybutton>
+            </HStack>
             <HStack space="2">
               <VStack flex="2" pb="1" space={4}>
                 <HStack flexWrap={"wrap"}>
@@ -156,6 +201,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     ]}
                   />
                 </HStack>
+
                 <AdminTypo.PrimaryButton
                   onPress={() => {
                     navigate(`/admin/beneficiary/${data?.id}`);
@@ -417,7 +463,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                     filter: "none",
                                     objectFit: "contain",
                                   }}
-                                  urlObject={receiptUrl}
+                                  urlObject={
+                                    localStorageData?.state_name === "BIHAR"
+                                      ? paymentDocId
+                                      : receiptUrl
+                                  }
                                   alt="aadhaar_front"
                                 />
                               </VStack>
