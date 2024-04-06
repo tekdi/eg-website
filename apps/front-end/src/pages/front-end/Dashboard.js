@@ -407,13 +407,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 resizeMode="contain"
               />
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                env = {env_name} <br />
-                Offline Page Custom
-                <br />
-                Cache Fix Version 15
-                <br />
-                <Link to={"/offline"}>go to offline</Link>
-                <br />
                 {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
