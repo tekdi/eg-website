@@ -53,7 +53,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const profileDetails = React.useCallback(
     async (selectedId = null) => {
       console.log({ selectedId });
-
       const { result } = await benificiaryRegistoryService.getOne(id);
       const value = result?.program_beneficiaries?.enrolled_for_board;
       setData(result);
@@ -61,15 +60,14 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       const { subjects } = await enumRegistryService.subjectsList(value);
       const boardName = await enumRegistryService.boardName(value);
       setBoardName(boardName?.name);
-
-      const payment_receipt_document_id = [70384, 30744, 18597];
-      setPaymentDocId(payment_receipt_document_id); //like this i got ids from result?.program_beneficiaries?.payment_receipt_document_id
+      setPaymentDocId(
+        result?.program_beneficiaries?.payment_receipt_document_id
+      );
       const newResult = await uploadRegistryService.getOne({
-        document_id: selectedId || payment_receipt_document_id?.[0], // Use selectedId if available, otherwise use default id from obj
+        document_id:
+          selectedId ||
+          result?.program_beneficiaries?.payment_receipt_document_id?.[0],
       });
-      // const newResult = await uploadRegistryService.getOne({
-      //   // document_id: result?.program_beneficiaries?.payment_receipt_document_id,
-      // });
       setReceiptUrl(newResult);
       setFileType(newResult?.key?.split(".").pop());
       const subject = jsonParse(result?.program_beneficiaries.subjects, []);
