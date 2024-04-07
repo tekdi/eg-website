@@ -11,6 +11,7 @@ import {
   Breadcrumb,
   jsonToQueryString,
   CustomRadio,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import {
   createSearchParams,
@@ -45,18 +46,16 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [openModal, setOpenModal] = React.useState(false);
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const [boardName, setBoardName] = useState({});
-  const [localStorageData] = useState(
-    jsonParse(localStorage?.getItem("program"))
-  );
+  const [localData, setLocalData] = useState({});
   const [paymentDocId, setPaymentDocId] = useState([]);
 
   const profileDetails = React.useCallback(
     async (selectedId = null) => {
-      console.log({ selectedId });
+      const { state_name } = await getSelectedProgramId();
+      setLocalData(state_name);
       const { result } = await benificiaryRegistoryService.getOne(id);
       const value = result?.program_beneficiaries?.enrolled_for_board;
       setData(result);
-
       const { subjects } = await enumRegistryService.subjectsList(value);
       const boardName = await enumRegistryService.boardName(value);
       setBoardName(boardName?.name);
@@ -81,7 +80,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
   const handleButtonClick = async (selectedId) => {
     setLoading(true);
-    console.log({ selectedId });
     await profileDetails(selectedId);
   };
 
@@ -119,7 +117,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     },
     [checkValidation, createSearchParams, filter, id, navigate, reason]
   );
-  console.log({ paymentDocId });
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
@@ -157,29 +154,31 @@ export default function EnrollmentReceiptView({ footerLinks }) {
             <AdminTypo.H5 color="textGreyColor.800" bold>
               {t("ENROLLMENT_DETAILS_VERIFICATION")}
             </AdminTypo.H5>
-            <HStack m={4} space={2}>
-              <AdminTypo.Secondarybutton
-                onPress={() => {
-                  handleButtonClick(paymentDocId[0]);
-                }}
-              >
-                {t("Payment Receipt")}
-              </AdminTypo.Secondarybutton>
-              <AdminTypo.Secondarybutton
-                onPress={() => {
-                  handleButtonClick(paymentDocId[1]);
-                }}
-              >
-                {t("Application Form")}
-              </AdminTypo.Secondarybutton>
-              <AdminTypo.Secondarybutton
-                onPress={() => {
-                  handleButtonClick(paymentDocId[2]);
-                }}
-              >
-                {t("Application Login ID Screenshot")}
-              </AdminTypo.Secondarybutton>
-            </HStack>
+            {localData === "BIHAR" && (
+              <HStack m={4} space={2}>
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    handleButtonClick(paymentDocId[0]);
+                  }}
+                >
+                  {t("PAYMENT_RECEIPTS")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    handleButtonClick(paymentDocId[1]);
+                  }}
+                >
+                  {t("APPLICATION_FORM")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    handleButtonClick(paymentDocId[2]);
+                  }}
+                >
+                  {t("APPLICATION_LOGIN_ID_SS")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+            )}
             <HStack space="2">
               <VStack flex="2" pb="1" space={4}>
                 <HStack flexWrap={"wrap"}>
@@ -384,7 +383,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   </VStack>
                 </ValidationBox>
               </VStack>
-
               <VStack flex="5">
                 {fileType === "pdf" ? (
                   <ImageView
@@ -462,7 +460,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                     objectFit: "contain",
                                   }}
                                   urlObject={
-                                    localStorageData?.state_name === "BIHAR"
+                                    localData === "BIHAR"
                                       ? paymentDocId
                                       : receiptUrl
                                   }
