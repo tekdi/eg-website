@@ -42,6 +42,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     application_login_id,
     application_form,
   } = fixedSchema?.properties || {};
+
   let newSchema = {};
   let newData = {};
   [
@@ -116,6 +117,18 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
               application_form,
               application_login_id,
             },
+            required: [
+              "enrollment_status",
+              "enrolled_for_board",
+              "enrollment_number",
+              // "enrollment_aadhaar_no",
+              "enrollment_mobile_no",
+              "enrollment_date",
+              "subjects",
+              "payment_receipt_document_id",
+              "application_form",
+              "application_login_id",
+            ],
           };
         } else {
           newSchema = {
@@ -144,6 +157,18 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
               application_form,
               application_login_id,
             },
+            required: [
+              "enrollment_status",
+              "enrolled_for_board",
+              "enrollment_number",
+              // "enrollment_aadhaar_no",
+              "enrollment_mobile_no",
+              "enrollment_date",
+              "subjects",
+              "payment_receipt_document_id",
+              "application_form",
+              "application_login_id",
+            ],
           };
         } else {
           newSchema = {
@@ -175,7 +200,6 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 
 const getSubjects = async (schemaData, value, page) => {
   let { state_name } = await getSelectedProgramId();
-
   if (value) {
     const propertiesMain = schema1.properties;
     const constantSchema = propertiesMain[page];
@@ -186,7 +210,7 @@ const getSubjects = async (schemaData, value, page) => {
       application_login_id,
       ...properties
     } = schemaData.properties;
-    let { data } = await enumRegistryService.subjectsList(value);
+    let data = await enumRegistryService.subjectsList(value);
     let newSchema;
     if (state_name === "BIHAR") {
       newSchema = getOptions(
@@ -230,7 +254,6 @@ const getSubjects = async (schemaData, value, page) => {
     return schemaData;
   }
 };
-
 // App
 export default function App(footerLinks) {
   const [RefAppBar, setRefAppBar] = React.useState();
@@ -322,8 +345,6 @@ export default function App(footerLinks) {
   };
 
   const getEnrollmentStatus = async (schemaData) => {
-    let { state_name } = await getSelectedProgramId();
-
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let newSchema = getOptions(schemaData, {
@@ -333,55 +354,8 @@ export default function App(footerLinks) {
         document_type: "enrollment_receipt",
         iconComponent: (
           <Image
-            source={{
-              uri:
-                state_name === "RAJASTHAN"
-                  ? "/enrollment-receipt.jpeg"
-                  : "/payment_receipt_bihar.jpg",
-            }}
+            source={{ uri: "/payment-receipt.jpeg" }}
             size="200"
-            height={"20vh"}
-            width={"60vw"}
-            maxWidth={400}
-            alt="background image"
-          />
-        ),
-      },
-    });
-
-    newSchema = getOptions(newSchema, {
-      key: "application_form",
-      extra: {
-        userId,
-        document_type: "enrollment_receipt_2",
-        iconComponent: (
-          <Image
-            source={{
-              uri: "/application_receipt_bihar.jpg",
-            }}
-            size="200"
-            height={"20vh"}
-            width={"60vw"}
-            maxWidth={400}
-            alt="background image"
-          />
-        ),
-      },
-    });
-    newSchema = getOptions(newSchema, {
-      key: "application_login_id",
-      extra: {
-        userId,
-        document_type: "enrollment_receipt_2",
-        iconComponent: (
-          <Image
-            source={{
-              uri: "/application_login_id_bihar.jpeg",
-            }}
-            size="200"
-            height={"20vh"}
-            width={"60vw"}
-            maxWidth={400}
             alt="background image"
           />
         ),
