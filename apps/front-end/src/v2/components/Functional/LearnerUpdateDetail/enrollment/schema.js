@@ -69,7 +69,7 @@ export default {
           label:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_RECIEPT"
-              : "APPLICATION_RECEIPT",
+              : "PAYMENT_RECEIPTS",
           description:
             state?.state_name === "RAJASTHAN"
               ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"

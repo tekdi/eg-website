@@ -64,7 +64,7 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "APPLICATION_RECEIPT",
+          label: "PAYMENT_RECEIPTS",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
           uploadTitle: "",
           type: ["string", "number"],
