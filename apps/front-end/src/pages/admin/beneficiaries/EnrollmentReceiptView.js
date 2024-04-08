@@ -12,6 +12,7 @@ import {
   jsonToQueryString,
   CustomRadio,
   getSelectedProgramId,
+  Loading,
 } from "@shiksha/common-lib";
 import {
   createSearchParams,
@@ -19,7 +20,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { HStack, VStack, Stack, Modal, Alert } from "native-base";
+import { HStack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ChipStatus } from "component/BeneficiaryStatus";
@@ -49,38 +50,35 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [localData, setLocalData] = useState({});
   const [paymentDocId, setPaymentDocId] = useState([]);
 
-  const profileDetails = React.useCallback(
-    async (selectedId = null) => {
-      const { state_name } = await getSelectedProgramId();
-      setLocalData(state_name);
-      const { result } = await benificiaryRegistoryService.getOne(id);
-      const value = result?.program_beneficiaries?.enrolled_for_board;
-      setData(result);
-      const { subjects } = await enumRegistryService.subjectsList(value);
-      const boardName = await enumRegistryService.boardName(value);
-      setBoardName(boardName?.name);
-      setPaymentDocId(
-        result?.program_beneficiaries?.payment_receipt_document_id
-      );
-      const newResult = await uploadRegistryService.getOne({
-        document_id:
-          selectedId ||
-          result?.program_beneficiaries?.payment_receipt_document_id?.[0],
-      });
-      setReceiptUrl(newResult);
-      setFileType(newResult?.key?.split(".").pop());
-      const subject = jsonParse(result?.program_beneficiaries.subjects, []);
-      setSubjects(
-        subjects?.filter((e) => subject?.includes(`${e.subject_id}`))
-      );
-      setLoading(false);
-    },
-    [id]
-  );
+  const handleSetReceiptUrl = async (doc_id) => {
+    setIsButtonLoading(true);
+    const newResult = await uploadRegistryService.getOne({
+      document_id: doc_id,
+    });
+    setReceiptUrl(newResult);
+    setFileType(newResult?.key?.split(".").pop());
+    setIsButtonLoading(false);
+  };
+  const profileDetails = React.useCallback(async () => {
+    const { state_name } = await getSelectedProgramId();
+    setLocalData(state_name);
+    const { result } = await benificiaryRegistoryService.getOne(id);
+    const value = result?.program_beneficiaries?.enrolled_for_board;
+    setData(result);
+    const { subjects } = await enumRegistryService.subjectsList(value);
+    const boardName = await enumRegistryService.boardName(value);
+    setBoardName(boardName?.name);
+    setPaymentDocId(result?.program_beneficiaries?.payment_receipt_document_id);
+    await handleSetReceiptUrl(
+      result?.program_beneficiaries?.payment_receipt_document_id?.[0]
+    );
+    const subject = jsonParse(result?.program_beneficiaries.subjects, []);
+    setSubjects(subjects?.filter((e) => subject?.includes(`${e.subject_id}`)));
+    setLoading(false);
+  }, [id]);
 
-  const handleButtonClick = async (selectedId) => {
-    setLoading(true);
-    await profileDetails(selectedId);
+  const handleButtonClick = async (doc_id) => {
+    await handleSetReceiptUrl(doc_id);
   };
 
   React.useEffect(() => {
@@ -117,6 +115,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     },
     [checkValidation, createSearchParams, filter, id, navigate, reason]
   );
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
@@ -183,8 +182,18 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <VStack flex="2" pb="1" space={4}>
                 <HStack flexWrap={"wrap"}>
                   <TextInfo
-                    _box={{ pr: "2", alignItems: "center" }}
-                    data={data?.program_beneficiaries}
+                    _box={{ pr: "2", alignItems: "center", space: 1 }}
+                    data={{
+                      ...data?.program_beneficiaries,
+                      enrollment_status: (
+                        <ChipStatus
+                          key={"4"}
+                          is_duplicate={data?.is_duplicate}
+                          is_deactivated={data?.is_deactivated}
+                          status={data?.program_beneficiaries?.status}
+                        />
+                      ),
+                    }}
                     board={boardName}
                     arr={[
                       {
@@ -332,7 +341,10 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       data={data?.program_beneficiaries}
                       arr={[
                         {
-                          label: "ENROLLMENT_NUMBER",
+                          label:
+                            localData === "RAJASTHAN"
+                              ? "ENROLLMENT_NO"
+                              : "APPLICATION_ID",
                           keyArr: "enrollment_number",
                         },
                         {
@@ -384,7 +396,9 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 </ValidationBox>
               </VStack>
               <VStack flex="5">
-                {fileType === "pdf" ? (
+                {isButtonLoading ? (
+                  <Loading />
+                ) : fileType === "pdf" ? (
                   <ImageView
                     frameborder="0"
                     _box={{ flex: 1 }}
@@ -459,11 +473,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                     filter: "none",
                                     objectFit: "contain",
                                   }}
-                                  urlObject={
-                                    localData === "BIHAR"
-                                      ? paymentDocId
-                                      : receiptUrl
-                                  }
+                                  urlObject={receiptUrl}
                                   alt="aadhaar_front"
                                 />
                               </VStack>
@@ -577,7 +587,7 @@ const TextInfo = ({ data, _box, arr, board }) => {
       alignItems={"center"}
       {..._box}
     >
-      <AdminTypo.H4 width={"150px"} color={"light.400"}>
+      <AdminTypo.H4 width={"150px"} color={"light.400"} bold>
         {t(e?.label || "-")}
       </AdminTypo.H4>
       {e?.value ? (
