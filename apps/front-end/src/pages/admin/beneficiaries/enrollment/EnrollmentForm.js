@@ -15,6 +15,7 @@ import {
   BodyMedium,
   IconByName,
   AdminTypo,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
@@ -30,12 +31,18 @@ import {
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 
-
 const setSchemaByStatus = async (data, fixedSchema, page) => {
+  let { state_name } = await getSelectedProgramId();
   const properties = schema1.properties;
   const constantSchema = properties[page];
-  const { enrollment_status, payment_receipt_document_id } =
-    fixedSchema?.properties || {};
+
+  const {
+    enrollment_status,
+    payment_receipt_document_id,
+    application_login_id,
+    application_form,
+  } = fixedSchema?.properties || {};
+
   let newSchema = {};
   let newData = {};
   [
@@ -46,6 +53,8 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     "enrollment_date",
     "subjects",
     "payment_receipt_document_id",
+    "application_form",
+    "application_login_id",
   ].forEach((e) => {
     if (e === "subjects") {
       newData = { ...newData, [e]: getArray(data?.[e]) };
@@ -78,6 +87,8 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             "subjects",
             "enrollment_aadhaar_no",
             "payment_receipt_document_id",
+            "application_form",
+            "application_login_id",
           ].includes(item)
       );
       newSchema = {
@@ -96,14 +107,39 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 
     default:
       if (data?.enrolled_for_board) {
-        newSchema = {
-          ...constantSchema,
-          properties: {
-            ...constantSchema?.properties,
-            enrollment_status,
-            payment_receipt_document_id,
-          },
-        };
+        if (state_name === "BIHAR") {
+          newSchema = {
+            ...constantSchema,
+            properties: {
+              ...constantSchema?.properties,
+              enrollment_status,
+              payment_receipt_document_id,
+              application_form,
+              application_login_id,
+            },
+            required: [
+              "enrollment_status",
+              "enrolled_for_board",
+              "enrollment_number",
+              // "enrollment_aadhaar_no",
+              "enrollment_mobile_no",
+              "enrollment_date",
+              "subjects",
+              "payment_receipt_document_id",
+              "application_form",
+              "application_login_id",
+            ],
+          };
+        } else {
+          newSchema = {
+            ...constantSchema,
+            properties: {
+              ...constantSchema?.properties,
+              enrollment_status,
+              payment_receipt_document_id,
+            },
+          };
+        }
         newSchema = await getSubjects(
           newSchema,
           data?.enrolled_for_board,
@@ -111,14 +147,51 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
         );
       } else {
         const { subjects, ...properties } = constantSchema?.properties || {};
-        newSchema = {
-          ...constantSchema,
-          properties: {
-            ...properties,
-            enrollment_status,
-            payment_receipt_document_id,
-          },
-        };
+        if (state_name === "BIHAR") {
+          newSchema = {
+            ...constantSchema,
+            properties: {
+              ...constantSchema?.properties,
+              enrollment_status,
+              payment_receipt_document_id,
+              application_form,
+              application_login_id,
+            },
+            required: [
+              "enrollment_status",
+              "enrolled_for_board",
+              "enrollment_number",
+              // "enrollment_aadhaar_no",
+              "enrollment_mobile_no",
+              "enrollment_date",
+              "subjects",
+              "payment_receipt_document_id",
+              "application_form",
+              "application_login_id",
+            ],
+          };
+        } else {
+          newSchema = {
+            ...constantSchema,
+            properties: {
+              ...constantSchema?.properties,
+              enrollment_status,
+              payment_receipt_document_id,
+            },
+            required: [
+              "enrollment_status",
+              "enrolled_for_board",
+              "enrollment_number",
+              // "enrollment_aadhaar_no",
+              "enrollment_mobile_no",
+              "enrollment_date",
+              "subjects",
+              "payment_receipt_document_id",
+              // "application_form",
+              // "application_login_id",
+            ],
+          };
+        }
       }
       break;
   }
@@ -126,37 +199,61 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 };
 
 const getSubjects = async (schemaData, value, page) => {
+  let { state_name } = await getSelectedProgramId();
   if (value) {
     const propertiesMain = schema1.properties;
     const constantSchema = propertiesMain[page];
     const { subjects } = constantSchema?.properties || {};
-    const { payment_receipt_document_id, ...properties } =
-      schemaData.properties;
-    let { data } = await enumRegistryService.getSubjects({
-      board: value,
-    });
-    let newSchema = getOptions(
-      {
-        ...schemaData,
-        properties: {
-          ...properties,
-          subjects,
-          payment_receipt_document_id,
+    const {
+      payment_receipt_document_id,
+      application_form,
+      application_login_id,
+      ...properties
+    } = schemaData.properties;
+    let data = await enumRegistryService.subjectsList(value);
+    let newSchema;
+    if (state_name === "BIHAR") {
+      newSchema = getOptions(
+        {
+          ...schemaData,
+          properties: {
+            ...properties,
+            subjects,
+            payment_receipt_document_id,
+            application_form,
+            application_login_id,
+          },
         },
-      },
-      {
-        key: "subjects",
-        arr: data || [],
-        title: "name",
-        value: "id",
-      }
-    );
+        {
+          key: "subjects",
+          arr: data?.subjects || [],
+          title: "name",
+          value: "subject_id",
+        }
+      );
+    } else {
+      newSchema = getOptions(
+        {
+          ...schemaData,
+          properties: {
+            ...properties,
+            subjects,
+            payment_receipt_document_id,
+          },
+        },
+        {
+          key: "subjects",
+          arr: data?.subjects || [],
+          title: "name",
+          value: "subject_id",
+        }
+      );
+    }
     return newSchema;
   } else {
     return schemaData;
   }
 };
-
 // App
 export default function App(footerLinks) {
   const [RefAppBar, setRefAppBar] = React.useState();
