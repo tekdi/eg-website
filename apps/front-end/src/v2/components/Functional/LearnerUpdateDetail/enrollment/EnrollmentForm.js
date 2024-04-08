@@ -755,9 +755,9 @@ export default function EnrollmentForm() {
         newdata = {
           ...newdata,
           payment_receipt_document_id: [
-            newdata.application_login_id,
-            newdata.application_form,
             newdata.payment_receipt_document_id,
+            newdata.application_form,
+            newdata.application_login_id,
           ],
         };
 
