@@ -163,6 +163,7 @@ const FileUpload = ({ value, onChange, schema }) => {
           <Box alignItems="center">
             {file ? (
               <ImageView
+                key={file}
                 source={{
                   document_id: file,
                 }}
