@@ -372,9 +372,8 @@ export default function EnrollmentForm() {
                   ? "/enrollment-receipt.jpeg"
                   : "/payment_receipt_bihar.jpg",
             }}
-            size="200"
-            height={"20vh"}
-            width={"60vw"}
+            height={"124px"}
+            width={"200px"}
             maxWidth={400}
             alt="background image"
           />
@@ -392,9 +391,8 @@ export default function EnrollmentForm() {
             source={{
               uri: "/application_receipt_bihar.jpg",
             }}
-            size="200"
-            height={"20vh"}
-            width={"60vw"}
+            height={"259px"}
+            width={"200px"}
             maxWidth={400}
             alt="background image"
           />
@@ -411,9 +409,8 @@ export default function EnrollmentForm() {
             source={{
               uri: "/application_login_id_bihar.jpeg",
             }}
-            size="200"
-            height={"20vh"}
-            width={"60vw"}
+            height={"161px"}
+            width={"200px"}
             maxWidth={400}
             alt="background image"
           />

@@ -151,35 +151,18 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
-              {t("ENROLLMENT_DETAILS_VERIFICATION")}
+              {t(
+                localData === "BIHAR"
+                  ? "ENROLLMENT_DETAILS_VERIFICATION_BIHAR"
+                  : "ENROLLMENT_DETAILS_VERIFICATION"
+              )}
             </AdminTypo.H5>
-            {localData === "BIHAR" && (
-              <HStack m={4} space={2}>
-                <AdminTypo.Secondarybutton
-                  onPress={() => {
-                    handleButtonClick(paymentDocId[0]);
-                  }}
-                >
-                  {t("PAYMENT_RECEIPTS")}
-                </AdminTypo.Secondarybutton>
-                <AdminTypo.Secondarybutton
-                  onPress={() => {
-                    handleButtonClick(paymentDocId[1]);
-                  }}
-                >
-                  {t("APPLICATION_FORM")}
-                </AdminTypo.Secondarybutton>
-                <AdminTypo.Secondarybutton
-                  onPress={() => {
-                    handleButtonClick(paymentDocId[2]);
-                  }}
-                >
-                  {t("APPLICATION_LOGIN_ID_SS")}
-                </AdminTypo.Secondarybutton>
-              </HStack>
-            )}
-            <HStack space="2">
-              <VStack flex="2" pb="1" space={4}>
+
+            <HStack
+              flexDirection={["column", "column", "row", "row", "row"]}
+              style={{ gap: "8px" }}
+            >
+              <VStack flex={["", "", "3", "3", "2"]} pb="1" space={4}>
                 <HStack flexWrap={"wrap"}>
                   <TextInfo
                     _box={{ pr: "2", alignItems: "center", space: 1 }}
@@ -217,11 +200,12 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
 
                 <ValidationBox error={error?.enrollment_details}>
-                  <VStack space={4}>
+                  <VStack flex={4}>
                     <HStack
                       alignItems="center"
                       justifyContent={"center"}
-                      space="8"
+                      flexDirection={["row", "row", "column", "column", "row"]}
+                      style={{ gap: "8px" }}
                     >
                       {data?.profile_photo_1?.name ||
                       data?.profile_photo_2?.name ||
@@ -252,86 +236,80 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         />
                       )}
                     </HStack>
+                    <TextInfo
+                      _box={{ space: "2" }}
+                      data={data?.program_beneficiaries}
+                      arr={[
+                        {
+                          label: "NAME",
 
-                    <HStack space={4} alignItems="center">
-                      <VStack flex={4}>
-                        <TextInfo
-                          _box={{ space: "2" }}
-                          data={data?.program_beneficiaries}
-                          arr={[
-                            {
-                              label: "NAME",
+                          value: (
+                            <AdminTypo.H5>
+                              {
+                                data?.program_beneficiaries
+                                  ?.enrollment_first_name
+                              }
+                              {data?.program_beneficiaries
+                                ?.enrollment_middle_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_middle_name}
+                              {data?.program_beneficiaries
+                                ?.enrollment_last_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_last_name}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "DOB",
+                          value: (
+                            <AdminTypo.H5>
+                              {data?.program_beneficiaries?.enrollment_dob
+                                ? moment(
+                                    data?.program_beneficiaries?.enrollment_dob
+                                  ).format("DD-MM-YYYY")
+                                : "-"}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "MOBILE_NUMBER",
+                          keyArr: "enrollment_mobile_no",
+                        },
+                      ]}
+                    />
 
-                              value: (
-                                <AdminTypo.H5>
-                                  {
-                                    data?.program_beneficiaries
-                                      ?.enrollment_first_name
-                                  }
-                                  {data?.program_beneficiaries
-                                    ?.enrollment_middle_name &&
-                                    " " +
-                                      data?.program_beneficiaries
-                                        ?.enrollment_middle_name}
-                                  {data?.program_beneficiaries
-                                    ?.enrollment_last_name &&
-                                    " " +
-                                      data?.program_beneficiaries
-                                        ?.enrollment_last_name}
-                                </AdminTypo.H5>
-                              ),
-                            },
-                            {
-                              label: "DOB",
-                              value: (
-                                <AdminTypo.H5>
-                                  {data?.program_beneficiaries?.enrollment_dob
-                                    ? moment(
-                                        data?.program_beneficiaries
-                                          ?.enrollment_dob
-                                      ).format("DD-MM-YYYY")
-                                    : "-"}
-                                </AdminTypo.H5>
-                              ),
-                            },
-                            {
-                              label: "MOBILE_NUMBER",
-                              keyArr: "enrollment_mobile_no",
-                            },
-                          ]}
-                        />
-
-                        <CustomRadio
-                          options={{
-                            enumOptions: [{ value: "no" }, { value: "yes" }],
-                          }}
-                          schema={{
-                            icons: checkboxIcons,
-                            _box: {
-                              flex: "1",
-                              gap: "2",
-                              alignItems: "center",
-                              padding: "10px",
-                            },
-                            _hstack: { space: "6" },
-                            _subHstack: {
-                              justifyContent: "space-between",
-                              width: "120px",
-                            },
-                            _pressable: {
-                              p: 0,
-                              mb: 0,
-                              borderWidth: 0,
-                              style: {},
-                            },
-                          }}
-                          value={reason?.enrollment_details}
-                          onChange={(e) => {
-                            setReason({ ...reason, enrollment_details: e });
-                          }}
-                        />
-                      </VStack>
-                    </HStack>
+                    <CustomRadio
+                      options={{
+                        enumOptions: [{ value: "no" }, { value: "yes" }],
+                      }}
+                      schema={{
+                        icons: checkboxIcons,
+                        _box: {
+                          flex: "1",
+                          gap: "2",
+                          alignItems: "center",
+                          padding: "10px",
+                        },
+                        _hstack: { space: "6" },
+                        _subHstack: {
+                          justifyContent: "space-between",
+                          width: "120px",
+                        },
+                        _pressable: {
+                          p: 0,
+                          mb: 0,
+                          borderWidth: 0,
+                          style: {},
+                        },
+                      }}
+                      value={reason?.enrollment_details}
+                      onChange={(e) => {
+                        setReason({ ...reason, enrollment_details: e });
+                      }}
+                    />
                   </VStack>
                 </ValidationBox>
                 <ValidationBox error={error?.learner_enrollment_details}>
@@ -395,7 +373,32 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   </VStack>
                 </ValidationBox>
               </VStack>
-              <VStack flex="5">
+              <VStack flex={["", "", "5", "5", "5"]}>
+                {localData === "BIHAR" && (
+                  <HStack m={4} space={2}>
+                    <AdminTypo.Secondarybutton
+                      onPress={() => {
+                        handleButtonClick(paymentDocId[0]);
+                      }}
+                    >
+                      {t("PAYMENT_RECEIPTS")}
+                    </AdminTypo.Secondarybutton>
+                    <AdminTypo.Secondarybutton
+                      onPress={() => {
+                        handleButtonClick(paymentDocId[1]);
+                      }}
+                    >
+                      {t("APPLICATION_FORM")}
+                    </AdminTypo.Secondarybutton>
+                    <AdminTypo.Secondarybutton
+                      onPress={() => {
+                        handleButtonClick(paymentDocId[2]);
+                      }}
+                    >
+                      {t("APPLICATION_LOGIN_ID_SS")}
+                    </AdminTypo.Secondarybutton>
+                  </HStack>
+                )}
                 {isButtonLoading ? (
                   <Loading />
                 ) : fileType === "pdf" ? (
