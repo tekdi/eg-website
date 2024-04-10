@@ -13,6 +13,9 @@ import {
   facilitatorRegistryService,
   CardComponent,
   jsonParse,
+  getSelectedProgramId,
+  getSelectedAcademicYear,
+  ItemComponent,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -44,6 +47,7 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
+import Scholarship from "component/Scholarship";
 
 const columns = (t) => [
   {
@@ -165,7 +169,7 @@ const addressFieldsArray = [
   },
 ];
 
-export default function AgAdminProfile({ footerLinks }) {
+export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [EditButton, setEditButton] = useState(false);
   const [selectData, setselectData] = useState([]);
@@ -179,10 +183,10 @@ export default function AgAdminProfile({ footerLinks }) {
   const [aadhaarerror, setAadhaarError] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [benificiary, setBeneficiary] = useState();
-  const [contextId, setcontextId] = useState();
-  const [auditLogs, setauditLogs] = useState([]);
-  const [auditMonth, setauditMonth] = useState([]);
-  const [auditYear, setauditYear] = useState([]);
+  const [contextId, setContextId] = useState();
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditMonth, setAuditMonth] = useState([]);
+  const [auditYear, setAuditYear] = useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = useState();
   const [loading, setLoading] = useState(true);
   const [editAccessModalVisible, setEditAccessModalVisible] = useState(false);
@@ -200,6 +204,9 @@ export default function AgAdminProfile({ footerLinks }) {
   const [checkedFields, setCheckedFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
   const [boardName, setBoardName] = useState({});
+  const [jsonData, setJsonData] = useState();
+  const [programUser, setProgramUser] = useState();
+  const [localData, setLocalData] = useState();
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -233,7 +240,7 @@ export default function AgAdminProfile({ footerLinks }) {
           const month = parsedDate.format("MMMM");
           const year = parsedDate.format("YYYY");
 
-          setauditLogs((prevState) => [
+          setAuditLogs((prevState) => [
             ...prevState,
             {
               status: JSON.parse(item?.new_data),
@@ -258,8 +265,8 @@ export default function AgAdminProfile({ footerLinks }) {
         { dates: [], months: [], years: [] }
       );
 
-      setauditMonth(uniqueDates?.months);
-      setauditYear(uniqueDates?.years);
+      setAuditMonth(uniqueDates?.months);
+      setAuditYear(uniqueDates?.years);
     }
   }, [contextId]);
 
@@ -302,7 +309,7 @@ export default function AgAdminProfile({ footerLinks }) {
         });
         setEnrollmentSubjects(subjectNames);
       }
-      setcontextId(newData?.result?.program_beneficiaries?.id);
+      setContextId(newData?.result?.program_beneficiaries?.id);
       setBeneficiary(newData);
       if (newData?.result?.program_beneficiaries?.documents_status) {
         setStatus(
@@ -512,9 +519,18 @@ export default function AgAdminProfile({ footerLinks }) {
     }
   }, [checkedFields, getRequestData, id]);
 
-  useEffect(() => {
+  useEffect(async () => {
     fetchData();
+    const { program_id, state_name } = (await getSelectedProgramId()) || {};
+    setLocalData(state_name);
+    const { academic_year_id } = (await getSelectedAcademicYear()) || {};
+    const data = userTokenInfo?.authUser?.program_users.find(
+      (e) =>
+        e.program_id == program_id && e.academic_year_id == academic_year_id
+    );
+    setProgramUser(data);
   }, [fetchData]);
+
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -663,6 +679,17 @@ export default function AgAdminProfile({ footerLinks }) {
               </AdminTypo.H4>
               <HStack>
                 <HStack space="4">
+                  {programUser?.organisation_id == 1 &&
+                    programUser?.program_id == 2 && (
+                      <Scholarship
+                        {...{
+                          item: data,
+                          setItem: setData,
+                          jsonData,
+                          setJsonData,
+                        }}
+                      />
+                    )}
                   <AdminTypo.Secondarybutton
                     onPress={() => {
                       setModalVisible(true);
@@ -1075,7 +1102,7 @@ export default function AgAdminProfile({ footerLinks }) {
                               data?.grampanchayat,
                             ]
                               .filter((e) => e)
-                              .join(",")}
+                              .join(", ")}
                           </AdminTypo.H6>
                         </HStack>
                       </VStack>
@@ -1454,81 +1481,82 @@ export default function AgAdminProfile({ footerLinks }) {
                     </AdminTypo.StatusButton>
                   )}
                 </HStack>
-                <HStack justifyContent="space-between" space={2}>
-                  <VStack
-                    space={"5"}
-                    w="100%"
-                    bg="light.100"
-                    p="6"
-                    rounded="xl"
-                  >
-                    <VStack space={"8"}>
-                      <HStack alignItems={"Center"}>
-                        <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
-                          {t("ENROLLMENT_STATUS")} :-
-                        </AdminTypo.H5>
-                        <AdminTypo.H5
-                          flex="0.69"
-                          color="textGreyColor.800"
-                          pl="1"
-                          bold
-                        >
-                          {data?.program_beneficiaries?.enrollment_status
-                            ? data?.program_beneficiaries?.enrollment_status
-                            : "-"}
-                        </AdminTypo.H5>
-                      </HStack>
-                      <HStack alignItems={"Center"}>
-                        <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
-                          {t("ENROLLMENT_BOARD")} :-
-                        </AdminTypo.H5>
+                <ItemComponent
+                  item={{
+                    ...data?.program_beneficiaries,
+                    enrolled_for_board: boardName || "-",
+                    enrollment_status: data?.program_beneficiaries
+                      ?.enrollment_status ? (
+                      <GetEnumValue
+                        enumType="ENROLLEMENT_STATUS"
+                        enumOptionValue={
+                          data?.program_beneficiaries?.enrollment_status
+                        }
+                        enumApiData={enumOptions}
+                        t={t}
+                      />
+                    ) : (
+                      "-"
+                    ),
+                    payment_receipt_document_id:
+                      data?.program_beneficiaries
+                        ?.payment_receipt_document_id?.[0],
+                    application_form:
+                      data?.program_beneficiaries
+                        ?.payment_receipt_document_id?.[1],
+                    application_login_id:
+                      data?.program_beneficiaries
+                        ?.payment_receipt_document_id?.[2],
+                  }}
+                  isHideProgressBar={true}
+                  _vstack={{
+                    px: "6",
+                    py: "6",
+                    space: "3",
+                    borderWidth: "0",
+                    bg: "light.100",
+                  }}
+                  _subVstack={{ paddingTop: 0 }}
+                  _hstackItem={{
+                    borderBottomWidth: "0",
+                    divider: <AdminTypo.H5>:-</AdminTypo.H5>,
+                  }}
+                  itemTitleComponent={TitleComponent}
+                  onlyField={[
+                    "enrollment_status",
+                    "enrolled_for_board",
+                    "enrollment_number",
+                    "payment_receipt_document_id",
+                    ...(localData !== "RAJASTHAN"
+                      ? ["application_form", "application_login_id"]
+                      : []),
+                  ]}
+                  labels={{
+                    enrollment_status: "ENROLLMENT_STATUS",
+                    enrolled_for_board: "BOARD_OF_ENROLLMENT",
+                    enrollment_number:
+                      localData === "RAJASTHAN"
+                        ? "ENROLLMENT_NO"
+                        : "APPLICATION_ID",
+                    payment_receipt_document_id:
+                      localData === "RAJASTHAN"
+                        ? "ENROLLMENT_RECIEPT"
+                        : "PAYMENT_RECEIPTS",
+                    ...(localData !== "RAJASTHAN"
+                      ? {
+                          application_form: "APPLICATION_FORM",
+                          application_login_id:
+                            "APPLICATION_LOGIN_ID_SCREENSHOT",
+                        }
+                      : {}),
+                  }}
+                  formats={{
+                    payment_receipt_document_id: "FileUpload",
+                    application_form: "FileUpload",
+                    application_login_id: "FileUpload",
+                  }}
+                />
 
-                        <AdminTypo.H5
-                          flex="0.69"
-                          color="textGreyColor.800"
-                          pl="1"
-                          bold
-                        >
-                          {data?.program_beneficiaries?.enrolled_for_board
-                            ? boardName
-                            : "-"}
-                        </AdminTypo.H5>
-                      </HStack>
-                      <HStack alignItems={"Center"}>
-                        <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
-                          {t("ENROLLMENT_NUMBER")} :-
-                        </AdminTypo.H5>
-                        <AdminTypo.H5
-                          flex="0.69"
-                          color="textGreyColor.800"
-                          bold
-                        >
-                          {data?.program_beneficiaries?.enrollment_number
-                            ? data?.program_beneficiaries?.enrollment_number
-                            : "-"}
-                        </AdminTypo.H5>
-                      </HStack>
-                      <HStack alignItems={"Center"}>
-                        <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
-                          {t("ENROLLMENT_RECIEPT")} :-
-                        </AdminTypo.H5>
-                        <AdminTypo.H5
-                          flex="0.69"
-                          color="textGreyColor.800"
-                          bold
-                        >
-                          <ImageView
-                            source={{
-                              document_id:
-                                data?.program_beneficiaries?.document?.id,
-                            }}
-                            text="link"
-                          />
-                        </AdminTypo.H5>
-                      </HStack>
-                    </VStack>
-                  </VStack>
-                </HStack>
                 <VStack
                   space={"5"}
                   w="100%"
@@ -2052,4 +2080,8 @@ const SelectAllCheckBox = ({
   );
 
   return <Checkbox onChange={handleCheckboxChange}>{title}</Checkbox>;
+};
+
+const TitleComponent = (props) => {
+  return <AdminTypo.H5 {...props} bold color="textGreyColor.550" />;
 };

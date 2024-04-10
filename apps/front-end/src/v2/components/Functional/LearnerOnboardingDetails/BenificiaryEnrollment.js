@@ -86,6 +86,15 @@ export default function BenificiaryEnrollment() {
             notShow={["subjects", "enrollmentlabelMobile"]}
             item={{
               ...benificiary?.program_beneficiaries,
+              payment_receipt_document_id:
+                benificiary?.program_beneficiaries
+                  ?.payment_receipt_document_id?.[0],
+              application_form:
+                benificiary?.program_beneficiaries
+                  ?.payment_receipt_document_id?.[1],
+              application_login_id:
+                benificiary?.program_beneficiaries
+                  ?.payment_receipt_document_id?.[2],
               enrollment_date: benificiary?.program_beneficiaries
                 ?.enrollment_date
                 ? moment(

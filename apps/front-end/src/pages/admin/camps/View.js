@@ -324,24 +324,59 @@ export default function View({ footerLinks }) {
             </HStack>
           </Alert>
         )}
-        <HStack alignItems={"center"} space="1" pt="3">
-          <IconByName name="UserLineIcon" size="md" />
-          <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
-          <IconByName
-            size="sm"
-            name="ArrowRightSLineIcon"
-            onPress={(e) => navigate(`/admin/camps`)}
-          />
-          <AdminTypo.H4
-            bold
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            enumOptions
-          >
-            {data?.id}
-          </AdminTypo.H4>
-        </HStack>
+
+        {data?.faciltator?.length > 0 &&
+          data?.faciltator.map((facilitator) => {
+            console.log("check facilitator", facilitator);
+            return (
+              <HStack
+                alignItems="center"
+                space="1"
+                pt="3"
+                justifyContent="space-between" // Align items to the start and end of the container
+              >
+                {/* Left-aligned content */}
+                <HStack alignItems="center" space="1">
+                  <IconByName name="UserLineIcon" size="md" />
+                  <AdminTypo.H4>{t("ALL_CAMPS")}</AdminTypo.H4>
+                  <IconByName
+                    size="sm"
+                    name="ArrowRightSLineIcon"
+                    onPress={(e) => navigate(`/admin/camps`)}
+                  />
+                  <AdminTypo.H4
+                    bold
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    enumOptions
+                  >
+                    {data?.id}
+                  </AdminTypo.H4>
+                </HStack>
+
+                {/* Right-aligned content (Camp Reassign button) */}
+                <AdminTypo.Secondarybutton
+                  background="white"
+                  _text={{
+                    color: "blueText.400",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                  }}
+                  my="2"
+                  mx="1"
+                  onPress={() => {
+                    navigate(
+                      `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                    );
+                  }}
+                >
+                  {t("REASSIGNE_CAMP")}
+                </AdminTypo.Secondarybutton>
+              </HStack>
+            );
+          })}
+
         <HStack flexWrap="wrap" space="2">
           <VStack width="350px">
             <HStack py="4">
@@ -368,7 +403,7 @@ export default function View({ footerLinks }) {
                               {facilitator?.mobile}
                             </AdminTypo.H5>
                           </VStack>
-                          <IconByName
+                          {/* <IconByName
                             name="EditBoxLineIcon"
                             color="iconColor.100"
                             onPress={(e) =>
@@ -376,7 +411,7 @@ export default function View({ footerLinks }) {
                                 `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
                               )
                             }
-                          />
+                          /> */}
                         </HStack>
                       }
                       subTitle={

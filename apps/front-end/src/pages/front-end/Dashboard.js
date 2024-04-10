@@ -31,7 +31,7 @@ import {
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import PropTypes from "prop-types";
 
@@ -80,6 +80,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+
+  const [env_name] = useState(process.env.NODE_ENV);
 
   useEffect(() => {
     async function fetchData() {
