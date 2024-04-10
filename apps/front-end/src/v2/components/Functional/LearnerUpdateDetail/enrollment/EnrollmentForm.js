@@ -511,11 +511,14 @@ export default function EnrollmentForm() {
           ...newdata,
           enrolled_for_board: newdata?.enrolled_for_board?.toString(),
           payment_receipt_document_id:
-            newdata?.payment_receipt_document_id?.[0],
+            newdata?.payment_receipt_document_id?.[0]
+              ?.payment_receipt_document_id,
           application_form:
-            newdata?.payment_receipt_document_id?.[1] || undefined,
+            newdata?.payment_receipt_document_id?.[1]?.application_form ||
+            undefined,
           application_login_id:
-            newdata?.payment_receipt_document_id?.[2] || undefined,
+            newdata?.payment_receipt_document_id?.[2]?.application_login_id ||
+            undefined,
         });
       } else {
         setSchema(constantSchema);
@@ -752,9 +755,11 @@ export default function EnrollmentForm() {
         newdata = {
           ...newdata,
           payment_receipt_document_id: [
-            newdata.payment_receipt_document_id,
-            newdata.application_form,
-            newdata.application_login_id,
+            {
+              payment_receipt_document_id: newdata.payment_receipt_document_id,
+            },
+            { application_form: newdata.application_form },
+            { application_login_id: newdata.application_login_id },
           ],
         };
 
@@ -767,7 +772,11 @@ export default function EnrollmentForm() {
       ) {
         newdata = {
           ...newdata,
-          payment_receipt_document_id: [newdata.payment_receipt_document_id],
+          payment_receipt_document_id: [
+            {
+              payment_receipt_document_id: newdata.payment_receipt_document_id,
+            },
+          ],
         };
       }
 
