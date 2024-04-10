@@ -5,24 +5,28 @@ import {
   FrontEndTypo,
   BodyMedium,
   getBeneficaryDocumentationStatus,
+  enumRegistryService,
 } from "@shiksha/common-lib";
-import React, { useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
-const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+const LearnerDocsChecklist = ({ footerLinks }) => {
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [selectData, setselectData] = useState([]);
   const [status, setStatus] = useState({});
   const [checkList, setCheckList] = useState(false);
   const [buttonPress, setButtonPress] = useState(false);
-  const [benificiary, setBenificiary] = React.useState({});
-  const [msgshow, setmsgshow] = React.useState(false);
-  const [loading, setloading] = React.useState(true);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [benificiary, setBenificiary] = useState({});
+  const [msgshow, setmsgshow] = useState(false);
+  const [loading, setloading] = useState(true);
+  const [isDisable, setIsDisable] = useState(false);
+  const [reqEnumData, setReqEnumData] = useState();
+  const [optEnumData, setOptEnumData] = useState();
+  const [alert, setAlert] = useState();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let data = await benificiaryRegistoryService.getOne(id);
     let docStatus = data?.result?.program_beneficiaries?.documents_status;
     setBenificiary(data?.result);
@@ -34,13 +38,13 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
       );
     }
   }, []);
-  React.useEffect(async () => {
+  useEffect(async () => {
     let data = await benificiaryRegistoryService.getDocumentStatus();
     setselectData(data);
   }, []);
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const keysLength = Object.keys(status).length;
     if (benificiary?.program_beneficiaries?.status === "ready_to_enroll") {
       setButtonPress(true);
@@ -50,7 +54,7 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
     const allValuesMatch = Object.values(status).every(
       (value) => value === "not_applicable" || value === "complete"
     );
-    if (keysLength === 10 && allValuesMatch) {
+    if (keysLength === 13 && allValuesMatch) {
       setCheckList(true);
     } else {
       setCheckList(false);
@@ -88,6 +92,20 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
     setButtonPress(true);
   };
 
+  useEffect(async () => {
+    const qData = await enumRegistryService.listOfEnum();
+    const data = qData?.data?.DOCUMENT_LIST;
+    const reqFilteredDocuments = data.filter(
+      (document) => document.type === "required"
+    );
+    setReqEnumData(reqFilteredDocuments);
+
+    const optionalFilteredDocuments = data?.filter(
+      (document) => document.type === "optional"
+    );
+    setOptEnumData(optionalFilteredDocuments);
+  }, []);
+
   return (
     <Layout
       loading={loading}
@@ -124,377 +142,86 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
           >
             {t("MANDATORY")}
           </FrontEndTypo.H3>
-          {/* <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("JAN_AADHAAR_CARD")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.jan_adhar || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.jan_adhar || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, jan_adhar: itemValue })
-              }
-            >
-              {Array.isArray(selectData) &&
-                selectData.map((item, i) => {
-                  return (
-                    <Select.Item
-                      key={i}
-                      label={`${t(item.title)}`}
-                      value={item.value}
-                    />
-                  );
-                })}
-            </Select>
-          </HStack>
 
-          <HStack
-            mt={8}
-            space="2"
-            alignItems={"center"}
-            justifyContent={"space-between"}
+          {reqEnumData?.map((item, index) => (
+            <HStack
+              key={index}
+              mt={8}
+              space="2"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+                {t(item?.title)}
+              </FrontEndTypo.H3>
+              <Select
+                selectedValue={status[item.value] ? status[item.value] : ""}
+                accessibilityLabel="Select"
+                placeholder={"Select"}
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) =>
+                  setStatus({ ...status, [item.value]: itemValue })
+                }
+              >
+                {selectData?.map((selectItem, i) => (
+                  <Select.Item
+                    key={i}
+                    label={t(selectItem.title)}
+                    value={selectItem.value}
+                  />
+                ))}
+              </Select>
+            </HStack>
+          ))}
+
+          <FrontEndTypo.H3
+            pt="4"
+            pb="0"
+            fontSize="sm"
+            bold
+            color="textMaroonColor.900"
           >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("AADHAAR_CARD")}
-            </FrontEndTypo.H3>
-
-            <Select
-              selectedValue={status?.aadhaar || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.aadhaar || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon fontSize="sm" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, aadhaar: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack> */}
-
-          <HStack
-            mt={8}
-            space="2"
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("PHOTO")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.photo || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.photo || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, photo: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("MOBILE_NUMBER")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.mobile || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.mobile || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, mobile: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("MARKSHEET")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.marksheet || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.marksheet || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, marksheet: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("BANK_PASSBOOK")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.bank || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.bank || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, bank: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack
-            mt={8}
-            mb={10}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("BIRTH_CERTIFICATE")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.birth || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.birth || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, birth: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-          <FrontEndTypo.H3 fontSize="sm" bold color="textMaroonColor.900">
             {t("MAY_BE_REQUIRED")}
           </FrontEndTypo.H3>
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("CASTE_CERTIFICATE")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.caste || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.caste || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, caste: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
 
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("TRANSFER_CERTIFICATE")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.transfer || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.transfer || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, transfer: itemValue })
-              }
+          {optEnumData?.map((item, index) => (
+            <HStack
+              key={index}
+              mt={8}
+              space="2"
+              alignItems="center"
+              justifyContent="space-between"
             >
-              {selectData?.map((item, i) => {
-                return (
+              <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+                {t(item?.title)}
+              </FrontEndTypo.H3>
+              <Select
+                selectedValue={status[item.value] ? status[item.value] : ""}
+                accessibilityLabel="Select"
+                placeholder={"Select"}
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: <CheckIcon size="5" />,
+                }}
+                mt={1}
+                onValueChange={(itemValue) =>
+                  setStatus({ ...status, [item.value]: itemValue })
+                }
+              >
+                {selectData?.map((selectItem, i) => (
                   <Select.Item
                     key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
+                    label={t(selectItem.title)}
+                    value={selectItem.value}
                   />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("AFFIDAVIT")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.notary || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.notary || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, notary: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack mt={8} alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("CBOSIGN")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.cbo || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.cbo || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, cbo: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
-
-          <HStack
-            mt={8}
-            mb={8}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-              {t("CBOSIGNTRANSFER")}
-            </FrontEndTypo.H3>
-            <Select
-              selectedValue={status?.cbo_sign || ""}
-              accessibilityLabel="Select"
-              placeholder={status?.cbo_sign || "Select"}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) =>
-                setStatus({ ...status, cbo_sign: itemValue })
-              }
-            >
-              {selectData?.map((item, i) => {
-                return (
-                  <Select.Item
-                    key={i}
-                    label={`${t(item.title)}`}
-                    value={item.value}
-                  />
-                );
-              })}
-            </Select>
-          </HStack>
+                ))}
+              </Select>
+            </HStack>
+          ))}
           {checkList ? (
             buttonPress ? (
               <FrontEndTypo.ColourPrimaryButton
@@ -528,9 +255,8 @@ const LearnerDocsChecklist = ({ footerLinks, setAlert }) => {
               </VStack>
             )
           ) : (
-            <React.Fragment></React.Fragment>
+            <Fragment></Fragment>
           )}
-
           <FrontEndTypo.Primarybutton
             isDisabled={isDisable}
             mt="4"
