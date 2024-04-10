@@ -166,7 +166,6 @@ export default function EventHome({ footerLinks }) {
   const handleOpenButtonClick = () => {
     setIsListOpen((prevState) => !prevState);
   };
-
   useEffect(async () => {
     if (id) {
       const eventResult = await eventService.getEventListById({ id });
@@ -446,7 +445,6 @@ export default function EventHome({ footerLinks }) {
 
             navigate(`/admin`);
           } else {
-            console.log(apiResponse);
             const newErrors = {
               name: {
                 __errors: [t(apiResponse?.message)],
@@ -528,7 +526,7 @@ export default function EventHome({ footerLinks }) {
       }
     }
   };
-
+  const idsOnly = selectedRowId.filter((item) => typeof item === "number");
   return (
     <Layout
       _sidebar={footerLinks}
@@ -667,7 +665,7 @@ export default function EventHome({ footerLinks }) {
                 </HStack>
                 <Stack alignSelf={"end"} pb={2} pr={4}>
                   <AdminTypo.H6 bold color="textBlue.200">
-                    {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
+                    {`${t("ADD_SELECTED")} (${idsOnly?.length ?? 0})`}
                   </AdminTypo.H6>
                 </Stack>
                 <DataTable
