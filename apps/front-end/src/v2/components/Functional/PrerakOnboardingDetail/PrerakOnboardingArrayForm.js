@@ -82,7 +82,7 @@ export default function PrerakOnboardingArrayForm({
   };
   useEffect(() => {
     if (facilitator) {
-      //console.log("type facilitator", type);
+      console.log("type facilitator", type);
       if (type == "experience") {
         setData(dataExperience);
       }
