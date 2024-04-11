@@ -115,13 +115,19 @@ function View() {
             />,
           ]}
         />
-
         <HStack space={4}>
           <CardComponent
             _header={{ bg: "light.100" }}
             _vstack={{ space: 0, flex: 1, bg: "light.100" }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
-            item={organisation}
+            item={{
+              ...organisation,
+              learner_target:
+                organisation?.program_organisations?.[0]?.learner_target,
+              program_id:
+                organisation?.program_organisations?.[0]?.program?.state
+                  ?.state_name,
+            }}
             title={t("BASIC_DETAILS")}
             label={[
               "IP_ID",
@@ -130,6 +136,7 @@ function View() {
               "CONTACT_PERSON_MOBILE",
               "EMAIL_ID",
               "IP_ADDRESS",
+              "STATE",
               "LEARNER_TARGET",
             ]}
             arr={[
@@ -139,40 +146,36 @@ function View() {
               "mobile",
               "email_id",
               "address",
-            ]}
-          />
-          <CardComponent
-            _header={{ bg: "light.100" }}
-            _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-            _hstack={{ borderBottomWidth: 0, p: 1 }}
-            item={{
-              ...(organisation?.program_organisations?.[0] || {}),
-              program_id:
-                organisation?.program_organisations?.[0]?.program?.state
-                  ?.state_name,
-            }}
-            title={t("DOCUMENT_DETAILS")}
-            label={[
-              "STATE",
-              "DUE_DILIGENCE_SIGNED_PROPOSAL",
-              "QUARTELY_CA_CERTIFIED",
-              "MONTHLY_UTILIZATION",
-              "LEARNER_TARGET",
-            ]}
-            arr={[
               "program_id",
-              "doc_per_cohort_id",
-              "doc_per_monthly_id",
-              "doc_quarterly_id",
               "learner_target",
             ]}
-            format={{
-              doc_per_cohort_id: "file",
-              doc_per_monthly_id: "file",
-              doc_quarterly_id: "file",
-            }}
           />
+          {/*  */}
         </HStack>
+        <CardComponent
+          _header={{ bg: "light.100" }}
+          _vstack={{ space: 0, flex: 1, bg: "light.100" }}
+          _hstack={{ borderBottomWidth: 0, p: 1 }}
+          item={{
+            ...(organisation?.program_organisations?.[0] || {}),
+            program_id:
+              organisation?.program_organisations?.[0]?.program?.state
+                ?.state_name,
+          }}
+          title={t("DOCUMENT_DETAILS")}
+          label={[
+            "DUE_DILIGENCE_SIGNED_PROPOSAL",
+            "QUARTELY_CA_CERTIFIED",
+            "MONTHLY_UTILIZATION",
+            "LEARNER_TARGET",
+          ]}
+          arr={["doc_per_cohort_id", "doc_per_monthly_id", "doc_quarterly_id"]}
+          format={{
+            doc_per_cohort_id: "file",
+            doc_per_monthly_id: "file",
+            doc_quarterly_id: "file",
+          }}
+        />
         <DataList />
         {/* <UserList /> */}
       </VStack>
@@ -220,7 +223,6 @@ const DataList = memo(() => {
 
   const handleRowClick = useCallback(
     (row) => {
-      console.log({ row });
       navigate(`/poadmin/ips/user/${row?.id}`);
     },
     [navigate]
