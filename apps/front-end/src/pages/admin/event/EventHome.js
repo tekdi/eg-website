@@ -526,7 +526,6 @@ export default function EventHome({ footerLinks }) {
       }
     }
   };
-  const idsOnly = selectedRowId.filter((item) => typeof item === "number");
   return (
     <Layout
       _sidebar={footerLinks}
@@ -665,7 +664,7 @@ export default function EventHome({ footerLinks }) {
                 </HStack>
                 <Stack alignSelf={"end"} pb={2} pr={4}>
                   <AdminTypo.H6 bold color="textBlue.200">
-                    {`${t("ADD_SELECTED")} (${idsOnly?.length ?? 0})`}
+                    {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
                   </AdminTypo.H6>
                 </Stack>
                 <DataTable
@@ -677,7 +676,7 @@ export default function EventHome({ footerLinks }) {
                   progressPending={loading}
                   pagination
                   paginationServer
-                  onSelectedRowsChange={handleCheckboxChange}
+                  // onSelectedRowsChange={handleCheckboxChange}
                   paginationTotalRows={paginationTotalRows}
                   onChangeRowsPerPage={(e) => {
                     setFilter({ ...filter, limit: e, page: 1 });
