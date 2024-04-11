@@ -166,7 +166,6 @@ export default function EventHome({ footerLinks }) {
   const handleOpenButtonClick = () => {
     setIsListOpen((prevState) => !prevState);
   };
-
   useEffect(async () => {
     if (id) {
       const eventResult = await eventService.getEventListById({ id });
@@ -446,7 +445,6 @@ export default function EventHome({ footerLinks }) {
 
             navigate(`/admin`);
           } else {
-            console.log(apiResponse);
             const newErrors = {
               name: {
                 __errors: [t(apiResponse?.message)],
@@ -528,7 +526,6 @@ export default function EventHome({ footerLinks }) {
       }
     }
   };
-
   return (
     <Layout
       _sidebar={footerLinks}
@@ -679,7 +676,7 @@ export default function EventHome({ footerLinks }) {
                   progressPending={loading}
                   pagination
                   paginationServer
-                  onSelectedRowsChange={handleCheckboxChange}
+                  // onSelectedRowsChange={handleCheckboxChange}
                   paginationTotalRows={paginationTotalRows}
                   onChangeRowsPerPage={(e) => {
                     setFilter({ ...filter, limit: e, page: 1 });

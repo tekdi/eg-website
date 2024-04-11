@@ -26,6 +26,7 @@ const BenificiaryProfileView = lazy(() =>
 const BenificiaryListView = lazy(() =>
   import("v2/views/Beneficiary/BenificiaryListView/BenificiaryListView")
 );
+const OfflinePage = lazy(() => import("v2/views/OfflinePage/OfflinePage"));
 
 const EpcpForm = lazy(() => import("v2/components/Functional/EPCP/EpcpForm"));
 const EpcpLearnerList = lazy(() =>
@@ -253,6 +254,11 @@ export default [
   {
     path: "/camps/exampreparation/:id",
     component: ExamForm,
+  },
+  //offlinepage
+  {
+    path: "/offline",
+    component: OfflinePage,
   },
 
   //end v2 code
