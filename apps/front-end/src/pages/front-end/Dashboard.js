@@ -91,8 +91,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectedCohortData, setSelectedCohortData] = useState(null);
   const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+
+  const [env_name] = useState(process.env.NODE_ENV);
 
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
@@ -122,6 +125,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       console.error("Error saving data to IndexedDB:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+      const FetchTime = moment(lastFetchTime, "ddd MMM DD YYYY HH:mm:ss GMTZZ");
+      const currentTime = moment();
+
+      const diffInHours = currentTime.diff(FetchTime, "hours");
+      if (diffInHours >= 48) {
+        setShowWarning(true);
+      } else {
+        setShowWarning(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -927,6 +946,25 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   {t("REGISTER_EXIST_INFO")}
                 </FrontEndTypo.Primarybutton>
               </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={showWarning}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Body p="5">
+            <VStack space="5">
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{t("PLEASE_TURN_ON_YOUR_INTERNET")}</BodyMedium>
+                </HStack>
+              </Alert>
             </VStack>
           </Modal.Body>
         </Modal.Content>
