@@ -100,15 +100,15 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       : "-"}
                   </FrontEndTypo.H2>
                   {item?.certificate_status === true ? (
-                    // <AdminTypo.Secondarybutton
-                    //   onPress={() => certificateDownload(item)}
-                    // >
-                    //   {t("VIEW_CERTIFICATE")}
-                    // </AdminTypo.Secondarybutton>
-                    <AdminTypo.H6 bold color="success.500">
-                      {t("PASS")}
-                    </AdminTypo.H6>
-                  ) : item.certificate_status === false ? (
+                    <AdminTypo.Secondarybutton
+                      onPress={() => certificateDownload(item)}
+                    >
+                      {t("VIEW_CERTIFICATE")}
+                    </AdminTypo.Secondarybutton>
+                  ) : // <AdminTypo.H6 bold color="success.500">
+                  //   {t("PASS")}
+                  // </AdminTypo.H6>
+                  item.certificate_status === false ? (
                     <AdminTypo.H6 bold color="red.500">
                       {t("FAILED")}
                     </AdminTypo.H6>
