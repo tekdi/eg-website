@@ -95,6 +95,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
 
+  const [env_name] = useState(process.env.NODE_ENV);
+
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
