@@ -115,7 +115,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         ...formData?.role_fields,
         program_id: parseInt(program?.program_id),
         academic_year_id: acadamic?.academic_year_id,
-        org_id: org_id?.program_faciltators?.parent_ip,
+        org_id: authUser?.program_faciltators?.parent_ip,
       },
     };
     let url = await AgRegistryService.createBeneficiary(formDataNew);
