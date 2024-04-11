@@ -150,9 +150,8 @@ function View() {
               "learner_target",
             ]}
           />
-          {/*  */}
         </HStack>
-        <CardComponent
+        {/* <CardComponent
           _header={{ bg: "light.100" }}
           _vstack={{ space: 0, flex: 1, bg: "light.100" }}
           _hstack={{ borderBottomWidth: 0, p: 1 }}
@@ -175,7 +174,7 @@ function View() {
             doc_per_monthly_id: "file",
             doc_quarterly_id: "file",
           }}
-        />
+        /> */}
         <DataList />
         {/* <UserList /> */}
       </VStack>
