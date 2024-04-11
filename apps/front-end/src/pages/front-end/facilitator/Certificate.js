@@ -1,23 +1,21 @@
-import React from "react";
-import { VStack, HStack, Modal, ScrollView, Button, Row } from "native-base";
 import {
-  Layout,
+  AdminTypo,
+  CardComponent,
   FrontEndTypo,
+  IconByName,
+  Layout,
   facilitatorRegistryService,
   testRegistryService,
-  AdminTypo,
-  IconByName,
-  CardComponent,
-  useWindowSize,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { Button, HStack, Modal, ScrollView, VStack } from "native-base";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser || [];
-  const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(true);
@@ -26,36 +24,34 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   const reportTemplateRef = React.useRef(null);
 
   React.useEffect(async () => {
-    const result = await facilitatorRegistryService.getOne({ id });
     const getCertificate = await testRegistryService.getCertificate({
       id,
     });
     setCertificateData(getCertificate?.data);
-    setFacilitator(result);
     setLoading(false);
   }, []);
 
   const handleGeneratePdf = async () => {
-    // const doc = new jsPDF({
-    //   format: "a4",
-    //   unit: "px",
-    // });
+    const doc = new jsPDF({
+      format: "a4",
+      unit: "px",
+    });
 
-    // // Adding the fonts.
-    // doc.setFont("Inter-Regular", "normal");
+    // Adding the fonts.
+    doc.setFont("Inter-Regular", "normal");
 
-    // doc.html(reportTemplateRef.current, {
-    //   async callback(doc) {
-    //     await doc.save("document");
-    //   },
-    // });
+    doc.html(reportTemplateRef.current, {
+      async callback(doc) {
+        await doc.save("document");
+      },
+    });
 
     const input = reportTemplateRef.current;
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("l");
       pdf.addImage(imgData, "PNG", 0, 0, 297, 210); // Adjust the width and height as needed
-      // pdf.output('dataurlnewwindow');
+      pdf.output("dataurlnewwindow");
       pdf.save("download.pdf");
     });
   };
@@ -96,6 +92,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                   justifyContent={"space-evenly"}
                   alignItems={"center"}
                 >
+                  <FrontEndTypo.H2>{item?.context_id}</FrontEndTypo.H2>
                   <FrontEndTypo.H2>{item?.events?.[0]?.name}</FrontEndTypo.H2>
                   <FrontEndTypo.H2>
                     {typeof item?.score === "number"
@@ -103,15 +100,15 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       : "-"}
                   </FrontEndTypo.H2>
                   {item?.certificate_status === true ? (
-                    // <AdminTypo.Secondarybutton
-                    //   onPress={() => certificateDownload(item)}
-                    // >
-                    //   {t("VIEW_CERTIFICATE")}
-                    // </AdminTypo.Secondarybutton>
-                    <AdminTypo.H6 bold color="success.500">
-                      {t("PASS")}
-                    </AdminTypo.H6>
-                  ) : item.certificate_status === false ? (
+                    <AdminTypo.Secondarybutton
+                      onPress={() => certificateDownload(item)}
+                    >
+                      {t("VIEW_CERTIFICATE")}
+                    </AdminTypo.Secondarybutton>
+                  ) : // <AdminTypo.H6 bold color="success.500">
+                  //   {t("PASS")}
+                  // </AdminTypo.H6>
+                  item.certificate_status === false ? (
                     <AdminTypo.H6 bold color="red.500">
                       {t("FAILED")}
                     </AdminTypo.H6>
