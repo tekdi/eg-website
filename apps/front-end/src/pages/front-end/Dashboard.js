@@ -1,45 +1,39 @@
 import {
-  facilitatorRegistryService,
+  AdminTypo,
+  BodyMedium,
+  FrontEndTypo,
   IconByName,
   Layout,
   RedOutlineButton,
-  FrontEndTypo,
-  objProps,
   arrList,
-  BodyMedium,
-  AdminTypo,
-  testRegistryService,
-  removeOnboardingURLData,
-  removeOnboardingMobile,
-  getOnboardingURLData,
-  H1,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
   enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getOnboardingURLData,
   getSelectedAcademicYear,
+  getSelectedProgramId,
+  objProps,
+  removeOnboardingMobile,
+  removeOnboardingURLData,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Stack,
-  Image,
-  Alert,
-  Modal,
-  CloseIcon,
-  Select,
-  CheckIcon,
-} from "native-base";
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import {
-  getIndexedDBItem,
-  setIndexedDBItem,
-} from "../../../src/v2/utils/Helper/JSHelper";
+  Alert,
+  CheckIcon,
+  CloseIcon,
+  HStack,
+  Image,
+  Modal,
+  Select,
+  Stack,
+  VStack,
+} from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   checkPrerakOfflineTimeInterval,
   getIpUserInfo,
@@ -47,6 +41,10 @@ import {
   setIpUserInfo,
   setPrerakOfflineInfo,
 } from "v2/utils/SyncHelper/SyncHelper";
+import {
+  getIndexedDBItem,
+  setIndexedDBItem,
+} from "../../../src/v2/utils/Helper/JSHelper";
 
 const styles = {
   inforBox: {
@@ -75,16 +73,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = useState(false);
-  const [lmsDEtails, setLmsDetails] = useState();
+  const [lmsDetails, setLmsDetails] = useState();
   const { id } = userTokenInfo?.authUser || [];
-  const [random, setRandom] = useState();
   const [events, setEvents] = useState("");
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
-  const [loadAll, setLoadAll] = useState(false);
   const [cohortData, setCohortData] = useState(null);
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
@@ -268,7 +264,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             });
           const data =
             c_data?.data?.filter(
-              (e) => e?.type === "prerak_camp_execution_training"
+              (eventItem) =>
+                eventItem?.params?.do_id?.length &&
+                eventItem?.attendances.filter(
+                  (attendance) =>
+                    attendance.user_id == fa_id &&
+                    attendance.status == "present" &&
+                    eventItem.end_date ==
+                      moment(attendance.date_time).format("YYYY-MM-DD")
+                )?.length
             )?.[0] || {};
           setCertificateData(data);
           if (data?.lms_test_tracking?.length > 0) {
@@ -280,6 +284,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           const time = moment(moment().format(format), format);
           const beforeTime = moment(data?.start_time, format);
           const afterTime = moment(data?.end_time, format);
+
           if (time?.isBetween(beforeTime, afterTime) && dataDay) {
             setIsEventActive(true);
           }
@@ -400,7 +405,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     const randomizedDoId = doIdArray[array[0] % doIdArray.length];
-    setRandom(randomizedDoId);
     return randomizedDoId;
   };
 
@@ -566,7 +570,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </FrontEndTypo.H1>
             </HStack>
             {isEventActive
-              ? certificateData?.type == "prerak_camp_execution_training" && (
+              ? certificateData && (
                   <HStack py="2" flex="1" px="4">
                     <FrontEndTypo.Primarybutton
                       onPress={() => {
@@ -583,7 +587,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.Primarybutton>
                   </HStack>
                 )
-              : lmsDEtails?.id && (
+              : lmsDetails?.id && (
                   <HStack py="2" flex="1" px="4">
                     <FrontEndTypo.Primarybutton
                       fontSize
@@ -611,27 +615,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack>
-                    {lmsDEtails === undefined && (
+                    {lmsDetails === undefined && (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(events)}
                       </AdminTypo.H3>
                     )}
-                    {lmsDEtails?.certificate_status === null ? (
+                    {lmsDetails?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === false &&
-                      lmsDEtails?.score >= floatValue ? (
+                    ) : lmsDetails?.certificate_status === false &&
+                      lmsDetails?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
                         {lmsDEtails?.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === true ? (
+                    ) : lmsDetails?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
                         {lmsDEtails.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === false ? (
+                    ) : lmsDetails?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
@@ -642,8 +646,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
                   <HStack space={"6"}>
-                    {lmsDEtails === undefined ||
-                      (lmsDEtails?.certificate_status === true && (
+                    {lmsDetails === undefined ||
+                      (lmsDetails?.certificate_status === true && (
                         <FrontEndTypo.DefaultButton
                           textColor={"black"}
                           onPress={() => {
@@ -653,7 +657,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           {t("GO_BACK")}
                         </FrontEndTypo.DefaultButton>
                       ))}
-                    {lmsDEtails?.certificate_status === false && (
+                    {lmsDetails?.certificate_status === false && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -663,7 +667,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDEtails === undefined &&
+                    {lmsDetails === undefined &&
                       !(
                         certificateData?.params?.do_id == null ||
                         (Array.isArray(certificateData?.params?.do_id) &&
@@ -676,7 +680,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           {t("START_TEST")}
                         </FrontEndTypo.DefaultButton>
                       )}
-                    {lmsDEtails?.certificate_status === true && (
+                    {lmsDetails?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -876,7 +880,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("SELECT_COHORT_INFO")}</H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("SELECT_COHORT_INFO")}
+            </FrontEndTypo.H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
@@ -923,7 +929,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("REGISTER_EXIST_CONFIRM")}</H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("REGISTER_EXIST_CONFIRM")}
+            </FrontEndTypo.H1>
             <CloseIcon
               onClick={async () => await removeRegisterExist()}
               style={{ cursor: "pointer" }}
