@@ -222,8 +222,8 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
               </Select>
             </HStack>
           ))}
-          {checkList ? (
-            buttonPress ? (
+          {checkList &&
+            (buttonPress ? (
               <FrontEndTypo.ColourPrimaryButton
                 isDisabled={isDisable}
                 mb={1}
@@ -253,10 +253,7 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
                   {t("MARK_AS_COMPLETE")}
                 </FrontEndTypo.Primarybutton>
               </VStack>
-            )
-          ) : (
-            <Fragment></Fragment>
-          )}
+            ))}
           <FrontEndTypo.Primarybutton
             isDisabled={isDisable}
             mt="4"
