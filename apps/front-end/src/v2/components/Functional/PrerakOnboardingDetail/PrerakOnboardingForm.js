@@ -94,12 +94,12 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-
+          //console.log({ result });
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
           // const ListOfEnum = await enumRegistryService.listOfEnum();
           if (!ListOfEnum?.error) {
-            setEnumObj(ListOfEnum);
+            setEnumObj(ListOfEnum?.data);
           }
           if (step === "qualification_details") {
             updateSchemaBasedOnDiploma(result?.core_faciltator?.has_diploma);
@@ -158,7 +158,11 @@ export default function PrerakOnboardingForm({
             setFormData(formDataObject);
           } else {
             let programSelected = jsonParse(localStorage.getItem("program"));
-            setFormData({ ...result, state: programSelected?.state_name });
+            setFormData({
+              ...result,
+              state: programSelected?.state_name,
+              aadhar_no: result?.aadhar_no,
+            });
           }
           getEditAccess();
         }
@@ -589,6 +593,16 @@ export default function PrerakOnboardingForm({
         });
       }
     }
+    if (step === "aadhaar_details") {
+      if (data?.aadhar_no) {
+        const validation = AadhaarNumberValidation({
+          aadhaar: data?.aadhar_no,
+        });
+        if (validation) {
+          errors?.aadhar_no?.addError(`${t(validation)}`);
+        }
+      }
+    }
     if (step === "qualification_details") {
       if (data?.qualification_ids.length === 0) {
         errors?.qualification_ids?.addError(
@@ -832,17 +846,6 @@ export default function PrerakOnboardingForm({
     }
     if (id === "root_aadhar_no") {
       if (data?.aadhar_no?.toString()?.length === 12) {
-        const validation = AadhaarNumberValidation({
-          aadhaar: data?.aadhar_no,
-        });
-        if (validation) {
-          const newErrors = {
-            aadhar_no: {
-              __errors: [t(validation)],
-            },
-          };
-          setErrors(newErrors);
-        }
         const result = await userExist({
           aadhar_no: data?.aadhar_no,
         });
@@ -970,13 +973,26 @@ export default function PrerakOnboardingForm({
           {},
           ""
         );
+
+        // console.log({ step, isOnline });
+        if (step === "aadhaar_details" && isOnline === true) {
+          await formSubmitUpdate(newdata);
+          await updateOnboardingData(userid, newdata);
+        } else if (step === "aadhaar_details" && isOnline === false) {
+          const newErrors = {
+            aadhar_no: {
+              __errors: [t("PLEASE_TURN_ON_YOUR_INTERNET")],
+            },
+          };
+          setErrors(newErrors);
+        } else {
+          await updateOnboardingData(userid, newdata);
+        }
         //console.log("new updated Form Data", newdata);
 
         //online data submit
-        //await formSubmitUpdate(newdata);
 
         //offline data submit
-        await updateOnboardingData(userid, newdata);
         if (localStorage.getItem("backToProfile") === "false") {
           nextPreviewStep();
         } else {
