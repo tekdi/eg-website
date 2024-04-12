@@ -82,7 +82,6 @@ export default function PrerakOnboardingArrayForm({
   };
   useEffect(() => {
     if (facilitator) {
-      console.log("type facilitator", type);
       if (type == "experience") {
         setData(dataExperience);
       }
@@ -143,7 +142,6 @@ export default function PrerakOnboardingArrayForm({
             required: [
               "role_title",
               "organization",
-              "description",
               "experience_in_years",
               "related_to_teaching",
             ],
@@ -477,7 +475,13 @@ export default function PrerakOnboardingArrayForm({
                           }}
                           onEdit={(e) => onEdit(e)}
                           onDelete={(e) => onDelete(e)}
-                          arr={keys}
+                          arr={[
+                            "role_title",
+                            "organization",
+                            "description",
+                            "experience_in_years",
+                            "related_to_teaching",
+                          ]}
                           label={labels}
                         />
                       </Box>
