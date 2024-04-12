@@ -381,7 +381,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   <HStack m={4} space={2}>
                     <ActiveButton
                       isActive={
-                        receiptUrl.doc_id ===
+                        receiptUrl?.doc_id ===
                         paymentDocId?.payment_receipt_document_id
                       }
                       onPress={() => {
@@ -394,7 +394,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     </ActiveButton>
                     <ActiveButton
                       isActive={
-                        receiptUrl.doc_id === paymentDocId?.application_form
+                        receiptUrl?.doc_id === paymentDocId?.application_form
                       }
                       onPress={() => {
                         handleButtonClick(paymentDocId?.application_form);
@@ -404,7 +404,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     </ActiveButton>
                     <ActiveButton
                       isActive={
-                        receiptUrl.doc_id === paymentDocId?.application_login_id
+                        receiptUrl?.doc_id ===
+                        paymentDocId?.application_login_id
                       }
                       onPress={() => {
                         handleButtonClick(paymentDocId?.application_login_id);
