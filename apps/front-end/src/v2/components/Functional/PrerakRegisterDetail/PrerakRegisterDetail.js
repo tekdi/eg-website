@@ -13,13 +13,19 @@ import {
   login,
   useWindowSize,
   Loading,
+  geolocationRegistryService,
+  getOptions,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
 //rjsf forms
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { basicRegister, verifyOTP } from "./PrerakRegister.Forms.Schema.js";
+import {
+  address_details,
+  basicRegister,
+  verifyOTP,
+} from "./PrerakRegister.Forms.Schema.js";
 import {
   widgets,
   templates,
@@ -116,6 +122,34 @@ export default function PrerakRegisterDetail({
     if (currentForm == 0) {
       setSchema(basicRegister);
       setFormData(registerFormData);
+    } else if (currentForm == 1) {
+      const fetchData = async () => {
+        let newSchema = address_details;
+        try {
+          if (address_details?.properties?.district) {
+            let programSelected = null;
+            try {
+              programSelected = programData;
+            } catch (error) {}
+            //add user specific state
+            if (programSelected != null) {
+              newSchema = await setDistric({
+                schemaData: address_details,
+                state: programSelected?.state_name,
+                district: registerFormData?.district,
+                block: registerFormData?.block,
+                gramp: registerFormData?.grampanchayat,
+              });
+            }
+          }
+          setLoading(false);
+          setSchema(newSchema);
+          setFormData(registerFormData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
     } else {
       const verifySchema = {
         ...verifyOTP,
@@ -149,6 +183,9 @@ export default function PrerakRegisterDetail({
     verify_mobile: {
       "ui:readOnly": true,
     },
+    labelAddress: {
+      "ui:widget": "LabelAddressWidget",
+    },
   };
   const validate = (data, key) => {
     let error = {};
@@ -178,6 +215,149 @@ export default function PrerakRegisterDetail({
     return err;
   };
 
+  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (state) {
+      const qData = await geolocationRegistryService.getDistricts({
+        name: state,
+      });
+      if (schemaData?.["properties"]?.["district"]) {
+        newSchema = getOptions(newSchema, {
+          key: "district",
+          arr: qData?.districts,
+          title: "district_name",
+          value: "district_name",
+        });
+      }
+      if (schemaData?.["properties"]?.["block"]) {
+        newSchema = await setBlock({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      }
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schemaData?.properties?.block && district) {
+      const qData = await geolocationRegistryService.getBlocks({
+        name: district,
+        state: state,
+      });
+      if (schemaData?.["properties"]?.["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData?.blocks,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+      if (
+        schemaData?.["properties"]?.["grampanchayat"] &&
+        ["BIHAR"].includes(state)
+      ) {
+        newSchema = await setGramp({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      } else {
+        newSchema = await setVilage({
+          state,
+          district,
+          block,
+          gramp: "null",
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      if (schemaData?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setGramp = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schemaData?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getGrampanchyat({
+        block: block,
+        state: state,
+        district: district,
+      });
+      if (schemaData?.["properties"]?.["grampanchayat"]) {
+        newSchema = getOptions(newSchema, {
+          key: "grampanchayat",
+          arr: qData?.gramPanchayat,
+          title: "grampanchayat_name",
+          value: "grampanchayat_name",
+          format: "select",
+        });
+      }
+      setSchema(newSchema);
+
+      if (schemaData?.["properties"]?.["village"] && gramp) {
+        newSchema = await setVilage({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schemaData?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
+      });
+      if (schemaData?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, {
+          key: "village",
+          arr: qData?.villages,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        });
+      }
+      setSchema(newSchema);
+    } else {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
   const handleCheckboxChange = (isAgree) => {
     setYesChecked(isAgree);
     setNoChecked(!isAgree);
@@ -185,9 +365,9 @@ export default function PrerakRegisterDetail({
       setConsentCompleted(false);
       //sent otp to mobile number
       const fetchData = async () => {
-        await sendAndVerifyOtp(schema, {
-          mobile: isConsentModal?.mobile,
-        });
+        // await sendAndVerifyOtp(schema, {
+        //   mobile: isConsentModal?.mobile,
+        // });
         setIsConsentModal();
         setCurrentForm(1);
         setYesChecked(!isAgree);
@@ -210,6 +390,14 @@ export default function PrerakRegisterDetail({
 
       setIsLoading(false);
     } else if (currentForm == 1) {
+      const fetchData = async () => {
+        await sendAndVerifyOtp(schema, {
+          mobile: isConsentModal?.mobile,
+        });
+        setCurrentForm(2);
+      };
+      fetchData();
+    } else if (currentForm == 2) {
       setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
       if (!isExist) {
@@ -274,7 +462,7 @@ export default function PrerakRegisterDetail({
     const data = e.formData;
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (currentForm == 0) {
+    if (currentForm == 0 || currentForm == 1) {
       setRegisterFormData(newData);
     }
     if (id === "root_mobile") {
@@ -288,6 +476,47 @@ export default function PrerakRegisterDetail({
     if (id === "root_verify_mobile") {
       let { verify_mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
+    }
+
+    if (id === "root_state") {
+      await setDistric({
+        schemaData: schema,
+        state: data?.state,
+        district: data?.district,
+        block: data?.block,
+      });
+    }
+
+    if (id === "root_district") {
+      await setBlock({
+        district: data?.district,
+        block: data?.block,
+        schemaData: schema,
+        state: programData?.state_name,
+      });
+    }
+
+    if (id === "root_block") {
+      await setVilage({
+        district: data?.district,
+        block: data?.block,
+        schemaData: schema,
+        state: programData?.state_name,
+      });
+    }
+
+    if (id === "root_pincode") {
+      const regex = /^[0-9]{6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      } else {
+        setErrors();
+      }
     }
   };
   const checkMobileExist = async (mobile) => {
@@ -448,6 +677,13 @@ export default function PrerakRegisterDetail({
       : "";
     let lang = localStorage.getItem("lang");
 
+    let state = registerFormData?.state;
+    let district = registerFormData?.district;
+    let block = registerFormData?.block;
+    let village = registerFormData?.village;
+    let grampanchayat = registerFormData?.grampanchayat || "";
+    let pincode = registerFormData?.pincode || "";
+
     const result = await facilitatorRegistryService.registerV2(
       {
         first_name: first_name,
@@ -455,6 +691,12 @@ export default function PrerakRegisterDetail({
         last_name: last_name,
         mobile: registerFormData?.mobile.toString(),
         lang: lang,
+        state: state,
+        district: district,
+        block: block,
+        village: village,
+        grampanchayat: grampanchayat,
+        pincode: pincode,
       },
       ip?.id.toString(),
       programData?.program_id,
@@ -509,7 +751,7 @@ export default function PrerakRegisterDetail({
                 transformErrors,
               }}
             >
-              {currentForm === 1 ? (
+              {currentForm === 2 ? (
                 <FrontEndTypo.Primarybutton
                   mt="3"
                   variant={"primary"}
@@ -531,7 +773,9 @@ export default function PrerakRegisterDetail({
                       formRef?.current?.submit();
                     }}
                   >
-                    {t("CONSENT_TO_SHARE_INFORMATION")}
+                    {currentForm == 0
+                      ? t("CONSENT_TO_SHARE_INFORMATION")
+                      : currentForm == 1 && t("SEND_OTP")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               )}
