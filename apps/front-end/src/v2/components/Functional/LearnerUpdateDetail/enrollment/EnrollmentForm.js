@@ -14,6 +14,7 @@ import {
   getUiSchema,
   BodyMedium,
   getSelectedProgramId,
+  getEnrollmentIds,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
@@ -491,8 +492,8 @@ export default function EnrollmentForm() {
           BoardSchema,
           page
         );
+        let { state_name } = await getSelectedProgramId();
         if (updatedSchema?.newSchema?.properties?.enrollment_number?.regex) {
-          let { state_name } = await getSelectedProgramId();
           if (state_name === "BIHAR") {
             updatedSchema.newSchema.properties.enrollment_number.regex =
               /^\d{0,9}$/;
@@ -510,18 +511,7 @@ export default function EnrollmentForm() {
         setFormData({
           ...newdata,
           enrolled_for_board: newdata?.enrolled_for_board?.toString(),
-          payment_receipt_document_id:
-            newdata?.payment_receipt_document_id?.find(
-              (e) => e?.key == "payment_receipt_document_id"
-            )?.id,
-          application_form:
-            newdata?.payment_receipt_document_id?.find(
-              (e) => e?.key == "application_form"
-            )?.id || undefined,
-          application_login_id:
-            newdata?.payment_receipt_document_id?.find(
-              (e) => e?.key == "application_login_id"
-            )?.id || undefined,
+          ...getEnrollmentIds(newdata?.payment_receipt_document_id, state_name),
         });
       } else {
         setSchema(constantSchema);
