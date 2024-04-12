@@ -177,8 +177,8 @@ export default function FacilitatorQualification({ userTokenInfo }) {
                   >
                     <ImageView
                       text={t("LINK")}
-                      source={{
-                        document_id:
+                      urlObject={{
+                        fileUrl:
                           qualification?.qualification_reference_document_id,
                       }}
                     />
