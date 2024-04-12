@@ -810,7 +810,7 @@ Textarea.propTypes = {
 };
 const validator = customizeValidator({
   customFormats: {
-    MobileNumber: /^[6-9]\d{8}9$/,
+    // MobileNumber: /^[6-9]\d{8}9$/,
   },
 });
 

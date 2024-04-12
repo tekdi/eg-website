@@ -7,6 +7,7 @@ export default {
   type: "step",
   properties: {
     edit_enrollement: {
+      title: "ENROLLMENT_DETAILS",
       type: "object",
       required: [
         "enrollment_status",
@@ -16,8 +17,6 @@ export default {
         "subjects",
         "enrollment_date",
         "payment_receipt_document_id",
-        "application_form",
-        "application_login_id",
       ],
       properties: {
         enrollment_status: {
@@ -29,8 +28,6 @@ export default {
           type: "string",
           label: "BOARD_OF_ENROLLMENT",
           format: "radio",
-          enumNames: ["RSOS", "NIOS"], //title
-          enum: ["rsos", "nios"], //values
         },
         enrollment_number: {
           type: "string",
@@ -41,17 +38,21 @@ export default {
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
         },
-        enrollment_aadhaar_no: {
-          title: "AADHAAR_NUMBER",
-          description: "AS_PER_ENROLLMENT_RECEIPT",
-          label: "AADHAAR_NUMBER",
+
+        enrollment_mobile_no: {
           type: "string",
-          regex: /^\d{0,12}$/,
+          label: "MOBILE_NUMBER",
+          title: "MOBILE_NUMBER",
+          format: "MobileNumber",
         },
+
         enrollment_date: {
           type: "string",
-          label: "ENROLLMENT_DATE",
-          format: "alt-date",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_DATE"
+              : "FEES_PAID_DATE",
+          format: "DMY",
         },
         subjects: {
           minItems: 1,
@@ -64,9 +65,15 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label: "PAYMENT_RECEIPTS",
-          description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: "",
+          label:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_RECIEPT"
+              : "PAYMENT_RECEIPTS",
+          description:
+            state?.state_name === "RAJASTHAN"
+              ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"
+              : "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
+          uploadTitle: " ",
           type: ["string", "number"],
           format: "FileUpload",
         },

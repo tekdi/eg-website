@@ -16,6 +16,7 @@ import {
   getSelectedProgramId,
   getSelectedAcademicYear,
   ItemComponent,
+  getEnrollmentIds,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -1498,15 +1499,10 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     ) : (
                       "-"
                     ),
-                    payment_receipt_document_id:
-                      data?.program_beneficiaries
-                        ?.payment_receipt_document_id?.[0],
-                    application_form:
-                      data?.program_beneficiaries
-                        ?.payment_receipt_document_id?.[1],
-                    application_login_id:
-                      data?.program_beneficiaries
-                        ?.payment_receipt_document_id?.[2],
+                    ...getEnrollmentIds(
+                      data?.program_beneficiaries?.payment_receipt_document_id,
+                      localData
+                    ),
                   }}
                   isHideProgressBar={true}
                   _vstack={{
