@@ -545,7 +545,11 @@ export default function App(footerLinks) {
   }, [page]);
 
   const enrollmentNumberExist = async (enrollment_number) => {
-    if (enrollment_number.length === 11) {
+    let { state_name } = await getSelectedProgramId();
+    if (
+      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
+      (state_name === "BIHAR" && enrollment_number.length === 9)
+    ) {
       const result = await benificiaryRegistoryService.isExistEnrollment(
         userId,
         {
@@ -556,19 +560,36 @@ export default function App(footerLinks) {
         setErrors({
           ...errors,
           enrollment_number: {
-            __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
+            __errors: [
+              t(
+                state_name === "RAJASTHAN"
+                  ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
+                  : "APPLICATION_ID_ALREADY_EXISTS"
+              ),
+            ],
           },
         });
       } else {
+        const { enrollment_number, ...otherErrors } = errors;
+        setErrors(otherErrors);
         return true;
       }
     } else {
-      setErrors({
-        ...errors,
-        enrollment_number: {
-          __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
-        },
-      });
+      if (state_name === "RAJASTHAN") {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
+          },
+        });
+      } else {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("APPLICATION_ID_SHOULD_BE_OF_9_DIGIT")],
+          },
+        });
+      }
     }
     return false;
   };
