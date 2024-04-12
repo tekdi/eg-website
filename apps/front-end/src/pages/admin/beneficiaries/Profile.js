@@ -680,7 +680,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               <HStack>
                 <HStack space="4">
                   {programUser?.organisation_id == 1 &&
-                    programUser?.program_id == 2 && (
+                    ["3", "2"].includes(`${programUser?.program_id}`) && (
                       <Scholarship
                         {...{
                           item: data,
