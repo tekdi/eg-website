@@ -24,6 +24,7 @@ const FileUpload = ({ value, onChange, schema }) => {
     dimensionsValidation,
   } = schema || {};
 
+  console.log({ iconComponent });
   const uplodInputRef = useRef();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
