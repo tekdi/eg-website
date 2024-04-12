@@ -511,11 +511,17 @@ export default function EnrollmentForm() {
           ...newdata,
           enrolled_for_board: newdata?.enrolled_for_board?.toString(),
           payment_receipt_document_id:
-            newdata?.payment_receipt_document_id?.[0]?.id,
+            newdata?.payment_receipt_document_id?.find(
+              (e) => e?.key == "payment_receipt_document_id"
+            )?.id,
           application_form:
-            newdata?.payment_receipt_document_id?.[1]?.id || undefined,
+            newdata?.payment_receipt_document_id?.find(
+              (e) => e?.key == "application_form"
+            )?.id || undefined,
           application_login_id:
-            newdata?.payment_receipt_document_id?.[2]?.id || undefined,
+            newdata?.payment_receipt_document_id?.find(
+              (e) => e?.key == "application_login_id"
+            )?.id || undefined,
         });
       } else {
         setSchema(constantSchema);
