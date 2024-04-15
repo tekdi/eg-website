@@ -169,10 +169,11 @@ export default function EventHome({ footerLinks }) {
   useEffect(async () => {
     if (id) {
       const eventResult = await eventService.getEventListById({ id });
+      const peopleResult = await eventService.getAttendanceList({id});
       const { event } = eventResult;
       setEventDetails(eventResult);
-      const selectedId =
-        eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
+      const selectedId = peopleResult?.data?.map((e) => e?.id) || [];
+        // eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
       setSelectedRowIds(selectedId);
       setIsListOpen(false);
       const timeFormat = "HH:mm:ss";
@@ -793,7 +794,7 @@ const Village = ({ village, filter, t, setFilter }) => {
           <Pressable accessibilityLabel="More options menu" {...triggerProps}>
             <HStack space={4}>
               <AdminTypo.H4>
-                {filter?.villages ? filter?.village : t("VILLAGE_WARD")}
+                {filter?.villages ? filter?.villages : t("VILLAGE_WARD")}
               </AdminTypo.H4>
               <IconByName name="ArrowDownSLineIcon" />
             </HStack>
