@@ -10,7 +10,7 @@ import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native-web";
 
-const Scholarship = ({ item, setItem, jsonData, setJsonData }) => {
+const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
   const { t } = useTranslation();
   // const width = useS;
   const { width, height } = useWindowDimensions();
@@ -34,7 +34,7 @@ const Scholarship = ({ item, setItem, jsonData, setJsonData }) => {
     if (event?.data?.orderId) {
       setJsonData();
       const data = await benificiaryRegistoryService.updateScholarship({
-        id: item.id,
+        id: user_id,
         scholarship_order_id: event?.data?.orderId,
       });
       if (data.success) {
@@ -73,7 +73,6 @@ const Scholarship = ({ item, setItem, jsonData, setJsonData }) => {
   //     };
   //   }
   // }, [jsonData]);
-
   return (
     <Stack>
       <Alert {...{ alert, setAlert }} />
