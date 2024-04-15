@@ -115,8 +115,11 @@
   "APPLICATION_APPROVED": "आवेदन स्वीकृत",
   "APPLICATION_FORM": "आवेदन फार्म",
   "APPLICATION_ID": "एप्लिकेशन ID",
-  "APPLICATION_RECEIPT": "एप्लिकेशन रसीद",
+  "APPLICATION_ID_ALREADY_EXISTS": "एप्लिकेशन ID पहले से मौजूद है",
+  "APPLICATION_ID_SHOULD_BE_OF_9_DIGIT": "एप्लिकेशन ID संख्या 9 अंकों की होनी चाहिए।",
   "APPLICATION_LOGIN_ID_SCREENSHOT": "आवेदन फॉर्म लॉगिन आईडी स्क्रीनशॉट",
+  "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट",
+  "APPLICATION_RECEIPT": "एप्लिकेशन रसीद",
   "APPLICATION_UNDER_REVIEW": "आवेदन की समीक्षा हो रही है",
   "APPLIED": "आवेदन किया",
   "APPLIED_BUT_PENDING": "आवेदन किया किन्तु प्रक्रिया में है",
@@ -124,7 +127,6 @@
   "APPLY_FOR_LEAVE": "छुट्टी के लिए आवेदन करें",
   "APPLY_NOW": "अभी अप्लाई करें",
   "APPLY_SCHOLARSHIP": "स्कालर्शिप अप्लाई करें",
-  "SCHOLARSHIP_SUBMITTED_SUCCESSFULLY": "स्कालर्शिप सफलतापूर्वक सबमिट कर दिया गया है",
   "APPROVE_APPLICATION": "आवेदन स्वीकृत करें",
   "ARE_YOU_SURE": "क्या आप निश्चित है",
   "AS_PER_AADHAAR": "(आधार कार्ड के अनुसार)",
@@ -387,6 +389,7 @@
   "CORRECT_ENROLLMENT_LEARNER_DETAILS": "नामांकन शिक्षार्थी विवरण सही करें",
   "COUNT": "गिनती",
   "COURAGEOUS": "साहस भरा",
+  "CREATE": "बनाएँ",
   "CREATE_4_DIGIT_SHARE_CODE": "4 अंकों का शेयर कोड बनाएं।",
   "CREATE_BENEFICIARIES": "शिक्षार्थी जोड़ें",
   "CREATE_CAMP": "शिविर बनाएँ",
@@ -400,8 +403,8 @@
   "DATE": "तारीख",
   "DATE_OF_BIRTH": "जन्म तारीख",
   "DATE_OF_BIRTH_AS_PER_AADHAAR": "जन्म तारीख(आधार कार्ड के अनुसार)",
-  "DATE_OF_BIRTH_AS_PER_ENROLLMENT": "जन्म तारीख (नामांकन रसीद के अनुसार)",
   "DATE_OF_BIRTH_AS_PER_APPLICATION": "जन्म तारीख (एप्लिकेशन रसीद के अनुसार)",
+  "DATE_OF_BIRTH_AS_PER_ENROLLMENT": "जन्म तारीख (नामांकन रसीद के अनुसार)",
   "DATE_OF_ENROLLMENT": "नामांकन तारीख",
   "DATE_OF_ENTRY_IN_PMS": "रजिस्ट्रेशन तारीख",
   "DATE_TIME": "दिनांक समय",
@@ -425,6 +428,7 @@
   "DO_YOU_HAVE_ANY_JOB_EXPERIENCE": "क्या आपके पास नौकरी करने का कुछ अनुभव है?",
   "DO_YOU_HAVE_ANY_TEACHING_DEGREE": "क्या आपके पास कोई शिक्षण डिग्री है?",
   "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE": "क्या आपके पास स्वयंसेवक के रूप में कार्य का अनुभव है?",
+  "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
   "DO_YOU_OWN_A_MOBILE_PHONE": "क्या आपके पास स्वयं का मोबाइल फोन है?",
   "DOC_PER_COHORT": "दस्तावेज़ प्रति कोहोर्ट",
   "DOC_PER_MONTHLY": "दस्तावेज़ प्रति महीना",
@@ -503,10 +507,8 @@
   "ENROLLMENT_NO": "नामांकन संख्या",
   "ENROLLMENT_NUMBER": "नामांकन नम्बर",
   "ENROLLMENT_NUMBER_ALREADY_EXISTS": "नामांकन नम्बर पहले से मौजूद है",
-  "APPLICATION_ID_ALREADY_EXISTS": "एप्लिकेशन ID पहले से मौजूद है",
   "ENROLLMENT_NUMBER_POPUP_MESSAGE": "नामांकन संख्या पहले से मौजूद. सही नामांकन संख्या दर्ज करें",
   "ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT": "नामांकन नम्बर संख्या 11 अंकों की होनी चाहिए।",
-  "APPLICATION_ID_SHOULD_BE_OF_9_DIGIT": "एप्लिकेशन ID संख्या 9 अंकों की होनी चाहिए।",
   "ENROLLMENT_PENDING": "नामांकन लंबित",
   "ENROLLMENT_RECEIPT": "शिक्षार्थी का विवरण नामांकन रसीद के अनुसार",
   "ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH": "नामांकन रसीद और विवरण बेमेल । सही करे",
@@ -523,6 +525,76 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "ENTER_YOUR_AADHAAR_NUMBER": "अपना आधार नंबर दर्ज करें",
   "ENTERED_AADHAR_NOT_EDITABLE": "दर्ज किया गया आधार कार्ड नंबर मे परिवर्तन नही कर सकते. कृपया दर्ज करने से पहले वेरिफाई  करें",
+  "EPCP": {
+    "HAS_LOGGED_RSOS_APP": {
+      "NO": "नहीं",
+      "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
+      "YES": "हाँ"
+    },
+    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "DONT_HAVE_INTERNET_RECHARGE": "इंटरनेट का रिचार्ज नही है",
+      "DONT_KNOW_ABOUT_APPLICATION": "एप्लीकेशन के बारे में पता नहीं है",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
+      "LACK_OF_TIME": "समय का अभाव",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
+      "TITLE": "एक कारण चुनें *"
+    },
+    "RSOS_DOCUMENT_IMAGE": {
+      "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
+      "NO": "नहीं",
+      "TITLE": "शिक्षार्थी RSOS App पर विडियो/ई-बूक से पढ़ाई करती हैं",
+      "YES": "हाँ"
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "मोबाइल से पढ़के समझना कठिन है ",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डाटा ज्यादा खर्च होना",
+      "LACK_OF_TIME": "समय का अभाव",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "NO_SMARTPHONE_AT_HOME": "घर में स्मार्टफोन नहीं है",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
+      "TITLE": "एक कारण चुनें *",
+      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "सहायक सामग्री समझना कठिन है "
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
+      "NO": "नहीं",
+      "TITLE": "RSOS App पर अभ्यास टेस्ट दे रहे है?",
+      "YES": "हाँ"
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "सहायक सामग्री या सवाल समझ नहीं आए",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डाटा ज्यादा खर्च होना",
+      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "अभ्यास टेस्ट देने में आत्मविश्वास की कमी",
+      "LACK_OF_TIME": "समय का अभाव",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "NO_SMARTPHONE_AT_HOME": "घर में स्मार्टफोन नहीं है",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
+      "TITLE": "एक कारण चुनें *"
+    },
+    "TITLE": " द्वारा RSOS app का उपयोग",
+    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
+      "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखी",
+      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "e-PCP देने में आत्मविश्वास की कमी",
+      "TITLE": "एक कारण चुनें *",
+      "WILL_GIVE_SOON": " जल्द ही देंगे"
+    },
+    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
+      "NO": "नहीं",
+      "TITLE": "RSOS App पर  e-PCP परीक्षा दी?",
+      "YES": "हाँ"
+    }
+  },
+  "EPCP_ACTIVITIES": "e-PCP गतिविधियाँ",
+  "EPCP_INFO": "कृपया शिक्षार्थी की e-PCP परीक्षा से जुड़ी जानकारी दर्ज करें ।",
+  "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
   "ERROR_MESSAGE_MOBILE_NUMBER_CANNT_USE": "आप स्वयं के मोबाइल नंबर का उपयोग नहीं कर सकते",
   "EVALUATION_1": "रैपिड अससेसमेंट - I",
   "EVALUATION_2": "रैपिड अससेसमेंट - II",
@@ -556,10 +628,55 @@
   "EVENT_NAME": "कार्यक्रम का नाम \n(बैच संख्या)",
   "EVENT_START_DATE_TIME": "शुरुआत की तारीख और समय",
   "EVENT_TYPE": "कार्यक्रम का प्रकार",
+  "EXAM": "परीक्षा",
   "EXAM_ALREADY_TAKEN": "परीक्षा का प्रयास पहले ही किया जा चुका है",
+  "EXAM_PREPARATION": {
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "NO": "नहीं",
+      "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
+      "YES": "हाँ"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "NO": "नहीं",
+      "NOT_APPLICABLE": "लागू नहीं होता है",
+      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
+      "YES": "हाँ"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "NO": "नहीं",
+      "NOT_APPLICABLE": "लागू नहीं होता है",
+      "TITLE": "क्या शिक्षार्थी के पास परीक्षा केंद्र तक जाने की व्यवस्था है ?",
+      "YES": "हाँ"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "NO": "नहीं",
+      "TITLE": "क्या शिक्षार्थी को परीक्षा की समय सारणी प्राप्त हुई थी ?",
+      "YES": "हाँ"
+    },
+    "TITLE": "की परीक्षा की स्थिति",
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "NO": "नहीं",
+      "TITLE1": "क्या ",
+      "TITLE2": " परीक्षा में उपस्थित होंगे ?",
+      "YES": "हाँ"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "ADMIT_CARD_NOT_RECEIVED": "प्रवेश पत्र प्राप्त नहीं हुआ",
+      "DISTANCE_OF_EXAM_CENTER": "परीक्षा केंद्र की दूरी",
+      "EXAM_FEAR": "परीक्षा का डर",
+      "FAMILY_RESTRICTIONS": "पारिवारिक प्रतिबंध",
+      "GETTING_MARRIED/HAD_BABY": "शादी करना / बच्चा होना",
+      "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
+      "ILLNESS": "बीमारी ।",
+      "TITLE": "एक कारण चुनें",
+      "TRAVEL_ISSUES": "यात्रा संबंधी समस्याएं"
+    }
+  },
   "EXAM_SUBMITTED_SUCCESSFULLY": "परीक्षण सफलतापूर्वक सबमिट कर दिया गया है",
   "EXIST_LOGIN": "आपके पास {{state}} {{year}} के लिए पहले से ही एक खाता है, आप लॉग इन कर सकते हैं",
+  "EXISTING_IP": "मौजूदा IP",
   "EXISTING_IP_USER": "मौजूदा IP उपयोगकर्ता",
+  "EXISTING_USER": "मौजूदा उपयोगकर्ता",
   "EXPERIENCE": "अनुभव",
   "EXPERIENCE_IN_YEARS": "अनुभव (वर्षों में)",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "शिक्षार्थी के अपने दावे की व्याख्या करें",
@@ -820,6 +937,7 @@
   "LEARNERS_INFO": "शिक्षार्थी की जानकारी",
   "LEARNERS_LIST": "शिक्षार्थी की सूची",
   "LEARNERS_NAME": "शिक्षार्थी का नाम",
+  "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
   "LEARNERS_SUBJECT_CSV": "शिक्षार्थी के विषय CSV",
   "LEARNERS_TARGET": "शिक्षार्थियों का लक्ष्य",
   "LEARNERS_WHATSAPP_NUMBER": "(व्हाट्सएप फ़ोन नंबर जो शिक्षार्थी के लिए आसानी से उपलब्ध हो)",
@@ -838,6 +956,7 @@
   "LETS_START_TODAYS_CAMP": "चलिये आज का कैंप शुरू करें!.",
   "LETTER_RECOMMENDATION_BOSS": "मेरे बॉस से सिफारिश का पत्र",
   "LIST_OF_HOLIDAYS": "List of holidays",
+  "LIST_OF_LEARNERS": "शिक्षार्थियों की सूची",
   "LIVELIHOOD_AWARENESS": "आजीविका जागरूकता",
   "LIVELIHOOD_AWARENESS_ASPIRATION_MAPPING": "आकांक्षा मानचित्रण",
   "LIVELIHOOD_AWARENESS_COMMUNICATION_SKILLS": "संचार कौशल",
@@ -902,9 +1021,9 @@
   "MISCELLANEOUS_ACTIVITIES_E_PCP_ACTIVITIES": "ई.पी.सी.पी.गतिविधियाँ",
   "MISCELLANEOUS_ACTIVITIES_FAMILY_VISIT": "परिवार का दौरा;",
   "MISCELLANEOUS_ACTIVITIES_FINANCIAL_LITERACY": "वित्तीय साक्षरता",
+  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "फॉर्मेटिव असेसमेंट",
   "MISCELLANEOUS_ACTIVITIES_LINKAGES": "संबंध",
   "MISCELLANEOUS_ACTIVITIES_PCR": "विविध गतिविधियाँ PCR",
-  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "फॉर्मेटिव असेसमेंट",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_INTERVENTION": "रोल मॉडल हस्तक्षेप;",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_VISIT": "रोल मॉडल यात्रा",
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "स्कूल शिक्षक का दौरा",
@@ -951,8 +1070,8 @@
   "NOT_AVAILABLE": "उपलब्ध नहीं है",
   "NOT_BAD": "बुरा नहीं",
   "NOT_ELIGIBLE": "पात्र नहीं",
-  "NOT_ENTERED": "दर्ज नहीं",
   "NOT_ENROLLED": "अनामांकित",
+  "NOT_ENTERED": "दर्ज नहीं",
   "NOT_FOUND": "नहीं मिला",
   "NOT_INTERESTED": "दिलचस्पी नहीं है ",
   "NOT_REGISTER": "रजिस्ट्रेशन नहीं करें",
@@ -1003,6 +1122,7 @@
   "PASSWORD_IS_REQUIRED": "पासवर्ड आवश्यक है",
   "PASSWORD_REQUIREMENTS_NOTMATCH": "पासवर्ड में कम से कम आठ अक्षर, कम से कम एक अपरकेस, लोअरकेस अक्षर और एक नंबर होना चाहिए.",
   "PAYMENT_RECEIPT": "नामांकन रसीद",
+  "PAYMENT_RECEIPTS": "भुगतान रसीद",
   "PCR_ACTIVITIES": "PCR गतिविधियाँ",
   "PCR_CAMP": "PCR शिविर",
   "PCR_CAMP_EXECUTION": "PCR शिविर संचालन",
@@ -1067,6 +1187,7 @@
   "PLEASE_SELECT": "कृपया चयन करें",
   "PLEASE_SELECT_A_LEARNER": "कृपया शिक्षार्थी चुनें",
   "PLEASE_SELECT_ALL_ITEMS_MESSAGE": "कृपया सभी विवरणों का चयन करें फिर आप विवरणों को सेव कर सकते हैं।",
+  "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें",
   "PLEASE_SELECT_OPTION_1_TO_3": "कृपया न्यूनतम 1 और अधिकतम 3 विकल्पों का चयन करें",
   "PLEASE_SELECT_THE_EVENT_TYPE": "कृपया कार्यक्रम का प्रकार चुनें",
   "PLEASE_TURN_ON_YOUR_INTERNET": "कृपया अपना इंटरनेट चालू करें.",
@@ -1080,6 +1201,7 @@
   "PREFERED_LANGUAGE": "पसंदीदा भाषा चुनें",
   "PREFERRED_CAMP_TIME": "पसंदीदा शिविर का समय",
   "PREFERRED_TIME": "पसंदीदा समय",
+  "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
   "PRERAK": "प्रेरक",
   "PRERAK_BIO": "प्रेरक जानकारी",
   "PRERAK_CERTIFICATION_PROGRAM": "प्रेरक प्रशिक्षण प्रमाणिकरण",
@@ -1132,6 +1254,7 @@
   "PROPERTY_AND_FACILITY_DETAILS": "संपत्ति और सुविधाओं का विवरण",
   "PROPERTY_DETAILS": "संपत्ति का विवरण",
   "PROPERTY_TYPE": "सम्पत्ती के प्रकार",
+  "PUBLISH": "प्रकाशित करें",
   "PURPOSE": "लक्ष्य",
   "PURSUING_GRADUATION": "ग्रेजुएशन कर रहे हैं",
   "QR_CODE_INVALID": "QR कोड गलत हे",
@@ -1163,9 +1286,9 @@
   "REASON_OF_DUPLICATION": "डुप्लिकेट का कारण",
   "REASSIGN": "फिर से नियुक्त करें",
   "REASSIGN_CAMP": "शिक्षार्थी को इस शिविर में नियुक्त किया जाएगा",
-  "REASSIGNE_CAMP": "शिविर फिर से नियुक्त करें",
   "REASSIGN_LEARNERS": "शिक्षार्थियों को फिर से नियुक्त करें",
   "REASSIGN_MSG": "क्या आप सहमत है कि आप शिविर को फिर से नियुक्त करना चाहते हैं?",
+  "REASSIGNE_CAMP": "शिविर फिर से नियुक्त करें",
   "REFERENCE": "संदर्भ",
   "REFERENCE_CONTACT_DETAILS": "संदर्भ संपर्क विवरण",
   "REFERENCE_DETAILS": "संदर्भ विवरण",
@@ -1234,7 +1357,9 @@
   "SCHEDULE": "अनुसूची",
   "SCHEDULE_AN_INTERVIEW": "इंटरव्यू निर्धारित करें",
   "SCHEDULE_EVENT": "कार्यक्रम निर्धारित करें",
+  "SCHEDULE_EXAM": "परीक्षा निर्धारित करें",
   "SCHEDULE_INTERVIEW": "शैड्यूल इंटरव्यू",
+  "SCHOLARSHIP_SUBMITTED_SUCCESSFULLY": "स्कालर्शिप सफलतापूर्वक सबमिट कर दिया गया है",
   "SCHOOL_BEING_TOO_FAR_AWAY": "स्कूल बहुत दूर होने के कारण",
   "SCHOOL_DROPOUT": "स्कूल ड्रॉपआउट",
   "SCHOOL_DROPOUT_CLASS": "स्कूल ड्रॉपआउट कक्षा",
@@ -1251,10 +1376,12 @@
   "SELECT": "चुनें",
   "SELECT_ACADEMIC_YEAR": "शैक्षणिक वर्ष चुनें",
   "SELECT_ALL": "सबका चयन करें",
+  "SELECT_BOARD": "बोर्ड चुनें",
   "SELECT_CANDIDATE": "उम्मीदवार चुनें",
   "SELECT_CANDIDATES": "कृपया इवेंट के लिए उम्मीदवारों का चयन करें",
   "SELECT_COHORT_INFO": "Cohort चुनें",
   "SELECT_COHORT_NEXT": "आगे बढ़ें",
+  "SELECT_DATE": "तिथि चुनें",
   "SELECT_DATE_ERROR_MESSAGE": "आप अधिकतम पांच दिनों का चयन नहीं कर सकते।",
   "SELECT_FOR_ONBOARDING": "ऑनबोर्डिंग के लिए चुने",
   "SELECT_FOR_TRAINING": "प्रशिक्षण के लिए चुने",
@@ -1354,6 +1481,7 @@
   "TAKE_PHOTO": "फोटो लें",
   "TAKE_TEST": "टेस्ट लें",
   "TAKE_THE_TEST": "टेस्ट ले",
+  "TARGET_CAMP": "शिविर लक्ष्य",
   "TEACHING_DEGREE": "अध्यापन की डिग्री",
   "TEACHING_QUALIFICATION": "शिक्षण योग्यता",
   "TEACHING_QUALIFICATION_B_ED": "बी.एड",
@@ -1444,9 +1572,11 @@
   "UPLOAD_YOUR_DOCUMENTS": "अपने दस्तावेज़ अपलोड करें",
   "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT": "आपका सबसे उच्च शिक्षण दस्तावेज़ अपलोड करें",
   "UPLOADED_AADHAR_NOT_EDITABLE": "अपलोड की गई आधार कार्ड की फोटो मैं परिवर्तन नही कर सकते. कृपया  अपलोड करने से पहले वेरिफाई  करें",
+  "USER": "उपयोगकर्ता",
   "USER_CONFIRM_PASSWORD": "नए पासवर्ड की पुष्टि करें",
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION": "पुष्टि पासवर्ड पासवर्ड से मेल नहीं खाता है",
   "USER_CONFIRM_PASSWORD_IS_REQUIRED": "पासवर्ड की पुष्टि आवश्यक है",
+  "USER_CREATE": "उपयोगकर्ता बनाएँ",
   "USER_ENTER_FOUR_DIGIT_OTP": "उपरोक्त मोबाइल नंबर पर भेजा गया छह अंकों का OTP दर्ज करें",
   "USER_ENTER_VALID_OTP": "गलत OTP डाला गया",
   "USER_FORGET_PASSWORD": "पासवर्ड भूल गए",
@@ -1534,131 +1664,5 @@
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
-  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "EPCP_ACTIVITIES": "e-PCP गतिविधियाँ",
-  "EPCP_INFO": "कृपया शिक्षार्थी की e-PCP परीक्षा से जुड़ी जानकारी दर्ज करें ।",
-  "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
-  "LIST_OF_LEARNERS": "शिक्षार्थियों की सूची",
-  "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
-  "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
-  "EPCP": {
-    "TITLE": " द्वारा RSOS app का उपयोग",
-    "HAS_LOGGED_RSOS_APP": {
-      "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    },
-    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
-      "TITLE": "शिक्षार्थी RSOS App पर विडियो/ई-बूक से पढ़ाई करती हैं",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    },
-    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
-      "TITLE": "RSOS App पर अभ्यास टेस्ट दे रहे है?",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    },
-    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
-      "TITLE": "RSOS App पर  e-PCP परीक्षा दी?",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    },
-    "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
-    },
-    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "एक कारण चुनें *",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
-      "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डाटा ज्यादा खर्च होना",
-      "LACK_OF_TIME": "समय का अभाव",
-      "NO_SMARTPHONE_AT_HOME": "घर में स्मार्टफोन नहीं है",
-      "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
-      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "मोबाइल से पढ़के समझना कठिन है ",
-      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "सहायक सामग्री समझना कठिन है "
-    },
-    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
-      "TITLE": "एक कारण चुनें *",
-
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
-      "EXCESSIVE_INTERNET_DATA_USAGE": "इंटरनेट डाटा ज्यादा खर्च होना",
-      "LACK_OF_TIME": "समय का अभाव",
-      "NO_SMARTPHONE_AT_HOME": "घर में स्मार्टफोन नहीं है",
-      "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
-      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "अभ्यास टेस्ट देने में आत्मविश्वास की कमी",
-      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "सहायक सामग्री या सवाल समझ नहीं आए"
-    },
-    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "एक कारण चुनें *",
-      "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखी",
-      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "e-PCP देने में आत्मविश्वास की कमी",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
-      "WILL_GIVE_SOON": " जल्द ही देंगे"
-    },
-    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
-      "TITLE": "एक कारण चुनें *",
-      "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
-      "DONT_KNOW_ABOUT_APPLICATION": "एप्लीकेशन के बारे में पता नहीं है",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
-      "DONT_HAVE_INTERNET_RECHARGE": "इंटरनेट का रिचार्ज नही है",
-      "LACK_OF_TIME": "समय का अभाव",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती "
-    }
-  },
-  "EXAM_PREPARATION": {
-    "TITLE": "की परीक्षा की स्थिति",
-    "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE1": "क्या ",
-      "TITLE2": " परीक्षा में उपस्थित होंगे ?",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    },
-    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
-      "TITLE": "एक कारण चुनें",
-      "DISTANCE_OF_EXAM_CENTER": "परीक्षा केंद्र की दूरी",
-      "FAMILY_RESTRICTIONS": "पारिवारिक प्रतिबंध",
-      "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
-      "GETTING_MARRIED/HAD_BABY": "शादी करना / बच्चा होना",
-      "ILLNESS": "बीमारी ।",
-      "TRAVEL_ISSUES": "यात्रा संबंधी समस्याएं",
-      "EXAM_FEAR": "परीक्षा का डर",
-      "ADMIT_CARD_NOT_RECEIVED": "प्रवेश पत्र प्राप्त नहीं हुआ"
-    },
-    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
-      "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    },
-    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
-      "YES": "हाँ",
-      "NO": "नहीं",
-      "NOT_APPLICABLE": "लागू नहीं होता है"
-    },
-    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "TITLE": "क्या शिक्षार्थी के पास परीक्षा केंद्र तक जाने की व्यवस्था है ?",
-      "YES": "हाँ",
-      "NO": "नहीं",
-      "NOT_APPLICABLE": "लागू नहीं होता है"
-    },
-    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "TITLE": "क्या शिक्षार्थी को परीक्षा की समय सारणी प्राप्त हुई थी ?",
-      "YES": "हाँ",
-      "NO": "नहीं"
-    }
-  },
-  "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
-  "TARGET_CAMP": "शिविर लक्ष्य",
-  "USER": "उपयोगकर्ता",
-  "USER_CREATE": "उपयोगकर्ता बनाएँ",
-  "CREATE": "बनाएँ",
-  "EXISTING_IP": "मौजूदा IP",
-  "EXISTING_USER": "मौजूदा उपयोगकर्ता",
-  "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें",
-  "PAYMENT_RECEIPTS": "भुगतान रसीद",
-  "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट"
+  "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?"
 }
