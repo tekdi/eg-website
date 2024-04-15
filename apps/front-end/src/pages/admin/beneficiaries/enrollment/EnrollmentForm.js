@@ -81,31 +81,18 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     case "enrollment_awaited":
     case "enrollment_rejected":
       const { enrolled_for_board } = constantSchema?.properties || {};
-      const required = constantSchema?.required.filter(
-        (item) =>
-          ![
-            "enrollment_number",
-            "enrollment_date",
-            "subjects",
-            // "enrollment_aadhaar_no",
-            "enrollment_mobile_no",
-            "payment_receipt_document_id",
-            "application_form",
-            "application_login_id",
-          ].includes(item)
-      );
       newSchema = {
         ...constantSchema,
         properties: {
           enrollment_status,
           enrolled_for_board,
         },
-        required,
+        required: ["enrollment_status", "enrolled_for_board"],
       };
-      let boardList = await enumRegistryService.boardList();
+      const { boards } = await enumRegistryService.boardList();
       newSchema = getOptions(newSchema, {
         key: "enrolled_for_board",
-        arr: boardList?.boards,
+        arr: boards || [],
         title: "name",
         value: "id",
       });
