@@ -1,36 +1,36 @@
-import React from "react";
 import Form from "@rjsf/core";
-import schema1 from "./schema.js";
-import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
 import {
-  AdminLayout as Layout,
-  enumRegistryService,
-  benificiaryRegistoryService,
-  FrontEndTypo,
-  getOptions,
-  getArray,
-  filterObject,
-  enrollmentDateOfBirth,
-  getUiSchema,
-  BodyMedium,
-  IconByName,
   AdminTypo,
-  getSelectedProgramId,
+  BodyMedium,
+  FrontEndTypo,
+  IconByName,
+  AdminLayout as Layout,
+  benificiaryRegistoryService,
+  enrollmentDateOfBirth,
+  enumRegistryService,
+  filterObject,
+  getArray,
   getEnrollmentIds,
+  getOptions,
+  getSelectedProgramId,
+  getUiSchema,
 } from "@shiksha/common-lib";
+import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
+import React from "react";
+import schema1 from "./schema.js";
 //updateSchemaEnum
+import { debounce } from "lodash";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  widgets,
-  templates,
   onError,
-  transformErrors,
   scrollToField,
+  templates,
+  transformErrors,
   validator,
+  widgets,
 } from "../../../../component/BaseInput.js";
-import { useTranslation } from "react-i18next";
-import { debounce } from "lodash";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   let { state_name } = await getSelectedProgramId();
@@ -89,13 +89,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
         },
         required: ["enrollment_status", "enrolled_for_board"],
       };
-      const { boards } = await enumRegistryService.boardList();
-      newSchema = getOptions(newSchema, {
-        key: "enrolled_for_board",
-        arr: boards || [],
-        title: "name",
-        value: "id",
-      });
+
       newData = {
         enrollment_status: data?.enrollment_status,
         enrolled_for_board: data?.enrolled_for_board,
@@ -137,13 +131,6 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             },
           };
         }
-        let boardList = await enumRegistryService.boardList();
-        newSchema = getOptions(newSchema, {
-          key: "enrolled_for_board",
-          arr: boardList?.boards,
-          title: "name",
-          value: "id",
-        });
 
         newSchema = await getSubjects(
           newSchema,
@@ -151,7 +138,6 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
           page
         );
       } else {
-        const { subjects, ...properties } = constantSchema?.properties || {};
         if (state_name === "BIHAR") {
           newSchema = {
             ...constantSchema,
@@ -200,6 +186,13 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       }
       break;
   }
+  let boardList = await enumRegistryService.boardList();
+  newSchema = getOptions(newSchema, {
+    key: "enrolled_for_board",
+    arr: boardList?.boards,
+    title: "name",
+    value: "id",
+  });
   return { newSchema, newData };
 };
 
