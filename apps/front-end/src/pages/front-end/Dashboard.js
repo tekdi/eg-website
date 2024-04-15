@@ -131,8 +131,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
           const format = "HH:mm:ss";
           const time = moment(moment().format(format), format);
-          const beforeTime = moment(data?.start_time, format);
-          const afterTime = moment(data?.end_time, format);
+          const beforeTime = moment.utc(data?.start_time, format);
+          const afterTime = moment.utc(data?.end_time, format);
 
           if (time?.isBetween(beforeTime, afterTime) && dataDay) {
             setIsEventActive(true);

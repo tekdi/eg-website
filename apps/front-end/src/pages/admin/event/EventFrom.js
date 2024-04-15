@@ -150,7 +150,6 @@ export default function EventHome({ footerLinks }) {
   const navigate = useNavigate();
   const { step, id } = useParams();
   const [selectedRowId, setSelectedRowIds] = useState([]);
-  const [eventDetails, setEventDetails] = useState([]);
 
   const [formData, setFormData] = useState({});
 
@@ -160,28 +159,32 @@ export default function EventHome({ footerLinks }) {
   useEffect(async () => {
     if (id) {
       const eventResult = await eventService.getEventListById({ id });
-      const peopleResult = await eventService.getAttendanceList({id});
+      const peopleResult = await eventService.getAttendanceList({ id });
       const { event } = eventResult;
-      setEventDetails(eventResult);
       const selectedId = peopleResult?.data?.map((e) => e?.id) || [];
-        // eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
+      // eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
       setSelectedRowIds(selectedId);
       setIsListOpen(false);
       const timeFormat = "HH:mm:ss";
+      const dateFormat = "YYYY-MM-DD";
+      const start_date_time = moment
+        .utc(event?.start_date + " " + event?.start_time, "YYYY-MM-DD HH:mm:ss")
+        ?.local();
+      const end_date_time = moment
+        .utc(event?.end_date + " " + event?.end_time, "YYYY-MM-DD HH:mm:ss")
+        ?.local();
       setFormData({
         type: event?.type,
         name: event?.name,
         master_trainer: event?.master_trainer,
         date: JSON.stringify({
-          startDate: event?.start_date,
-          endDate: event?.end_date,
+          startDate: start_date_time.format(dateFormat),
+          endDate: end_date_time.format(dateFormat),
         }),
-        start_date: event?.start_date,
-        start_time: moment
-          .utc(event?.start_time, `HH:mm:ssZ`)
-          .format(timeFormat),
-        end_date: event?.end_date,
-        end_time: moment.utc(event?.end_time, `HH:mm:ssZ`).format(timeFormat),
+        start_date: start_date_time.format(dateFormat),
+        start_time: start_date_time.format(timeFormat),
+        end_date: end_date_time.format(dateFormat),
+        end_time: end_date_time.format(timeFormat),
       });
     }
   }, [id]);
@@ -253,7 +256,7 @@ export default function EventHome({ footerLinks }) {
           ...filter,
           district: filter?.districts?.[0],
           block: filter?.blocks?.[0],
-          type: formData?.type || eventDetails?.event?.type,
+          type: formData?.type,
         });
 
       setData(result?.data?.data);
