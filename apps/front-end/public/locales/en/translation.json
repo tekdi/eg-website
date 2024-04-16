@@ -1658,5 +1658,8 @@
   "EXISTING_USER": "Existing User",
   "PLEASE_SELECT_CAMP": "Please select camp",
   "PAYMENT_RECEIPTS": "Payment Receipt",
-  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot"
+  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot",
+  "VIEW_EXAM_SCHEDULE": "View Exam Schedule",
+  "LEARNER_EXAM_RESULTS": "Learner Exam Results",
+  "LEARNER_EXAM_RESULT": "Learner Exam Result"
 }

@@ -376,6 +376,36 @@ export default function Orientation({ footerLinks }) {
     setModal(false);
   };
 
+  const menus = [
+    {
+      title: "ORIENTATION",
+      icon: "Home4LineIcon",
+      selected: ["/admin"],
+      route: "/admin",
+    },
+    {
+      title: "PRERAKS",
+      icon: "GroupLineIcon",
+      route: "/admin/facilitator",
+    },
+    {
+      title: "LEARNERS",
+      icon: "GraduationCap",
+      route: "/admin/learners",
+    },
+    { title: "CAMPS", icon: "CommunityLineIcon", route: "/admin/camps" },
+    {
+      title: "VIEW_EXAM_SCHEDULE",
+      icon: "FileTextLineIcon",
+      route: "/admin/exams/examschedule",
+    },
+    {
+      title: "LEARNER_EXAM_RESULTS",
+      icon: "FileTextLineIcon",
+      route: "/admin/exams/list",
+    },
+  ];
+
   return (
     <Layout
       _appBar={{
@@ -402,7 +432,32 @@ export default function Orientation({ footerLinks }) {
               </HStack>
             </Box>
             <HStack>
-              <Pressable
+              {menus
+                .filter((e) => e.title.toLowerCase() !== "home")
+                .map((item) => (
+                  <Pressable
+                    p="4"
+                    key={item?.title}
+                    onPress={() => {
+                      navigator(item?.route);
+                    }}
+                  >
+                    <BoxBlue
+                      width={"170px"}
+                      height={"130px"}
+                      justifyContent="center"
+                      // pl="3"
+                    >
+                      <VStack alignItems={"center"}>
+                        <IconByName name={item?.icon} _icon={{ size: 35 }} />
+                        <AdminTypo.H6 bold pt="4">
+                          {t(item?.title)}
+                        </AdminTypo.H6>
+                      </VStack>
+                    </BoxBlue>
+                  </Pressable>
+                ))}
+              {/* <Pressable
                 onPress={() => {
                   navigator("/admin/event/create");
                   // setModalVisible(!modalVisible);
@@ -424,7 +479,7 @@ export default function Orientation({ footerLinks }) {
                     </AdminTypo.H6>
                   </VStack>
                 </BoxBlue>
-              </Pressable>
+              </Pressable> */}
               {/* <BoxBlue justifyContent="center">
             <VStack alignItems={"Center"}>
               <Image
