@@ -534,29 +534,51 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   useEffect(() => {
     const fetchData = async () => {
       let data = await getUserUpdatedInfo(fa_id);
-      const jsonData = JSON.stringify(data);
-      const jsonFile = new File([jsonData], "data.json", {
-        type: "application/json",
-      });
-      const formData = new FormData();
-      formData.append("jsonpayload", jsonFile);
+      const offlinePrerakData = await getUserInfoNull(fa_id);
 
-      const res = await cohortService.syncOfflinePayload(formData);
-      if (data) {
-        res?.result.forEach((item) => {
+      // Check if any of the sub-objects or the experience array has data
+      const isDataPresent = () => {
+        return (
+          data &&
+          ((data.users && Object.keys(data.users).length > 0) ||
+            (data.references && Object.keys(data.references).length > 0) ||
+            (data.qualifications &&
+              Object.keys(data.qualifications).length > 0) ||
+            (data.program_facilitators &&
+              Object.keys(data.program_facilitators).length > 0) ||
+            (data.extended_users &&
+              Object.keys(data.extended_users).length > 0) ||
+            (data.core_facilitators &&
+              Object.keys(data.core_facilitators).length > 0) ||
+            (data.experience && data.experience.length > 0))
+        );
+      };
+
+      if (isDataPresent() && isOnline && offlinePrerakData) {
+        const jsonData = JSON.stringify(data);
+        const jsonFile = new File([jsonData], "data.json", {
+          type: "application/json",
+        });
+
+        const formData = new FormData();
+        formData.append("jsonpayload", jsonFile);
+
+        const res = await cohortService.syncOfflinePayload(formData);
+        res?.result?.forEach((item) => {
           for (const key in item) {
             if (item[key].status) {
               delete data[key];
             }
           }
         });
+
         await setPrerakUpdateInfo(fa_id, data);
         await setPrerakOfflineInfo(fa_id);
       }
     };
 
     fetchData();
-  }, []);
+  }, [isOnline]);
 
   return (
     <Layout
