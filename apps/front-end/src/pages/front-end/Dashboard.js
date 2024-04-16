@@ -116,7 +116,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             });
           const data =
             c_data?.data?.filter(
-              (eventItem) => eventItem?.params?.do_id?.length
+              (eventItem) =>
+                eventItem?.params?.do_id?.length &&
+                eventItem?.lms_test_tracking?.length < 1
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
@@ -464,7 +466,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack>
-                    {lmsDetails === undefined && (
+                    {certificateData ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(
                           isTodayAttendace?.length > 0
@@ -472,8 +474,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                             : "TODAYS_ATTENDANCE_MISSING"
                         )}
                       </AdminTypo.H3>
-                    )}
-                    {lmsDetails?.certificate_status === null ? (
+                    ) : lmsDetails?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
@@ -520,16 +521,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDetails === undefined &&
-                      certificateData &&
-                      isTodayAttendace?.length > 0 && (
-                        <FrontEndTypo.DefaultButton
-                          background={"textRed.400"}
-                          onPress={startTest}
-                        >
-                          {t("START_TEST")}
-                        </FrontEndTypo.DefaultButton>
-                      )}
+                    {certificateData && isTodayAttendace?.length > 0 && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={startTest}
+                      >
+                        {t("START_TEST")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
                     {lmsDetails?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
