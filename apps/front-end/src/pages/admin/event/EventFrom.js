@@ -420,6 +420,29 @@ export default function EventHome({ footerLinks }) {
           if (data?.success === true) {
             setIsDisabled(false);
             navigate(`/admin/event/${data?.data?.events?.id}`);
+          } else {
+            const newErrors = {
+              [["start_date", "end_date"].includes(data?.key)
+                ? "date"
+                : ["start_time", "end_time"].includes(data?.key)
+                ? data?.key
+                : "name"]: {
+                __errors: [t(data?.message)],
+              },
+            };
+            setErrors(newErrors);
+            toast.show({
+              render: () => {
+                return (
+                  <Alert status="error" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{data?.message}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                );
+              },
+            });
           }
         } else {
           const apiResponse = await eventService.createNewEvent(obj);

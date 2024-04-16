@@ -62,7 +62,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = useState(false);
   const [lmsDetails, setLmsDetails] = useState();
-  const { id } = userTokenInfo?.authUser || [];
+  const { id } = userTokenInfo?.authUser || {};
   const [events, setEvents] = useState("");
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -77,6 +77,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+  const [isTodayAttendace, setIsTodayAttendace] = useState();
 
   useEffect(() => {
     async function fetchData() {
@@ -88,9 +89,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       if (countLoad == 1) {
         //do page load first operation
         //get user info
-        if (userTokenInfo) {
+        if (!userTokenInfo.authUser) {
           const fa_data = await facilitatorRegistryService.getInfo();
           setFacilitator(fa_data);
+        } else {
+          setFacilitator(userTokenInfo?.authUser);
         }
         setLoading(false);
         //end do page load first operation
@@ -113,29 +116,31 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             });
           const data =
             c_data?.data?.filter(
-              (eventItem) =>
-                eventItem?.params?.do_id?.length &&
-                eventItem?.attendances.filter(
-                  (attendance) =>
-                    attendance.user_id == fa_id &&
-                    attendance.status == "present" &&
-                    eventItem.end_date ==
-                      moment(attendance.date_time).format("YYYY-MM-DD")
-                )?.length
+              (eventItem) => eventItem?.params?.do_id?.length
             )?.[0] || {};
-          setCertificateData(data);
-          if (data?.lms_test_tracking?.length > 0) {
-            setLmsDetails(data?.lms_test_tracking?.[0]);
-          }
+          if (data) {
+            setIsTodayAttendace(
+              data?.attendances.filter(
+                (attendance) =>
+                  attendance.user_id == fa_id &&
+                  attendance.status == "present" &&
+                  data.end_date ==
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
+            );
 
-          const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-          const format = "HH:mm:ss";
-          const time = moment(moment().format(format), format);
-          const beforeTime = moment.utc(data?.start_time, format);
-          const afterTime = moment.utc(data?.end_time, format);
-
-          if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-            setIsEventActive(true);
+            setCertificateData(data);
+            if (data?.lms_test_tracking?.length > 0) {
+              setLmsDetails(data?.lms_test_tracking?.[0]);
+            }
+            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+            const format = "HH:mm:ss";
+            const time = moment(moment().format(format), format);
+            const beforeTime = moment.utc(data?.start_time, format).local();
+            const afterTime = moment.utc(data?.end_time, format).local();
+            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+              setIsEventActive(true);
+            }
           }
         } catch (error) {
           console.log(error);
@@ -439,7 +444,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         setModalVisible(certificateData);
                       }}
                     >
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                      {t("PRERAK_CERTIFICATION")}
                     </FrontEndTypo.Primarybutton>
                   </HStack>
                 )}
@@ -461,7 +466,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <VStack>
                     {lmsDetails === undefined && (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t(events)}
+                        {t(
+                          isTodayAttendace?.length > 0
+                            ? events
+                            : "TODAYS_ATTENDANCE_MISSING"
+                        )}
                       </AdminTypo.H3>
                     )}
                     {lmsDetails?.certificate_status === null ? (
@@ -512,11 +521,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       </FrontEndTypo.DefaultButton>
                     )}
                     {lmsDetails === undefined &&
-                      !(
-                        certificateData?.params?.do_id == null ||
-                        (Array.isArray(certificateData?.params?.do_id) &&
-                          certificateData?.params?.do_id?.length === 0)
-                      ) && (
+                      certificateData &&
+                      isTodayAttendace?.length > 0 && (
                         <FrontEndTypo.DefaultButton
                           background={"textRed.400"}
                           onPress={startTest}
