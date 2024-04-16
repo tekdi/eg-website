@@ -684,6 +684,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     ["3", "2"].includes(`${programUser?.program_id}`) && (
                       <Scholarship
                         {...{
+                          user_id: id,
                           item: data,
                           setItem: setData,
                           jsonData,

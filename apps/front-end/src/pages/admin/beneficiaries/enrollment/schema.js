@@ -88,6 +88,7 @@ export default {
           label: "APPLICATION_LOGIN_ID_SCREENSHOT",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
           uploadTitle: " ",
+          isReduce: false,
           type: ["string", "number"],
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
         },

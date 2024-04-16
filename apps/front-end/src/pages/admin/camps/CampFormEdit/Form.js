@@ -176,20 +176,11 @@ export default function App({ userTokenInfo, footerLinks }) {
         value: "value",
       });
     }
-    if (schema?.properties?.state) {
-      // const qData = await geolocationRegistryService.getStates();
-      const result = await getSelectedProgramId();
-      if (schema?.["properties"]?.["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: [result],
-          title: "state_name",
-          value: "state_name",
-        });
-      }
+    if (schema?.properties?.district) {
+      const { state_name } = await getSelectedProgramId();
       await setDistric({
         schemaData: newSchema,
-        state: formData?.state,
+        state: state_name,
         district: formData?.district,
         block: formData?.block,
       });
