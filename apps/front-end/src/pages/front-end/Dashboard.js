@@ -8,7 +8,7 @@ import {
   arrList,
   BodyMedium,
   AdminTypo,
-  testRegistryService,
+  cohortService,
   removeOnboardingURLData,
   removeOnboardingMobile,
   getOnboardingURLData,
@@ -44,8 +44,10 @@ import {
   checkPrerakOfflineTimeInterval,
   getIpUserInfo,
   getUserInfoNull,
+  getUserUpdatedInfo,
   setIpUserInfo,
   setPrerakOfflineInfo,
+  setPrerakUpdateInfo,
 } from "v2/utils/SyncHelper/SyncHelper";
 
 const styles = {
@@ -520,6 +522,33 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const handleAcademicYear = async (item) => {
     setAcademicYear(item);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let data = await getUserUpdatedInfo(fa_id);
+      const jsonData = JSON.stringify(data);
+      const jsonFile = new File([jsonData], "data.json", {
+        type: "application/json",
+      });
+      const formData = new FormData();
+      formData.append("jsonpayload", jsonFile);
+
+      const res = await cohortService.syncOfflinePayload(formData);
+      if (data) {
+        res?.result.forEach((item) => {
+          for (const key in item) {
+            if (item[key].status) {
+              delete data[key];
+            }
+          }
+        });
+        await setPrerakUpdateInfo(fa_id, data);
+        await setPrerakOfflineInfo(fa_id);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Layout

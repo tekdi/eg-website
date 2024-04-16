@@ -97,9 +97,9 @@ export async function getOnboardingData(id) {
       //step 2 contact_details
       mobile: userMergedInfo?.users?.mobile || undefined,
       email_id: userMergedInfo?.users?.email_id || undefined,
-      device_type: userMergedInfo?.core_faciltator?.device_type || undefined,
+      device_type: userMergedInfo?.core_faciltators?.device_type || undefined,
       device_ownership:
-        userMergedInfo?.core_faciltator?.device_ownership || undefined,
+        userMergedInfo?.core_faciltators?.device_ownership || undefined,
       alternative_mobile_number:
         userMergedInfo?.users?.alternative_mobile_number || undefined,
       //step 3 address_details
@@ -145,12 +145,12 @@ export async function getOnboardingData(id) {
           userMergedInfo?.qualifications?.qualification_master || undefined,
       },
       qualification_ids: qualification_id_arr || undefined,
-      core_faciltator: {
-        has_diploma: userMergedInfo?.core_faciltator?.has_diploma
-          ? userMergedInfo?.core_faciltator?.has_diploma
+      core_faciltators: {
+        has_diploma: userMergedInfo?.core_faciltators?.has_diploma
+          ? userMergedInfo?.core_faciltators?.has_diploma
           : false,
         diploma_details:
-          userMergedInfo?.core_faciltator?.diploma_details || undefined,
+          userMergedInfo?.core_faciltators?.diploma_details || undefined,
       },
       //step 10 profile photo 1
       profile_photo_1: {
@@ -228,7 +228,7 @@ export async function updateOnboardingData(id, onboardingData) {
   let userUpdatedInfo = await getUserUpdatedInfo(id);
   //console.log("userUpdatedInfo", userUpdatedInfo);
   let users = new Object();
-  let core_faciltator = new Object();
+  let core_faciltators = new Object();
   let extended_users = new Object();
   let references = new Object();
   let program_faciltators = new Object();
@@ -267,15 +267,15 @@ export async function updateOnboardingData(id, onboardingData) {
       : delete userUpdatedInfo?.users?.email_id
     : null;
   onboardingData?.device_type
-    ? onboardingData.device_type != userInfo?.core_faciltator?.device_type
-      ? (core_faciltator.device_type = onboardingData.device_type)
-      : delete userUpdatedInfo?.core_faciltator?.device_type
+    ? onboardingData.device_type != userInfo?.core_faciltators?.device_type
+      ? (core_faciltators.device_type = onboardingData.device_type)
+      : delete userUpdatedInfo?.core_faciltators?.device_type
     : null;
   onboardingData?.device_ownership
     ? onboardingData.device_ownership !=
-      userInfo?.core_faciltator?.device_ownership
-      ? (core_faciltator.device_ownership = onboardingData.device_ownership)
-      : delete userUpdatedInfo?.core_faciltator?.device_ownership
+      userInfo?.core_faciltators?.device_ownership
+      ? (core_faciltators.device_ownership = onboardingData.device_ownership)
+      : delete userUpdatedInfo?.core_faciltators?.device_ownership
     : null;
   onboardingData?.alternative_mobile_number
     ? onboardingData.alternative_mobile_number !=
@@ -506,24 +506,24 @@ export async function updateOnboardingData(id, onboardingData) {
       //diploma and its value
       onboardingData?.has_diploma == true ||
       onboardingData?.has_diploma == false
-        ? onboardingData.has_diploma != userInfo?.core_faciltator?.has_diploma
-          ? (core_faciltator.has_diploma = onboardingData.has_diploma)
-          : delete userUpdatedInfo?.core_faciltator?.has_diploma
+        ? onboardingData.has_diploma != userInfo?.core_faciltators?.has_diploma
+          ? (core_faciltators.has_diploma = onboardingData.has_diploma)
+          : delete userUpdatedInfo?.core_faciltators?.has_diploma
         : null;
       onboardingData?.has_diploma == true ||
       onboardingData?.has_diploma == false
         ? onboardingData?.has_diploma == true
           ? onboardingData?.diploma_details
             ? onboardingData.diploma_details !=
-              userInfo?.core_faciltator?.diploma_details
-              ? (core_faciltator.diploma_details =
+              userInfo?.core_faciltators?.diploma_details
+              ? (core_faciltators.diploma_details =
                   onboardingData.diploma_details)
-              : delete userUpdatedInfo?.core_faciltator?.diploma_details
+              : delete userUpdatedInfo?.core_faciltators?.diploma_details
             : null
           : onboardingData?.has_diploma == false
-          ? "" != userInfo?.core_faciltator?.diploma_details
-            ? (core_faciltator.diploma_details = "")
-            : delete userUpdatedInfo?.core_faciltator?.diploma_details
+          ? "" != userInfo?.core_faciltators?.diploma_details
+            ? (core_faciltators.diploma_details = "")
+            : delete userUpdatedInfo?.core_faciltators?.diploma_details
           : null
         : null;
     }
@@ -588,7 +588,7 @@ export async function updateOnboardingData(id, onboardingData) {
   //generate final object
   let temp_update_obj = {
     users: users,
-    core_faciltator: core_faciltator,
+    core_faciltators: core_faciltators,
     extended_users: extended_users,
     references: references,
     program_faciltators: program_faciltators,
