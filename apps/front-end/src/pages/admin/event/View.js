@@ -260,14 +260,15 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
           const { presentDate } = row;
           const format = "YYYY-MM-DD HH:mm";
           const currentDate = moment();
-          const startDate = moment(
-            `${event?.start_date} ${event?.start_time}`,
-            format
-          );
-          const endDate = moment(
-            `${event?.end_date} ${event?.end_time}`,
-            format
-          );
+          const startDate = moment
+            .utc(
+              event?.start_date + " " + event?.start_time,
+              "YYYY-MM-DD HH:mm:ss"
+            )
+            ?.local();
+          const endDate = moment
+            .utc(event?.end_date + " " + event?.end_time, "YYYY-MM-DD HH:mm:ss")
+            ?.local();
 
           const newPresentDate = moment(
             `${presentDate} ${moment().format("HH:mm")}`,
