@@ -17,46 +17,39 @@ const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
   const [alert, setAlert] = useState();
 
   useEffect(() => {
-    window.addEventListener(
-      "message",
-      (event) => {
-        handleEvent(event);
-      },
-      false
-    );
+    const handleEvent = async (event) => {
+      if (event?.data?.orderId) {
+        setJsonData();
+        const data = await benificiaryRegistoryService.updateScholarship({
+          id: user_id,
+          scholarship_order_id: event?.data?.orderId,
+        });
+        if (data.success) {
+          setItem({
+            ...item,
+            core_beneficiaries: {
+              ...item.core_beneficiaries,
+              scholarship_order_id: event?.data?.orderId,
+            },
+          });
+          setAlert({
+            type: "success",
+            title: t("SCHOLARSHIP_SUBMITTED_SUCCESSFULLY"),
+          });
+        } else {
+          setAlert({
+            type: "danger",
+            title: data?.message,
+          });
+        }
+      }
+    };
+    window.addEventListener("message", handleEvent);
 
     return () => {
-      window.removeEventListener("message", (val) => {});
+      window.removeEventListener("message", handleEvent);
     };
   }, []);
-
-  const handleEvent = async (event) => {
-    if (event?.data?.orderId) {
-      setJsonData();
-      const data = await benificiaryRegistoryService.updateScholarship({
-        id: user_id,
-        scholarship_order_id: event?.data?.orderId,
-      });
-      if (data.success) {
-        setItem({
-          ...item,
-          core_beneficiaries: {
-            ...item.core_beneficiaries,
-            scholarship_order_id: event?.data?.orderId,
-          },
-        });
-        setAlert({
-          type: "success",
-          title: t("SCHOLARSHIP_SUBMITTED_SUCCESSFULLY"),
-        });
-      } else {
-        setAlert({
-          type: "danger",
-          title: data?.message,
-        });
-      }
-    }
-  };
 
   // useEffect(() => {
   //   const iframe = document.getElementById("preview");
