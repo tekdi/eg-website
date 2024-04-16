@@ -26,6 +26,9 @@ import {
   Stack,
   VStack,
   useToast,
+  View,
+  Select,
+  CheckIcon
 } from "native-base";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -518,6 +521,62 @@ export default function EventHome({ footerLinks }) {
       }
     }
   };
+
+  const changeFilterOptions = (filterType, value) => {
+    switch (filterType) {
+      case "districts":
+        if(value === ""){
+          setBlock([]);
+          setVillage([]);
+          const { districts, blocks, villages, ...data } = filter;
+          setFilter(data);
+        }else{
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }))
+        }
+        break;
+
+      case "blocks":
+        if(value===""){
+          const { blocks, villages, ...data } = filter;
+          setVillage([]);
+          setFilter(data);
+        }else{
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }))
+        }
+        break;
+
+      case "villages":
+        if(value===""){
+          const { villages, ...data } = filter;
+          setFilter(data);
+        }else{
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }))
+        }
+        break;
+    
+      default:
+        if(value === ""){
+          const { districts, blocks, villages, ...data } = filter;
+          setFilter(data);
+        }else{
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }))
+        }
+        break;
+    }
+  }
+
   return (
     <Layout
       _sidebar={footerLinks}
@@ -619,7 +678,7 @@ export default function EventHome({ footerLinks }) {
                   direction={["column", "column", "column", "row", "row"]}
                 >
                   <Input
-                    minH="32px"
+                    // minH="32px"
                     InputLeftElement={
                       <IconByName color="coolGray.500" name="SearchLineIcon" />
                     }
@@ -627,30 +686,20 @@ export default function EventHome({ footerLinks }) {
                     variant="outline"
                     onChange={debouncedHandleSearch}
                   />
-                  <HStack space={4} alignItems={"center"}>
+                  
+                  <HStack space={4} flexDirection={"column"}>
                     <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
                     <HStack space={4} alignItems={"center"}>
-                      <District
+                      <LocationFilters
                         district={district}
-                        filter={filter}
-                        t={t}
-                        setFilter={setFilter}
-                      />
-
-                      <Blocks
                         block={block}
-                        t={t}
+                        village={village}
                         filter={filter}
-                        setFilter={setFilter}
+                        t={t}
+                        changeFilterOptions={changeFilterOptions}
+                        programData={programData}
                       />
-                      {programData === "BIHAR" && (
-                        <Village
-                          village={village}
-                          t={t}
-                          filter={filter}
-                          setFilter={setFilter}
-                        />
-                      )}
+ 
                     </HStack>
                   </HStack>
                 </HStack>
@@ -686,130 +735,76 @@ export default function EventHome({ footerLinks }) {
   );
 }
 
-const District = ({ district, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { districts, blocks, village, ...data } = filter;
-    setFilter(data);
-  };
-
+const LocationFilters = ({ district, block, village, filter, t, changeFilterOptions, programData }) => {
   return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.districts ? filter?.districts : t("DISTRICT")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {district &&
-        district.map &&
-        district.map((e) => (
-          <Menu.Item
-            key={e.district_id}
-            onPress={() =>
-              setFilter((prevFilter) => ({
-                ...prevFilter,
-                districts: [e.district_name],
-              }))
-            }
-          >
-            {e.district_name}
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-};
-const Blocks = ({ block, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { blocks, village, ...data } = filter;
-    setFilter(data);
-  };
-  return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.blocks ? filter?.blocks : t("BLOCK")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {block &&
-        block?.map &&
-        block?.map((e) => (
-          <Menu.Item
-            key={e?.block_name}
-            onPress={() =>
-              setFilter((prevFilter) => ({
-                ...prevFilter,
-                blocks: [e?.block_name],
-              }))
-            }
-          >
-            {e?.block_name}
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-};
-
-const Village = ({ village, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { village, ...data } = filter;
-    setFilter(data);
-  };
-  return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.villages ? filter?.villages : t("VILLAGE_WARD")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {village?.map((e) => (
-        <Menu.Item
-          key={e?.block_id}
-          onPress={() =>
-            setFilter((prevFilter) => ({
-              ...prevFilter,
-              villages: [e?.village_ward_name],
-            }))
-          }
+    <HStack space={4} flexDirection={"row"} alignItems={"center"}>
+    <View>
+      <label>{t("DISTRICT")}</label>
+      <Select
+        selectedValue={filter?.districts ? filter.districts[0] : t("DISTRICT")}
+        placeholder={t("DISTRICT")}
+        minWidth={200}
+        accessibilityLabel="More options menu"
+        _selectedItem={{
+          bg: "cyan.600",
+          endIcon: <CheckIcon size={4} />,
+        }}
+        onValueChange={(itemValue) => changeFilterOptions("districts", itemValue)}
+      >
+        <Select.Item label="Select All" value="" />
+        {district &&
+          district.map &&
+          district.map((e) => (
+            <Select.Item key={e.district_id} label={e.district_name} value={e.district_name} />
+          ))}
+      </Select>
+    </View>
+    <View>
+      <label>{t("BLOCK")}</label>
+      <Select
+        selectedValue={filter?.blocks ? filter.blocks[0] : t("BLOCK")}
+        minWidth={200}
+        placeholder={t("BLOCK")}
+        accessibilityLabel="More options menu"
+        _selectedItem={{
+          bg: "cyan.600",
+          endIcon: <CheckIcon size={4} />,
+        }}
+        onValueChange={(itemValue) => changeFilterOptions("blocks", itemValue)}
+      >
+        <Select.Item label="Select All" value="" />
+        {block &&
+          block.map &&
+          block.map((e) => (
+            <Select.Item key={e.block_name} label={e.block_name} value={e.block_name} />
+          ))}
+      </Select>
+    </View>
+    {
+      programData === "BIHAR" &&
+      <View>
+        <label>{t("VILLAGE_WARD")}</label>
+        <Select
+          selectedValue={filter?.villages ? filter.villages[0] : t("VILLAGE_WARD")}
+          placeholder={t("VILLAGE_WARD")}
+          minWidth={200}
+          accessibilityLabel="More options menu"
+          _selectedItem={{
+            bg: "cyan.600",
+            endIcon: <CheckIcon size={4} />,
+          }}
+          onValueChange={(itemValue) => changeFilterOptions("villages", itemValue)}
         >
-          {e?.village_ward_name}
-        </Menu.Item>
-      ))}
-    </Menu>
+          <Select.Item label="Select All" value="" />
+          {village &&
+            village.map &&
+            village.map((e) => (
+              <Select.Item key={e.village_ward_name} label={e.village_ward_name} value={e.village_ward_name} />
+            ))}
+        </Select>
+      </View>
+    }
+    </HStack>
   );
 };
 
@@ -817,16 +812,3 @@ EventHome.propTypes = {
   footerLinks: PropTypes.any,
 };
 
-District.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
-
-Blocks.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
-Village.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
