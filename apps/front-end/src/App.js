@@ -51,7 +51,6 @@ function App() {
         logout();
         window.location.reload();
       }
-
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
 
