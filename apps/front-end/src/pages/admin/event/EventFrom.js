@@ -21,8 +21,7 @@ import {
   Checkbox,
   HStack,
   Input,
-  Menu,
-  Pressable,
+  Select,
   Stack,
   VStack,
   useToast,
@@ -140,9 +139,6 @@ export default function EventHome({ footerLinks }) {
   const { t } = useTranslation();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [data, setData] = useState();
-  const [district, setDistrict] = useState();
-  const [block, setBlock] = useState();
-  const [village, setVillage] = useState();
   const [programData, setProgramData] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const [isDisabled, setIsDisabled] = useState(true);
@@ -266,50 +262,6 @@ export default function EventHome({ footerLinks }) {
 
     fetchData();
   }, [isListOpen, step, formData?.type, filter]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let programSelected = jsonParse(localStorage.getItem("program"));
-      const stateName = programSelected?.state_name;
-      setProgramData(stateName);
-      const getDistricts = await geolocationRegistryService.getDistricts({
-        name: stateName,
-      });
-      if (Array.isArray(getDistricts?.districts)) {
-        setDistrict(getDistricts?.districts);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const blockss = useCallback(async () => {
-    if (filter?.districts) {
-      const blockData = await geolocationRegistryService.getMultipleBlocks({
-        districts: filter?.districts,
-      });
-      setBlock(blockData);
-    }
-  }, [filter?.districts]);
-
-  useEffect(() => {
-    blockss();
-  }, [filter?.districts]);
-
-  const villageData = useCallback(async () => {
-    if (programData === "BIHAR" && filter?.districts && filter?.blocks) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: filter?.blocks?.[0],
-        state: programData,
-        district: filter?.districts?.[0],
-        gramp: "null",
-      });
-      setVillage(qData?.villages);
-    }
-  }, [filter?.blocks]);
-
-  useEffect(() => {
-    villageData();
-  }, [filter?.blocks]);
 
   useEffect(() => {
     const persan = arrList(formData, [
@@ -544,6 +496,7 @@ export default function EventHome({ footerLinks }) {
       }
     }
   };
+
   return (
     <Layout
       _sidebar={footerLinks}
@@ -643,9 +596,10 @@ export default function EventHome({ footerLinks }) {
                   space={4}
                   flexWrap={"wrap"}
                   direction={["column", "column", "column", "row", "row"]}
+                  alignItems={"center"}
                 >
                   <Input
-                    minH="32px"
+                    // minH="32px"
                     InputLeftElement={
                       <IconByName color="coolGray.500" name="SearchLineIcon" />
                     }
@@ -653,32 +607,8 @@ export default function EventHome({ footerLinks }) {
                     variant="outline"
                     onChange={debouncedHandleSearch}
                   />
-                  <HStack space={4} alignItems={"center"}>
-                    <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                    <HStack space={4} alignItems={"center"}>
-                      <District
-                        district={district}
-                        filter={filter}
-                        t={t}
-                        setFilter={setFilter}
-                      />
-
-                      <Blocks
-                        block={block}
-                        t={t}
-                        filter={filter}
-                        setFilter={setFilter}
-                      />
-                      {programData === "BIHAR" && (
-                        <Village
-                          village={village}
-                          t={t}
-                          filter={filter}
-                          setFilter={setFilter}
-                        />
-                      )}
-                    </HStack>
-                  </HStack>
+                  <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
+                  <LocationFilters filter={filter} setFilter={setFilter} />
                 </HStack>
                 <Stack alignSelf={"end"} pb={2} pr={4}>
                   <AdminTypo.H6 bold color="textBlue.200">
@@ -712,147 +642,180 @@ export default function EventHome({ footerLinks }) {
   );
 }
 
-const District = ({ district, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { districts, blocks, village, ...data } = filter;
-    setFilter(data);
+const LocationFilters = ({ filter, setFilter }) => {
+  const { t } = useTranslation();
+  const [district, setDistrict] = useState();
+  const [block, setBlock] = useState();
+  const [village, setVillage] = useState();
+  const [programData, setProgramData] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let programSelected = jsonParse(localStorage.getItem("program"));
+      const stateName = programSelected?.state_name;
+      setProgramData(stateName);
+      const getDistricts = await geolocationRegistryService.getDistricts({
+        name: stateName,
+      });
+      if (Array.isArray(getDistricts?.districts)) {
+        setDistrict(getDistricts?.districts);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const changeFilterOptions = (filterType, value) => {
+    switch (filterType) {
+      case "districts":
+        if (value === "") {
+          setBlock([]);
+          setVillage([]);
+          const { districts, blocks, villages, ...data } = filter;
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+
+      case "blocks":
+        if (value === "") {
+          const { blocks, villages, ...data } = filter;
+          setVillage([]);
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+
+      case "villages":
+        if (value === "") {
+          const { villages, ...data } = filter;
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+
+      default:
+        if (value === "") {
+          const { districts, blocks, villages, ...data } = filter;
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+    }
   };
 
-  return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.districts ? filter?.districts : t("DISTRICT")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {district &&
-        district.map &&
-        district.map((e) => (
-          <Menu.Item
-            key={e.district_id}
-            onPress={() =>
-              setFilter((prevFilter) => ({
-                ...prevFilter,
-                districts: [e.district_name],
-              }))
-            }
-          >
-            {e.district_name}
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-};
-const Blocks = ({ block, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { blocks, village, ...data } = filter;
-    setFilter(data);
-  };
-  return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.blocks ? filter?.blocks : t("BLOCK")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {block &&
-        block?.map &&
-        block?.map((e) => (
-          <Menu.Item
-            key={e?.block_name}
-            onPress={() =>
-              setFilter((prevFilter) => ({
-                ...prevFilter,
-                blocks: [e?.block_name],
-              }))
-            }
-          >
-            {e?.block_name}
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-};
+  const blockss = useCallback(async () => {
+    if (filter?.districts) {
+      const blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filter?.districts,
+      });
+      setBlock(blockData);
+    }
+  }, [filter?.districts]);
 
-const Village = ({ village, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { village, ...data } = filter;
-    setFilter(data);
-  };
+  useEffect(() => {
+    blockss();
+  }, [filter?.districts]);
+
+  const villageData = useCallback(async () => {
+    if (programData === "BIHAR" && filter?.districts && filter?.blocks) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: filter?.blocks?.[0],
+        state: programData,
+        district: filter?.districts?.[0],
+        gramp: "null",
+      });
+      setVillage(qData?.villages);
+    }
+  }, [filter?.blocks]);
+
+  useEffect(() => {
+    villageData();
+  }, [filter?.blocks]);
+
   return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.villages ? filter?.villages : t("VILLAGE_WARD")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {village?.map((e) => (
-        <Menu.Item
-          key={e?.block_id}
-          onPress={() =>
-            setFilter((prevFilter) => ({
-              ...prevFilter,
-              villages: [e?.village_ward_name],
-            }))
+    <HStack space={4}>
+      <Select
+        selectedValue={filter?.districts ? filter.districts[0] : t("DISTRICT")}
+        placeholder={t("DISTRICT")}
+        width={150}
+        borderWidth={0}
+        onValueChange={(itemValue) =>
+          changeFilterOptions("districts", itemValue)
+        }
+      >
+        <Select.Item label="Select All" value="" />
+        {district &&
+          district.map &&
+          district.map((e) => (
+            <Select.Item
+              key={e.district_id}
+              label={e.district_name}
+              value={e.district_name}
+            />
+          ))}
+      </Select>
+      <Select
+        selectedValue={filter?.blocks ? filter.blocks[0] : t("BLOCK")}
+        width={150}
+        borderWidth={0}
+        placeholder={t("BLOCK")}
+        onValueChange={(itemValue) => changeFilterOptions("blocks", itemValue)}
+      >
+        <Select.Item label="Select All" value="" />
+        {block &&
+          block.map &&
+          block.map((e) => (
+            <Select.Item
+              key={e.block_name}
+              label={e.block_name}
+              value={e.block_name}
+            />
+          ))}
+      </Select>
+      {programData === "BIHAR" && (
+        <Select
+          selectedValue={
+            filter?.villages ? filter.villages[0] : t("VILLAGE_WARD")
+          }
+          placeholder={t("VILLAGE_WARD")}
+          width={150}
+          borderWidth={0}
+          onValueChange={(itemValue) =>
+            changeFilterOptions("villages", itemValue)
           }
         >
-          {e?.village_ward_name}
-        </Menu.Item>
-      ))}
-    </Menu>
+          <Select.Item label="Select All" value="" />
+          {village &&
+            village.map &&
+            village.map((e) => (
+              <Select.Item
+                key={e.village_ward_name}
+                label={e.village_ward_name}
+                value={e.village_ward_name}
+              />
+            ))}
+        </Select>
+      )}
+    </HStack>
   );
 };
 
 EventHome.propTypes = {
   footerLinks: PropTypes.any,
-};
-
-District.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
-
-Blocks.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
-Village.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
 };
