@@ -97,9 +97,9 @@ export async function getOnboardingData(id) {
       //step 2 contact_details
       mobile: userMergedInfo?.users?.mobile || undefined,
       email_id: userMergedInfo?.users?.email_id || undefined,
-      device_type: userMergedInfo?.core_faciltator?.device_type || undefined,
+      device_type: userMergedInfo?.core_faciltators?.device_type || undefined,
       device_ownership:
-        userMergedInfo?.core_faciltator?.device_ownership || undefined,
+        userMergedInfo?.core_faciltators?.device_ownership || undefined,
       alternative_mobile_number:
         userMergedInfo?.users?.alternative_mobile_number || undefined,
       //step 3 address_details
@@ -145,12 +145,12 @@ export async function getOnboardingData(id) {
           userMergedInfo?.qualifications?.qualification_master || undefined,
       },
       qualification_ids: qualification_id_arr || undefined,
-      core_faciltator: {
-        has_diploma: userMergedInfo?.core_faciltator?.has_diploma
-          ? userMergedInfo?.core_faciltator?.has_diploma
+      core_faciltators: {
+        has_diploma: userMergedInfo?.core_faciltators?.has_diploma
+          ? userMergedInfo?.core_faciltators?.has_diploma
           : false,
         diploma_details:
-          userMergedInfo?.core_faciltator?.diploma_details || undefined,
+          userMergedInfo?.core_faciltators?.diploma_details || undefined,
       },
       //step 10 profile photo 1
       profile_photo_1: {
@@ -228,56 +228,57 @@ export async function updateOnboardingData(id, onboardingData) {
   let userUpdatedInfo = await getUserUpdatedInfo(id);
   //console.log("userUpdatedInfo", userUpdatedInfo);
   let users = new Object();
-  let core_faciltator = new Object();
+  let core_faciltators = new Object();
   let extended_users = new Object();
   let references = new Object();
   let program_faciltators = new Object();
   let experience = [];
   let qualifications = new Object();
   //step 1 basic_details
-  onboardingData?.first_name
+  onboardingData?.first_name || onboardingData?.first_name == ""
     ? onboardingData.first_name != userInfo?.users?.first_name
       ? (users.first_name = onboardingData.first_name)
       : delete userUpdatedInfo?.users?.first_name
     : null;
-  onboardingData?.last_name
+  onboardingData?.last_name || onboardingData?.last_name == ""
     ? onboardingData.last_name != userInfo?.users?.last_name
       ? (users.last_name = onboardingData.last_name)
       : delete userUpdatedInfo?.users?.last_name
     : null;
-  onboardingData?.middle_name
+  onboardingData?.middle_name || onboardingData?.middle_name == ""
     ? onboardingData.middle_name != userInfo?.users?.middle_name
       ? (users.middle_name = onboardingData.middle_name)
       : delete userUpdatedInfo?.users?.middle_name
     : null;
-  onboardingData?.dob
+  onboardingData?.dob || onboardingData?.dob == ""
     ? onboardingData.dob != userInfo?.users?.dob
       ? (users.dob = onboardingData.dob)
       : delete userUpdatedInfo?.users?.dob
     : null;
   //step 2 contact_details
-  onboardingData?.mobile
+  onboardingData?.mobile || onboardingData?.mobile == ""
     ? onboardingData.mobile != userInfo?.users?.mobile
       ? (users.mobile = onboardingData.mobile)
       : delete userUpdatedInfo?.users?.mobile
     : null;
-  onboardingData?.email_id
+  onboardingData?.email_id || onboardingData?.email_id == ""
     ? onboardingData.email_id != userInfo?.users?.email_id
       ? (users.email_id = onboardingData.email_id)
       : delete userUpdatedInfo?.users?.email_id
     : null;
-  onboardingData?.device_type
-    ? onboardingData.device_type != userInfo?.core_faciltator?.device_type
-      ? (core_faciltator.device_type = onboardingData.device_type)
-      : delete userUpdatedInfo?.core_faciltator?.device_type
+  onboardingData?.device_type || onboardingData?.device_type == ""
+    ? onboardingData.device_type != userInfo?.core_faciltators?.device_type
+      ? (core_faciltators.device_type = onboardingData.device_type)
+      : delete userUpdatedInfo?.core_faciltators?.device_type
     : null;
-  onboardingData?.device_ownership
+  onboardingData?.device_ownership || onboardingData?.device_ownership == ""
     ? onboardingData.device_ownership !=
-      userInfo?.core_faciltator?.device_ownership
-      ? (core_faciltator.device_ownership = onboardingData.device_ownership)
-      : delete userUpdatedInfo?.core_faciltator?.device_ownership
+      userInfo?.core_faciltators?.device_ownership
+      ? (core_faciltators.device_ownership = onboardingData.device_ownership)
+      : delete userUpdatedInfo?.core_faciltators?.device_ownership
     : null;
-  onboardingData?.alternative_mobile_number
+  onboardingData?.alternative_mobile_number ||
+  onboardingData?.alternative_mobile_number == ""
     ? onboardingData.alternative_mobile_number !=
       userInfo?.users?.alternative_mobile_number
       ? (users.alternative_mobile_number =
@@ -290,71 +291,71 @@ export async function updateOnboardingData(id, onboardingData) {
       : delete userUpdatedInfo?.users?.aadhar_no
     : null;
   //step 3 address_details
-  onboardingData?.block
+  onboardingData?.block || onboardingData?.block == ""
     ? onboardingData.block != userInfo?.users?.block
       ? (users.block = onboardingData.block)
       : delete userUpdatedInfo?.users?.block
     : null;
-  onboardingData?.district
+  onboardingData?.district || onboardingData?.district == ""
     ? onboardingData.district != userInfo?.users?.district
       ? (users.district = onboardingData.district)
       : delete userUpdatedInfo?.users?.district
     : null;
-  onboardingData?.grampanchayat
+  onboardingData?.grampanchayat || onboardingData?.grampanchayat == ""
     ? onboardingData.grampanchayat != userInfo?.users?.grampanchayat
       ? (users.grampanchayat = onboardingData.grampanchayat)
       : delete userUpdatedInfo?.users?.grampanchayat
     : null;
-  onboardingData?.pincode
+  onboardingData?.pincode || onboardingData?.pincode == ""
     ? onboardingData.pincode != userInfo?.users?.pincode
       ? (users.pincode = onboardingData.pincode)
       : delete userUpdatedInfo?.users?.pincode
     : null;
-  onboardingData?.state
+  onboardingData?.state || onboardingData?.state == ""
     ? onboardingData.state != userInfo?.users?.state
       ? (users.state = onboardingData.state)
       : delete userUpdatedInfo?.users?.state
     : null;
-  onboardingData?.village
+  onboardingData?.village || onboardingData?.village == ""
     ? onboardingData.village != userInfo?.users?.village
       ? (users.village = onboardingData.village)
       : delete userUpdatedInfo?.users?.village
     : null;
   //step 4 personal_details
-  onboardingData?.gender
+  onboardingData?.gender || onboardingData?.gender == ""
     ? onboardingData.gender != userInfo?.users?.gender
       ? (users.gender = onboardingData.gender)
       : delete userUpdatedInfo?.users?.gender
     : null;
-  onboardingData?.marital_status
+  onboardingData?.marital_status || onboardingData?.marital_status == ""
     ? onboardingData.marital_status != userInfo?.extended_users?.marital_status
       ? (extended_users.marital_status = onboardingData.marital_status)
       : delete userUpdatedInfo?.extended_users?.marital_status
     : null;
-  onboardingData?.social_category
+  onboardingData?.social_category || onboardingData?.social_category == ""
     ? onboardingData.social_category !=
       userInfo?.extended_users?.social_category
       ? (extended_users.social_category = onboardingData.social_category)
       : delete userUpdatedInfo?.extended_users?.social_category
     : null;
   //step 5 reference_details
-  onboardingData?.contact_number
+  onboardingData?.contact_number || onboardingData?.contact_number == ""
     ? onboardingData.contact_number != userInfo?.references?.contact_number
       ? (references.contact_number = onboardingData.contact_number)
       : delete userUpdatedInfo?.references?.contact_number
     : null;
-  onboardingData?.designation
+  onboardingData?.designation || onboardingData?.designation == ""
     ? onboardingData.designation != userInfo?.references?.designation
       ? (references.designation = onboardingData.designation)
       : delete userUpdatedInfo?.references?.designation
     : null;
-  onboardingData?.name
+  onboardingData?.name || onboardingData?.name == ""
     ? onboardingData.name != userInfo?.references?.name
       ? (references.name = onboardingData.name)
       : delete userUpdatedInfo?.references?.name
     : null;
   //step 6 work_availability_details
-  onboardingData?.availability
+  onboardingData?.availability || onboardingData?.availability == ""
     ? onboardingData.availability != userInfo?.program_faciltators?.availability
       ? (program_faciltators.availability = onboardingData.availability)
       : delete userUpdatedInfo?.program_faciltators?.availability
@@ -506,24 +507,24 @@ export async function updateOnboardingData(id, onboardingData) {
       //diploma and its value
       onboardingData?.has_diploma == true ||
       onboardingData?.has_diploma == false
-        ? onboardingData.has_diploma != userInfo?.core_faciltator?.has_diploma
-          ? (core_faciltator.has_diploma = onboardingData.has_diploma)
-          : delete userUpdatedInfo?.core_faciltator?.has_diploma
+        ? onboardingData.has_diploma != userInfo?.core_faciltators?.has_diploma
+          ? (core_faciltators.has_diploma = onboardingData.has_diploma)
+          : delete userUpdatedInfo?.core_faciltators?.has_diploma
         : null;
       onboardingData?.has_diploma == true ||
       onboardingData?.has_diploma == false
         ? onboardingData?.has_diploma == true
           ? onboardingData?.diploma_details
             ? onboardingData.diploma_details !=
-              userInfo?.core_faciltator?.diploma_details
-              ? (core_faciltator.diploma_details =
+              userInfo?.core_faciltators?.diploma_details
+              ? (core_faciltators.diploma_details =
                   onboardingData.diploma_details)
-              : delete userUpdatedInfo?.core_faciltator?.diploma_details
+              : delete userUpdatedInfo?.core_faciltators?.diploma_details
             : null
           : onboardingData?.has_diploma == false
-          ? "" != userInfo?.core_faciltator?.diploma_details
-            ? (core_faciltator.diploma_details = "")
-            : delete userUpdatedInfo?.core_faciltator?.diploma_details
+          ? "" != userInfo?.core_faciltators?.diploma_details
+            ? (core_faciltators.diploma_details = "")
+            : delete userUpdatedInfo?.core_faciltators?.diploma_details
           : null
         : null;
     }
@@ -588,7 +589,7 @@ export async function updateOnboardingData(id, onboardingData) {
   //generate final object
   let temp_update_obj = {
     users: users,
-    core_faciltator: core_faciltator,
+    core_faciltators: core_faciltators,
     extended_users: extended_users,
     references: references,
     program_faciltators: program_faciltators,
