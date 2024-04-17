@@ -71,7 +71,7 @@ export default function Orientation({ footerLinks }) {
 
   const getEventLists = async () => {
     const eventResult = await eventService.getEventList();
-    setEventList(eventResult);
+    setEventList(eventResult?.events || []);
   };
 
   const handleEventClick = async (info) => {
@@ -257,43 +257,42 @@ export default function Orientation({ footerLinks }) {
                 }}
                 initialView="timeGridWeek"
                 editable={false}
-                // events={[
-                //   {
-                //     allDay: false,
-                //     title: "Daily Event",
-                //     start: "2024-04-15T07:00:00",
-                //     end: "2024-04-17T18:00:00",
-                //     daysOfWeek: [1, 2, 3], // Repeat on Thursday, Friday, Saturday (April 15th to April 17th)
-                //     startTime: "07:00", // Event start time
-                //     endTime: "18:00", // Event end time
-                //   },
-                // ]}
-                events={eventList?.events?.map((item) => {
-                  return {
-                    allDay: false,
-                    title:
-                      item?.name !== null
-                        ? `#${
-                            item?.id +
-                            " " +
-                            item?.name +
-                            " " +
-                            item?.master_trainer
-                          }`
-                        : item?.type,
-                    start: `${item?.start_date} ${item?.start_time}`,
-                    end: `${item?.end_date} ${item?.end_time}`,
-                    type: item?.type ? item?.type : "",
-                    name: item?.name ? item?.name : "",
-                    event_id: item?.id ? item?.id : "",
-                    borderColor: EVENTS_COLORS?.[item?.type]
-                      ? EVENTS_COLORS[item?.type]
-                      : "#808080",
-                    backgroundColor: EVENTS_COLORS?.[item?.type]
-                      ? EVENTS_COLORS[item?.type]
-                      : "#808080",
-                  };
-                })}
+                events={eventList
+                  ?.map((item) => {
+                    const startMoment = moment(item?.start_date);
+                    const endMoment = moment(item?.end_date);
+                    let datesD = [];
+                    while (startMoment.isSameOrBefore(endMoment)) {
+                      datesD.push(startMoment.format("YYYY-MM-DD"));
+                      startMoment.add(1, "day");
+                    }
+
+                    return datesD.map((subItem) => ({
+                      allDay: false,
+                      title:
+                        item?.name !== null
+                          ? `#${
+                              item?.id +
+                              " " +
+                              item?.name +
+                              " " +
+                              item?.master_trainer
+                            }`
+                          : item?.type,
+                      start: `${subItem} ${item?.start_time}`,
+                      end: `${subItem} ${item?.end_time}`,
+                      type: item?.type ? item?.type : "",
+                      name: item?.name ? item?.name : "",
+                      event_id: item?.id ? item?.id : "",
+                      borderColor: EVENTS_COLORS?.[item?.type]
+                        ? EVENTS_COLORS[item?.type]
+                        : "#808080",
+                      backgroundColor: EVENTS_COLORS?.[item?.type]
+                        ? EVENTS_COLORS[item?.type]
+                        : "#808080",
+                    }));
+                  })
+                  .flat()}
                 eventTimeFormat={{
                   hour: "numeric",
                   minute: "2-digit",
