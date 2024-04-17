@@ -16,6 +16,7 @@ export async function setPrerakOfflineInfo(id) {
       data?.data
     );
     setIndexedDBItem("GetSyncTime", currentTime);
+    return data?.data;
   } catch (error) {
     console.error("Error setting IndexedDB item:", error);
   }
