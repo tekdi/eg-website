@@ -1538,7 +1538,7 @@
   "PREPARATION_FOR_EXAM": "Preparation for Exam",
   "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
   "EPCP": {
-    "TITLE": "Learner's Use of the RSOS App",
+    "TITLE": "'s Use of the RSOS App",
     "HAS_LOGGED_RSOS_APP": {
       "TITLE": "Has the learner logged into the RSOS App?",
       "YES": "yes",
@@ -1607,7 +1607,8 @@
 
   "EXAM_PREPARATION": {
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE": "Will the learner appear for the exam?",
+      "TITLE1": "Will",
+      "TITLE2": "appear for the exam?",
       "YES": "yes",
       "NO": "no"
     },

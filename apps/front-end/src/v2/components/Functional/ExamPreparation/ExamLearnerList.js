@@ -189,7 +189,9 @@ const ExamLearnerList = ({ footerLinks }) => {
                   borderColor={"gray.300"}
                   p={4}
                   onPress={() => {
-                    navigate(`/camps/exampreparation/${item.user_id}`);
+                    navigate(`/camps/exampreparation/${item.user_id}`, {
+                      state: item,
+                    });
                   }}
                 >
                   <HStack
