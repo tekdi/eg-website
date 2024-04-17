@@ -23,6 +23,7 @@ import {
   Switch,
   Text,
   VStack,
+  ScrollView,
 } from "native-base";
 import {
   Suspense,
@@ -664,19 +665,21 @@ export default function Attendence({ footerLinks }) {
                 />
               </HStack>
             </Modal.Header>
-            <Modal.Body
-              style={{
-                backgroundColor: "#f5f5f5",
-                width: "297mm",
-                minHeight: "210mm",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-            >
-              <div ref={reportTemplateRef}>
-                <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
-              </div>
-            </Modal.Body>
+            <ScrollView horizontal={true} mb="2">
+              <Modal.Body
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  width: "297mm",
+                  minHeight: "210mm",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+              >
+                <div ref={reportTemplateRef}>
+                  <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
+                </div>
+              </Modal.Body>
+            </ScrollView>
           </Modal.Content>
         </Modal>
       </VStack>
