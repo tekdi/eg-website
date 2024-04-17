@@ -263,6 +263,10 @@ export default function CampExecution({ footerLinks, setAlert }) {
           _appBar={{ name: t("CAMP_EXECUTION") }}
           loading={loading}
           _footer={{ menues: footerLinks }}
+          pageTitle={"CAMP"}
+          stepTitle={`${campType?.type === "main" ? "Main" : "Pcr"}/${t(
+            "CAMP_EXECUTION"
+          )}`}
         >
           <VStack py={6} px={4} mb={5} space="6">
             <FrontEndTypo.H2 color={"textMaroonColor.400"}>
@@ -341,13 +345,15 @@ export default function CampExecution({ footerLinks, setAlert }) {
   } else if (page === "endcamp") {
     return (
       <Suspense fallback={<Loading />}>
-        <CampExecutionEnd {...{ learnerCount, todaysActivity, facilitator }} />
+        <CampExecutionEnd
+          {...{ learnerCount, campType, todaysActivity, facilitator }}
+        />
       </Suspense>
     );
   } else if (page === "attendance") {
     return (
       <Suspense fallback={<Loading />}>
-        <CampAttendance activityId={activityId} />
+        <CampAttendance campType={campType} activityId={activityId} />
       </Suspense>
     );
   } else if (page === "activities") {
@@ -368,6 +374,10 @@ export default function CampExecution({ footerLinks, setAlert }) {
       _appBar={{ name: t("CAMP_EXECUTION") }}
       loading={loading}
       _footer={{ menues: footerLinks }}
+      pageTitle={"CAMP"}
+      stepTitle={`${campType?.type === "main" ? "Main" : "Pcr"}/${t(
+        "CAMP_EXECUTION"
+      )}`}
     >
       {!todaysActivity?.id ? (
         <VStack space="5" p="5">

@@ -363,7 +363,6 @@ export default function ContactDetailsEdit({ ip }) {
       navigate(`/beneficiary/${userId}/basicdetails`);
     }
   };
-
   return (
     <Layout
       _appBar={{
@@ -373,6 +372,8 @@ export default function ContactDetailsEdit({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={t("CONTACT_DETAILS")}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (

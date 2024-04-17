@@ -46,6 +46,8 @@ export default function BenificiaryProfilePhoto() {
         onlyIconsShow: ["backBtn"],
       }}
       _page={{ _scollView: { bg: "white" } }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={t("PHOTOS")}
     >
       <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
         <H2 color="textMaroonColor.400">{t("ADD_ID_PHOTOS")}</H2>

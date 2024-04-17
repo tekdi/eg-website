@@ -68,6 +68,8 @@ export default function ConsentForm() {
         onPressBackButton,
         _box: { bg: "white" },
       }}
+      pageTitle={"CAMP"}
+      stepTitle={t("CONSENT_FORM")}
     >
       <Box py={6} px={4} mb={5}>
         <AdminTypo.H3 color={"textMaroonColor.400"}>

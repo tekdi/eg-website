@@ -160,6 +160,8 @@ export default function CampKitMaterialDetails({ footerLinks }) {
         _box: { bg: "formBg.500", shadow: "appBarShadow" },
       }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"CAMP"}
+      stepTitle={t("CAMP_KIT_MATERIAL_DETAILS")}
     >
       <VStack space={"2"} p={4}>
         <DataTable

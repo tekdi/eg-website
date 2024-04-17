@@ -523,7 +523,6 @@ export default function App({ footerLinks }) {
   if (page === "edit_kit_material_details") {
     return <CampKitMaterialDetails schema={schema} />;
   }
-
   return (
     <Layout
       _appBar={{
@@ -537,6 +536,8 @@ export default function App({ footerLinks }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
       loading={loading || !campDetails?.group?.status}
+      pageTitle={"CAMP"}
+      stepTitle={step}
     >
       {["camp_ip_verified", "inactive"].includes(campDetails?.group?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">

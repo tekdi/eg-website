@@ -32,6 +32,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"CAMP_DASHBOARD"}
     >
       <List userTokenInfo={userTokenInfo} />
       <VStack p="4" space="5">

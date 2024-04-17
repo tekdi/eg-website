@@ -29,6 +29,8 @@ export default function AadhaarDetails() {
         exceptIconsShow: ["menuBtn", "userInfo"],
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
       }}
+      pageTitle={"FACILITATOR"}
+      stepTitle={t("AADHAAR_DETAILS")}
     >
       {["quit"].includes(facilitator?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">

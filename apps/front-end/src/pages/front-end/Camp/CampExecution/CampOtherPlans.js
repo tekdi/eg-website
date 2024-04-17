@@ -53,6 +53,8 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
       _appBar={{ name: t("CAMP_EXECUTION") }}
       loading={loading}
       _footer={{ menues: footerLinks }}
+      pageTitle={"CAMP"}
+      stepTitle={t("OTHER_PLAN")}
     >
       <VStack space={2} padding={5}>
         <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>

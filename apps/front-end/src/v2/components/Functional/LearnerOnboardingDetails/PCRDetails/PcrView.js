@@ -16,7 +16,9 @@ export default function PcrView() {
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = Array.isArray(result?.data) ? result.data.filter((item) => item.user_id == id) : [];
+    const userData = Array.isArray(result?.data)
+      ? result.data.filter((item) => item.user_id == id)
+      : [];
     setData(userData[0]);
   }, []);
 
@@ -32,6 +34,8 @@ export default function PcrView() {
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={t("PCR_DETAILS")}
     >
       <Box p="10">
         <CardComponent

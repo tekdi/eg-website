@@ -1660,5 +1660,8 @@
   "EXISTING_USER": "Existing User",
   "PLEASE_SELECT_CAMP": "Please select camp",
   "PAYMENT_RECEIPTS": "Payment Receipt",
-  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot"
+  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot",
+  "JOURNEY": "Journey",
+  "CAMP_EXECUTION": "Execution",
+  "OTHER_PLAN": "Other Plan"
 }

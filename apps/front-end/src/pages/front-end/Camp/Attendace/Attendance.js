@@ -148,6 +148,8 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"CAMP"}
+      stepTitle={t("ATTENDANCE")}
     >
       <Stack space={1}>
         {/* <FrontEndTypo.H4 textAlign="center">

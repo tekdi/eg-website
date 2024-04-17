@@ -48,6 +48,8 @@ export default function BenificiaryAadhaarDetails() {
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
         onPressBackButton,
       }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={t("AADHAAR_DETAILS")}
     >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">

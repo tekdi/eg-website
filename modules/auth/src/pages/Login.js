@@ -136,6 +136,7 @@ export default function Login() {
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
       }}
       getRefAppBar={(e) => setRef(e)}
+      pageTitle={"LOGIN"}
     >
       <VStack bg="bgGreyColor.200" minH={height - ref?.clientHeight} space="1">
         <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">

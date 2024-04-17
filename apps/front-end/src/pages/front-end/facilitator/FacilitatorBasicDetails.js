@@ -88,6 +88,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
         name: t("BASIC_DETAILS"),
         onPressBackButton: (e) => navigate(`/profile`),
       }}
+      pageTitle={"FACILITATOR"}
+      stepTitle={t("BASIC_DETAILS")}
     >
       {["quit"].includes(facilitator?.program_faciltators?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">

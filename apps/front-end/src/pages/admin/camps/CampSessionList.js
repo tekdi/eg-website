@@ -227,6 +227,8 @@ export default function CampSessionList({ footerLinks }) {
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _footer={{ menues: footerLinks }}
       getBodyHeight={(e) => setBodyHeight(e)}
+      pageTitle={"CAMP"}
+      stepTitle={`${campType === "main" ? "Main" : "Pcr"}/${t("SESSION_LIST")}`}
     >
       {campType === "pcr" ? (
         <Alert status="warning" alignItems="start" mb="3" mt="4">

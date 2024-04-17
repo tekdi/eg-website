@@ -16,9 +16,11 @@ import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
 import PoAdminRoutes from "./routes/PoAdminRoutes";
 import { getIndexedDBItem, getUserId } from "v2/utils/Helper/JSHelper";
+import ReactGA from "react-ga4";
 
 //TODO: separate out the theme related code from App
 
+ReactGA.initialize("G-BVQST5813F");
 initializeI18n(["translation"]);
 
 function App() {

@@ -65,6 +65,8 @@ export default function BenificiaryEnrollment() {
         onPressBackButton,
         _box: { bg: "white" },
       }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={t("ENROLLMENT_DETAILS")}
     >
       <VStack p="5" space={4}>
         <EnrollmentMessage

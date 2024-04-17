@@ -139,6 +139,7 @@ const ExamLearnerList = ({ footerLinks }) => {
         onlyIconsShow: ["backBtn", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"EXAM_PREPARATION"}
     >
       {leanerList.length === 0 ? (
         <Alert mt={4} status="warning">

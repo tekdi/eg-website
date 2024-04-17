@@ -459,6 +459,8 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={page}
     >
       <Box py={6} px={4} mb={5}>
         {/* <Steper

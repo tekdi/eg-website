@@ -558,6 +558,7 @@ const EpcpForm = ({ footerLinks }) => {
         onlyIconsShow: ["backBtn", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"EPCP"}
     >
       <Box p={4}>
         <Form

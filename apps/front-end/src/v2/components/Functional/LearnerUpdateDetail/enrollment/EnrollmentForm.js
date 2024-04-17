@@ -811,6 +811,8 @@ export default function EnrollmentForm() {
           _box: { bg: "white", shadow: "appBarShadow" },
         }}
         _page={{ _scollView: { bg: "formBg.500" } }}
+        pageTitle={"BENEFICIARY"}
+        stepTitle={t("ENROLLMENT_DETAILS")}
       >
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>

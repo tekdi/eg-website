@@ -70,6 +70,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      pageTitle={"CERTIFICATE"}
     >
       <VStack space={4}>
         <VStack paddingLeft="16px" paddingRight="16px" py={4} space="4">

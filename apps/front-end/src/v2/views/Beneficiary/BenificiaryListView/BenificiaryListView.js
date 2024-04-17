@@ -275,6 +275,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"BENEFICIARY_LIST"}
     >
       <VStack ref={ref}>
         <Pressable

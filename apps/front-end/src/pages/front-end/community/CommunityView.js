@@ -120,6 +120,7 @@ export default function CommunityView({ footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      pageTitle={"COMMUNITY_REFRENCE"}
     >
       <Box p="4">
         {!addMore ||

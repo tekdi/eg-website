@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
-function CampExecutionEnd({ facilitator, learnerCount }) {
+function CampExecutionEnd({ facilitator, campType, learnerCount }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
   const [disable, setDisable] = useState(true);
@@ -100,6 +100,8 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
         name: t("CAMP_EXECUTION"),
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
+      pageTitle={"CAMP"}
+      stepTitle={`${campType?.type === "main" ? "Main" : "Pcr"}/${step}`}
       loading={loading}
     >
       <VStack py={6} px={4} mb={5} space="6">

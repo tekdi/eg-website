@@ -175,6 +175,10 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
         onPressBackButton,
         _box: { bg: "white" },
       }}
+      pageTitle={"CAMP"}
+      stepTitle={`${campDetails?.type === "main" ? "Main" : "Pcr"}/${t(
+        "PROFILE"
+      )}`}
     >
       <VStack p="4" space={4}>
         <HStack margin={"auto"} mt={3} space={4}>

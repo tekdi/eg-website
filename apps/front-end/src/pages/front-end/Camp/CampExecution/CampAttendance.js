@@ -20,7 +20,7 @@ const PRESENT = "present";
 const ABSENT = "absent";
 
 // App
-export default function CampAttendancePage({ activityId }) {
+export default function CampAttendancePage({ activityId, campType }) {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -333,6 +333,10 @@ export default function CampAttendancePage({ activityId }) {
           setFilter({ ...filter, search: value, page: 1 });
         },
       }}
+      pageTitle={"CAMP"}
+      stepTitle={`${campType?.type === "main" ? "Main" : "Pcr"}/${t(
+        "ATTENDANCE"
+      )}`}
     >
       {/* <GeoLocation
         getLocation={(lat, long, err) => {

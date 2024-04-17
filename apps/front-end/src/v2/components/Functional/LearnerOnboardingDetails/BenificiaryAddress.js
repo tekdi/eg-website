@@ -58,7 +58,11 @@ export default function BenificiaryAddress() {
   };
 
   return (
-    <Layout _appBar={{ name: t("ADDRESS_DETAILS"), onPressBackButton }}>
+    <Layout
+      _appBar={{ name: t("ADDRESS_DETAILS"), onPressBackButton }}
+      pageTitle={"BENEFICIARY"}
+      stepTitle={t("ADDRESS_DETAILS")}
+    >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
           <VStack

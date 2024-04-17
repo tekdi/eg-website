@@ -1662,5 +1662,8 @@
   "EXISTING_USER": "मौजूदा उपयोगकर्ता",
   "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें",
   "PAYMENT_RECEIPTS": "भुगतान रसीद",
-  "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट"
+  "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट",
+  "JOURNEY": "यात्रा",
+  "CAMP_EXECUTION": "संचालन",
+  "OTHER_PLAN": "अन्य योजनाएँ"
 }
