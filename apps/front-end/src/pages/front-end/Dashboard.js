@@ -840,7 +840,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </VStack>
                 </HStack>
               )}
-              {isDocumentUpload("vo_experience") && (
+              {/* {isDocumentUpload("vo_experience") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
@@ -856,7 +856,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
-              )}
+              )} */}
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"
