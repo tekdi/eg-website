@@ -6,7 +6,10 @@ import {
   mergeOnlyChanged,
   setPrerakUpdateInfo,
   mergeExperiences,
+  setPrerakOfflineInfo,
+  getUserInfoNull,
 } from "../SyncHelper/SyncHelper";
+import { cohortService } from "@shiksha/common-lib";
 import { arraysAreEqual, generateUniqueRandomNumber } from "../Helper/JSHelper";
 
 export async function getOnboardingData(id) {
@@ -614,5 +617,57 @@ export async function updateOnboardingData(id, onboardingData) {
     await setPrerakUpdateInfo(id, userMergedInfo);
   } catch (e) {
     console.log("error", e);
+  }
+}
+
+export async function SyncOfflineData(id, isOnline) {
+  let data = await getUserUpdatedInfo(id);
+  const offlinePrerakData = await getUserInfoNull(id);
+
+  // Check if any of the sub-objects or the experience array has data
+  const isDataPresent = () => {
+    return (
+      data &&
+      ((data.users && Object.keys(data.users).length > 0) ||
+        (data.references && Object.keys(data.references).length > 0) ||
+        (data.qualifications && Object.keys(data.qualifications).length > 0) ||
+        (data.program_facilitators &&
+          Object.keys(data.program_facilitators).length > 0) ||
+        (data.extended_users && Object.keys(data.extended_users).length > 0) ||
+        (data.core_facilitators &&
+          Object.keys(data.core_facilitators).length > 0) ||
+        (data.experience && data.experience.length > 0))
+    );
+  };
+
+  if (isDataPresent() && isOnline && offlinePrerakData) {
+    const jsonData = JSON.stringify(data);
+    const jsonFile = new File([jsonData], "data.json", {
+      type: "application/json",
+    });
+
+    const formData = new FormData();
+    formData.append("jsonpayload", jsonFile);
+
+    const res = await cohortService.syncOfflinePayload(formData);
+    res?.result?.forEach((item) => {
+      for (const key in item) {
+        if (item[key].status) {
+          delete data[key];
+        }
+      }
+    });
+
+    await setPrerakUpdateInfo(id, data);
+    let getData = await setPrerakOfflineInfo(id);
+    const profile_url = getData?.users?.profile_photo_1?.documents?.name;
+    const { first_name, middle_name, last_name } = getData?.users ?? {};
+    const fullName = `${first_name} ${
+      last_name ? `${middle_name} ${last_name}` : ""
+    }`;
+    localStorage.setItem("profile_url", profile_url);
+    localStorage.setItem("fullName", fullName);
+    localStorage.setItem("first_name", first_name);
+    localStorage.setItem("last_name", last_name);
   }
 }
