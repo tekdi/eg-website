@@ -8,6 +8,7 @@ import {
   mergeExperiences,
   setPrerakOfflineInfo,
   getUserInfoNull,
+  setIpUserInfo,
 } from "../SyncHelper/SyncHelper";
 import { cohortService } from "@shiksha/common-lib";
 import { arraysAreEqual, generateUniqueRandomNumber } from "../Helper/JSHelper";
@@ -660,6 +661,7 @@ export async function SyncOfflineData(id, isOnline) {
 
     await setPrerakUpdateInfo(id, data);
     let getData = await setPrerakOfflineInfo(id);
+    await setIpUserInfo(id);
     const profile_url = getData?.users?.profile_photo_1?.documents?.name;
     const { first_name, middle_name, last_name } = getData?.users ?? {};
     const fullName = `${first_name} ${
