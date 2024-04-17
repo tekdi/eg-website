@@ -76,7 +76,7 @@ const AdharKyc = React.lazy(() =>
 const FileView = React.lazy(() => import("pages/FileView"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
-const EventFrom = React.lazy(() => import("pages/admin/event/EventFrom"));
+const EventForm = React.lazy(() => import("pages/admin/event/EventForm"));
 
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
@@ -154,8 +154,8 @@ export default [
     component: Assessment,
   },
 
-  { path: "/admin/event/create", component: EventFrom },
-  { path: "/admin/event/:id/:step", component: EventFrom },
+  { path: "/admin/event/create", component: EventForm },
+  { path: "/admin/event/:id/:step", component: EventForm },
 
   { path: "*", component: NotFound },
 ];
