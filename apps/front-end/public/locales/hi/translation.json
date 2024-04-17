@@ -1539,7 +1539,7 @@
   "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
   "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
   "EPCP": {
-    "TITLE": " द्वारा RSOS app का उपयोग",
+    "TITLE": " शिक्षार्थियों द्वारा RSOS app का उपयोग",
     "HAS_LOGGED_RSOS_APP": {
       "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
       "YES": "हाँ",
@@ -1631,7 +1631,7 @@
       "NO": "नहीं"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
+      "TITLE": "क्या शिक्षार्थी ने प्रेक्टिकल फाइल तैयार की है ?",
       "YES": "हाँ",
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है"
@@ -1648,6 +1648,9 @@
       "NO": "नहीं"
     }
   },
+  "IT_WILL_NOT_BE_DETERMINED": "निश्चित नहीं की जाएंगे",
+  "THEY_WONT_GO": "नहीं जाएंगे ",
+  "WILL_BE_DETERMINED": "निश्चित जाएंगे",
   "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
   "TARGET_CAMP": "शिविर लक्ष्य",
   "USER": "उपयोगकर्ता",
