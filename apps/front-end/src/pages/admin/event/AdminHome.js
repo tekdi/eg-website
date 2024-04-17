@@ -57,11 +57,11 @@ export default function Orientation({ footerLinks }) {
     const fetchData = async () => {
       let academic_Id = await getSelectedAcademicYear();
       if (academic_Id) {
+        getEventLists();
         setModal(false);
       }
     };
     fetchData();
-    getEventLists();
   }, []);
 
   React.useEffect(async () => {
@@ -105,6 +105,7 @@ export default function Orientation({ footerLinks }) {
     setSelectedProgramId(parseData);
     setSelectedAcademic({ parseData, academicYearparseData });
     setModal(false);
+    getEventLists();
   };
 
   return (
