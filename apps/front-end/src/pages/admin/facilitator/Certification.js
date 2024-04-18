@@ -243,11 +243,15 @@ export default function Certification({ footerLinks }) {
               />
             </HStack>
           </Modal.Header>
-          <Modal.Body overflow={"scroll"}>
-            <div ref={reportTemplateRef} className="certificae-height">
-              <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
-            </div>
-          </Modal.Body>
+          <div className="certificae-parent">
+            <Modal.Body>
+              <div ref={reportTemplateRef} className="certificae-height">
+                <div
+                  dangerouslySetInnerHTML={{ __html: downloadCertificate }}
+                />
+              </div>
+            </Modal.Body>
+          </div>
         </Modal.Content>
       </Modal>
     </Layout>
