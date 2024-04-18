@@ -525,6 +525,7 @@
   "EVALUATION_1": "Rapid Assesment-I",
   "EVALUATION_2": "Rapid Assesment-II",
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "There is no assessment available for this event",
+  "EVENT_ID": "Event ID",
   "EVENT_BATCH_NAME_BATCH_1": "Batch 1",
   "EVENT_BATCH_NAME_BATCH_10": "Batch 10",
   "EVENT_BATCH_NAME_BATCH_11": "Batch 11",
@@ -553,6 +554,7 @@
   "EVENT_END_DATE_TIME": "End Date & Time",
   "EVENT_NAME": "Event Name \n (Batch Number)",
   "EVENT_START_DATE_TIME": "Start Date & Time",
+  "EVENT_SCHEDULED": "Event Scheduled",
   "EVENT_TYPE": "Event Type",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
@@ -571,6 +573,7 @@
   "FACILITATOR_EVENT_TYPE_PRAGATI_ORIENTATION": "Pragati Orientation",
   "FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING": "Prerak Camp Execution Training",
   "FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING": "Prerak FLN Training",
+  "FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION": "Prerak Orientation",
   "FACILITATOR_FULL_TIME": "Full Time",
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "Divorced",
   "FACILITATOR_MARITAL_STATUS_MARRIED": "Married",
@@ -1082,6 +1085,7 @@
   "PRERAK": "Prerak",
   "PRERAK_BIO": "Prerak Bio",
   "PRERAK_CERTIFICATION_PROGRAM": "Prerak Certification Program",
+  "PRERAK_CERTIFICATION": "Prerak Certification",
   "PRERAK_CHANGED_MIND": "Changed Mind",
   "PRERAK_COMMUNITY": "Prerak Community",
   "PRERAK_COMMUNITY_ISSUE": "Community Issue",
@@ -1392,6 +1396,7 @@
   "TODAYS_ACTIVITIES": "Today's Activities",
   "TODAYS_CAMP_HAS_BEEN_COMPLETED": "Today's camp has been completed",
   "TODAYS_TASKS": "Today's Activities",
+  "TODAYS_ATTENDANCE_MISSING": "Today's attendance missing",
   "TOMORROW": "Tomorrow",
   "TRAINING": "Training",
   "TRAINING_DAYS": "Training Days",
@@ -1541,7 +1546,7 @@
   "PREPARATION_FOR_EXAM": "Preparation for Exam",
   "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
   "EPCP": {
-    "TITLE": "'s Use of the RSOS App",
+    "TITLE": "Learner's Use of the RSOS App",
     "HAS_LOGGED_RSOS_APP": {
       "TITLE": "Has the learner logged into the RSOS App?",
       "YES": "yes",
@@ -1563,7 +1568,7 @@
       "NO": "no"
     },
     "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "Upload an Image of your Document "
+      "TITLE": "Upload a screenshot of the e-PCP test"
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
       "TITLE": "Choose the reason *",
@@ -1649,6 +1654,9 @@
       "NO": "no"
     }
   },
+  "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
+  "WILL_BE_DETERMINED": "will be determined",
+  "THEY_WONT_GO": "They won't go",
   "LEARNERS_PER_TARGET": "Average learners per camp",
   "TARGET_CAMP": "Target Camp",
   "USER": "User",

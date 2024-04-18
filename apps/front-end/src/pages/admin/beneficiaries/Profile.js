@@ -16,6 +16,7 @@ import {
   getSelectedProgramId,
   getSelectedAcademicYear,
   ItemComponent,
+  getEnrollmentIds,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -680,9 +681,10 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               <HStack>
                 <HStack space="4">
                   {programUser?.organisation_id == 1 &&
-                    programUser?.program_id == 2 && (
+                    ["3", "2"].includes(`${programUser?.program_id}`) && (
                       <Scholarship
                         {...{
+                          user_id: id,
                           item: data,
                           setItem: setData,
                           jsonData,
@@ -1498,15 +1500,10 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     ) : (
                       "-"
                     ),
-                    payment_receipt_document_id:
-                      data?.program_beneficiaries
-                        ?.payment_receipt_document_id?.[0],
-                    application_form:
-                      data?.program_beneficiaries
-                        ?.payment_receipt_document_id?.[1],
-                    application_login_id:
-                      data?.program_beneficiaries
-                        ?.payment_receipt_document_id?.[2],
+                    ...getEnrollmentIds(
+                      data?.program_beneficiaries?.payment_receipt_document_id,
+                      localData
+                    ),
                   }}
                   isHideProgressBar={true}
                   _vstack={{

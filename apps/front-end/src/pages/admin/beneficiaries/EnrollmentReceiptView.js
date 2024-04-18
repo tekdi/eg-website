@@ -13,6 +13,7 @@ import {
   CustomRadio,
   getSelectedProgramId,
   Loading,
+  getEnrollmentIds,
 } from "@shiksha/common-lib";
 import {
   createSearchParams,
@@ -55,7 +56,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     const newResult = await uploadRegistryService.getOne({
       document_id: doc_id,
     });
-    setReceiptUrl(newResult);
+    setReceiptUrl({ url: newResult, doc_id });
     setFileType(newResult?.key?.split(".").pop());
     setIsButtonLoading(false);
   };
@@ -68,10 +69,12 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     const { subjects } = await enumRegistryService.subjectsList(value);
     const boardName = await enumRegistryService.boardName(value);
     setBoardName(boardName?.name);
-    setPaymentDocId(result?.program_beneficiaries?.payment_receipt_document_id);
-    await handleSetReceiptUrl(
-      result?.program_beneficiaries?.payment_receipt_document_id?.[0]
+    const documentData = getEnrollmentIds(
+      result?.program_beneficiaries?.payment_receipt_document_id,
+      state_name
     );
+    setPaymentDocId(documentData);
+    await handleSetReceiptUrl(documentData?.payment_receipt_document_id);
     const subject = jsonParse(result?.program_beneficiaries.subjects, []);
     setSubjects(subjects?.filter((e) => subject?.includes(`${e.subject_id}`)));
     setLoading(false);
@@ -376,27 +379,40 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               <VStack flex={["", "", "5", "5", "5"]}>
                 {localData === "BIHAR" && (
                   <HStack m={4} space={2}>
-                    <AdminTypo.Secondarybutton
+                    <ActiveButton
+                      isActive={
+                        receiptUrl?.doc_id ===
+                        paymentDocId?.payment_receipt_document_id
+                      }
                       onPress={() => {
-                        handleButtonClick(paymentDocId[0]);
+                        handleButtonClick(
+                          paymentDocId?.payment_receipt_document_id
+                        );
                       }}
                     >
                       {t("PAYMENT_RECEIPTS")}
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.Secondarybutton
+                    </ActiveButton>
+                    <ActiveButton
+                      isActive={
+                        receiptUrl?.doc_id === paymentDocId?.application_form
+                      }
                       onPress={() => {
-                        handleButtonClick(paymentDocId[1]);
+                        handleButtonClick(paymentDocId?.application_form);
                       }}
                     >
                       {t("APPLICATION_FORM")}
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.Secondarybutton
+                    </ActiveButton>
+                    <ActiveButton
+                      isActive={
+                        receiptUrl?.doc_id ===
+                        paymentDocId?.application_login_id
+                      }
                       onPress={() => {
-                        handleButtonClick(paymentDocId[2]);
+                        handleButtonClick(paymentDocId?.application_login_id);
                       }}
                     >
                       {t("APPLICATION_LOGIN_ID_SS")}
-                    </AdminTypo.Secondarybutton>
+                    </ActiveButton>
                   </HStack>
                 )}
                 {isButtonLoading ? (
@@ -407,7 +423,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     _box={{ flex: 1 }}
                     height="100%"
                     width="100%"
-                    urlObject={receiptUrl}
+                    urlObject={receiptUrl?.url}
                     alt="aadhaar_front"
                   />
                 ) : (
@@ -476,7 +492,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                     filter: "none",
                                     objectFit: "contain",
                                   }}
-                                  urlObject={receiptUrl}
+                                  urlObject={receiptUrl?.url}
                                   alt="aadhaar_front"
                                 />
                               </VStack>
@@ -723,5 +739,16 @@ const LearnerInfo = ({ item, reason, status }) => {
         </Alert>
       )}
     </VStack>
+  );
+};
+
+const ActiveButton = ({ isActive, children, ...props }) => {
+  if (isActive) {
+    return (
+      <AdminTypo.PrimaryButton {...props}>{children}</AdminTypo.PrimaryButton>
+    );
+  }
+  return (
+    <AdminTypo.Secondarybutton {...props}>{children}</AdminTypo.Secondarybutton>
   );
 };
