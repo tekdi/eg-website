@@ -157,17 +157,19 @@ const ExamLearnerList = ({ footerLinks }) => {
               </HStack>
               <HStack space={2} alignItems={"center"}>
                 <Avatar bg="textRed.300" size={["15px", "30px"]} />
-                <FrontEndTypo.H3>{t("NOT_STARTED")}</FrontEndTypo.H3>
+                <FrontEndTypo.H3>{t("THEY_WONT_GO")}</FrontEndTypo.H3>
               </HStack>
             </VStack>
             <VStack space={4}>
               <HStack space={2} alignItems={"center"}>
                 <Avatar bg="amber.300" size={["15px", "30px"]} />
-                <FrontEndTypo.H3>{t("IN_PROGRESS")}</FrontEndTypo.H3>
+                <FrontEndTypo.H3>
+                  {t("IT_WILL_NOT_BE_DETERMINED")}
+                </FrontEndTypo.H3>
               </HStack>
               <HStack space={2} alignItems={"center"}>
                 <Avatar bg="green.300" size={["15px", "30px"]} />
-                <FrontEndTypo.H3>{t("COMPLETED")}</FrontEndTypo.H3>
+                <FrontEndTypo.H3>{t("WILL_BE_DETERMINED")}</FrontEndTypo.H3>
               </HStack>
             </VStack>
           </HStack>

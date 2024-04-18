@@ -22,6 +22,7 @@ const FileUpload = ({ value, onChange, schema }) => {
     width,
     height,
     dimensionsValidation,
+    isReduce,
   } = schema || {};
 
   const uplodInputRef = useRef();
@@ -110,17 +111,20 @@ const FileUpload = ({ value, onChange, schema }) => {
   };
 
   const uplaodFile = async (file) => {
+    let newFile = file;
     const maxWidthOrHeight = Math.max(width || 1024, height || 768);
     // Compress the image
-    const compressedImage = await imageCompression(file, {
-      maxSizeMB: 0.1,
-      maxWidthOrHeight,
-      useWebWorker: true,
-    });
-    const uploadFile = new File([compressedImage], file.name, {
-      type: file.type,
-    });
-    uploadProfile(uploadFile);
+    if (isReduce != false) {
+      const compressedImage = await imageCompression(file, {
+        maxSizeMB: 0.1,
+        maxWidthOrHeight,
+        useWebWorker: true,
+      });
+      newFile = new File([compressedImage], file.name, {
+        type: file.type,
+      });
+    }
+    uploadProfile(newFile);
   };
 
   useEffect(() => {

@@ -1,35 +1,36 @@
-import React from "react";
 import Form from "@rjsf/core";
-import schema1 from "./schema.js";
-import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
 import {
-  AdminLayout as Layout,
-  enumRegistryService,
-  benificiaryRegistoryService,
-  FrontEndTypo,
-  getOptions,
-  getArray,
-  filterObject,
-  enrollmentDateOfBirth,
-  getUiSchema,
-  BodyMedium,
-  IconByName,
   AdminTypo,
+  BodyMedium,
+  FrontEndTypo,
+  IconByName,
+  AdminLayout as Layout,
+  benificiaryRegistoryService,
+  enrollmentDateOfBirth,
+  enumRegistryService,
+  filterObject,
+  getArray,
+  getEnrollmentIds,
+  getOptions,
   getSelectedProgramId,
+  getUiSchema,
 } from "@shiksha/common-lib";
+import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
+import React from "react";
+import schema1 from "./schema.js";
 //updateSchemaEnum
+import { debounce } from "lodash";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  widgets,
-  templates,
   onError,
-  transformErrors,
   scrollToField,
+  templates,
+  transformErrors,
   validator,
+  widgets,
 } from "../../../../component/BaseInput.js";
-import { useTranslation } from "react-i18next";
-import { debounce } from "lodash";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   let { state_name } = await getSelectedProgramId();
@@ -49,7 +50,8 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     "enrollment_status",
     "enrolled_for_board",
     "enrollment_number",
-    "enrollment_aadhaar_no",
+    // "enrollment_aadhaar_no",
+    "enrollment_mobile_no",
     "enrollment_date",
     "subjects",
     "payment_receipt_document_id",
@@ -79,26 +81,15 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
     case "enrollment_awaited":
     case "enrollment_rejected":
       const { enrolled_for_board } = constantSchema?.properties || {};
-      const required = constantSchema?.required.filter(
-        (item) =>
-          ![
-            "enrollment_number",
-            "enrollment_date",
-            "subjects",
-            "enrollment_aadhaar_no",
-            "payment_receipt_document_id",
-            "application_form",
-            "application_login_id",
-          ].includes(item)
-      );
       newSchema = {
         ...constantSchema,
         properties: {
           enrollment_status,
           enrolled_for_board,
         },
-        required,
+        required: ["enrollment_status", "enrolled_for_board"],
       };
+
       newData = {
         enrollment_status: data?.enrollment_status,
         enrolled_for_board: data?.enrolled_for_board,
@@ -140,13 +131,13 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             },
           };
         }
+
         newSchema = await getSubjects(
           newSchema,
           data?.enrolled_for_board,
           page
         );
       } else {
-        const { subjects, ...properties } = constantSchema?.properties || {};
         if (state_name === "BIHAR") {
           newSchema = {
             ...constantSchema,
@@ -195,6 +186,13 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       }
       break;
   }
+  let boardList = await enumRegistryService.boardList();
+  newSchema = getOptions(newSchema, {
+    key: "enrolled_for_board",
+    arr: boardList?.boards,
+    title: "name",
+    value: "id",
+  });
   return { newSchema, newData };
 };
 
@@ -345,6 +343,7 @@ export default function App(footerLinks) {
   };
 
   const getEnrollmentStatus = async (schemaData) => {
+    let { state_name } = await getSelectedProgramId();
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let newSchema = getOptions(schemaData, {
@@ -354,13 +353,58 @@ export default function App(footerLinks) {
         document_type: "enrollment_receipt",
         iconComponent: (
           <Image
-            source={{ uri: "/payment-receipt.jpeg" }}
-            size="200"
+            source={{
+              uri:
+                state_name === "RAJASTHAN"
+                  ? "/enrollment-receipt.jpeg"
+                  : "/payment_receipt_bihar.jpg",
+            }}
+            height={"124px"}
+            width={"200px"}
+            maxWidth={400}
             alt="background image"
           />
         ),
       },
     });
+
+    newSchema = getOptions(newSchema, {
+      key: "application_form",
+      extra: {
+        userId,
+        document_type: "enrollment_receipt_2",
+        iconComponent: (
+          <Image
+            source={{
+              uri: "/application_receipt_bihar.jpg",
+            }}
+            height={"259px"}
+            width={"200px"}
+            maxWidth={400}
+            alt="background image"
+          />
+        ),
+      },
+    });
+    newSchema = getOptions(newSchema, {
+      key: "application_login_id",
+      extra: {
+        userId,
+        document_type: "enrollment_receipt_2",
+        iconComponent: (
+          <Image
+            source={{
+              uri: "/application_login_id_bihar.jpeg",
+            }}
+            height={"161px"}
+            width={"200px"}
+            maxWidth={400}
+            alt="background image"
+          />
+        ),
+      },
+    });
+
     return getOptions(newSchema, {
       key: "enrollment_status",
       arr: list,
@@ -372,12 +416,11 @@ export default function App(footerLinks) {
   const validate = (data, key) => {
     let error = {};
     switch (key) {
-      case "enrollment_aadhaar_no":
-        if (
-          data.enrollment_aadhaar_no &&
-          `${data.enrollment_aadhaar_no}` !== `${benificiary.aadhar_no}`
-        ) {
-          error = { [key]: t("ENROLLMENT_AADHAR_NUMBER_ERROR") };
+      case "enrollment_mobile_no":
+        const mobile = data?.enrollment_mobile_no;
+        const regex = /^([+]\d{2})?\d{10}$/;
+        if (!mobile || !mobile?.match(regex)) {
+          error = { [key]: t("REQUIRED_MESSAGE") };
         }
         break;
       case "enrollment_date":
@@ -390,7 +433,6 @@ export default function App(footerLinks) {
     }
     return error;
   };
-
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
     arr.forEach((key) => {
@@ -414,6 +456,8 @@ export default function App(footerLinks) {
 
   React.useEffect(async () => {
     if (page) {
+      let { state_name } = await getSelectedProgramId();
+
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
@@ -432,8 +476,11 @@ export default function App(footerLinks) {
           updatedSchema?.newData,
           Object.keys(updatedSchema?.newSchema?.properties)
         );
-
-        setFormData(newdata);
+        setFormData({
+          ...newdata,
+          enrolled_for_board: newdata?.enrolled_for_board?.toString(),
+          ...getEnrollmentIds(newdata?.payment_receipt_document_id, state_name),
+        });
       } else {
         setSchema(constantSchema);
         let newdata = filterObject(
@@ -478,7 +525,11 @@ export default function App(footerLinks) {
   }, [page]);
 
   const enrollmentNumberExist = async (enrollment_number) => {
-    if (enrollment_number.length === 11) {
+    let { state_name } = await getSelectedProgramId();
+    if (
+      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
+      (state_name === "BIHAR" && enrollment_number.length === 9)
+    ) {
       const result = await benificiaryRegistoryService.isExistEnrollment(
         userId,
         {
@@ -489,19 +540,36 @@ export default function App(footerLinks) {
         setErrors({
           ...errors,
           enrollment_number: {
-            __errors: [t("ENROLLMENT_NUMBER_ALREADY_EXISTS")],
+            __errors: [
+              t(
+                state_name === "RAJASTHAN"
+                  ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
+                  : "APPLICATION_ID_ALREADY_EXISTS"
+              ),
+            ],
           },
         });
       } else {
+        const { enrollment_number, ...otherErrors } = errors;
+        setErrors(otherErrors);
         return true;
       }
     } else {
-      setErrors({
-        ...errors,
-        enrollment_number: {
-          __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
-        },
-      });
+      if (state_name === "RAJASTHAN") {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
+          },
+        });
+      } else {
+        setErrors({
+          ...errors,
+          enrollment_number: {
+            __errors: [t("APPLICATION_ID_SHOULD_BE_OF_9_DIGIT")],
+          },
+        });
+      }
     }
     return false;
   };
@@ -542,20 +610,20 @@ export default function App(footerLinks) {
     return updatedData;
   };
 
-  const handleAadhaarNoChange = (data) => {
-    const result = validate(data, "enrollment_aadhaar_no");
-    if (result?.enrollment_aadhaar_no) {
-      setErrors({
-        ...errors,
-        enrollment_aadhaar_no: {
-          __errors: [result?.enrollment_aadhaar_no],
-        },
-      });
-    } else {
-      const { enrollment_aadhaar_no, ...otherError } = errors || {};
-      setErrors(otherError);
-    }
-  };
+  // const handleAadhaarNoChange = (data) => {
+  //   const result = validate(data, "enrollment_aadhaar_no");
+  //   if (result?.enrollment_aadhaar_no) {
+  //     setErrors({
+  //       ...errors,
+  //       enrollment_aadhaar_no: {
+  //         __errors: [result?.enrollment_aadhaar_no],
+  //       },
+  //     });
+  //   } else {
+  //     const { enrollment_aadhaar_no, ...otherError } = errors || {};
+  //     setErrors(otherError);
+  //   }
+  // };
 
   const handleDobChange = (data) => {
     const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
@@ -606,9 +674,9 @@ export default function App(footerLinks) {
       case "root_enrollment_status":
         newData = await handleEnrollmentStatusChange(data, fixedSchema, page);
         break;
-      case "root_enrollment_aadhaar_no":
-        handleAadhaarNoChange(data);
-        break;
+      // case "root_enrollment_aadhaar_no":
+      //   handleAadhaarNoChange(data);
+      //   break;
       case "root_enrollment_dob":
         newData = handleDobChange(data);
         break;
@@ -636,9 +704,7 @@ export default function App(footerLinks) {
     }
 
     if (keys?.length > 0) {
-      const errorData = ["enrollment_aadhaar_no", "enrollment_number"].filter(
-        (e) => keys.includes(e)
-      );
+      const errorData = ["enrollment_number"].filter((e) => keys.includes(e));
 
       if (errorData.length > 0) {
         if (
@@ -660,6 +726,7 @@ export default function App(footerLinks) {
   };
 
   const handleFormSubmission = async () => {
+    let { state_name } = await getSelectedProgramId();
     const newFormData = formData;
     let newdata = filterObject(
       newFormData,
@@ -667,6 +734,36 @@ export default function App(footerLinks) {
       {},
       ""
     );
+    if (state_name === "BIHAR" && newdata?.enrollment_status === "enrolled") {
+      newdata = {
+        ...newdata,
+        payment_receipt_document_id: [
+          {
+            id: newdata.payment_receipt_document_id,
+            key: "payment_receipt_document_id",
+          },
+          { id: newdata.application_form, key: "application_form" },
+          { id: newdata.application_login_id, key: "application_login_id" },
+        ],
+      };
+
+      // Removing individual document ID keys
+      delete newdata.application_form;
+      delete newdata.application_login_id;
+    } else if (
+      state_name === "RAJASTHAN" &&
+      newdata?.enrollment_status === "enrolled"
+    ) {
+      newdata = {
+        ...newdata,
+        payment_receipt_document_id: [
+          {
+            id: newdata.payment_receipt_document_id,
+            key: "payment_receipt_document_id",
+          },
+        ],
+      };
+    }
     const { success, isUserExist } = await benificiaryRegistoryService.updateAg(
       {
         ...newdata,
@@ -780,11 +877,11 @@ export default function App(footerLinks) {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {notMatched?.includes("enrollment_aadhaar_no") && (
+              {/* {notMatched?.includes("enrollment_aadhaar_no") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
                 </FrontEndTypo.H3>
-              )}
+              )} */}
               {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
