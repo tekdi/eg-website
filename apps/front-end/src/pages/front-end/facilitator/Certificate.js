@@ -6,13 +6,54 @@ import {
   Layout,
   facilitatorRegistryService,
   testRegistryService,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Button, HStack, Modal, ScrollView, VStack } from "native-base";
 import React from "react";
+import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+
+const columns = (t, certificateDownload) => [
+  {
+    name: t("EVENT_ID"),
+    selector: (row) => row.context_id,
+  },
+  {
+    name: t("NAME"),
+    selector: (row) => (row?.events?.[0]?.name ? row?.events?.[0]?.name : "-"),
+    attr: "name",
+    wrap: true,
+  },
+  {
+    name: t("SCORE"),
+    selector: (row) => {
+      const score = row?.score;
+      const roundedScore = typeof score === "number" ? score.toFixed(2) : "-";
+      return roundedScore;
+    },
+    attr: "name",
+    wrap: true,
+  },
+  {
+    name: t("STATUS"),
+    selector: (row) =>
+      row.certificate_status === true ? (
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => certificateDownload(row)}
+        >
+          {t("VIEW_CERTIFICATE")}
+        </AdminTypo.Secondarybutton>
+      ) : row.certificate_status === false ? (
+        <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
+      ) : (
+        <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
+      ),
+  },
+];
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { id } = userTokenInfo?.authUser || [];
@@ -60,6 +101,12 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     const result = await testRegistryService.postCertificates(data);
     setDownloadCertificate(result?.data?.[0]?.certificate_html);
   };
+
+  const columnsMemoized = React.useMemo(
+    () => columns(t, certificateDownload),
+    [t, certificateDownload]
+  );
+
   return (
     <Layout
       loading={loading}
@@ -79,41 +126,12 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             </FrontEndTypo.H1>
           </VStack>
 
-          {certificateData?.map((item) => {
-            return (
-              <CardComponent
-                key={item}
-                _header={{ px: "0", pt: "0" }}
-                _body={{ px: "0", pb: "0" }}
-                _vstack={{ p: 5, space: 0, flex: 1 }}
-              >
-                <HStack
-                  key={item}
-                  justifyContent={"space-evenly"}
-                  alignItems={"center"}
-                >
-                  <FrontEndTypo.H2>{item?.context_id}</FrontEndTypo.H2>
-                  <FrontEndTypo.H2>{item?.events?.[0]?.name}</FrontEndTypo.H2>
-                  <FrontEndTypo.H2>
-                    {typeof item?.score === "number"
-                      ? item?.score.toFixed(2)
-                      : "-"}
-                  </FrontEndTypo.H2>
-                  {item?.certificate_status === true ? (
-                    <AdminTypo.Secondarybutton
-                      onPress={() => certificateDownload(item)}
-                    >
-                      {t("VIEW_CERTIFICATE")}
-                    </AdminTypo.Secondarybutton>
-                  ) : item.certificate_status === false ? (
-                    <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
-                  ) : (
-                    <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
-                  )}
-                </HStack>
-              </CardComponent>
-            );
-          })}
+          <DataTable
+            bg="light.100"
+            customStyles={tableCustomStyles}
+            columns={columnsMemoized}
+            data={certificateData}
+          />
         </VStack>
       </VStack>
       <Modal isOpen={downloadCertificate} size="xl">
