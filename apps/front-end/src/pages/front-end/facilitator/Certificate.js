@@ -153,23 +153,15 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             </HStack>
           </Modal.Header>
           <ScrollView horizontal={true} mb="2">
-            <Modal.Body>
-              <div
-                id="content"
-                style={{
-                  backgroundColor: "#f5f5f5",
-                  width: "297mm",
-                  minHeight: "210mm",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-                ref={reportTemplateRef}
-              >
-                <div
-                  dangerouslySetInnerHTML={{ __html: downloadCertificate }}
-                />
-              </div>
-            </Modal.Body>
+            <div className="certificae-parent">
+              <Modal.Body>
+                <div ref={reportTemplateRef} className="certificae-height">
+                  <div
+                    dangerouslySetInnerHTML={{ __html: downloadCertificate }}
+                  />
+                </div>
+              </Modal.Body>
+            </div>
           </ScrollView>
         </Modal.Content>
       </Modal>

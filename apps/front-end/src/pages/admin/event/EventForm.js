@@ -366,6 +366,7 @@ export default function EventHome({ footerLinks }) {
           start_date: moment(startDate).format("YYYY-MM-DD"),
           end_date: moment(endDate).format("YYYY-MM-DD"),
           attendees: selectedRowId,
+          context: "events",
         };
         if (step === "edit") {
           const data = await eventService.updateEvent(id, obj);
