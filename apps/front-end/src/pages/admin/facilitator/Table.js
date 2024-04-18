@@ -202,7 +202,7 @@ function Table({
   return (
     <VStack>
       <VStack p={2} pt="0">
-        <AdminTypo.H5 underline bold color="blueText.400">
+        <AdminTypo.H5 underline bold color="textMaroonColor.600">
           {filter?.status === undefined || filter?.status?.length === 0 ? (
             t("ALL") + `(${paginationTotalRows})`
           ) : filter?.status?.[0] === "all" ? (

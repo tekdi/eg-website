@@ -31,6 +31,44 @@ export const basicRegister = {
     },
   },
 };
+export const address_details = {
+  type: "object",
+  required: ["district", "block", "village"],
+  properties: {
+    labelAddress: {
+      type: "string",
+    },
+    state: {
+      title: "STATE",
+      type: "string",
+      format: "hidden",
+    },
+    district: {
+      title: "DISTRICT",
+      type: "string",
+      format: "select",
+    },
+    block: {
+      title: "BLOCK",
+      type: "string",
+      format: "select",
+    },
+    grampanchayat: {
+      title: "GRAMPANCHAYAT",
+      type: "string",
+    },
+    village: {
+      title: "VILLAGE_WARD",
+      type: "string",
+      format: "select",
+    },
+    pincode: {
+      title: "PINCODE",
+      type: "string",
+      regex: /^\d{0,6}$/,
+    },
+  },
+};
 export const verifyOTP = {
   type: "object",
   required: ["verify_mobile"],

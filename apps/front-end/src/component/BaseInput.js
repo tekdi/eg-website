@@ -31,6 +31,8 @@ import FileUpload from "./formCustomeInputs/FileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 import PropTypes from "prop-types";
+import CalenderInput from "./CalenderInput";
+import Time from "./Time";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
@@ -404,12 +406,12 @@ export const Aadhaar = (props) => {
 // rjsf custom select field
 export const select = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
-  const { label, title, readOnly } = schema || {};
+  const { label, title, readOnly, isHideFloatingLabel } = schema || {};
   const { t } = useTranslation();
 
   return (
     <FormControl gap="4">
-      {(label || (!label && title)) && (
+      {(label || (!label && title)) && !isHideFloatingLabel && (
         <FormControl.Label
           rounded="sm"
           position="absolute"
@@ -828,6 +830,8 @@ const widgets = {
   Location,
   StarRating,
   CheckUncheck,
+  CalenderInput,
+  Time,
 };
 
 const templates = {

@@ -31,6 +31,7 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
+import OfflineFileUpload from "./formCustomeInputs/OfflineFileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 
@@ -112,6 +113,15 @@ export function LabelVerifyNameWidget() {
       </Text>
     </>
   );
+}
+
+export function convertImageToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 }
 
 // rjsf custom BaseInputTemplate for all text field use in all form
@@ -353,7 +363,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly } = schema || {};
+  const { label, format, readOnly, direction } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -374,7 +384,7 @@ export const RadioBtn = ({
       >
         <Stack
           direction={{
-            base: "column",
+            base: direction || "column",
             sm: directionColumn || "row",
           }}
           alignItems={{
@@ -827,6 +837,7 @@ const widgets = {
   Textarea,
   CustomOTPBox,
   FileUpload,
+  OfflineFileUpload,
   MobileNumber,
   MultiCheck,
   ReadOnly,
@@ -880,6 +891,7 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
+  console.log({ errors });
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
   const getMessage = (error) => {
@@ -899,6 +911,8 @@ const transformErrors = (errors, schema, t) => {
         return t("SELECT_MAXIMUM", error?.params?.limit, title);
       case "enum":
         return t("SELECT_MESSAGE");
+      case "type":
+        return "";
       case "format":
         const { format } = error?.params || {};
         const messageKey =
@@ -926,6 +940,7 @@ export {
   templates,
   CustomOTPBox,
   FileUpload,
+  OfflineFileUpload,
   validator,
   MobileNumber,
   MobileNumberReadOnly,

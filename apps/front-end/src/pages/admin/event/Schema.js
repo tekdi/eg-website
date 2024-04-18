@@ -1,0 +1,62 @@
+export default {
+  type: "object",
+  required: [
+    "type",
+    // "attendees",
+    "name",
+    "master_trainer",
+    "date",
+    "start_time",
+    "end_time",
+  ],
+  properties: {
+    type: {
+      icons: "VidiconLineIcon",
+      type: "string",
+      label: "EVENT_TYPE",
+      format: "select",
+      readOnly: false,
+    },
+    name: {
+      icons: "UserFollowLineIcon",
+      label: "EVENT_NAME",
+      title: "EVENT_NAME",
+      type: "string",
+      format: "select",
+    },
+    master_trainer: {
+      icons: "UserFollowLineIcon",
+      label: "MASTER_TRAINER",
+      title: "MASTER_TRAINER",
+      type: "string",
+    },
+    date: {
+      icons: "CalendarLineIcon",
+      label: "DATE",
+      title: "Start Date & Time",
+      type: "string",
+      // format: "CalenderInput",
+    },
+    start_time: {
+      icons: "TimeLineIcon",
+      label: "START_TIME",
+      title: "Start time",
+      type: "string",
+      format: "Time",
+    },
+    // end_date: {
+    //   icons: "CalendarLineIcon",
+    //   label: "EVENT_END_DATE_TIME",
+    //   title: "End Date & Time",
+    //   type: "string",
+    //   format: "alt-date",
+    // },
+    end_time: {
+      icons: "TimeLineIcon",
+      label: "End time",
+      title: "End time",
+      type: "string",
+      format: "Time",
+    },
+  },
+};

@@ -33,6 +33,7 @@ import {
   MobileNumber,
 } from "../../../components/Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
+import { getIpUserInfo } from "v2/utils/SyncHelper/SyncHelper.js";
 
 // App
 
@@ -107,6 +108,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const createBeneficiary = async () => {
     let program = await getSelectedProgramId();
     let acadamic = await getSelectedAcademicYear();
+    let org_id = await getIpUserInfo(authUser?.id);
     const formDataNew = {
       ...formData,
       role_fields: {

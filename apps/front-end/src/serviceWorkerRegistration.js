@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -8,13 +10,15 @@
 // resources are updated in the background.
 
 // To learn more about the benefits of this model and instructions on how to
-// opt-in, read https://cra.link/PWA
+// opt-in, read https://bit.ly/CRA-PWA
+
+// import Toaster from "./services/Toaster";
 
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
     // [::1] is the IPv6 localhost address.
     window.location.hostname === "[::1]" ||
-    // 127.0.0.0/8 are considered localhost for IPv4.
+    // 127.0.0.1/8 is considered localhost for IPv4.
     window.location.hostname.match(
       /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
     )
@@ -43,7 +47,7 @@ export function register(config) {
         navigator.serviceWorker.ready.then(() => {
           console.log(
             "This web app is being served cache-first by a service " +
-              "worker. To learn more, visit https://cra.link/PWA"
+              "worker. To learn more, visit https://bit.ly/CRA-PWA"
           );
         });
       } else {
@@ -51,36 +55,6 @@ export function register(config) {
         registerValidSW(swUrl, config);
       }
     });
-    //This for a PWA
-    let installPrompt = null;
-    const installButton = document.querySelector("#install");
-
-    window.addEventListener("beforeinstallprompt", (event) => {
-      console.log("into the addEventListener");
-      event.preventDefault();
-      installPrompt = event;
-      localStorage.setItem("pwa", "yes");
-      installButton.removeAttribute("hidden");
-    });
-    window.addEventListener("appinstalled", () => {
-      disableInAppInstallPrompt();
-    });
-    installButton.addEventListener("click", async () => {
-      console.log("into the serviceworker.install button");
-      if (!installPrompt) {
-        localStorage.setItem("pwa", "no");
-        return;
-      }
-      const result = await installPrompt.prompt();
-      console.log(`Install prompt was: ${result.outcome}`);
-      disableInAppInstallPrompt();
-    });
-
-    function disableInAppInstallPrompt() {
-      installPrompt = null;
-      localStorage.setItem("pwa", "no");
-      installButton.setAttribute("hidden", "");
-    }
   }
 }
 
@@ -101,9 +75,11 @@ function registerValidSW(swUrl, config) {
               // content until all client tabs are closed.
               console.log(
                 "New content is available and will be used when all " +
-                  "tabs for this page are closed. See https://cra.link/PWA."
+                  "tabs for this page are closed. See https://bit.ly/CRA-PWA."
               );
-
+              window.alert(
+                "                'New content is available and will be used when all ' +'tabs for this page are closed. See https://bit.ly/CRA-PWA.'"
+              );
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
@@ -130,9 +106,7 @@ function registerValidSW(swUrl, config) {
 
 function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
-  fetch(swUrl, {
-    headers: { "Service-Worker": "script" },
-  })
+  fetch(swUrl)
     .then((response) => {
       // Ensure service worker exists, and that we really are getting a JS file.
       const contentType = response.headers.get("content-type");
@@ -160,12 +134,8 @@ function checkValidServiceWorker(swUrl, config) {
 
 export function unregister() {
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.ready
-      .then((registration) => {
-        registration.unregister();
-      })
-      .catch((error) => {
-        console.error(error.message);
-      });
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.unregister();
+    });
   }
 }

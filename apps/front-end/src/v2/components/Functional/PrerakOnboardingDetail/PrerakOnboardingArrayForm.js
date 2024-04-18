@@ -20,6 +20,15 @@ import {
   templates,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
+import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
+import {
+  getOnboardingData,
+  updateOnboardingData,
+} from "v2/utils/OfflineHelper/OfflineHelper.js";
+import {
+  mergeAndUpdate,
+  mergeOnlyChanged,
+} from "v2/utils/SyncHelper/SyncHelper.js";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -36,7 +45,8 @@ export default function PrerakOnboardingArrayForm({
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [data, setData] = useState();
+  const [dataExperience, setDataExperience] = useState([]);
+  const [data, setData] = useState([]);
   const [facilitator, setfacilitator] = useState();
   const [addMore, setAddMore] = useState();
   const [keys, setKeys] = useState([]);
@@ -70,6 +80,14 @@ export default function PrerakOnboardingArrayForm({
       );
     }
   };
+  useEffect(() => {
+    if (facilitator) {
+      if (type == "experience") {
+        setData(dataExperience);
+      }
+      //console.log("dataExperience", dataExperience);
+    }
+  }, [facilitator]);
 
   useEffect(async () => {
     const id = userid;
@@ -103,7 +121,37 @@ export default function PrerakOnboardingArrayForm({
             extra: { title: stepTitle },
           });
         }
-        setSchema({ ...newSchema, title: stepLabel });
+        if (stepLabel === "ADD_VOLUNTEER_EXPERIENCE") {
+          const {
+            role_title,
+            organization,
+            description,
+            experience_in_years,
+            related_to_teaching,
+          } = newSchema?.properties || {};
+
+          const updatedSchema = {
+            ...newSchema,
+            properties: {
+              role_title,
+              organization,
+              description,
+              experience_in_years,
+              related_to_teaching,
+            },
+            required: [
+              "role_title",
+              "organization",
+              "experience_in_years",
+              "related_to_teaching",
+            ],
+            title: stepLabel,
+          };
+          setSchema(updatedSchema);
+        } else {
+          setSchema({ ...newSchema, title: stepLabel });
+        }
+
         const refPro =
           newSchema?.properties["reference_details"]?.["properties"];
         let newKeys = Object.keys(newSchema?.properties).filter(
@@ -133,13 +181,13 @@ export default function PrerakOnboardingArrayForm({
         setLabels(newLabels);
         setKeys(newKeys);
 
-        const ListOfEnum = await enumRegistryService.listOfEnum();
+        const ListOfEnum = await getIndexedDBItem("enums");
         if (!ListOfEnum?.error) {
-          setEnumObj(ListOfEnum?.data);
+          setEnumObj(ListOfEnum);
         }
       }
 
-      getData();
+      await getData();
       setFormData();
       setAddMore();
     }
@@ -148,7 +196,12 @@ export default function PrerakOnboardingArrayForm({
   const getData = async () => {
     const id = userid;
     if (id) {
-      const result = await facilitatorRegistryService.getOne({ id });
+      //get online data
+      //const result = await facilitatorRegistryService.getOne({ id });
+
+      //get offline data
+      setLoading(true);
+      const result = await getOnboardingData(id);
       setfacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
@@ -157,6 +210,8 @@ export default function PrerakOnboardingArrayForm({
       } else if (type === "experience") {
         setData(result?.experience);
       }
+      setDataExperience(result?.experience);
+      setLoading(false);
     }
   };
 
@@ -169,7 +224,7 @@ export default function PrerakOnboardingArrayForm({
         ...(overide || {}),
         id: id,
       });
-      getData();
+      await getData();
       setLoading(false);
       return result;
     }
@@ -298,21 +353,45 @@ export default function PrerakOnboardingArrayForm({
       const newdata = filterObject(newFormData, [
         ...Object.keys(schema?.properties),
         "arr_id",
+        "status",
+        "unique_key",
       ]);
-      await formSubmitUpdate({
+
+      //online data submit
+      /*await formSubmitUpdate({
         ...newdata,
         page_type:
           type === "reference_details"
             ? "reference_details"
             : "work_experience_details",
         type,
+      });*/
+      //offline data submit
+      await updateOnboardingData(userid, {
+        ...newdata,
+        type,
       });
+      //get offline data
+      setLoading(true);
+      const result = await getOnboardingData(userid);
+      setfacilitator(result);
+      if (type === "reference_details") {
+        setData(result?.references);
+      } else if (type === "vo_experience") {
+        setData(result?.vo_experience);
+      } else if (type === "experience") {
+        setData(result?.experience);
+      }
+      setDataExperience(result?.experience);
+      setLoading(false);
       setAddMore(false);
     }
   };
 
   const onAdd = () => {
-    setFormData();
+    setFormData({
+      status: "insert",
+    });
     setAddMore(true);
   };
 
@@ -321,17 +400,27 @@ export default function PrerakOnboardingArrayForm({
       ...item,
       reference_details: item?.reference ? item?.reference : {},
       arr_id: item?.id,
+      status: "update",
     });
     setAddMore(true);
   };
 
-  const onDelete = async (id) => {
-    if (type === "reference_details") {
+  const onDelete = async (deletedata) => {
+    //online delete
+    /*if (type === "reference_details") {
       await facilitatorRegistryService.referenceDelete({ id });
     } else {
       await facilitatorRegistryService.experienceDelete({ id });
-    }
-    setData(data.filter((e) => e.id !== id));
+    }*/
+    //offline delete
+    await updateOnboardingData(userid, {
+      ...deletedata,
+      type,
+      arr_id: deletedata?.id,
+      status: "delete",
+    });
+
+    setData(data.filter((e) => e.id !== deletedata.id));
   };
 
   const onClickSubmit = (data) => {
@@ -355,39 +444,85 @@ export default function PrerakOnboardingArrayForm({
         <Box py={6} px={4} mb={5}>
           {!addMore ? (
             <VStack space={"4"}>
-              {data &&
-                data.constructor.name === "Array" &&
-                data?.map((item, index) => {
-                  const {
-                    name,
-                    contact_number,
-                    type_of_document,
-                    document_id,
-                  } = item?.reference || {};
-                  return (
-                    <Box key={name}>
-                      <CardComponent
-                        schema={schema}
-                        index={index + 1}
-                        item={{
-                          ...item,
-                          ...(item?.reference?.constructor.name === "Object"
-                            ? {
-                                name,
-                                contact_number,
-                                type_of_document,
-                                document_id,
-                              }
-                            : {}),
-                        }}
-                        onEdit={(e) => onEdit(e)}
-                        onDelete={(e) => onDelete(e.id)}
-                        arr={keys}
-                        label={labels}
-                      />
-                    </Box>
-                  );
-                })}
+              {type == "vo_experience"
+                ? data &&
+                  data.constructor.name === "Array" &&
+                  data?.map((item, index) => {
+                    const {
+                      name,
+                      contact_number,
+                      type_of_document,
+                      document_id,
+                    } = item?.reference || {};
+
+                    return item?.status == "delete" ? (
+                      <></>
+                    ) : (
+                      <Box key={name}>
+                        <CardComponent
+                          schema={schema}
+                          index={index + 1}
+                          item={{
+                            ...item,
+                            ...(item?.reference?.constructor.name === "Object"
+                              ? {
+                                  name,
+                                  contact_number,
+                                  type_of_document,
+                                  document_id,
+                                }
+                              : {}),
+                          }}
+                          onEdit={(e) => onEdit(e)}
+                          onDelete={(e) => onDelete(e)}
+                          arr={[
+                            "role_title",
+                            "organization",
+                            "description",
+                            "experience_in_years",
+                            "related_to_teaching",
+                          ]}
+                          label={labels}
+                        />
+                      </Box>
+                    );
+                  })
+                : dataExperience &&
+                  dataExperience.constructor.name === "Array" &&
+                  dataExperience?.map((item, index) => {
+                    const {
+                      name,
+                      contact_number,
+                      type_of_document,
+                      document_id,
+                    } = item?.reference || {};
+
+                    return item?.status == "delete" ? (
+                      <></>
+                    ) : (
+                      <Box key={name}>
+                        <CardComponent
+                          schema={schema}
+                          index={index + 1}
+                          item={{
+                            ...item,
+                            ...(item?.reference?.constructor.name === "Object"
+                              ? {
+                                  name,
+                                  contact_number,
+                                  type_of_document,
+                                  document_id,
+                                }
+                              : {}),
+                          }}
+                          onEdit={(e) => onEdit(e)}
+                          onDelete={(e) => onDelete(e)}
+                          arr={keys}
+                          label={labels}
+                        />
+                      </Box>
+                    );
+                  })}
               <Button variant={"link"} colorScheme="info" onPress={onAdd}>
                 <FrontEndTypo.H3 color="blueText.400" underline bold>
                   {`${t(stepLabel)}`}

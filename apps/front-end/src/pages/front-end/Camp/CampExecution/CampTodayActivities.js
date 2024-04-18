@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
 import {
   CardComponent,
@@ -27,19 +27,20 @@ export default function CampTodayActivities({
   footerLinks,
   setAlert,
   activityId,
+  campType,
 }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [enums, setEnums] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState(null);
-  const [selectValue, setSelectValue] = React.useState([]);
-  const [miscActivities, setMiscActivities] = React.useState([]);
-  const [activitiesValue, setActivitiesValue] = React.useState(false);
-  const [isSaving] = React.useState(false);
-  const [sessionList, setSessionList] = React.useState(false);
+  const [enums, setEnums] = useState();
+  const [enumOptions, setEnumOptions] = useState(null);
+  const [selectValue, setSelectValue] = useState([]);
+  const [miscActivities, setMiscActivities] = useState([]);
+  const [activitiesValue, setActivitiesValue] = useState(false);
+  const [isSaving] = useState(false);
+  const [sessionList, setSessionList] = useState(false);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     getActivity();
   }, []);
 
@@ -49,7 +50,6 @@ export default function CampTodayActivities({
       start_date: moment(new Date()).format("YYYY-MM-DD"),
     };
     const result = await campService.getActivity(obj);
-
     if (result?.data?.camp_days_activities_tracker?.[0]?.misc_activities) {
       setSelectValue(
         result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
@@ -77,7 +77,7 @@ export default function CampTodayActivities({
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await enumRegistryService.listOfEnum();
     const LearningActivitydata = qData?.data;
     setEnumOptions(LearningActivitydata);
@@ -110,43 +110,46 @@ export default function CampTodayActivities({
     }
     setEnums();
   };
+
   return (
     <Layout
       _appBar={t("ADD_TODAYS_ACTIVITIES")}
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space={4}>
-        <CardComponent
-          _vstack={{
-            flex: 1,
-            borderColor: sessionList === true && "greenIconColor",
-          }}
-          _body={{ pt: 4 }}
-        >
-          <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-            <HStack alignItems="center" justifyContent="center" space={3}>
-              <Image
-                source={{
-                  uri: "/images/activities/learning-activity.png",
-                }}
-                resizeMode="contain"
-                alignSelf={"center"}
-                w="75px"
-                h="60px"
-              />
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t("LEARNING_ACTIVITIES")}
-              </FrontEndTypo.H2>
-              {sessionList === true && (
-                <IconByName
-                  name="CheckboxCircleFillIcon"
-                  _icon={{ size: "36" }}
-                  color="successColor"
+        {campType?.type === "main" && (
+          <CardComponent
+            _vstack={{
+              flex: 1,
+              borderColor: sessionList === true && "greenIconColor",
+            }}
+            _body={{ pt: 4 }}
+          >
+            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
+              <HStack alignItems="center" justifyContent="center" space={3}>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  w="75px"
+                  h="60px"
                 />
-              )}
-            </HStack>
-          </Pressable>
-        </CardComponent>
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {t("LEARNING_ACTIVITIES")}
+                </FrontEndTypo.H2>
+                {sessionList === true && (
+                  <IconByName
+                    name="CheckboxCircleFillIcon"
+                    _icon={{ size: "36" }}
+                    color="successColor"
+                  />
+                )}
+              </HStack>
+            </Pressable>
+          </CardComponent>
+        )}
         <CardComponent
           _vstack={{
             flex: 1,
@@ -156,7 +159,9 @@ export default function CampTodayActivities({
         >
           <Pressable
             onPress={() => {
-              handleActivities("MISCELLANEOUS_ACTIVITIES");
+              campType?.type === "main"
+                ? handleActivities("MISCELLANEOUS_ACTIVITIES")
+                : handleActivities("PCR_MISCELLANEOUS_ACTIVITIES");
             }}
           >
             <HStack alignItems="center" justifyContent="center" space={5}>
@@ -170,7 +175,9 @@ export default function CampTodayActivities({
                 h="60px"
               />
               <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t("MISCELLANEOUS_ACTIVITIES")}
+                {campType?.type === "main"
+                  ? t("MISCELLANEOUS_ACTIVITIES")
+                  : t("PCR_ACTIVITIES")}
               </FrontEndTypo.H2>
               {activitiesValue && (
                 <IconByName
@@ -211,7 +218,7 @@ export default function CampTodayActivities({
           <ScrollView width={"100%"} space="1" bg={"gray.100"} p="5">
             <VStack space="2" p="1" rounded="lg" w="100%">
               <VStack alignItems="center" space="1" flex="1">
-                <React.Suspense fallback={<HStack>Loading...</HStack>}>
+                <Suspense fallback={<HStack>Loading...</HStack>}>
                   <MultiCheck
                     value={selectValue}
                     options={{
@@ -226,7 +233,7 @@ export default function CampTodayActivities({
                       setSelectValue(newSelectValue);
                     }}
                   />
-                </React.Suspense>
+                </Suspense>
               </VStack>
             </VStack>
             <VStack space="5" pt="5">
