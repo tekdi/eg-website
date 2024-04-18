@@ -43,15 +43,12 @@ const columns = (t, certificateDownload) => [
     name: t("STATUS"),
     selector: (row) =>
       row.certificate_status === true ? (
-        // <AdminTypo.Secondarybutton
-        //   my="3"
-        //   onPress={() => certificateDownload(row)}
-        // >
-        //   {t("DOWNLOAD")}
-        // </AdminTypo.Secondarybutton>
-        <AdminTypo.H6 bold color="success.500">
-          {t("PASS")}
-        </AdminTypo.H6>
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => certificateDownload(row)}
+        >
+          {t("DOWNLOAD")}
+        </AdminTypo.Secondarybutton>
       ) : row.certificate_status === false ? (
         <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
       ) : (

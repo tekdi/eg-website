@@ -9,7 +9,10 @@ import {
   eventService,
   testRegistryService,
 } from "@shiksha/common-lib";
-import DataTable from "react-data-table-component";
+import Chip from "component/Chip";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { debounce } from "lodash";
 import moment from "moment";
 import {
   Alert,
@@ -32,13 +35,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { debounce } from "lodash";
 import { useWindowDimensions } from "react-native-web";
-import Chip from "component/Chip";
+import { useNavigate, useParams } from "react-router-dom";
 
 const customStyles = {
   headCells: {
@@ -650,7 +650,7 @@ export default function Attendence({ footerLinks }) {
           </Stack>
         </VStack>
 
-        <Modal isOpen={certificateHtml} size="xl">
+        <Modal isOpen={certificateHtml} size="full" margin={"auto"}>
           <Modal.Content>
             <Modal.Header>
               <HStack justifyContent={"space-between"} pr="10">
@@ -664,16 +664,8 @@ export default function Attendence({ footerLinks }) {
                 />
               </HStack>
             </Modal.Header>
-            <Modal.Body
-              style={{
-                backgroundColor: "#f5f5f5",
-                width: "297mm",
-                minHeight: "210mm",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-            >
-              <div ref={reportTemplateRef}>
+            <Modal.Body overflow={"scroll"}>
+              <div ref={reportTemplateRef} className="certificae-height">
                 <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
               </div>
             </Modal.Body>
