@@ -3,53 +3,46 @@ import PropTypes from "prop-types";
 import { Stack } from "native-base";
 import moment from "moment";
 
-function DatePicker({ subjectArr, examType, setSelectedDate }) {
+function DatePicker({ subjectArr, examType, setSelectedDate, status }) {
   const [selectedDates, setSelectedDates] = useState({});
 
-  const handleDateChange = (subject_name, index, date) => {
+  const handleDateChange = (subject, id, date) => {
     const subjectExists = selectedDates?.subject_details?.some(
-      (subject) => subject?.subject_id === index
+      (existingSubject) => existingSubject.subject_id === id
     );
-
     if (subjectExists) {
       setSelectedDates((prevState) => ({
         ...prevState,
-        subject_details: prevState?.subject_details?.map((subject) =>
-          subject.subject_id === index
+        subject_details: prevState.subject_details.map((existingSubject) =>
+          existingSubject.subject_id === id
             ? {
-                ...subject,
-                subject_name: subject_name,
+                ...existingSubject,
                 exam_date: date,
-                exam_type: examType,
+                type: examType,
+                status,
               }
-            : subject
+            : existingSubject
         ),
       }));
-
       setSelectedDate((prevState) => ({
         ...prevState,
-        subject_details: prevState?.subject_details?.map((subject) =>
-          subject?.subject_id === index
+        subject_details: prevState.subject_details.map((existingSubject) =>
+          existingSubject.subject_id === id
             ? {
-                ...subject,
-                subject_name: subject_name,
+                ...existingSubject,
                 exam_date: date,
-                exam_type: examType,
+                type: examType,
+                status,
               }
-            : subject
+            : existingSubject
         ),
       }));
     } else {
       setSelectedDates((prevState) => ({
         ...prevState,
         subject_details: [
-          ...(prevState?.subject_details || []),
-          {
-            subject_name: subject_name,
-            exam_date: date,
-            subject_id: index,
-            exam_type: examType,
-          },
+          ...(prevState.subject_details || []),
+          { subject_id: id, exam_date: date, type: examType },
         ],
       }));
 
@@ -57,20 +50,14 @@ function DatePicker({ subjectArr, examType, setSelectedDate }) {
         ...prevState,
         subject_details: [
           ...(prevState.subject_details || []),
-          {
-            subject_name: subject_name,
-            subject_id: index,
-            exam_date: date,
-            exam_type: examType,
-          },
+          { subject_id: id, exam_date: date, type: examType, status },
         ],
       }));
     }
   };
-
   return (
     <Stack>
-      {subjectArr?.map((subject, index) => (
+      {subjectArr?.map((subject) => (
         <div
           key={subject}
           style={{
@@ -80,7 +67,7 @@ function DatePicker({ subjectArr, examType, setSelectedDate }) {
             justifyContent: "space-between",
           }}
         >
-          <label style={{ marginRight: "10" }}>{subject}</label>
+          <label style={{ marginRight: "10" }}>{subject?.name}</label>
           <input
             type="date"
             style={{
@@ -96,7 +83,9 @@ function DatePicker({ subjectArr, examType, setSelectedDate }) {
               (subject) => subject?.subject_name === subject
             )}
             min={moment().format("YYYY-MM-DD")}
-            onChange={(e) => handleDateChange(subject, index, e.target.value)}
+            onChange={(e) =>
+              handleDateChange(subject, subject?.id, e.target.value)
+            }
           />
         </div>
       ))}
