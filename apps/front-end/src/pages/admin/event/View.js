@@ -651,7 +651,7 @@ export default function Attendence({ footerLinks }) {
           </Stack>
         </VStack>
 
-        <Modal isOpen={certificateHtml} size="xl">
+        <Modal isOpen={certificateHtml} size="full" margin={"auto"}>
           <Modal.Content>
             <Modal.Header>
               <HStack justifyContent={"space-between"} pr="10">
@@ -665,21 +665,11 @@ export default function Attendence({ footerLinks }) {
                 />
               </HStack>
             </Modal.Header>
-            <ScrollView horizontal={true} mb="2">
-              <Modal.Body
-                style={{
-                  backgroundColor: "#f5f5f5",
-                  width: "297mm",
-                  minHeight: "210mm",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-              >
-                <div ref={reportTemplateRef}>
-                  <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
-                </div>
-              </Modal.Body>
-            </ScrollView>
+            <Modal.Body overflow={"scroll"}>
+              <div ref={reportTemplateRef} className="certificae-height">
+                <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
+              </div>
+            </Modal.Body>
           </Modal.Content>
         </Modal>
       </VStack>
