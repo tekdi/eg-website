@@ -438,33 +438,20 @@ export default function Attendence({ footerLinks }) {
   };
 
   const startExam = async () => {
-    const result = await eventService.startExam(id);
     setIsButtonLoading(true);
-    if (true) {
+    const result = await eventService.startExam(id);
+    if (result?.success === true) {
       setIsButtonLoading(false);
       setOpenStartExam(false);
-      toast.show({
-        render: () => {
-          return (
-            <Alert status="error" alignItems={"start"} mb="3" mt="4">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <BodyMedium>Error Message</BodyMedium>
-              </HStack>
-            </Alert>
-          );
-        },
-      });
     } else {
       setIsButtonLoading(false);
-      setOpenStartExam(false);
       toast.show({
         render: () => {
           return (
             <Alert status="error" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{data?.message}</BodyMedium>
+                <BodyMedium>{result?.message}</BodyMedium>
               </HStack>
             </Alert>
           );
