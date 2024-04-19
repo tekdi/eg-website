@@ -7,54 +7,57 @@ function DatePicker({ subjectArr, examType, setSelectedDate, status }) {
   const [selectedDates, setSelectedDates] = useState({});
 
   const handleDateChange = (subject, id, date) => {
-    const subjectExists = selectedDates?.subject_details?.some(
-      (existingSubject) => existingSubject.subject_id === id
-    );
+    const subjectExists =
+      Array.isArray(selectedDates) &&
+      selectedDates.some(
+        (existingSubject) => existingSubject.subject_id === id
+      );
+
     if (subjectExists) {
       setSelectedDates((prevState) => ({
         ...prevState,
-        subject_details: prevState.subject_details.map((existingSubject) =>
-          existingSubject.subject_id === id
-            ? {
-                ...existingSubject,
-                exam_date: date,
-                type: examType,
-                status,
-              }
-            : existingSubject
-        ),
-      }));
-      setSelectedDate((prevState) => ({
-        ...prevState,
-        subject_details: prevState.subject_details.map((existingSubject) =>
-          existingSubject.subject_id === id
-            ? {
-                ...existingSubject,
-                exam_date: date,
-                type: examType,
-                status,
-              }
-            : existingSubject
-        ),
-      }));
-    } else {
-      setSelectedDates((prevState) => ({
-        ...prevState,
-        subject_details: [
-          ...(prevState.subject_details || []),
-          { subject_id: id, exam_date: date, type: examType },
-        ],
+        ...(Array.isArray(prevState)
+          ? prevState.map((existingSubject) =>
+              existingSubject.subject_id === id
+                ? {
+                    ...existingSubject,
+                    exam_date: date,
+                    type: examType,
+                    status,
+                  }
+                : existingSubject
+            )
+          : []),
       }));
 
       setSelectedDate((prevState) => ({
         ...prevState,
-        subject_details: [
-          ...(prevState.subject_details || []),
-          { subject_id: id, exam_date: date, type: examType, status },
-        ],
+        ...(Array.isArray(prevState)
+          ? prevState.map((existingSubject) =>
+              existingSubject.subject_id === id
+                ? {
+                    ...existingSubject,
+                    exam_date: date,
+                    type: examType,
+                    status,
+                  }
+                : existingSubject
+            )
+          : []),
       }));
+    } else {
+      setSelectedDates((prevState) => [
+        ...(Array.isArray(prevState) ? prevState : []),
+        { subject_id: id, exam_date: date, type: examType },
+      ]);
+
+      setSelectedDate((prevState) => [
+        ...(Array.isArray(prevState) ? prevState : []),
+        { subject_id: id, exam_date: date, type: examType, status },
+      ]);
     }
   };
+
   return (
     <Stack>
       {subjectArr?.map((subject) => (

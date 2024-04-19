@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   AdminTypo,
   Breadcrumb,
@@ -25,10 +24,8 @@ function ScheduleExam() {
   const [selectedDate, setSelectedDate] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const navigate = useNavigate();
-  const [data, setData] = useState(null);
   const [practicalSubjects, setPracticalSubjects] = useState([]);
   const [theorySubjects, setTheorySubjects] = useState([]);
-
   useEffect(async () => {
     const data = await cohortService.getProgramList();
     setProgramList(data?.data);
@@ -62,356 +59,14 @@ function ScheduleExam() {
     setFilter({ ...filter, board_id: optionId });
   };
 
-  useEffect(() => {
-    const fetchedData = {
-      data: [
-        {
-          name: "English",
-          id: 19,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Urdu",
-          id: 20,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Sanskrit",
-          id: 21,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Bengali",
-          id: 22,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Marathi",
-          id: 23,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Telugu",
-          id: 24,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Gujarati",
-          id: 25,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Kannada",
-          id: 26,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Punjabi",
-          id: 27,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Assamese",
-          id: 28,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Nepali",
-          id: 29,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Malayalam",
-          id: 30,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Hate",
-          id: 31,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [
-            {
-              context: "subjects",
-              context_id: 31,
-              program_id: 1,
-              academic_year_id: 1,
-              id: 1,
-              start_date: "2023-05-05",
-              end_date: "2023-06-06",
-              type: "theory",
-              status: "publish",
-            },
-          ],
-        },
-        {
-          name: "Arabic",
-          id: 32,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Persian",
-          id: 33,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Tamil",
-          id: 34,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Entrepreneurship",
-          id: 54,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Social Science",
-          id: 38,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Sindhi",
-          id: 35,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Economics",
-          id: 39,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Science And Technology",
-          id: 37,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Business Studies",
-          id: 40,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Psychology",
-          id: 42,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Indian Culture and Heritage",
-          id: 43,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Accountancy",
-          id: 44,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Data Entry Operations",
-          id: 46,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Carnatic Sangeet",
-          id: 48,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Sanskrit Sahitya",
-          id: 53,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Sanskrit Vyakaran",
-          id: 50,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Hindustani Sangeet",
-          id: 47,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Bharatiya Darshan",
-          id: 51,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "See Adhyayan",
-          id: 49,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Hindi",
-          id: 56,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Drawing",
-          id: 45,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: null,
-          events: [],
-        },
-        {
-          name: "Mathematics",
-          id: 36,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: true,
-          events: [],
-        },
-        {
-          name: "Home Science",
-          id: 41,
-          board: "nios",
-          board_id: 1,
-          is_theory: true,
-          is_practical: true,
-          events: [],
-        },
-      ],
-    };
-    setData(fetchedData?.data);
-  }, []);
-
-  useEffect(() => {
-    if (data) {
+  useEffect(async () => {
+    const subjectData = await organisationService.getSubjectList({
+      id: filter?.board_id,
+    });
+    if (Array.isArray(subjectData?.data)) {
       const practical = [];
       const theory = [];
-
-      data?.forEach((subject) => {
+      subjectData?.data?.forEach((subject) => {
         if (subject.is_practical) {
           practical.push(subject);
         }
@@ -423,19 +78,21 @@ function ScheduleExam() {
       setPracticalSubjects(practical);
       setTheorySubjects(theory);
     }
-  }, [data]);
+  }, [filter?.board_id]);
 
   useEffect(() => {
-    const data =
-      theorySubjects?.length + practicalSubjects?.length ==
-      selectedDate?.subject_details?.length;
-    if (data === true) {
-      setIsDisable(false);
+    if (theorySubjects?.length !== 0 && practicalSubjects?.length !== 0) {
+      const data =
+        theorySubjects.length + practicalSubjects.length == selectedDate.length;
+      if (data === true) {
+        setIsDisable(false);
+      }
     }
   }, [selectedDate]);
 
   const handleSaveButton = async () => {
-    const data = await organisationService.PoExampSchedule(selectedDate);
+    const data = await organisationService.PoExamSchedule(selectedDate);
+    setIsDisable(true);
     if (data?.success === true) {
       navigate("/");
     }
@@ -580,7 +237,5 @@ function ScheduleExam() {
     </PoAdminLayout>
   );
 }
-
-ScheduleExam.propTypes = {};
 
 export default ScheduleExam;
