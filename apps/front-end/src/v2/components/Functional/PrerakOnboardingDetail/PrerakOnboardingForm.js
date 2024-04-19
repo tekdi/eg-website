@@ -314,7 +314,7 @@ export default function PrerakOnboardingForm({
               state: programSelected?.state_name,
               district: formData?.district,
               block: formData?.block,
-              gramp: formData?.grampanchayat,
+              // gramp: formData?.grampanchayat,
             });
           }
         }
@@ -381,13 +381,7 @@ export default function PrerakOnboardingForm({
       }
     };
     fetchData();
-  }, [
-    page,
-    formData?.district,
-    formData?.block,
-    formData?.grampanchayat,
-    formData?.village,
-  ]);
+  }, [page, formData?.district, formData?.block, formData?.village]);
 
   useEffect(() => {
     let newSchema = schema;
@@ -670,28 +664,28 @@ export default function PrerakOnboardingForm({
           value: "block_name",
         });
       }
-      if (
-        schema?.["properties"]?.["grampanchayat"] &&
-        ["BIHAR"].includes(state)
-      ) {
-        newSchema = await setGramp({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-        setSchemaData(newSchema);
-      } else {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          gramp: "null",
-          schemaData: newSchema,
-        });
-        setSchemaData(newSchema);
-      }
+      // if (
+      //   schema?.["properties"]?.["grampanchayat"] &&
+      //   ["BIHAR"].includes(state)
+      // ) {
+      //   newSchema = await setGramp({
+      //     state,
+      //     district,
+      //     block,
+      //     gramp,
+      //     schemaData: newSchema,
+      //   });
+      //   setSchemaData(newSchema);
+      // } else {
+      newSchema = await setVilage({
+        state,
+        district,
+        block,
+        gramp: "null",
+        schemaData: newSchema,
+      });
+      setSchemaData(newSchema);
+      // }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
       if (schema?.["properties"]?.["village"]) {
@@ -703,42 +697,42 @@ export default function PrerakOnboardingForm({
     return newSchema;
   };
 
-  const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getGrampanchyat({
-        block: block,
-        state: state,
-        district: district,
-      });
-      if (schema?.["properties"]?.["grampanchayat"]) {
-        newSchema = getOptions(newSchema, {
-          key: "grampanchayat",
-          arr: qData?.gramPanchayat,
-          title: "grampanchayat_name",
-          value: "grampanchayat_name",
-          format: "select",
-        });
-      }
-      setSchemaData(newSchema);
+  // const setGramp = async ({ gramp, state, district, block, schemaData }) => {
+  //   let newSchema = schemaData;
+  //   setLoading(true);
+  //   if (schema?.properties?.village && block) {
+  //     const qData = await geolocationRegistryService.getGrampanchyat({
+  //       block: block,
+  //       state: state,
+  //       district: district,
+  //     });
+  //     if (schema?.["properties"]?.["grampanchayat"]) {
+  //       newSchema = getOptions(newSchema, {
+  //         key: "grampanchayat",
+  //         arr: qData?.gramPanchayat,
+  //         title: "grampanchayat_name",
+  //         value: "grampanchayat_name",
+  //         format: "select",
+  //       });
+  //     }
+  //     setSchemaData(newSchema);
 
-      if (schema?.["properties"]?.["village"] && gramp) {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-      setSchemaData(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
+  //     if (schema?.["properties"]?.["village"] && gramp) {
+  //       newSchema = await setVilage({
+  //         state,
+  //         district,
+  //         block,
+  //         gramp,
+  //         schemaData: newSchema,
+  //       });
+  //     }
+  //   } else {
+  //     newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
+  //     setSchemaData(newSchema);
+  //   }
+  //   setLoading(false);
+  //   return newSchema;
+  // };
 
   const setVilage = async ({ state, district, gramp, block, schemaData }) => {
     let newSchema = schemaData;
