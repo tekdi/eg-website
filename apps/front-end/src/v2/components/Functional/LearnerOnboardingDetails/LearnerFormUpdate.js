@@ -441,7 +441,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
           state: programSelected?.state_name,
           district: formData?.district,
           block: formData?.block,
-          gramp: formData?.grampanchayat,
+          // gramp: formData?.grampanchayat,
         });
         setSchema(newSchema);
       }
@@ -602,28 +602,28 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
           value: "block_name",
         });
       }
-      if (
-        schema?.["properties"]?.["grampanchayat"] &&
-        ["BIHAR"].includes(state)
-      ) {
-        newSchema = await setGramp({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      } else {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          gramp: "null",
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
+      // if (
+      //   schema?.["properties"]?.["grampanchayat"] &&
+      //   ["BIHAR"].includes(state)
+      // ) {
+      //   newSchema = await setGramp({
+      //     state,
+      //     district,
+      //     block,
+      //     gramp,
+      //     schemaData: newSchema,
+      //   });
+      //   setSchema(newSchema);
+      // } else {
+      newSchema = await setVilage({
+        state,
+        district,
+        block,
+        gramp: "null",
+        schemaData: newSchema,
+      });
+      setSchema(newSchema);
+      // }
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
       if (schema["properties"]["village"]) {
@@ -634,41 +634,41 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
 
-  const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getGrampanchyat({
-        block: block,
-        state: state,
-        district: district,
-      });
-      if (schema?.["properties"]?.["grampanchayat"]) {
-        newSchema = getOptions(newSchema, {
-          key: "grampanchayat",
-          arr: qData?.gramPanchayat,
-          title: "grampanchayat_name",
-          value: "grampanchayat_name",
-          format: "select",
-        });
-      }
-      setSchema(newSchema);
+  // const setGramp = async ({ gramp, state, district, block, schemaData }) => {
+  //   let newSchema = schemaData;
+  //   if (schema?.properties?.village && block) {
+  //     const qData = await geolocationRegistryService.getGrampanchyat({
+  //       block: block,
+  //       state: state,
+  //       district: district,
+  //     });
+  //     if (schema?.["properties"]?.["grampanchayat"]) {
+  //       newSchema = getOptions(newSchema, {
+  //         key: "grampanchayat",
+  //         arr: qData?.gramPanchayat,
+  //         title: "grampanchayat_name",
+  //         value: "grampanchayat_name",
+  //         format: "select",
+  //       });
+  //     }
+  //     setSchema(newSchema);
 
-      if (schema?.["properties"]?.["village"] && gramp) {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-      setSchema(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
+  //     if (schema?.["properties"]?.["village"] && gramp) {
+  //       newSchema = await setVilage({
+  //         state,
+  //         district,
+  //         block,
+  //         gramp,
+  //         schemaData: newSchema,
+  //       });
+  //     }
+  //   } else {
+  //     newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
+  //     setSchema(newSchema);
+  //   }
+  //   setLoading(false);
+  //   return newSchema;
+  // };
 
   const setVilage = async ({ state, district, gramp, block, schemaData }) => {
     let newSchema = schemaData;
