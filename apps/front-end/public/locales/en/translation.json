@@ -1322,6 +1322,13 @@
   "SR_NO": "Sr.No.",
   "START_CAMP": "Start Camp",
   "START_ENROLLMENT": "Start Enrollment",
+  "START_EXAM": "Start Exam",
+  "START_EXAM_MODAL_CONTENT": {
+    "HEADING": "Before confirming, ensure the following",
+    "MESSAGE_1": "1. Provide attendance response for all participants.",
+    "MESSAGE_2": "2. Note that the event cannot be edited after confirmation.",
+    "MESSAGE_3": "3. Once confirmed, participants will have access to the test question paper."
+  },
   "START_FIRST_CAMP_REGISTER": "Start First PCR Camp Registration",
   "START_SECOND_CAMP_REGISTER": "Start Second PCR Camp Registration",
   "START_TEST": "Start Test",

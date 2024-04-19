@@ -8,6 +8,7 @@ import {
   enumRegistryService,
   eventService,
   testRegistryService,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import html2canvas from "html2canvas";
@@ -26,6 +27,7 @@ import {
   Switch,
   Text,
   VStack,
+  useToast,
 } from "native-base";
 import {
   Suspense,
@@ -328,6 +330,9 @@ export default function Attendence({ footerLinks }) {
   const [filter, setFilter] = useState({});
   const [eventDates, setEventDates] = useState([]);
   const [enums, setEnums] = useState();
+  const [openStartExam, setOpenStartExam] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const toast = useToast();
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
@@ -430,6 +435,42 @@ export default function Attendence({ footerLinks }) {
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+  };
+
+  const startExam = async () => {
+    const result = await eventService.startExam(id);
+    setIsButtonLoading(true);
+    if (true) {
+      setIsButtonLoading(false);
+      setOpenStartExam(false);
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="error" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>Error Message</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    } else {
+      setIsButtonLoading(false);
+      setOpenStartExam(false);
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="error" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{data?.message}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    }
   };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
@@ -553,6 +594,9 @@ export default function Attendence({ footerLinks }) {
               >
                 {t("EDIT")}
               </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(true)}>
+                {t("START_EXAM")}
+              </AdminTypo.PrimaryButton>
             </Stack>
           </VStack>
           <Stack space={4}>
@@ -671,6 +715,36 @@ export default function Attendence({ footerLinks }) {
                 </div>
               </Modal.Body>
             </div>
+          </Modal.Content>
+        </Modal>
+
+        <Modal isOpen={openStartExam} size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"center"}>
+              {t("START_EXAM_MODAL_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body p="5">
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_1")}
+              </AdminTypo.H5>
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_2")}
+              </AdminTypo.H5>
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_3")}
+              </AdminTypo.H5>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(false)}>
+                {t("CANCEL")}
+              </AdminTypo.PrimaryButton>
+              <AdminTypo.Secondarybutton
+                isDisabled={isButtonLoading}
+                onPress={startExam}
+              >
+                {t("CONFIRM")}
+              </AdminTypo.Secondarybutton>
+            </Modal.Footer>
           </Modal.Content>
         </Modal>
       </VStack>
