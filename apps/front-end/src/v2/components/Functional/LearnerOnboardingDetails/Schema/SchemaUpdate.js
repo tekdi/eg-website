@@ -64,14 +64,15 @@ export default {
           type: "string",
           format: "select",
         },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: ["string", "null"],
-        },
+
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
+        },
+        grampanchayat: {
+          title: "GRAMPANCHAYAT",
+          type: ["string", "null"],
         },
         pincode: {
           title: "PINCODE",
