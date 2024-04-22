@@ -11,23 +11,22 @@ import {
   enumRegistryService,
   getSelectedProgramId,
   setSelectedProgramId,
+  organisationService,
 } from "@shiksha/common-lib";
-import { HStack, Radio, Select, Stack, VStack } from "native-base";
+import { HStack, Radio, ScrollView, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 
 const ExamSchedule = (footerLinks) => {
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const { t } = useTranslation();
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState();
   const [boardList, setBoardList] = useState();
-  const [programList, setProgramList] = useState();
-  const [selectedDate, setSelectedDate] = useState([]);
-  const [isDisable, setIsDisable] = useState(true);
+  const [practicalSubjects, setPracticalSubjects] = useState([]);
+  const [theorySubjects, setTheorySubjects] = useState([]);
 
   useEffect(async () => {
     const data = await cohortService.getProgramList();
-    setProgramList(data?.data);
     const localData = await getSelectedProgramId();
     if (localData === null) {
       const obj = data?.data?.[0];
@@ -42,34 +41,47 @@ const ExamSchedule = (footerLinks) => {
     setBoardList(boardList);
   }, []);
 
-  const handleProgramChange = async (selectedItem) => {
-    const data = programList.find((e) => e.id == selectedItem);
-    await setSelectedProgramId({
-      program_id: data?.id,
-      program_name: data?.name,
-      state_name: data?.state?.state_name,
-    });
-    setFilter({ ...filter, program_id: selectedItem });
-  };
-
   const handleSelect = (optionId) => {
     setFilter({ ...filter, selectedId: optionId });
+    getSubjectList(optionId);
   };
 
-  const theoryExams = [
-    "Sindhi",
-    "Rajasthani",
-    "Mathematics",
-    "Data Entry Operations",
-    "Psychology",
-  ];
-  const practicalExams = [
-    "Mathematics",
-    "Data Entry Operations",
-    "Science",
-    "Painting",
-    "Home Science",
-  ];
+  const getSubjectList = async (id) => {
+    const subjectData = await organisationService.getSubjectList({ id });
+
+    if (Array.isArray(subjectData?.data)) {
+      const practical = [];
+      const theory = [];
+
+      subjectData?.data?.forEach((subject) => {
+        // Filter events based on type (theory or practical)
+        const practicalEvents = subject.events.filter(
+          (event) => event.type === "practical"
+        );
+        const theoryEvents = subject.events.filter(
+          (event) => event.type === "theory"
+        );
+
+        // Add filtered events to subjects
+        const subjectWithPracticalEvents = {
+          ...subject,
+          events: practicalEvents,
+        };
+        const subjectWithTheoryEvents = { ...subject, events: theoryEvents };
+
+        // Push subjects with events to respective arrays
+        if (subject.is_practical) {
+          practical.push(subjectWithPracticalEvents);
+        }
+        if (subject.is_theory) {
+          theory.push(subjectWithTheoryEvents);
+        }
+      });
+
+      setPracticalSubjects(practical);
+      setTheorySubjects(theory);
+    }
+  };
 
   return (
     <Layout
@@ -131,28 +143,62 @@ const ExamSchedule = (footerLinks) => {
             ))}
           </HStack>
         </VStack>
-        <VStack p={4} pl={0} space={4}>
-          <AdminTypo.H5 bold color="textGreyColor.500">
-            {t("SELECT_DATE")}
-          </AdminTypo.H5>
-          <HStack space={4}>
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title="Theory Exams"
-            >
-              <VStack></VStack>
-            </CardComponent>
+        {practicalSubjects.length > 0 && (
+          <VStack p={4} pl={0} space={4}>
+            <AdminTypo.H5 bold color="textGreyColor.500">
+              {t("SELECT_DATE")}
+            </AdminTypo.H5>
+            <HStack space={4}>
+              <CardComponent
+                _header={{ bg: "light.100" }}
+                _vstack={{ space: 0, flex: 1, bg: "light.100" }}
+                _hstack={{ borderBottomWidth: 0, p: 1 }}
+                title="Theory Exams"
+              >
+                <ScrollView>
+                  <VStack space={2} padding={4} height="400px">
+                    {theorySubjects?.map((subjects) => {
+                      return (
+                        <HStack
+                          key={subjects?.name}
+                          justifyContent={"space-Between"}
+                        >
+                          <AdminTypo.H3>{subjects?.name}</AdminTypo.H3>
+                          <AdminTypo.H3>
+                            {subjects?.events?.[0]?.start_date || "-"}
+                          </AdminTypo.H3>
+                        </HStack>
+                      );
+                    })}
+                  </VStack>
+                </ScrollView>
+              </CardComponent>
 
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title={t("Practical Exams")}
-            ></CardComponent>
-          </HStack>
-        </VStack>
+              <CardComponent
+                _header={{ bg: "light.100" }}
+                _vstack={{ space: 0, flex: 1, bg: "light.100" }}
+                _hstack={{ borderBottomWidth: 0, p: 1 }}
+                title={t("Practical Exams")}
+              >
+                <VStack>
+                  {practicalSubjects?.map((subjects) => {
+                    return (
+                      <HStack
+                        key={subjects?.name}
+                        justifyContent={"space-Between"}
+                      >
+                        <AdminTypo.H3>{subjects?.name}</AdminTypo.H3>
+                        <AdminTypo.H3>
+                          {subjects?.events?.[0]?.start_date || "-"}
+                        </AdminTypo.H3>
+                      </HStack>
+                    );
+                  })}
+                </VStack>
+              </CardComponent>
+            </HStack>
+          </VStack>
+        )}
       </Stack>
     </Layout>
   );
