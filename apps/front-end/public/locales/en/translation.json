@@ -465,6 +465,7 @@
   "EDIT_AADHAR_NUMBER": "Edit Aadhaar number",
   "EDIT_DETAILS": "Edit Details",
   "EDIT_ENROLLMENT_NUMBER": "Edit enrollment number",
+  "EDIT_EVENT_WARNING": "Examination has started, hence you cannot edit the event now",
   "EDUCATION": "Education",
   "EDUCATION_AND_WORK_DETAILS": "Education and job Details",
   "EDUCATION_DETAILS": "Educational Details",
