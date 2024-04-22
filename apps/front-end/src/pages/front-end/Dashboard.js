@@ -285,26 +285,26 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       } else {
         setExamButtonText("TAKE_TEST");
       }
-      // setIsTodayAttendace(
-      //   data?.attendances?.filter(
-      //     (attendance) =>
-      //       attendance.user_id == fa_id &&
-      //       attendance.status == "present" &&
-      //       data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
-      //   )
-      // );
+      setIsTodayAttendace(
+        data?.attendances?.filter(
+          (attendance) =>
+            attendance.user_id == fa_id &&
+            attendance.status == "present" &&
+            data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
+        )
+      );
 
-      // if (data?.lms_test_tracking?.length > 0) {
-      //   setCertificateData(data?.lms_test_tracking?.[0]);
-      // }
-      // const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-      // const format = "HH:mm:ss";
-      // const time = moment(moment().format(format), format);
-      // const beforeTime = moment.utc(data?.start_time, format).local();
-      // const afterTime = moment.utc(data?.end_time, format).local();
-      // if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-      //   setIsEventActive(data);
-      // }
+      if (data?.lms_test_tracking?.length > 0) {
+        setCertificateData(data?.lms_test_tracking?.[0]);
+      }
+      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+      const format = "HH:mm:ss";
+      const time = moment(moment().format(format), format);
+      const beforeTime = moment.utc(data?.start_time, format).local();
+      const afterTime = moment.utc(data?.end_time, format).local();
+      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+        setIsEventActive(data);
+      }
     }
   };
 
@@ -409,7 +409,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   }, [facilitator]);
 
   const handleRandomise = async () => {
-    const doIdArray = modalVisible?.params?.do_id;
+    const doIdArray = isEventActive?.params?.do_id;
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
@@ -421,9 +421,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const startTest = async () => {
+    console.log("hello");
     try {
       const randomizedDoId = await handleRandomise();
-      navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
+      navigate(`/assessment/events/${isEventActive?.id}/${randomizedDoId}`);
       navigate(0);
     } catch (error) {
       console.error("Error handling randomization:", error);
@@ -605,7 +606,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <FrontEndTypo.Primarybutton
                     fontSize
                     onPress={() => {
-                      setModalVisible(events);
+                      setModalVisible(true);
                     }}
                   >
                     {t("PRERAK_CERTIFICATION")}
@@ -621,20 +622,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             >
               <Modal.Content>
                 <Modal.Header alignItems={"center"}>
-                  <HStack alignItems={"center"}>
-                    <AdminTypo.H4 color="textGreyColor.500">
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.H4>
-                  </HStack>
+                  <VStack alignItems={"center"}>
+                    {isEventActive ? (
+                      <AdminTypo.H4 color="textGreyColor.500" bold>
+                        {`${t("EVENT_ID")} / ${t("NAME")} : ${
+                          isEventActive?.id
+                        } / ${isEventActive?.name}`}
+                      </AdminTypo.H4>
+                    ) : (
+                      <AdminTypo.H4 color="textGreyColor.500">
+                        {t("PRERAK_CERTIFICATION_PROGRAM")}
+                      </AdminTypo.H4>
+                    )}
+                  </VStack>
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack width={"100%"}>
                     {isEventActive ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(
-                          isTodayAttendace?.length > 0
-                            ? examButtonText
-                            : "TODAYS_ATTENDANCE_MISSING"
+                          isTodayAttendace?.length < 1
+                            ? "TODAYS_ATTENDANCE_MISSING"
+                            : isEventActive?.params?.start_exam != "yes"
+                            ? "EXAM_NOT_STARTED_YET"
+                            : examButtonText
                         )}
                       </AdminTypo.H3>
                     ) : certificateData?.certificate_status === null ? (
@@ -663,17 +674,23 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         data={events}
                         columns={[
                           {
-                            name: t("EVENT_ID"),
-                            selector: (row) => row?.id,
-                          },
-                          {
-                            name: t("EVENT"),
-                            selector: (row) => row?.name,
+                            name: `${t("EVENT_ID")} / ${t("NAME")}`,
+                            selector: (row) => `${row?.id} / ${row?.name}`,
                           },
                           {
                             name: t("ATTENDANCE"),
-                            selector: (row) =>
-                              row?.attendance?.length > 0 ? "yes" : "no",
+                            selector: (row) => {
+                              const attData = row?.attendances?.filter(
+                                (attendance) =>
+                                  attendance.user_id == fa_id &&
+                                  attendance.status == "present" &&
+                                  row.end_date ==
+                                    moment(attendance.date_time).format(
+                                      "YYYY-MM-DD"
+                                    )
+                              );
+                              return attData.length > 0 ? "yes" : "no";
+                            },
                           },
                           {
                             name: t("EXAM_START_STATUS"),
@@ -710,14 +727,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {events && isTodayAttendace?.length > 0 && (
-                      <FrontEndTypo.DefaultButton
-                        background={"textRed.400"}
-                        onPress={startTest}
-                      >
-                        {t("START_TEST")}
-                      </FrontEndTypo.DefaultButton>
-                    )}
+                    {isEventActive?.params?.start_exam == "yes" &&
+                      isTodayAttendace?.length > 0 && (
+                        <FrontEndTypo.DefaultButton
+                          background={"textRed.400"}
+                          onPress={startTest}
+                        >
+                          {t("START_TEST")}
+                        </FrontEndTypo.DefaultButton>
+                      )}
                     {certificateData?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
@@ -1190,14 +1208,13 @@ const TableCard = ({ data, columns, setExamEvent }) => {
             <VStack px="4" p="2">
               <FrontEndTypo.Primarybutton
                 p="0"
-                onPress={(e) => setExamEvent(data)}
+                onPress={(e) => setExamEvent(item)}
               >
                 {t("SELECT")}
               </FrontEndTypo.Primarybutton>
             </VStack>
           }
           key={item}
-          grid={2}
           _body={{ bg: "light.100", roundedBottom: 0, p: 4 }}
           _subHstack={{ flex: 1, space: 2 }}
           _hstack={{ space: 2 }}
@@ -1207,7 +1224,13 @@ const TableCard = ({ data, columns, setExamEvent }) => {
           }}
           item={setData(item)}
           arr={columns?.map((e, key) => key) || []}
-          label={columns?.map((e) => e?.name) || []}
+          label={
+            columns?.map((e) => ({
+              label: e?.name,
+              _text: { flex: 2 },
+              _value: { flex: 1 },
+            })) || []
+          }
           isHideProgressBar
         />
       ))}
