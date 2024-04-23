@@ -8,8 +8,12 @@ import {
   enumRegistryService,
   eventService,
   testRegistryService,
+  BodyMedium,
 } from "@shiksha/common-lib";
-import DataTable from "react-data-table-component";
+import Chip from "component/Chip";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { debounce } from "lodash";
 import moment from "moment";
 import {
   Alert,
@@ -23,6 +27,7 @@ import {
   Switch,
   Text,
   VStack,
+  useToast,
 } from "native-base";
 import {
   Suspense,
@@ -32,13 +37,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { debounce } from "lodash";
 import { useWindowDimensions } from "react-native-web";
-import Chip from "component/Chip";
+import { useNavigate, useParams } from "react-router-dom";
 
 const customStyles = {
   headCells: {
@@ -260,14 +262,15 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
           const { presentDate } = row;
           const format = "YYYY-MM-DD HH:mm";
           const currentDate = moment();
-          const startDate = moment(
-            `${event?.start_date} ${event?.start_time}`,
-            format
-          );
-          const endDate = moment(
-            `${event?.end_date} ${event?.end_time}`,
-            format
-          );
+          const startDate = moment
+            .utc(
+              event?.start_date + " " + event?.start_time,
+              "YYYY-MM-DD HH:mm:ss"
+            )
+            ?.local();
+          const endDate = moment
+            .utc(event?.end_date + " " + event?.end_time, "YYYY-MM-DD HH:mm:ss")
+            ?.local();
 
           const newPresentDate = moment(
             `${presentDate} ${moment().format("HH:mm")}`,
@@ -327,6 +330,9 @@ export default function Attendence({ footerLinks }) {
   const [filter, setFilter] = useState({});
   const [eventDates, setEventDates] = useState([]);
   const [enums, setEnums] = useState();
+  const [openStartExam, setOpenStartExam] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const toast = useToast();
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
@@ -429,6 +435,29 @@ export default function Attendence({ footerLinks }) {
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+  };
+
+  const startExam = async () => {
+    setIsButtonLoading(true);
+    const result = await eventService.startExam(id);
+    if (result?.success === true) {
+      setIsButtonLoading(false);
+      setOpenStartExam(false);
+    } else {
+      setIsButtonLoading(false);
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="error" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{result?.message}</BodyMedium>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    }
   };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
@@ -552,6 +581,9 @@ export default function Attendence({ footerLinks }) {
               >
                 {t("EDIT")}
               </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(true)}>
+                {t("START_EXAM")}
+              </AdminTypo.PrimaryButton>
             </Stack>
           </VStack>
           <Stack space={4}>
@@ -649,7 +681,7 @@ export default function Attendence({ footerLinks }) {
           </Stack>
         </VStack>
 
-        <Modal isOpen={certificateHtml} size="xl">
+        <Modal isOpen={certificateHtml} size="full" margin={"auto"}>
           <Modal.Content>
             <Modal.Header>
               <HStack justifyContent={"space-between"} pr="10">
@@ -663,19 +695,43 @@ export default function Attendence({ footerLinks }) {
                 />
               </HStack>
             </Modal.Header>
-            <Modal.Body
-              style={{
-                backgroundColor: "#f5f5f5",
-                width: "297mm",
-                minHeight: "210mm",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-            >
-              <div ref={reportTemplateRef}>
-                <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
-              </div>
+            <div className="certificae-parent">
+              <Modal.Body>
+                <div ref={reportTemplateRef} className="certificae-height">
+                  <div dangerouslySetInnerHTML={{ __html: certificateHtml }} />
+                </div>
+              </Modal.Body>
+            </div>
+          </Modal.Content>
+        </Modal>
+
+        <Modal isOpen={openStartExam} size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"center"}>
+              {t("START_EXAM_MODAL_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body p="5">
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_1")}
+              </AdminTypo.H5>
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_2")}
+              </AdminTypo.H5>
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_3")}
+              </AdminTypo.H5>
             </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(false)}>
+                {t("CANCEL")}
+              </AdminTypo.PrimaryButton>
+              <AdminTypo.Secondarybutton
+                isDisabled={isButtonLoading}
+                onPress={startExam}
+              >
+                {t("CONFIRM")}
+              </AdminTypo.Secondarybutton>
+            </Modal.Footer>
           </Modal.Content>
         </Modal>
       </VStack>

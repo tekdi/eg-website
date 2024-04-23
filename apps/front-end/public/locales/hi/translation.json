@@ -527,6 +527,7 @@
   "EVALUATION_1": "रैपिड अससेसमेंट - I",
   "EVALUATION_2": "रैपिड अससेसमेंट - II",
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "इस घटना के लिए कोई मूल्यांकन उपलब्ध नहीं है",
+  "EVENT_ID": "इवेंट आईडी",
   "EVENT_BATCH_NAME_BATCH_1": "बैच 1",
   "EVENT_BATCH_NAME_BATCH_10": "बैच 10",
   "EVENT_BATCH_NAME_BATCH_11": "बैच 11",
@@ -1085,6 +1086,7 @@
   "PRERAK": "प्रेरक",
   "PRERAK_BIO": "प्रेरक जानकारी",
   "PRERAK_CERTIFICATION_PROGRAM": "प्रेरक प्रशिक्षण प्रमाणिकरण",
+  "PRERAK_CERTIFICATION": "प्रेरक प्रमाणिकरण",
   "PRERAK_CHANGED_MIND": "बदले हुए मन",
   "PRERAK_COMMUNITY": "प्रेरक समुदाय",
   "PRERAK_COMMUNITY_ISSUE": "सामुदायिक मुद्दा",
@@ -1321,6 +1323,13 @@
   "SR_NO": "सीनियर नं.",
   "START_CAMP": "शिविर प्रारंभ करें",
   "START_ENROLLMENT": "नामांकन शुरू करें",
+  "START_EXAM": "परीक्षा प्रारंभ करें",
+  "START_EXAM_MODAL_CONTENT": {
+    "HEADING": "पुष्टि करने से पहले, निम्नलिखित सुनिश्चित करें:",
+    "MESSAGE_1": "1. सभी प्रतिभागियों के लिए उपस्थिति प्रतिक्रिया प्रदान करें।",
+    "MESSAGE_2": "2. ध्यान दें कि पुष्टि के बाद ईवेंट को एडिट  नहीं किया जा सकता है।",
+    "MESSAGE_3": "3. एक बार पुष्टि हो जाने पर, प्रतिभागियों को परीक्षण प्रश्न पत्र तक पहुंच प्राप्त होगी।"
+  },
   "START_FIRST_CAMP_REGISTER": "पहला शिविर रजिस्टर करें",
   "START_SECOND_CAMP_REGISTER": "दूसरा शिविर रजिस्टर करें",
   "START_TEST": "परीक्षण प्रारंभ करें",
@@ -1395,6 +1404,7 @@
   "TODAYS_ACTIVITIES": "आज की गतिविधियाँ",
   "TODAYS_CAMP_HAS_BEEN_COMPLETED": "आज का शिविर पूरा हो गया है",
   "TODAYS_TASKS": "आज की गतिविधियां",
+  "TODAYS_ATTENDANCE_MISSING": "आज की उपस्थिति नहीं है",
   "TOMORROW": "आने वाला कल",
   "TRAINING": "प्रशिक्षण",
   "TRAINING_DAYS": "प्रशिक्षण दिवस",
@@ -1544,7 +1554,7 @@
   "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
   "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
   "EPCP": {
-    "TITLE": " द्वारा RSOS app का उपयोग",
+    "TITLE": " शिक्षार्थियों द्वारा RSOS app का उपयोग",
     "HAS_LOGGED_RSOS_APP": {
       "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
       "YES": "हाँ",
@@ -1566,7 +1576,7 @@
       "NO": "नहीं"
     },
     "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
+      "TITLE": "e-PCP का टेस्ट का स्क्रीनशॉट अपलोड करे"
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
       "TITLE": "एक कारण चुनें *",
@@ -1636,7 +1646,7 @@
       "NO": "नहीं"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
+      "TITLE": "क्या शिक्षार्थी ने प्रेक्टिकल फाइल तैयार की है ?",
       "YES": "हाँ",
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है"
@@ -1653,6 +1663,9 @@
       "NO": "नहीं"
     }
   },
+  "IT_WILL_NOT_BE_DETERMINED": "निश्चित नहीं की जाएंगे",
+  "THEY_WONT_GO": "नहीं जाएंगे ",
+  "WILL_BE_DETERMINED": "निश्चित जाएंगे",
   "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
   "TARGET_CAMP": "शिविर लक्ष्य",
   "USER": "उपयोगकर्ता",

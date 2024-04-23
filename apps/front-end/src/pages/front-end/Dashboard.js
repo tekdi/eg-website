@@ -6,17 +6,19 @@ import {
   Layout,
   RedOutlineButton,
   arrList,
+  cohortService,
+  removeOnboardingURLData,
+  removeOnboardingMobile,
+  getOnboardingURLData,
+  H1,
+  setSelectedProgramId,
+  getOnboardingMobile,
+  setSelectedAcademicYear,
+  getSelectedProgramId,
   enumRegistryService,
   facilitatorRegistryService,
-  getOnboardingMobile,
-  getOnboardingURLData,
   getSelectedAcademicYear,
-  getSelectedProgramId,
   objProps,
-  removeOnboardingMobile,
-  removeOnboardingURLData,
-  setSelectedAcademicYear,
-  setSelectedProgramId,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import {
@@ -45,6 +47,7 @@ import {
   getIndexedDBItem,
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
+import { SyncOfflineData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 const styles = {
   inforBox: {
@@ -74,7 +77,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const fa_id = localStorage.getItem("id");
   const [isEventActive, setIsEventActive] = useState(false);
   const [lmsDetails, setLmsDetails] = useState();
-  const { id } = userTokenInfo?.authUser || [];
+  const { id } = userTokenInfo?.authUser || {};
   const [events, setEvents] = useState("");
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -90,6 +93,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+  const [isTodayAttendace, setIsTodayAttendace] = useState();
 
   const [env_name] = useState(process.env.NODE_ENV);
 
@@ -227,7 +231,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   useEffect(() => {
     async function fetchData() {
       // ...async operation
-
       if (countLoad == 0) {
         setCountLoad(1);
       }
@@ -266,27 +269,31 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.attendances.filter(
-                  (attendance) =>
-                    attendance.user_id == fa_id &&
-                    attendance.status == "present" &&
-                    eventItem.end_date ==
-                      moment(attendance.date_time).format("YYYY-MM-DD")
-                )?.length
+                eventItem?.lms_test_tracking?.length < 1
             )?.[0] || {};
-          setCertificateData(data);
-          if (data?.lms_test_tracking?.length > 0) {
-            setLmsDetails(data?.lms_test_tracking?.[0]);
-          }
+          if (data) {
+            setIsTodayAttendace(
+              data?.attendances.filter(
+                (attendance) =>
+                  attendance.user_id == fa_id &&
+                  attendance.status == "present" &&
+                  data.end_date ==
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
+            );
 
-          const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-          const format = "HH:mm:ss";
-          const time = moment(moment().format(format), format);
-          const beforeTime = moment(data?.start_time, format);
-          const afterTime = moment(data?.end_time, format);
-
-          if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-            setIsEventActive(true);
+            setCertificateData(data);
+            if (data?.lms_test_tracking?.length > 0) {
+              setLmsDetails(data?.lms_test_tracking?.[0]);
+            }
+            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+            const format = "HH:mm:ss";
+            const time = moment(moment().format(format), format);
+            const beforeTime = moment.utc(data?.start_time, format).local();
+            const afterTime = moment.utc(data?.end_time, format).local();
+            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+              setIsEventActive(true);
+            }
           }
         } catch (error) {
           console.log(error);
@@ -527,6 +534,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     setAcademicYear(item);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await SyncOfflineData(fa_id, isOnline);
+    };
+
+    fetchData();
+  }, [isOnline]);
+
   return (
     <Layout
       loading={loading}
@@ -595,7 +610,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         setModalVisible(certificateData);
                       }}
                     >
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
+                      {t("PRERAK_CERTIFICATION")}
                     </FrontEndTypo.Primarybutton>
                   </HStack>
                 )}
@@ -615,12 +630,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack>
-                    {lmsDetails === undefined && (
+                    {certificateData ? (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t(events)}
+                        {t(
+                          isTodayAttendace?.length > 0
+                            ? events
+                            : "TODAYS_ATTENDANCE_MISSING"
+                        )}
                       </AdminTypo.H3>
-                    )}
-                    {lmsDetails?.certificate_status === null ? (
+                    ) : lmsDetails?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
@@ -667,19 +685,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDetails === undefined &&
-                      !(
-                        certificateData?.params?.do_id == null ||
-                        (Array.isArray(certificateData?.params?.do_id) &&
-                          certificateData?.params?.do_id?.length === 0)
-                      ) && (
-                        <FrontEndTypo.DefaultButton
-                          background={"textRed.400"}
-                          onPress={startTest}
-                        >
-                          {t("START_TEST")}
-                        </FrontEndTypo.DefaultButton>
-                      )}
+                    {certificateData && isTodayAttendace?.length > 0 && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={startTest}
+                      >
+                        {t("START_TEST")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
                     {lmsDetails?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
@@ -835,7 +848,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </VStack>
                 </HStack>
               )}
-              {isDocumentUpload("vo_experience") && (
+              {/* {isDocumentUpload("vo_experience") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
@@ -851,7 +864,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                     </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
-              )}
+              )} */}
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"

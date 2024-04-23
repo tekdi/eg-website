@@ -525,6 +525,7 @@
   "EVALUATION_1": "Rapid Assesment-I",
   "EVALUATION_2": "Rapid Assesment-II",
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "There is no assessment available for this event",
+  "EVENT_ID": "Event ID",
   "EVENT_BATCH_NAME_BATCH_1": "Batch 1",
   "EVENT_BATCH_NAME_BATCH_10": "Batch 10",
   "EVENT_BATCH_NAME_BATCH_11": "Batch 11",
@@ -1084,6 +1085,7 @@
   "PRERAK": "Prerak",
   "PRERAK_BIO": "Prerak Bio",
   "PRERAK_CERTIFICATION_PROGRAM": "Prerak Certification Program",
+  "PRERAK_CERTIFICATION": "Prerak Certification",
   "PRERAK_CHANGED_MIND": "Changed Mind",
   "PRERAK_COMMUNITY": "Prerak Community",
   "PRERAK_COMMUNITY_ISSUE": "Community Issue",
@@ -1320,6 +1322,13 @@
   "SR_NO": "Sr.No.",
   "START_CAMP": "Start Camp",
   "START_ENROLLMENT": "Start Enrollment",
+  "START_EXAM": "Start Exam",
+  "START_EXAM_MODAL_CONTENT": {
+    "HEADING": "Before confirming, ensure the following",
+    "MESSAGE_1": "1. Provide attendance response for all participants.",
+    "MESSAGE_2": "2. Note that the event cannot be edited after confirmation.",
+    "MESSAGE_3": "3. Once confirmed, participants will have access to the test question paper."
+  },
   "START_FIRST_CAMP_REGISTER": "Start First PCR Camp Registration",
   "START_SECOND_CAMP_REGISTER": "Start Second PCR Camp Registration",
   "START_TEST": "Start Test",
@@ -1394,6 +1403,7 @@
   "TODAYS_ACTIVITIES": "Today's Activities",
   "TODAYS_CAMP_HAS_BEEN_COMPLETED": "Today's camp has been completed",
   "TODAYS_TASKS": "Today's Activities",
+  "TODAYS_ATTENDANCE_MISSING": "Today's attendance missing",
   "TOMORROW": "Tomorrow",
   "TRAINING": "Training",
   "TRAINING_DAYS": "Training Days",
@@ -1543,7 +1553,7 @@
   "PREPARATION_FOR_EXAM": "Preparation for Exam",
   "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
   "EPCP": {
-    "TITLE": "'s Use of the RSOS App",
+    "TITLE": "Learner's Use of the RSOS App",
     "HAS_LOGGED_RSOS_APP": {
       "TITLE": "Has the learner logged into the RSOS App?",
       "YES": "yes",
@@ -1565,7 +1575,7 @@
       "NO": "no"
     },
     "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "Upload an Image of your Document "
+      "TITLE": "Upload a screenshot of the e-PCP test"
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
       "TITLE": "Choose the reason *",
@@ -1651,6 +1661,9 @@
       "NO": "no"
     }
   },
+  "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
+  "WILL_BE_DETERMINED": "will be determined",
+  "THEY_WONT_GO": "They won't go",
   "LEARNERS_PER_TARGET": "Average learners per camp",
   "TARGET_CAMP": "Target Camp",
   "USER": "User",

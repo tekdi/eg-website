@@ -21,8 +21,7 @@ import {
   Checkbox,
   HStack,
   Input,
-  Menu,
-  Pressable,
+  Select,
   Stack,
   VStack,
   useToast,
@@ -140,9 +139,6 @@ export default function EventHome({ footerLinks }) {
   const { t } = useTranslation();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [data, setData] = useState();
-  const [district, setDistrict] = useState();
-  const [block, setBlock] = useState();
-  const [village, setVillage] = useState();
   const [programData, setProgramData] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const [isDisabled, setIsDisabled] = useState(true);
@@ -150,7 +146,6 @@ export default function EventHome({ footerLinks }) {
   const navigate = useNavigate();
   const { step, id } = useParams();
   const [selectedRowId, setSelectedRowIds] = useState([]);
-  const [eventDetails, setEventDetails] = useState([]);
 
   const [formData, setFormData] = useState({});
 
@@ -160,27 +155,32 @@ export default function EventHome({ footerLinks }) {
   useEffect(async () => {
     if (id) {
       const eventResult = await eventService.getEventListById({ id });
+      const peopleResult = await eventService.getAttendanceList({ id });
       const { event } = eventResult;
-      setEventDetails(eventResult);
-      const selectedId =
-        eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
+      const selectedId = peopleResult?.data?.map((e) => e?.id) || [];
+      // eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
       setSelectedRowIds(selectedId);
       setIsListOpen(false);
       const timeFormat = "HH:mm:ss";
+      const dateFormat = "YYYY-MM-DD";
+      const start_date_time = moment
+        .utc(event?.start_date + " " + event?.start_time, "YYYY-MM-DD HH:mm:ss")
+        ?.local();
+      const end_date_time = moment
+        .utc(event?.end_date + " " + event?.end_time, "YYYY-MM-DD HH:mm:ss")
+        ?.local();
       setFormData({
         type: event?.type,
         name: event?.name,
         master_trainer: event?.master_trainer,
         date: JSON.stringify({
-          startDate: event?.start_date,
-          endDate: event?.end_date,
+          startDate: start_date_time.format(dateFormat),
+          endDate: end_date_time.format(dateFormat),
         }),
-        start_date: event?.start_date,
-        start_time: moment
-          .utc(event?.start_time, `HH:mm:ssZ`)
-          .format(timeFormat),
-        end_date: event?.end_date,
-        end_time: moment.utc(event?.end_time, `HH:mm:ssZ`).format(timeFormat),
+        start_date: start_date_time.format(dateFormat),
+        start_time: start_date_time.format(timeFormat),
+        end_date: end_date_time.format(dateFormat),
+        end_time: end_date_time.format(timeFormat),
       });
     }
   }, [id]);
@@ -252,7 +252,7 @@ export default function EventHome({ footerLinks }) {
           ...filter,
           district: filter?.districts?.[0],
           block: filter?.blocks?.[0],
-          type: formData?.type || eventDetails?.event?.type,
+          type: formData?.type,
         });
 
       setData(result?.data?.data);
@@ -262,50 +262,6 @@ export default function EventHome({ footerLinks }) {
 
     fetchData();
   }, [isListOpen, step, formData?.type, filter]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let programSelected = jsonParse(localStorage.getItem("program"));
-      const stateName = programSelected?.state_name;
-      setProgramData(stateName);
-      const getDistricts = await geolocationRegistryService.getDistricts({
-        name: stateName,
-      });
-      if (Array.isArray(getDistricts?.districts)) {
-        setDistrict(getDistricts?.districts);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const blockss = useCallback(async () => {
-    if (filter?.districts) {
-      const blockData = await geolocationRegistryService.getMultipleBlocks({
-        districts: filter?.districts,
-      });
-      setBlock(blockData);
-    }
-  }, [filter?.districts]);
-
-  useEffect(() => {
-    blockss();
-  }, [filter?.districts]);
-
-  const villageData = useCallback(async () => {
-    if (programData === "BIHAR" && filter?.districts && filter?.blocks) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: filter?.blocks?.[0],
-        state: programData,
-        district: filter?.districts?.[0],
-        gramp: "null",
-      });
-      setVillage(qData?.villages);
-    }
-  }, [filter?.blocks]);
-
-  useEffect(() => {
-    villageData();
-  }, [filter?.blocks]);
 
   useEffect(() => {
     const persan = arrList(formData, [
@@ -410,12 +366,36 @@ export default function EventHome({ footerLinks }) {
           start_date: moment(startDate).format("YYYY-MM-DD"),
           end_date: moment(endDate).format("YYYY-MM-DD"),
           attendees: selectedRowId,
+          context: "events",
         };
         if (step === "edit") {
           const data = await eventService.updateEvent(id, obj);
           if (data?.success === true) {
             setIsDisabled(false);
             navigate(`/admin/event/${data?.data?.events?.id}`);
+          } else {
+            const newErrors = {
+              [["start_date", "end_date"].includes(data?.key)
+                ? "date"
+                : ["start_time", "end_time"].includes(data?.key)
+                ? data?.key
+                : "name"]: {
+                __errors: [t(data?.message)],
+              },
+            };
+            setErrors(newErrors);
+            toast.show({
+              render: () => {
+                return (
+                  <Alert status="error" alignItems={"start"} mb="3" mt="4">
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>{data?.message}</BodyMedium>
+                    </HStack>
+                  </Alert>
+                );
+              },
+            });
           }
         } else {
           const apiResponse = await eventService.createNewEvent(obj);
@@ -517,6 +497,7 @@ export default function EventHome({ footerLinks }) {
       }
     }
   };
+
   return (
     <Layout
       _sidebar={footerLinks}
@@ -616,9 +597,10 @@ export default function EventHome({ footerLinks }) {
                   space={4}
                   flexWrap={"wrap"}
                   direction={["column", "column", "column", "row", "row"]}
+                  alignItems={"center"}
                 >
                   <Input
-                    minH="32px"
+                    // minH="32px"
                     InputLeftElement={
                       <IconByName color="coolGray.500" name="SearchLineIcon" />
                     }
@@ -626,32 +608,8 @@ export default function EventHome({ footerLinks }) {
                     variant="outline"
                     onChange={debouncedHandleSearch}
                   />
-                  <HStack space={4} alignItems={"center"}>
-                    <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                    <HStack space={4} alignItems={"center"}>
-                      <District
-                        district={district}
-                        filter={filter}
-                        t={t}
-                        setFilter={setFilter}
-                      />
-
-                      <Blocks
-                        block={block}
-                        t={t}
-                        filter={filter}
-                        setFilter={setFilter}
-                      />
-                      {programData === "BIHAR" && (
-                        <Village
-                          village={village}
-                          t={t}
-                          filter={filter}
-                          setFilter={setFilter}
-                        />
-                      )}
-                    </HStack>
-                  </HStack>
+                  <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
+                  <LocationFilters filter={filter} setFilter={setFilter} />
                 </HStack>
                 <Stack alignSelf={"end"} pb={2} pr={4}>
                   <AdminTypo.H6 bold color="textBlue.200">
@@ -685,147 +643,180 @@ export default function EventHome({ footerLinks }) {
   );
 }
 
-const District = ({ district, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { districts, blocks, village, ...data } = filter;
-    setFilter(data);
+const LocationFilters = ({ filter, setFilter }) => {
+  const { t } = useTranslation();
+  const [district, setDistrict] = useState();
+  const [block, setBlock] = useState();
+  const [village, setVillage] = useState();
+  const [programData, setProgramData] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let programSelected = jsonParse(localStorage.getItem("program"));
+      const stateName = programSelected?.state_name;
+      setProgramData(stateName);
+      const getDistricts = await geolocationRegistryService.getDistricts({
+        name: stateName,
+      });
+      if (Array.isArray(getDistricts?.districts)) {
+        setDistrict(getDistricts?.districts);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const changeFilterOptions = (filterType, value) => {
+    switch (filterType) {
+      case "districts":
+        if (value === "") {
+          setBlock([]);
+          setVillage([]);
+          const { districts, blocks, villages, ...data } = filter;
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+
+      case "blocks":
+        if (value === "") {
+          const { blocks, villages, ...data } = filter;
+          setVillage([]);
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+
+      case "villages":
+        if (value === "") {
+          const { villages, ...data } = filter;
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+
+      default:
+        if (value === "") {
+          const { districts, blocks, villages, ...data } = filter;
+          setFilter(data);
+        } else {
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            [filterType]: [value],
+          }));
+        }
+        break;
+    }
   };
 
-  return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.districts ? filter?.districts : t("DISTRICT")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {district &&
-        district.map &&
-        district.map((e) => (
-          <Menu.Item
-            key={e.district_id}
-            onPress={() =>
-              setFilter((prevFilter) => ({
-                ...prevFilter,
-                districts: [e.district_name],
-              }))
-            }
-          >
-            {e.district_name}
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-};
-const Blocks = ({ block, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { blocks, village, ...data } = filter;
-    setFilter(data);
-  };
-  return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.blocks ? filter?.blocks : t("BLOCK")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {block &&
-        block?.map &&
-        block?.map((e) => (
-          <Menu.Item
-            key={e?.block_name}
-            onPress={() =>
-              setFilter((prevFilter) => ({
-                ...prevFilter,
-                blocks: [e?.block_name],
-              }))
-            }
-          >
-            {e?.block_name}
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-};
+  const blockss = useCallback(async () => {
+    if (filter?.districts) {
+      const blockData = await geolocationRegistryService.getMultipleBlocks({
+        districts: filter?.districts,
+      });
+      setBlock(blockData);
+    }
+  }, [filter?.districts]);
 
-const Village = ({ village, filter, t, setFilter }) => {
-  const handleSelectAll = () => {
-    const { village, ...data } = filter;
-    setFilter(data);
-  };
+  useEffect(() => {
+    blockss();
+  }, [filter?.districts]);
+
+  const villageData = useCallback(async () => {
+    if (programData === "BIHAR" && filter?.districts && filter?.blocks) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: filter?.blocks?.[0],
+        state: programData,
+        district: filter?.districts?.[0],
+        gramp: "null",
+      });
+      setVillage(qData?.villages);
+    }
+  }, [filter?.blocks]);
+
+  useEffect(() => {
+    villageData();
+  }, [filter?.blocks]);
+
   return (
-    <Menu
-      shadow={2}
-      trigger={(triggerProps) => {
-        return (
-          <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <HStack space={4}>
-              <AdminTypo.H4>
-                {filter?.villages ? filter?.village : t("VILLAGE_WARD")}
-              </AdminTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Pressable>
-        );
-      }}
-    >
-      <Menu.Item key="selectAll" onPress={handleSelectAll}>
-        Select All
-      </Menu.Item>
-      {village?.map((e) => (
-        <Menu.Item
-          key={e?.block_id}
-          onPress={() =>
-            setFilter((prevFilter) => ({
-              ...prevFilter,
-              villages: [e?.village_ward_name],
-            }))
+    <HStack space={4}>
+      <Select
+        selectedValue={filter?.districts ? filter.districts[0] : t("DISTRICT")}
+        placeholder={t("DISTRICT")}
+        width={150}
+        borderWidth={0}
+        onValueChange={(itemValue) =>
+          changeFilterOptions("districts", itemValue)
+        }
+      >
+        <Select.Item label="Select All" value="" />
+        {district &&
+          district.map &&
+          district.map((e) => (
+            <Select.Item
+              key={e.district_id}
+              label={e.district_name}
+              value={e.district_name}
+            />
+          ))}
+      </Select>
+      <Select
+        selectedValue={filter?.blocks ? filter.blocks[0] : t("BLOCK")}
+        width={150}
+        borderWidth={0}
+        placeholder={t("BLOCK")}
+        onValueChange={(itemValue) => changeFilterOptions("blocks", itemValue)}
+      >
+        <Select.Item label="Select All" value="" />
+        {block &&
+          block.map &&
+          block.map((e) => (
+            <Select.Item
+              key={e.block_name}
+              label={e.block_name}
+              value={e.block_name}
+            />
+          ))}
+      </Select>
+      {programData === "BIHAR" && (
+        <Select
+          selectedValue={
+            filter?.villages ? filter.villages[0] : t("VILLAGE_WARD")
+          }
+          placeholder={t("VILLAGE_WARD")}
+          width={150}
+          borderWidth={0}
+          onValueChange={(itemValue) =>
+            changeFilterOptions("villages", itemValue)
           }
         >
-          {e?.village_ward_name}
-        </Menu.Item>
-      ))}
-    </Menu>
+          <Select.Item label="Select All" value="" />
+          {village &&
+            village.map &&
+            village.map((e) => (
+              <Select.Item
+                key={e.village_ward_name}
+                label={e.village_ward_name}
+                value={e.village_ward_name}
+              />
+            ))}
+        </Select>
+      )}
+    </HStack>
   );
 };
 
 EventHome.propTypes = {
   footerLinks: PropTypes.any,
-};
-
-District.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
-
-Blocks.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
-};
-Village.propTypes = {
-  district: PropTypes.string,
-  setFilter: PropTypes.array,
 };
