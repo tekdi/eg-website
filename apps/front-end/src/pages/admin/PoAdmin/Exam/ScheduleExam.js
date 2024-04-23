@@ -86,6 +86,11 @@ function ScheduleExam() {
     resetFillData();
   };
 
+  const handleSelect = (optionId, board) => {
+    setFilter({ ...filter, program_id: board?.program_id, board_id: optionId });
+    setIsVisibleEdit();
+  };
+
   useEffect(async () => {
     const subjectData = await organisationService.getSubjectList({
       id: filter?.board_id,
@@ -139,11 +144,6 @@ function ScheduleExam() {
       setTheorySubjects(theory);
     }
   }, [filter?.board_id]);
-
-  const handleSelect = (optionId) => {
-    setFilter({ ...filter, board_id: optionId });
-    setIsVisibleEdit();
-  };
 
   useEffect(() => {
     if (theorySubjects?.length !== 0 && practicalSubjects?.length !== 0) {
@@ -276,7 +276,7 @@ function ScheduleExam() {
               {boardList?.boards?.map((board) => (
                 <Radio.Group
                   key={board.id}
-                  onChange={(nextValue) => handleSelect(nextValue)}
+                  onChange={(nextValue) => handleSelect(nextValue, board)}
                   value={filter?.board_id || null}
                 >
                   <Radio colorScheme="red" value={board.id}>
