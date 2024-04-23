@@ -45,8 +45,7 @@ function ScheduleExam() {
     const data = await cohortService.getProgramList();
     setProgramList(data?.data);
     const localData = await getSelectedProgramId();
-    setFilter({ ...filter, program_id: localData?.program_id });
-    if (localData === null) {
+    if (localData?.length === undefined) {
       const obj = data?.data?.[0];
       const defaultData = {
         program_id: obj?.id,
@@ -54,10 +53,27 @@ function ScheduleExam() {
         state_name: obj?.state?.state_name,
       };
       setSelectedProgramId(defaultData);
+      setFilter({ ...filter, program_id: obj?.id });
+    } else {
+      setFilter({ ...filter, program_id: localData?.program_id });
     }
+  }, []);
+
+  useEffect(async () => {
     const boardList = await enumRegistryService.boardList();
     setBoardList(boardList);
-  }, []);
+  }, [filter]);
+
+  const resetFillData = () => {
+    setTheorySubjects([]);
+    setPracticalSubjects([]);
+    setIsVisibleEdit(false);
+    setProgress(0);
+    setEventOverallData([]);
+    setPracticalEvent([]);
+    setTheoryEvent([]);
+    setIsDisable(true);
+  };
 
   const handleProgramChange = async (selectedItem) => {
     const data = programList.find((e) => e.id == selectedItem);
@@ -67,19 +83,13 @@ function ScheduleExam() {
       state_name: data?.state?.state_name,
     });
     setFilter({ ...filter, program_id: selectedItem });
-    window.location.reload();
-  };
-
-  const handleSelect = (optionId) => {
-    setFilter({ ...filter, board_id: optionId });
-    setIsVisibleEdit();
+    resetFillData();
   };
 
   useEffect(async () => {
     const subjectData = await organisationService.getSubjectList({
       id: filter?.board_id,
     });
-
     setOldSelectedData(subjectData?.data);
     if (Array.isArray(subjectData?.data)) {
       const practical = [];
@@ -129,6 +139,11 @@ function ScheduleExam() {
       setTheorySubjects(theory);
     }
   }, [filter?.board_id]);
+
+  const handleSelect = (optionId) => {
+    setFilter({ ...filter, board_id: optionId });
+    setIsVisibleEdit();
+  };
 
   useEffect(() => {
     if (theorySubjects?.length !== 0 && practicalSubjects?.length !== 0) {
