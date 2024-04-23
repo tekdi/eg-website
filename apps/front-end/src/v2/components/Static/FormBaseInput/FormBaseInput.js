@@ -513,6 +513,10 @@ export const select = ({ options, value, onChange, required, schema }) => {
         bg="#FFFFFF"
         borderWidth={value ? "2px" : "1px"}
         borderRadius={"4px"}
+        fontSize={"16px"}
+        letterSpacing={"0.5px"}
+        fontWeight={400}
+        lineHeight={"24px"}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
         _selectedItem={{

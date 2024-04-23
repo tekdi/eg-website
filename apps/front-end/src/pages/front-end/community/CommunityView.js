@@ -126,6 +126,7 @@ export default function CommunityView({ footerLinks }) {
         {!addMore ||
           (data?.length <= 2 && (
             <CustomAlert
+              _hstack={{ mb: 9 }}
               status={"customAlertdanger"}
               title={t("COMMUNITY_ALERT_MESSAGE")}
             />

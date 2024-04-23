@@ -14,7 +14,7 @@ import getWindowSize from "v2/utils/Helper/JSHelper";
 import { IconByName, BodyLarge } from "@shiksha/common-lib";
 import LanguageChange from "../../../assets/Images/Icon/LanguageChange.png";
 
-export default function PageHeader({
+export default function PageHqeader({
   t,
   showHelpButton,
   funBackButton,

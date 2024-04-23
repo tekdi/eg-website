@@ -172,6 +172,24 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
               )
             )}
           </Box> */}
+
+          <Box alignItems="center">
+            {file && (
+              <FilePreview
+                base64={file}
+                // source={{
+                //   document_id: file,
+                // }}
+                // urlObject={{ file }}
+                alt={`Alternate ${t(label)}`}
+                width={"190px"}
+                height={"190px"}
+                borderRadius="0"
+                _image={{ borderRadius: 0 }}
+              />
+            )}
+          </Box>
+
           <Pressable
             justifyContent={"center"}
             flex="1"
