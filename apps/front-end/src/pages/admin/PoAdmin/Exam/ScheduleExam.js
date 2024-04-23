@@ -11,9 +11,17 @@ import {
   organisationService,
   setSelectedProgramId,
 } from "@shiksha/common-lib";
-import { HStack, Radio, Select, Stack, VStack } from "native-base";
+import {
+  HStack,
+  Progress,
+  Radio,
+  ScrollView,
+  Select,
+  Stack,
+  VStack,
+} from "native-base";
 import { useTranslation } from "react-i18next";
-import DatePicker from "v2/components/Static/FormBaseInput/formCustomeInputs/DatePicker";
+import DatePicker from "./DatePicker";
 import { useNavigate } from "react-router-dom";
 
 function ScheduleExam() {
@@ -23,9 +31,16 @@ function ScheduleExam() {
   const [filter, setFilter] = useState({});
   const [selectedDate, setSelectedDate] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
+  const [isVisibleEdit, setIsVisibleEdit] = useState(false);
   const navigate = useNavigate();
   const [practicalSubjects, setPracticalSubjects] = useState([]);
   const [theorySubjects, setTheorySubjects] = useState([]);
+  const [oldSelectedData, setOldSelectedData] = useState([]);
+  const [theoryEvent, setTheoryEvent] = useState([]);
+  const [practicalEvent, setPracticalEvent] = useState([]);
+  const [eventOverallData, setEventOverallData] = useState([]);
+  const [progress, setProgress] = useState(0);
+
   useEffect(async () => {
     const data = await cohortService.getProgramList();
     setProgramList(data?.data);
@@ -57,24 +72,59 @@ function ScheduleExam() {
 
   const handleSelect = (optionId) => {
     setFilter({ ...filter, board_id: optionId });
+    setIsVisibleEdit();
   };
 
   useEffect(async () => {
     const subjectData = await organisationService.getSubjectList({
       id: filter?.board_id,
     });
+
+    setOldSelectedData(subjectData?.data);
     if (Array.isArray(subjectData?.data)) {
       const practical = [];
       const theory = [];
-      subjectData?.data?.forEach((subject) => {
+      const practicalEvent = [];
+      const theoryEvent = [];
+      const allEventData = [];
+
+      subjectData?.data?.forEach((subject, events) => {
         if (subject.is_practical) {
+          subject?.events?.map((item) => {
+            if (item?.type === "practical") {
+              const obj = { subject_id: item?.context_id, type: item?.type };
+              allEventData.push(obj);
+            }
+          });
           practical.push(subject);
         }
         if (subject.is_theory) {
+          subject?.events?.map((item) => {
+            if (item?.type === "theory") {
+              const obj = { subject_id: item?.context_id, type: item?.type };
+              allEventData.push(obj);
+            }
+          });
           theory.push(subject);
         }
       });
-
+      const data = await organisationService.PoExamScheduleEdit(allEventData);
+      const eventData = [];
+      if (data) {
+        data?.map((item) => {
+          if (item?.type === "theory") {
+            theoryEvent.push(item);
+            eventData.push(item);
+          }
+          if (item?.type === "practical") {
+            practicalEvent.push(item);
+            eventData.push(item);
+          }
+        });
+      }
+      setEventOverallData(eventData);
+      setPracticalEvent(practicalEvent);
+      setTheoryEvent(theoryEvent);
       setPracticalSubjects(practical);
       setTheorySubjects(theory);
     }
@@ -83,7 +133,9 @@ function ScheduleExam() {
   useEffect(() => {
     if (theorySubjects?.length !== 0 && practicalSubjects?.length !== 0) {
       const data =
-        theorySubjects.length + practicalSubjects.length == selectedDate.length;
+        (theorySubjects.length ||
+          practicalSubjects.length ||
+          selectedDate.length) > 0;
       if (data === true) {
         setIsDisable(false);
       }
@@ -97,6 +149,53 @@ function ScheduleExam() {
       navigate("/");
     }
   };
+
+  const handleCancelButton = async () => {
+    const subjectData = await organisationService.getSubjectList({
+      id: filter?.board_id,
+    });
+    setOldSelectedData(subjectData?.data);
+  };
+
+  const handleEditButton = () => {
+    setIsVisibleEdit(true);
+  };
+
+  const handlePublish = async () => {
+    const newData = oldSelectedData?.map((subject) => {
+      if (subject && subject.events) {
+        subject.events = subject.events.map((event) => {
+          if (event.status === "draft") {
+            return { ...event, status: "publish" };
+          }
+          return event;
+        });
+      }
+      return subject;
+    });
+    const data = await organisationService.PoExamScheduleEdit(newData);
+    if (data?.success === true) {
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    const theoryCount = (theoryEvent?.length / theorySubjects?.length) * 100;
+    const practicalCount =
+      (practicalEvent?.length / practicalSubjects?.length) * 100;
+    const progressArray = {
+      theoryCount: theoryCount,
+      practicalCount: practicalCount,
+    };
+    setProgress(progressArray);
+  }, [
+    filter?.board,
+    theorySubjects,
+    theoryEvent,
+    practicalSubjects,
+    practicalEvent,
+  ]);
+
   return (
     <PoAdminLayout>
       <Stack p={4} space={4}>
@@ -172,56 +271,98 @@ function ScheduleExam() {
               ))}
             </HStack>
           </VStack>
-          <VStack>
-            <AdminTypo.Secondarybutton
-              icon={<IconByName color="black" name="ShareLineIcon" />}
-            >
-              <AdminTypo.H6 bold>{t("PUBLISH")}</AdminTypo.H6>
-            </AdminTypo.Secondarybutton>
-          </VStack>
         </HStack>
 
         <VStack p={4} pl={0} space={4}>
-          <AdminTypo.H5 bold color="textGreyColor.500">
-            {t("SELECT_DATE")}
-          </AdminTypo.H5>
+          <HStack justifyContent={"space-between"} alignItems={"center"}>
+            <AdminTypo.H5 bold color="textGreyColor.500">
+              {t("SELECT_DATE")}
+            </AdminTypo.H5>
+
+            <HStack space={4}>
+              {(theoryEvent?.length > 0 || practicalEvent?.length > 0) && (
+                <AdminTypo.Secondarybutton
+                  icon={<IconByName color="black" name="PencilLineIcon" />}
+                  onPress={handleEditButton}
+                >
+                  <AdminTypo.H6 bold>{t("EDIT")}</AdminTypo.H6>
+                </AdminTypo.Secondarybutton>
+              )}
+              {(theoryEvent?.length > 0 || practicalEvent?.length > 0) && (
+                <AdminTypo.Secondarybutton
+                  icon={<IconByName color="black" name="ShareLineIcon" />}
+                  onPress={handlePublish}
+                >
+                  <AdminTypo.H6 bold>{t("PUBLISH")}</AdminTypo.H6>
+                </AdminTypo.Secondarybutton>
+              )}
+            </HStack>
+          </HStack>
           <HStack space={4}>
             <CardComponent
               _header={{ bg: "light.100" }}
               _vstack={{ space: 0, flex: 1, bg: "light.100" }}
               _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title="Theory Exams"
+              title={t("THEORY_EXAM")}
+              isHideProgressBar={true}
             >
               {filter?.board_id && (
-                <VStack>
-                  <DatePicker
-                    subjectArr={theorySubjects}
-                    examType={"theory"}
-                    setSelectedDate={setSelectedDate}
-                    status={"draft"}
+                <>
+                  <Progress
+                    value={progress?.theoryCount}
+                    colorScheme={"warning"}
                   />
-                </VStack>
+                  <ScrollView>
+                    <VStack padding={3} height={"350px"}>
+                      <DatePicker
+                        subjectArr={theorySubjects}
+                        examType={"theory"}
+                        setSelectedDate={setSelectedDate}
+                        oldSelectedData={oldSelectedData}
+                        isVisibleEdit={isVisibleEdit}
+                        eventOverallData={eventOverallData}
+                        status={"draft"}
+                      />
+                    </VStack>
+                  </ScrollView>
+                </>
               )}
             </CardComponent>
             <CardComponent
               _header={{ bg: "light.100" }}
               _vstack={{ space: 0, flex: 1, bg: "light.100" }}
               _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title={t("Practical Exams")}
+              title={t("PRACTICAL_EXAM")}
+              isHideProgressBar={true}
             >
               {filter?.board_id && (
-                <DatePicker
-                  subjectArr={practicalSubjects}
-                  examType={"practical"}
-                  setSelectedDate={setSelectedDate}
-                  status={"draft"}
-                />
+                <>
+                  <Progress
+                    value={progress?.practicalCount}
+                    colorScheme={"warning"}
+                  />
+                  <ScrollView>
+                    <VStack padding={3} height={"350px"}>
+                      <DatePicker
+                        subjectArr={practicalSubjects}
+                        examType={"practical"}
+                        setSelectedDate={setSelectedDate}
+                        oldSelectedData={oldSelectedData}
+                        isVisibleEdit={isVisibleEdit}
+                        eventOverallData={eventOverallData}
+                        status={"draft"}
+                      />
+                    </VStack>
+                  </ScrollView>
+                </>
               )}
             </CardComponent>
           </HStack>
         </VStack>
         <HStack space={4} alignSelf={"center"}>
           <AdminTypo.Secondarybutton
+            isDisabled={isDisable}
+            onPress={handleCancelButton}
             icon={<IconByName color="black" name="DeleteBinLineIcon" />}
           >
             {t("CANCEL")}
