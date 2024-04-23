@@ -512,7 +512,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
         bg="#FFFFFF"
         borderWidth={value ? "2px" : "1px"}
-        borderRadius={"5px"}
+        borderRadius={"4px"}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
         _selectedItem={{

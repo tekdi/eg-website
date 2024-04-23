@@ -438,7 +438,13 @@ export const select = ({ options, value, onChange, required, schema }) => {
                 }),
           }}
         >
-          <Text fontSize="12" fontWeight="400">
+          <Text
+            bg={"white"}
+            zIndex={99999999}
+            color={"floatingLabelColor.500"}
+            fontSize="12"
+            fontWeight="400"
+          >
             {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
@@ -456,6 +462,10 @@ export const select = ({ options, value, onChange, required, schema }) => {
         selectedValue={value}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
+        borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
+        bg="#FFFFFF"
+        borderWidth={value ? "2px" : "1px"}
+        borderRadius={"4px"}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
