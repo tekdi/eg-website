@@ -1661,5 +1661,11 @@
   "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot",
   "VIEW_EXAM_SCHEDULE": "View Exam Schedule",
   "LEARNER_EXAM_RESULTS": "Learner Exam Results",
-  "LEARNER_EXAM_RESULT": "Learner Exam Result"
+  "LEARNER_EXAM_RESULT": "Learner Exam Result",
+  "LEARNER_EXAMINATION": "Learner Examination",
+  "UPDATE_LEARNER_EXAM_ATTENDANCE": "Update Learner Exam Attendance",
+  "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
+  "PRACTICALS": "Practicals",
+  "THEORY": "Theory",
+  "SELECT_BOARD": "Select Board"
 }

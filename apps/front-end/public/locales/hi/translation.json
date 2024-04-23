@@ -1663,5 +1663,10 @@
   "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट",
   "VIEW_EXAM_SCHEDULE": "परीक्षा अनुसूची देखें",
   "LEARNER_EXAM_RESULTS": "शिक्षार्थी परीक्षा परिणाम",
-  "LEARNER_EXAM_RESULT": "शिक्षार्थी परीक्षा परिणाम"
+  "LEARNER_EXAM_RESULT": "शिक्षार्थी परीक्षा परिणाम",
+  "LEARNER_EXAMINATION": "शिक्षार्थी परीक्षा",
+  "LEARNER_EXAMINATION_DETAILS": "अपने शिक्षार्थियों की परीक्षा से संबंधित सभी जानकारी और गतिविधियों तक यहां से पहुंचें",
+  "UPDATE_LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी की परीक्षा उपस्थिति अंकित करें",
+  "PRACTICALS": "प्रैक्टिकल",
+  "THEORY": "लिखित"
 }
