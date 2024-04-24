@@ -19,12 +19,12 @@ import html2canvas from "html2canvas";
 
 const columns = (t, certificateDownload) => [
   {
-    name: t("SR_NO"),
-    selector: (row, index) => index + 1,
+    name: t("EVENT_ID"),
+    selector: (row) => row?.events?.[0]?.id,
   },
   {
-    name: t("PURPOSE"),
-    selector: (row) => row?.events?.[0]?.name,
+    name: t("NAME"),
+    selector: (row) => `${row?.events?.[0]?.type}, ${row?.events?.[0]?.name}`,
     attr: "name",
     wrap: true,
   },
