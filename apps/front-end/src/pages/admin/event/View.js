@@ -464,7 +464,7 @@ export default function Attendence({ footerLinks }) {
       toast.show({
         render: () => {
           return (
-            <Alert status="error" alignItems={"start"} mb="3" mt="4">
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
                 <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>

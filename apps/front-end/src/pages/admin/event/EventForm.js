@@ -503,46 +503,48 @@ export default function EventHome({ footerLinks }) {
       _sidebar={footerLinks}
       // loading={loading}
     >
-      <VStack p={4}>
-        <HStack
-          pt="3"
-          justifyContent={"space-between"}
-          direction={["column", "row", "row"]}
-          space={2}
-        >
-          <HStack alignItems={"center"} space={2} flexWrap={"wrap"}>
-            <IconByName name="home" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">{t("HOME")}</AdminTypo.H1>
-            <IconByName
-              size="sm"
-              name="ArrowRightSLineIcon"
-              p="0"
-              onPress={(e) => navigate(`/admin`)}
-            />
-            <AdminTypo.H1
-              color="textGreyColor.800"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              {t("SCHEDULE_EVENT")}
-            </AdminTypo.H1>
+      {data?.params?.start_exam === "yes" ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>
           </HStack>
-
-          {step === "candidate" && (
-            <AdminTypo.Secondarybutton onPress={updateSelected}>
-              {t("SAVE_EVENT")}
-            </AdminTypo.Secondarybutton>
-          )}
-        </HStack>
-        {data?.params?.start_exam === "yes" ? (
-          <Alert status="error" alignItems={"start"} mb="3" mt="4">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>
+        </Alert>
+      ) : (
+        <VStack p={4}>
+          <HStack
+            pt="3"
+            justifyContent={"space-between"}
+            direction={["column", "row", "row"]}
+            space={2}
+          >
+            <HStack alignItems={"center"} space={2} flexWrap={"wrap"}>
+              <IconByName name="home" size="md" />
+              <AdminTypo.H1 color="Activatedcolor.400">
+                {t("HOME")}
+              </AdminTypo.H1>
+              <IconByName
+                size="sm"
+                name="ArrowRightSLineIcon"
+                p="0"
+                onPress={(e) => navigate(`/admin`)}
+              />
+              <AdminTypo.H1
+                color="textGreyColor.800"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                {t("SCHEDULE_EVENT")}
+              </AdminTypo.H1>
             </HStack>
-          </Alert>
-        ) : (
+
+            {step === "candidate" && (
+              <AdminTypo.Secondarybutton onPress={updateSelected}>
+                {t("SAVE_EVENT")}
+              </AdminTypo.Secondarybutton>
+            )}
+          </HStack>
           <HStack
             pt={6}
             space={4}
@@ -648,8 +650,8 @@ export default function EventHome({ footerLinks }) {
               )}
             </VStack>
           </HStack>
-        )}
-      </VStack>
+        </VStack>
+      )}
     </Layout>
   );
 }
