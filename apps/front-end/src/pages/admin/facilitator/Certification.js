@@ -43,15 +43,12 @@ const columns = (t, certificateDownload) => [
     name: t("STATUS"),
     selector: (row) =>
       row.certificate_status === true ? (
-        // <AdminTypo.Secondarybutton
-        //   my="3"
-        //   onPress={() => certificateDownload(row)}
-        // >
-        //   {t("DOWNLOAD")}
-        // </AdminTypo.Secondarybutton>
-        <AdminTypo.H6 bold color="success.500">
-          {t("PASS")}
-        </AdminTypo.H6>
+        <AdminTypo.Secondarybutton
+          my="3"
+          onPress={() => certificateDownload(row)}
+        >
+          {t("DOWNLOAD")}
+        </AdminTypo.Secondarybutton>
       ) : row.certificate_status === false ? (
         <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
       ) : (
@@ -246,11 +243,15 @@ export default function Certification({ footerLinks }) {
               />
             </HStack>
           </Modal.Header>
-          <Modal.Body overflow={"scroll"}>
-            <div ref={reportTemplateRef} className="certificae-height">
-              <div dangerouslySetInnerHTML={{ __html: downloadCertificate }} />
-            </div>
-          </Modal.Body>
+          <div className="certificae-parent">
+            <Modal.Body>
+              <div ref={reportTemplateRef} className="certificae-height">
+                <div
+                  dangerouslySetInnerHTML={{ __html: downloadCertificate }}
+                />
+              </div>
+            </Modal.Body>
+          </div>
         </Modal.Content>
       </Modal>
     </Layout>

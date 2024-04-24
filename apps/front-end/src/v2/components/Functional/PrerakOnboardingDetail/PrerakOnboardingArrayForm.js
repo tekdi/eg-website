@@ -82,7 +82,6 @@ export default function PrerakOnboardingArrayForm({
   };
   useEffect(() => {
     if (facilitator) {
-      //console.log("type facilitator", type);
       if (type == "experience") {
         setData(dataExperience);
       }
@@ -122,7 +121,37 @@ export default function PrerakOnboardingArrayForm({
             extra: { title: stepTitle },
           });
         }
-        setSchema({ ...newSchema, title: stepLabel });
+        if (stepLabel === "ADD_VOLUNTEER_EXPERIENCE") {
+          const {
+            role_title,
+            organization,
+            description,
+            experience_in_years,
+            related_to_teaching,
+          } = newSchema?.properties || {};
+
+          const updatedSchema = {
+            ...newSchema,
+            properties: {
+              role_title,
+              organization,
+              description,
+              experience_in_years,
+              related_to_teaching,
+            },
+            required: [
+              "role_title",
+              "organization",
+              "experience_in_years",
+              "related_to_teaching",
+            ],
+            title: stepLabel,
+          };
+          setSchema(updatedSchema);
+        } else {
+          setSchema({ ...newSchema, title: stepLabel });
+        }
+
         const refPro =
           newSchema?.properties["reference_details"]?.["properties"];
         let newKeys = Object.keys(newSchema?.properties).filter(
@@ -446,7 +475,13 @@ export default function PrerakOnboardingArrayForm({
                           }}
                           onEdit={(e) => onEdit(e)}
                           onDelete={(e) => onDelete(e)}
-                          arr={keys}
+                          arr={[
+                            "role_title",
+                            "organization",
+                            "description",
+                            "experience_in_years",
+                            "related_to_teaching",
+                          ]}
                           label={labels}
                         />
                       </Box>

@@ -176,20 +176,11 @@ export default function App({ userTokenInfo, footerLinks }) {
         value: "value",
       });
     }
-    if (schema?.properties?.state) {
-      // const qData = await geolocationRegistryService.getStates();
-      const result = await getSelectedProgramId();
-      if (schema?.["properties"]?.["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: [result],
-          title: "state_name",
-          value: "state_name",
-        });
-      }
+    if (schema?.properties?.district) {
+      const { state_name } = await getSelectedProgramId();
       await setDistric({
         schemaData: newSchema,
-        state: formData?.state,
+        state: state_name,
         district: formData?.district,
         block: formData?.block,
       });
@@ -237,7 +228,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     return errors;
   };
 
-  const setDistric = async ({ state, district, block, schemaData }) => {
+  const setDistric = async ({ state, gramp, district, block, schemaData }) => {
     let newSchema = schemaData;
     if (schema?.properties?.district && state) {
       const qData = await geolocationRegistryService.getDistricts({
@@ -252,7 +243,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
       if (schema?.["properties"]?.["block"]) {
-        newSchema = await setBlock({ district, block, schemaData: newSchema });
+        newSchema = await setBlock({
+          state,
+          gramp,
+          district,
+          block,
+          schemaData: newSchema,
+        });
         setSchema(newSchema);
       }
     } else {
@@ -268,10 +265,11 @@ export default function App({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
 
-  const setBlock = async ({ district, block, schemaData }) => {
+  const setBlock = async ({ state, district, block, gramp, schemaData }) => {
     let newSchema = schemaData;
     if (schema?.properties?.block && district) {
       const qData = await geolocationRegistryService.getBlocks({
+        state: state,
         name: district,
       });
       if (schema?.["properties"]?.["block"]) {
@@ -283,7 +281,13 @@ export default function App({ userTokenInfo, footerLinks }) {
         });
       }
       if (schema?.["properties"]?.["village"]) {
-        newSchema = await setVilage({ block, schemaData: newSchema });
+        newSchema = await setVilage({
+          block,
+          state: state,
+          district: district,
+          gramp: gramp || "null",
+          schemaData: newSchema,
+        });
         setSchema(newSchema);
       }
     } else {
@@ -296,11 +300,14 @@ export default function App({ userTokenInfo, footerLinks }) {
     return newSchema;
   };
 
-  const setVilage = async ({ block, schemaData }) => {
+  const setVilage = async ({ state, district, block, gramp, schemaData }) => {
     let newSchema = schemaData;
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
       });
       if (schema?.["properties"]?.["village"]) {
         newSchema = getOptions(newSchema, {
@@ -341,7 +348,10 @@ export default function App({ userTokenInfo, footerLinks }) {
     }
 
     if (id === "root_block") {
-      await setVilage({ block: data?.block, schemaData: schema });
+      await setVilage({
+        block: data?.block,
+        schemaData: schema,
+      });
     }
 
     if (id === "root_kit_received") {

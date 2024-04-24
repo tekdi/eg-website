@@ -16,6 +16,7 @@ export async function setPrerakOfflineInfo(id) {
       data?.data
     );
     setIndexedDBItem("GetSyncTime", currentTime);
+    return data?.data;
   } catch (error) {
     console.error("Error setting IndexedDB item:", error);
   }
@@ -68,7 +69,7 @@ export async function getIpUserInfo(id) {
 
 export async function checkPrerakOfflineTimeInterval() {
   try {
-    const timeInterval = 30;
+    const timeInterval = 0.5;
 
     const GetSyncTime = await getIndexedDBItem("GetSyncTime");
 

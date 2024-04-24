@@ -11,6 +11,9 @@ import {
   Breadcrumb,
   jsonToQueryString,
   CustomRadio,
+  getSelectedProgramId,
+  Loading,
+  getEnrollmentIds,
 } from "@shiksha/common-lib";
 import {
   createSearchParams,
@@ -18,7 +21,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { HStack, VStack, Stack, Modal, Alert } from "native-base";
+import { HStack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ChipStatus } from "component/BeneficiaryStatus";
@@ -45,24 +48,41 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [openModal, setOpenModal] = React.useState(false);
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const [boardName, setBoardName] = useState({});
+  const [localData, setLocalData] = useState({});
+  const [paymentDocId, setPaymentDocId] = useState([]);
 
+  const handleSetReceiptUrl = async (doc_id) => {
+    setIsButtonLoading(true);
+    const newResult = await uploadRegistryService.getOne({
+      document_id: doc_id,
+    });
+    setReceiptUrl({ url: newResult, doc_id });
+    setFileType(newResult?.key?.split(".").pop());
+    setIsButtonLoading(false);
+  };
   const profileDetails = React.useCallback(async () => {
+    const { state_name } = await getSelectedProgramId();
+    setLocalData(state_name);
     const { result } = await benificiaryRegistoryService.getOne(id);
     const value = result?.program_beneficiaries?.enrolled_for_board;
     setData(result);
-
     const { subjects } = await enumRegistryService.subjectsList(value);
     const boardName = await enumRegistryService.boardName(value);
     setBoardName(boardName?.name);
-    const newResult = await uploadRegistryService.getOne({
-      document_id: result?.program_beneficiaries?.payment_receipt_document_id,
-    });
-    setReceiptUrl(newResult);
-    setFileType(newResult?.key?.split(".").pop());
+    const documentData = getEnrollmentIds(
+      result?.program_beneficiaries?.payment_receipt_document_id,
+      state_name
+    );
+    setPaymentDocId(documentData);
+    await handleSetReceiptUrl(documentData?.payment_receipt_document_id);
     const subject = jsonParse(result?.program_beneficiaries.subjects, []);
     setSubjects(subjects?.filter((e) => subject?.includes(`${e.subject_id}`)));
     setLoading(false);
   }, [id]);
+
+  const handleButtonClick = async (doc_id) => {
+    await handleSetReceiptUrl(doc_id);
+  };
 
   React.useEffect(() => {
     profileDetails();
@@ -134,15 +154,32 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         <Body data={data}>
           <VStack>
             <AdminTypo.H5 color="textGreyColor.800" bold>
-              {t("ENROLLMENT_DETAILS_VERIFICATION")}
+              {t(
+                localData === "BIHAR"
+                  ? "ENROLLMENT_DETAILS_VERIFICATION_BIHAR"
+                  : "ENROLLMENT_DETAILS_VERIFICATION"
+              )}
             </AdminTypo.H5>
 
-            <HStack space="2">
-              <VStack flex="2" pb="1" space={4}>
+            <HStack
+              flexDirection={["column", "column", "row", "row", "row"]}
+              style={{ gap: "8px" }}
+            >
+              <VStack flex={["", "", "3", "3", "2"]} pb="1" space={4}>
                 <HStack flexWrap={"wrap"}>
                   <TextInfo
-                    _box={{ pr: "2", alignItems: "center" }}
-                    data={data?.program_beneficiaries}
+                    _box={{ pr: "2", alignItems: "center", space: 1 }}
+                    data={{
+                      ...data?.program_beneficiaries,
+                      enrollment_status: (
+                        <ChipStatus
+                          key={"4"}
+                          is_duplicate={data?.is_duplicate}
+                          is_deactivated={data?.is_deactivated}
+                          status={data?.program_beneficiaries?.status}
+                        />
+                      ),
+                    }}
                     board={boardName}
                     arr={[
                       {
@@ -156,6 +193,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     ]}
                   />
                 </HStack>
+
                 <AdminTypo.PrimaryButton
                   onPress={() => {
                     navigate(`/admin/beneficiary/${data?.id}`);
@@ -165,11 +203,12 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 </AdminTypo.PrimaryButton>
 
                 <ValidationBox error={error?.enrollment_details}>
-                  <VStack space={4}>
+                  <VStack flex={4}>
                     <HStack
                       alignItems="center"
                       justifyContent={"center"}
-                      space="8"
+                      flexDirection={["row", "row", "column", "column", "row"]}
+                      style={{ gap: "8px" }}
                     >
                       {data?.profile_photo_1?.name ||
                       data?.profile_photo_2?.name ||
@@ -200,86 +239,80 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         />
                       )}
                     </HStack>
+                    <TextInfo
+                      _box={{ space: "2" }}
+                      data={data?.program_beneficiaries}
+                      arr={[
+                        {
+                          label: "NAME",
 
-                    <HStack space={4} alignItems="center">
-                      <VStack flex={4}>
-                        <TextInfo
-                          _box={{ space: "2" }}
-                          data={data?.program_beneficiaries}
-                          arr={[
-                            {
-                              label: "NAME",
+                          value: (
+                            <AdminTypo.H5>
+                              {
+                                data?.program_beneficiaries
+                                  ?.enrollment_first_name
+                              }
+                              {data?.program_beneficiaries
+                                ?.enrollment_middle_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_middle_name}
+                              {data?.program_beneficiaries
+                                ?.enrollment_last_name &&
+                                " " +
+                                  data?.program_beneficiaries
+                                    ?.enrollment_last_name}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "DOB",
+                          value: (
+                            <AdminTypo.H5>
+                              {data?.program_beneficiaries?.enrollment_dob
+                                ? moment(
+                                    data?.program_beneficiaries?.enrollment_dob
+                                  ).format("DD-MM-YYYY")
+                                : "-"}
+                            </AdminTypo.H5>
+                          ),
+                        },
+                        {
+                          label: "MOBILE_NUMBER",
+                          keyArr: "enrollment_mobile_no",
+                        },
+                      ]}
+                    />
 
-                              value: (
-                                <AdminTypo.H5>
-                                  {
-                                    data?.program_beneficiaries
-                                      ?.enrollment_first_name
-                                  }
-                                  {data?.program_beneficiaries
-                                    ?.enrollment_middle_name &&
-                                    " " +
-                                      data?.program_beneficiaries
-                                        ?.enrollment_middle_name}
-                                  {data?.program_beneficiaries
-                                    ?.enrollment_last_name &&
-                                    " " +
-                                      data?.program_beneficiaries
-                                        ?.enrollment_last_name}
-                                </AdminTypo.H5>
-                              ),
-                            },
-                            {
-                              label: "DOB",
-                              value: (
-                                <AdminTypo.H5>
-                                  {data?.program_beneficiaries?.enrollment_dob
-                                    ? moment(
-                                        data?.program_beneficiaries
-                                          ?.enrollment_dob
-                                      ).format("DD-MM-YYYY")
-                                    : "-"}
-                                </AdminTypo.H5>
-                              ),
-                            },
-                            {
-                              label: "MOBILE_NUMBER",
-                              keyArr: "enrollment_mobile_no",
-                            },
-                          ]}
-                        />
-
-                        <CustomRadio
-                          options={{
-                            enumOptions: [{ value: "no" }, { value: "yes" }],
-                          }}
-                          schema={{
-                            icons: checkboxIcons,
-                            _box: {
-                              flex: "1",
-                              gap: "2",
-                              alignItems: "center",
-                              padding: "10px",
-                            },
-                            _hstack: { space: "6" },
-                            _subHstack: {
-                              justifyContent: "space-between",
-                              width: "120px",
-                            },
-                            _pressable: {
-                              p: 0,
-                              mb: 0,
-                              borderWidth: 0,
-                              style: {},
-                            },
-                          }}
-                          value={reason?.enrollment_details}
-                          onChange={(e) => {
-                            setReason({ ...reason, enrollment_details: e });
-                          }}
-                        />
-                      </VStack>
-                    </HStack>
+                    <CustomRadio
+                      options={{
+                        enumOptions: [{ value: "no" }, { value: "yes" }],
+                      }}
+                      schema={{
+                        icons: checkboxIcons,
+                        _box: {
+                          flex: "1",
+                          gap: "2",
+                          alignItems: "center",
+                          padding: "10px",
+                        },
+                        _hstack: { space: "6" },
+                        _subHstack: {
+                          justifyContent: "space-between",
+                          width: "120px",
+                        },
+                        _pressable: {
+                          p: 0,
+                          mb: 0,
+                          borderWidth: 0,
+                          style: {},
+                        },
+                      }}
+                      value={reason?.enrollment_details}
+                      onChange={(e) => {
+                        setReason({ ...reason, enrollment_details: e });
+                      }}
+                    />
                   </VStack>
                 </ValidationBox>
                 <ValidationBox error={error?.learner_enrollment_details}>
@@ -289,7 +322,10 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       data={data?.program_beneficiaries}
                       arr={[
                         {
-                          label: "ENROLLMENT_NUMBER",
+                          label:
+                            localData === "RAJASTHAN"
+                              ? "ENROLLMENT_NO"
+                              : "APPLICATION_ID",
                           keyArr: "enrollment_number",
                         },
                         {
@@ -340,15 +376,54 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   </VStack>
                 </ValidationBox>
               </VStack>
-
-              <VStack flex="5">
-                {fileType === "pdf" ? (
+              <VStack flex={["", "", "5", "5", "5"]}>
+                {localData === "BIHAR" && (
+                  <HStack m={4} space={2}>
+                    <ActiveButton
+                      isActive={
+                        receiptUrl?.doc_id ===
+                        paymentDocId?.payment_receipt_document_id
+                      }
+                      onPress={() => {
+                        handleButtonClick(
+                          paymentDocId?.payment_receipt_document_id
+                        );
+                      }}
+                    >
+                      {t("PAYMENT_RECEIPTS")}
+                    </ActiveButton>
+                    <ActiveButton
+                      isActive={
+                        receiptUrl?.doc_id === paymentDocId?.application_form
+                      }
+                      onPress={() => {
+                        handleButtonClick(paymentDocId?.application_form);
+                      }}
+                    >
+                      {t("APPLICATION_FORM")}
+                    </ActiveButton>
+                    <ActiveButton
+                      isActive={
+                        receiptUrl?.doc_id ===
+                        paymentDocId?.application_login_id
+                      }
+                      onPress={() => {
+                        handleButtonClick(paymentDocId?.application_login_id);
+                      }}
+                    >
+                      {t("APPLICATION_LOGIN_ID_SS")}
+                    </ActiveButton>
+                  </HStack>
+                )}
+                {isButtonLoading ? (
+                  <Loading />
+                ) : fileType === "pdf" ? (
                   <ImageView
                     frameborder="0"
                     _box={{ flex: 1 }}
                     height="100%"
                     width="100%"
-                    urlObject={receiptUrl}
+                    urlObject={receiptUrl?.url}
                     alt="aadhaar_front"
                   />
                 ) : (
@@ -417,7 +492,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                     filter: "none",
                                     objectFit: "contain",
                                   }}
-                                  urlObject={receiptUrl}
+                                  urlObject={receiptUrl?.url}
                                   alt="aadhaar_front"
                                 />
                               </VStack>
@@ -531,7 +606,7 @@ const TextInfo = ({ data, _box, arr, board }) => {
       alignItems={"center"}
       {..._box}
     >
-      <AdminTypo.H4 width={"150px"} color={"light.400"}>
+      <AdminTypo.H4 width={"150px"} color={"light.400"} bold>
         {t(e?.label || "-")}
       </AdminTypo.H4>
       {e?.value ? (
@@ -664,5 +739,16 @@ const LearnerInfo = ({ item, reason, status }) => {
         </Alert>
       )}
     </VStack>
+  );
+};
+
+const ActiveButton = ({ isActive, children, ...props }) => {
+  if (isActive) {
+    return (
+      <AdminTypo.PrimaryButton {...props}>{children}</AdminTypo.PrimaryButton>
+    );
+  }
+  return (
+    <AdminTypo.Secondarybutton {...props}>{children}</AdminTypo.Secondarybutton>
   );
 };
