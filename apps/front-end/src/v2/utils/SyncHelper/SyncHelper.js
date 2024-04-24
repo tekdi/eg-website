@@ -69,7 +69,7 @@ export async function getIpUserInfo(id) {
 
 export async function checkPrerakOfflineTimeInterval() {
   try {
-    const timeInterval = 30;
+    const timeInterval = 0.5;
 
     const GetSyncTime = await getIndexedDBItem("GetSyncTime");
 
