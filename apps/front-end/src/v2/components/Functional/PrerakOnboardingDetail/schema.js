@@ -94,15 +94,16 @@ export default {
           format: "select",
           readOnly: "",
         },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: "string",
-          readOnly: "",
-        },
+
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
+          readOnly: "",
+        },
+        grampanchayat: {
+          title: "GRAMPANCHAYAT",
+          type: "string",
           readOnly: "",
         },
         pincode: {

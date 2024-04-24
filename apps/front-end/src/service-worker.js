@@ -132,9 +132,85 @@ self.addEventListener("message", (event) => {
 
 // Any other custom service worker logic can go here.
 
-self.addEventListener("fetch", (event) => {
+//old code
+/*self.addEventListener("fetch", (event) => {
   if (event.request.mode === "navigate") {
     // If it's a navigation request (HTML file), don't cache it
     return;
   }
+});*/
+
+//new code
+/*const CACHE_NAME = "eg-pragati-v1";
+const urlsToCache = [
+  "/",
+  "/index.html",
+  "/offline.html", // Add your custom offline page
+  // Add other static assets to cache
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
+  );
 });
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches
+      .match(event.request)
+      .then((response) => {
+        // If resource is cached, return it
+        if (response) {
+          return response;
+        }
+        // If offline and request for HTML, return cached index.html
+        if (!navigator.onLine && event.request.url.endsWith("/index.html")) {
+          return caches.match("/index.html");
+        }
+        // If offline and request for other resources, return custom offline response
+        if (!navigator.onLine) {
+          return new Response("Offline", {
+            status: 503,
+            statusText: "Service Unavailable",
+          });
+        }
+        // If online and resource not found in cache, fetch from network
+        return fetch(event.request).then((networkResponse) => {
+          const clonedResponse = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clonedResponse);
+          });
+          return networkResponse;
+        });
+      })
+      .catch(() => {
+        // If fetch fails and resource not in cache, return custom offline response
+        if (event.request.url.endsWith("/index.html")) {
+          return caches.match("/index.html");
+        }
+        return new Response("Offline", {
+          status: 503,
+          statusText: "Service Unavailable",
+        });
+      })
+  );
+});*/

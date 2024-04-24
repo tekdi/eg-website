@@ -115,6 +115,7 @@
   "APPLICATION_FORM": "Application Form",
   "APPLICATION_ID": "Application ID",
   "APPLICATION_RECEIPT": "Application Receipt",
+  "APPLICATION_LOGIN_ID_SCREENSHOT": "Application Login ID screenshot",
   "APPLICATION_UNDER_REVIEW": "Application Under Review",
   "APPLIED": "Applied",
   "APPLIED_BUT_PENDING": "Applied But Pending",
@@ -497,6 +498,7 @@
   "ENROLLMENT_DATE": "Enrollment Date",
   "ENROLLMENT_DETAILS": "Enrollment Details",
   "ENROLLMENT_DETAILS_VERIFICATION": "Enrollment Details Verification Checklist(Cross verify the information on Enrollment receipt)",
+  "ENROLLMENT_DETAILS_VERIFICATION_BIHAR": "Enrollment Details Verification Checklist(Cross verify the information on Payment Receipt,Application Form and Application Login ID Screenshot)",
   "ENROLLMENT_INCOMPLETE_MESSAGE": "Review the entered information and make sure all information is accurate and Complete any remaining section",
   "ENROLLMENT_MOBILE_NO": "Mobile Number *",
   "ENROLLMENT_MOBILE_NUMBER": "Enrollment Mobile Number *",
@@ -526,6 +528,7 @@
   "EVALUATION_1": "Rapid Assesment-I",
   "EVALUATION_2": "Rapid Assesment-II",
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "There is no assessment available for this event",
+  "EVENT_ID": "Event ID",
   "EVENT_BATCH_NAME_BATCH_1": "Batch 1",
   "EVENT_BATCH_NAME_BATCH_10": "Batch 10",
   "EVENT_BATCH_NAME_BATCH_11": "Batch 11",
@@ -554,6 +557,7 @@
   "EVENT_END_DATE_TIME": "End Date & Time",
   "EVENT_NAME": "Event Name \n (Batch Number)",
   "EVENT_START_DATE_TIME": "Start Date & Time",
+  "EVENT_SCHEDULED": "Event Scheduled",
   "EVENT_TYPE": "Event Type",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
@@ -572,6 +576,7 @@
   "FACILITATOR_EVENT_TYPE_PRAGATI_ORIENTATION": "Pragati Orientation",
   "FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING": "Prerak Camp Execution Training",
   "FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING": "Prerak FLN Training",
+  "FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION": "Prerak Orientation",
   "FACILITATOR_FULL_TIME": "Full Time",
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "Divorced",
   "FACILITATOR_MARITAL_STATUS_MARRIED": "Married",
@@ -881,7 +886,7 @@
   "MARK_FOR_REVIEW": "Marks for Review",
   "MARK_OWNERSHIP": "Mobile Ownership",
   "MARKSHEET": "Marksheet",
-  "MARKSHEET_WITH_CBO_SIGN": "Marksheet With CBO Sign",
+  "MARKSHEET_WITH_CBEO_SIGN": "Marksheet With CBEO Sign",
   "MASTER_TRAINER": "Master Trainer",
   "MASTERS": "Masters",
   "MAX_LENGHT_200": "Max Lenght 200",
@@ -907,6 +912,7 @@
   "MISCELLANEOUS_ACTIVITIES_FINANCIAL_LITERACY": "Financial literacy",
   "MISCELLANEOUS_ACTIVITIES_LINKAGES": "Linkages",
   "MISCELLANEOUS_ACTIVITIES_PCR": "Miscellaneous activities PCR",
+  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "Formative Assessment",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_INTERVENTION": "Role model intervention",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_VISIT": "Role model visit",
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "School teacher visit",
@@ -1085,6 +1091,7 @@
   "PRERAK": "Prerak",
   "PRERAK_BIO": "Prerak Bio",
   "PRERAK_CERTIFICATION_PROGRAM": "Prerak Certification Program",
+  "PRERAK_CERTIFICATION": "Prerak Certification",
   "PRERAK_CHANGED_MIND": "Changed Mind",
   "PRERAK_COMMUNITY": "Prerak Community",
   "PRERAK_COMMUNITY_ISSUE": "Community Issue",
@@ -1322,6 +1329,13 @@
   "SR_NO": "Sr.No.",
   "START_CAMP": "Start Camp",
   "START_ENROLLMENT": "Start Enrollment",
+  "START_EXAM": "Start Exam",
+  "START_EXAM_MODAL_CONTENT": {
+    "HEADING": "Before confirming, ensure the following",
+    "MESSAGE_1": "1. Provide attendance response for all participants.",
+    "MESSAGE_2": "2. Note that the event cannot be edited after confirmation.",
+    "MESSAGE_3": "3. Once confirmed, participants will have access to the test question paper."
+  },
   "START_FIRST_CAMP_REGISTER": "Start First PCR Camp Registration",
   "START_SECOND_CAMP_REGISTER": "Start Second PCR Camp Registration",
   "START_TEST": "Start Test",
@@ -1399,6 +1413,7 @@
   "TODAYS_ACTIVITIES": "Today's Activities",
   "TODAYS_CAMP_HAS_BEEN_COMPLETED": "Today's camp has been completed",
   "TODAYS_TASKS": "Today's Activities",
+  "TODAYS_ATTENDANCE_MISSING": "Today's attendance missing",
   "TOMORROW": "Tomorrow",
   "TRAINING": "Training",
   "TRAINING_DAYS": "Training Days",
@@ -1407,7 +1422,7 @@
   "TRAINING_NOT_PASSED": "Did not pass the test",
   "TRAINING_TEST_DOWNLOAD_CERTIFICATE": "Test passed, Download certificate. Score: ",
   "TRANSFER_CERTIFICATE": "Transfer certificate",
-  "TRANSFER_CERTIFICATE_WITH_CBO_SIGN": "Transfer Certificate With CBO Sign",
+  "TRANSFER_CERTIFICATE_WITH_CBEO_SIGN": "Transfer Certificate With CBEO Sign",
   "TRY_AADHAR_NUMER_KYC": "Try Aadhaar Number KYC",
   "TRY_AADHAR_QR_KYC": "Try Aadhaar QR KYC",
   "TRY_AADHAR_UPLOAD_KYC": "Try Aadhaar upload KYC",
@@ -1570,7 +1585,7 @@
       "NO": "no"
     },
     "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "Upload an Image of your Document "
+      "TITLE": "Upload a screenshot of the e-PCP test"
     },
     "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
       "TITLE": "Choose the reason *",
@@ -1617,7 +1632,8 @@
 
   "EXAM_PREPARATION": {
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE": "Will the learner appear for the exam?",
+      "TITLE1": "Will",
+      "TITLE2": "appear for the exam?",
       "YES": "yes",
       "NO": "no"
     },
@@ -1655,6 +1671,9 @@
       "NO": "no"
     }
   },
+  "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
+  "WILL_BE_DETERMINED": "will be determined",
+  "THEY_WONT_GO": "They won't go",
   "LEARNERS_PER_TARGET": "Average learners per camp",
   "TARGET_CAMP": "Target Camp",
   "USER": "User",
@@ -1662,5 +1681,7 @@
   "CREATE": "Create",
   "EXISTING_IP": "Existing IP",
   "EXISTING_USER": "Existing User",
-  "PLEASE_SELECT_CAMP": "Please select camp"
+  "PLEASE_SELECT_CAMP": "Please select camp",
+  "PAYMENT_RECEIPTS": "Payment Receipt",
+  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot"
 }

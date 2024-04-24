@@ -3,12 +3,8 @@ import React from "react";
 const Profile = React.lazy(() => import("pages/admin/facilitator/Profile"));
 
 // events
-const Orientation = React.lazy(() =>
-  import("pages/front-end/orientation/Orientation")
-);
-const Attendence = React.lazy(() =>
-  import("pages/front-end/Attendence/Attendence")
-);
+const AdminHome = React.lazy(() => import("pages/admin/event/AdminHome"));
+const EventView = React.lazy(() => import("pages/admin/event/View"));
 
 // facilitator
 const FacilitatorList = React.lazy(() =>
@@ -80,7 +76,7 @@ const AdharKyc = React.lazy(() =>
 const FileView = React.lazy(() => import("pages/FileView"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
-const EventHome = React.lazy(() => import("pages/admin/event/EventHome"));
+const EventForm = React.lazy(() => import("pages/admin/event/EventForm"));
 
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
@@ -88,8 +84,8 @@ export default [
   { path: "/admin/facilitator-onbording", component: FacilitatorForm },
   { path: "/admin/profile", component: Profile },
   { path: "/admin/facilitator", component: FacilitatorList },
-  { path: "/admin", component: Orientation },
-  { path: "/admin/event/:id", component: Attendence },
+  { path: "/admin", component: AdminHome },
+  { path: "/admin/event/:id", component: EventView },
   { path: "/admin/learners", component: AdminBeneficiariesList },
   { path: "/admin/reports/:name", component: AdminReports },
   {
@@ -136,7 +132,7 @@ export default [
     path: "/file/:id/view",
     component: FileView,
   },
-  { path: "/", component: Orientation },
+  { path: "/", component: AdminHome },
   { path: "/admin/camps", component: CampHome },
   { path: "/admin/camps/:id", component: ViewCamp },
   { path: "/admin/camps/:id/reassign", component: ReassignCamp },
@@ -158,9 +154,8 @@ export default [
     component: Assessment,
   },
 
-  { path: "/admin/event/create", component: EventHome },
-  { path: "/admin/event/:id", component: EventHome },
-  { path: "/admin/event/:id/:step", component: EventHome },
+  { path: "/admin/event/create", component: EventForm },
+  { path: "/admin/event/:id/:step", component: EventForm },
 
   { path: "*", component: NotFound },
 ];

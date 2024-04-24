@@ -32,11 +32,11 @@ export default {
           title: "STREET_ADDRESS",
           type: ["string", "null"],
         },
-        state: {
-          title: "STATE",
-          type: "string",
-          format: "select",
-        },
+        // state: {
+        //   title: "STATE",
+        //   type: "string",
+        //   format: "select",
+        // },
         district: {
           title: "DISTRICT",
           type: "string",
@@ -54,7 +54,7 @@ export default {
         },
         grampanchayat: {
           title: "GRAMPANCHAYAT",
-          type: "string",
+          type: ["string", "null"],
         },
       },
     },

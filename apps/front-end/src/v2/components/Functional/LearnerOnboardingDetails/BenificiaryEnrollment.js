@@ -6,6 +6,8 @@ import {
   Layout,
   enumRegistryService,
   GetEnumValue,
+  getEnrollmentIds,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -18,6 +20,7 @@ export default function BenificiaryEnrollment() {
   const [benificiary, setbenificiary] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [boardName, setBoardName] = useState({});
+  const [stateName, setStateName] = useState({});
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -41,6 +44,8 @@ export default function BenificiaryEnrollment() {
     setLoading(false);
   };
   useEffect(async () => {
+    let { state_name } = await getSelectedProgramId();
+    setStateName(state_name);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
   }, []);
@@ -86,6 +91,10 @@ export default function BenificiaryEnrollment() {
             notShow={["subjects", "enrollmentlabelMobile"]}
             item={{
               ...benificiary?.program_beneficiaries,
+              ...getEnrollmentIds(
+                benificiary?.program_beneficiaries?.payment_receipt_document_id,
+                stateName
+              ),
               enrollment_date: benificiary?.program_beneficiaries
                 ?.enrollment_date
                 ? moment(
@@ -134,7 +143,19 @@ export default function BenificiaryEnrollment() {
               ? {
                   onlyField: ["enrollment_status", "enrolled_for_board"],
                 }
-              : {})}
+              : {
+                  onlyField: [
+                    "enrollment_status",
+                    "enrolled_for_board",
+                    "enrollment_number",
+                    "enrollment_mobile_no",
+                    "enrollment_date",
+                    "payment_receipt_document_id",
+                    ...(stateName !== "RAJASTHAN"
+                      ? ["application_form", "application_login_id"]
+                      : []),
+                  ],
+                })}
             onEdit={
               onEditFunc()
                 ? (e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)

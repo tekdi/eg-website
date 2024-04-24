@@ -1,6 +1,11 @@
 {
-  "short_name": "EG - Project Pragati",
   "name": "EG - Project Pragati",
+  "short_name": "EG - Project Pragati",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "images/logos/favicon.ico",
@@ -13,19 +18,15 @@
       "sizes": "192x192"
     },
     {
-        "src": "images/logos/logo196.png",
-        "sizes": "196x196",
-        "type": "image/png",
-        "purpose": "any maskable"
+      "src": "images/logos/logo196.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "images/logos/logo512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }
