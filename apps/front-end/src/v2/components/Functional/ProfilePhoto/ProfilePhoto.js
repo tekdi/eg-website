@@ -14,14 +14,17 @@ export default function ProfilePhoto({
   const navigate = useNavigate();
   return (
     <VStack alignItems="center">
-      <VStack position="relative" py={4}>
+      <HStack
+        flexDirection={"row-reverse"}
+        space="4"
+        position="relative"
+        py={4}
+      >
         {isProfileEdit && (
           <IconByName
-            right="-20"
-            top="0"
-            p="2"
-            position="absolute"
             name="PencilLineIcon"
+            color="iconColor.200"
+            _icon={{ size: "20" }}
             onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
           />
         )}
@@ -42,7 +45,7 @@ export default function ProfilePhoto({
             justifySelf="Center"
           />
         )}
-      </VStack>
+      </HStack>
 
       {/* <HStack alignItems="center" space="6">
         {[profile_photo_1, profile_photo_2, profile_photo_3].map(

@@ -81,8 +81,8 @@ export default function BenificiaryBasicDetails() {
             <HStack space={4} alignItems={"center"}>
               <VStack>
                 <ProfilePhoto
-                  // isProfileEdit={true}
-                  // editLink={edit}
+                  isProfileEdit={true}
+                  editLink={edit}
                   profile_photo_1={benificiary?.profile_photo_1}
                   profile_photo_2={benificiary?.profile_photo_2}
                   profile_photo_3={benificiary?.profile_photo_3}

@@ -23,8 +23,12 @@ export default {
         device_type: {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
-          format: "RadioBtn",
-          _stack: { direction: "row", justifyContent: "space-between" },
+          format: "CustomR",
+          grid: 2,
+          icons: [
+            { name: "SmartphoneLineIcon" },
+            { name: "CellphoneLineIcon" },
+          ],
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },

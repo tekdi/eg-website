@@ -110,7 +110,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                     profile_photo_1={facilitator?.profile_photo_1}
                     profile_photo_2={facilitator?.profile_photo_2}
                     profile_photo_3={facilitator?.profile_photo_3}
-                    // isProfileEdit={isProfileEdit()}
+                    isProfileEdit={isProfileEdit()}
                   />
                 </VStack>
                 <VStack>
@@ -125,7 +125,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                       }`}
                     </FrontEndTypo.H3>
 
-                    {isNameEdit() && (
+                    {/* {isNameEdit() && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
@@ -134,7 +134,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                           navigate(`/profile/edit/basic_details`);
                         }}
                       />
-                    )}
+                    )} */}
                   </HStack>
                   <HStack alignItems="Center">
                     {/* <IconByName name="Cake2LineIcon" color="iconColor.300" /> */}

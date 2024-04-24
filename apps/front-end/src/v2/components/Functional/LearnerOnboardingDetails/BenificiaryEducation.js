@@ -9,6 +9,7 @@ import {
   enumRegistryService,
   GetEnumValue,
   getUniqueArray,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import Chip from "component/Chip";
@@ -94,7 +95,35 @@ export default function BenificiaryEducation() {
         },
       }}
     >
-      <VStack bg="bgGreyColor.200">
+      <VStack bg="white" p={"11px"}>
+        <CardComponent
+          _vstack={{ space: 0 }}
+          _hstack={{ borderBottomWidth: 0 }}
+          title={t("EDUCATION_DETAILS")}
+          label={[
+            "TYPE_OF_LEARNER",
+            "LAST_STANDARD_OF_EDUCATION",
+            "LAST_YEAR_OF_EDUCATION",
+            "PREVIOUS_SCHOOL_TYPE",
+            "REASON_FOR_LEAVING",
+            "REGISTERED_IN_TENTH_DATE",
+            "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+          ]}
+          item={{
+            address: benificiary?.address,
+            state: benificiary?.state,
+            district: benificiary?.district,
+            block: benificiary?.block,
+            village: benificiary?.village,
+            grampanchayat: benificiary?.grampanchayat,
+            pincode: benificiary?.pincode,
+          }}
+          arr={["address", "state", "district", "block", "village", "pincode"]}
+          onEdit={(e) => {
+            navigate(`/beneficiary/edit/${userId}/address`);
+          }}
+        />
+
         <VStack px="5" pt="3">
           <VStack
             px="5"
