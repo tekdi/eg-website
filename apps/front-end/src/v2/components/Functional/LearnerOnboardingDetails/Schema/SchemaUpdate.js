@@ -2,85 +2,85 @@ export default {
   description: "IDENTIFY_BENEFICIARY",
   type: "step",
   properties: {
-    1: {
-      // title: "Contact Information",
-      // description: "PLEASE_WHATSAPP_NUMBER",
-      type: "object",
-      required: ["device_ownership", "device_type"],
-      properties: {
-        device_type: {
-          type: "string",
-          label: "TYPE_OF_MOBILE_PHONE",
-          format: "CustomR",
-          enumNames: ["SMARTPHONE", "BASIC"],
-          enum: ["smartphone", "basic"],
-          grid: "2",
-        },
-        device_ownership: {
-          type: "string",
-          label: "MARK_OWNERSHIP",
-          format: "RadioBtn",
-          enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
-          enum: ["self", "family_member", "neighbour", "other"],
-        },
-        edit_page_type: {
-          type: "string",
-          format: "hidden",
-          default: "add_contact",
-        },
-      },
-    },
-    2: {
-      title: "COMPLETE_ADDRESS",
-      type: "object",
-      required: ["state", "district", "block", "village", "grampanchayat"],
-      properties: {
-        lat: {
-          type: ["number", "string"],
-          title: "LATITUDE",
-          format: "ReadOnly",
-        },
-        long: {
-          type: ["number", "string"],
-          title: "LONGITUDE",
-          format: "ReadOnly",
-        },
-        address: {
-          title: "STREET_ADDRESS",
-          type: ["string", "null"],
-        },
-        // state: {
-        //   type: "string",
-        //   title: "STATE",
-        //   format: "select",
-        // },
-        district: {
-          title: "DISTRICT",
-          type: "string",
-          format: "select",
-        },
-        block: {
-          title: "BLOCK",
-          type: "string",
-          format: "select",
-        },
+    // 1: {
+    //   // title: "Contact Information",
+    //   // description: "PLEASE_WHATSAPP_NUMBER",
+    //   type: "object",
+    //   required: ["device_ownership", "device_type"],
+    //   properties: {
+    //     device_type: {
+    //       type: "string",
+    //       label: "TYPE_OF_MOBILE_PHONE",
+    //       format: "CustomR",
+    //       enumNames: ["SMARTPHONE", "BASIC"],
+    //       enum: ["smartphone", "basic"],
+    //       grid: "2",
+    //     },
+    //     device_ownership: {
+    //       type: "string",
+    //       label: "MARK_OWNERSHIP",
+    //       format: "RadioBtn",
+    //       enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
+    //       enum: ["self", "family_member", "neighbour", "other"],
+    //     },
+    //     edit_page_type: {
+    //       type: "string",
+    //       format: "hidden",
+    //       default: "add_contact",
+    //     },
+    //   },
+    // },
+    // 2: {
+    //   title: "COMPLETE_ADDRESS",
+    //   type: "object",
+    //   required: ["state", "district", "block", "village", "grampanchayat"],
+    //   properties: {
+    //     lat: {
+    //       type: ["number", "string"],
+    //       title: "LATITUDE",
+    //       format: "ReadOnly",
+    //     },
+    //     long: {
+    //       type: ["number", "string"],
+    //       title: "LONGITUDE",
+    //       format: "ReadOnly",
+    //     },
+    //     address: {
+    //       title: "STREET_ADDRESS",
+    //       type: ["string", "null"],
+    //     },
+    //     // state: {
+    //     //   type: "string",
+    //     //   title: "STATE",
+    //     //   format: "select",
+    //     // },
+    //     district: {
+    //       title: "DISTRICT",
+    //       type: "string",
+    //       format: "select",
+    //     },
+    //     block: {
+    //       title: "BLOCK",
+    //       type: "string",
+    //       format: "select",
+    //     },
 
-        village: {
-          title: "VILLAGE_WARD",
-          type: "string",
-          format: "select",
-        },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: ["string", "null"],
-        },
-        pincode: {
-          title: "PINCODE",
-          type: "string",
-          readOnly: "",
-        },
-      },
-    },
+    //     village: {
+    //       title: "VILLAGE_WARD",
+    //       type: "string",
+    //       format: "select",
+    //     },
+    //     grampanchayat: {
+    //       title: "GRAMPANCHAYAT",
+    //       type: ["string", "null"],
+    //     },
+    //     pincode: {
+    //       title: "PINCODE",
+    //       type: "string",
+    //       readOnly: "",
+    //     },
+    //   },
+    // },
 
     3: {
       title: "PERSONAL_DETAILS",
