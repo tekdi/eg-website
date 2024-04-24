@@ -31,7 +31,7 @@ function ScheduleExam() {
   const [filter, setFilter] = useState({});
   const [selectedDate, setSelectedDate] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
-  const [saveBtnIsDisable, setSaveBtnIsDisable] = useState(true);
+  const [isVisibleEditBtn, setIsVisibleEditBtn] = useState(false);
   const [isVisibleEdit, setIsVisibleEdit] = useState(false);
   const navigate = useNavigate();
   const [practicalSubjects, setPracticalSubjects] = useState([]);
@@ -40,8 +40,11 @@ function ScheduleExam() {
   const [theoryEvent, setTheoryEvent] = useState([]);
   const [practicalEvent, setPracticalEvent] = useState([]);
   const [eventOverallData, setEventOverallData] = useState([]);
+  const [publishDate, setPublishDate] = useState([]);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [hasDraftStatus, setHasDraftStatus] = useState(false);
+  const [isPublishDisable, setIsPublishDisable] = useState(false);
 
   useEffect(async () => {
     const data = await cohortService.getProgramList();
@@ -91,11 +94,6 @@ function ScheduleExam() {
     setLoading(false);
   };
 
-  const handleSelect = (optionId, board) => {
-    setFilter({ ...filter, program_id: board?.program_id, board_id: optionId });
-    setIsVisibleEdit();
-  };
-
   useEffect(async () => {
     setLoading(true);
     const subjectData = await organisationService.getSubjectList({
@@ -108,6 +106,28 @@ function ScheduleExam() {
       const practicalEvent = [];
       const theoryEvent = [];
       const allEventData = [];
+
+      const subjectDataArray = [];
+
+      subjectData?.data?.forEach((item) => {
+        if (item?.events?.length > 0) {
+          item.events.forEach((statusItem) => {
+            const subjId = statusItem?.context_id;
+            const status =
+              statusItem?.status === "draft" ? "publish" : statusItem?.status;
+            const date = statusItem?.start_date;
+            const type = statusItem?.type;
+            setHasDraftStatus(statusItem?.status === "draft");
+            subjectDataArray.push({
+              subject_id: subjId,
+              exam_date: date,
+              type: type,
+              status: status,
+            });
+          });
+        }
+      });
+      setPublishDate(subjectDataArray);
 
       subjectData?.data?.forEach((subject, events) => {
         if (subject.is_practical) {
@@ -158,24 +178,34 @@ function ScheduleExam() {
         (theorySubjects.length ||
           practicalSubjects.length ||
           selectedDate.length) > 0;
-      if (data === true) {
+      if (data === true && selectedDate?.length != 0) {
         setIsDisable(false);
       }
     }
   }, [selectedDate]);
 
+  const handleSelect = (optionId, board) => {
+    setFilter({ ...filter, program_id: board?.program_id, board_id: optionId });
+    //Edit button visibility (current-reverse)
+    if (oldSelectedData?.length > 0) {
+      setIsVisibleEditBtn(true);
+    } else {
+      setIsVisibleEditBtn(false);
+    }
+  };
+  console.log({ isVisibleEdit });
   const handleSaveButton = async () => {
     setIsDisable(true);
     const data = await organisationService.PoExamSchedule(selectedDate);
     if (data?.success === true) {
-      setIsVisibleEdit(false);
       setPracticalEvent([]);
       setTheoryEvent([]);
       setSelectedDate([]);
       setIsDisable(true);
+      setIsVisibleEdit(false);
+      setIsVisibleEditBtn(true);
     }
   };
-
   const handleCancelButton = async () => {
     setIsDisable(true);
     const subjectData = await organisationService.getSubjectList({
@@ -183,6 +213,7 @@ function ScheduleExam() {
     });
     setOldSelectedData(subjectData?.data);
     setSelectedDate([]);
+    setIsVisibleEdit();
   };
 
   const handleEditButton = () => {
@@ -190,20 +221,15 @@ function ScheduleExam() {
   };
 
   const handlePublish = async () => {
-    const newData = oldSelectedData?.map((subject) => {
-      if (subject && subject.events) {
-        subject.events = subject.events.map((event) => {
-          if (event.status === "draft") {
-            return { ...event, status: "publish" };
-          }
-          return event;
-        });
-      }
-      return subject;
-    });
-    const data = await organisationService.PoExamSchedule(newData);
+    setIsPublishDisable(true);
+    const data = await organisationService.PoExamSchedule(publishDate);
     if (data?.success === true) {
+      setPracticalEvent([]);
+      setTheoryEvent([]);
       setSelectedDate([]);
+      setIsDisable(true);
+      setIsVisibleEdit();
+      setIsVisibleEditBtn(true);
     }
   };
 
@@ -306,9 +332,10 @@ function ScheduleExam() {
             <AdminTypo.H5 bold color="textGreyColor.500">
               {t("SELECT_DATE")}
             </AdminTypo.H5>
-
             <HStack space={4}>
-              {(theoryEvent?.length > 0 || practicalEvent?.length > 0) && (
+              {(theoryEvent?.length > 0 ||
+                practicalEvent?.length > 0 ||
+                isVisibleEditBtn === true) && (
                 <AdminTypo.Secondarybutton
                   icon={<IconByName color="black" name="PencilLineIcon" />}
                   onPress={handleEditButton}
@@ -316,8 +343,9 @@ function ScheduleExam() {
                   <AdminTypo.H6 bold>{t("EDIT")}</AdminTypo.H6>
                 </AdminTypo.Secondarybutton>
               )}
-              {(theoryEvent?.length > 0 || practicalEvent?.length > 0) && (
+              {hasDraftStatus && (
                 <AdminTypo.Secondarybutton
+                  isDisabled={isPublishDisable}
                   icon={<IconByName color="black" name="ShareLineIcon" />}
                   onPress={handlePublish}
                 >

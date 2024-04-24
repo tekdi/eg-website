@@ -79,7 +79,6 @@ function DatePicker({
             selectedDates[subject?.id] ||
             moment().subtract(2, "months").format("YYYY-MM-DD");
         }
-
         return (
           <ScrollView key={subject.id}>
             <div
@@ -91,7 +90,6 @@ function DatePicker({
               }}
             >
               <label style={{ marginRight: "10px" }}>{subject.name}</label>
-
               <input
                 type="date"
                 style={{
