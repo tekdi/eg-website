@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -7,6 +7,8 @@ import {
   ImageView,
   AdminTypo,
   tableCustomStyles,
+  GetEnumValue,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, Modal, VStack } from "native-base";
@@ -17,50 +19,11 @@ import { useTranslation } from "react-i18next";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const columns = (t, certificateDownload) => [
-  {
-    name: t("EVENT_ID"),
-    selector: (row) => row?.events?.[0]?.id,
-  },
-  {
-    name: t("NAME"),
-    selector: (row) => `${row?.events?.[0]?.type}, ${row?.events?.[0]?.name}`,
-    attr: "name",
-    wrap: true,
-  },
-  {
-    name: t("SCORE"),
-    selector: (row) => {
-      const score = row?.score;
-      const roundedScore = typeof score === "number" ? score.toFixed(2) : "-";
-      return roundedScore;
-    },
-    attr: "name",
-    wrap: true,
-  },
-
-  {
-    name: t("STATUS"),
-    selector: (row) =>
-      row.certificate_status === true ? (
-        <AdminTypo.Secondarybutton
-          my="3"
-          onPress={() => certificateDownload(row)}
-        >
-          {t("DOWNLOAD")}
-        </AdminTypo.Secondarybutton>
-      ) : row.certificate_status === false ? (
-        <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
-      ) : (
-        <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
-      ),
-  },
-];
-
 export default function Certification({ footerLinks }) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [data, setData] = React.useState();
+  const [enums, setEnums] = React.useState();
   const navigate = useNavigate();
   const [certificateData, setCertificateData] = React.useState();
   const [loading, setLoading] = React.useState(false);
@@ -76,6 +39,14 @@ export default function Certification({ footerLinks }) {
       pdf.addImage(imgData, "JPEG", 0, 0);
       pdf.save("download.pdf");
     });
+  }, []);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const enumApiData = await enumRegistryService.listOfEnum();
+      setEnums(enumApiData?.data);
+    };
+    fetchData();
   }, []);
 
   const certificateDownload = React.useCallback(async (data) => {
@@ -100,6 +71,66 @@ export default function Certification({ footerLinks }) {
     };
     fetchData();
   }, [id]);
+
+  const columns = (t, certificateDownload) => [
+    {
+      name: t("EVENT_ID"),
+      selector: (row) => row?.events?.[0]?.id,
+    },
+    {
+      name: t("EVENT_TYPE"),
+      selector: (row) => (
+        <GetEnumValue
+          t={t}
+          enumType="FACILITATOR_EVENT_TYPE"
+          enumOptionValue={row?.events?.[0]?.type}
+          enumApiData={enums}
+        />
+      ),
+      attr: "name",
+      wrap: true,
+    },
+    {
+      name: t("EVENT_SCHEDULED"),
+      selector: (row) => (
+        <GetEnumValue
+          t={t}
+          enumType="EVENT_BATCH_NAME"
+          enumOptionValue={row?.events?.[0]?.name}
+          enumApiData={enums}
+        />
+      ),
+      attr: "name",
+      wrap: true,
+    },
+    {
+      name: t("SCORE"),
+      selector: (row) => {
+        const score = row?.score;
+        const roundedScore = typeof score === "number" ? score.toFixed(2) : "-";
+        return roundedScore;
+      },
+      attr: "name",
+      wrap: true,
+    },
+
+    {
+      name: t("STATUS"),
+      selector: (row) =>
+        row.certificate_status === true ? (
+          <AdminTypo.Secondarybutton
+            my="3"
+            onPress={() => certificateDownload(row)}
+          >
+            {t("DOWNLOAD")}
+          </AdminTypo.Secondarybutton>
+        ) : row.certificate_status === false ? (
+          <AdminTypo.H6 color="red.500">{t("FAILED")}</AdminTypo.H6>
+        ) : (
+          <AdminTypo.H6>{t("PENDING")}</AdminTypo.H6>
+        ),
+    },
+  ];
 
   const columnsMemoized = React.useMemo(
     () => columns(t, certificateDownload),
