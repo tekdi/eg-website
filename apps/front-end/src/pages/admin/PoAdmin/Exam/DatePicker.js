@@ -68,11 +68,17 @@ function DatePicker({
   return (
     <Stack>
       {subjectArr?.map((subject) => {
-        const minDate = !isEditableDates?.[subject?.id]
-          ? (isVisibleEdit &&
+        let minDate;
+        if (!isEditableDates?.[subject?.id]) {
+          minDate =
+            ((disableDates || isVisibleEdit) &&
               moment().subtract(2, "months").format("YYYY-MM-DD")) ||
-            moment().format("YYYY-MM-DD")
-          : moment().format("YYYY-MM-DD");
+            moment().format("YYYY-MM-DD");
+        } else {
+          minDate =
+            selectedDates[subject?.id] ||
+            moment().subtract(2, "months").format("YYYY-MM-DD");
+        }
 
         return (
           <ScrollView key={subject.id}>
@@ -84,7 +90,7 @@ function DatePicker({
                 justifyContent: "space-between",
               }}
             >
-              <label style={{ marginRight: "10" }}>{subject.name}</label>
+              <label style={{ marginRight: "10px" }}>{subject.name}</label>
 
               <input
                 type="date"
@@ -100,7 +106,7 @@ function DatePicker({
                 value={selectedDates[subject?.id] || ""}
                 min={minDate}
                 disabled={
-                  disableDates[subject?.id] &&
+                  disableDates?.[subject?.id] &&
                   !(isVisibleEdit && isEditableDates[subject?.id])
                 }
                 onChange={(e) =>

@@ -31,6 +31,7 @@ function ScheduleExam() {
   const [filter, setFilter] = useState({});
   const [selectedDate, setSelectedDate] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
+  const [saveBtnIsDisable, setSaveBtnIsDisable] = useState(true);
   const [isVisibleEdit, setIsVisibleEdit] = useState(false);
   const navigate = useNavigate();
   const [practicalSubjects, setPracticalSubjects] = useState([]);
@@ -40,6 +41,7 @@ function ScheduleExam() {
   const [practicalEvent, setPracticalEvent] = useState([]);
   const [eventOverallData, setEventOverallData] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(async () => {
     const data = await cohortService.getProgramList();
@@ -64,7 +66,7 @@ function ScheduleExam() {
     setBoardList(boardList);
   }, [filter]);
 
-  const resetFillData = () => {
+  const resetFillData = (selectedItem) => {
     setTheorySubjects([]);
     setPracticalSubjects([]);
     setIsVisibleEdit(false);
@@ -72,10 +74,12 @@ function ScheduleExam() {
     setEventOverallData([]);
     setPracticalEvent([]);
     setTheoryEvent([]);
+    setFilter({ program_id: selectedItem });
     setIsDisable(true);
   };
 
   const handleProgramChange = async (selectedItem) => {
+    setLoading(true);
     const data = programList.find((e) => e.id == selectedItem);
     await setSelectedProgramId({
       program_id: data?.id,
@@ -83,7 +87,8 @@ function ScheduleExam() {
       state_name: data?.state?.state_name,
     });
     setFilter({ ...filter, program_id: selectedItem });
-    resetFillData();
+    resetFillData(selectedItem);
+    setLoading(false);
   };
 
   const handleSelect = (optionId, board) => {
@@ -92,6 +97,7 @@ function ScheduleExam() {
   };
 
   useEffect(async () => {
+    setLoading(true);
     const subjectData = await organisationService.getSubjectList({
       id: filter?.board_id,
     });
@@ -143,6 +149,7 @@ function ScheduleExam() {
       setPracticalSubjects(practical);
       setTheorySubjects(theory);
     }
+    setLoading(false);
   }, [filter?.board_id]);
 
   useEffect(() => {
@@ -158,18 +165,24 @@ function ScheduleExam() {
   }, [selectedDate]);
 
   const handleSaveButton = async () => {
-    const data = await organisationService.PoExamSchedule(selectedDate);
     setIsDisable(true);
+    const data = await organisationService.PoExamSchedule(selectedDate);
     if (data?.success === true) {
-      navigate("/");
+      setIsVisibleEdit(false);
+      setPracticalEvent([]);
+      setTheoryEvent([]);
+      setSelectedDate([]);
+      setIsDisable(true);
     }
   };
 
   const handleCancelButton = async () => {
+    setIsDisable(true);
     const subjectData = await organisationService.getSubjectList({
       id: filter?.board_id,
     });
     setOldSelectedData(subjectData?.data);
+    setSelectedDate([]);
   };
 
   const handleEditButton = () => {
@@ -188,9 +201,9 @@ function ScheduleExam() {
       }
       return subject;
     });
-    const data = await organisationService.PoExamScheduleEdit(newData);
+    const data = await organisationService.PoExamSchedule(newData);
     if (data?.success === true) {
-      navigate("/");
+      setSelectedDate([]);
     }
   };
 
@@ -212,7 +225,7 @@ function ScheduleExam() {
   ]);
 
   return (
-    <PoAdminLayout>
+    <PoAdminLayout loading={loading}>
       <Stack p={4} space={4}>
         <HStack justifyContent={"space-between"}>
           <Breadcrumb
