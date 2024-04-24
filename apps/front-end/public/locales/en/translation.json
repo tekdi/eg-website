@@ -554,6 +554,7 @@
   "EVENT_CREATED_SUCCESSFULLY": "Event Created Successfully!!",
   "EVENT_END_DATE_TIME": "End Date & Time",
   "EVENT_NAME": "Event Name \n (Batch Number)",
+  "EVENT_NOT_IN_DURATION": "Current time is not within event duration",
   "EVENT_START_DATE_TIME": "Start Date & Time",
   "EVENT_SCHEDULED": "Event Scheduled",
   "EVENT_TYPE": "Event Type",

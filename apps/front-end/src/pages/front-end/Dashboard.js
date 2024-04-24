@@ -92,7 +92,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
-  const [isTodayAttendace, setIsTodayAttendace] = useState();
 
   const [env_name] = useState(process.env.NODE_ENV);
 
@@ -278,20 +277,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const setExamEvent = (data) => {
     if (data) {
-      setIsEventActive(data);
-      const doIdArray = data?.params?.do_id;
-      if (doIdArray == null || doIdArray.length === 0) {
-        setExamButtonText("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE");
-      } else {
-        setExamButtonText("TAKE_TEST");
-      }
-      setIsTodayAttendace(
-        data?.attendances?.filter(
-          (attendance) =>
-            attendance.user_id == fa_id &&
-            attendance.status == "present" &&
-            data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
-        )
+      let isTodayAttendace = [];
+      isTodayAttendace = data?.attendances?.filter(
+        (attendance) =>
+          attendance.user_id == fa_id &&
+          attendance.status == "present" &&
+          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
       );
 
       if (data?.lms_test_tracking?.length > 0) {
@@ -302,9 +293,28 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const time = moment(moment().format(format), format);
       const beforeTime = moment.utc(data?.start_time, format).local();
       const afterTime = moment.utc(data?.end_time, format).local();
+      let newData = data;
       if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-        setIsEventActive(data);
+        newData = { ...data, event_started: true };
       }
+      const doIdArray = data?.params?.do_id;
+      if (doIdArray == null || doIdArray.length === 0) {
+        setExamButtonText(t("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE"));
+      } else if (!newData?.event_started) {
+        setExamButtonText(
+          `${t("EVENT_NOT_IN_DURATION")} ${t("START_TIME")} ${beforeTime.format(
+            "hh:mm a"
+          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`
+        );
+      } else if (isTodayAttendace?.length < 1) {
+        setExamButtonText(t("TODAYS_ATTENDANCE_MISSING"));
+      } else if (data?.params?.start_exam != "yes") {
+        setExamButtonText(t("EXAM_NOT_STARTED_YET"));
+      } else {
+        newData = { ...data, take_test: true };
+        setExamButtonText(t("TAKE_TEST"));
+      }
+      setIsEventActive(newData);
     }
   };
 
@@ -640,13 +650,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <VStack width={"100%"}>
                     {isEventActive ? (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t(
-                          isTodayAttendace?.length < 1
-                            ? "TODAYS_ATTENDANCE_MISSING"
-                            : isEventActive?.params?.start_exam != "yes"
-                            ? "EXAM_NOT_STARTED_YET"
-                            : examButtonText
-                        )}
+                        {examButtonText}
                       </AdminTypo.H3>
                     ) : certificateData?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
@@ -667,40 +671,40 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
-                    ) : events ? (
-                      <TableCard
-                        setExamEvent={setExamEvent}
-                        pagination
-                        data={events}
-                        columns={[
-                          {
-                            name: `${t("EVENT_ID")} / ${t("NAME")}`,
-                            selector: (row) => `${row?.id} / ${row?.name}`,
-                          },
-                          {
-                            name: t("ATTENDANCE"),
-                            selector: (row) => {
-                              const attData = row?.attendances?.filter(
-                                (attendance) =>
-                                  attendance.user_id == fa_id &&
-                                  attendance.status == "present" &&
-                                  row.end_date ==
-                                    moment(attendance.date_time).format(
-                                      "YYYY-MM-DD"
-                                    )
-                              );
-                              return attData.length > 0 ? "yes" : "no";
-                            },
-                          },
-                          {
-                            name: t("EXAM_START_STATUS"),
-                            selector: (row) =>
-                              row?.attendance?.length > 0 ? "yes" : "no",
-                          },
-                        ]}
-                      />
                     ) : (
-                      <></>
+                      events && (
+                        <TableCard
+                          setExamEvent={setExamEvent}
+                          pagination
+                          data={events}
+                          columns={[
+                            {
+                              name: `${t("EVENT_ID")} / ${t("NAME")}`,
+                              selector: (row) => `${row?.id} / ${row?.name}`,
+                            },
+                            {
+                              name: t("ATTENDANCE"),
+                              selector: (row) => {
+                                const attData = row?.attendances?.filter(
+                                  (attendance) =>
+                                    attendance.user_id == fa_id &&
+                                    attendance.status == "present" &&
+                                    row.end_date ==
+                                      moment(attendance.date_time).format(
+                                        "YYYY-MM-DD"
+                                      )
+                                );
+                                return attData.length > 0 ? "yes" : "no";
+                              },
+                            },
+                            {
+                              name: t("EXAM_START_STATUS"),
+                              selector: (row) =>
+                                row?.params?.start_exam == "yes" ? "yes" : "no",
+                            },
+                          ]}
+                        />
+                      )
                     )}
                   </VStack>
                 </Modal.Body>
@@ -727,15 +731,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {isEventActive?.params?.start_exam == "yes" &&
-                      isTodayAttendace?.length > 0 && (
-                        <FrontEndTypo.DefaultButton
-                          background={"textRed.400"}
-                          onPress={startTest}
-                        >
-                          {t("START_TEST")}
-                        </FrontEndTypo.DefaultButton>
-                      )}
+                    {isEventActive?.take_test == true && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={startTest}
+                      >
+                        {t("START_TEST")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
                     {certificateData?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
