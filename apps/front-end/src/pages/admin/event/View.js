@@ -8,7 +8,6 @@ import {
   enumRegistryService,
   eventService,
   testRegistryService,
-  BodyMedium,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import html2canvas from "html2canvas";
@@ -451,7 +450,7 @@ export default function Attendence({ footerLinks }) {
             <Alert status="error" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{result?.message}</BodyMedium>
+                <AdminTypo.H6>{result?.message}</AdminTypo.H6>
               </HStack>
             </Alert>
           );
@@ -461,14 +460,14 @@ export default function Attendence({ footerLinks }) {
   };
 
   const editEvent = () => {
-    if (event?.params.start_exam === "yes") {
+    if (event?.params?.start_exam === "yes") {
       toast.show({
         render: () => {
           return (
             <Alert status="error" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t("EDIT_EVENT_WARNING")}</BodyMedium>
+                <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>
               </HStack>
             </Alert>
           );
