@@ -464,6 +464,9 @@ export const select = ({ options, value, onChange, required, schema }) => {
         placeholder={t(label || title)}
         borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
         bg="#FFFFFF"
+        dropdownIcon={
+          <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+        }
         borderWidth={value ? "2px" : "1px"}
         borderRadius={"4px"}
         fontSize={"16px"}

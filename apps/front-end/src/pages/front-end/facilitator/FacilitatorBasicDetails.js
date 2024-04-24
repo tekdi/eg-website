@@ -125,7 +125,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                       }`}
                     </FrontEndTypo.H3>
 
-                    {/* {isNameEdit() && (
+                    {isNameEdit() && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
@@ -134,7 +134,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                           navigate(`/profile/edit/basic_details`);
                         }}
                       />
-                    )} */}
+                    )}
                   </HStack>
                   <HStack alignItems="Center">
                     {/* <IconByName name="Cake2LineIcon" color="iconColor.300" /> */}

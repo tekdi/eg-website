@@ -817,6 +817,7 @@ const DEFAULT_THEME = {
     grayTitleCard: '#484848',
     garyTitleCardBorder: '#DDDDDD',
     grayIndark: '#18181b',
+    dashBoardCards: '#F4F4F4',
     btnGray: {
       100: '#e0e0e0'
     },

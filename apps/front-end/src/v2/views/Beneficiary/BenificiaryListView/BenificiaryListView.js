@@ -302,6 +302,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
+              dropdownIcon={
+                <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+              }
               selectedValue={filter?.status}
               placeholder={t("STATUS_ALL")}
               onValueChange={(nextValue) => {
@@ -326,6 +329,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           </Box>
           <Box flex="2">
             <SelectStyle
+              dropdownIcon={
+                <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+              }
               overflowX="hidden"
               selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}

@@ -509,6 +509,9 @@ export const select = ({ options, value, onChange, required, schema }) => {
         key={value + items}
         isDisabled={readOnly}
         selectedValue={value}
+        dropdownIcon={
+          <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+        }
         borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
         bg="#FFFFFF"
         borderWidth={value ? "2px" : "1px"}
