@@ -877,7 +877,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
             <FrontEndTypo.Primarybutton
               width="100%"
-              onPress={(e) => navigate("/profile")}
+              onPress={(e) => navigate("/examattendance")}
             >
               {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
             </FrontEndTypo.Primarybutton>

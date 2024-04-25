@@ -41,6 +41,9 @@ const ExamForm = lazy(() =>
 const ViewExamSchedule = lazy(() =>
   import("v2/components/Functional/ExamSchedule/ViewExamSchedule")
 );
+const ExamAttendance = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ExamAttendance")
+);
 
 //end v2 code
 
@@ -266,6 +269,10 @@ export default [
   {
     path: "/examschedule",
     component: ViewExamSchedule,
+  },
+  {
+    path: "/examattendance",
+    component: ExamAttendance,
   },
 
   //end v2 code

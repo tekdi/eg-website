@@ -1,0 +1,349 @@
+import React, { useEffect, useState } from "react";
+import { HStack, VStack, Text, Pressable } from "native-base";
+import {
+  IconByName,
+  FrontEndTypo,
+  organisationService,
+} from "@shiksha/common-lib";
+import { useTranslation } from "react-i18next";
+
+import {
+  CheckUserIdInPayload,
+  StoreAttendanceToIndexDB,
+  transformAttendanceResponse,
+} from "v2/utils/SyncHelper/SyncHelper";
+import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
+
+const CustomAccordion = ({ data, date }) => {
+  const { t } = useTranslation();
+  const [openAccordion, setOpenAccordion] = useState(null);
+  const [learnerAttendance, setLearnerAttendance] = useState([]);
+  const [mainAttendance, setMainAttendance] = useState([]);
+  const [isDisable, setIsDisable] = useState(true);
+  const [isCancelDisable, setCancelIsDisable] = useState(true);
+
+  const compareDates = (date1, date2) => {
+    const parsedDate1 = new Date(date1);
+    const parsedDate2 = new Date(date2);
+    return parsedDate1.toDateString() === parsedDate2.toDateString();
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setOpenAccordion(null);
+      const IndexDatapayload = convertPayload(data);
+      const getIndexData = await getIndexedDBItem("exam_attendance");
+      const getexamSyncDate = await getIndexedDBItem("examSyncDate");
+      setMainAttendance(IndexDatapayload || []);
+      const isDate = compareDates(date, getexamSyncDate);
+      if (date) {
+        if (isDate) {
+          if (getIndexData) {
+            setLearnerAttendance(getIndexData);
+          } else {
+            setLearnerAttendance(IndexDatapayload);
+            if (IndexDatapayload.length > 0) {
+              setIndexedDBItem("exam_attendance", IndexDatapayload);
+            }
+          }
+        } else {
+          if (IndexDatapayload) {
+            setIndexedDBItem("exam_attendance", IndexDatapayload);
+            setLearnerAttendance(IndexDatapayload);
+            setIndexedDBItem("examSyncDate", date);
+          }
+        }
+      }
+
+      const stringIndexDatapayload = JSON.stringify(IndexDatapayload);
+      const stringgetIndexData = JSON.stringify(getIndexData);
+      if (
+        isDate &&
+        (stringIndexDatapayload !== stringgetIndexData || !getIndexData)
+      ) {
+        setIsDisable(false);
+        setCancelIsDisable(false);
+      } else {
+        setIsDisable(true);
+        setCancelIsDisable(true);
+      }
+    };
+    fetchData();
+  }, [data]);
+
+  const convertPayload = (payload) => {
+    // Flatten the nested payload and extract event_id and user_id
+    const flattenedData = payload.flatMap((item) =>
+      item.data.map((user) => ({
+        event_id: item.event_id,
+        user_id: user.user_id,
+        status:
+          user?.attendances?.[0]?.status === "present"
+            ? "present"
+            : user?.attendances?.[0]?.status === "absent"
+            ? "absent"
+            : "", // Determine the attendance status
+      }))
+    );
+
+    // Construct the new format
+    const formattedPayload = flattenedData.map((item) => ({
+      [`${item.event_id}_${item.user_id}`]: item.status,
+    }));
+    return formattedPayload;
+  };
+
+  const toggleAccordion = (index, subject) => {
+    setOpenAccordion(openAccordion === index ? null : index);
+  };
+
+  const mergePayloads = (payload1, payload2) => {
+    // Combine both payloads into a single array
+    const combinedPayload = [...payload1, ...payload2];
+
+    // Create a map to store merged data
+    const mergedData = new Map();
+
+    // Iterate over the combined payload
+    combinedPayload.forEach((item) => {
+      const key = Object.keys(item)[0]; // Extract the key
+      const value = Object.values(item)[0]; // Extract the value
+
+      if (mergedData.has(key)) {
+        // If the key already exists, update the value
+        mergedData.set(key, value || mergedData.get(key));
+      } else {
+        // If the key does not exist, add it to the map
+        mergedData.set(key, value);
+      }
+    });
+
+    // Convert the map back to an array of objects
+    const mergedPayload = Array.from(mergedData, ([key, value]) => ({
+      [key]: value,
+    }));
+    return mergedPayload;
+  };
+
+  const markAttendance = async (user, event_id, attendance) => {
+    setIsDisable(false);
+    setCancelIsDisable(false);
+    const AttendaceData = await StoreAttendanceToIndexDB(
+      user,
+      event_id,
+      attendance
+    );
+    const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
+    setLearnerAttendance(mergedPayload);
+  };
+
+  const SaveAttendance = async (event_id) => {
+    const payload = (await getIndexedDBItem("exam_attendance")) || [];
+    const matchedPayload = payload.filter((item) => {
+      const key = Object.keys(item)[0];
+      return key.startsWith(event_id + "_");
+    });
+
+    const unmatchedPayload = payload.filter((item) => {
+      const key = Object.keys(item)[0];
+      return !key.startsWith(event_id + "_");
+    });
+
+    const finalPayload = await transformAttendanceResponse(
+      matchedPayload,
+      date
+    );
+    const result = await organisationService.markExamAttendance(finalPayload);
+    if (result?.success) {
+      setIsDisable(true);
+      setCancelIsDisable(true);
+    }
+  };
+
+  let event_id = 600;
+
+  const generateNewPayload = (original, updated, event_id) => {
+    const newPayload = updated.map((originalItem) => {
+      const key = Object.keys(originalItem)[0];
+      if (key.startsWith(`${event_id}_`)) {
+        const updatedItem = original.find(
+          (item) => Object.keys(item)[0] === key
+        );
+        return updatedItem ? updatedItem : originalItem;
+      } else {
+        return originalItem;
+      }
+    });
+    return newPayload;
+  };
+
+  const cancelAttendance = async (event_id) => {
+    if (mainAttendance.length > 0) {
+      const newPayload = generateNewPayload(
+        mainAttendance,
+        learnerAttendance,
+        event_id
+      );
+      setIndexedDBItem("exam_attendance", newPayload);
+      setLearnerAttendance(newPayload);
+    } else {
+      setLearnerAttendance([]);
+    }
+    setIsDisable(true);
+    setCancelIsDisable(true);
+  };
+
+  return (
+    <VStack space={4}>
+      {data?.map((subject, index) => (
+        <VStack key={subject.id}>
+          <HStack
+            onClick={() => toggleAccordion(index, subject)}
+            style={{
+              cursor: "pointer",
+              padding: "10px",
+              backgroundColor: openAccordion === index ? "lightgray" : "white",
+            }}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <HStack space={2}>
+              {subject?.subject_name}
+              {subject?.type == "Practical" && `- ${t("PRACTICALS")}`}
+            </HStack>
+            {openAccordion === index ? (
+              <IconByName p="0" name="ArrowUpSLineIcon" />
+            ) : (
+              <IconByName p="0" name="ArrowDownSLineIcon" />
+            )}
+          </HStack>
+          {openAccordion === index && (
+            <>
+              <table
+                style={{
+                  textAlign: "center",
+                  borderSpacing: "10px",
+                }}
+              >
+                {subject?.data?.length !== 0 ? (
+                  <>
+                    <thead>
+                      <tr>
+                        <th>{t("ID")}</th>
+                        <th>{t("NAME")}</th>
+                        <th>{t("MARK_ATTENDANCE")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* Assuming attendance data is fetched from an API or stored elsewhere */}
+                      {/* You can replace the placeholder values with actual attendance data */}
+                      {subject?.data.map((user, index) => {
+                        return (
+                          <tr style={{}} key={user?.user_id}>
+                            <td>{user.user_id}</td>
+                            <td>
+                              {user.first_name} {user.last_name}
+                            </td>
+                            <td>
+                              <HStack
+                                alignItems={"center"}
+                                justifyContent={"center"}
+                                space={4}
+                              >
+                                <Pressable
+                                  onPress={() =>
+                                    markAttendance(
+                                      user,
+                                      subject?.event_id,
+                                      "present"
+                                    )
+                                  }
+                                >
+                                  <VStack alignItems={"center"}>
+                                    <IconByName
+                                      name="CheckboxCircleFillIcon"
+                                      color={`${
+                                        CheckUserIdInPayload(
+                                          user,
+                                          learnerAttendance,
+                                          subject.event_id
+                                        ) === "present"
+                                          ? "successColor"
+                                          : "grayColor"
+                                      }`}
+                                    />
+                                    <Text>{t("PRESENT")}</Text>
+                                  </VStack>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    markAttendance(
+                                      user,
+                                      subject?.event_id,
+                                      "absent"
+                                    )
+                                  }
+                                >
+                                  <VStack alignItems={"center"}>
+                                    <IconByName
+                                      name="CloseCircleLineIcon"
+                                      color={`${
+                                        CheckUserIdInPayload(
+                                          user,
+                                          learnerAttendance,
+                                          subject.event_id
+                                        ) === "absent"
+                                          ? "dangerColor"
+                                          : "grayColor"
+                                      }`}
+                                    />
+                                    <Text>{t("ABSENT")}</Text>
+                                  </VStack>
+                                </Pressable>
+                              </HStack>
+                            </td>
+                            {/* Example attendance value */}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </>
+                ) : (
+                  <FrontEndTypo.H2>{t("EXAM_WARNING")}</FrontEndTypo.H2>
+                )}
+              </table>
+              {subject?.data.length !== 0 && (
+                <HStack
+                  space={4}
+                  width={"100%"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <FrontEndTypo.Secondarybutton
+                    px="20px"
+                    onPress={() => {
+                      cancelAttendance(subject?.event_id);
+                    }}
+                  >
+                    {t("CANCEL")}
+                  </FrontEndTypo.Secondarybutton>
+                  <FrontEndTypo.Primarybutton
+                    px="20px"
+                    isDisabled={isDisable}
+                    onPress={() => {
+                      SaveAttendance(subject?.event_id);
+                    }}
+                  >
+                    {t("SAVE")}
+                  </FrontEndTypo.Primarybutton>
+                </HStack>
+              )}
+            </>
+          )}
+        </VStack>
+      ))}
+    </VStack>
+  );
+};
+
+export default CustomAccordion;

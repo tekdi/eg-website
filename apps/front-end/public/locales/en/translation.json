@@ -1672,5 +1672,7 @@
   "UPDATE_LEARNER_EXAM_ATTENDANCE": "Update Learner Exam Attendance",
   "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
   "PRACTICALS": "Practicals",
-  "THEORY": "Theory"
+  "THEORY": "Theory",
+  "MARK_LEARNER_EXAM_ATTENDANCE": "Mark Learner Exam Attendance",
+  "EXAM_WARNING": "No Learners for the exam"
 }

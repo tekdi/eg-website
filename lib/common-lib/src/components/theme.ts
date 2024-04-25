@@ -683,6 +683,7 @@ const DEFAULT_THEME = {
       400: '#14242D'
     },
     appliedColor: '#E0E0E0',
+    grayColor: '#D3D3D3',
     screenedColor: '#e5f4ff',
     shortlistedColor: '#CAE9FF',
     potentialColor: '#A7F3D0',
@@ -736,15 +737,15 @@ const DEFAULT_THEME = {
     },
     textBlue: {
       100: '#a8e3fd',
-      200:'#0038FF'
+      200: '#0038FF'
     },
     text: {
       100: '#a8e3fd'
     },
-    zambezi:'#5A5A5A',
+    zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',
     greenIconColor: '#008C0E',
-    whiteSomke:'#F9F9F9'
+    whiteSomke: '#F9F9F9'
   }
 }
 
