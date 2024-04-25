@@ -204,6 +204,10 @@ function ScheduleExam() {
       setIsDisable(true);
       setIsVisibleEdit(false);
       setIsVisibleEditBtn(true);
+      const subjectData = await organisationService.getSubjectList({
+        id: filter?.board_id,
+      });
+      setOldSelectedData(subjectData?.data);
     }
   };
   const handleCancelButton = async () => {
