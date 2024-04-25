@@ -136,7 +136,7 @@ const PcrDetails = () => {
               {t("PCR_INITIAL_LEVEL")}
             </FrontEndTypo.H3>
             <Select
-              isDisabled={isDisabledSelect({ pcrCreated })}
+              //isDisabled={isDisabledSelect({ pcrCreated })}
               selectedValue={data?.baseline_learning_level || "Select"}
               accessibilityLabel="SELECT"
               placeholder={
@@ -158,7 +158,7 @@ const PcrDetails = () => {
               })}
             </Select>
           </VStack>
-          {isHideSelect({
+          {/* {isHideSelect({
             pcrCreated,
             attr: "rapid_assessment_first_learning_level",
           }) && (
@@ -202,9 +202,9 @@ const PcrDetails = () => {
                 })}
               </Select>
             </VStack>
-          )}
+          )} */}
 
-          {isHideSelect({
+          {/* {isHideSelect({
             pcrCreated,
             attr: "rapid_assessment_second_learning_level",
           }) && (
@@ -247,9 +247,9 @@ const PcrDetails = () => {
                 })}
               </Select>
             </VStack>
-          )}
+          )} */}
 
-          {isHideSelect({
+          {/* {isHideSelect({
             pcrCreated,
             attr: "endline_learning_level",
           }) && (
@@ -285,7 +285,7 @@ const PcrDetails = () => {
                 })}
               </Select>
             </VStack>
-          )}
+          )} */}
           <Box pt="4">
             <FrontEndTypo.Primarybutton
               onPress={() => {
