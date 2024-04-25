@@ -38,6 +38,9 @@ const ExamLearnerList = lazy(() =>
 const ExamForm = lazy(() =>
   import("v2/components/Functional/ExamPreparation/ExamForm")
 );
+const ViewExamSchedule = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ViewExamSchedule")
+);
 
 //end v2 code
 
@@ -259,6 +262,10 @@ export default [
   {
     path: "/offline",
     component: OfflinePage,
+  },
+  {
+    path: "/examschedule",
+    component: ViewExamSchedule,
   },
 
   //end v2 code

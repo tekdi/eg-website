@@ -939,6 +939,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </HStack>
             </Stack>
           )}
+
+          <Stack bg="bgYellowColor.400" space="6" p={4}>
+            <FrontEndTypo.H2 color="textMaroonColor.400">
+              {t("LEARNER_EXAMINATION")}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H3>
+              {t("LEARNER_EXAMINATION_DETAILS")}
+            </FrontEndTypo.H3>
+
+            <FrontEndTypo.Primarybutton
+              width="100%"
+              onPress={(e) => navigate("/profile")}
+            >
+              {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+            </FrontEndTypo.Primarybutton>
+
+            <FrontEndTypo.Secondarybutton
+              width="100%"
+              onPress={(e) => navigate("/examschedule")}
+            >
+              {t("VIEW_EXAM_SCHEDULE")}
+            </FrontEndTypo.Secondarybutton>
+          </Stack>
         </VStack>
       </VStack>
       <Modal
