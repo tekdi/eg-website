@@ -114,8 +114,11 @@
   "APPLICATION_APPROVED": "Application Approved",
   "APPLICATION_FORM": "Application Form",
   "APPLICATION_ID": "Application ID",
-  "APPLICATION_RECEIPT": "Application Receipt",
+  "APPLICATION_ID_ALREADY_EXISTS": "Application id already exists",
+  "APPLICATION_ID_SHOULD_BE_OF_9_DIGIT": "Application id should be of 9 digit",
   "APPLICATION_LOGIN_ID_SCREENSHOT": "Application Login ID screenshot",
+  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot",
+  "APPLICATION_RECEIPT": "Application Receipt",
   "APPLICATION_UNDER_REVIEW": "Application Under Review",
   "APPLIED": "Applied",
   "APPLIED_BUT_PENDING": "Applied But Pending",
@@ -123,7 +126,6 @@
   "APPLY_FOR_LEAVE": "Apply For Leave",
   "APPLY_NOW": "Apply Now",
   "APPLY_SCHOLARSHIP": "Apply scholarship",
-  "SCHOLARSHIP_SUBMITTED_SUCCESSFULLY": "Scholarship has been submitted successfully",
   "APPROVE_APPLICATION": "Approve Application",
   "ARE_YOU_SURE": "Are you sure",
   "AS_PER_AADHAAR": "(As Per Aadhaar Card)",
@@ -386,6 +388,7 @@
   "CORRECT_ENROLLMENT_LEARNER_DETAILS": "Correct learner enrollment details",
   "COUNT": "Count",
   "COURAGEOUS": "Courageous",
+  "CREATE": "Create",
   "CREATE_4_DIGIT_SHARE_CODE": "Create a 4 digit share code.",
   "CREATE_BENEFICIARIES": "Create Beneficiaries",
   "CREATE_CAMP": "Create Camp",
@@ -399,8 +402,8 @@
   "DATE": "Date",
   "DATE_OF_BIRTH": "Date of Birth",
   "DATE_OF_BIRTH_AS_PER_AADHAAR": "Date of birth (As per Aadhaar Card)",
-  "DATE_OF_BIRTH_AS_PER_ENROLLMENT": "Date of Birth (As per Enrollment Receipt)",
   "DATE_OF_BIRTH_AS_PER_APPLICATION": "Date of Birth (As per Application)",
+  "DATE_OF_BIRTH_AS_PER_ENROLLMENT": "Date of Birth (As per Enrollment Receipt)",
   "DATE_OF_ENROLLMENT": "Date of Enrollment",
   "DATE_OF_ENTRY_IN_PMS": "Date of entry in PMS",
   "DATE_TIME": "Date time",
@@ -424,6 +427,7 @@
   "DO_YOU_HAVE_ANY_JOB_EXPERIENCE": "Do you have any Job Experience ?",
   "DO_YOU_HAVE_ANY_TEACHING_DEGREE": "Do you have any teaching degree?",
   "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE": "Do you have any Volunteer Experience ?",
+  "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
   "DO_YOU_OWN_A_MOBILE_PHONE": "Do you have a personal smartphone ?",
   "DOC_PER_COHORT": "Document per Cohort",
   "DOC_PER_MONTHLY": "Document per month",
@@ -502,14 +506,12 @@
   "ENROLLMENT_NO": "Enrollment Number",
   "ENROLLMENT_NUMBER": "Enrollment Number",
   "ENROLLMENT_NUMBER_ALREADY_EXISTS": "Enrollment Number already exists",
-  "APPLICATION_ID_ALREADY_EXISTS": "Application id already exists",
   "ENROLLMENT_NUMBER_POPUP_MESSAGE": "Enrollment number already exists. Enter correct enrollment number",
   "ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT": "Enrollment number should be of 11 digit",
-  "APPLICATION_ID_SHOULD_BE_OF_9_DIGIT": "Application id should be of 9 digit",
   "ENROLLMENT_PENDING": "Enrollment Pending",
-  "ENROLLMENT_RECEIPT_DETAILS": "Learner's details as per 'Application Receipt'",
   "ENROLLMENT_RECEIPT": "Details of the learner as per the enrolment receipt",
   "ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH": "Enrollment receipt and details mismatch",
+  "ENROLLMENT_RECEIPT_DETAILS": "Learner's details as per 'Application Receipt'",
   "ENROLLMENT_RECIEPT": "Enrollment Reciept",
   "ENROLLMENT_REJECTED": "Enrollment Rejected",
   "ENROLLMENT_STATUS": "Enrollment Status",
@@ -522,6 +524,76 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "ENTER_YOUR_AADHAAR_NUMBER": "Enter Your Aadhaar Number",
   "ENTERED_AADHAR_NOT_EDITABLE": "Entered Aadhaar card number is not editable. Please verify before entering",
+  "EPCP": {
+    "HAS_LOGGED_RSOS_APP": {
+      "NO": "no",
+      "TITLE": "Has the learner logged into the RSOS App?",
+      "YES": "yes"
+    },
+    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
+      "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "LACK_OF_TIME": "Lack of time",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
+      "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
+      "TITLE": "Choose the reason "
+    },
+    "RSOS_DOCUMENT_IMAGE": {
+      "TITLE": "Upload an Image of your Document "
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
+      "NO": "no",
+      "TITLE": "Do the learners study through videos/e-books on RSOS App?",
+      "YES": "yes"
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "Difficult to read and understand from mobile",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
+      "LACK_OF_TIME": "Lack of time",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
+      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
+      "TITLE": "Choose the reason *",
+      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "Videos,E-bboks are difficult to understand"
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
+      "NO": "no",
+      "TITLE": "Are you taking practice tests on the RSOS App?",
+      "YES": "yes"
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "Did not understand supporting material or question",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
+      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "Lack of confidence in taking practice tests",
+      "LACK_OF_TIME": "Lack of time",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
+      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
+      "TITLE": "Choose the reason *"
+    },
+    "TITLE": "'s Use of the RSOS App",
+    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
+      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "Lack of confidence in giving e-PCP",
+      "TITLE": "Choose the reason *",
+      "WILL_GIVE_SOON": "Will give soon"
+    },
+    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
+      "NO": "no",
+      "TITLE": "Are you taking practice tests on the RSOS App?",
+      "YES": "yes"
+    }
+  },
+  "EPCP_ACTIVITIES": "e-PCP Activities",
+  "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
+  "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
   "EVALUATION_1": "Rapid Assesment-I",
   "EVALUATION_2": "Rapid Assesment-II",
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "There is no assessment available for this event",
@@ -554,10 +626,54 @@
   "EVENT_NAME": "Event Name \n (Batch Number)",
   "EVENT_START_DATE_TIME": "Start Date & Time",
   "EVENT_TYPE": "Event Type",
+  "EXAM": "Exam",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
+  "EXAM_PREPARATION": {
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "NO": "no",
+      "TITLE": "Did the learner receive the  admit card?",
+      "YES": "yes"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable",
+      "TITLE": "Has the learner prepared the practical file?",
+      "YES": "yes"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable",
+      "TITLE": "Does the learner have the travel arrangements to the exam center?",
+      "YES": "yes"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "NO": "no",
+      "TITLE": "Did the learner receive the Exam Time Table?",
+      "YES": "yes"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "NO": "no",
+      "TITLE1": "Will",
+      "TITLE2": "appear for the exam?",
+      "YES": "yes"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received",
+      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
+      "EXAM_FEAR": "Exam Fear",
+      "FAMILY_RESTRICTIONS": "Family restrictions",
+      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
+      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
+      "ILLNESS": "Illness",
+      "TITLE": "Choose the reason ",
+      "TRAVEL_ISSUES": "Travel Issues"
+    }
+  },
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
   "EXIST_LOGIN": "You already have an account for {{state}} {{year}}, proceed to log in instead.",
+  "EXISTING_IP": "Existing IP",
   "EXISTING_IP_USER": "Existing IP User",
+  "EXISTING_USER": "Existing User",
   "EXPERIENCE": "Experience",
   "EXPERIENCE_IN_YEARS": "Experience in years",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "Explain your claim of the AG Learner",
@@ -819,6 +935,7 @@
   "LEARNERS_INFO": "Learner Info",
   "LEARNERS_LIST": "Learner's List",
   "LEARNERS_NAME": "Learner's Name",
+  "LEARNERS_PER_TARGET": "Average learners per camp",
   "LEARNERS_SUBJECT_CSV": "Learner's subject CSV",
   "LEARNERS_TARGET": "Learner's Target",
   "LEARNERS_WHATSAPP_NUMBER": "(WhatsApp phone number that is readily available to the learner)",
@@ -837,6 +954,7 @@
   "LETS_START_TODAYS_CAMP": "Let's start today's camp.",
   "LETTER_RECOMMENDATION_BOSS": "Letter of recommendation from my boss",
   "LIST_OF_HOLIDAYS": "List of holidays",
+  "LIST_OF_LEARNERS": "List of Learners",
   "LIVELIHOOD_AWARENESS": "Livelihood Awareness",
   "LIVELIHOOD_AWARENESS_ASPIRATION_MAPPING": "Aspiration Mapping",
   "LIVELIHOOD_AWARENESS_COMMUNICATION_SKILLS": "Communication Skills",
@@ -901,9 +1019,9 @@
   "MISCELLANEOUS_ACTIVITIES_E_PCP_ACTIVITIES": "E.P.C.P. Activities",
   "MISCELLANEOUS_ACTIVITIES_FAMILY_VISIT": "Family visit",
   "MISCELLANEOUS_ACTIVITIES_FINANCIAL_LITERACY": "Financial literacy",
+  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "Formative Assessment",
   "MISCELLANEOUS_ACTIVITIES_LINKAGES": "Linkages",
   "MISCELLANEOUS_ACTIVITIES_PCR": "Miscellaneous activities PCR",
-  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "Formative Assessment",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_INTERVENTION": "Role model intervention",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_VISIT": "Role model visit",
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "School teacher visit",
@@ -950,8 +1068,8 @@
   "NOT_AVAILABLE": "Not Available",
   "NOT_BAD": "Not Bad",
   "NOT_ELIGIBLE": "Not eligible",
-  "NOT_ENTERED": "Not Entered",
   "NOT_ENROLLED": "Not enrolled",
+  "NOT_ENTERED": "Not Entered",
   "NOT_FOUND": "Not Found",
   "NOT_INTERESTED": "Not interested",
   "NOT_REGISTER": "Not Register",
@@ -1002,6 +1120,7 @@
   "PASSWORD_IS_REQUIRED": "Password is required",
   "PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "PAYMENT_RECEIPT": "Enrollment Receipt",
+  "PAYMENT_RECEIPTS": "Payment Receipt",
   "PCR_ACTIVITIES": "PCR Activities",
   "PCR_CAMP": "PCR Camp",
   "PCR_CAMP_EXECUTION": "PCR Camp Execution",
@@ -1066,6 +1185,7 @@
   "PLEASE_SELECT": "Please select",
   "PLEASE_SELECT_A_LEARNER": "Please select a Learner",
   "PLEASE_SELECT_ALL_ITEMS_MESSAGE": "Please select all details then you can save the details",
+  "PLEASE_SELECT_CAMP": "Please select camp",
   "PLEASE_SELECT_OPTION_1_TO_3": "Please select min 1 and max 3 options",
   "PLEASE_SELECT_THE_EVENT_TYPE": "Please select the event type",
   "PLEASE_TURN_ON_YOUR_INTERNET": "Please turn on your Internet.",
@@ -1074,11 +1194,13 @@
   "POST_GRADUATE": "Post Graduate",
   "POSTER": "Poster",
   "POTENTIAL_PRERAK": "Potential prerak",
+  "PRACTICAL_EXAM": "Practical Exams",
   "PRAGATI_MOBILIZER": "Pragati mobilizer",
   "PRAGATI_SYC": "Pragati Syc",
   "PREFERED_LANGUAGE": "Please choose your preferred language for the application",
   "PREFERRED_CAMP_TIME": "Preferred camp time",
   "PREFERRED_TIME": "Preferred Time",
+  "PREPARATION_FOR_EXAM": "Preparation for Exam",
   "PRERAK": "Prerak",
   "PRERAK_BIO": "Prerak Bio",
   "PRERAK_CERTIFICATION_PROGRAM": "Prerak Certification Program",
@@ -1131,6 +1253,7 @@
   "PROPERTY_AND_FACILITY_DETAILS": "Property and Facility Details",
   "PROPERTY_DETAILS": "Property Details",
   "PROPERTY_TYPE": "Property Type",
+  "PUBLISH": "Publish",
   "PURPOSE": "Purpose",
   "PURSUING_GRADUATION": "Pursuing Graduation",
   "QR_CODE_INVALID": "Invalid QR code",
@@ -1162,9 +1285,9 @@
   "REASON_OF_DUPLICATION": "Reason of Duplication",
   "REASSIGN": "Reassign",
   "REASSIGN_CAMP": "Reassign To Camp",
-  "REASSIGNE_CAMP": "Reassign Camp",
   "REASSIGN_LEARNERS": "Reassign Learner's",
   "REASSIGN_MSG": "Are you sure you want to reassign the camp?",
+  "REASSIGNE_CAMP": "Reassign Camp",
   "REFERENCE": "Reference",
   "REFERENCE_CONTACT_DETAILS": "Reference Contact Details",
   "REFERENCE_DETAILS": "Reference Details",
@@ -1233,7 +1356,9 @@
   "SCHEDULE": "Schedule",
   "SCHEDULE_AN_INTERVIEW": "Schedule an Interview",
   "SCHEDULE_EVENT": "Schedule an Event",
+  "SCHEDULE_EXAM": "Schedule Exam",
   "SCHEDULE_INTERVIEW": "Schedule Interview",
+  "SCHOLARSHIP_SUBMITTED_SUCCESSFULLY": "Scholarship has been submitted successfully",
   "SCHOOL_BEING_TOO_FAR_AWAY": "School being too far away",
   "SCHOOL_DROPOUT": "School Dropout",
   "SCHOOL_DROPOUT_CLASS": "School Dropout Class",
@@ -1250,10 +1375,12 @@
   "SELECT": "Select",
   "SELECT_ACADEMIC_YEAR": "Select Academic year",
   "SELECT_ALL": "Select all",
+  "SELECT_BOARD": "Select Board",
   "SELECT_CANDIDATE": "Select Candidate",
   "SELECT_CANDIDATES": "Please select Candidates for Event",
   "SELECT_COHORT_INFO": "Select Cohort",
   "SELECT_COHORT_NEXT": "Next",
+  "SELECT_DATE": "Select Date",
   "SELECT_DATE_ERROR_MESSAGE": "You can only choose a maximum of five days.",
   "SELECT_FOR_ONBOARDING": "Select for onboarding",
   "SELECT_FOR_TRAINING": "Select for training",
@@ -1353,6 +1480,7 @@
   "TAKE_PHOTO": "Take a Photo",
   "TAKE_TEST": "Take test",
   "TAKE_THE_TEST": "Take the test",
+  "TARGET_CAMP": "Target Camp",
   "TEACHING_DEGREE": "Teaching Degree",
   "TEACHING_QUALIFICATION": "Teaching qualification",
   "TEACHING_QUALIFICATION_B_ED": "B.Ed",
@@ -1372,6 +1500,7 @@
   "THE_ENROLLMENT_DETAILS": "Enter the details",
   "THE_FOLLOWING_FACILITIES_ARE_AVAILABLE_AT_THE_CAMP_SITE": "The following facilities are available at the camp site",
   "THE_QUALITY_OF_THE_KIT": "Suggestions for the Kit",
+  "THEORY_EXAM": "Theory Exams",
   "THIS_CAN_BE_LETTER_OF": "This can be letter of recommendation from your company/workplace",
   "THIS_CAN_BE_REFERENCE_OR_LETTER_OF": "This can be references or letter of recommendation from the organization",
   "THIS_CAN_BE_YOUR_HIGHEST_GRADE": "This can be your highest grade or graduation certificate",
@@ -1443,9 +1572,11 @@
   "UPLOAD_YOUR_DOCUMENTS": "Upload Your Documents",
   "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT": "Upload Your Highest Qualification Document",
   "UPLOADED_AADHAR_NOT_EDITABLE": "Uploaded Aadhaar Card Photo Is Not Editable. Please Verify Before Uploading",
+  "USER": "User",
   "USER_CONFIRM_PASSWORD": "Confirm Password",
   "USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION": "Confirm password is not matched with Password",
   "USER_CONFIRM_PASSWORD_IS_REQUIRED": "Confirm Password Is Required",
+  "USER_CREATE": "User Create",
   "USER_ENTER_FOUR_DIGIT_OTP": "Enter 6 Digit OTP sent on Above Mobile Number",
   "USER_ENTER_VALID_OTP": "Incorrect OTP Entered",
   "USER_FORGET_PASSWORD": "Forgot Password",
@@ -1534,131 +1665,6 @@
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "EPCP_ACTIVITIES": "e-PCP Activities",
-  "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
-  "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
-  "LIST_OF_LEARNERS": "List of Learners",
-  "PREPARATION_FOR_EXAM": "Preparation for Exam",
-  "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
-  "EPCP": {
-    "TITLE": "'s Use of the RSOS App",
-    "HAS_LOGGED_RSOS_APP": {
-      "TITLE": "Has the learner logged into the RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
-      "TITLE": "Do the learners study through videos/e-books on RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
-      "TITLE": "Are you taking practice tests on the RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
-      "TITLE": "Are you taking practice tests on the RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "Upload an Image of your Document "
-    },
-    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason *",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
-      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
-      "LACK_OF_TIME": "Lack of time",
-      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
-      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "Difficult to read and understand from mobile",
-      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "Videos,E-bboks are difficult to understand"
-    },
-    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
-      "TITLE": "Choose the reason *",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
-      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
-      "LACK_OF_TIME": "Lack of time",
-      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
-      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "Lack of confidence in taking practice tests",
-      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "Did not understand supporting material or question"
-    },
-    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason *",
-      "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
-      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "Lack of confidence in giving e-PCP",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
-      "WILL_GIVE_SOON": "Will give soon"
-    },
-    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason ",
-      "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
-      "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
-      "LACK_OF_TIME": "Lack of time",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly"
-    }
-  },
-
-  "EXAM_PREPARATION": {
-    "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE1": "Will",
-      "TITLE2": "appear for the exam?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
-      "TITLE": "Choose the reason ",
-      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
-      "FAMILY_RESTRICTIONS": "Family restrictions",
-      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
-      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
-      "ILLNESS": "Illness",
-      "TRAVEL_ISSUES": "Travel Issues",
-      "EXAM_FEAR": "Exam Fear",
-      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received"
-    },
-    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
-      "TITLE": "Did the learner receive the  admit card?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "TITLE": "Has the learner prepared the practical file?",
-      "YES": "yes",
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable"
-    },
-    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "TITLE": "Does the learner have the travel arrangements to the exam center?",
-      "YES": "yes",
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable"
-    },
-    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "TITLE": "Did the learner receive the Exam Time Table?",
-      "YES": "yes",
-      "NO": "no"
-    }
-  },
-  "LEARNERS_PER_TARGET": "Average learners per camp",
-  "TARGET_CAMP": "Target Camp",
-  "USER": "User",
-  "USER_CREATE": "User Create",
-  "CREATE": "Create",
-  "EXISTING_IP": "Existing IP",
-  "EXISTING_USER": "Existing User",
-  "PLEASE_SELECT_CAMP": "Please select camp",
-  "PAYMENT_RECEIPTS": "Payment Receipt",
-  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot",
   "VIEW_EXAM_SCHEDULE": "View Exam Schedule",
   "LEARNER_EXAM_RESULTS": "Learner Exam Results",
   "LEARNER_EXAM_RESULT": "Learner Exam Result",
@@ -1666,6 +1672,5 @@
   "UPDATE_LEARNER_EXAM_ATTENDANCE": "Update Learner Exam Attendance",
   "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
   "PRACTICALS": "Practicals",
-  "THEORY": "Theory",
-  "SELECT_BOARD": "Select Board"
+  "THEORY": "Theory"
 }
