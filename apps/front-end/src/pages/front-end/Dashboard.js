@@ -552,6 +552,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"HOME"}
+      pageTitle={t("HOME")}
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
