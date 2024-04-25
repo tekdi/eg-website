@@ -95,36 +95,215 @@ export default function BenificiaryEducation() {
         },
       }}
     >
-      <VStack bg="white" p={"11px"}>
+      <VStack bg="white" px="5" py="3">
         <CardComponent
           _vstack={{ space: 0 }}
           _hstack={{ borderBottomWidth: 0 }}
           title={t("EDUCATION_DETAILS")}
           label={[
             "TYPE_OF_LEARNER",
-            "LAST_STANDARD_OF_EDUCATION",
-            "LAST_YEAR_OF_EDUCATION",
-            "PREVIOUS_SCHOOL_TYPE",
             "REASON_FOR_LEAVING",
-            "REGISTERED_IN_TENTH_DATE",
-            "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
-          ]}
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              [
+                "school_dropout",
+                "already_open_school_syc",
+                "already_enrolled_in_open_school",
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
+              "LAST_STANDARD_OF_EDUCATION",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              [
+                "school_dropout",
+                "already_open_school_syc",
+                "already_enrolled_in_open_school",
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
+              "LAST_YEAR_OF_EDUCATION",
+            "PREVIOUS_SCHOOL_TYPE",
+            "REASON_OF_LEAVING_EDUCATION",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              ["already_open_school_syc"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) &&
+              "REGISTERED_IN_TENTH_DATE",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              ["already_open_school_syc"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) &&
+              "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+          ].filter(Boolean)}
           item={{
-            address: benificiary?.address,
-            state: benificiary?.state,
-            district: benificiary?.district,
-            block: benificiary?.block,
-            village: benificiary?.village,
-            grampanchayat: benificiary?.grampanchayat,
-            pincode: benificiary?.pincode,
+            type_of_learner: benificiary?.core_beneficiaries
+              ?.type_of_learner && (
+              <GetEnumValue
+                t={t}
+                enumType={"TYPE_OF_LEARNER"}
+                enumOptionValue={
+                  benificiary?.core_beneficiaries?.type_of_learner
+                }
+                enumApiData={enumOptions}
+              />
+            ),
+            reason_of_leaving_education: benificiary?.core_beneficiaries
+              ?.reason_of_leaving_education && (
+              <GetEnumValue
+                t={t}
+                enumType={"REASON_OF_LEAVING_EDUCATION"}
+                enumOptionValue={
+                  benificiary?.core_beneficiaries?.reason_of_leaving_education
+                }
+                enumApiData={enumOptions}
+              />
+            ),
+            ...(benificiary?.core_beneficiaries?.type_of_learner &&
+              [
+                "school_dropout",
+                "already_open_school_syc",
+                "already_enrolled_in_open_school",
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) && {
+                last_standard_of_education: (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"LAST_STANDARD_OF_EDUCATION"}
+                    enumOptionValue={
+                      benificiary?.core_beneficiaries
+                        ?.last_standard_of_education
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ),
+                LAST_YEAR_OF_EDUCATION: (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"LAST_YEAR_OF_EDUCATION"}
+                    enumOptionValue={
+                      benificiary?.core_beneficiaries?.last_year_of_education
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ),
+                previous_school_type: (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"PREVIOUS_SCHOOL_TYPE"}
+                    enumOptionValue={
+                      benificiary?.core_beneficiaries?.previous_school_type
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ),
+                education_10th_date:
+                  benificiary?.core_beneficiaries?.type_of_learner ===
+                  "already_open_school_syc"
+                    ? benificiary?.core_beneficiaries?.education_10th_date ||
+                      "-"
+                    : undefined,
+                education_10th_exam_year:
+                  benificiary?.core_beneficiaries?.type_of_learner ===
+                  "already_open_school_syc"
+                    ? benificiary?.core_beneficiaries
+                        ?.education_10th_exam_year || "-"
+                    : undefined,
+              }),
           }}
-          arr={["address", "state", "district", "block", "village", "pincode"]}
+          arr={(() => {
+            const arr = [];
+            if (
+              benificiary?.core_beneficiaries?.type_of_learner ||
+              benificiary?.core_beneficiaries?.reason_of_leaving_education
+            ) {
+              arr.push("type_of_learner");
+              arr.push(" reason_of_leaving_education");
+              if (
+                [
+                  "school_dropout",
+                  "already_open_school_syc",
+                  "already_enrolled_in_open_school",
+                ].includes(benificiary?.core_beneficiaries?.type_of_learner)
+              ) {
+                arr.push(
+                  "last_standard_of_education",
+                  "last_standard_of_education_year",
+                  "previous_school_type"
+                );
+              }
+              if (
+                benificiary?.core_beneficiaries?.type_of_learner ===
+                "already_open_school_syc"
+              ) {
+                arr.push("education_10th_date", "education_10th_exam_year");
+              }
+            }
+            return arr;
+          })()}
           onEdit={(e) => {
-            navigate(`/beneficiary/edit/${userId}/address`);
+            navigate(`/beneficiary/edit/${userId}/education`);
           }}
         />
 
-        <VStack px="5" pt="3">
+        <VStack mt={6} mb={2}>
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("LEARNER_ASPIRATION")}
+            label={[
+              "MOTIVATION_TO_PASS_10TH",
+              "SUPPORT_FROM_PRAGATI",
+              "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+              "CAREER_ASPIRATION",
+              "REMARKS",
+            ]}
+            item={{
+              learning_motivation: (
+                <GetOptions
+                  array={
+                    benificiary?.program_beneficiaries?.learning_motivation
+                  }
+                  enumApiData={enumOptions}
+                  enumType={"LEARNING_MOTIVATION"}
+                />
+              ),
+
+              type_of_support_needed: (
+                <GetOptions
+                  array={
+                    benificiary?.program_beneficiaries?.type_of_support_needed
+                  }
+                  enumApiData={enumOptions}
+                  enumType={"TYPE_OF_SUPPORT_NEEDED"}
+                />
+              ),
+
+              parent_support:
+                benificiary?.core_beneficiaries?.parent_support ?? "-",
+
+              career_aspiration: (
+                <GetEnumValue
+                  t={t}
+                  enumOptionValue={
+                    benificiary?.core_beneficiaries?.career_aspiration
+                  }
+                  enumApiData={enumOptions}
+                  enumType={"CAREER_ASPIRATION"}
+                />
+              ),
+
+              career_aspiration_details:
+                benificiary?.core_beneficiaries?.career_aspiration_details ||
+                "-",
+            }}
+            arr={[
+              "learning_motivation",
+              "type_of_support_needed",
+              "parent_support",
+              "career_aspiration",
+              "education_10th_exam_year",
+            ]}
+            onEdit={(e) => {
+              navigate(`/beneficiary/edit/${userId}/future-education`);
+            }}
+          />
+        </VStack>
+
+        {/* <VStack>
           <VStack
             px="5"
             py="4"
@@ -154,6 +333,7 @@ export default function BenificiaryEducation() {
               )}
             </HStack>
             <Box paddingTop="2">
+              {console.log(benificiary?.core_beneficiaries)}
               <Progress
                 value={arrList(benificiary?.core_beneficiaries, [
                   "last_standard_of_education",
@@ -190,7 +370,7 @@ export default function BenificiaryEducation() {
                     ? benificiary?.core_beneficiaries
                         ?.last_standard_of_education
                     : "-"} */}
-                  {benificiary?.core_beneficiaries?.type_of_learner ? (
+        {/* {benificiary?.core_beneficiaries?.type_of_learner ? (
                     <GetEnumValue
                       t={t}
                       enumType={"TYPE_OF_LEARNER"}
@@ -203,8 +383,8 @@ export default function BenificiaryEducation() {
                     "-"
                   )}
                 </FrontEndTypo.H3>
-              </HStack>
-              {["school_dropout", "already_enrolled_in_open_school"].includes(
+              </HStack> */}
+        {/* {["school_dropout", "already_enrolled_in_open_school"].includes(
                 benificiary?.core_beneficiaries?.type_of_learner
               ) && (
                 <HStack
@@ -381,177 +561,10 @@ export default function BenificiaryEducation() {
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
-              )}
-            </VStack>
+              )} */}
+        {/* </VStack>
           </VStack>
-          <VStack
-            px="5"
-            py="4"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack
-              space={2}
-              justifyContent={"space-between"}
-              alignItems="Center"
-            >
-              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
-                {t("LEARNER_ASPIRATION")}
-              </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${userId}/future-education`);
-                }}
-              />
-            </HStack>
-            <Box paddingTop="2">
-              <Progress
-                value={arrList(benificiary?.core_beneficiaries, [
-                  "last_standard_of_education",
-                  "last_standard_of_education_year",
-                  "previous_school_type",
-                  "reason_of_leaving_education",
-                ])}
-                size="xs"
-                colorScheme="textMaroonColor"
-              />
-            </Box>
-            <VStack space="2" paddingTop="5">
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("MOTIVATION_TO_PASS_10TH")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
-                  {benificiary?.program_beneficiaries?.learning_motivation ? (
-                    <GetOptions
-                      array={
-                        benificiary?.program_beneficiaries?.learning_motivation
-                      }
-                      enumApiData={enumOptions}
-                      enumType={"LEARNING_MOTIVATION"}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("SUPPORT_FROM_PRAGATI")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.program_beneficiaries
-                    ?.type_of_support_needed ? (
-                    <GetOptions
-                      array={
-                        benificiary?.program_beneficiaries
-                          ?.type_of_support_needed
-                      }
-                      enumApiData={enumOptions}
-                      enumType={"TYPE_OF_SUPPORT_NEEDED"}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries?.parent_support
-                    ? benificiary?.core_beneficiaries?.parent_support
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("CAREER_ASPIRATION")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
-                  {benificiary?.core_beneficiaries?.career_aspiration ? (
-                    <GetEnumValue
-                      t={t}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries?.career_aspiration
-                      }
-                      enumApiData={enumOptions}
-                      enumType={"CAREER_ASPIRATION"}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack alignItems="Center" space={2}>
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("REMARKS")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries?.career_aspiration_details
-                    ? benificiary?.core_beneficiaries?.career_aspiration_details
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
-        </VStack>
+        </VStack> */}
       </VStack>
     </Layout>
   );

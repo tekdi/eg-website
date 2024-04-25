@@ -74,15 +74,7 @@ export default function BenificiaryAddress() {
             "GRAMPANCHAYAT",
             "PINCODE",
           ]}
-          item={{
-            address: benificiary?.address,
-            state: benificiary?.state,
-            district: benificiary?.district,
-            block: benificiary?.block,
-            village: benificiary?.village,
-            grampanchayat: benificiary?.grampanchayat,
-            pincode: benificiary?.pincode,
-          }}
+          item={benificiary}
           arr={["address", "state", "district", "block", "village", "pincode"]}
           onEdit={(e) => {
             navigate(`/beneficiary/edit/${userId}/address`);
