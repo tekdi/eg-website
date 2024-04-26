@@ -7,9 +7,19 @@ import {
   getBeneficaryDocumentationStatus,
   SelectStyle,
   enumRegistryService,
+  IconByName,
 } from "@shiksha/common-lib";
 import React, { Fragment, useEffect, useState } from "react";
-import { VStack, HStack, Select, CheckIcon, Alert } from "native-base";
+import {
+  VStack,
+  HStack,
+  Select,
+  CheckIcon,
+  Alert,
+  FormControl,
+  Text,
+  Box,
+} from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 
 const LearnerDocsChecklist = ({ footerLinks }) => {
@@ -135,98 +145,192 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
         </Alert>
       ) : (
         <VStack width={"90%"} margin={"auto"} mt={3}>
-          <FrontEndTypo.H3 bold color="textGreyColor.900" mt="3">
+          <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.900" mt="3">
             {t("MANDATORY")}
           </FrontEndTypo.H3>
 
           {reqEnumData?.map((item, index) => (
-            <HStack
+            <VStack
               key={index}
-              mt={8}
+              mt={5}
               space="2"
-              alignItems="center"
+              alignItems="start"
               justifyContent="space-between"
             >
-              <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-                {t(item?.title)}
-              </FrontEndTypo.H3>
-              <Select
-                selectedValue={status[item.value] ? status[item.value] : ""}
-                accessibilityLabel="Select"
-                placeholder={"Select"}
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) =>
-                  setStatus({ ...status, [item.value]: itemValue })
-                }
-              >
-                {selectData?.map((selectItem, i) => (
-                  <Select.Item
-                    key={i}
-                    label={t(selectItem.title)}
-                    value={selectItem.value}
-                  />
-                ))}
-              </Select>
-            </HStack>
+              <FormControl gap="4">
+                <FormControl.Label
+                  rounded="sm"
+                  position="absolute"
+                  left="1rem"
+                  bg="white"
+                  px="1"
+                  m="0"
+                  height={"1px"}
+                  alignItems="center"
+                  style={{
+                    top: "3px",
+                    opacity: 1,
+                    zIndex: 5,
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <Text
+                    bg={"white"}
+                    zIndex={99999999}
+                    color={"floatingLabelColor.500"}
+                    fontSize="12"
+                    fontWeight="400"
+                  >
+                    {t(item?.title)}
+                  </Text>
+                </FormControl.Label>
+
+                <Select
+                  selectedValue={status[item.value] ? status[item.value] : ""}
+                  accessibilityLabel="Select"
+                  placeholder={"Select"}
+                  mt={1}
+                  onValueChange={(itemValue) =>
+                    setStatus({ ...status, [item.value]: itemValue })
+                  }
+                  minH={"56px"}
+                  // key={value + items}
+                  dropdownIcon={
+                    <IconByName
+                      color="grayTitleCard"
+                      name="ArrowDownSFillIcon"
+                    />
+                  }
+                  borderColor={
+                    status[item.value]
+                      ? "floatingLabelColor.500"
+                      : "inputBorderColor.500"
+                  }
+                  bg="#FFFFFF"
+                  borderWidth={status[item.value] ? "2px" : "1px"}
+                  borderRadius={"4px"}
+                  fontSize={"16px"}
+                  letterSpacing={"0.5px"}
+                  fontWeight={400}
+                  lineHeight={"24px"}
+                  _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                >
+                  {selectData?.map((selectItem, i) => (
+                    <Select.Item
+                      key={i}
+                      label={t(selectItem.title)}
+                      value={selectItem.value}
+                    />
+                  ))}
+                </Select>
+              </FormControl>
+            </VStack>
           ))}
 
           <FrontEndTypo.H3
-            pt="4"
+            pt="6"
             pb="0"
-            fontSize="sm"
-            bold
+            fontWeight={"600"}
             color="textMaroonColor.900"
           >
             {t("MAY_BE_REQUIRED")}
           </FrontEndTypo.H3>
 
           {optEnumData?.map((item, index) => (
-            <HStack
+            <VStack
               key={index}
-              mt={8}
+              mt={5}
               space="2"
-              alignItems="center"
+              alignItems="start"
               justifyContent="space-between"
             >
-              <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
-                {t(item?.title)}
-              </FrontEndTypo.H3>
-              <Select
-                selectedValue={status[item.value] ? status[item.value] : ""}
-                accessibilityLabel="Select"
-                placeholder={"Select"}
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: <CheckIcon size="5" />,
-                }}
-                mt={1}
-                onValueChange={(itemValue) =>
-                  setStatus({ ...status, [item.value]: itemValue })
-                }
-              >
-                {selectData?.map((selectItem, i) => (
-                  <Select.Item
-                    key={i}
-                    label={t(selectItem.title)}
-                    value={selectItem.value}
-                  />
-                ))}
-              </Select>
-            </HStack>
+              <FormControl gap="4">
+                <FormControl.Label
+                  rounded="sm"
+                  position="absolute"
+                  left="1rem"
+                  bg="white"
+                  px="1"
+                  m="0"
+                  height={"1px"}
+                  alignItems="center"
+                  style={{
+                    top: "3px",
+                    opacity: 1,
+                    zIndex: 5,
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <Text
+                    bg={"white"}
+                    zIndex={99999999}
+                    color={"floatingLabelColor.500"}
+                    fontSize="12"
+                    fontWeight="400"
+                  >
+                    {t(item?.title)}
+                  </Text>
+                </FormControl.Label>
+
+                <Select
+                  selectedValue={status[item.value] ? status[item.value] : ""}
+                  accessibilityLabel="Select"
+                  placeholder={"Select"}
+                  mt={1}
+                  onValueChange={(itemValue) =>
+                    setStatus({ ...status, [item.value]: itemValue })
+                  }
+                  minH={"56px"}
+                  // key={value + items}
+                  dropdownIcon={
+                    <IconByName
+                      color="grayTitleCard"
+                      name="ArrowDownSFillIcon"
+                    />
+                  }
+                  borderColor={
+                    status[item.value]
+                      ? "floatingLabelColor.500"
+                      : "inputBorderColor.500"
+                  }
+                  bg="#FFFFFF"
+                  borderWidth={status[item.value] ? "2px" : "1px"}
+                  borderRadius={"4px"}
+                  fontSize={"16px"}
+                  letterSpacing={"0.5px"}
+                  fontWeight={400}
+                  lineHeight={"24px"}
+                  _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="5" />,
+                  }}
+                >
+                  {selectData?.map((selectItem, i) => (
+                    <Select.Item
+                      key={i}
+                      label={t(selectItem.title)}
+                      value={selectItem.value}
+                    />
+                  ))}
+                </Select>
+              </FormControl>
+            </VStack>
           ))}
           {checkList &&
             (buttonPress ? (
-              <FrontEndTypo.ColourPrimaryButton
-                isDisabled={isDisable}
-                mb={1}
-                type="submit"
-              >
-                {t("MARK_AS_COMPLETE")}
-              </FrontEndTypo.ColourPrimaryButton>
+              <Box display={"flex"} alignItems={"center"}>
+                <FrontEndTypo.ColourPrimaryButton
+                  isDisabled={isDisable}
+                  mb={1}
+                  minW="60%"
+                  type="submit"
+                >
+                  {t("MARK_AS_COMPLETE")}
+                </FrontEndTypo.ColourPrimaryButton>
+              </Box>
             ) : (
               <VStack>
                 <Alert status="warning" alignItems={"start"} mb="3">
@@ -238,29 +342,35 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
                   </HStack>
                 </Alert>
 
-                <FrontEndTypo.Primarybutton
-                  isDisabled={isDisable}
-                  mb={1}
-                  type="submit"
-                  onPress={() => {
-                    readyToEnrollApiCall();
-                  }}
-                >
-                  {t("MARK_AS_COMPLETE")}
-                </FrontEndTypo.Primarybutton>
+                <Box display={"flex"} alignItems={"center"}>
+                  <FrontEndTypo.Primarybutton
+                    isDisabled={isDisable}
+                    mb={1}
+                    type="submit"
+                    minW="60%"
+                    onPress={() => {
+                      readyToEnrollApiCall();
+                    }}
+                  >
+                    {t("MARK_AS_COMPLETE")}
+                  </FrontEndTypo.Primarybutton>
+                </Box>
               </VStack>
             ))}
-          <FrontEndTypo.Primarybutton
-            isDisabled={isDisable}
-            mt="4"
-            mb={8}
-            type="submit"
-            onPress={() => {
-              navigate(-1);
-            }}
-          >
-            {t("SAVE")}
-          </FrontEndTypo.Primarybutton>
+          <Box display={"flex"} alignItems={"center"}>
+            <FrontEndTypo.Primarybutton
+              isDisabled={isDisable}
+              mt="4"
+              mb={8}
+              minW="60%"
+              type="submit"
+              onPress={() => {
+                navigate(-1);
+              }}
+            >
+              {t("SAVE")}
+            </FrontEndTypo.Primarybutton>
+          </Box>
         </VStack>
       )}
     </Layout>

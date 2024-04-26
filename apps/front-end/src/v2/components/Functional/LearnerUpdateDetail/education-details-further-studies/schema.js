@@ -41,7 +41,7 @@ export default {
         },
         reason_of_leaving_education: {
           type: "string",
-          title: "REASON_FOR_BEING_DEPRIVED_OF_EDUCATION",
+          title: "REASON",
           format: "select",
         },
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, VStack, Box, Progress } from "native-base";
+import { HStack, VStack, Box, Progress, Text } from "native-base";
 import {
   arrList,
   IconByName,
@@ -20,20 +20,20 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
   return (
     <VStack>
       {getUniqueArray(array)?.map((item, index) => (
-        <Chip
-          textAlign="center"
-          lineHeight="14px"
-          bg="gray.100"
-          label={
-            <GetEnumValue
-              fontSize="14px"
-              key={index}
-              t={t}
-              enumOptionValue={item}
-              {...{ enumType, enumApiData }}
-            />
-          }
-        />
+        <Text
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="24px"
+          color={"inputValueColor"}
+        >
+          <GetEnumValue
+            fontSize="14px"
+            key={index}
+            t={t}
+            enumOptionValue={item}
+            {...{ enumType, enumApiData }}
+          />
+        </Text>
       ))}
     </VStack>
   );
@@ -170,7 +170,7 @@ export default function BenificiaryEducation() {
                     enumApiData={enumOptions}
                   />
                 ),
-                LAST_YEAR_OF_EDUCATION: (
+                last_year_of_education: (
                   <GetEnumValue
                     t={t}
                     enumType={"LAST_YEAR_OF_EDUCATION"}
@@ -205,13 +205,12 @@ export default function BenificiaryEducation() {
               }),
           }}
           arr={(() => {
-            const arr = [];
+            let arr = [];
             if (
               benificiary?.core_beneficiaries?.type_of_learner ||
               benificiary?.core_beneficiaries?.reason_of_leaving_education
             ) {
-              arr.push("type_of_learner");
-              arr.push(" reason_of_leaving_education");
+              arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
               if (
                 [
                   "school_dropout",
@@ -219,17 +218,22 @@ export default function BenificiaryEducation() {
                   "already_enrolled_in_open_school",
                 ].includes(benificiary?.core_beneficiaries?.type_of_learner)
               ) {
-                arr.push(
+                arr = [
+                  ...arr,
                   "last_standard_of_education",
                   "last_standard_of_education_year",
-                  "previous_school_type"
-                );
+                  "previous_school_type",
+                ];
               }
               if (
                 benificiary?.core_beneficiaries?.type_of_learner ===
                 "already_open_school_syc"
               ) {
-                arr.push("education_10th_date", "education_10th_exam_year");
+                arr = [
+                  ...arr,
+                  "education_10th_date",
+                  "education_10th_exam_year",
+                ];
               }
             }
             return arr;
