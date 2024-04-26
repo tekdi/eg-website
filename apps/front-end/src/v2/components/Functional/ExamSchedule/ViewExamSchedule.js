@@ -6,30 +6,22 @@ import {
   organisationService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
-import {
-  HStack,
-  VStack,
-  Stack,
-  Radio,
-  Image,
-  Alert,
-  Modal,
-  CloseIcon,
-  Select,
-  CheckIcon,
-} from "native-base";
+import { HStack, VStack, Radio } from "native-base";
+import { useNavigate } from "react-router-dom";
 
 const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const [filter, setFilter] = useState();
   const [boardList, setBoardList] = useState();
   const [practicalSubjects, setPracticalSubjects] = useState([]);
   const [theorySubjects, setTheorySubjects] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(async () => {
     const boardList = await enumRegistryService.boardList();
     setBoardList(boardList);
+    setLoading(false);
   }, []);
 
   const handleSelect = (optionId) => {
@@ -38,6 +30,8 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
   };
 
   const getSubjectList = async (id) => {
+    setLoading(true);
+
     const subjectData = await organisationService.getSubjectList({ id });
 
     if (Array.isArray(subjectData?.data)) {
@@ -72,6 +66,7 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
       setPracticalSubjects(practical);
       setTheorySubjects(theory);
     }
+    setLoading(false);
   };
 
   return (
@@ -155,6 +150,13 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
                 })}
               </VStack>
             </VStack>
+            <FrontEndTypo.Primarybutton
+              onPress={(e) => {
+                navigate(`/examattendance`);
+              }}
+            >
+              {t("MARK_LEARNER_EXAM_ATTENDANCE")}
+            </FrontEndTypo.Primarybutton>
           </VStack>
         )}
       </VStack>
