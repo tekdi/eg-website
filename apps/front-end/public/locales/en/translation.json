@@ -1694,5 +1694,17 @@
   "UPDATE_LEARNER_EXAM_ATTENDANCE": "Update Learner Exam Attendance",
   "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
   "PRACTICALS": "Practicals",
-  "THEORY": "Theory"
+  "THEORY": "Theory",
+  "MARK_LEARNER_EXAM_ATTENDANCE": "Mark Learner Exam Attendance",
+  "EXAM_WARNING": "No Learners for the exam",
+  "LEARNER_STATUS_COUNT": "Learner Status Count",
+  "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "Access all information of your learner's status",
+  "LEARNER_STATUS_OVERVIEW": "Learner Status Overview",
+  "LEARNER_EXAM_ATTENDANCE": "Learner Exam Attendance",
+  "LEARNER_EXAM_ATTENDANCE_DETAILS": "Access all information related to your learners' examination attendance from here",
+  "LEARNER_EXAM_ATTENDANCE_OVERVIEW": "Learner Exam Attendance Overview",
+  "LEARNER_EXAM_RESULTS_OVERVIEW": "Learner Exam Results Overview",
+  "NOT_MARKED": "Not Marked",
+  "TOTAL_STUDENTS": "Total Students",
+  "SUBJECT": "Subject"
 }

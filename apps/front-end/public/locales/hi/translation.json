@@ -1694,5 +1694,17 @@
   "LEARNER_EXAMINATION_DETAILS": "अपने शिक्षार्थियों की परीक्षा से संबंधित सभी जानकारी और गतिविधियों तक यहां से पहुंचें",
   "UPDATE_LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी की परीक्षा उपस्थिति अंकित करें",
   "PRACTICALS": "प्रैक्टिकल",
-  "THEORY": "लिखित"
+  "THEORY": "लिखित",
+  "MARK_LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी की परीक्षा उपस्थिति अंकित करें",
+  "EXAM_WARNING": "परीक्षा के लिए कोई शिक्षार्थी नहीं",
+  "LEARNER_STATUS_COUNT": "शिक्षार्थी स्थिति गणना",
+  "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "अपने शिक्षार्थियों की स्थिति की सभी जानकारी तक पहुँचें",
+  "LEARNER_STATUS_OVERVIEW": "शिक्षार्थी स्थिति अवलोकन",
+  "LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी परीक्षा उपस्थिति",
+  "LEARNER_EXAM_ATTENDANCE_DETAILS": "अपने शिक्षार्थियों की परीक्षा उपस्थिति से संबंधित सभी जानकारी यहां से प्राप्त करें",
+  "LEARNER_EXAM_ATTENDANCE_OVERVIEW": "शिक्षार्थी परीक्षा उपस्थिति अवलोकन",
+  "LEARNER_EXAM_RESULTS_OVERVIEW": "शिक्षार्थी परीक्षा परिणाम अवलोकन",
+  "NOT_MARKED": "अपडेट नहीं किया",
+  "TOTAL_STUDENTS": "कुल शिक्षार्थी",
+  "SUBJECT": "विषय"
 }
