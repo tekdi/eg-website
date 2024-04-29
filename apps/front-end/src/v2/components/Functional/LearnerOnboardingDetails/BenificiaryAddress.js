@@ -6,7 +6,6 @@ import {
   FrontEndTypo,
   benificiaryRegistoryService,
   Layout,
-  CardComponent,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -60,26 +59,7 @@ export default function BenificiaryAddress() {
 
   return (
     <Layout _appBar={{ name: t("ADDRESS_DETAILS"), onPressBackButton }}>
-      <VStack bg="white" p={"11px"}>
-        <CardComponent
-          _vstack={{ space: 0 }}
-          _hstack={{ borderBottomWidth: 0 }}
-          title={t("ADDRESS_DETAILS")}
-          label={[
-            "ADDRESS",
-            "STATE",
-            "DISTRICT",
-            "BLOCKS",
-            "VILLAGE_WARD",
-            "GRAMPANCHAYAT",
-            "PINCODE",
-          ]}
-          item={benificiary}
-          arr={["address", "state", "district", "block", "village", "pincode"]}
-          onEdit={(e) => {
-            navigate(`/beneficiary/edit/${userId}/address`);
-          }}
-        />
+      <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
           <VStack
             px="5"

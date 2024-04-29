@@ -12,8 +12,6 @@ import {
   getOnboardingMobile,
   getOnboardingURLData,
   getSelectedAcademicYear,
-  CustomAlert,
-  TitleCard,
   getSelectedProgramId,
   objProps,
   removeOnboardingMobile,
@@ -573,7 +571,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       analyticsPageTitle={"HOME"}
       pageTitle={t("HOME")}
     >
-      <VStack pb="5" style={{ zIndex: -1 }}>
+      <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
           {facilitator?.status === "applied" && (
             <InfoBox status={facilitator?.status} progress={progress} />
@@ -582,24 +580,26 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             {facilitator?.program_faciltators?.status ===
               "selected_for_onboarding" &&
               progress !== 100 && (
-                <VStack px="4">
-                  <CustomAlert
-                    title={t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
-                    status={"success"}
-                  />
-                </VStack>
+                <Alert status="success" alignItems={"start"}>
+                  <HStack alignItems="center" space="2" color>
+                    <Alert.Icon />
+                    <BodyMedium>
+                      {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+                    </BodyMedium>
+                  </HStack>
+                </Alert>
               )}
-            <HStack py="4" flex="1" px="4" pb={0}>
-              {/* <Image
+            <HStack py="4" flex="1" px="4">
+              <Image
                 source={{
                   uri: "/hello.svg",
                 }}
                 alt="Add AG"
                 size={"30px"}
                 resizeMode="contain"
-              /> */}
-              <FrontEndTypo.H1 color="textGreyColor.900" pl="1">
-                {t("HELLO_HOME")}, {facilitator?.first_name}!
+              />
+              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
+                {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
             {events?.length ? (
@@ -770,27 +770,33 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_for_training",
             "selected_for_onboarding",
           ].includes(facilitator.status) && (
-            <Stack py={0} px={4}>
-              <TitleCard
-                _icon=""
-                icon={
-                  <IconByName _icon={{ color: "white" }} name="Book2LineIcon" />
-                }
+            <Stack>
+              <RedOutlineButton
+                background="bgYellowColor.400"
+                mx="5"
+                p="10"
+                width="40%"
+                shadow="RedBlackShadow"
                 onPress={(e) => navigate("/beneficiary")}
               >
-                <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
-              </TitleCard>
+                <Image
+                  source={{
+                    uri: "/images/learner/add_learner.png",
+                  }}
+                  alt="Add AG"
+                  size={"sm"}
+                  resizeMode="contain"
+                />
+                <FrontEndTypo.H4 mt="2" color="textBlack.500" bold>
+                  {t("ADD_AN_AG")}
+                </FrontEndTypo.H4>
+              </RedOutlineButton>
               <Stack px="3">
                 {facilitator?.program_faciltators?.status ===
                   "pragati_mobilizer" && (
-                  <FrontEndTypo.H3
-                    bold
-                    color="textGreyColor.750"
-                    pb="5px"
-                    pt="10"
-                  >
+                  <FrontEndTypo.H2 bold mx="8" pb="5px" pt="10">
                     {t("ITS_TIME_TO_START_MOBILIZING")}
-                  </FrontEndTypo.H3>
+                  </FrontEndTypo.H2>
                 )}
               </Stack>
             </Stack>
@@ -813,13 +819,17 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
-            <Stack p="5" pt={0} space={4}>
+            <Stack p="5" space={4}>
               {[undefined].includes(facilitator?.aadhar_no) && (
                 <Stack space="3">
-                  <CustomAlert
-                    status={"danger"}
-                    title={t("ADD_AADHAAR_NUMBER_ERROR_MESSAGE")}
-                  />
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("ADD_AADHAAR_NUMBER_ERROR_MESSAGE")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
                   <FrontEndTypo.Primarybutton
                     onPress={(e) => navigate(`/profile/edit/aadhaar_details`)}
                   >
@@ -831,10 +841,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 facilitator?.aadhaar_verification_mode
               ) && (
                 <Stack space="3">
-                  <CustomAlert
-                    title={t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-                    status={"danger"}
-                  />
+                  <Alert status="warning" alignItems={"start"}>
+                    <HStack alignItems="center" space="2" color>
+                      <Alert.Icon />
+                      <BodyMedium>
+                        {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+                      </BodyMedium>
+                    </HStack>
+                  </Alert>
                   <FrontEndTypo.Primarybutton
                     onPress={(e) =>
                       navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
@@ -849,30 +863,27 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {isDocumentUpload() && (
-            <Stack space="6" p={4}>
-              <VStack>
-                <FrontEndTypo.H3 bold color="textGreyColor.750">
-                  {t("UPLOAD_YOUR_DOCUMENTS")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4 color="grayTitleCard">
-                  {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
-                </FrontEndTypo.H4>
-              </VStack>
+            <Stack bg="bgYellowColor.400" space="6" p={4}>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("UPLOAD_YOUR_DOCUMENTS")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3>
+                {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
+              </FrontEndTypo.H3>
               {isDocumentUpload("qualifications") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
                     name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
+                    _icon={{ size: "20px" }}
                   />
                   <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
+                    <FrontEndTypo.H3 bold>
                       {t("QUALIFICATION_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
                       {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
-                    </FrontEndTypo.H5>
+                    </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
               )}
@@ -881,16 +892,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <IconByName
                     isDisabled
                     name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
+                    _icon={{ size: "20px" }}
                   />
                   <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
+                    <FrontEndTypo.H3 bold>
                       {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
                       {t("THIS_CAN_BE_LETTER_OF")}
-                    </FrontEndTypo.H5>
+                    </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
               )}
@@ -899,22 +909,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <IconByName
                     isDisabled
                     name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
+                    _icon={{ size: "20px" }}
                   />
                   <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
+                    <FrontEndTypo.H3 bold>
                       {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H4>
                       {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                    </FrontEndTypo.H5>
+                    </FrontEndTypo.H4>
                   </VStack>
                 </HStack>
               )} */}
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"
+                  endIcon={
+                    <IconByName
+                      isDisabled
+                      name="Upload2FillIcon"
+                      _icon={{ size: "25px" }}
+                      color="gray.800"
+                    />
+                  }
                   onPress={(e) => navigate("/profile")}
                 >
                   {t("UPLOAD_NOW")}

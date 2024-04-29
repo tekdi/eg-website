@@ -23,19 +23,20 @@ export default {
         description: {
           title: "DESCRIPTION",
           type: ["string", "null"],
+          format: "Textarea",
+          rows: 3,
         },
         experience_in_years: {
           label: "EXPERIENCE_IN_YEARS",
           type: "string",
           format: "CustomR",
-          grid: 6,
+          grid: 3,
           enumNames: ["<1", "1", "2", "3", "4", "5+"],
           enum: ["0", "1", "2", "3", "4", "5"],
         },
         related_to_teaching: {
           label: "IS_THE_JOB_RELATED_TO_TEACHING",
           type: "string",
-          _stack: { direction: "row", justifyContent: "space-between" },
           format: "RadioBtn",
           enumNames: ["Yes", "No"],
           enum: ["yes", "no"],

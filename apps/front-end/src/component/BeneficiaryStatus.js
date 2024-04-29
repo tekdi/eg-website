@@ -174,14 +174,7 @@ export function ChipStatus({
       }
       is_duplicate={is_duplicate}
       is_deactivated={is_deactivated}
-      _text={{
-        color: "chipGreyColor.500",
-        textTransform: "capitalize",
-        fontSize: "12px",
-        fontWeight: "400",
-        lineHeight: "18px",
-        textAlign: "center",
-      }}
+      _text={{ color: textColor, textTransform: "capitalize" }}
       rounded="sm"
       {...props}
     />

@@ -14,17 +14,14 @@ export default function ProfilePhoto({
   const navigate = useNavigate();
   return (
     <VStack alignItems="center">
-      <HStack
-        flexDirection={"row-reverse"}
-        space="4"
-        position="relative"
-        py={4}
-      >
+      <VStack position="relative" p="4">
         {isProfileEdit && (
           <IconByName
+            right="-20"
+            top="0"
+            p="2"
+            position="absolute"
             name="PencilLineIcon"
-            color="iconColor.200"
-            _icon={{ size: "20" }}
             onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
           />
         )}
@@ -32,8 +29,8 @@ export default function ProfilePhoto({
         {profile_photo_1?.base64 ? (
           <FilePreview
             base64={profile_photo_1?.base64}
-            width={"64px"}
-            height={"64px"}
+            width={"190px"}
+            height={"190px"}
             borderRadius="50%"
           />
         ) : (
@@ -41,13 +38,13 @@ export default function ProfilePhoto({
             isDisabled
             name="AccountCircleLineIcon"
             color="iconColor.350"
-            _icon={{ size: "64" }}
+            _icon={{ size: "120" }}
             justifySelf="Center"
           />
         )}
-      </HStack>
+      </VStack>
 
-      {/* <HStack alignItems="center" space="6">
+      <HStack alignItems="center" space="6">
         {[profile_photo_1, profile_photo_2, profile_photo_3].map(
           (photo) =>
             photo?.base64 && (
@@ -60,7 +57,7 @@ export default function ProfilePhoto({
               />
             )
         )}
-      </HStack> */}
+      </HStack>
     </VStack>
   );
 }

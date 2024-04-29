@@ -1,7 +1,6 @@
 import {
   AdminTypo,
   CardComponent,
-  CustomAlert,
   FrontEndTypo,
   GetEnumValue,
   Layout,
@@ -125,17 +124,22 @@ export default function CommunityView({ footerLinks }) {
       <Box p="4">
         {!addMore ||
           (data?.length <= 2 && (
-            <CustomAlert
-              _hstack={{ mb: 9 }}
-              status={"customAlertdanger"}
-              title={t("COMMUNITY_ALERT_MESSAGE")}
-            />
+            <Alert
+              alignSelf="center"
+              status="warning"
+              p="2"
+              flexDirection="row"
+              mb="4"
+            >
+              <Alert.Icon size="5" />
+              <FrontEndTypo.H3>{t("COMMUNITY_ALERT_MESSAGE")}</FrontEndTypo.H3>
+            </Alert>
           ))}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
-            <FrontEndTypo.H3 color="textGreyColor.750" bold>
+            <FrontEndTypo.H2 color="textMaroonColor.400" bold>
               {t("COMMUNITY_DETAILS")}
-            </FrontEndTypo.H3>
+            </FrontEndTypo.H2>
             {data?.length > 0 &&
               data
                 ?.slice()
@@ -144,9 +148,7 @@ export default function CommunityView({ footerLinks }) {
                   return (
                     <CardComponent
                       key={item?.id}
-                      _vstack={{ pb: 2, mb: 5 }}
-                      title={`${index + 1}. ${t("MEMBER_DETAILS")}`}
-                      _mainTitle={{ p: 2, pb: 0 }}
+                      title={`${index + 1}) ${t("MEMBER_DETAILS")}`}
                       item={{
                         ...item,
                         designation: item?.designation ? (
@@ -210,7 +212,7 @@ export default function CommunityView({ footerLinks }) {
                 }
               }}
             >
-              {t("ADD_MEMBER")}
+              {t("SAVE")}
             </FrontEndTypo.Primarybutton>
             <FrontEndTypo.Secondarybutton
               p="4"
