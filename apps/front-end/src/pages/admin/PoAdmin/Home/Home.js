@@ -62,6 +62,10 @@ function Home() {
 
   return (
     <PoAdminLayout getMenus={(e) => setMenus(e)}>
+      <HStack pt={8} pl={6} space={5} alignItems={"center"}>
+        <IconByName name="Home" />
+        <AdminTypo.H1>{t("HOME")}</AdminTypo.H1>
+      </HStack>
       <VStack justifyContent="center" alignItems="center" p={4} space={4}>
         <HStack flexWrap={"wrap"}>
           {menus
@@ -75,10 +79,10 @@ function Home() {
                 }}
               >
                 <BoxBlue
-                  width={"250px"}
-                  height={"200px"}
+                  width={"200px"}
+                  height={"150px"}
                   justifyContent="center"
-                  pl="3"
+                  // pl="3"
                 >
                   <VStack alignItems={"center"}>
                     <IconByName name={item?.icon} _icon={{ size: 35 }} />
