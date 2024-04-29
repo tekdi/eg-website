@@ -1,22 +1,22 @@
 import {
   FrontEndTypo,
   Layout,
+  arrList,
   campService,
   enumRegistryService,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
-  arrList,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
 import { Alert, Box, HStack, VStack } from "native-base";
-import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 

@@ -1,26 +1,26 @@
 import {
+  CardComponent,
   FrontEndTypo,
   Layout,
-  t,
-  CardComponent,
+  arrList,
   campService,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
   enumRegistryService,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
-  arrList,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  t,
 } from "@shiksha/common-lib";
-import React, { useEffect, useState } from "react";
-import { VStack, HStack, Pressable, Stack, Alert } from "native-base";
+import { Alert, HStack, Pressable, Stack, VStack } from "native-base";
+import { useEffect, useState } from "react";
 
+import moment from "moment";
+import PropTypes from "prop-types";
 import TimePicker from "rc-time-picker";
 import "rc-time-picker/assets/index.css";
 import { useNavigate, useParams } from "react-router-dom";
-import moment from "moment";
-import PropTypes from "prop-types";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 

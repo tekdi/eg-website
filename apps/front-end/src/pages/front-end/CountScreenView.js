@@ -1,21 +1,19 @@
 import {
-  t,
-  Layout,
-  benificiaryRegistoryService,
   FrontEndTypo,
-  Heading1,
-  Heading,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
+  Layout,
+  arrList,
+  benificiaryRegistoryService,
   enumRegistryService,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
-  arrList,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  t,
 } from "@shiksha/common-lib";
 import { HStack, Text, VStack, View } from "native-base";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 export default function TableView({ footerLinks, userTokenInfo }) {

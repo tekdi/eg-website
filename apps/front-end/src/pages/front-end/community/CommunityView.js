@@ -1,30 +1,29 @@
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
 import {
-  AdminTypo,
   CardComponent,
   CustomAlert,
   FrontEndTypo,
   GetEnumValue,
   Layout,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
+  arrList,
+  benificiaryRegistoryService,
   enumRegistryService,
   facilitatorRegistryService,
-  benificiaryRegistoryService,
+  getOnboardingMobile,
   getOptions,
+  getSelectedProgramId,
   objProps,
-  arrList,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import React, { useEffect, useRef, useState } from "react";
 import { templates, widgets } from "component/BaseInput";
-import { useTranslation } from "react-i18next";
-import schema1 from "./schema";
-import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
-import { Alert, Box, VStack } from "native-base";
+import { Box, VStack } from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import schema1 from "./schema";
 
 export default function CommunityView({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();

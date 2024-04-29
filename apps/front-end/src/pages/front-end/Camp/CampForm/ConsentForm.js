@@ -1,4 +1,22 @@
-import React, { useState, useEffect } from "react";
+import {
+  AdminTypo,
+  BodyMedium,
+  ConsentService,
+  FrontEndTypo,
+  IconByName,
+  ImageView,
+  Layout,
+  arrList,
+  campService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+} from "@shiksha/common-lib";
+import { FileUpload } from "component/BaseInput";
 import {
   Actionsheet,
   Alert,
@@ -7,27 +25,9 @@ import {
   Pressable,
   VStack,
 } from "native-base";
-import {
-  Layout,
-  FrontEndTypo,
-  AdminTypo,
-  ImageView,
-  IconByName,
-  campService,
-  ConsentService,
-  BodyMedium,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
-  enumRegistryService,
-  facilitatorRegistryService,
-  objProps,
-  arrList,
-} from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FileUpload } from "component/BaseInput";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
