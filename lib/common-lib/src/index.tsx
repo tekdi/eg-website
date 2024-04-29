@@ -53,6 +53,7 @@ import * as testRegistryService from './services/testRegistryService'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
+import GATrackPageView from './services/AnalyticsService'
 
 // export
 export {
@@ -111,7 +112,8 @@ export {
   GeoLocation,
   useLocationData,
   CustomAlert,
-  SunbirdPlayer
+  SunbirdPlayer,
+  GATrackPageView
 }
 
 export * from './services/RestClient'

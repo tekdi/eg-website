@@ -30,6 +30,9 @@ const ExitingUser = lazy(() =>
   import("pages/admin/PoAdmin/IP/ExistingUser/Form")
 );
 
+const ExamSchedule = lazy(() =>
+  import("pages/admin/PoAdmin/Exam/ScheduleExam")
+);
 export default [
   {
     path: "/poadmin/profile",
@@ -103,6 +106,10 @@ export default [
   {
     path: "/poadmin/ips/:id/list",
     component: UserList,
+  },
+  {
+    path: "/poadmin/exam-schedule",
+    component: ExamSchedule,
   },
   { path: "/", component: Home },
   { path: "*", component: NotFound },

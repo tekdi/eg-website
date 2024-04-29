@@ -503,142 +503,155 @@ export default function EventHome({ footerLinks }) {
       _sidebar={footerLinks}
       // loading={loading}
     >
-      <VStack p={4}>
-        <HStack
-          pt="3"
-          justifyContent={"space-between"}
-          direction={["column", "row", "row"]}
-          space={2}
-        >
-          <HStack alignItems={"center"} space={2} flexWrap={"wrap"}>
-            <IconByName name="home" size="md" />
-            <AdminTypo.H1 color="Activatedcolor.400">{t("HOME")}</AdminTypo.H1>
-            <IconByName
-              size="sm"
-              name="ArrowRightSLineIcon"
-              p="0"
-              onPress={(e) => navigate(`/admin`)}
-            />
-            <AdminTypo.H1
-              color="textGreyColor.800"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              {t("SCHEDULE_EVENT")}
-            </AdminTypo.H1>
+      {data?.params?.start_exam === "yes" ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>
           </HStack>
-
-          {step === "candidate" && (
-            <AdminTypo.Secondarybutton onPress={updateSelected}>
-              {t("SAVE_EVENT")}
-            </AdminTypo.Secondarybutton>
-          )}
-        </HStack>
-
-        <HStack
-          pt={6}
-          space={4}
-          justifyContent={"space-between"}
-          direction={["column", "column", "row"]}
-        >
-          {step !== "candidate" && (
-            <VStack
-              flex={["auto", "auto", "30"]}
-              background={"whiteSomke"}
-              p={4}
-            >
-              <Form
-                ref={formRef}
-                extraErrors={errors}
-                showErrorList={false}
-                noHtml5Validate={true}
-                {...{
-                  widgets,
-                  templates,
-                  validator,
-                  schema: schema,
-                  uiSchema,
-                  formData,
-                  onChange,
-                  onSubmit,
-                  transformErrors,
-                }}
-              >
-                <AdminTypo.PrimaryButton
-                  isDisabled={isDisabled}
-                  mt="4"
-                  onPress={() => {
-                    formRef?.current?.submit();
-                  }}
-                >
-                  {step === "edit" ? t("SAVE_EVENT") : t("SCHEDULE_EVENT")}
-                </AdminTypo.PrimaryButton>
-              </Form>
-            </VStack>
-          )}
-          <VStack
-            flex={["auto", "auto", "70"]}
-            display={step !== "candidate" && ["none", "none", "flex"]}
-            bg={isListOpen ? "zambezi" : "whiteSomke"}
-            p={[0, 0, "4"]}
-            justifyContent={isListOpen && "center"}
+        </Alert>
+      ) : (
+        <VStack p={4}>
+          <HStack
+            pt="3"
+            justifyContent={"space-between"}
+            direction={["column", "row", "row"]}
+            space={2}
           >
-            {isListOpen ? (
-              <VStack p={4}>
-                <AdminTypo.Secondarybutton onPress={handleOpenButtonClick}>
-                  {t("SELECT_CANDIDATE")}
-                </AdminTypo.Secondarybutton>
-              </VStack>
-            ) : (
-              <VStack background={"whiteSomke"}>
-                <HStack
-                  p={[2, 2, 0]}
-                  space={4}
-                  flexWrap={"wrap"}
-                  direction={["column", "column", "column", "row", "row"]}
-                  alignItems={"center"}
+            <HStack alignItems={"center"} space={2} flexWrap={"wrap"}>
+              <IconByName name="home" size="md" />
+              <AdminTypo.H1 color="Activatedcolor.400">
+                {t("HOME")}
+              </AdminTypo.H1>
+              <IconByName
+                size="sm"
+                name="ArrowRightSLineIcon"
+                p="0"
+                onPress={(e) => navigate(`/admin`)}
+              />
+              <AdminTypo.H1
+                color="textGreyColor.800"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                {t("SCHEDULE_EVENT")}
+              </AdminTypo.H1>
+            </HStack>
+
+            {step === "candidate" && (
+              <AdminTypo.Secondarybutton onPress={updateSelected}>
+                {t("SAVE_EVENT")}
+              </AdminTypo.Secondarybutton>
+            )}
+          </HStack>
+          <HStack
+            pt={6}
+            space={4}
+            justifyContent={"space-between"}
+            direction={["column", "column", "row"]}
+          >
+            {step !== "candidate" && (
+              <VStack
+                flex={["auto", "auto", "30"]}
+                background={"whiteSomke"}
+                p={4}
+              >
+                <Form
+                  ref={formRef}
+                  extraErrors={errors}
+                  showErrorList={false}
+                  noHtml5Validate={true}
+                  {...{
+                    widgets,
+                    templates,
+                    validator,
+                    schema: schema,
+                    uiSchema,
+                    formData,
+                    onChange,
+                    onSubmit,
+                    transformErrors,
+                  }}
                 >
-                  <Input
-                    // minH="32px"
-                    InputLeftElement={
-                      <IconByName color="coolGray.500" name="SearchLineIcon" />
-                    }
-                    placeholder={t("SEARCH_BY_NAME")}
-                    variant="outline"
-                    onChange={debouncedHandleSearch}
-                  />
-                  <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
-                  <LocationFilters filter={filter} setFilter={setFilter} />
-                </HStack>
-                <Stack alignSelf={"end"} pb={2} pr={4}>
-                  <AdminTypo.H6 bold color="textBlue.200">
-                    {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
-                  </AdminTypo.H6>
-                </Stack>
-                <DataTable
-                  columns={columns(t, handleCheckboxChange, selectedRowId)}
-                  data={data}
-                  customStyles={customStyles}
-                  persistTableHead
-                  // selectableRows
-                  progressPending={loading}
-                  pagination
-                  paginationServer
-                  // onSelectedRowsChange={handleCheckboxChange}
-                  paginationTotalRows={paginationTotalRows}
-                  onChangeRowsPerPage={(e) => {
-                    setFilter({ ...filter, limit: e, page: 1 });
-                  }}
-                  onChangePage={(e) => {
-                    setFilter({ ...filter, page: e });
-                  }}
-                />
+                  <AdminTypo.PrimaryButton
+                    isDisabled={isDisabled}
+                    mt="4"
+                    onPress={() => {
+                      formRef?.current?.submit();
+                    }}
+                  >
+                    {step === "edit" ? t("SAVE_EVENT") : t("SCHEDULE_EVENT")}
+                  </AdminTypo.PrimaryButton>
+                </Form>
               </VStack>
             )}
-          </VStack>
-        </HStack>
-      </VStack>
+            <VStack
+              flex={["auto", "auto", "70"]}
+              display={step !== "candidate" && ["none", "none", "flex"]}
+              bg={isListOpen ? "zambezi" : "whiteSomke"}
+              p={[0, 0, "4"]}
+              justifyContent={isListOpen && "center"}
+            >
+              {isListOpen ? (
+                <VStack p={4}>
+                  <AdminTypo.Secondarybutton onPress={handleOpenButtonClick}>
+                    {t("SELECT_CANDIDATE")}
+                  </AdminTypo.Secondarybutton>
+                </VStack>
+              ) : (
+                <VStack background={"whiteSomke"}>
+                  <HStack
+                    p={[2, 2, 0]}
+                    space={4}
+                    flexWrap={"wrap"}
+                    direction={["column", "column", "column", "row", "row"]}
+                    alignItems={"center"}
+                  >
+                    <Input
+                      // minH="32px"
+                      InputLeftElement={
+                        <IconByName
+                          color="coolGray.500"
+                          name="SearchLineIcon"
+                        />
+                      }
+                      placeholder={t("SEARCH_BY_NAME")}
+                      variant="outline"
+                      onChange={debouncedHandleSearch}
+                    />
+                    <AdminTypo.H4 bold>{t("FILTERS")}:-</AdminTypo.H4>
+                    <LocationFilters filter={filter} setFilter={setFilter} />
+                  </HStack>
+                  <Stack alignSelf={"end"} pb={2} pr={4}>
+                    <AdminTypo.H6 bold color="textBlue.200">
+                      {`${t("ADD_SELECTED")} (${selectedRowId?.length ?? 0})`}
+                    </AdminTypo.H6>
+                  </Stack>
+                  <DataTable
+                    columns={columns(t, handleCheckboxChange, selectedRowId)}
+                    data={data}
+                    customStyles={customStyles}
+                    persistTableHead
+                    // selectableRows
+                    progressPending={loading}
+                    pagination
+                    paginationServer
+                    // onSelectedRowsChange={handleCheckboxChange}
+                    paginationTotalRows={paginationTotalRows}
+                    onChangeRowsPerPage={(e) => {
+                      setFilter({ ...filter, limit: e, page: 1 });
+                    }}
+                    onChangePage={(e) => {
+                      setFilter({ ...filter, page: e });
+                    }}
+                  />
+                </VStack>
+              )}
+            </VStack>
+          </HStack>
+        </VStack>
+      )}
     </Layout>
   );
 }

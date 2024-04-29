@@ -1,26 +1,25 @@
 import {
   AdminTypo,
   BodyMedium,
+  CardComponent,
   FrontEndTypo,
   IconByName,
   Layout,
   RedOutlineButton,
   arrList,
-  cohortService,
-  removeOnboardingURLData,
-  removeOnboardingMobile,
-  getOnboardingURLData,
-  H1,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
   enumRegistryService,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getOnboardingURLData,
   getSelectedAcademicYear,
   CustomAlert,
   TitleCard,
+  getSelectedProgramId,
   objProps,
+  removeOnboardingMobile,
+  removeOnboardingURLData,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import {
@@ -38,6 +37,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { SyncOfflineData } from "v2/utils/OfflineHelper/OfflineHelper";
 import {
   checkPrerakOfflineTimeInterval,
   getIpUserInfo,
@@ -49,7 +49,6 @@ import {
   getIndexedDBItem,
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
-import { SyncOfflineData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 const styles = {
   inforBox: {
@@ -77,10 +76,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [progress, setProgress] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
-  const [isEventActive, setIsEventActive] = useState(false);
-  const [lmsDetails, setLmsDetails] = useState();
+  const [isEventActive, setIsEventActive] = useState();
   const { id } = userTokenInfo?.authUser || {};
-  const [events, setEvents] = useState("");
+  const [examButtonText, setExamButtonText] = useState("");
+  const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
@@ -95,7 +94,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
-  const [isTodayAttendace, setIsTodayAttendace] = useState();
 
   const [env_name] = useState(process.env.NODE_ENV);
 
@@ -267,36 +265,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             await facilitatorRegistryService.getPrerakCertificateDetails({
               id: fa_id,
             });
-          const data =
-            c_data?.data?.filter(
-              (eventItem) =>
-                eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
-            )?.[0] || {};
-          if (data) {
-            setIsTodayAttendace(
-              data?.attendances.filter(
-                (attendance) =>
-                  attendance.user_id == fa_id &&
-                  attendance.status == "present" &&
-                  data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
-            );
-
-            setCertificateData(data);
-            if (data?.lms_test_tracking?.length > 0) {
-              setLmsDetails(data?.lms_test_tracking?.[0]);
-            }
-            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-            const format = "HH:mm:ss";
-            const time = moment(moment().format(format), format);
-            const beforeTime = moment.utc(data?.start_time, format).local();
-            const afterTime = moment.utc(data?.end_time, format).local();
-            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-              setIsEventActive(true);
-            }
-          }
+          const data = c_data?.data?.filter(
+            (eventItem) => eventItem?.params?.do_id?.length
+          );
+          setEvents(data);
         } catch (error) {
           console.log(error);
         }
@@ -304,6 +276,49 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     };
     fetchdata();
   }, [selectedCohortData]);
+
+  const setExamEvent = (data) => {
+    if (data) {
+      let isTodayAttendace = [];
+      isTodayAttendace = data?.attendances?.filter(
+        (attendance) =>
+          attendance.user_id == fa_id &&
+          attendance.status == "present" &&
+          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
+      );
+
+      if (data?.lms_test_tracking?.length > 0) {
+        setCertificateData(data?.lms_test_tracking?.[0]);
+      }
+      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+      const format = "HH:mm:ss";
+      const time = moment(moment().format(format), format);
+      const beforeTime = moment.utc(data?.start_time, format).local();
+      const afterTime = moment.utc(data?.end_time, format).local();
+      let newData = data;
+      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+        newData = { ...data, event_started: true };
+      }
+      const doIdArray = data?.params?.do_id;
+      if (doIdArray == null || doIdArray.length === 0) {
+        setExamButtonText(t("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE"));
+      } else if (!newData?.event_started) {
+        setExamButtonText(
+          `${t("EVENT_NOT_IN_DURATION")} ${t("START_TIME")} ${beforeTime.format(
+            "hh:mm a"
+          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`
+        );
+      } else if (isTodayAttendace?.length < 1) {
+        setExamButtonText(t("TODAYS_ATTENDANCE_MISSING"));
+      } else if (data?.params?.start_exam != "yes") {
+        setExamButtonText(t("EXAM_NOT_STARTED_YET"));
+      } else {
+        newData = { ...data, take_test: true };
+        setExamButtonText(t("TAKE_TEST"));
+      }
+      setIsEventActive(newData);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -328,7 +343,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   //       id,
   //     });
   //     if (getCertificate?.data?.length > 0) {
-  //       setLmsDetails(getCertificate?.data?.[0]);
+  //       setCertificateData(getCertificate?.data?.[0]);
   //     }
   //   }
   //   fetchData();
@@ -406,7 +421,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   }, [facilitator]);
 
   const handleRandomise = async () => {
-    const doIdArray = modalVisible?.params?.do_id;
+    const doIdArray = isEventActive?.params?.do_id;
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
@@ -418,9 +433,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const startTest = async () => {
+    console.log("hello");
     try {
       const randomizedDoId = await handleRandomise();
-      navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
+      navigate(`/assessment/events/${isEventActive?.id}/${randomizedDoId}`);
       navigate(0);
     } catch (error) {
       console.error("Error handling randomization:", error);
@@ -554,6 +570,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"HOME"}
+      pageTitle={t("HOME")}
     >
       <VStack pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
@@ -584,88 +602,118 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("HELLO_HOME")}, {facilitator?.first_name}!
               </FrontEndTypo.H1>
             </HStack>
-            {isEventActive
-              ? certificateData && (
-                  <HStack py="2" flex="1" px="4">
-                    <FrontEndTypo.Primarybutton
-                      onPress={() => {
-                        setModalVisible(certificateData);
-                        const doIdArray = certificateData?.params?.do_id;
-                        if (doIdArray == null || doIdArray.length === 0) {
-                          setEvents("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE");
-                        } else {
-                          setEvents("TAKE_TEST");
-                        }
-                      }}
-                    >
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                )
-              : lmsDetails?.id && (
-                  <HStack py="2" flex="1" px="4">
-                    <FrontEndTypo.Primarybutton
-                      fontSize
-                      onPress={() => {
-                        setModalVisible(certificateData);
-                      }}
-                    >
-                      {t("PRERAK_CERTIFICATION")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                )}
+            {events?.length ? (
+              <HStack py="2" flex="1" px="4">
+                <FrontEndTypo.Primarybutton
+                  onPress={() => {
+                    setModalVisible(true);
+                  }}
+                >
+                  {t("PRERAK_CERTIFICATION_PROGRAM")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            ) : (
+              certificateData?.id && (
+                <HStack py="2" flex="1" px="4">
+                  <FrontEndTypo.Primarybutton
+                    fontSize
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    {t("PRERAK_CERTIFICATION")}
+                  </FrontEndTypo.Primarybutton>
+                </HStack>
+              )
+            )}
             <Modal
               isOpen={modalVisible}
               onClose={() => setModalVisible()}
               avoidKeyboard
-              size="md"
+              size="full"
             >
               <Modal.Content>
                 <Modal.Header alignItems={"center"}>
-                  <HStack alignItems={"center"}>
-                    <AdminTypo.H4 color="textGreyColor.500">
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.H4>
-                  </HStack>
+                  <VStack alignItems={"center"}>
+                    {isEventActive ? (
+                      <AdminTypo.H4 color="textGreyColor.500" bold>
+                        {`${t("EVENT_ID")} / ${t("NAME")} : ${
+                          isEventActive?.id
+                        } / ${isEventActive?.name}`}
+                      </AdminTypo.H4>
+                    ) : (
+                      <AdminTypo.H4 color="textGreyColor.500">
+                        {t("PRERAK_CERTIFICATION_PROGRAM")}
+                      </AdminTypo.H4>
+                    )}
+                  </VStack>
                 </Modal.Header>
                 <Modal.Body alignItems="center">
-                  <VStack>
-                    {certificateData ? (
+                  <VStack width={"100%"}>
+                    {isEventActive ? (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t(
-                          isTodayAttendace?.length > 0
-                            ? events
-                            : "TODAYS_ATTENDANCE_MISSING"
-                        )}
+                        {examButtonText}
                       </AdminTypo.H3>
-                    ) : lmsDetails?.certificate_status === null ? (
+                    ) : certificateData?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
-                    ) : lmsDetails?.certificate_status === false &&
-                      lmsDetails?.score >= floatValue ? (
+                    ) : certificateData?.certificate_status === false &&
+                      certificateData?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
-                        {lmsDEtails?.score?.toFixed(2) + "%"}
+                        {certificateData?.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDetails?.certificate_status === true ? (
+                    ) : certificateData?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {lmsDEtails.score?.toFixed(2) + "%"}
+                        {certificateData.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDetails?.certificate_status === false ? (
+                    ) : certificateData?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
                     ) : (
-                      <></>
+                      events && (
+                        <TableCard
+                          setExamEvent={setExamEvent}
+                          pagination
+                          data={events}
+                          columns={[
+                            {
+                              name: `${t("EVENT_ID")} / ${t("NAME")}`,
+                              selector: (row) => `${row?.id} / ${row?.name}`,
+                            },
+                            {
+                              name: t("ATTENDANCE"),
+                              selector: (row) => {
+                                const attData = row?.attendances?.filter(
+                                  (attendance) =>
+                                    attendance.user_id == fa_id &&
+                                    attendance.status == "present" &&
+                                    row.end_date ==
+                                      moment(attendance.date_time).format(
+                                        "YYYY-MM-DD"
+                                      )
+                                );
+                                return attData.length > 0 ? "yes" : "no";
+                              },
+                            },
+                            {
+                              name: t("EXAM_START_STATUS"),
+                              selector: (row) =>
+                                row?.params?.start_exam == "yes" ? "yes" : "no",
+                            },
+                          ]}
+                        />
+                      )
                     )}
                   </VStack>
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
                   <HStack space={"6"}>
-                    {lmsDetails === undefined ||
-                      (lmsDetails?.certificate_status === true && (
+                    {certificateData === undefined ||
+                      (certificateData?.certificate_status === true && (
                         <FrontEndTypo.DefaultButton
                           textColor={"black"}
                           onPress={() => {
@@ -675,7 +723,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           {t("GO_BACK")}
                         </FrontEndTypo.DefaultButton>
                       ))}
-                    {lmsDetails?.certificate_status === false && (
+                    {certificateData?.certificate_status === false && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -685,7 +733,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {certificateData && isTodayAttendace?.length > 0 && (
+                    {isEventActive?.take_test == true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={startTest}
@@ -693,7 +741,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("START_TEST")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDetails?.certificate_status === true && (
+                    {certificateData?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -701,6 +749,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         }}
                       >
                         {t("VIEW_RESULTS")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
+                    {isEventActive && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={(e) => setIsEventActive()}
+                      >
+                        {t("GO_BACK")}
                       </FrontEndTypo.DefaultButton>
                     )}
                   </HStack>
@@ -866,6 +922,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </HStack>
             </Stack>
           )}
+
+          <Stack bg="bgYellowColor.400" space="6" p={4}>
+            <FrontEndTypo.H2 color="textMaroonColor.400">
+              {t("LEARNER_EXAMINATION")}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H3>
+              {t("LEARNER_EXAMINATION_DETAILS")}
+            </FrontEndTypo.H3>
+
+            <FrontEndTypo.Primarybutton
+              width="100%"
+              onPress={(e) => navigate("/examattendance")}
+            >
+              {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+            </FrontEndTypo.Primarybutton>
+
+            <FrontEndTypo.Secondarybutton
+              width="100%"
+              onPress={(e) => navigate("/examschedule")}
+            >
+              {t("VIEW_EXAM_SCHEDULE")}
+            </FrontEndTypo.Secondarybutton>
+          </Stack>
         </VStack>
       </VStack>
       <Modal
@@ -1120,6 +1199,54 @@ const InfoBox = ({ status, progress }) => {
   }
 
   return infoBox;
+};
+
+const TableCard = ({ data, columns, setExamEvent }) => {
+  const { t } = useTranslation();
+
+  const setData = (item) => {
+    let jsonData = {};
+    columns.forEach((e, key) => {
+      jsonData = { ...jsonData, [key]: e?.selector(item) || "" };
+    });
+    return jsonData;
+  };
+  return (
+    <VStack alignItems={"center"} space="5">
+      {data?.map((item) => (
+        <CardComponent
+          footerComponent={
+            <VStack px="4" p="2">
+              <FrontEndTypo.Primarybutton
+                p="0"
+                onPress={(e) => setExamEvent(item)}
+              >
+                {t("SELECT")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
+          }
+          key={item}
+          _body={{ bg: "light.100", roundedBottom: 0, p: 4 }}
+          _subHstack={{ flex: 1, space: 2 }}
+          _hstack={{ space: 2 }}
+          _vstack={{
+            width: "100%",
+            space: 0,
+          }}
+          item={setData(item)}
+          arr={columns?.map((e, key) => key) || []}
+          label={
+            columns?.map((e) => ({
+              label: e?.name,
+              _text: { flex: 2 },
+              _value: { flex: 1 },
+            })) || []
+          }
+          isHideProgressBar
+        />
+      ))}
+    </VStack>
+  );
 };
 Dashboard.propTypes = {
   userTokenInfo: PropTypes.any,

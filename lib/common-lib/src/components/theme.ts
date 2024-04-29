@@ -784,6 +784,7 @@ const DEFAULT_THEME = {
       400: '#14242D'
     },
     appliedColor: '#E0E0E0',
+    grayColor: '#D3D3D3',
     screenedColor: '#e5f4ff',
     shortlistedColor: '#CAE9FF',
     potentialColor: '#A7F3D0',
