@@ -15,71 +15,68 @@ import { FrontEndTypo } from "@shiksha/common-lib";
 import { setLanguage, getLanguage } from "v2/utils/Helper/JSHelper";
 import { stylesheet } from "./IntroductionPage.Styles";
 
-// import pragati100 from "/public/educate-girls-pragati-100x100.png"
-
 export default function IntroductionPage({
   t,
   showPrerakDuties,
   showApplyNow,
   showLogin,
 }) {
-  const [language, setLang] = useState(getLanguage);
-
-  useEffect(() => {
-    setLang(getLanguage);
-  }, []);
-  {
-    return (
-      <Stack style={stylesheet.bgimage} alignItems={"center"}>
+  return (
+    <Stack style={stylesheet.bgimage}>
+      <FrontEndTypo.H2
+        bold
+        color="textMaroonColor.400"
+        textAlign="center"
+        my="4"
+      >
+        {t("PROJECT_PRAGATI")}
+      </FrontEndTypo.H2>
+      <FrontEndTypo.H1
+        color="textGreyColor.800"
+        p={2}
+        bold
+        textAlign={"center"}
+      >
+        {t("SPLASHSCREEN_1")}
+      </FrontEndTypo.H1>
+      <VStack
+        space={2}
+        justifyContent="center"
+        alignItems="center"
+        safeAreaTop
+        mb={6}
+      >
         <Image
-          mt={5}
-          alignSelf="center"
+          size={"2xl"}
+          resizeMode="cover"
           source={{
-            uri: `/images/logos/${language}/educate-girls-pragati.png`,
+            uri: "/images/facilitator-duties/img7.png",
           }}
-          alt={`${language}`}
-          resizeMode="contain"
-          width={"130px"}
-          height={"90px"}
+          alt={"Alternate Text "}
+          style={stylesheet.image}
         />
-        <Text
-          width={292}
-          textAlign="center"
-          color="textGreyColor.800"
-          p={2}
-          fontSize={"22px"}
-          lineHeight={"33px"}
-          fontWeight={600}
-        >
-          {t("SPLASHSCREEN_1")}
-        </Text>
-        <VStack space="8">
-          <Image
-            width={292}
-            height={264}
-            resizeMode="cover"
-            source={{
-              uri: "/images/facilitator-duties/img7.png",
-            }}
-            alt={"Alternate Text "}
-            style={stylesheet.image}
-          />
-          <VStack width={"100%"} alignItems={"center"} space={4} pb="4">
-            <FrontEndTypo.Primarybutton width="60%" onPress={showApplyNow}>
-              {t("APPLY_NOW")}
-            </FrontEndTypo.Primarybutton>
-            <FrontEndTypo.Secondarybutton minW="60%" onPress={showPrerakDuties}>
-              {t("KNOW_PRERAK_DUTIES")}
-            </FrontEndTypo.Secondarybutton>
-
-            <Pressable onPress={() => showLogin()}>
-              <Text style={stylesheet.text1}>
-                {t("ALREADY_APPLIED_CHECK_STATUS")}
-              </Text>
+        <Box bg="white" width="100%" px="5">
+          <Center my="6">
+            <Pressable onPress={showPrerakDuties}>
+              <FrontEndTypo.H3 style={stylesheet.text1}>
+                {" "}
+                {t("KNOW_PRERAK_DUTIES")}
+              </FrontEndTypo.H3>
             </Pressable>
-          </VStack>
-        </VStack>
-      </Stack>
-    );
-  }
+          </Center>
+          <FrontEndTypo.Primarybutton onPress={showApplyNow}>
+            {t("APPLY_NOW")}
+          </FrontEndTypo.Primarybutton>
+        </Box>
+        <Center>
+          <Pressable onPress={() => showLogin()}>
+            <Text style={stylesheet.text1}>
+              {" "}
+              {t("ALREADY_APPLIED_CHECK_STATUS")}
+            </Text>
+          </Pressable>
+        </Center>
+      </VStack>
+    </Stack>
+  );
 }

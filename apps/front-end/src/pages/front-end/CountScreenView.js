@@ -3,15 +3,11 @@ import {
   Layout,
   benificiaryRegistoryService,
   FrontEndTypo,
-  Heading1,
-  Heading,
 } from "@shiksha/common-lib";
-import { HStack, Text, VStack, View } from "native-base";
+import { HStack, VStack } from "native-base";
 import React from "react";
 
 export default function TableView({ footerLinks }) {
-  const [statusData, setStatusData] = React.useState([]);
-
   React.useEffect(async () => {
     const selectStatus = await benificiaryRegistoryService.getStatusList();
 
@@ -29,7 +25,7 @@ export default function TableView({ footerLinks }) {
       }
     }
   }, []);
-
+  const [statusData, setStatusData] = React.useState([]);
   return (
     <Layout
       _appBar={{
@@ -38,52 +34,31 @@ export default function TableView({ footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack space="4" p="5" alignContent="center" bg="white">
-        <HStack justifyContent="space-between" px="2" pt={1}>
-          <Text
-            fontSize="20px"
-            lineHeight="24px"
-            fontWeight="600"
-            color="textGreyColor.900"
-          >
-            {t("LEARNER_STATUS_COUNT")}
-          </Text>
+      <VStack space="4" p="5" alignContent="center" bg="bgGreyColor.200">
+        <HStack justifyContent="space-between" px="2">
+          <FrontEndTypo.H2 color="textMaroonColor.400" bold>
+            {t("STATUS")}
+          </FrontEndTypo.H2>
+          <FrontEndTypo.H2 color="textMaroonColor.400" bold>
+            {t("COUNT")}
+          </FrontEndTypo.H2>
         </HStack>
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-          }}
-        >
-          {statusData?.map((item, index) => (
-            <View
-              key={index}
-              style={{
-                backgroundColor: "#F4F4F4",
-                padding: 15,
-                borderRadius: "5px",
-                justifyContent: "end",
-                margin: 6,
-                width: "calc(50% - 16px)",
-              }}
-            >
-              <Text
-                color={"floatingLabelColor.500"}
-                fontSize={"48px"}
-                lineHeight={"72px"}
-                fontWeight={"500"}
-              >
-                {item.count}
-              </Text>
-              <FrontEndTypo.H3
-                fontWeight={"400"}
-                lineHeight={"21px"}
-                color={"grayTitleCard"}
-              >{`${t(item.title)}`}</FrontEndTypo.H3>
-            </View>
-          ))}
-        </View>
+        {statusData?.map((item) => (
+          <HStack
+            bg="white"
+            px="4"
+            py="5"
+            shadow="FooterShadow"
+            borderRadius="4px"
+            space="2"
+            justifyContent="space-between"
+          >
+            <FrontEndTypo.H3 bold color="textGreyColor.800">{`${t(
+              item.title
+            )}`}</FrontEndTypo.H3>
+            <FrontEndTypo.H2>{item.count}</FrontEndTypo.H2>
+          </HStack>
+        ))}
       </VStack>
     </Layout>
   );

@@ -5,7 +5,6 @@ import {
   FrontEndTypo,
   BodyMedium,
   getBeneficaryDocumentationStatus,
-  SelectStyle,
   enumRegistryService,
 } from "@shiksha/common-lib";
 import React, { Fragment, useEffect, useState } from "react";
@@ -135,7 +134,12 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
         </Alert>
       ) : (
         <VStack width={"90%"} margin={"auto"} mt={3}>
-          <FrontEndTypo.H3 bold color="textGreyColor.900" mt="3">
+          <FrontEndTypo.H3
+            fontSize="sm"
+            mt={3}
+            bold
+            color="textMaroonColor.900"
+          >
             {t("MANDATORY")}
           </FrontEndTypo.H3>
 

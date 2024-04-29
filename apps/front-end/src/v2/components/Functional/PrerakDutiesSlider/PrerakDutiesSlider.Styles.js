@@ -1,5 +1,6 @@
 export const stylesheet = {
   text1: {
+    fontFamily: "Inter",
     fontWeight: "400",
     fontSize: "14px",
     lineHeight: "26px",
@@ -13,10 +14,10 @@ export const stylesheet = {
     padding: "16px",
   },
   headerText: {
-    color: "#1E1E1E",
-    fontWeight: "600",
-    fontSize: "22px",
-    lineHeight: "26.82px",
+    color: "var(--Gray-90, #212121);",
+    fontFamily: "Inter",
+    fontWeight: "700",
+    fontSize: "18px",
   },
   languageButton: {
     width: 150,
@@ -29,6 +30,7 @@ export const stylesheet = {
   languageButtonText: {
     color: "var(--Secondary-Blue, #084B82)",
     textAlign: "center",
+    fontFamily: "Inter",
     fontSize: 12,
     fontStyle: "normal",
     fontWeight: "600",
@@ -47,6 +49,7 @@ export const stylesheet = {
   defaulutLanguageButtonText: {
     color: "var(--Gray-80, #424242)",
     textAlign: "center",
+    fontFamily: "Inter",
     fontSize: 12,
     fontStyle: "normal",
     fontWeight: "500",

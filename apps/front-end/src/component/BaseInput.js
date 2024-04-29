@@ -312,7 +312,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, _stack } = schema || {};
+  const { label, format, readOnly } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -324,7 +324,7 @@ export const RadioBtn = ({
         </FormControl.Label>
       )}
       <Radio.Group
-        colorScheme="eG_Blue"
+        colorScheme="red"
         key={items}
         pb="4"
         value={value}
@@ -342,7 +342,6 @@ export const RadioBtn = ({
           }}
           space={4}
           w="75%"
-          {..._stack}
           gap="4"
         >
           {items?.map((item) => (
@@ -350,7 +349,7 @@ export const RadioBtn = ({
               key={item?.value}
               value={item?.value}
               size="lg"
-              colorScheme="eG_Blue"
+              colorScheme="red"
               _text={{ fontSize: 12, fontWeight: 500 }}
               isDisabled={readOnly}
             >
@@ -423,7 +422,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value || true
+            ...(value
               ? {
                   top: "0",
                   opacity: 1,
@@ -438,13 +437,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
                 }),
           }}
         >
-          <Text
-            bg={"white"}
-            zIndex={99999999}
-            color={"floatingLabelColor.500"}
-            fontSize="12"
-            fontWeight="400"
-          >
+          <Text fontSize="12" fontWeight="400">
             {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
@@ -462,17 +455,6 @@ export const select = ({ options, value, onChange, required, schema }) => {
         selectedValue={value}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
-        borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
-        bg="#FFFFFF"
-        dropdownIcon={
-          <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
-        }
-        borderWidth={value ? "2px" : "1px"}
-        borderRadius={"4px"}
-        fontSize={"16px"}
-        letterSpacing={"0.5px"}
-        fontWeight={400}
-        lineHeight={"24px"}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
@@ -544,23 +526,21 @@ export const Location = ({ value, onChange, schema }) => {
   }, [value]);
   return (
     <HStack alignItems={"center"} space={2}>
-      <HStack space={2}>
+      <VStack space={2}>
         {[lat, long]?.map((item, index) => {
           return (
             <HStack alignItems={"center"} space={2} key={item}>
-              <FrontEndTypo.H4 bold color="floatingLabelColor.400">
-                {index ? t("LONGITUDE") : t("LATITUDE")}:
-              </FrontEndTypo.H4>
-              <FrontEndTypo.H4 color={"grayTitleCard"}>
-                {value?.[item]}
-              </FrontEndTypo.H4>
+              <FrontEndTypo.H3 bold color="textMaroonColor.400">
+                {index ? t("LONGITUDE") : t("LATITUDE")}
+              </FrontEndTypo.H3>
+              <Text>:{value?.[item]}</Text>
             </HStack>
           );
         })}
 
         {t(error)}
-      </HStack>
-      <IconByName name="PencilLineIcon" onPress={updateValue} />
+      </VStack>
+      <Button onPress={updateValue}>{t("UPDATE")}</Button>
     </HStack>
   );
 };

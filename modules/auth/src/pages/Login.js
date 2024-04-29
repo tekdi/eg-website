@@ -134,7 +134,6 @@ export default function Login() {
           ? ["backBtn", "helpBtn", "pwaBtn"]
           : ["helpBtn", "langBtn", "pwaBtn"],
         _box: { styles: { boxShadow: "0px 3px 16px rgba(0, 0, 0, 0.12)" } },
-        _customProps: { display: "none" },
       }}
       getRefAppBar={(e) => setRef(e)}
     >

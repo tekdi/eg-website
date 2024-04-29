@@ -126,7 +126,7 @@ export default {
           icons: [
             {
               name: "Female",
-              _icon: { size: "30", color: "white" },
+              _icon: { size: "30" },
             },
             {
               name: "Male",
@@ -143,13 +143,13 @@ export default {
         marital_status: {
           label: "MARITAL_STATUS",
           type: "string",
-          format: "RadioBtn",
+          format: "CustomR",
           grid: 2,
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
           type: "string",
-          format: "RadioBtn",
+          format: "CustomR",
           grid: 2,
         },
       },
@@ -185,8 +185,7 @@ export default {
         availability: {
           label: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
-          format: "RadioBtn",
-          _stack: { direction: "row", justifyContent: "space-between" },
+          format: "CustomR",
           grid: 2,
           enum: ["part_time", "full_time"],
           enumNames: ["PART_TIME", "FACILITATOR_FULL_TIME"],
@@ -207,7 +206,7 @@ export default {
         qualification_master_id: {
           label: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string", "number"],
-          format: "RadioBtn",
+          format: "CustomR",
           grid: 2,
         },
         // type_of_document: {
@@ -234,7 +233,6 @@ export default {
           label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
           type: "boolean",
           format: "RadioBtn",
-          _stack: { direction: "row", justifyContent: "space-between" },
         },
         diploma_details: {
           label: "NAME_OF_THE_DIPLOMA",
