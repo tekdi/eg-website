@@ -30,6 +30,7 @@ export default function CampSetting({ footerLinks }) {
   const [selectedEndTime, setSelectedEndTime] = useState();
   const [isDisable, setIsDisable] = useState(false);
   const [error, setError] = useState();
+  const [selectedCampType, setSelectedCampType] = useState();
 
   const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ export default function CampSetting({ footerLinks }) {
   useEffect(async () => {
     const data = await campService.getCampDetails(camp_id);
     const camp = data?.data;
+    setSelectedCampType(camp?.type);
     setSelectedStartTime(camp?.preferred_start_time);
     setSelectedEndTime(camp?.preferred_end_time);
     setSelectedDays(camp?.week_off);
@@ -73,7 +75,15 @@ export default function CampSetting({ footerLinks }) {
   };
 
   return (
-    <Layout _appBar={{ name: t("Settings") }} _footer={{ menues: footerLinks }}>
+    <Layout
+      _appBar={{ name: t("Settings") }}
+      _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"CAMP_SETTINGS"}
+      pageTitle={t("CAMP")}
+      stepTitle={`${selectedCampType === "main" ? "Main" : "Pcr"}/${t(
+        "SETTINGS"
+      )}`}
+    >
       <VStack space={4} p={4}>
         <CardComponent _vstack={{ flex: 1 }} _body={{ pt: 4 }}>
           <VStack alignItems="center" space={3}>

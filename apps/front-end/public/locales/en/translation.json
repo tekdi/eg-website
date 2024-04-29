@@ -1673,5 +1673,17 @@
   "EXISTING_USER": "Existing User",
   "PLEASE_SELECT_CAMP": "Please select camp",
   "PAYMENT_RECEIPTS": "Payment Receipt",
-  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot"
+  "APPLICATION_LOGIN_ID_SS": "Application Login ID Screenshot",
+  "CAMP_DASHBOARD": "Camp Dashboard",
+  "CAMP_OTHER_PLANS": "Other Plan",
+  "CAMP_FORM": "Form",
+  "EPCP_LIST": "EPCP List",
+  "CAMP_EXAM_PREPARATION": "Exam Preparation",
+  "BENEFICIARY": "Beneficiary",
+  "FACILITATOR": "Facilitator",
+  "JOURNEY": "Journey",
+  "ADDRESS_FORM": "Address Form",
+  "ADDRESS_EDIT": "Address Edit",
+  "ONBOARDING": "Onboarding",
+  "BENEFICIARY_LIST": "List"
 }

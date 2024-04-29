@@ -1675,5 +1675,17 @@
   "EXISTING_USER": "मौजूदा उपयोगकर्ता",
   "PLEASE_SELECT_CAMP": "कृपया शिविर चुनें",
   "PAYMENT_RECEIPTS": "भुगतान रसीद",
-  "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट"
+  "APPLICATION_LOGIN_ID_SS": "आवेदन लॉगइन ID स्क्रीनशॉट",
+  "CAMP_DASHBOARD": "शिविर डैशबोर्ड",
+  "CAMP_OTHER_PLANS": "शिविर अन्य योजना",
+  "CAMP_FORM": "शिविर फॉर्म",
+  "EPCP_LIST": "EPCP सूची",
+  "CAMP_EXAM_PREPARATION": "परीक्षा की तैयारी",
+  "BENEFICIARY": "शिक्षार्थी",
+  "FACILITATOR": "शिक्षार्थी",
+  "JOURNEY": "यात्रा",
+  "ADDRESS_FORM": "पता फॉर्म",
+  "ADDRESS_EDIT": "संपादित",
+  "ONBOARDING": "ऑनबोर्डिंग",
+  "BENEFICIARY_LIST": "सूची"
 }

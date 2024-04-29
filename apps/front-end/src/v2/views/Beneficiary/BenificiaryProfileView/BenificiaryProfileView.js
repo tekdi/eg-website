@@ -192,6 +192,8 @@ export default function BenificiaryProfileView(props) {
         },
       }}
       loading={loading}
+      analyticsPageTitle={"BENEFICIARY_PROFILE"}
+      pageTitle={t("BENEFICIARY_PROFILE")}
     >
       {benificiary?.is_deactivated ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
