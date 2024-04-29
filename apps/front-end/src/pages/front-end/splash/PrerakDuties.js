@@ -139,7 +139,6 @@ function PrerakDuties(props) {
                 color="blueText.400"
                 my="5"
                 underline
-                bold
                 onPress={onSkipPress ? onSkipPress : (e) => {}}
               >
                 {t("SKIP_TO_APPLY")}

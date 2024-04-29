@@ -61,9 +61,11 @@ export default {
           maxItems: 7,
           type: "array",
           label: "SUBJECTS",
+          grid: 1,
           items: {
             type: ["string", "number"],
           },
+          format: "MultiCheck",
           uniqueItems: true,
         },
         payment_receipt_document_id: {

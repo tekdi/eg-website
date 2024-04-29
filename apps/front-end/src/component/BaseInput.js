@@ -687,9 +687,7 @@ export const MultiCheck = ({
                     <IconByName
                       {...icons[key]}
                       isDisabled
-                      color={
-                        value === item?.value ? "secondaryBlue.500" : "gray.500"
-                      }
+                      color={value === item?.value ? "eg_blue" : "gray.500"}
                       _icon={{
                         ...(icons?.[key]?.["_icon"]
                           ? icons?.[key]?.["_icon"]
@@ -697,15 +695,20 @@ export const MultiCheck = ({
                       }}
                     />
                   )}
-                  <input
-                    checked={
+                  <Checkbox
+                    onChange={(e) =>
+                      handleCheck({
+                        target: { checked: e, value: item?.value },
+                      })
+                    }
+                    value={item?.value}
+                    size="sm"
+                    colorScheme={"eg-blue"}
+                    isChecked={
                       value?.constructor?.name === "Array" &&
                       (value?.includes(item?.value) ||
                         value?.includes(`${item?.value}`))
                     }
-                    type="checkbox"
-                    value={item?.value}
-                    onChange={handleCheck}
                   />
                   {t(item?.label || item?.title)}
                 </HStack>
