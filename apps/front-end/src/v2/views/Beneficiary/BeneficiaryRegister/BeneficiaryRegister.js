@@ -658,95 +658,109 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <Box py={6} px={4} mb={5}>
-        {/* <Steper
+      {![
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(authUser?.program_faciltators?.status) ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <FrontEndTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H1>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {/* <Steper
           type={"circle"}
           steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
           progress={page === "upload" ? 10 : page}
         /> */}
-        {alert ? (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        ) : (
-          <Fragment />
-        )}
+          {alert ? (
+            <Alert status="warning" alignItems={"start"} mb="3">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{alert}</BodyMedium>
+              </HStack>
+            </Alert>
+          ) : (
+            <Fragment />
+          )}
 
-        {page && page !== "" && (
-          <Form
-            key={lang}
-            ref={formRef}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              templates,
-              widgets,
-              uiSchema,
-              validator,
-              schema: schema || {},
-              formData,
-              customValidate,
-              onChange,
-              onError,
-              onSubmit,
-              transformErrors,
-            }}
-          >
-            {page === "2" ? (
-              <FrontEndTypo.Primarybutton
-                mt="3"
-                variant={"primary"}
-                type="submit"
-                onPress={otpfunction}
-              >
-                {/* {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")} */}
-                {t("NEXT")}
-              </FrontEndTypo.Primarybutton>
-            ) : (
-              <FrontEndTypo.Primarybutton
-                mt="0"
-                variant={"primary"}
-                type="submit"
-                onPress={() => formRef?.current?.submit()}
-              >
-                {t("NEXT")}
-              </FrontEndTypo.Primarybutton>
-            )}
-          </Form>
-        )}
+          {page && page !== "" && (
+            <Form
+              key={lang}
+              ref={formRef}
+              extraErrors={errors}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                templates,
+                widgets,
+                uiSchema,
+                validator,
+                schema: schema || {},
+                formData,
+                customValidate,
+                onChange,
+                onError,
+                onSubmit,
+                transformErrors,
+              }}
+            >
+              {page === "2" ? (
+                <FrontEndTypo.Primarybutton
+                  mt="3"
+                  variant={"primary"}
+                  type="submit"
+                  onPress={otpfunction}
+                >
+                  {/* {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")} */}
+                  {t("NEXT")}
+                </FrontEndTypo.Primarybutton>
+              ) : (
+                <FrontEndTypo.Primarybutton
+                  mt="0"
+                  variant={"primary"}
+                  type="submit"
+                  onPress={() => formRef?.current?.submit()}
+                >
+                  {t("NEXT")}
+                </FrontEndTypo.Primarybutton>
+              )}
+            </Form>
+          )}
 
-        <Modal isOpen={isExistModal} size="lg">
-          <Modal.Content>
-            <Modal.Body alignItems={"center"} textAlign={"center"} p="5">
-              <IconByName
-                name="ErrorWarningLineIcon"
-                isDisabled
-                color="textMaroonColor.300"
-              />
-              <FrontEndTypo.H3>{t("PROFILE_EXIST")}</FrontEndTypo.H3>
-            </Modal.Body>
-            <Modal.Footer justifyContent={"space-between"}>
-              <FrontEndTypo.Secondarybutton
-                onPress={() => setIsExistModal(false)}
-              >
-                {t("GO_BACK")}
-              </FrontEndTypo.Secondarybutton>
-              <FrontEndTypo.Primarybutton
-                onPress={async () => {
-                  await setStep();
-                  setIsExistModal(false);
-                }}
-              >
-                {t("CONTINUE")}
-              </FrontEndTypo.Primarybutton>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-      </Box>
+          <Modal isOpen={isExistModal} size="lg">
+            <Modal.Content>
+              <Modal.Body alignItems={"center"} textAlign={"center"} p="5">
+                <IconByName
+                  name="ErrorWarningLineIcon"
+                  isDisabled
+                  color="textMaroonColor.300"
+                />
+                <FrontEndTypo.H3>{t("PROFILE_EXIST")}</FrontEndTypo.H3>
+              </Modal.Body>
+              <Modal.Footer justifyContent={"space-between"}>
+                <FrontEndTypo.Secondarybutton
+                  onPress={() => setIsExistModal(false)}
+                >
+                  {t("GO_BACK")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton
+                  onPress={async () => {
+                    await setStep();
+                    setIsExistModal(false);
+                  }}
+                >
+                  {t("CONTINUE")}
+                </FrontEndTypo.Primarybutton>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+        </Box>
+      )}
     </Layout>
   );
 }

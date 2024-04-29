@@ -160,6 +160,7 @@ const PcrDetails = () => {
             <FrontEndTypo.H3 mt="6" fontWeight="600" color="textGreyColor.750">
               {t("PCR_INITIAL_LEVEL")}
             </FrontEndTypo.H3>
+
             <FrontEndTypo.H4 my="6" fontWeight="600" color="textGreyColor.750">
               {t("EVALUATE_ON_THE_FIRST_DAY_OF_CAMP")}
             </FrontEndTypo.H4>
@@ -192,7 +193,54 @@ const PcrDetails = () => {
                   {t("LEARNER_LEVEL")}
                 </Text>
               </FormControl.Label>
-
+              <Select
+                //isDisabled={isDisabledSelect({ pcrCreated })}
+                minH={"56px"}
+                selectedValue={data?.baseline_learning_level || "Select"}
+                accessibilityLabel="SELECT"
+                placeholder={
+                  data?.baseline_learning_level?.toUpperCase() || "Select"
+                }
+                dropdownIcon={
+                  <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+                }
+                borderColor={
+                  data?.baseline_learning_level
+                    ? "floatingLabelColor.500"
+                    : "inputBorderColor.500"
+                }
+                bg="#FFFFFF"
+                borderWidth={data?.baseline_learning_level ? "2px" : "1px"}
+                borderRadius={"4px"}
+                fontSize={"16px"}
+                letterSpacing={"0.5px"}
+                fontWeight={400}
+                lineHeight={"24px"}
+                mt={1}
+                onValueChange={(itemValue) =>
+                  setData({ ...data, baseline_learning_level: itemValue })
+                }
+              >
+                {selectBaselineData?.map((item, i) => {
+                  return (
+                    <Select.Item
+                      key={item?.title}
+                      label={t(item?.title)}
+                      value={item?.value}
+                    />
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </VStack>
+          {/* {isHideSelect({
+            pcrCreated,
+            attr: "rapid_assessment_first_learning_level",
+          }) && (
+            <VStack mt={8} space="2" alignItems={"center"}>
+              <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+                {t("PCR_EVALUATION_1")}
+              </FrontEndTypo.H3>
               <Select
                 isFocused={{ borderColor: "inputBorderColor.500" }}
                 isDisabled={isDisabledSelect({ pcrCreated })}
@@ -350,9 +398,9 @@ const PcrDetails = () => {
                 </FormControl>
               </VStack>
             </VStack>
-          )}
+          )} */}
 
-          {isHideSelect({
+          {/* {isHideSelect({
             pcrCreated,
             attr: "rapid_assessment_second_learning_level",
           }) && (
@@ -459,9 +507,9 @@ const PcrDetails = () => {
                 </FormControl>
               </VStack>
             </VStack>
-          )}
+          )} */}
 
-          {isHideSelect({
+          {/* {isHideSelect({
             pcrCreated,
             attr: "endline_learning_level",
           }) && (
@@ -558,6 +606,8 @@ const PcrDetails = () => {
               </VStack>
             </VStack>
           )}
+          <Box pt="4" display={"flex"} alignItems={"center"}>
+          )} */}
           <Box pt="4" display={"flex"} alignItems={"center"}>
             <FrontEndTypo.Primarybutton
               onPress={() => {
