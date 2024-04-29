@@ -656,7 +656,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
     >
       {![

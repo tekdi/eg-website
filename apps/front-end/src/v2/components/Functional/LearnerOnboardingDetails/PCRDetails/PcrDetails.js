@@ -132,7 +132,7 @@ const PcrDetails = () => {
         <VStack p="4">
           <FrontEndTypo.H1>{t("PCR_EDUCATION_LEVEL")}</FrontEndTypo.H1>
           <VStack mt={8} space="2" alignItems={"center"}>
-            <FrontEndTypo.H3 fontSize="sm" color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontSize="sm" color="textGreyColor.750">
               {t("PCR_INITIAL_LEVEL")}
             </FrontEndTypo.H3>
             <Select

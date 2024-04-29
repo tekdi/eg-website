@@ -13,6 +13,7 @@ import {
   TextArea,
   VStack,
   Heading,
+  Checkbox,
 } from "native-base";
 import {
   BodySmall,
@@ -27,7 +28,8 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
-  jsonParse,
+  H3,
+  H4,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -39,10 +41,10 @@ export function LabelNameWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <Heading size="xs" mb={1} color="textGreyColor.750">
         {t("TELL_US_YOUR_NAME")}
       </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text fontSize={"12px"} color="textGreyColor.750" mb={1}>
         {" "}
         {t("AS_PER_AADHAAR")}
       </Text>
@@ -53,27 +55,24 @@ export function LabelMobileWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <Heading size="xs" mb={1} color="textGreyColor.750">
         {t("HOW_CAN_CONTACT_YOU")}
       </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text fontSize={"12px"} color="textGreyColor.750" mb={1}>
         {t("PLEASE_MOBILE_NUMBER")}
       </Text>
     </>
   );
 }
 export function EnrollmentLabelMobileWidget() {
-  let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H2 color="textMaroonColor.400">
+      <FrontEndTypo.H3 color="textGreyColor.750">
         {t("ENROLLMENT_MOBILE_NO")}
-      </FrontEndTypo.H2>
-      <Text color="textMaroonColor.400" mb={1}>
-        {state?.state_name === "RAJASTHAN"
-          ? t("AS_PER_ENROLLMENT_RECEIPT")
-          : t("AS_PER_APPLICATION_RECEIPT")}
+      </FrontEndTypo.H3>
+      <Text color="textGreyColor.750" mb={1}>
+        {t("AS_PER_APPLICATION_RECEIPT")}
       </Text>
     </>
   );
@@ -91,10 +90,10 @@ export function LabelAddressWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <FrontEndTypo.H2 mb={1} color="textGreyColor.750">
         {t("ADDRESS")}
-      </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      </FrontEndTypo.H2>
+      <Text color="textGreyColor.750" mb={1}>
         {t("ADDRESS_DESCRIPTION")}
       </Text>
     </>
@@ -105,10 +104,16 @@ export function LabelVerifyNameWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
+      <Heading size="xs" mb={6} color="textGreyColor.750">
         {t("VERIFY_CONTACT_NUMBER")}
       </Heading>
-      <Text color="textMaroonColor.400" mb={1}>
+      <Text
+        fontSize={"12px"}
+        lineHeight={"14.63px"}
+        fontWeight={600}
+        color="textGreyColor.750"
+        mb={1}
+      >
         {t("PLEASE_ENTER_OTP")}
       </Text>
     </>
@@ -171,7 +176,7 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
     <VStack pb="3">
-      <BodySmall id={id} color="textMaroonColor.400">
+      <BodySmall id={id} color="textGreyColor.750">
         {t(description)}
       </BodySmall>
     </VStack>
@@ -292,10 +297,10 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <H2 color="textMaroonColor.400">
+                  <H4 color="textGreyColor.750">
                     {t(schema?.label ? schema?.label : label)}
-                  </H2>
-                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                  </H4>
+                  <H3 color="textGreyColor.750">{required ? "*" : null}</H3>
                 </HStack>
               </label>
             )}
@@ -363,7 +368,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, direction } = schema || {};
+  const { label, format, readOnly, _stack } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -375,7 +380,7 @@ export const RadioBtn = ({
         </FormControl.Label>
       )}
       <Radio.Group
-        colorScheme="red"
+        colorScheme="eg-blue"
         key={items}
         pb="4"
         value={value}
@@ -384,7 +389,7 @@ export const RadioBtn = ({
       >
         <Stack
           direction={{
-            base: direction || "column",
+            base: "column",
             sm: directionColumn || "row",
           }}
           alignItems={{
@@ -394,13 +399,14 @@ export const RadioBtn = ({
           space={4}
           w="75%"
           gap="4"
+          {..._stack}
         >
           {items?.map((item) => (
             <Radio
               key={item?.value}
               value={item?.value}
-              size="lg"
-              colorScheme="red"
+              size="sm"
+              colorScheme="eg-blue"
               _text={{ fontSize: 12, fontWeight: 500 }}
               isDisabled={readOnly}
             >
@@ -465,7 +471,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value
+            ...(value || true
               ? {
                   top: "0",
                   opacity: 1,
@@ -480,7 +486,13 @@ export const select = ({ options, value, onChange, required, schema }) => {
                 }),
           }}
         >
-          <Text fontSize="12" fontWeight="400">
+          <Text
+            bg={"white"}
+            zIndex={99999999}
+            color={"floatingLabelColor.500"}
+            fontSize="12"
+            fontWeight="400"
+          >
             {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
@@ -493,9 +505,21 @@ export const select = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
       <Select
+        minH={"56px"}
         key={value + items}
         isDisabled={readOnly}
         selectedValue={value}
+        dropdownIcon={
+          <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+        }
+        borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
+        bg="#FFFFFF"
+        borderWidth={value ? "2px" : "1px"}
+        borderRadius={"4px"}
+        fontSize={"16px"}
+        letterSpacing={"0.5px"}
+        fontWeight={400}
+        lineHeight={"24px"}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
         _selectedItem={{
@@ -509,7 +533,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
             key={item?.value}
             value={item?.value}
             label={t(item?.label)}
-            _text={{ fontSize: 12, fontWeight: 500 }}
+            _text={{ fontSize: 16, fontWeight: 400 }}
           />
         ))}
       </Select>
@@ -518,22 +542,22 @@ export const select = ({ options, value, onChange, required, schema }) => {
 };
 
 // rjsf custom readOnly field
-export const ReadOnly = ({ value, onChange, required, schema }) => {
+export const ReadOnly = ({ value, onChange, _stack, required, schema }) => {
   const { title } = schema || {};
   const { t } = useTranslation();
   return (
     <HStack gap="2">
-      <FrontEndTypo.H3 bold color="textMaroonColor.400">
+      <FrontEndTypo.H4 bold color="floatingLabelColor.500" {..._stack}>
         {t(title)}
-      </FrontEndTypo.H3>
+      </FrontEndTypo.H4>
       <Text fontSize="14" fontWeight="400">
         {required && <Text color={"danger.500"}>*</Text>}
         {value && (
           <Text
             marginLeft={"5px"}
-            fontWeight="700"
-            fontSize={14}
-            color={"#9E9E9E"}
+            fontWeight="600"
+            fontSize={12}
+            color={"grayTitleCard"}
           >
             : {value}
           </Text>
@@ -559,21 +583,23 @@ export const Location = ({ value, onChange, required, schema }) => {
   }, [value]);
   return (
     <HStack alignItems={"center"} space={2}>
-      <VStack space={2}>
+      <HStack space={2}>
         {[lat, long]?.map((item, index) => {
           return (
             <HStack alignItems={"center"} space={2} key={item}>
-              <FrontEndTypo.H3 bold color="textMaroonColor.400">
-                {index ? t("LONGITUDE") : t("LATITUDE")}
-              </FrontEndTypo.H3>
-              <Text>:{value?.[item]}</Text>
+              <FrontEndTypo.H4 bold color="floatingLabelColor.500">
+                {index ? t("LONGITUDE") : t("LATITUDE")}:
+              </FrontEndTypo.H4>
+              <FrontEndTypo.H4 color={"grayTitleCard"}>
+                {value?.[item]}
+              </FrontEndTypo.H4>
             </HStack>
           );
         })}
 
         {t(error)}
-      </VStack>
-      <Button onPress={updateValue}>{t("UPDATE")}</Button>
+      </HStack>
+      <IconByName name="PencilLineIcon" onPress={updateValue} />
     </HStack>
   );
 };
@@ -657,6 +683,7 @@ export const MultiCheck = ({
         return value.indexOf(val) === index;
       });
     }
+    console.log("updatedList", newValue);
 
     let updatedList = [...newValue];
     if (event.target.checked) {
@@ -664,6 +691,7 @@ export const MultiCheck = ({
     } else {
       updatedList.splice(newValue.indexOf(event.target.value), 1);
     }
+    console.log(updatedList, newValue);
     onChange(updatedList);
   };
 
@@ -691,9 +719,7 @@ export const MultiCheck = ({
                     <IconByName
                       {...icons[key]}
                       isDisabled
-                      color={
-                        value === item?.value ? "secondaryBlue.500" : "gray.500"
-                      }
+                      color={value === item?.value ? "eg_blue" : "gray.500"}
                       _icon={{
                         ...(icons?.[key]?.["_icon"]
                           ? icons?.[key]?.["_icon"]
@@ -701,7 +727,7 @@ export const MultiCheck = ({
                       }}
                     />
                   )}
-                  <input
+                  {/* <input
                     checked={
                       value?.constructor?.name === "Array" &&
                       (value?.includes(item?.value) ||
@@ -710,6 +736,21 @@ export const MultiCheck = ({
                     type="checkbox"
                     value={item?.value}
                     onChange={handleCheck}
+                  /> */}
+                  <Checkbox
+                    onChange={(e) =>
+                      handleCheck({
+                        target: { checked: e, value: item?.value },
+                      })
+                    }
+                    value={item?.value}
+                    size="sm"
+                    colorScheme={"eg-blue"}
+                    isChecked={
+                      value?.constructor?.name === "Array" &&
+                      (value?.includes(item?.value) ||
+                        value?.includes(`${item?.value}`))
+                    }
                   />
                   {t(item?.label || item?.title)}
                 </HStack>
@@ -891,7 +932,6 @@ export const focusToField = (errors) => {
 
 // trans form erros in i18 lang translate
 const transformErrors = (errors, schema, t) => {
-  console.log({ errors });
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
   const getMessage = (error) => {
@@ -911,8 +951,6 @@ const transformErrors = (errors, schema, t) => {
         return t("SELECT_MAXIMUM", error?.params?.limit, title);
       case "enum":
         return t("SELECT_MESSAGE");
-      case "type":
-        return "";
       case "format":
         const { format } = error?.params || {};
         const messageKey =

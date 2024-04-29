@@ -13,7 +13,6 @@ const stylesheet = {
   mainText: {
     color: "#790000",
     textAlign: "center",
-    fontFamily: "Inter",
     fontSize: "12px",
     marginTop: "37px",
   },
@@ -22,14 +21,12 @@ const stylesheet = {
     borderRadius: "10px",
   },
   text1: {
-    fontFamily: "Inter",
     fontWeight: "700",
     fontSize: "22px",
     lineHeight: "26px",
     color: "#212121",
   },
   text2: {
-    fontFamily: "Inter",
     fontWeight: "500",
     lineHeight: "26px",
     fontSize: "12px",
@@ -59,7 +56,6 @@ const stylesheet = {
   },
   skipText: {
     marginTop: "24px",
-    fontFamily: "Inter",
     fontWeight: "400",
     fontSize: "12px",
     lineHeight: "15px",

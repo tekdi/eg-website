@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./arraySchema.js";
-import { Alert, Box, Button, HStack, VStack } from "native-base";
+import { Alert, Box, Button, HStack, Icon, VStack } from "native-base";
 import {
   facilitatorRegistryService,
   Layout,
@@ -13,6 +13,7 @@ import {
   enumRegistryService,
   validation,
   CardComponent,
+  IconByName,
 } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import {
@@ -524,27 +525,41 @@ export default function PrerakOnboardingArrayForm({
                     );
                   })}
               <Button variant={"link"} colorScheme="info" onPress={onAdd}>
-                <FrontEndTypo.H3 color="blueText.400" underline bold>
+                <FrontEndTypo.H5
+                  color="blueText.500"
+                  underline
+                  bold
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <IconByName
+                    name="AddLineIcon"
+                    _icon={{ size: "16px" }}
+                    style={{ fontSize: "8px", marginRight: "4px" }}
+                  />
                   {`${t(stepLabel)}`}
-                </FrontEndTypo.H3>
+                </FrontEndTypo.H5>
               </Button>
-              <FrontEndTypo.Primarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(false)}
-              >
-                {t("PRERAK_PROCEED_BTN")}
-              </FrontEndTypo.Primarybutton>
+              <Box alignItems={"center"}>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  minWidth="60%"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("PRERAK_PROCEED_BTN")}
+                </FrontEndTypo.Primarybutton>
 
-              <FrontEndTypo.Secondarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(true)}
-              >
-                {t("GO_TO_PROFILE")}
-              </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  minWidth="60%"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
             </VStack>
           ) : (
             <Box>

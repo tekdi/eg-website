@@ -29,7 +29,7 @@ export default function PageLayout({
           {customComponent ? customComponent : <></>}
         </Center>
       ) : (
-        <ScrollView minH={height} maxH={height} w={width}>
+        <ScrollView minH={height} maxH={height} w={width} shadow={4}>
           {showAppBar ? (
             <PageHeader
               t={t}
