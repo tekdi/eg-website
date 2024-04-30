@@ -461,7 +461,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
       case null:
         return (
           <Box
-            bg="boxBackgroundColour.100"
+            bg="white"
             borderColor="garyTitleCardBorder"
             borderRadius="5px"
             borderWidth="1px"

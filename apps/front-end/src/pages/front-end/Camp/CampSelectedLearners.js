@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react";
+import {
+  AdminTypo,
+  BodyMedium,
+  CardComponent,
+  FrontEndTypo,
+  IconByName,
+  ImageView,
+  Layout,
+  arrList,
+  campService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+} from "@shiksha/common-lib";
 import {
   Alert,
   Box,
   Checkbox,
   HStack,
+  Modal,
   Pressable,
   VStack,
-  Modal,
 } from "native-base";
-import {
-  Layout,
-  BodyMedium,
-  FrontEndTypo,
-  AdminTypo,
-  IconByName,
-  ImageView,
-  campService,
-  CardComponent,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
-  enumRegistryService,
-  facilitatorRegistryService,
-  objProps,
-  arrList,
-} from "@shiksha/common-lib";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useTranslation } from "react-i18next";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
+import { useTranslation } from "react-i18next";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 

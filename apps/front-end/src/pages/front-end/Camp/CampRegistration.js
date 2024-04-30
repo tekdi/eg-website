@@ -1,21 +1,21 @@
 import {
+  BodyMedium,
+  ConsentService,
   FrontEndTypo,
   IconByName,
   Layout,
-  campService,
-  ConsentService,
   arrList,
-  BodyMedium,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
+  campService,
   enumRegistryService,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import { HStack, Pressable, Image, Avatar, Alert, VStack } from "native-base";
-import React, { useEffect, useState } from "react";
+import { Alert, Avatar, HStack, Image, Pressable, VStack } from "native-base";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 

@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
+import React, { useEffect, useState } from "react";
+import schema1 from "./schema.js";
 
 import {
-  Layout,
-  BodyMedium,
-  benificiaryRegistoryService,
   AgRegistryService,
+  BodyMedium,
   FrontEndTypo,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
+  Layout,
+  arrList,
+  benificiaryRegistoryService,
   enumRegistryService,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
-  arrList,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
+import { useTranslation } from "react-i18next";
 import {
-  TitleFieldTemplate,
+  ArrayFieldTitleTemplate,
+  BaseInputTemplate,
+  CustomR,
   DescriptionFieldTemplate,
   FieldTemplate,
   ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
   RadioBtn,
-  CustomR,
+  TitleFieldTemplate,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
-import { useTranslation } from "react-i18next";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 

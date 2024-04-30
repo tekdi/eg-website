@@ -1,47 +1,41 @@
 import {
-  campService,
-  FrontEndTypo,
-  Layout,
-  Alert as TAlert,
-  Loading,
   Camera,
-  uploadRegistryService,
-  ImageView,
-  useLocationData,
   CardComponent,
-  enumRegistryService,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
-  facilitatorRegistryService,
-  objProps,
+  FrontEndTypo,
+  ImageView,
+  Layout,
+  Loading,
+  Alert as TAlert,
   arrList,
+  campService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  uploadRegistryService,
+  useLocationData,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import moment from "moment";
 import {
+  Alert,
   Box,
   HStack,
-  VStack,
-  Alert,
   Image,
-  Stack,
   Pressable,
-  Spinner,
   Progress,
+  Spinner,
+  Stack,
+  VStack,
 } from "native-base";
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import CampExecutionEnd from "./CampExecutionEnd";
 import CampAttendance from "./CampAttendance";
+import CampExecutionEnd from "./CampExecutionEnd";
 import CampTodayActivities from "./CampTodayActivities";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";

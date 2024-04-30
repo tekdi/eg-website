@@ -1,23 +1,19 @@
 import {
-  FrontEndTypo,
   Layout,
-  getSelectedProgramId,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
+  arrList,
   enumRegistryService,
   facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
-  arrList,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import { Stack, VStack } from "native-base";
 import PropTypes from "prop-types";
-import { useTranslation } from "react-i18next";
-import List from "./CampList/CampList";
-import { useNavigate } from "react-router-dom";
-import EpcpCard from "./CampList/EpcpCard";
-import ExamPreparationCard from "./CampList/ExamPreparationCard";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import List from "./CampList/CampList";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 

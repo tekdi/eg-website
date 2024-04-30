@@ -1,39 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
-import schema1 from "./schema.js";
+import {
+  FrontEndTypo,
+  Layout,
+  arrList,
+  campService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  filterObject,
+  geolocationRegistryService,
+  getOnboardingMobile,
+  getOptions,
+  getSelectedProgramId,
+  jsonParse,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  validation,
+} from "@shiksha/common-lib";
+import {
+  onError,
+  templates,
+  transformErrors,
+  validator,
+  widgets,
+} from "component/BaseInput";
 import { Alert, Box, HStack } from "native-base";
 import PropTypes from "prop-types";
-import {
-  geolocationRegistryService,
-  Layout,
-  BodyMedium,
-  filterObject,
-  FrontEndTypo,
-  enumRegistryService,
-  getOptions,
-  validation,
-  campService,
-  jsonParse,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
-  facilitatorRegistryService,
-  objProps,
-  arrList,
-} from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  templates,
-  widgets,
-  validator,
-  transformErrors,
-  onError,
-} from "component/BaseInput";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ConsentForm from "./ConsentForm.js";
-import CampSelectedLearners from "../CampSelectedLearners.js";
+import { useNavigate, useParams } from "react-router-dom";
 import CampKitMaterialDetails from "../CampKitMaterialDetails.js";
+import CampSelectedLearners from "../CampSelectedLearners.js";
+import ConsentForm from "./ConsentForm.js";
+import schema1 from "./schema.js";
 
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 

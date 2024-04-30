@@ -1,28 +1,28 @@
 import {
-  facilitatorRegistryService,
-  t,
+  CardComponent,
+  FrontEndTypo,
   IconByName,
   Layout,
-  benificiaryRegistoryService,
-  FrontEndTypo,
-  SelectStyle,
   Loading,
-  CardComponent,
-  objProps,
+  SelectStyle,
   arrList,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
+  benificiaryRegistoryService,
   enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  t,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable, Stack } from "native-base";
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import Chip, { ChipStatus } from "component/BeneficiaryStatus";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
+import { Box, HStack, Pressable, Select, VStack } from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useNavigate } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
@@ -66,7 +66,18 @@ const List = ({ data }) => {
   const navigate = useNavigate();
 
   return (
-    <VStack space="4" p="4" alignContent="center">
+    <VStack
+      space="4"
+      p="4"
+      alignContent="center"
+      // overflowY={"scroll"}
+      // h={"50vh"}
+      // css={{
+      //   "&::-webkit-scrollbar": {
+      //     display: "none", // Hide the scrollbar in WebKit browsers
+      //   },
+      // }}
+    >
       {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
         data &&
         data?.constructor?.name === "Array" &&
@@ -565,7 +576,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack ref={ref}>
-        {[
+        {/* {[
           "pragati_mobilizer",
           "selected_prerak",
           "selected_for_training",
@@ -596,7 +607,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
               </VStack>
             </HStack>
           </Pressable>
-        )}
+        )} */}
         <HStack
           justifyContent="space-between"
           space="2"
