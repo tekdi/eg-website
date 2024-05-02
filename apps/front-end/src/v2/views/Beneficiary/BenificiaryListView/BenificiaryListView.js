@@ -262,6 +262,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
+  const refButton = useRef(null);
 
   // PROFILE DATA IMPORTS
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -528,8 +529,16 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   }, []);
 
   useEffect(() => {
-    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    if (
+      ref?.current?.clientHeight >= 0 &&
+      refButton?.current?.clientHeight >= 0 &&
+      bodyHeight >= 0
+    ) {
+      setLoadingHeight(
+        bodyHeight -
+          ref?.current?.clientHeight -
+          refButton?.current?.clientHeight
+      );
     } else {
       setLoadingHeight(bodyHeight);
     }
@@ -697,23 +706,20 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           pullDownToRefreshThreshold={50}
         >
           <List data={data} />
-          <Pressable
-            onPress={(e) => {
-              if (
-                [
-                  "pragati_mobilizer",
-                  "selected_prerak",
-                  "selected_for_training",
-                  "selected_for_onboarding",
-                ].includes(facilitator.status)
-              ) {
-                navigate(`/beneficiary`);
-              } else {
-                navigate("/beneficiary");
-              }
-            }}
-          >
-            {/* <HStack alignItems="Center">
+        </InfiniteScroll>
+      ) : (
+        <Loading height={loadingHeight} />
+      )}
+      <HStack
+        ref={refButton}
+        width={"100%"}
+        bg={"white"}
+        flex={1}
+        safeAreaTop
+        position="fixed"
+        bottom="70px"
+      >
+        {/* <HStack alignItems="Center">
               <IconByName
                 isDisabled
                 name="UserFollowLineIcon"
@@ -723,35 +729,30 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
                 }}
               />
               <VStack flex="0.8"> */}
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => {
-                if (
-                  [
-                    "pragati_mobilizer",
-                    "selected_prerak",
-                    "selected_for_training",
-                    "selected_for_onboarding",
-                  ].includes(facilitator.status)
-                ) {
-                  navigate(`/beneficiary`);
-                } else {
-                  navigate("/beneficiary");
-                }
-              }}
-              // rightIcon={}
-              mx="auto"
-              my="2"
-              minW="70%"
-            >
-              {t("ADD_MORE_AG")}
-            </FrontEndTypo.Secondarybutton>
-            {/* </VStack>
+        <FrontEndTypo.Secondarybutton
+          onPress={(e) => {
+            if (
+              [
+                "pragati_mobilizer",
+                "selected_prerak",
+                "selected_for_training",
+                "selected_for_onboarding",
+              ].includes(facilitator.status)
+            ) {
+              navigate(`/beneficiary`);
+            } else {
+              navigate("/beneficiary");
+            }
+          }}
+          // rightIcon={}
+          mx="auto"
+          my="2"
+        >
+          {t("ADD_MORE_AG")}
+        </FrontEndTypo.Secondarybutton>
+        {/* </VStack>
             </HStack> */}
-          </Pressable>
-        </InfiniteScroll>
-      ) : (
-        <Loading height={loadingHeight} />
-      )}
+      </HStack>
     </Layout>
   );
 }

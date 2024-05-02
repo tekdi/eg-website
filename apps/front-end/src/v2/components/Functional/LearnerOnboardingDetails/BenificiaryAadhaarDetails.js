@@ -49,7 +49,7 @@ export default function BenificiaryAadhaarDetails() {
         onPressBackButton,
       }}
     >
-      <VStack bg="bgGreyColor.200">
+      <VStack>
         <VStack px="5" pt="3">
           <VStack
             px="5"

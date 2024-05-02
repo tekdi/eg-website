@@ -288,7 +288,7 @@ export const FieldTemplate = ({
   return (
     <VStack
       style={style}
-      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
     >
       {(!schema?.format ||
         !["hidden", "CheckUncheck"].includes(schema?.format)) &&

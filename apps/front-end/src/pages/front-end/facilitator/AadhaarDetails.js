@@ -38,7 +38,7 @@ export default function AadhaarDetails() {
           </HStack>
         </Alert>
       ) : (
-        <VStack bg="bgGreyColor.200" pb="5">
+        <VStack pb="5">
           <VStack px="5" pt="3">
             <VStack
               px="5"

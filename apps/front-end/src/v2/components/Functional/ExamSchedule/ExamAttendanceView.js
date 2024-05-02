@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Layout, FrontEndTypo, organisationService } from "@shiksha/common-lib";
-import { VStack, Stack } from "native-base";
+import { VStack, Stack, Text } from "native-base";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
@@ -81,9 +81,14 @@ const ExamAttendanceView = ({ footerLinks }) => {
   return (
     <Layout loading={loading} _footer={{ menues: footerLinks }}>
       <VStack bg="primary.50" p="5" space={4} style={{ zIndex: -1 }}>
-        <FrontEndTypo.H2 color="textMaroonColor.400">
-          {t("LEARNER_EXAM_ATTENDANCE_OVERVIEW")}
-        </FrontEndTypo.H2>
+        <Text
+          fontSize="20px"
+          lineHeight="24px"
+          fontWeight="600"
+          color="textGreyColor.900"
+        >
+          {t("LEARNER_EXAM_ATTENDANCE")}
+        </Text>
         <Stack width={"100%"}>
           <DataTable
             customStyles={customStyles}
