@@ -163,7 +163,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
         setIndexedDBItem("editRequest", editRequest),
       ]);
     } catch (error) {
-      console.error("Error saving data to IndexedDB:", error);
+      console.error("Error in Promise.all fetching data:", error);
     }
   };
 
