@@ -97,7 +97,11 @@ export default function FacilitatorQualification({ userTokenInfo }) {
           <FrontEndTypo.H2>{t("QUALIFICATION_DETAILS")}</FrontEndTypo.H2>
         ),
         onPressBackButton,
+        profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
       }}
+      facilitator={facilitator}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       {["quit"].includes(facilitator?.status) ? (

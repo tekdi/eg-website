@@ -768,7 +768,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_for_training",
             "selected_for_onboarding",
           ].includes(facilitator.status) && (
-            <Stack py={0} px={4}>
+            <Stack
+              py={0}
+              px={4}
+              pb={"7"}
+              mx={"2"}
+              borderBottomRadius={"10px"}
+              borderBottomColor={"dashboardCardBorder"}
+              borderBottomWidth={"1px"}
+              borderBottomStyle={"solid"}
+            >
               <TitleCard
                 _icon=""
                 icon={
@@ -847,7 +856,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {isDocumentUpload() && (
-            <Stack space="6" p={4}>
+            <Stack
+              space="6"
+              p={4}
+              mx={"2"}
+              borderBottomRadius={"10px"}
+              borderBottomColor={"dashboardCardBorder"}
+              borderBottomWidth={"1px"}
+              borderBottomStyle={"solid"}
+            >
               <VStack>
                 <FrontEndTypo.H3 bold color="textGreyColor.750">
                   {t("UPLOAD_YOUR_DOCUMENTS")}
@@ -921,27 +938,37 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          <Stack bg="bgYellowColor.400" space="6" p={4}>
-            <FrontEndTypo.H2 color="textMaroonColor.400">
+          <Stack
+            space="10"
+            p={4}
+            mx={"2"}
+            borderBottomRadius={"10px"}
+            borderBottomColor={"dashboardCardBorder"}
+            borderBottomWidth={"1px"}
+            borderBottomStyle={"solid"}
+          >
+            <FrontEndTypo.H3 fontWeight="600" color="textGreyColor.750">
               {t("LEARNER_EXAMINATION")}
-            </FrontEndTypo.H2>
-            <FrontEndTypo.H3>
-              {t("LEARNER_EXAMINATION_DETAILS")}
             </FrontEndTypo.H3>
+            <FrontEndTypo.H4 fontWeight="600" color="textGreyColor.750">
+              {t("LEARNER_EXAMINATION_DETAILS")}
+            </FrontEndTypo.H4>
 
-            <FrontEndTypo.Primarybutton
-              width="100%"
-              onPress={(e) => navigate("/examattendance")}
-            >
-              {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
-            </FrontEndTypo.Primarybutton>
+            <VStack space={"4"}>
+              <FrontEndTypo.Primarybutton
+                width="100%"
+                onPress={(e) => navigate("/examattendance")}
+              >
+                {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+              </FrontEndTypo.Primarybutton>
 
-            <FrontEndTypo.Secondarybutton
-              width="100%"
-              onPress={(e) => navigate("/examschedule")}
-            >
-              {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                onPress={(e) => navigate("/examschedule")}
+              >
+                {t("VIEW_EXAM_SCHEDULE")}
+              </FrontEndTypo.Secondarybutton>
+            </VStack>
           </Stack>
         </VStack>
       </VStack>

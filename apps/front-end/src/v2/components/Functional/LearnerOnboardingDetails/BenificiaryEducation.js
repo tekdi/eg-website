@@ -399,64 +399,79 @@ export default function BenificiaryEducation(userTokenInfo) {
           ].filter(Boolean)}
           item={{
             type_of_learner: benificiary?.core_beneficiaries
-              ?.type_of_learner && (
+              ?.type_of_learner ? (
               <GetEnumValue
                 t={t}
                 enumType={"TYPE_OF_LEARNER"}
-                enumOptionValue={
-                  benificiary?.core_beneficiaries?.type_of_learner
-                }
+                enumOptionValue={benificiary.core_beneficiaries.type_of_learner}
                 enumApiData={enumOptions}
               />
+            ) : (
+              "-"
             ),
+
             reason_of_leaving_education: benificiary?.core_beneficiaries
-              ?.reason_of_leaving_education && (
+              ?.reason_of_leaving_education ? (
               <GetEnumValue
                 t={t}
                 enumType={"REASON_OF_LEAVING_EDUCATION"}
                 enumOptionValue={
-                  benificiary?.core_beneficiaries?.reason_of_leaving_education
+                  benificiary.core_beneficiaries.reason_of_leaving_education
                 }
                 enumApiData={enumOptions}
               />
+            ) : (
+              "-"
             ),
+
             ...(benificiary?.core_beneficiaries?.type_of_learner &&
               [
                 "school_dropout",
                 "already_open_school_syc",
                 "already_enrolled_in_open_school",
               ].includes(benificiary?.core_beneficiaries?.type_of_learner) && {
-                last_standard_of_education: (
+                last_standard_of_education: benificiary?.core_beneficiaries
+                  ?.last_standard_of_education ? (
                   <GetEnumValue
                     t={t}
                     enumType={"LAST_STANDARD_OF_EDUCATION"}
                     enumOptionValue={
-                      benificiary?.core_beneficiaries
-                        ?.last_standard_of_education
+                      benificiary.core_beneficiaries.last_standard_of_education
                     }
                     enumApiData={enumOptions}
                   />
+                ) : (
+                  "-"
                 ),
-                last_year_of_education: (
+
+                last_year_of_education: benificiary?.core_beneficiaries
+                  ?.last_year_of_education ? (
                   <GetEnumValue
                     t={t}
                     enumType={"LAST_YEAR_OF_EDUCATION"}
                     enumOptionValue={
-                      benificiary?.core_beneficiaries?.last_year_of_education
+                      benificiary.core_beneficiaries.last_year_of_education
                     }
                     enumApiData={enumOptions}
                   />
+                ) : (
+                  "-"
                 ),
-                previous_school_type: (
+
+                previous_school_type: benificiary?.core_beneficiaries
+                  ?.previous_school_type ? (
                   <GetEnumValue
                     t={t}
                     enumType={"PREVIOUS_SCHOOL_TYPE"}
                     enumOptionValue={
-                      benificiary?.core_beneficiaries?.previous_school_type
+                      benificiary.core_beneficiaries.previous_school_type
                     }
                     enumApiData={enumOptions}
                   />
+                ) : (
+                  "-"
                 ),
+
                 education_10th_date:
                   benificiary?.core_beneficiaries?.type_of_learner ===
                   "already_open_school_syc"
@@ -523,38 +538,51 @@ export default function BenificiaryEducation(userTokenInfo) {
               "REMARKS",
             ]}
             item={{
-              learning_motivation: (
-                <GetOptions
-                  array={
-                    benificiary?.program_beneficiaries?.learning_motivation
-                  }
-                  enumApiData={enumOptions}
-                  enumType={"LEARNING_MOTIVATION"}
-                />
-              ),
+              learning_motivation:
+                benificiary?.program_beneficiaries?.learning_motivation &&
+                benificiary.program_beneficiaries.learning_motivation.length >
+                  0 ? (
+                  <GetOptions
+                    array={
+                      benificiary.program_beneficiaries.learning_motivation
+                    }
+                    enumApiData={enumOptions}
+                    enumType={"LEARNING_MOTIVATION"}
+                  />
+                ) : (
+                  "-"
+                ),
 
-              type_of_support_needed: (
-                <GetOptions
-                  array={
-                    benificiary?.program_beneficiaries?.type_of_support_needed
-                  }
-                  enumApiData={enumOptions}
-                  enumType={"TYPE_OF_SUPPORT_NEEDED"}
-                />
-              ),
+              type_of_support_needed:
+                benificiary?.program_beneficiaries?.type_of_support_needed &&
+                benificiary.program_beneficiaries.type_of_support_needed
+                  .length > 0 ? (
+                  <GetOptions
+                    array={
+                      benificiary.program_beneficiaries.type_of_support_needed
+                    }
+                    enumApiData={enumOptions}
+                    enumType={"TYPE_OF_SUPPORT_NEEDED"}
+                  />
+                ) : (
+                  "-"
+                ),
 
               parent_support:
                 benificiary?.core_beneficiaries?.parent_support ?? "-",
 
-              career_aspiration: (
+              career_aspiration: benificiary?.core_beneficiaries
+                ?.career_aspiration ? (
                 <GetEnumValue
                   t={t}
                   enumOptionValue={
-                    benificiary?.core_beneficiaries?.career_aspiration
+                    benificiary.core_beneficiaries.career_aspiration
                   }
                   enumApiData={enumOptions}
-                  enumType={"CAREER_ASPIRATION"}
+                  enumType={"CAREER_ASPERATION"}
                 />
+              ) : (
+                "-"
               ),
 
               career_aspiration_details:
