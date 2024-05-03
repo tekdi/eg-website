@@ -149,12 +149,14 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
       edit_req_for_context_id: id,
     };
     try {
-      const [ListOfEnum, qualification, editRequest] = await Promise.all([
-        enumRegistryService.listOfEnum(),
-        enumRegistryService.getQualificationAll(),
-        facilitatorRegistryService.getEditRequests(obj),
-        // enumRegistryService.userInfo(),
-      ]);
+      const [ListOfEnum, qualification, editRequest] = await Promise.allSettled(
+        [
+          enumRegistryService.listOfEnum(),
+          enumRegistryService.getQualificationAll(),
+          facilitatorRegistryService.getEditRequests(obj),
+          // enumRegistryService.userInfo(),
+        ]
+      );
       const currentTime = moment().toString();
       await Promise.all([
         setIndexedDBItem("enums", ListOfEnum.data),
@@ -260,47 +262,43 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (!facilitator?.notLoaded === true) {
-        // ...async operations
-        const res = objProps(facilitator);
-        setProgress(
-          arrList(
-            {
-              ...res,
-              qua_name: facilitator?.qualifications?.qualification_master?.name,
-            },
-            [
-              "device_ownership",
-              "mobile",
-              "device_type",
-              "gender",
-              "marital_status",
-              "social_category",
-              "name",
-              "contact_number",
-              "availability",
-              "aadhar_no",
-              "aadhaar_verification_mode",
-              "aadhar_verified",
-              "qualification_ids",
-              "qua_name",
-            ]
-          )
-        );
-        //check exist user registered
-        try {
+      try {
+        if (!facilitator?.notLoaded === true) {
+          const res = objProps(facilitator);
+          setProgress(
+            arrList(
+              {
+                ...res,
+                qua_name:
+                  facilitator?.qualifications?.qualification_master?.name,
+              },
+              [
+                "device_ownership",
+                "mobile",
+                "device_type",
+                "gender",
+                "marital_status",
+                "social_category",
+                "name",
+                "contact_number",
+                "availability",
+                "aadhar_no",
+                "aadhaar_verification_mode",
+                "aadhar_verified",
+                "qualification_ids",
+                "qua_name",
+              ]
+            )
+          );
           let onboardingURLData = await getOnboardingURLData();
           setCohortData(onboardingURLData?.cohortData);
           setProgramData(onboardingURLData?.programData);
-          //get program id and store in localstorage
-
           const user_program_id = facilitator?.program_faciltators?.program_id;
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
           });
           setSelectedProgramData(program_data[0]);
           await setSelectedProgramId(program_data[0]);
-          //check mobile number with localstorage mobile no
           let mobile_no = facilitator?.mobile;
           let mobile_no_onboarding = await getOnboardingMobile();
           if (
@@ -309,7 +307,6 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
             mobile_no == mobile_no_onboarding &&
             onboardingURLData?.cohortData
           ) {
-            //get cohort id and store in localstorage
             const user_cohort_id =
               onboardingURLData?.cohortData?.academic_year_id;
             const cohort_data = await facilitatorRegistryService.getCohort({
@@ -323,7 +320,9 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
             setIsUserRegisterExist(false);
             await showSelectCohort();
           }
-        } catch (e) {}
+        }
+      } catch (error) {
+        console.error("Error in fetchData:", error);
       }
     }
     fetchData();
