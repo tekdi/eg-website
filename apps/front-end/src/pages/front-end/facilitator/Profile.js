@@ -66,7 +66,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <VStack bg="bgGreyColor.200" pb="10">
+      <VStack pb="10">
         <VStack paddingLeft="16px" pt={4} paddingRight="16px" space="24px">
           <FrontEndTypo.H1 color="textGreyColor.900" pt="5" bold>
             {t("HELLO_HOME")}, {facilitator?.first_name}!

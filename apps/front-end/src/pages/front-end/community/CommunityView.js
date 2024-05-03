@@ -412,9 +412,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
                   return (
                     <CardComponent
                       key={item?.id}
-                      _vstack={{ pb: 2, mb: 5 }}
                       title={`${index + 1}. ${t("MEMBER_DETAILS")}`}
-                      _mainTitle={{ p: 2, pb: 0 }}
                       item={{
                         ...item,
                         designation: item?.designation ? (
@@ -446,7 +444,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
                   );
                 })}
             {data?.length < 10 && (
-              <FrontEndTypo.Primarybutton onPress={onAdd}>
+              <FrontEndTypo.Primarybutton mt="6" onPress={onAdd}>
                 {t("ADD_COMMUNITY_MEMBER")}
               </FrontEndTypo.Primarybutton>
             )}

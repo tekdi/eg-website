@@ -1,8 +1,10 @@
 import {
   CardComponent,
   GetEnumValue,
+  ItemComponent,
   Layout,
   arrList,
+  benificiaryRegistoryService,
   enumRegistryService,
   facilitatorRegistryService,
   getEnrollmentIds,
@@ -351,91 +353,11 @@ export default function BenificiaryEnrollment(userTokenInfo) {
             benificiary?.program_beneficiaries?.status
         ) && (
           <VStack>
-            {/* <ItemComponent
-              title={t("ENROLLMENT_DETAILS")}
-              schema={schema1?.properties["edit_enrollement"]}
-              notShow={["subjects", "enrollmentlabelMobile"]}
-              item={{
-                ...benificiary?.program_beneficiaries,
-                ...getEnrollmentIds(
-                  benificiary?.program_beneficiaries
-                    ?.payment_receipt_document_id,
-                  stateName
-                ),
-                enrollment_date: benificiary?.program_beneficiaries
-                  ?.enrollment_date
-                  ? moment(
-                      benificiary?.program_beneficiaries?.enrollment_date
-                    ).format("DD-MM-YYYY")
-                  : "-",
-                enrollment_status: benificiary?.program_beneficiaries
-                  ?.enrollment_status ? (
-                  <GetEnumValue
-                    enumType="ENROLLEMENT_STATUS"
-                    enumOptionValue={
-                      benificiary?.program_beneficiaries?.enrollment_status
-                    }
-                    enumApiData={enumOptions}
-                    t={t}
-                  />
-                ) : (
-                  "-"
-                ),
-                enrolled_for_board: benificiary?.program_beneficiaries
-                  ?.enrolled_for_board ? (
-                  <GetEnumValue
-                    t={t}
-                    enumType={"ENROLLED_FOR_BOARD"}
-                    enumOptionValue={boardName}
-                    enumApiData={enumOptions}
-                  />
-                ) : (
-                  "-"
-                ),
-              }}
-              {...(["not_enrolled"].includes(
-                benificiary?.program_beneficiaries?.enrollment_status
-              )
-                ? {
-                    onlyField: ["enrollment_status"],
-                  }
-                : [
-                    "identified",
-                    "applied_but_pending",
-                    "enrollment_rejected",
-                    "enrollment_awaited",
-                  ].includes(
-                    benificiary?.program_beneficiaries?.enrollment_status
-                  )
-                ? {
-                    onlyField: ["enrollment_status", "enrolled_for_board"],
-                  }
-                : {
-                    onlyField: [
-                      "enrollment_status",
-                      "enrolled_for_board",
-                      "enrollment_number",
-                      "enrollment_mobile_no",
-                      "enrollment_date",
-                      "payment_receipt_document_id",
-                      ...(stateName !== "RAJASTHAN"
-                        ? ["application_form", "application_login_id"]
-                        : []),
-                    ],
-                  })}
-              onEdit={
-                onEditFunc()
-                  ? (e) =>
-                      navigate(`/beneficiary/edit/${id}/enrollment-details`)
-                  : false
-              }
-              BenificiaryStatus={benificiary?.program_beneficiaries?.status}
-            /> */}
-            {/* {console.log(schema1?.properties["edit_enrollement"])} */}
             <CardComponent
               _vstack={{ space: 0 }}
               _hstack={{ borderBottomWidth: 0 }}
               title={t("ENROLLMENT_DETAILS")}
+              format={{ payment_receipt_document_id: "file" }}
               label={[
                 "ENROLLMENT_STATUS",
                 "BOARD_OF_ENROLLMENT",
