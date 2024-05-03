@@ -21,23 +21,28 @@ export default {
       properties: {
         enrollment_status: {
           type: "string",
-          label: "ENROLLMENT_STATUS",
+          description: "ENROLLMENT_STATUS",
+          title: "ENROLLMENT_STATUS",
           format: "select",
         },
         enrolled_for_board: {
           type: "string",
           _stack: { direction: "row", justifyContent: "space-between" },
-          label: "BOARD_OF_ENROLLMENT",
+          description: "BOARD_OF_ENROLLMENT",
           format: "RadioBtn",
         },
         enrollment_number: {
           type: "string",
-          label:
+          description:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_NO"
               : "APPLICATION_ID",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
+          title:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_NO"
+              : "APPLICATION_ID",
         },
         enrollmentlabelMobile: {
           type: "string",
@@ -50,7 +55,7 @@ export default {
 
         enrollment_date: {
           type: "string",
-          label:
+          description:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_DATE"
               : "FEES_PAID_DATE",
@@ -60,7 +65,7 @@ export default {
           minItems: 1,
           maxItems: 7,
           type: "array",
-          label: "SUBJECTS",
+          description: "SUBJECTS",
           grid: 1,
           items: {
             type: ["string", "number"],
@@ -69,7 +74,7 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label:
+          description:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_RECIEPT"
               : "PAYMENT_RECEIPTS",
@@ -109,7 +114,7 @@ export default {
         enrollment_first_name: {
           type: "string",
           title: "FIRST_NAME",
-          label: "FIRST_NAME",
+          description: "FIRST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
           description:
             state?.state_name === "RAJASTHAN"
@@ -120,13 +125,13 @@ export default {
           type: ["string", "null"],
           title: "MIDDLE_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          label: "MIDDLE_NAME",
+          description: "MIDDLE_NAME",
         },
         enrollment_last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          label: "LAST_NAME",
+          description: "LAST_NAME",
         },
         enrollment_dob: {
           type: "string",
