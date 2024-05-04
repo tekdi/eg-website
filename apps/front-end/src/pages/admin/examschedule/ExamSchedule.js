@@ -159,15 +159,17 @@ const ExamSchedule = (footerLinks) => {
                   <VStack space={2} padding={4} height="400px">
                     {theorySubjects?.map((subjects) => {
                       return (
-                        <HStack
-                          key={subjects?.name}
-                          justifyContent={"space-Between"}
-                        >
-                          <AdminTypo.H3>{subjects?.name}</AdminTypo.H3>
-                          <AdminTypo.H3>
-                            {subjects?.events?.[0]?.start_date || "-"}
-                          </AdminTypo.H3>
-                        </HStack>
+                        subjects?.events?.[0]?.status === "publish" && (
+                          <HStack
+                            key={subjects?.name}
+                            justifyContent={"space-Between"}
+                          >
+                            <AdminTypo.H3>{subjects?.name}</AdminTypo.H3>
+                            <AdminTypo.H3>
+                              {subjects?.events?.[0]?.start_date || "-"}
+                            </AdminTypo.H3>
+                          </HStack>
+                        )
                       );
                     })}
                   </VStack>
@@ -183,15 +185,17 @@ const ExamSchedule = (footerLinks) => {
                 <VStack>
                   {practicalSubjects?.map((subjects) => {
                     return (
-                      <HStack
-                        key={subjects?.name}
-                        justifyContent={"space-Between"}
-                      >
-                        <AdminTypo.H3>{subjects?.name}</AdminTypo.H3>
-                        <AdminTypo.H3>
-                          {subjects?.events?.[0]?.start_date || "-"}
-                        </AdminTypo.H3>
-                      </HStack>
+                      subjects?.events?.[0]?.start_date && (
+                        <HStack
+                          key={subjects?.name}
+                          justifyContent={"space-Between"}
+                        >
+                          <AdminTypo.H3>{subjects?.name}</AdminTypo.H3>
+                          <AdminTypo.H3>
+                            {subjects?.events?.[0]?.start_date || "-"}
+                          </AdminTypo.H3>
+                        </HStack>
+                      )
                     );
                   })}
                 </VStack>
