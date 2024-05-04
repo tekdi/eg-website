@@ -1,0 +1,24 @@
+{
+  "id": "onest.telemetry",
+  "ver": "1",
+  "events": [
+    {
+      "eid": "IMPRESSION",
+      "transId": "",
+      "ets": 0,
+      "actor": {
+        "type": "user",
+        "id": "",
+        "agent": "",
+        "distributor": ""
+      },
+      "context": {
+        "channel": ""
+      },
+      "edata": {
+        "pageurl": "",
+        "utm_source": ""
+      }
+    }
+  ]
+}

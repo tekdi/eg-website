@@ -255,6 +255,9 @@ export default function BenificiaryProfileView(props) {
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
+              <FrontEndTypo.Primarybutton onPress={(e) => navigate("/onest")}>
+                {t("OPPORTUNITY")}
+              </FrontEndTypo.Primarybutton>
             </VStack>
             {(benificiary?.program_beneficiaries?.status == "dropout" ||
               benificiary?.program_beneficiaries?.status == "rejected") && (
