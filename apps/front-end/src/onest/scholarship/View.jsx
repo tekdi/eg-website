@@ -322,12 +322,10 @@ function ScholarshipView() {
 
           {jobInfo?.description ? (
             <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-              {" "}
               {jobInfo?.description}{" "}
             </Text>
           ) : (
             <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-              {" "}
               {t("Job_description_is_not_available")}{" "}
             </Text>
           )}
