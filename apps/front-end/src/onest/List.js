@@ -33,8 +33,10 @@ const List = () => {
         let response;
         const configData = dataConfig[type] || {};
         setConfig(configData);
-        const apiUrl = configData?.apiLink;
-        response = await axios.post(apiUrl, configData?.payload || {});
+        response = await axios.post(
+          `${configData?.apiLink_API_BASE_URL}/content/search`,
+          configData?.payload || {}
+        );
         if (configData.apiResponce) {
           response = configData.apiResponce(response);
         }
