@@ -33,8 +33,10 @@ const List = () => {
         let response;
         const configData = dataConfig[type] || {};
         setConfig(configData);
-        const apiUrl = configData?.apiLink;
-        response = await axios.post(apiUrl, configData?.payload || {});
+        response = await axios.post(
+          `${configData?.apiLink_API_BASE_URL}/content/search`,
+          configData?.payload || {}
+        );
         if (configData.apiResponce) {
           response = configData.apiResponce(response);
         }
@@ -192,10 +194,28 @@ const RenderCards = ({ obj, config }) => {
         config.render(obj)
       ) : (
         <Box>
-          <Heading as="h2" size="md" mb="2">
+          <Text marginLeft={1} fontSize={["xl", "2xl", "3xl"]}>
             {obj?.title}
-          </Heading>
-          <Text fontSize="md">{obj?.description}</Text>
+          </Text>
+          {obj?.provider_name && (
+            <Text
+              color="gray.700"
+              marginTop={"3"}
+              fontWeight={600}
+              marginLeft={1}
+              fontSize={["sm", "md"]}
+            >
+              {obj?.provider_name}
+            </Text>
+          )}
+          <Text
+            color="gray.700"
+            fontSize={["xs", "sm"]}
+            marginLeft={0.5}
+            textOverflow="ellipsis"
+          >
+            {obj?.description}
+          </Text>
         </Box>
       )}
     </Pressable>
