@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 
-const ExamAttendanceView = ({ footerLinks }) => {
+const ExamAttendanceReport = ({ footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const [tableData, setTableData] = useState([]);
@@ -104,4 +104,4 @@ const ExamAttendanceView = ({ footerLinks }) => {
   );
 };
 
-export default ExamAttendanceView;
+export default ExamAttendanceReport;

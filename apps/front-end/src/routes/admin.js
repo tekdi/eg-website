@@ -90,6 +90,9 @@ const ExamSchedule = React.lazy(() =>
 const ExamResultList = React.lazy(() =>
   import("pages/admin/examschedule/ExamResult/ExamResultList")
 );
+const ManualExamResult = React.lazy(() =>
+  import("pages/admin/examschedule/ExamResult/ManualExamResult")
+);
 const ExamResultView = React.lazy(() =>
   import("pages/admin/examschedule/ExamResult/ExamResultView")
 );
@@ -178,5 +181,6 @@ export default [
   // Exam Schedule Routes
   { path: "/admin/exams/examschedule", component: ExamSchedule },
   { path: "/admin/exams/list", component: ExamResultList },
-  { path: "/admin/exams/list/:id", component: ExamResultView },
+  { path: "/admin/exams/list/:id", component: ManualExamResult },
+  { path: "/admin/exams/list/result/:id", component: ExamResultView },
 ];

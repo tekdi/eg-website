@@ -85,7 +85,11 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             ))}
           </HStack>
           <DatePicker setFilter={setFilter} filter={filter} />
-          <CustomAccordion data={subjects} date={filter?.date} />
+          {subjects.length > 0 ? (
+            <CustomAccordion data={subjects} date={filter?.date} />
+          ) : (
+            t("DATA_NOT_FOUND")
+          )}
         </VStack>
       </VStack>
     </Layout>

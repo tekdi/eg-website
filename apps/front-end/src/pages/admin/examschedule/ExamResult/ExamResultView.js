@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   AdminTypo,
   Breadcrumb,
@@ -7,70 +6,49 @@ import {
   useWindowSize,
   CardComponent,
   IconByName,
+  PoAdminLayout,
   cohortService,
   enumRegistryService,
   getSelectedProgramId,
+  organisationService,
   setSelectedProgramId,
+  ImageView,
 } from "@shiksha/common-lib";
-import { HStack, Radio, Select, Stack, VStack } from "native-base";
+import {
+  HStack,
+  Progress,
+  Radio,
+  ScrollView,
+  Select,
+  Stack,
+  VStack,
+} from "native-base";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import TextBox from "./TextBox";
+import ManualResultView from "./ManualResultView";
 
-const ExamSchedule = (footerLinks) => {
+const ExamResultView = (footerLinks) => {
+  const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
-  const { t } = useTranslation();
-  const [filter, setFilter] = useState({});
-  const [boardList, setBoardList] = useState();
-  const [programList, setProgramList] = useState();
-  const [selectedDate, setSelectedDate] = useState([]);
-  const [isDisable, setIsDisable] = useState(true);
+  const [fileType, setfileType] = useState("pdf");
 
-  useEffect(async () => {
-    const data = await cohortService.getProgramList();
-    setProgramList(data?.data);
-    const localData = await getSelectedProgramId();
-    if (localData === null) {
-      const obj = data?.data?.[0];
-      const defaultData = {
-        program_id: obj?.id,
-        name: obj?.name,
-        state_name: obj?.state?.state_name,
-      };
-      setSelectedProgramId(defaultData);
-    }
-    const boardList = await enumRegistryService.boardList();
-    setBoardList(boardList);
-  }, []);
-
-  const handleProgramChange = async (selectedItem) => {
-    const data = programList.find((e) => e.id == selectedItem);
-    await setSelectedProgramId({
-      program_id: data?.id,
-      program_name: data?.name,
-      state_name: data?.state?.state_name,
-    });
-    setFilter({ ...filter, program_id: selectedItem });
+  const receiptUrl = {
+    key: "dummy1714383633910.pdf",
+    fileUrl:
+      "https://eg-dev-1.s3.ap-south-1.amazonaws.com/dummy1714383633910.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5CBNW7QSEUPAGE7O%2F20240429%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20240429T094236Z&X-Amz-Expires=3600&X-Amz-Signature=6363c48b473df271679e66b43284696d6f89cbe100e02ffbd5a963f46435f25a&X-Amz-SignedHeaders=host&x-id=GetObject",
+    documentData: {
+      id: 3287,
+      name: "dummy1714383633910.pdf",
+      doument_type: "enrollment_receipt",
+      document_sub_type: "",
+      path: "/user/docs",
+      provider: "s3",
+      context: null,
+      context_id: null,
+    },
   };
-
-  const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId });
-  };
-
-  const theoryExams = [
-    "Sindhi",
-    "Rajasthani",
-    "Mathematics",
-    "Data Entry Operations",
-    "Psychology",
-  ];
-  const practicalExams = [
-    "Mathematics",
-    "Data Entry Operations",
-    "Science",
-    "Painting",
-    "Home Science",
-  ];
-
   return (
     <Layout
       w={Width}
@@ -108,45 +86,61 @@ const ExamSchedule = (footerLinks) => {
                     {t("LEARNER_EXAM_RESULT")}
                   </AdminTypo.H4>
                 ),
+                link: "/admin/exams/list",
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {"learner Name"}
+                  </AdminTypo.H4>
+                ),
               },
             ]}
           />
         </HStack>
 
-        <VStack space={4}>
-          <AdminTypo.H5 bold color="textGreyColor.500">
-            Swapnil Phalke
-          </AdminTypo.H5>
-          <HStack space={6}>
+        <HStack justifyContent={"space-between"}>
+          <VStack width={"100%"} height={"1000px"} space={4}>
             <AdminTypo.H6 bold color="textGreyColor.500">
               {t("ENROLLMENT_NO")} : 123456789
             </AdminTypo.H6>
-          </HStack>
-        </VStack>
-        <VStack p={4} pl={0} space={4}>
-          <HStack space={4}>
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title="Theory Exams"
-            >
-              <VStack></VStack>
-            </CardComponent>
-
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title={t("Practical Exams")}
-            ></CardComponent>
-          </HStack>
-        </VStack>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("BOARD")} : NIOS
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("FATHER_NAME")} : RAVINDRA
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("MOTHER_NAME")} : SANGITA
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("DOB")} : 03-05-1995
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("CLASS")} : 10
+            </AdminTypo.H6>
+            {fileType !== "pdf" ? (
+              <ImageView
+                frameborder="0"
+                _box={{ flex: 1 }}
+                width="100%"
+                height="100%"
+                urlObject={receiptUrl}
+                alt="aadhaar_front"
+              />
+            ) : (
+              <ManualResultView />
+            )}
+          </VStack>
+        </HStack>
       </Stack>
     </Layout>
   );
 };
 
-ExamSchedule.propTypes = {};
-
-export default ExamSchedule;
+export default ExamResultView;

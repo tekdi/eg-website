@@ -47,6 +47,7 @@ import {
   setIpUserInfo,
   setPrerakOfflineInfo,
 } from "v2/utils/SyncHelper/SyncHelper";
+import DashboardCard from "component/common_components/DashboardCard";
 
 const styles = {
   inforBox: {
@@ -889,6 +890,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               {t("VIEW_EXAM_SCHEDULE")}
             </FrontEndTypo.Secondarybutton>
           </Stack>
+
+          <DashboardCard
+            title={"LEARNER_EXAM_RESULTS"}
+            titleDetail={"LEARNER_EXAMINATION_DETAILS"}
+            primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
+            navigation={"/examresult"}
+          />
         </VStack>
       </VStack>
       <Modal
