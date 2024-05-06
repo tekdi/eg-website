@@ -1,12 +1,12 @@
 // AutomatedForm.js
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { useLocation, useNavigate } from "react-router-dom";
 import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
 
-import { Layout } from "@shiksha/common-lib";
+import { Layout, benificiaryRegistoryService } from "@shiksha/common-lib";
 import axios from "axios";
 import {
   Box,
@@ -29,6 +29,7 @@ const AutomatedForm = () => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const [benificiary, setBenificiary] = React.useState({});
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -49,6 +50,32 @@ const AutomatedForm = () => {
 
   const { jobId } = useParams();
   const { transactionId } = useParams();
+
+  useEffect(async () => {
+    const id = localStorage.getItem("benificiaryId");
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
+    const Address = [
+      result?.result?.state,
+      result?.result?.district,
+      result?.result?.block,
+      result?.result?.village,
+      result?.result?.grampanchayat,
+    ]
+      .filter((e) => e)
+      .join(", ");
+    const userDetails = {
+      "Student Name":
+        result?.result?.first_name + " " + result?.result?.last_name,
+      email: `${result?.result?.first_name}@gmail.com`,
+      //result?.result?.email_id,
+      "Date Of Birth": result?.result?.dob,
+      "mobile number": result?.result?.mobile,
+      Address,
+    };
+    localStorage.setItem("userData", JSON.stringify(userDetails));
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     // registerTelementry(siteUrl, transactionId);

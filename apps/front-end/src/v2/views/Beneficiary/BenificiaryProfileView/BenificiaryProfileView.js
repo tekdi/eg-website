@@ -113,6 +113,7 @@ export default function BenificiaryProfileView(props) {
   };
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
+    localStorage.setItem("benificiaryId", id);
     setBenificiary(result?.result);
     setloading(false);
   }, [reactivateReasonValue, reasonValue]);
