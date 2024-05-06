@@ -75,9 +75,14 @@ function DatePicker({
               moment().subtract(2, "months").format("YYYY-MM-DD")) ||
             moment().format("YYYY-MM-DD");
         } else {
-          minDate =
-            selectedDates[subject?.id] ||
-            moment().subtract(2, "months").format("YYYY-MM-DD");
+          const selectedDate = selectedDates[subject?.id];
+          if (selectedDate && moment(selectedDate).isSameOrAfter(moment())) {
+            minDate = moment().format("YYYY-MM-DD");
+          } else {
+            minDate =
+              selectedDate ||
+              moment().subtract(2, "months").format("YYYY-MM-DD");
+          }
         }
         return (
           <ScrollView key={subject.id}>
