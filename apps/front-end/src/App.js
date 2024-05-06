@@ -99,7 +99,7 @@ function App() {
         {
           title: "DASHBOARD",
           icon: "DashboardLineIcon",
-          route: "/table",
+          route: "/dashboardview",
         },
       ]}
       userTokenInfo={userTokenInfo}
