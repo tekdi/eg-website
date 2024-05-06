@@ -114,25 +114,31 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
               </FrontEndTypo.H2>
               {hasEventWithStatusPublish(theorySubjects) ? (
                 <VStack borderRadius={"5px"} p={4} bg={"white"} space={4}>
-                  {theorySubjects?.map((subjects) => {
-                    return (
-                      subjects?.events?.[0]?.status === "publish" && (
-                        <HStack
-                          key={subjects?.name}
-                          alignItems={"center"}
-                          justifyContent={"space-Between"}
-                          padding={2}
-                          borderBottomWidth={1}
-                          borderColor={"grayInLight"}
-                        >
-                          <FrontEndTypo.H3>{subjects?.name}</FrontEndTypo.H3>
-                          <FrontEndTypo.H4>
-                            {subjects?.events?.[0]?.start_date || "-"}
-                          </FrontEndTypo.H4>
-                        </HStack>
-                      )
-                    );
-                  })}
+                  {theorySubjects
+                    ?.filter(
+                      (subjects) => subjects?.events?.[0]?.status === "publish"
+                    )
+                    .sort((a, b) => {
+                      // Access the start_date directly and convert them to Date objects for comparison
+                      const dateA = new Date(a?.events?.[0]?.start_date);
+                      const dateB = new Date(b?.events?.[0]?.start_date);
+                      return dateA - dateB;
+                    })
+                    .map((subjects) => (
+                      <HStack
+                        key={subjects?.name}
+                        alignItems={"center"}
+                        justifyContent={"space-Between"}
+                        padding={2}
+                        borderBottomWidth={1}
+                        borderColor={"grayInLight"}
+                      >
+                        <FrontEndTypo.H3>{subjects?.name}</FrontEndTypo.H3>
+                        <FrontEndTypo.H4>
+                          {subjects?.events?.[0]?.start_date || "-"}
+                        </FrontEndTypo.H4>
+                      </HStack>
+                    ))}
                 </VStack>
               ) : (
                 <HStack>{t("DATA_NOT_PUBLISH")}</HStack>
@@ -144,25 +150,31 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
               </FrontEndTypo.H2>
               {hasEventWithStatusPublish(practicalSubjects) ? (
                 <VStack borderRadius={"5px"} p={4} bg={"white"} space={4}>
-                  {practicalSubjects?.map((subjects) => {
-                    return (
-                      subjects?.events?.[0]?.status === "publish" && (
-                        <HStack
-                          key={subjects?.name}
-                          alignItems={"center"}
-                          justifyContent={"space-Between"}
-                          padding={2}
-                          borderBottomWidth={1}
-                          borderColor={"grayInLight"}
-                        >
-                          <FrontEndTypo.H3>{subjects?.name}</FrontEndTypo.H3>
-                          <FrontEndTypo.H4>
-                            {subjects?.events?.[0]?.start_date || "-"}
-                          </FrontEndTypo.H4>
-                        </HStack>
-                      )
-                    );
-                  })}
+                  {practicalSubjects
+                    ?.filter(
+                      (subjects) => subjects?.events?.[0]?.status === "publish"
+                    )
+                    .sort((a, b) => {
+                      // Access the start_date directly and convert them to Date objects for comparison
+                      const dateA = new Date(a?.events?.[0]?.start_date);
+                      const dateB = new Date(b?.events?.[0]?.start_date);
+                      return dateA - dateB;
+                    })
+                    .map((subjects) => (
+                      <HStack
+                        key={subjects?.name}
+                        alignItems={"center"}
+                        justifyContent={"space-Between"}
+                        padding={2}
+                        borderBottomWidth={1}
+                        borderColor={"grayInLight"}
+                      >
+                        <FrontEndTypo.H3>{subjects?.name}</FrontEndTypo.H3>
+                        <FrontEndTypo.H4>
+                          {subjects?.events?.[0]?.start_date || "-"}
+                        </FrontEndTypo.H4>
+                      </HStack>
+                    ))}
                 </VStack>
               ) : (
                 <HStack>{t("DATA_NOT_PUBLISH")}</HStack>

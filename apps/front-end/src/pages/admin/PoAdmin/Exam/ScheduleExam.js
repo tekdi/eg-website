@@ -92,6 +92,7 @@ function ScheduleExam() {
     setFilter({ ...filter, program_id: selectedItem });
     resetFillData(selectedItem);
     setLoading(false);
+    setHasDraftStatus(false);
   };
 
   useEffect(async () => {
@@ -112,18 +113,19 @@ function ScheduleExam() {
       subjectData?.data?.forEach((item) => {
         if (item?.events?.length > 0) {
           item.events.forEach((statusItem) => {
-            const subjId = statusItem?.context_id;
-            const status =
-              statusItem?.status === "draft" ? "publish" : statusItem?.status;
-            const date = statusItem?.start_date;
-            const type = statusItem?.type;
-            setHasDraftStatus(statusItem?.status === "draft");
-            subjectDataArray.push({
-              subject_id: subjId,
-              exam_date: date,
-              type: type,
-              status: status,
-            });
+            if (statusItem?.status === "draft") {
+              const subjId = statusItem?.context_id;
+              const status =
+                statusItem?.status === "draft" ? "publish" : statusItem?.status;
+              const date = statusItem?.start_date;
+              const type = statusItem?.type;
+              subjectDataArray.push({
+                subject_id: subjId,
+                exam_date: date,
+                type: type,
+                status: status,
+              });
+            }
           });
         }
       });
@@ -170,7 +172,16 @@ function ScheduleExam() {
       setTheorySubjects(theory);
     }
     setLoading(false);
-  }, [filter?.board_id]);
+  }, [filter?.board_id, hasDraftStatus]);
+
+  useEffect(() => {
+    if (Array?.isArray(oldSelectedData)) {
+      const isDraft = oldSelectedData?.some((subject) => {
+        return subject?.events?.some((event) => event?.status === "draft");
+      });
+      setHasDraftStatus(isDraft);
+    }
+  }, [oldSelectedData, selectedDate, hasDraftStatus]);
 
   useEffect(() => {
     if (theorySubjects?.length !== 0 && practicalSubjects?.length !== 0) {
@@ -186,14 +197,17 @@ function ScheduleExam() {
 
   const handleSelect = (optionId, board) => {
     setFilter({ ...filter, program_id: board?.program_id, board_id: optionId });
-    //Edit button visibility (current-reverse)
-    if (oldSelectedData?.length > 0) {
-      setIsVisibleEditBtn(true);
+    // Edit button visibility (current-reverse)
+    if (Array.isArray(oldSelectedData)) {
+      const isDraft = oldSelectedData.some((subject) => {
+        return subject?.events?.some((event) => event?.status === "draft");
+      });
+      setIsVisibleEditBtn(isDraft);
     } else {
       setIsVisibleEditBtn(false);
     }
   };
-  console.log({ isVisibleEdit });
+
   const handleSaveButton = async () => {
     setIsDisable(true);
     const data = await organisationService.PoExamSchedule(selectedDate);
@@ -234,9 +248,11 @@ function ScheduleExam() {
       setIsDisable(true);
       setIsVisibleEdit();
       setIsVisibleEditBtn(true);
+      setHasDraftStatus(false);
+      setPublishDate([]);
     }
+    setIsPublishDisable(false);
   };
-
   useEffect(() => {
     const theoryCount = (theoryEvent?.length / theorySubjects?.length) * 100;
     const practicalCount =
