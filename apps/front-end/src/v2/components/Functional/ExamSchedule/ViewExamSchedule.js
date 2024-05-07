@@ -184,6 +184,10 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
               onPress={(e) => {
                 navigate(`/examattendance`);
               }}
+              isDisabled={
+                !hasEventWithStatusPublish(theorySubjects) &&
+                !hasEventWithStatusPublish(practicalSubjects)
+              }
             >
               {t("MARK_LEARNER_EXAM_ATTENDANCE")}
             </FrontEndTypo.Primarybutton>
