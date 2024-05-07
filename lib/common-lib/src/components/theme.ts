@@ -699,6 +699,7 @@ const DEFAULT_THEME = {
     droppedoutColor: '#FFACAF',
     duplicatedColor: '#E95055',
     warningColor: '#FFCF52',
+    yellowColor: '#FEFFB8',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
 

@@ -54,7 +54,7 @@ const ExamAttendanceReport = ({ footerLinks }) => {
   const columns = (t) => [
     {
       name: t("SUBJECT"),
-      cell: (row) => t(row?.name),
+      cell: (row) => `${t(row?.name)} (${t(row?.boardname)})`,
       wrap: true,
     },
     {

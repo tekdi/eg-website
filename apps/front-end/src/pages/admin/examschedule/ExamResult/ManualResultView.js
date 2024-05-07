@@ -4,71 +4,16 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 
-const ManualResultView = () => {
+const ManualResultView = ({ data }) => {
   const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
 
-  const data = [
-    {
-      srNo: 1,
-      subjectName: "Hindi (201)",
-      maxMarks: 100,
-      marksTheory: 32,
-      marksPractical: 9,
-      marksSessional: 41,
-      totalMarks: 179,
-      result: "PASS",
-    },
-    {
-      srNo: 2,
-      subjectName: "Business Studies (215)",
-      maxMarks: 100,
-      marksTheory: 0,
-      marksPractical: 9,
-      marksSessional: 9,
-      totalMarks: 18,
-      result: "SYC",
-    },
-    {
-      srNo: 3,
-      subjectName: "Home Science (216)",
-      maxMarks: 100,
-      marksTheory: 18,
-      marksPractical: 10,
-      marksSessional: 8,
-      totalMarks: 36,
-      result: "PASS",
-    },
-    {
-      srNo: 4,
-      subjectName: "Psychology (222)",
-      maxMarks: 100,
-      marksTheory: 30,
-      marksPractical: 9,
-      marksSessional: 39,
-      totalMarks: 78,
-      result: "PASS",
-    },
-    {
-      srNo: 5,
-      subjectName: "Drawing (225)",
-      maxMarks: 100,
-      marksTheory: 2,
-      marksPractical: 50,
-      marksSessional: 2,
-      totalMarks: 54,
-      result: "PASS",
-    },
-  ];
-
   const customStyles = {
-    header: {
+    rows: {
       style: {
-        background: "#F4F4F7",
-        minHeight: "72px",
+        minHeight: "72px", // override the row height
         cursor: "pointer",
-        justifyContent: "left",
       },
     },
     headRow: {
@@ -81,51 +26,57 @@ const ManualResultView = () => {
     headCells: {
       style: {
         background: "#EEEEEE",
-        size: "4px",
-        justifyContent: "center",
-        padding: "0px",
+        color: "#616161",
+        size: "16px",
+        justifyContent: "flex-start",
+        height: "50px",
       },
     },
     cells: {
       style: {
         background: "#EEEEEE",
-        justifyContent: "center",
+        color: "#616161",
+        size: "19px",
+        justifyContent: "flex-start",
       },
     },
   };
 
-  const columns = [
-    {
-      name: "Sr. No.",
-      selector: "srNo",
-    },
+  const columns = (t) => [
     {
       name: "Subject Name (Code)",
-      selector: "subjectName",
+      selector: (row) => `${row?.subject_name} (${row?.subject_code || "-"})`,
+      wrap: true,
     },
     {
       name: "Max Marks",
-      selector: "maxMarks",
+      selector: (row) => `${row?.max_marks}`,
+      wrap: true,
     },
     {
       name: "Marks Theory",
-      selector: "marksTheory",
+      selector: (row) => `${row?.theory}`,
+      wrap: true,
     },
     {
       name: "Marks Practical",
-      selector: "marksPractical",
+      selector: (row) => `${row?.practical}`,
+      wrap: true,
     },
     {
       name: "Marks Sessional",
-      selector: "marksSessional",
+      selector: (row) => `${row?.tma_internal_sessional}`,
+      wrap: true,
     },
     {
       name: "Total Marks",
-      selector: "totalMarks",
+      selector: (row) => `${row?.total}`,
+      wrap: true,
     },
     {
       name: "Result",
-      selector: "result",
+      selector: (row) => `${row?.result}`,
+      wrap: true,
     },
   ];
 
@@ -137,8 +88,8 @@ const ManualResultView = () => {
       >
         <Stack bg={"dividerColor"} p={4}>
           <DataTable
-            columns={columns}
-            data={data}
+            columns={columns(t)}
+            data={data?.exam_subject_results}
             customStyles={customStyles}
             striped
             responsive
@@ -154,20 +105,20 @@ const ManualResultView = () => {
       >
         <HStack width={"40%"} justifyContent={"space-between"}>
           <AdminTypo.H3>{t("TOTAL")}</AdminTypo.H3>
-          <AdminTypo.H3>{"32"}</AdminTypo.H3>
+          <AdminTypo.H3>{data?.total_marks}</AdminTypo.H3>
         </HStack>
         <HStack width={"40%"} justifyContent={"space-between"}>
           <AdminTypo.H3>{t("RESULT")}</AdminTypo.H3>
-          <AdminTypo.H3>{"PASS"}</AdminTypo.H3>
+          <AdminTypo.H3>{data?.final_result}</AdminTypo.H3>
         </HStack>
       </HStack>
       <VStack>
-        <AdminTypo.H4>{t("P_PASS")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("SYC")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("SYCT")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("SYCP")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("RWH")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("XXXX")}</AdminTypo.H4>
+        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_P")}</AdminTypo.H4>
+        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYC")}</AdminTypo.H4>
+        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCT")}</AdminTypo.H4>
+        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCP")}</AdminTypo.H4>
+        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_RWH")}</AdminTypo.H4>
+        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_XXXX")}</AdminTypo.H4>
       </VStack>
     </VStack>
   );

@@ -14,6 +14,7 @@ import {
   setSelectedProgramId,
 } from "@shiksha/common-lib";
 import {
+  Alert,
   HStack,
   Progress,
   Radio,
@@ -37,6 +38,8 @@ function ManualExamResult(footerLinks) {
   const [data, setData] = useState();
   const [finalResult, setFinalResult] = useState();
   const [year, setYear] = useState();
+  const [error, setError] = useState();
+  const [subjectCodeError, setSubjectCodeError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +49,11 @@ function ManualExamResult(footerLinks) {
       const data = await organisationService.LearnerSujectList(obj);
       setData(data?.data);
       setSubjects(data?.data?.subjectsArray || []);
+      data?.data?.subjectsArray?.map((item) => {
+        if (!item?.code) {
+          setSubjectCodeError(true);
+        }
+      });
     };
 
     fetchData();
@@ -79,16 +87,10 @@ function ManualExamResult(footerLinks) {
     updatedSubjects[index] = subject;
 
     setSubjects(updatedSubjects);
-    if (!isEmptyField()) {
-      setIsDisable(false);
-    }
   };
 
   const handleFinalResult = (value) => {
     setFinalResult(value);
-    if (!isEmptyField()) {
-      setIsDisable(false);
-    }
   };
 
   const handleCancelButton = () => {
@@ -119,6 +121,15 @@ function ManualExamResult(footerLinks) {
       );
     });
 
+  useEffect(() => {
+    const isEmpty = isEmptyField();
+    if (isEmpty) {
+      setIsDisable(true);
+    } else {
+      setIsDisable(false);
+    }
+  }, [subjects, finalResult, year]);
+
   // Calculate Final Marks.
   const finalMarks = () =>
     subjects.reduce((total, subject) => {
@@ -132,14 +143,14 @@ function ManualExamResult(footerLinks) {
 
   const convertToObjectFormat = (subject) => {
     return {
-      subject_name: subject.name,
-      subject_code: subject.code,
+      subject_name: subject?.name,
+      subject_code: subject?.code,
       max_marks: 100,
-      theory: subject.marks.theory,
-      practical: subject.marks.practical,
-      tma_internal_sessional: subject.marks.sessional,
-      total: subject.marks.total,
-      result: subject.marks.result,
+      theory: subject?.marks?.theory,
+      practical: subject?.marks?.practical,
+      tma_internal_sessional: subject?.marks?.sessional,
+      total: subject?.marks?.total,
+      result: subject?.marks?.result,
     };
   };
 
@@ -153,12 +164,24 @@ function ManualExamResult(footerLinks) {
         candidate: `${data?.enrollment_first_name} ${
           data?.enrollment_middle_name || ""
         } ${data?.data?.enrollment_last_name || ""}`,
-        father: `${data?.user?.core_beneficiaries?.father_first_name} ${
-          data?.user?.core_beneficiaries?.father_middle_name || ""
-        } ${data?.user?.core_beneficiaries?.father_last_name || ""}`,
-        mother: `${data?.user?.core_beneficiaries?.mother_first_name} ${
-          data?.user?.core_beneficiaries?.mother_middle_name || ""
-        } ${data?.user?.core_beneficiaries?.mother_last_name || ""}`,
+        father: data?.user?.core_beneficiaries?.father_first_name
+          ? `${data?.user?.core_beneficiaries?.father_first_name} ${
+              data?.user?.core_beneficiaries?.father_middle_name &&
+              data?.user?.core_beneficiaries?.father_middle_name
+            } ${
+              data?.user?.core_beneficiaries?.father_last_name &&
+              data?.user?.core_beneficiaries?.father_last_name
+            }`
+          : "",
+        mother: data?.user?.core_beneficiaries?.mother_first_name
+          ? `${data?.user?.core_beneficiaries?.mother_first_name} ${
+              data?.user?.core_beneficiaries?.mother_middle_name &&
+              data?.user?.core_beneficiaries?.mother_middle_name
+            } ${
+              data?.user?.core_beneficiaries?.mother_last_name &&
+              data?.user?.core_beneficiaries?.mother_last_name
+            }`
+          : "",
         dob: data?.enrollment_dob,
         course_class: "10th",
         exam_year: year,
@@ -166,11 +189,18 @@ function ManualExamResult(footerLinks) {
         final_result: finalResult,
         subject: newArray,
       };
-      const result = await organisationService.examResult(payload);
+
+      if (!isEmptyField()) {
+        const result = await organisationService.examResult(payload);
+        if (result?.data) {
+          navigate(-1);
+        }
+      } else {
+        setError("REQUIRED_MESSAGE");
+      }
     };
     fetchData();
   };
-
   const handleYearChange = (value) => {
     setYear(value);
   };
@@ -216,189 +246,217 @@ function ManualExamResult(footerLinks) {
             ]}
           />
         </HStack>
-
-        <HStack justifyContent={"space-between"}>
-          <VStack space={4}>
-            <AdminTypo.H5 bold color="textGreyColor.500">
-              {data?.enrollment_first_name}
-              {data?.enrollment_middle_name
-                ? `${data.enrollment_middle_name} ${data.enrollment_last_name}`
-                : data?.enrollment_last_name}
-            </AdminTypo.H5>
-            <HStack alignItems={"center"} space={6}>
-              <AdminTypo.H6 bold color="textGreyColor.500">
-                {t("ENROLLMENT_NO")} : {data?.enrollment_number}
-              </AdminTypo.H6>
-              <AdminTypo.H6 bold color="textGreyColor.500">
-                {t("BOARD")} : {data?.subjectsArray?.[0]?.boardById?.name}
-              </AdminTypo.H6>
-
-              <HStack alignItems={"center"} space={4}>
-                <AdminTypo.H6 bold color="textGreyColor.500">
-                  {t("ENTER_EXAM_YEAR")} :
-                </AdminTypo.H6>
-                <TextBox
-                  value={year}
-                  onChange={(e) =>
-                    handleYearChange(
-                      e.target.value.toUpperCase().replace(/[^0-9-]/g, "")
-                    )
-                  }
-                  maxlength={4}
-                  placeholder={"ENTER_EXAM_YEAR"}
-                />
-              </HStack>
+        {subjectCodeError ? (
+          <Alert mt={"20px"} status="warning" alignItems={"start"}>
+            <HStack alignItems="center" space="2">
+              <Alert.Icon />
+              <AdminTypo.H5>{t("SUBJECTCODE_ERROR")}</AdminTypo.H5>
             </HStack>
-          </VStack>
-        </HStack>
+          </Alert>
+        ) : (
+          <>
+            <HStack justifyContent={"space-between"}>
+              <VStack space={4}>
+                <AdminTypo.H5 bold color="textGreyColor.500">
+                  {data?.enrollment_first_name}
+                  {data?.enrollment_middle_name
+                    ? `${data.enrollment_middle_name} ${data.enrollment_last_name}`
+                    : data?.enrollment_last_name}
+                </AdminTypo.H5>
+                <HStack alignItems={"center"} space={6}>
+                  <AdminTypo.H6 bold color="textGreyColor.500">
+                    {t("ENROLLMENT_NO")} : {data?.enrollment_number}
+                  </AdminTypo.H6>
+                  <AdminTypo.H6 bold color="textGreyColor.500">
+                    {t("BOARD")} : {data?.subjectsArray?.[0]?.boardById?.name}
+                  </AdminTypo.H6>
 
-        <VStack p={4} pl={0} space={4}>
-          <HStack space={4}>
-            <CardComponent
-              _header={{ bg: "light.100", padding: 4 }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              isHideProgressBar={true}
-            >
-              <ScrollView>
-                <VStack padding={3} space={4} height={"350px"}>
-                  <table
-                    style={{
-                      textAlign: "center",
-                      borderSpacing: "10px",
-                    }}
-                  >
-                    <thead>
-                      <tr>
-                        <th>{t("SUBJECTS")}</th>
-                        <th>{t("MAX_MARKS")}</th>
-                        <th>{t("MARKS_THEORY")}</th>
-                        <th>{t("MARKS_PRACTICAL")}</th>
-                        <th>{t("MARKS_SESSIONAL")}</th>
-                        <th>{t("TOTAL_MARKS")}</th>
-                        <th>{t("RESULT")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {subjects?.map((item, index) => {
-                        return (
-                          <tr style={{}} key={item?.user_id}>
-                            <td>{item.name}</td>
-                            <td>100</td>
-                            <td>
-                              <TextBox
-                                value={item?.marks?.theory}
-                                onChange={(e) =>
-                                  handleMarksChange(
-                                    index,
-                                    "theory",
-                                    e.target.value
-                                      .toUpperCase()
-                                      .replace(/[^0-9AB-]/g, "")
-                                  )
-                                }
-                                placeholder={"ENTER_THEORY_MARKS"}
-                              />
-                            </td>
-                            <td>
-                              <TextBox
-                                value={item?.marks?.practical}
-                                onChange={(e) =>
-                                  handleMarksChange(
-                                    index,
-                                    "practical",
-                                    e.target.value
-                                      .toUpperCase()
-                                      .replace(/[^0-9AB-]/g, "")
-                                  )
-                                }
-                                placeholder={"ENTER_PRACTICAL_MARKS"}
-                              />
-                            </td>
-
-                            <td>
-                              <TextBox
-                                value={item?.marks?.sessional}
-                                onChange={(e) =>
-                                  handleMarksChange(
-                                    index,
-                                    "sessional",
-                                    e.target.value
-                                      .toUpperCase()
-                                      .replace(/[^0-9AB-]/g, "")
-                                  )
-                                }
-                                placeholder={"ENTER_SESSIONAL_MARKS"}
-                              />
-                            </td>
-                            <td>
-                              <HStack>{item?.marks?.total || "-"}</HStack>
-                            </td>
-                            <td>
-                              <TextBox
-                                value={item?.marks?.result}
-                                onChange={(e) =>
-                                  handleMarksChange(
-                                    index,
-                                    "result",
-                                    e.target.value
-                                      .toUpperCase()
-                                      .replace(/[^A-Z]/g, "")
-                                  )
-                                }
-                                maxlength="4"
-                                placeholder={"RESULT"}
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  <HStack
-                    bg={"dividerColor"}
-                    p={4}
-                    alignItems={"center"}
-                    justifyContent={"space-evenly"}
-                  >
-                    <HStack width={"40%"} justifyContent={"space-between"}>
-                      <AdminTypo.H4>{t("TOTAL")}</AdminTypo.H4>
-                      <AdminTypo.H4>{finalMarks()}</AdminTypo.H4>
-                    </HStack>
-                    <HStack width={"40%"} justifyContent={"space-between"}>
-                      <AdminTypo.H4>{t("RESULT")}</AdminTypo.H4>
-                      <TextBox
-                        value={finalResult}
-                        onChange={(e) =>
-                          handleFinalResult(
-                            e.target.value.toUpperCase().replace(/[^A-Z]/g, "")
-                          )
-                        }
-                        maxlength="4"
-                        placeholder={"RESULT"}
-                      />
-                    </HStack>
+                  <HStack alignItems={"center"} space={4}>
+                    <AdminTypo.H6 bold color="textGreyColor.500">
+                      {t("ENTER_EXAM_YEAR")} :
+                    </AdminTypo.H6>
+                    <TextBox
+                      value={year}
+                      onChange={(e) =>
+                        handleYearChange(
+                          e.target.value.toUpperCase().replace(/[^0-9-]/g, "")
+                        )
+                      }
+                      maxlength={4}
+                      placeholder={"ENTER_EXAM_YEAR"}
+                    />
                   </HStack>
-                </VStack>
-              </ScrollView>
-            </CardComponent>
-          </HStack>
-        </VStack>
-        <HStack space={4} alignSelf={"center"}>
-          <AdminTypo.Secondarybutton
-            isDisabled={isDisable}
-            onPress={handleCancelButton}
-            icon={<IconByName color="black" name="DeleteBinLineIcon" />}
-          >
-            {t("CANCEL")}
-          </AdminTypo.Secondarybutton>
-          <AdminTypo.PrimaryButton
-            isDisabled={isDisable}
-            onPress={handleSaveButton}
-          >
-            {t("SAVE")}
-          </AdminTypo.PrimaryButton>
-        </HStack>
+                </HStack>
+              </VStack>
+            </HStack>
+
+            <VStack p={4} pl={0} space={4}>
+              <HStack space={4}>
+                <CardComponent
+                  _header={{ bg: "light.100", padding: 4 }}
+                  _vstack={{ space: 0, flex: 1, bg: "light.100" }}
+                  _hstack={{ borderBottomWidth: 0, p: 1 }}
+                  isHideProgressBar={true}
+                >
+                  <ScrollView>
+                    <VStack padding={3} space={4} height={"350px"}>
+                      <table
+                        style={{
+                          textAlign: "center",
+                          borderSpacing: "10px",
+                        }}
+                      >
+                        <thead>
+                          <tr>
+                            <th>{t("SUBJECTS")}</th>
+                            <th>{t("MAX_MARKS")}</th>
+                            <th>{t("MARKS_THEORY")}</th>
+                            <th>{t("MARKS_PRACTICAL")}</th>
+                            <th>{t("MARKS_SESSIONAL")}</th>
+                            <th>{t("TOTAL_MARKS")}</th>
+                            <th>{t("RESULT")}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subjects?.map((item, index) => {
+                            return (
+                              <tr style={{}} key={item?.user_id}>
+                                <td>{item.name}</td>
+                                <td>100</td>
+                                <td>
+                                  <TextBox
+                                    value={item?.marks?.theory}
+                                    onChange={(e) =>
+                                      handleMarksChange(
+                                        index,
+                                        "theory",
+                                        e.target.value
+                                          .toUpperCase()
+                                          .replace(/[^0-9AB-]/g, "")
+                                      )
+                                    }
+                                    placeholder={"ENTER_THEORY_MARKS"}
+                                  />
+                                </td>
+                                <td>
+                                  <TextBox
+                                    value={item?.marks?.practical}
+                                    onChange={(e) =>
+                                      handleMarksChange(
+                                        index,
+                                        "practical",
+                                        e.target.value
+                                          .toUpperCase()
+                                          .replace(/[^0-9AB-]/g, "")
+                                      )
+                                    }
+                                    placeholder={"ENTER_PRACTICAL_MARKS"}
+                                  />
+                                </td>
+
+                                <td>
+                                  <TextBox
+                                    value={item?.marks?.sessional}
+                                    onChange={(e) =>
+                                      handleMarksChange(
+                                        index,
+                                        "sessional",
+                                        e.target.value
+                                          .toUpperCase()
+                                          .replace(/[^0-9AB-]/g, "")
+                                      )
+                                    }
+                                    placeholder={"ENTER_SESSIONAL_MARKS"}
+                                  />
+                                </td>
+                                <td>
+                                  <HStack>{item?.marks?.total || "-"}</HStack>
+                                </td>
+                                <td>
+                                  <TextBox
+                                    value={item?.marks?.result}
+                                    onChange={(e) =>
+                                      handleMarksChange(
+                                        index,
+                                        "result",
+                                        e.target.value
+                                          .toUpperCase()
+                                          .replace(/[^A-Z]/g, "")
+                                      )
+                                    }
+                                    maxlength="4"
+                                    placeholder={"RESULT"}
+                                  />
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                      <HStack
+                        bg={"dividerColor"}
+                        p={4}
+                        alignItems={"center"}
+                        justifyContent={"space-evenly"}
+                      >
+                        <HStack width={"40%"} justifyContent={"space-between"}>
+                          <AdminTypo.H4>{t("TOTAL")}</AdminTypo.H4>
+                          <AdminTypo.H4>{finalMarks()}</AdminTypo.H4>
+                        </HStack>
+                        <HStack width={"40%"} justifyContent={"space-between"}>
+                          <AdminTypo.H4>{t("RESULT")}</AdminTypo.H4>
+                          <TextBox
+                            value={finalResult}
+                            onChange={(e) =>
+                              handleFinalResult(
+                                e.target.value
+                                  .toUpperCase()
+                                  .replace(/[^A-Z]/g, "")
+                              )
+                            }
+                            maxlength="4"
+                            placeholder={"RESULT"}
+                          />
+                        </HStack>
+                      </HStack>
+                      {error && (
+                        <Alert status="warning" alignItems={"start"}>
+                          <HStack alignItems="center" space="2">
+                            <Alert.Icon />
+                            {t(error)}
+                          </HStack>
+                        </Alert>
+                      )}
+                    </VStack>
+                  </ScrollView>
+                </CardComponent>
+              </HStack>
+            </VStack>
+            <VStack>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_P")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYC")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCT")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCP")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_RWH")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_XXXX")}</AdminTypo.H4>
+            </VStack>
+            <HStack space={4} alignSelf={"center"}>
+              <AdminTypo.Secondarybutton
+                isDisabled={isDisable}
+                onPress={handleCancelButton}
+                icon={<IconByName color="black" name="DeleteBinLineIcon" />}
+              >
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton
+                isDisabled={isDisable}
+                onPress={handleSaveButton}
+              >
+                {t("SAVE")}
+              </AdminTypo.PrimaryButton>
+            </HStack>
+          </>
+        )}
       </Stack>
     </Layout>
   );

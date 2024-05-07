@@ -139,7 +139,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
 
       let newSchema = getOptions(schemat, {
         key: "status",
-        arr: data?.data?.FACILITATOR_STATUS,
+        arr: data?.data?.EXAM_RESULT_STATUS,
         title: "title",
         value: "value",
       });

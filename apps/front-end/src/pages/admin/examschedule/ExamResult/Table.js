@@ -5,7 +5,7 @@ import {
   enumRegistryService,
   uploadRegistryService,
 } from "@shiksha/common-lib";
-import { ChipStatus } from "component/Chip";
+import { ChipStatus, ExamChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Button, Menu } from "native-base";
 
 import React, {
@@ -136,13 +136,26 @@ function Table({
       wrap: true,
       compact: true,
     },
-
     {
       name: t("ENROLLMENT_ID"),
       selector: (row) => row?.enrollment_number || "-",
       attr: "enrollment_id",
       wrap: true,
       compact: true,
+    },
+    {
+      name: t("STATUS"),
+      selector: (row) => (
+        <>
+          <ExamChipStatus
+            status={
+              row?.beneficiary_user?.exam_results?.[0]?.final_result || ""
+            }
+          />
+        </>
+      ),
+      attr: "enrollment_id",
+      wrap: true,
     },
     {
       minWidth: "140px",
@@ -159,45 +172,52 @@ function Table({
           shadow="BlueOutlineShadow"
           borderWidth="1px"
         >
-          <Pressable
-            px="1.5"
-            _text={{
-              color: "blueText.400",
-              fontSize: "12px",
-              fontWeight: "700",
-            }}
-            onPress={() => {
-              navigate(
-                `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`
-              );
-            }}
-          >
-            {t("VIEW")}
-          </Pressable>
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => dropDown(triggerProps, t)}
-          >
-            <Menu.Item>
-              <Pressable
-                onPress={() => {
-                  openFileUploadDialog();
-                }}
-              >
-                <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
-              </Pressable>
-            </Menu.Item>
-            <Menu.Item
+          {row?.beneficiary_user?.exam_results.length > 0 ? (
+            <Pressable
+              px="20px"
+              _text={{
+                color: "blueText.400",
+                fontSize: "12px",
+                fontWeight: "700",
+              }}
               onPress={() => {
                 navigate(
-                  `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
+                  `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
+                  { state: { row } }
                 );
               }}
             >
-              <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
-            </Menu.Item>
-          </Menu>
+              <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
+            </Pressable>
+          ) : (
+            <>
+              <AdminTypo.H5>{t("UPLOAD")}</AdminTypo.H5>
+              <Menu
+                w="190"
+                placement="bottom right"
+                trigger={(triggerProps) => dropDown(triggerProps, t)}
+              >
+                <Menu.Item>
+                  <Pressable
+                    onPress={() => {
+                      openFileUploadDialog();
+                    }}
+                  >
+                    <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
+                  </Pressable>
+                </Menu.Item>
+                <Menu.Item
+                  onPress={() => {
+                    navigate(
+                      `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
+                    );
+                  }}
+                >
+                  <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
+                </Menu.Item>
+              </Menu>
+            </>
+          )}
         </Button.Group>
       ),
       center: true,

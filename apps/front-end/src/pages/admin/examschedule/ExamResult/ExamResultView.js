@@ -4,51 +4,37 @@ import {
   Breadcrumb,
   AdminLayout as Layout,
   useWindowSize,
-  CardComponent,
   IconByName,
-  PoAdminLayout,
-  cohortService,
-  enumRegistryService,
-  getSelectedProgramId,
   organisationService,
-  setSelectedProgramId,
   ImageView,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  Progress,
-  Radio,
-  ScrollView,
-  Select,
-  Stack,
-  VStack,
-} from "native-base";
+import { HStack, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import TextBox from "./TextBox";
+import { useNavigate, useLocation } from "react-router-dom";
 import ManualResultView from "./ManualResultView";
 
 const ExamResultView = (footerLinks) => {
   const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
-  const [fileType, setfileType] = useState("pdf");
+  const [data, setData] = useState();
+  const location = useLocation();
+  const userData = location?.state?.row;
 
-  const receiptUrl = {
-    key: "dummy1714383633910.pdf",
-    fileUrl:
-      "https://eg-dev-1.s3.ap-south-1.amazonaws.com/dummy1714383633910.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5CBNW7QSEUPAGE7O%2F20240429%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20240429T094236Z&X-Amz-Expires=3600&X-Amz-Signature=6363c48b473df271679e66b43284696d6f89cbe100e02ffbd5a963f46435f25a&X-Amz-SignedHeaders=host&x-id=GetObject",
-    documentData: {
-      id: 3287,
-      name: "dummy1714383633910.pdf",
-      doument_type: "enrollment_receipt",
-      document_sub_type: "",
-      path: "/user/docs",
-      provider: "s3",
-      context: null,
-      context_id: null,
-    },
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const obj = {
+        board_id: userData?.bordID?.id,
+        user_id: userData?.beneficiary_user?.beneficiary_id,
+        enrollment: userData?.enrollment_number,
+      };
+      const data = await organisationService.resultView(obj);
+      setData(data?.data?.[0]);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Layout
       w={Width}
@@ -107,34 +93,35 @@ const ExamResultView = (footerLinks) => {
         <HStack justifyContent={"space-between"}>
           <VStack width={"100%"} height={"1000px"} space={4}>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("ENROLLMENT_NO")} : 123456789
+              {t("ENROLLMENT_NO")} : {data?.enrollment}
             </AdminTypo.H6>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("BOARD")} : NIOS
+              {t("BOARD")} : {userData?.bordID?.name}
             </AdminTypo.H6>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("FATHER_NAME")} : RAVINDRA
+              {t("FATHER_NAME")} : {data?.father || "-"}
             </AdminTypo.H6>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("MOTHER_NAME")} : SANGITA
+              {t("MOTHER_NAME")} : {data?.mother || "-"}
             </AdminTypo.H6>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("DOB")} : 03-05-1995
+              {t("DOB")} : {data?.dob || "-"}
             </AdminTypo.H6>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("CLASS")} : 10
+              {t("CLASS")} : {data?.course_class || "-"}
             </AdminTypo.H6>
-            {fileType !== "pdf" ? (
+
+            {data?.document_id ? (
               <ImageView
                 frameborder="0"
                 _box={{ flex: 1 }}
                 width="100%"
                 height="100%"
-                urlObject={receiptUrl}
-                alt="aadhaar_front"
+                source={{ document_id: data?.document_id }}
+                alt="result"
               />
             ) : (
-              <ManualResultView />
+              <ManualResultView data={data} />
             )}
           </VStack>
         </HStack>

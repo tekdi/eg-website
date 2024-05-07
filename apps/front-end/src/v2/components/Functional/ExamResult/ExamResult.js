@@ -29,7 +29,10 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
   };
 
   const learnerList = async () => {
-    const data = await organisationService.examResultLearnerList();
+    const data = await organisationService.examResultLearnerList({
+      ...filter,
+      limit: "",
+    });
     setData(data?.data);
   };
 
