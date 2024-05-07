@@ -63,7 +63,7 @@ const ExamAttendanceReport = ({ footerLinks }) => {
       wrap: true,
     },
     {
-      name: t("PRESENT"),
+      name: t("A_PRESENT"),
       cell: (row) => t(row?.present),
       wrap: true,
     },

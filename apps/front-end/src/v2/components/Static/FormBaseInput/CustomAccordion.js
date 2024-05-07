@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HStack, VStack, Text, Pressable } from "native-base";
+import { HStack, VStack, Text, Pressable, Modal } from "native-base";
 import {
   IconByName,
   FrontEndTypo,
@@ -13,14 +13,18 @@ import {
   transformAttendanceResponse,
 } from "v2/utils/SyncHelper/SyncHelper";
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
+import { useNavigate } from "react-router-dom";
 
 const CustomAccordion = ({ data, date }) => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [openAccordion, setOpenAccordion] = useState(null);
   const [learnerAttendance, setLearnerAttendance] = useState([]);
   const [mainAttendance, setMainAttendance] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [isCancelDisable, setCancelIsDisable] = useState(true);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [checkLearner, setCheckLeaner] = React.useState();
 
   const compareDates = (date1, date2) => {
     const parsedDate1 = new Date(date1);
@@ -133,6 +137,20 @@ const CustomAccordion = ({ data, date }) => {
       event_id,
       attendance
     );
+
+    const presenceStatus = [];
+    AttendaceData?.forEach((item) => {
+      const key = Object.keys(item)[0];
+      const status = item[key];
+      if (status === "present" || status === "absent") {
+        presenceStatus.push({
+          key: key,
+          status: status,
+        });
+      }
+    });
+    const check = data?.[0]?.data?.length == presenceStatus?.length;
+    setCheckLeaner(check);
     const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
     setLearnerAttendance(mergedPayload);
   };
@@ -157,6 +175,11 @@ const CustomAccordion = ({ data, date }) => {
     if (result?.success) {
       setIsDisable(true);
       setCancelIsDisable(true);
+      if (checkLearner === true) {
+        navigate("/");
+      } else {
+        setOpenModal();
+      }
     }
   };
 
@@ -272,7 +295,7 @@ const CustomAccordion = ({ data, date }) => {
                                           : "grayColor"
                                       }`}
                                     />
-                                    <Text>{t("PRESENT")}</Text>
+                                    <Text>{t("A_PRESENT")}</Text>
                                   </VStack>
                                 </Pressable>
                                 <Pressable
@@ -331,7 +354,9 @@ const CustomAccordion = ({ data, date }) => {
                     px="20px"
                     isDisabled={isDisable}
                     onPress={() => {
-                      SaveAttendance(subject?.event_id);
+                      checkLearner === true
+                        ? SaveAttendance(subject?.event_id)
+                        : setOpenModal(subject?.event_id);
                     }}
                   >
                     {t("SAVE")}
@@ -342,6 +367,45 @@ const CustomAccordion = ({ data, date }) => {
           )}
         </VStack>
       ))}
+      {date && data?.length < 1 && (
+        <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
+      )}
+      <Modal isOpen={openModal} size="lg">
+        <Modal.Content>
+          <Modal.Header alignItems={"center"}>{t("ARE_YOU_SURE")}</Modal.Header>
+          <Modal.Body p="5">
+            <VStack space="4">
+              <FrontEndTypo.H3>{t("ATTENDANCE_ALERT_MESSAGE")}</FrontEndTypo.H3>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <HStack
+              space={4}
+              width={"100%"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <FrontEndTypo.Secondarybutton
+                px="20px"
+                onPress={() => {
+                  setOpenModal(false);
+                }}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                px="20px"
+                isDisabled={isDisable}
+                onPress={() => {
+                  SaveAttendance(openModal);
+                }}
+              >
+                {t("SAVE")}
+              </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </VStack>
   );
 };

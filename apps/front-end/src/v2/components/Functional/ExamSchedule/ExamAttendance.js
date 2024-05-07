@@ -84,11 +84,12 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
               </Radio.Group>
             ))}
           </HStack>
-          <DatePicker setFilter={setFilter} filter={filter} />
-          {subjects.length > 0 ? (
+          {console.log(filter)}
+          {filter?.selectedId && (
+            <DatePicker setFilter={setFilter} filter={filter} />
+          )}
+          {filter?.date != "" && (
             <CustomAccordion data={subjects} date={filter?.date} />
-          ) : (
-            t("DATA_NOT_FOUND")
           )}
         </VStack>
       </VStack>

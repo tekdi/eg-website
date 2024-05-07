@@ -1678,8 +1678,8 @@
   "LEARNER_EXAMINATION": "Learner Examination",
   "UPDATE_LEARNER_EXAM_ATTENDANCE": "Update Learner Exam Attendance",
   "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
-  "PRACTICALS": "Practicals",
-  "THEORY": "Theory",
+  "PRACTICALS": "Practicals Exam",
+  "THEORY": "Theory Exam",
   "MARK_LEARNER_EXAM_ATTENDANCE": "Mark Learner Exam Attendance",
   "EXAM_WARNING": "No Learners for the exam",
   "LEARNER_STATUS_COUNT": "Learner Status Count",
@@ -1714,5 +1714,7 @@
   "EXAM_RESULT_STATUS_RWH": "RWH - Result Withheld",
   "EXAM_RESULT_STATUS_XXXX": "XXXX - Fail",
   "ASSIGNED_TO_IP": "Assigned to IP",
-  "SUBJECTCODE_ERROR": "Subject code not present"
+  "SUBJECTCODE_ERROR": "Subject code not present",
+  "ATTENDANCE_ALERT_MESSAGE": "There is no attendance response for all learners. Do you want to continue ?",
+  "A_PRESENT": "Present"
 }
