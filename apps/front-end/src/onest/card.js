@@ -12,13 +12,17 @@ export const dataConfig = {
     apiLink_API_BASE_URL: "https://eg-scholarship-dev-api.tekdinext.com",
     imageUrl: "",
     apiResponce: (e) => e.data.data.scholarship_cache,
+    onOrderIdGenerate: (val) => {
+      console.log("onOrderIdGenerate", val);
+    },
+    expiryLimit: 180, //seconds
   },
 
   // jobs: {
   //   title: "Jobs",
   //   searchByKey: "title",
   //   listLink: "onest/jobs",
-  //   //apiLink: "http://eg-jobs-dev-api.tekdinext.com",
+  //   //apiLink: "https://eg-jobs-dev-api.tekdinext.com",
   //   filters: [
   //     "city",
   //     "state",
@@ -32,22 +36,22 @@ export const dataConfig = {
   //   apiLink_DOMAIN: "onest:work-opportunities",
   //   apiLink_BAP_ID: "jobs-bap-dev.tekdinext.com",
   //   apiLink_BAP_URI: "https://jobs-bap-dev.tekdinext.com/",
-  //   apiLink_API_BASE_URL: "http://eg-jobs-dev-api.tekdinext.com",
+  //   apiLink_API_BASE_URL: "https://eg-jobs-dev-api.tekdinext.com",
   //   apiLink_SUNBIRD_API: "https://sunbirdsaas.com/api/content/v1/read",
   //   apiLink_DIKSHA_API: "https://diksha.gov.in/api/content/v1/read",
   //   apiLink_IMAGE_URL: "https://kvk-nashik.tekdinext.com",
   //   imageUrl: "",
-  //   apiResponce: (e) => e.data.data.jobs_cache,
-  // render: (e) => {
-  //   console.log(e);
-  //   return (
-  //     <div>
-  //       <h1>{e.title} </h1>
-  //       <h2>{e.company}</h2>
-  //     </div>
-  //   );
+  //   apiResponce: (e) => e.data.data.jobs_cache_dev,
+  //   // render: (e) => {
+  //   //   console.log(e);
+  //   //   return (
+  //   //     <div>
+  //   //       <h1>{e.title} </h1>
+  //   //       <h2>{e.company}</h2>
+  //   //     </div>
+  //   //   );
+  //   // },
   // },
-  //},
   // learning: {
   //   title: "Learning experiences",
   //   searchByKey: "title",
