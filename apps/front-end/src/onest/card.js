@@ -1,3 +1,5 @@
+import { OnestService } from "@shiksha/common-lib";
+
 export const dataConfig = {
   scholarship: {
     title: "Scholarship",
@@ -12,8 +14,17 @@ export const dataConfig = {
     apiLink_API_BASE_URL: "https://eg-scholarship-dev-api.tekdinext.com",
     imageUrl: "",
     apiResponce: (e) => e.data.data.scholarship_cache,
-    onOrderIdGenerate: (val) => {
-      console.log("onOrderIdGenerate", val);
+    onOrderIdGenerate: async (val) => {
+      const data = {
+        user_id: val.userData.user_id,
+        context: val.type,
+        context_item_id: val.jobId,
+        status: "created",
+        order_id:
+          val.response.data.data.insert_scholarship_order_dev.returning[0]
+            .order_id,
+      };
+      let response = await OnestService.create(data);
     },
     expiryLimit: 180, //seconds
   },
