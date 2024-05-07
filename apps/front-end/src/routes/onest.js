@@ -16,6 +16,6 @@ export default [
     path: "/onest/:type/automatedForm/:jobId/:transactionId",
     component: AutomatedForm,
   },
-  { path: "/onest/:type/confirm/:itemId", component: MediaPage },
+  { path: "/onest/:type/confirm/:itemId/:transactionId", component: MediaPage },
   { path: "/onest/:type/form", component: UserDetailsForm },
 ];

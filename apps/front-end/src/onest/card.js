@@ -48,58 +48,18 @@ export const dataConfig = {
   //   //   );
   //   // },
   // },
-  // learning: {
-  //   title: "Learning experiences",
-  //   searchByKey: "title",
-  //   listLink: "onest/learning",
-  //   detailLink: "/learning/:id",
-  //   apiLink: "https://kahani-api.tekdinext.com/content/search",
-  //   imageUrl: "",
-  //   apiLink_DB_CACHE: "kahani_cache",
-  //   apiLink_API_ROUTE: "content",
-  //   apiLink_DOMAIN: "onest:learning-experiences",
-  //   apiLink_BAP_ID: "13.201.4.186:6002",
-  //   apiLink_BAP_URI: "http://13.201.4.186:6002/",
-  //   apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
-  //   apiResponce: (e) => e.data.data.kahani_cache,
-  //   // apiResponce: ({ data }) => {
-  //   //   let response = [];
-  //   //   //   response = data?.message?.catalog?.providers?.flatMap((e) => e.items);
-  //   //   return data.data;
-  //   // },
-  //   render: (e) => {
-  //     return "";
-  //   },
-  //   payload: {
-  //     context: {
-  //       domain: "onest:learning-experiences",
-  //       action: "search",
-  //       version: "1.1.0",
-  //       bap_id: "13.201.4.186:6002",
-  //       bap_uri: "http://13.201.4.186:6002/",
-  //       location: {
-  //         country: {
-  //           name: "India",
-  //           code: "IND",
-  //         },
-  //         city: {
-  //           name: "Bangalore",
-  //           code: "std:080",
-  //         },
-  //       },
-  //       transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c60008",
-  //       message_id: "a9aaecca-10b7-4d19-b640-b047a7c60009",
-  //       timestamp: "2023-02-06T09:55:41.161Z",
-  //     },
-  //     message: {
-  //       intent: {
-  //         item: {
-  //           descriptor: {
-  //             name: "",
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
+  learning: {
+    title: "Learning experiences",
+    searchByKey: "title",
+    listLink: "onest/learning",
+    detailLink: "/learning/:id",
+    apiLink_DB_CACHE: "kahani_cache_dev",
+    apiLink_API_ROUTE: "content",
+    apiLink_DOMAIN: "onest:learning-experiences",
+    apiLink_BAP_ID: "eg-content-dev-bap-network.tekdinext.com",
+    apiLink_BAP_URI: "https://eg-content-dev-bap-network.tekdinext.com/",
+    // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
+    apiLink_API_BASE_URL: "https://eg-content-dev-api.tekdinext.com",
+    apiResponce: (e) => e.data.data.kahani_cache_dev,
+  },
 };

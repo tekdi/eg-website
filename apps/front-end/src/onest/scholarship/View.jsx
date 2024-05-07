@@ -1,17 +1,16 @@
-import { Box, Button, Divider, HStack, Icon, Text } from "native-base";
-import React, { useEffect, useState } from "react";
+import { FrontEndTypo } from "@shiksha/common-lib";
+import { Box, Divider, HStack, Text } from "native-base";
+import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
-import { MdLocationPin } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
+import { dataConfig } from "../card";
 import Loader from "./Loader";
 import "./Shared.css";
-import { dataConfig } from "../card";
-import { FrontEndTypo } from "@shiksha/common-lib";
 
 function ScholarshipView() {
   const { type } = useParams();
@@ -231,12 +230,6 @@ function ScholarshipView() {
           <HStack marginTop={"1"} marginLeft={1}>
             {(jobInfo?.city || jobInfo?.state) && (
               <div style={{ display: "flex" }}>
-                <Icon
-                  as={MdLocationPin}
-                  boxSize={4}
-                  marginTop={1}
-                  marginRight={1}
-                />{" "}
                 <Text fontSize={["xs", "sm"]}>{jobInfo?.city}</Text>
                 {jobInfo?.city && jobInfo?.state ? (
                   <Text fontSize={["xs", "sm"]}>, {jobInfo?.state}</Text>
