@@ -161,7 +161,8 @@ export default {
       },
     },
     reference_details: {
-      title: "ADD_A_REFERENCE",
+      title: "3_REFERENCE_DETAILS",
+      description: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
       required: ["name", "designation", "contact_number"],
@@ -185,11 +186,12 @@ export default {
     },
     work_availability_details: {
       step_name: "OTHER_DETAILS",
+      title: "4_OTHER_DETAILS",
       type: "object",
       required: ["availability"],
       properties: {
         availability: {
-          label: "YOUR_WORK_AVAILABILITY_WILL_BE",
+          description: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
@@ -209,6 +211,7 @@ export default {
         "diploma_details",
       ],
       type: "object",
+      title: "2_VOLUNTEER_AND_WORK_DETAILS",
       properties: {
         qualification_master_id: {
           description: "YOUR_HIGHEST_QUALIFICATION",
@@ -225,6 +228,7 @@ export default {
           document_type: "highest_qualification_document",
           type: ["string", "number"],
           format: "OfflineFileUpload",
+          uploadTitle: "UPLOAD_FROM_PHONE",
         },
         qualification_ids: {
           type: "array",

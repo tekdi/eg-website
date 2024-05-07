@@ -76,27 +76,27 @@ export default {
         payment_receipt_document_id: {
           description:
             state?.state_name === "RAJASTHAN"
-              ? "ENROLLMENT_RECIEPT"
-              : "PAYMENT_RECEIPTS",
-          description:
-            state?.state_name === "RAJASTHAN"
-              ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"
-              : "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+              ? [
+                  "ENROLLMENT_RECIEPT_AND_UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
+                ]
+              : [
+                  "PAYMENT_RECEIPTS_AND_PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
+                ],
+          uploadTitle: "UPLOAD_FROM_PHONE",
           type: ["string", "number"],
           format: "FileUpload",
         },
         application_form: {
           label: "APPLICATION_FORM",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+          uploadTitle: "UPLOAD_FROM_PHONE",
           type: ["string", "number"],
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
         },
         application_login_id: {
           label: "APPLICATION_LOGIN_ID_SCREENSHOT",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+          uploadTitle: "UPLOAD_FROM_PHONE",
           isReduce: false,
           type: ["string", "number"],
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",

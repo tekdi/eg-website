@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CheckIcon,
+  Checkbox,
   FormControl,
   HStack,
   Image,
@@ -456,13 +457,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
             fontWeight="400"
           >
             {t(label || title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}
@@ -809,13 +804,7 @@ const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
         >
           <Text fontSize="12" fontWeight="400">
             {t(title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}

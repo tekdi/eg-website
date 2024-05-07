@@ -1,5 +1,6 @@
 import {
   CardComponent,
+  FrontEndTypo,
   GetEnumValue,
   Layout,
   arrList,
@@ -363,6 +364,9 @@ export default function BenificiaryEducation(userTokenInfo) {
       facilitator={facilitator}
     >
       <VStack bg="white" px="5" py="3">
+        <FrontEndTypo.H1 fontWeight="600" mb="3" mt="3">
+          {t("EDUCATION_DETAILS")}
+        </FrontEndTypo.H1>
         <CardComponent
           _vstack={{ space: 0 }}
           _hstack={{ borderBottomWidth: 0 }}

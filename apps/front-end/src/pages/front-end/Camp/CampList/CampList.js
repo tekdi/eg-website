@@ -8,6 +8,7 @@ import {
   campService,
   enumRegistryService,
   benificiaryRegistoryService,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -218,12 +219,7 @@ export default function List({ userTokenInfo }) {
                       </FrontEndTypo.Secondarybutton>
                     )}
 
-                    <Alert status="warning" alignItems={"start"} width={"100%"}>
-                      <HStack alignItems="center" space="2" color>
-                        <Alert.Icon />
-                        <BodyMedium>{t("CAMP_WARNING")}</BodyMedium>
-                      </HStack>
-                    </Alert>
+                    <CustomAlert status={"danger"} title={t("CAMP_WARNING")} />
                   </VStack>
                 ) : (
                   <Alert status="warning" alignItems={"start"} width={"100%"}>

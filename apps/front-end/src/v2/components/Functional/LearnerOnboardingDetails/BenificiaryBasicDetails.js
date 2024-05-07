@@ -347,6 +347,9 @@ export default function BenificiaryBasicDetails(userTokenInfo) {
       facilitator={facilitator}
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
+        <FrontEndTypo.H1 fontWeight="600" mx="4" mt="6">
+          {t("BASIC_DETAILS")}
+        </FrontEndTypo.H1>
         <VStack px="16px" space="24px">
           <HStack
             alignItems={"center"}

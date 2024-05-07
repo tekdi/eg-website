@@ -223,6 +223,7 @@ const FileUpload = ({ value, onChange, schema }) => {
                   name="FileUploadFillIcon"
                   color="textRed.350"
                 />
+                
               </FrontEndTypo.H3>
             </HStack>
           </Pressable>

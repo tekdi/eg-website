@@ -394,12 +394,11 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
         return (
           <Box
             bg="boxBackgroundColour.100"
-            borderColor="garyTitleCardBorder"
-            borderRadius="5px"
-            borderWidth="1px"
-            shadow={"LearnerProfileViewShadow"}
+            borderBottomColor={"garyTitleCardBorder"}
+            borderBottomWidth={"1px"}
+            borderBottomStyle={"solid"}
           >
-            <VStack p={2}>
+            <VStack>
               <VStack space="2">
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack space="md" alignItems="Center">
@@ -460,15 +459,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
       // case "enrolled_ip_verified":
       case null:
         return (
-          <Box
-            bg="white"
-            borderColor="garyTitleCardBorder"
-            borderRadius="5px"
-            borderWidth="1px"
-            shadow={"LearnerProfileViewShadow"}
-            // pb="4"
-          >
-            <VStack p={2}>
+          <Box bg="white">
+            <VStack>
               <VStack space="2">
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack space="md" alignItems="Center">
@@ -528,9 +520,12 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
           </HStack>
         </Alert>
       ) : (
-        <VStack paddingBottom="64px" bg="bgGreyColor.200">
+        <VStack paddingBottom="64px">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
             <VStack pt="20px">
+              <FrontEndTypo.H1 mb="4" fontWeight="600">
+                {t("LEARNER_PROFILE")}
+              </FrontEndTypo.H1>
               <HStack alignItems={"center"} space={4} mb={6}>
                 {benificiary?.profile_photo_1?.id ? (
                   <ImageView
@@ -905,9 +900,23 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                 />
               </HStack>
             </VStack>
-            {renderDropoutButton()}
-            {renderReactivateButton()}
-            {renderRejectButton()}
+
+            <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+              {t("LEARNER_ACTIONS")}
+            </FrontEndTypo.H3>
+            <VStack
+              borderColor="garyTitleCardBorder"
+              borderRadius="5px"
+              borderWidth="1px"
+              shadow={"LearnerProfileViewShadow"}
+              px={3}
+              py={4}
+              backgroundColor={"white"}
+            >
+              {renderDropoutButton()}
+              {renderReactivateButton()}
+              {renderRejectButton()}
+            </VStack>
           </VStack>
         </VStack>
       )}

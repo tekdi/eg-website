@@ -1,5 +1,6 @@
 import {
   CardComponent,
+  FrontEndTypo,
   GetEnumValue,
   ItemComponent,
   Layout,
@@ -333,7 +334,7 @@ export default function BenificiaryEnrollment(userTokenInfo) {
       }}
       facilitator={facilitator}
     >
-      <VStack p="5" space={4}>
+      <VStack p="5" pt="0" space={4}>
         <EnrollmentMessage
           status={benificiary?.program_beneficiaries?.status}
           enrollment_status={
@@ -353,6 +354,9 @@ export default function BenificiaryEnrollment(userTokenInfo) {
             benificiary?.program_beneficiaries?.status
         ) && (
           <VStack>
+            <FrontEndTypo.H1 fontWeight="600" mb="3">
+              {t("ENROLLMENT_DETAILS")}
+            </FrontEndTypo.H1>
             <CardComponent
               _vstack={{ space: 0 }}
               _hstack={{ borderBottomWidth: 0 }}

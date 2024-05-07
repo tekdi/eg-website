@@ -585,38 +585,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack ref={ref}>
-        {/* {[
-          "pragati_mobilizer",
-          "selected_prerak",
-          "selected_for_training",
-          "selected_for_onboarding",
-        ].includes(facilitator.status) && (
-          <Pressable
-            onPress={(e) => {
-              navigate(`/beneficiary`);
-            }}
-          >
-            <HStack p="5" space="5" bg="textMaroonColor.50" alignItems="Center">
-              <IconByName
-                isDisabled
-                name="UserFollowLineIcon"
-                _icon={{ size: "30px" }}
-              />
-              <VStack flex="0.8">
-                <FrontEndTypo.H3
-                  bold
-                  color="textGreyColor.800"
-                  wordWrap="break-word"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {t("ADD_MORE_AG")}
-                </FrontEndTypo.H3>
-              </VStack>
-            </HStack>
-          </Pressable>
-        )} */}
+        <FrontEndTypo.H1 fontWeight="600" mx="4" my="6" mb="0">
+          {t("LEARNER_LIST")}
+        </FrontEndTypo.H1>
         <HStack
           justifyContent="space-between"
           space="2"
@@ -718,17 +689,8 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
         safeAreaTop
         position="fixed"
         bottom="70px"
+        zIndex={"9999999"}
       >
-        {/* <HStack alignItems="Center">
-              <IconByName
-                isDisabled
-                name="UserFollowLineIcon"
-                _icon={{ size: "30px" }}
-                onPress={(e) => {
-                  navigate("/beneficiary");
-                }}
-              />
-              <VStack flex="0.8"> */}
         <FrontEndTypo.Secondarybutton
           onPress={(e) => {
             if (
@@ -744,14 +706,11 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
               navigate("/beneficiary");
             }
           }}
-          // rightIcon={}
           mx="auto"
           my="2"
         >
           {t("ADD_MORE_AG")}
         </FrontEndTypo.Secondarybutton>
-        {/* </VStack>
-            </HStack> */}
       </HStack>
     </Layout>
   );
