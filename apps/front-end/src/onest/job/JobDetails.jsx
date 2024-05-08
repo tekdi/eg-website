@@ -93,7 +93,13 @@ function JobDetails() {
       const data = await response.json();
       data["context"]["message_id"] = transactionId;
       setJobDetails(data);
-      setJobsData(data?.responses[0]?.message?.order?.items[0]);
+      if (data?.responses[0]?.message?.order?.items[0]) {
+        setJobsData(data?.responses[0]?.message?.order?.items[0]);
+      } else {
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
+      }
       localStorage.setItem("selectRes", JSON.stringify(data));
       if (!data?.responses.length) {
         errorMessage(

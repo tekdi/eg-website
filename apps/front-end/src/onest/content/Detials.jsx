@@ -94,8 +94,13 @@ const Details = () => {
     const result = await post(`${baseUrl}/select`, bodyData);
     let response = result?.data;
     localStorage.setItem("details", JSON.stringify(response));
-    console.log(response, result);
-    setDetails(response.responses[0].message.order.items[0]);
+    if (response.responses?.[0].message?.order?.items?.[0]) {
+      setDetails(response.responses?.[0].message?.order?.items?.[0] || {});
+    } else {
+      errorMessage(
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+      );
+    }
     // console.log("resp", response);
     if (response && response.responses && response.responses.length > 0) {
       // console.log("Entered 1");
