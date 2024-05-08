@@ -1,7 +1,7 @@
 // AutomatedForm.js
 import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
@@ -22,13 +22,15 @@ import {
 } from "native-base";
 import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
 import moment from "moment";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AutomatedForm = () => {
   const location = useLocation();
+  const { jobId, transactionId, type } = useParams();
   const state = location?.state;
   const { t } = useTranslation();
 
@@ -39,7 +41,6 @@ const AutomatedForm = () => {
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
 
-  const { type } = useParams();
   const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
@@ -51,9 +52,6 @@ const AutomatedForm = () => {
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
   const [siteUrl, setSiteUrl] = useState(window.location.href);
-
-  const { jobId } = useParams();
-  const { transactionId } = useParams();
 
   useEffect(() => {
     // registerTelementry(siteUrl, transactionId);
@@ -214,7 +212,12 @@ const AutomatedForm = () => {
       .then((response) => {
         console.log("Response:", response.data);
         if (envConfig?.onOrderIdGenerate) {
-          envConfig?.onOrderIdGenerate({ response, userData });
+          envConfig?.onOrderIdGenerate({
+            response,
+            userData,
+            jobId,
+            type,
+          });
         }
       })
       .catch((error) => {
