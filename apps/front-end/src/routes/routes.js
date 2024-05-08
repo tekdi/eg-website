@@ -45,11 +45,17 @@ const ViewExamSchedule = lazy(() =>
 const ExamAttendance = lazy(() =>
   import("v2/components/Functional/ExamSchedule/ExamAttendance")
 );
-const ExamAttendanceView = lazy(() =>
-  import("v2/components/Functional/ExamSchedule/ExamAttendanceView")
+const ExamAttendanceReport = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ExamAttendanceReport")
 );
 
 const ExamDashboard = React.lazy(() => import("pages/front-end/ExamDashboard"));
+const ExamResultReport = React.lazy(() =>
+  import("v2/components/Functional/ExamResult/ExamResultReport")
+);
+const ExamResult = React.lazy(() =>
+  import("v2/components/Functional/ExamResult/ExamResult")
+);
 
 //end v2 code
 
@@ -282,12 +288,20 @@ export default [
     component: ExamAttendance,
   },
   {
-    path: "/examattendanceview",
-    component: ExamAttendanceView,
+    path: "/examattendancereport",
+    component: ExamAttendanceReport,
   },
   {
     path: "/dashboardview",
     component: ExamDashboard,
+  },
+  {
+    path: "/examresultreport",
+    component: ExamResultReport,
+  },
+  {
+    path: "/examresult",
+    component: ExamResult,
   },
 
   //end v2 code
