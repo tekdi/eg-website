@@ -63,7 +63,6 @@ const MediaPage = () => {
 
     if (jsonDataParam) {
       let jsonData = atob(jsonDataParam);
-      console.log("Parsed JSON data:", jsonData);
       localStorage.setItem("userData", jsonData);
     }
   }, []);
@@ -100,7 +99,7 @@ const MediaPage = () => {
             getSelectDetails(result?.data[db_cache][0]);
           }
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.error("error", error));
     }
     // fetchConfirmMedia();
   }, []);
@@ -298,7 +297,6 @@ const MediaPage = () => {
       const result = await post(`${baseUrl}/confirm`, bodyData);
       let response = result?.data;
 
-      console.log("API Response:", response);
       if (envConfig?.onOrderIdGenerate) {
         const userDataString = localStorage.getItem("userData");
         const userData = JSON.parse(userDataString);
@@ -311,28 +309,19 @@ const MediaPage = () => {
       }
 
       if (response && response?.responses && response?.responses?.length > 0) {
-        console.log("res length", response?.responses?.length);
-        console.log("Yes we get the data");
         let arrayOfObjects = [];
         let uniqueItemIds = new Set();
 
         response?.responses?.forEach((responseItem) => {
           try {
             if (responseItem?.message && responseItem?.message?.order) {
-              console.log("Enter 1");
-
               const order = responseItem?.message.order;
               let appId = responseItem.message.order.id;
-              console.log("orderId", appId);
               window?.parent?.postMessage({ orderId: appId }, "*");
               if (order.items) {
-                console.log("Enter 2");
-
                 const items = order.items;
                 items.forEach((item) => {
                   if (!uniqueItemIds.has(item.id)) {
-                    console.log("Enter 3");
-
                     let mediaUrl = "";
                     if (
                       item["add-ons"] &&
@@ -358,7 +347,7 @@ const MediaPage = () => {
                   }
                 });
               } else {
-                console.log("No items found in order");
+                console.error("No items found in order");
               }
             }
           } catch (error) {
@@ -372,10 +361,8 @@ const MediaPage = () => {
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
-
-        console.log("Updated Story Array:", arrayOfObjects);
       } else {
-        console.log("No valid responses found.");
+        console.error("No valid responses found.");
       }
     } catch (error) {
       console.error("Error fetching details:", error);
@@ -750,7 +737,6 @@ const MediaPage = () => {
           <>
             {story.map((item, index) => {
               const mediaUrl = item.media_url;
-              console.log(mediaUrl);
               if (mediaUrl.endsWith(".mp3")) {
                 // MP3 audio
                 return (
