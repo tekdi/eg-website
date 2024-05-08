@@ -1,15 +1,12 @@
-import { FrontEndTypo, OnestService } from "@shiksha/common-lib";
-import { Box, Divider, HStack, Text } from "native-base";
+import { FrontEndTypo, Loading, OnestService } from "@shiksha/common-lib";
+import { Alert, Box, Divider, HStack, Text, useToast } from "native-base";
 import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "../card";
-import Loader from "./Loader";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
 
@@ -31,49 +28,46 @@ function ScholarshipView() {
   const [jobDetails, setJobDetails] = useState(null);
   const [siteUrl] = useState(window.location.href);
   const [transactionId] = useState(uuidv4());
-
-  // const uniqueId = uuidv4();
-
-  //   useEffect(() => {
-  //     if (transactionId === undefined) {
-  //       const uniqueId = uuidv4();
-  //       settransactionId(uniqueId); // Update state only when necessary
-  //     }else{
-  //       registerTelementry(siteUrl, transactionId);
-  //     }
-  // }, [transactionId]);
-
-  //const jobsData  = selectJson?.responses[0]?.message?.order?.items[0]
-  //console.log(jobsData);
+  const toast = useToast();
 
   const closeModal = () => {
     setOpenModal(false);
     navigate("/");
   };
 
-  useEffect(async () => {
-    const userDataDetails = localStorage.getItem("userData");
-    const userData = JSON.parse(userDataDetails);
-    const data = {
-      context: type,
-      context_item_id: jobId,
-      user_id: userData.user_id,
+  useEffect(() => {
+    const fetchData = async () => {
+      const userDataDetails = localStorage.getItem("userData");
+      const userData = JSON.parse(userDataDetails);
+      const data = {
+        context: type,
+        context_item_id: jobId,
+        user_id: userData.user_id,
+      };
+      let result = await OnestService.getList({ filter: data });
+      if (result?.data.length) {
+        setOpenModal(true);
+        setListData(result?.data);
+      }
     };
-    let result = await OnestService.getList({ filter: data });
-    if (result?.data.length) {
-      setOpenModal(true);
-      setListData(result?.data);
-    }
+    fetchData();
   }, []);
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: toast.POSITION.BOTTOM_CENTER,
-      autoClose: 5000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
+      },
     });
   }
 
@@ -124,15 +118,16 @@ function ScholarshipView() {
       });
 
       const data = await response.json();
-      data["context"]["message_id"] = transactionId;
-      setJobDetails(data);
-      setJobsData(data?.responses[0]?.message?.order?.items[0]);
-      localStorage.setItem("selectRes", JSON.stringify(data));
       if (!data?.responses.length) {
         errorMessage(
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
+      } else {
+        setJobsData(data?.responses[0]?.message?.order?.items[0]);
+        localStorage.setItem("selectRes", JSON.stringify(data));
       }
+      data["context"]["message_id"] = transactionId;
+      setJobDetails(data);
     } catch (error) {
       console.error("Error fetching job details:", error);
     } finally {
@@ -213,6 +208,10 @@ function ScholarshipView() {
       })
       .catch((error) => console.log("error", error));
   }, [transactionId]); // Runs only once when the component mounts
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div>
@@ -329,86 +328,82 @@ function ScholarshipView() {
         </Box>
       </Box>
 
-      {loading ? (
-        <Loader />
-      ) : (
-        <Box
-          fontFamily={"Alice"}
-          marginLeft={4}
-          marginRight={4}
-          padding={4}
-          marginTop={5}
-          borderRadius={15}
-          backgroundColor={"white"}
-        >
-          <Text fontSize={16} fontWeight={700}>
-            {t("Job_Description")}
-          </Text>
+      <Box
+        fontFamily={"Alice"}
+        marginLeft={4}
+        marginRight={4}
+        padding={4}
+        marginTop={5}
+        borderRadius={15}
+        backgroundColor={"white"}
+      >
+        <Text fontSize={16} fontWeight={700}>
+          {t("Job_Description")}
+        </Text>
 
-          {jobInfo?.description ? (
-            <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-              {jobInfo?.description}{" "}
-            </Text>
-          ) : (
-            <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-              {t("Job_description_is_not_available")}{" "}
-            </Text>
-          )}
-          <Box marginTop={4}>
-            {jobsData?.tags?.map((tag, index) => (
-              <Box key={index} marginBottom={3}>
-                <Text fontSize={["sm"]} color={"black"} fontWeight={700}>
-                  {tag.descriptor.name}
-                </Text>
-                {tag.list.map((item, itemIndex) => (
-                  <div key={itemIndex}>
-                    <ul style={{ marginLeft: "3rem", listStyleType: "disc" }}>
-                      <li>
-                        {!item?.descriptor?.name &&
-                          item?.descriptor?.code &&
-                          item?.value !== "" && (
-                            <Text fontSize={["xs", "sm"]} color="gray.700">
-                              {item?.descriptor?.code}
+        {jobInfo?.description ? (
+          <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
+            {jobInfo?.description}{" "}
+          </Text>
+        ) : (
+          <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
+            {t("Job_description_is_not_available")}{" "}
+          </Text>
+        )}
+        <Box marginTop={4}>
+          {jobsData?.tags?.map((tag, index) => (
+            <Box key={index} marginBottom={3}>
+              <Text fontSize={["sm"]} color={"black"} fontWeight={700}>
+                {tag.descriptor.name}
+              </Text>
+              {tag.list.map((item, itemIndex) => (
+                <div key={itemIndex}>
+                  <ul style={{ marginLeft: "3rem", listStyleType: "disc" }}>
+                    <li>
+                      {!item?.descriptor?.name &&
+                        item?.descriptor?.code &&
+                        item?.value !== "" && (
+                          <Text fontSize={["xs", "sm"]} color="gray.700">
+                            {item?.descriptor?.code}
+                          </Text>
+                        )}
+
+                      {item?.descriptor?.name &&
+                      item?.value &&
+                      item?.value !== "null" &&
+                      item?.value !== null ? (
+                        <Box display="flex">
+                          {item?.descriptor?.name && (
+                            <Text
+                              fontSize={["xs", "sm"]}
+                              color="gray.900"
+                              marginRight={2}
+                            >
+                              {item?.descriptor?.name}:
                             </Text>
                           )}
-
-                        {item?.descriptor?.name &&
-                        item?.value &&
-                        item?.value !== "null" &&
-                        item?.value !== null ? (
-                          <Box display="flex">
-                            {item?.descriptor?.name && (
-                              <Text
-                                fontSize={["xs", "sm"]}
-                                color="gray.900"
-                                marginRight={2}
-                              >
-                                {item?.descriptor?.name}:
-                              </Text>
-                            )}
-                            {item?.value && (
-                              <Text fontSize={["xs", "sm"]} color="gray.700">
-                                {item?.value}
-                              </Text>
-                            )}
-                          </Box>
-                        ) : (
-                          <div>
+                          {item?.value && (
                             <Text fontSize={["xs", "sm"]} color="gray.700">
-                              {t("Not_Provided")}
+                              {item?.value}
                             </Text>
-                          </div>
-                        )}
-                      </li>
-                    </ul>
-                  </div>
-                ))}
-                <Divider my={2} borderWidth="0.5px" />
-              </Box>
-            ))}
-          </Box>
+                          )}
+                        </Box>
+                      ) : (
+                        <div>
+                          <Text fontSize={["xs", "sm"]} color="gray.700">
+                            {t("Not_Provided")}
+                          </Text>
+                        </div>
+                      )}
+                    </li>
+                  </ul>
+                </div>
+              ))}
+              <Divider my={2} borderWidth="0.5px" />
+            </Box>
+          ))}
         </Box>
-      )}
+      </Box>
     </div>
   );
 }

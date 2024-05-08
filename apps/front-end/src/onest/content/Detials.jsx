@@ -1,17 +1,20 @@
-import { Box, Button, Flex, Heading, Text } from "native-base";
-import React, { useEffect, useState } from "react";
-import { registerTelementry } from "../services/Apicall";
-import { v4 as uuidv4 } from "uuid";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import {
+  Alert,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Heading,
+  Text,
+  useToast,
+} from "native-base";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Loader from "../components/Loader";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 // import { registerTelementry } from "../api/Apicall";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { FrontEndTypo, Loading, post } from "@shiksha/common-lib";
 import { dataConfig } from "onest/card";
-import { FrontEndTypo, post } from "@shiksha/common-lib";
 
 const Details = () => {
   const location = useLocation();
@@ -36,18 +39,22 @@ const Details = () => {
   const [siteUrl, setSiteUrl] = useState(window.location.href);
   // const [info, setInfo] = useState(state?.product);
   const dataShow = ["title", "name"];
+  const toast = useToast();
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: "bottom-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
-      style: {
-        margin: "0 21px",
-        width: "96%", // Set width to 100% to make the toast full-width
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
       },
     });
   }
@@ -248,6 +255,11 @@ const Details = () => {
     return transformedName;
   }
 
+  // transaction id
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       {isLoading ? (
@@ -259,9 +271,7 @@ const Details = () => {
             minHeight: "100vh",
           }}
         >
-          <Box textAlign="center">
-            <Loader />
-          </Box>
+          <Box textAlign="center"></Box>
         </div>
       ) : error ? (
         <div

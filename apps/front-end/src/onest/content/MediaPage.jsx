@@ -1,10 +1,10 @@
-import { Box, Flex, Text } from "native-base";
+import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
 import axios from "axios";
+import { Alert, Box, Flex, Text, useToast } from "native-base";
+import { dataConfig } from "onest/card";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import AudioPlayer from "../components/AudioPlayer";
 import ExternalLink from "../components/ExternalLink";
@@ -12,8 +12,6 @@ import Loader from "../components/Loader";
 import PDFViewer from "../components/PDFViewer";
 import VideoPlayer from "../components/VideoPlayer";
 import YouTubeEmbed from "../components/YouTubeEmbed";
-import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
-import { dataConfig } from "onest/card";
 
 const MediaPage = () => {
   const location = useLocation();
@@ -29,15 +27,14 @@ const MediaPage = () => {
   const { t } = useTranslation();
   const [story, setStory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const messageId = uuidv4();
+  const [error] = useState(null);
   const [product, setProduct] = useState(state?.product);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
+  const toast = useToast();
 
   useEffect(() => {
     const url = window.location.href;
-
     const getUrlParams = (url) => {
       const params = {};
       const parser = document.createElement("a");
@@ -513,16 +510,19 @@ const MediaPage = () => {
   }
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: "bottom-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
-      style: {
-        margin: "0 21px",
-        width: "96%", // Set width to 100% to make the toast full-width
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
       },
     });
   }
@@ -687,7 +687,6 @@ const MediaPage = () => {
   const handleBack = () => {
     navigate(`/${envConfig?.listLink}/${itemId}`);
   };
-
   // transaction id
   if (isLoading) {
     return <Loading />;
