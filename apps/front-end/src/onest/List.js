@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
-  Flex,
   HStack,
   Heading,
+  Image,
   Input,
   Modal,
   Pressable,
@@ -17,6 +17,7 @@ import { dataConfig } from "./card";
 import axios from "axios";
 import Layout from "./Layout";
 import { FrontEndTypo } from "@shiksha/common-lib";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const List = () => {
   const [cardData, setCardData] = useState();
@@ -26,6 +27,19 @@ const List = () => {
   const { type } = useParams();
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [filter, setFilter] = useState();
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loadingHeight, setLoadingHeight] = useState(0);
+  const ref = useRef(null);
+  const [bodyHeight, setBodyHeight] = useState(0);
+
+  useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
 
   useEffect(() => {
     const fetchJobsData = async () => {
@@ -42,7 +56,7 @@ const List = () => {
         }
         if (response) {
           setCardData(response);
-          setFilterCardData(response);
+          setFilterCardData(paginateArray(response, 10, page));
           setfilterData(filterToData(configData?.filters, response));
         } else {
           console.error("Failed to fetch data");
@@ -92,83 +106,108 @@ const List = () => {
     setShowFiltersModal(true);
   };
 
+  const fetchData = () => {
+    // Simulating fetching data from an API
+    // In real application, replace this with actual API call
+
+    // Update state with new data
+    console.log("hello");
+    setFilterCardData(paginateArray(cardData, 10, page));
+
+    // Increment page number
+    setPage(page + 1);
+
+    // In this example, let's assume we have only 5 pages of data
+    if (page >= 5) {
+      setHasMore(false);
+    }
+  };
+
   return (
-    <Layout>
-      <Box p="4">
-        <HStack justify="space-between" align="center" mb="4">
-          <Input
-            flex={11}
-            type="text"
-            placeholder="Search by name..."
-            onChange={(e) =>
-              handleFilter(config?.searchByKey || "title", e.target.value)
-            }
-          />
-          <FrontEndTypo.Primarybutton
-            flex="1"
-            colorScheme="gray"
-            onPress={handleOpenModal}
-            ml={1}
-          >
-            Filters
-          </FrontEndTypo.Primarybutton>
-        </HStack>
-        <Modal
-          isOpen={showFiltersModal}
-          onClose={(e) => setShowFiltersModal(false)}
+    <Layout getBodyHeight={(e) => setBodyHeight(e)}>
+      <HStack justify="space-between" align="center" p="4" ref={ref}>
+        <Input
+          flex={11}
+          type="text"
+          placeholder="Search by name..."
+          onChange={(e) =>
+            handleFilter(config?.searchByKey || "title", e.target.value)
+          }
+        />
+        <FrontEndTypo.Primarybutton
+          flex="1"
+          colorScheme="gray"
+          onPress={handleOpenModal}
+          ml={1}
         >
-          <Modal.Content m={2}>
-            <Modal.Header>Apply Filters</Modal.Header>
-            <Modal.CloseButton />
-            <Modal.Body>
-              {filterData &&
-                Object.entries(filterData)?.map(([heading, options]) => {
-                  return (
-                    <Box key={heading} mb="4">
-                      <Heading size="sm" mb="2">
-                        {heading}
-                      </Heading>
-                      {Array.isArray(options) && (
-                        <Select
-                          placeholder={`Select ${heading}`}
-                          onValueChange={(value) =>
-                            handleFilter(heading, value)
-                          }
-                          value={filter?.[heading] || ""}
-                        >
-                          {options?.map(
-                            (option) =>
-                              option.constructor.name == "String" && (
-                                <Select.Item
-                                  key={option}
-                                  value={option}
-                                  label={option}
-                                  _text={{ fontSize: 12, fontWeight: 500 }}
-                                />
-                              )
-                          )}
-                        </Select>
-                      )}
-                    </Box>
-                  );
-                })}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                colorScheme="gray"
-                onPress={(e) => setShowFiltersModal(false)}
-              >
-                Apply
-              </Button>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-        <VStack flexWrap="wrap" space={4}>
-          {filterCardData?.map((e) => (
-            <RenderCards key={e} obj={e} config={config} />
-          ))}
-        </VStack>
-      </Box>
+          Filters
+        </FrontEndTypo.Primarybutton>
+      </HStack>
+      <Modal
+        isOpen={showFiltersModal}
+        onClose={(e) => setShowFiltersModal(false)}
+      >
+        <Modal.Content m={2}>
+          <Modal.Header>Apply Filters</Modal.Header>
+          <Modal.CloseButton />
+          <Modal.Body>
+            {filterData &&
+              Object.entries(filterData)?.map(([heading, options]) => {
+                return (
+                  <Box key={heading} mb="4">
+                    <Heading size="sm" mb="2">
+                      {heading}
+                    </Heading>
+                    {Array.isArray(options) && (
+                      <Select
+                        placeholder={`Select ${heading}`}
+                        onValueChange={(value) => handleFilter(heading, value)}
+                        value={filter?.[heading] || ""}
+                      >
+                        {options?.map(
+                          (option) =>
+                            option.constructor.name == "String" && (
+                              <Select.Item
+                                key={option}
+                                value={option}
+                                label={option}
+                                _text={{ fontSize: 12, fontWeight: 500 }}
+                              />
+                            )
+                        )}
+                      </Select>
+                    )}
+                  </Box>
+                );
+              })}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              colorScheme="gray"
+              onPress={(e) => setShowFiltersModal(false)}
+            >
+              Apply
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <VStack flexWrap="wrap" space={4}>
+        <InfiniteScroll
+          dataLength={filterCardData?.length || 0}
+          next={fetchData}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
+          endMessage={<p>No more items</p>}
+          height={loadingHeight}
+          gap="10px"
+        >
+          <VStack space="4" alignContent="center" p="4">
+            {filterCardData?.map((e) => (
+              <RenderCards key={e} obj={e} config={config} />
+            ))}
+          </VStack>
+        </InfiniteScroll>
+      </VStack>
     </Layout>
   );
 };
@@ -177,6 +216,7 @@ const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
   return (
     <Pressable
+      width={"100%"}
       p="4"
       borderWidth="1px"
       borderRadius="md"
@@ -189,11 +229,21 @@ const RenderCards = ({ obj, config }) => {
           }
         }
       }}
+      textAlign={"center"}
     >
       {config?.render ? (
         config.render(obj)
       ) : (
-        <Box>
+        <VStack space={4}>
+          {obj?.image_url && (
+            <Image
+              alignSelf={"center"}
+              source={{ uri: obj?.image_url }}
+              size={"lg"}
+              src={obj?.image_url}
+              alt={"no IMAGE"}
+            />
+          )}
           <Text marginLeft={1} fontSize={["xl", "2xl", "3xl"]}>
             {obj?.title}
           </Text>
@@ -205,7 +255,7 @@ const RenderCards = ({ obj, config }) => {
               marginLeft={1}
               fontSize={["sm", "md"]}
             >
-              {obj?.provider_name}
+              <strong>Published By:</strong> {obj?.provider_name}
             </Text>
           )}
           <Text
@@ -214,9 +264,14 @@ const RenderCards = ({ obj, config }) => {
             marginLeft={0.5}
             textOverflow="ellipsis"
           >
-            {obj?.description}
+            <strong>Description:</strong>{" "}
+            {obj.shortDescription
+              ? obj.shortDescription
+              : obj.description
+              ? obj.description.substring(0, 100) + "..."
+              : ""}
           </Text>
-        </Box>
+        </VStack>
       )}
     </Pressable>
   );
@@ -229,8 +284,8 @@ const replaceUrlParam = (url, object) => {
 
 const filterToData = (data, arr) => {
   let result = {};
-  arr.forEach((item) => {
-    data.forEach((key) => {
+  arr?.forEach((item) => {
+    data?.forEach((key) => {
       if (item?.[key]) {
         const countData = result?.[key]?.indexOf(item?.[key]);
         if (!countData || countData < 1) {
@@ -240,6 +295,34 @@ const filterToData = (data, arr) => {
     });
   });
   return result;
+};
+
+const paginateArray = (dataArray, itemsPerPage, pageNumber) => {
+  const paginatedArrays = [];
+  let currentPage = [];
+
+  dataArray.forEach((item) => {
+    if (currentPage.length === itemsPerPage) {
+      paginatedArrays.push([...currentPage]);
+      currentPage = [];
+    }
+    currentPage.push(item);
+  });
+
+  if (currentPage.length > 0) {
+    paginatedArrays.push([...currentPage]);
+  }
+
+  const currentPageNumber = Math.min(
+    Math.max(1, pageNumber),
+    paginatedArrays.length
+  );
+
+  return paginatedArrays[currentPageNumber - 1];
+  return {
+    currentPage: currentPageNumber,
+    paginatedArray: paginatedArrays[currentPageNumber - 1],
+  };
 };
 
 export default List;

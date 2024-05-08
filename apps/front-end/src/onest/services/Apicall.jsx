@@ -229,6 +229,28 @@ export const getconfirmdata = async (params = {}, header = {}) => {
   }
 };
 
+export const getInitdata = async (params = {}, header = {}) => {
+  let headers = {
+    ...header,
+  };
+
+  try {
+    const result = await post(`${baseUrl}/${apiPath?.init}`, params, {
+      headers,
+    });
+    if (result) {
+      return result?.data;
+    } else {
+      return {};
+    }
+  } catch ({ response, message }) {
+    return {
+      status: response?.status ? response?.status : 404,
+      error: response?.data?.message ? response?.data?.message : message,
+    };
+  }
+};
+
 export const getContentbyCollectionId = async (
   id,
   params = {},
@@ -629,5 +651,60 @@ export const getShikshaWithBody = async (id, header = {}) => {
       status: response?.status ? response?.status : 404,
       error: response?.data?.message ? response?.data?.message : message,
     };
+  }
+};
+
+export const registerTelementry = async (siteUrl, transactionId) => {
+  let telementryJson = {
+    id: "onest.telemetry",
+    ver: "1",
+    events: [
+      {
+        eid: "IMPRESSION",
+        transId: "",
+        ets: 0,
+        actor: {
+          type: "user",
+          id: "",
+          agent: "",
+          distributor: "",
+        },
+        context: {
+          channel: "",
+        },
+        edata: {
+          pageurl: "",
+        },
+      },
+    ],
+  };
+
+  localStorage.setItem("transactionId", transactionId);
+  const url = new URL(siteUrl);
+  telementryJson.events[0].ets = Date.now();
+  telementryJson.events[0].transId = transactionId;
+  telementryJson.events[0].actor.id = url.searchParams.get("agent-id") || "";
+
+  telementryJson.events[0].actor.agent = url.searchParams.get("agent")
+    ? url.searchParams.get("agent")
+    : "";
+  telementryJson.events[0].actor.distributor = url.searchParams.get(
+    "distributor-name"
+  )
+    ? url.searchParams.get("distributor-name")
+    : "";
+  telementryJson.events[0].context.channel = url.hostname.split(".")[0];
+  telementryJson.events[0].edata.pageurl = siteUrl;
+
+  console.log(telementryJson);
+  try {
+    const response = post(`${baseUrl}/content/telemetry`, telementryJson, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error:", error);
   }
 };
