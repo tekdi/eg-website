@@ -19,14 +19,14 @@ import {
   Modal,
   HStack,
   VStack,
+  useToast,
+  Alert,
 } from "native-base";
 import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
 import moment from "moment";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const AutomatedForm = () => {
   const location = useLocation();
@@ -51,11 +51,12 @@ const AutomatedForm = () => {
 
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
-  const [siteUrl, setSiteUrl] = useState(window.location.href);
+  // const [siteUrl, setSiteUrl] = useState(window.location.href);
+  const toast = useToast();
 
-  useEffect(() => {
-    // registerTelementry(siteUrl, transactionId);
-  }, []);
+  // useEffect(() => {
+  //   registerTelementry(siteUrl, transactionId);
+  // }, []);
 
   useEffect(() => {
     const url = window.location.href;
@@ -462,13 +463,20 @@ const AutomatedForm = () => {
   };
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: toast.POSITION.BOTTOM_CENTER,
-      autoClose: 5000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
+      },
     });
   }
 
@@ -653,64 +661,6 @@ const AutomatedForm = () => {
       }
       console.error("Error submitting form:", error);
     }
-
-    /* try {
-       await fetch(action, {
-         method: "POST",
-         headers: {
-           'Content-Type': 'multipart/form-data',
-                 },
-         body: urlencoded,
-       })
-         .then((response) => response.text())
-         .then((result) => {
-           if(result){
-           localStorage.setItem('submissionId', result)
-           setTimeout(() => {
-             fetchInitDetails();
-             // getInitJson();
-           }, 7000);
-         }
- 
-         })
-         .catch((error) => {
-           console.log("error", error);
-           errorMessage(error);
-           // return;
-         });
-     } catch (error) {
-       setLoading(false);
- 
-       console.error("Error submitting form:", error);
-     } finally {
-       // setTimeout(() => {
-       //   setLoading(false);
-       // }, 30000);
-     }*/
-  };
-
-  const responseSearch = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      action: "on_init",
-      transaction_id: transactionId,
-    });
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    await fetch(`${baseUrl}/responseSearch`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        confirmDetails(JSON.parse(result));
-      })
-      .catch((error) => console.log("error", error));
   };
 
   const closeModal = () => {

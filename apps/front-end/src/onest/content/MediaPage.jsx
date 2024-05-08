@@ -1,10 +1,10 @@
-import { Box, Flex, Text } from "native-base";
+import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
 import axios from "axios";
+import { Alert, Box, Flex, Text, useToast } from "native-base";
+import { dataConfig } from "onest/card";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import AudioPlayer from "../components/AudioPlayer";
 import ExternalLink from "../components/ExternalLink";
@@ -12,8 +12,6 @@ import Loader from "../components/Loader";
 import PDFViewer from "../components/PDFViewer";
 import VideoPlayer from "../components/VideoPlayer";
 import YouTubeEmbed from "../components/YouTubeEmbed";
-import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
-import { dataConfig } from "onest/card";
 
 const MediaPage = () => {
   const location = useLocation();
@@ -29,15 +27,14 @@ const MediaPage = () => {
   const { t } = useTranslation();
   const [story, setStory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const messageId = uuidv4();
+  const [error] = useState(null);
   const [product, setProduct] = useState(state?.product);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
+  const toast = useToast();
 
   useEffect(() => {
     const url = window.location.href;
-
     const getUrlParams = (url) => {
       const params = {};
       const parser = document.createElement("a");
@@ -66,7 +63,6 @@ const MediaPage = () => {
 
     if (jsonDataParam) {
       let jsonData = atob(jsonDataParam);
-      console.log("Parsed JSON data:", jsonData);
       localStorage.setItem("userData", jsonData);
     }
   }, []);
@@ -103,7 +99,7 @@ const MediaPage = () => {
             getSelectDetails(result?.data[db_cache][0]);
           }
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.error("error", error));
     }
     // fetchConfirmMedia();
   }, []);
@@ -301,7 +297,6 @@ const MediaPage = () => {
       const result = await post(`${baseUrl}/confirm`, bodyData);
       let response = result?.data;
 
-      console.log("API Response:", response);
       if (envConfig?.onOrderIdGenerate) {
         const userDataString = localStorage.getItem("userData");
         const userData = JSON.parse(userDataString);
@@ -314,28 +309,19 @@ const MediaPage = () => {
       }
 
       if (response && response?.responses && response?.responses?.length > 0) {
-        console.log("res length", response?.responses?.length);
-        console.log("Yes we get the data");
         let arrayOfObjects = [];
         let uniqueItemIds = new Set();
 
         response?.responses?.forEach((responseItem) => {
           try {
             if (responseItem?.message && responseItem?.message?.order) {
-              console.log("Enter 1");
-
               const order = responseItem?.message.order;
               let appId = responseItem.message.order.id;
-              console.log("orderId", appId);
               window?.parent?.postMessage({ orderId: appId }, "*");
               if (order.items) {
-                console.log("Enter 2");
-
                 const items = order.items;
                 items.forEach((item) => {
                   if (!uniqueItemIds.has(item.id)) {
-                    console.log("Enter 3");
-
                     let mediaUrl = "";
                     if (
                       item["add-ons"] &&
@@ -361,7 +347,7 @@ const MediaPage = () => {
                   }
                 });
               } else {
-                console.log("No items found in order");
+                console.error("No items found in order");
               }
             }
           } catch (error) {
@@ -375,10 +361,8 @@ const MediaPage = () => {
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
-
-        console.log("Updated Story Array:", arrayOfObjects);
       } else {
-        console.log("No valid responses found.");
+        console.error("No valid responses found.");
       }
     } catch (error) {
       console.error("Error fetching details:", error);
@@ -523,16 +507,19 @@ const MediaPage = () => {
   }
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: "bottom-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
-      style: {
-        margin: "0 21px",
-        width: "96%", // Set width to 100% to make the toast full-width
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
       },
     });
   }
@@ -697,7 +684,6 @@ const MediaPage = () => {
   const handleBack = () => {
     navigate(`/${envConfig?.listLink}/${itemId}`);
   };
-
   // transaction id
   if (isLoading) {
     return <Loading />;
@@ -751,7 +737,6 @@ const MediaPage = () => {
           <>
             {story.map((item, index) => {
               const mediaUrl = item.media_url;
-              console.log(mediaUrl);
               if (mediaUrl.endsWith(".mp3")) {
                 // MP3 audio
                 return (

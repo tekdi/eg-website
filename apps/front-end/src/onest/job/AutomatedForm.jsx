@@ -8,17 +8,18 @@ import ReactGA from "react-ga4";
 import { useLocation, useNavigate } from "react-router-dom";
 // import Header from "./Header";
 import Loader from "./Loader";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import {
+  Alert,
   Box,
   Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Select,
+  useToast,
 } from "native-base";
 import { add } from "lodash";
 import { useParams } from "react-router-dom";
@@ -55,6 +56,7 @@ const AutomatedForm = () => {
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
   const [siteUrl, setSiteUrl] = useState(window.location.href);
+  const toast = useToast();
 
   const { jobId } = useParams();
   const { transactionId } = useParams();
@@ -468,13 +470,20 @@ const AutomatedForm = () => {
   };
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: toast.POSITION.BOTTOM_CENTER,
-      autoClose: 5000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
+      },
     });
   }
 
