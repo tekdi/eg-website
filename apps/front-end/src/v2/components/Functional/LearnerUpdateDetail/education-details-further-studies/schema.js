@@ -18,7 +18,8 @@ export default {
       properties: {
         type_of_learner: {
           type: "string",
-          label: "TYPE_OF_LEARNER",
+          title: "TYPE_OF_LEARNER",
+          description: "TYPE_OF_LEARNER",
           format: "select",
         },
         alreadyOpenLabel: {
@@ -48,7 +49,7 @@ export default {
         education_10th_date: {
           type: "string",
           format: "date",
-          label: "REGISTERED_IN_TENTH_DATE",
+          description: "REGISTERED_IN_TENTH_DATE",
         },
         education_10th_exam_year: {
           type: "string",
@@ -57,7 +58,7 @@ export default {
         },
 
         learning_level: {
-          label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+          description: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
           type: "string",
           format: "RadioBtn",
         },

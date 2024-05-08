@@ -1,5 +1,6 @@
 import {
   CardComponent,
+  FrontEndTypo,
   Layout,
   arrList,
   benificiaryRegistoryService,
@@ -334,6 +335,9 @@ export default function BenificiaryAddress(userTokenInfo) {
       facilitator={facilitator}
     >
       <VStack bg="white" p={"11px"}>
+        <FrontEndTypo.H1 fontWeight="600" mb="3" mt="3">
+          {t("ADDRESS_DETAILS")}
+        </FrontEndTypo.H1>
         <CardComponent
           _vstack={{ space: 0 }}
           _hstack={{ borderBottomWidth: 0 }}

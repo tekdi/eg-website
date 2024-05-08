@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CheckIcon,
+  Checkbox,
   FormControl,
   HStack,
   Image,
@@ -25,6 +26,7 @@ import {
   chunk,
   CustomRadio,
   useLocationData,
+  H1,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -96,9 +98,14 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
     <VStack pb="3">
-      <BodySmall id={id} color="textMaroonColor.400">
+      <FrontEndTypo.H3
+        id={id}
+        fontWeight="600"
+        lineHeight="21px"
+        color="textGreyColor.750"
+      >
         {t(description)}
-      </BodySmall>
+      </FrontEndTypo.H3>
     </VStack>
   );
 };
@@ -216,7 +223,7 @@ export const FieldTemplate = ({
   return (
     <VStack
       style={style}
-      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
     >
       {(!schema?.format ||
         !["hidden", "CheckUncheck"].includes(schema?.format)) &&
@@ -225,9 +232,13 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <H2 color="textMaroonColor.400">
+                  <FrontEndTypo.H1
+                    fontSize="20px"
+                    color="textGreyColor.900"
+                    fontWeight="600"
+                  >
                     {t(schema?.label ? schema?.label : label)}
-                  </H2>
+                  </FrontEndTypo.H1>
                   <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
                 </HStack>
               </label>
@@ -446,13 +457,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
             fontWeight="400"
           >
             {t(label || title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}
@@ -799,13 +804,7 @@ const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
         >
           <Text fontSize="12" fontWeight="400">
             {t(title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}

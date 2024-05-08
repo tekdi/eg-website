@@ -1,5 +1,6 @@
 import {
   CardComponent,
+  FrontEndTypo,
   Layout,
   arrList,
   benificiaryRegistoryService,
@@ -306,6 +307,9 @@ export default function PcrView(userTokenInfo) {
       facilitator={facilitator}
     >
       <Box p="5">
+        <FrontEndTypo.H1 fontWeight="600" mb="3">
+          {t("PCR_DETAILS")}
+        </FrontEndTypo.H1>
         <CardComponent
           // {...(!data?.endline_learning_level
           //   ? { onEdit: (e) => navigate(`/beneficiary/${id}/pcrdetails`) }

@@ -63,7 +63,11 @@ export default function Profile({ userTokenInfo, footerLinks }) {
         onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
+        profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
       }}
+      facilitator={facilitator}
       _footer={{ menues: footerLinks }}
     >
       <VStack pb="10">
