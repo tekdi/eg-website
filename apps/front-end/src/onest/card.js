@@ -77,6 +77,15 @@ export const dataConfig = {
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: "https://eg-content-dev-api.tekdinext.com",
     apiResponce: (e) => e.data.data.kahani_cache_dev,
+    getTrackData: async (e) => {
+      const data = {
+        context: e?.type || "",
+        context_item_id: e?.itemId,
+        user_id: e?.user_id,
+      };
+      let result = await OnestService.getList({ filter: data });
+      return result?.data?.[0];
+    },
     onOrderIdGenerate: async (val) => {
       const paramData = { url: "", type: "" };
       paramData.url =
@@ -93,7 +102,6 @@ export const dataConfig = {
           paramData.type = item.value;
         }
       });
-      console.log(paramData);
       const data = {
         user_id: val.userData.user_id,
         context: val.type,
@@ -102,7 +110,7 @@ export const dataConfig = {
         order_id: val.response.responses[0].message.order.id,
         params: paramData,
       };
-      let response = await OnestService.create(data);
+      await OnestService.create(data);
     },
   },
 };
