@@ -95,7 +95,6 @@ const List = () => {
   }, [filter]);
 
   const handleFilter = (key, value) => {
-    console.log(key, value);
     setFilter((e) => ({
       ...e,
       [key]: value,
@@ -111,7 +110,6 @@ const List = () => {
     // In real application, replace this with actual API call
 
     // Update state with new data
-    console.log("hello");
     setFilterCardData(paginateArray(cardData, 10, page));
 
     // Increment page number

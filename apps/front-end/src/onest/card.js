@@ -77,7 +77,6 @@ export const dataConfig = {
     apiLink_API_BASE_URL: "https://eg-content-dev-api.tekdinext.com",
     apiResponce: (e) => e.data.data.kahani_cache_dev,
     getTrackData: async (e) => {
-      console.log(e);
       const data = {
         context: e?.type || "",
         context_item_id: e?.itemId,

@@ -360,7 +360,6 @@ const MediaPage = () => {
                   if (item.descriptor.code === "urlType") {
                     let urlTypeValue = item.value;
                     setUrlType(urlTypeValue);
-                    console.log("urlTypeValue", urlTypeValue);
                   }
                 });
               });
