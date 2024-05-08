@@ -84,6 +84,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
               </Radio.Group>
             ))}
           </HStack>
+          {console.log(filter)}
           {filter?.selectedId && (
             <DatePicker setFilter={setFilter} filter={filter} />
           )}

@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 
-const ExamAttendanceView = ({ footerLinks }) => {
+const ExamResultReport = ({ footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const [tableData, setTableData] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
-      const data = await organisationService.attendanceReport();
+      const data = await organisationService.examResultReport();
       setTableData(data?.data);
       setLoading(false);
     };
@@ -53,28 +53,23 @@ const ExamAttendanceView = ({ footerLinks }) => {
 
   const columns = (t) => [
     {
-      name: t("SUBJECT"),
-      cell: (row) => t(row?.name),
+      name: t("NO_OF_LEARNERS"),
+      cell: (row) => t(row?.total_learners),
       wrap: true,
     },
     {
-      name: t("TOTAL_STUDENTS"),
-      cell: (row) => t(row?.total_students),
+      name: t("BENEFICIARY_STATUS_10TH_PASSED"),
+      cell: (row) => t(row?.tenth_passed),
       wrap: true,
     },
     {
-      name: t("A_PRESENT"),
-      cell: (row) => t(row?.present),
+      name: t("BENEFICIARY_STATUS_PRAGATI_SYC"),
+      cell: (row) => t(row?.pragati_syc),
       wrap: true,
     },
     {
-      name: t("ABSENT"),
-      cell: (row) => t(row?.absent),
-      wrap: true,
-    },
-    {
-      name: t("NOT_MARKED"),
-      cell: (row) => t(row?.not_marked),
+      name: t("RESULT_UPLOAD_PENDING"),
+      cell: (row) => t(row?.not_uploaded),
       wrap: true,
     },
   ];
@@ -82,7 +77,7 @@ const ExamAttendanceView = ({ footerLinks }) => {
     <Layout loading={loading} _footer={{ menues: footerLinks }}>
       <VStack bg="primary.50" p="5" space={4} style={{ zIndex: -1 }}>
         <FrontEndTypo.H2 color="textMaroonColor.400">
-          {t("LEARNER_EXAM_ATTENDANCE_OVERVIEW")}
+          {t("LEARNER_EXAM_RESULTS_OVERVIEW")}
         </FrontEndTypo.H2>
         <Stack width={"100%"}>
           <DataTable
@@ -94,14 +89,14 @@ const ExamAttendanceView = ({ footerLinks }) => {
         </Stack>
         <FrontEndTypo.Primarybutton
           onPress={(e) => {
-            navigate(`/examattendance`);
+            navigate(`/examresult`);
           }}
         >
-          {t("MARK_LEARNER_EXAM_ATTENDANCE")}
+          {t("UPDATE_LEARNER_EXAM_RESULTS")}
         </FrontEndTypo.Primarybutton>
       </VStack>
     </Layout>
   );
 };
 
-export default ExamAttendanceView;
+export default ExamResultReport;
