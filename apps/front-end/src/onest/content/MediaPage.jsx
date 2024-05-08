@@ -109,7 +109,6 @@ const MediaPage = () => {
   }, []);
 
   const getSelectDetails = async (info) => {
-    console.log("asdasd");
     try {
       //setIsLoading(true);
       const response = await fetch(`${baseUrl}/select`, {
@@ -163,10 +162,9 @@ const MediaPage = () => {
         fetchInitDetails();
       }
     } catch (error) {
-      setIsLoading(false);
       console.error("Error fetching job details:", error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -251,7 +249,6 @@ const MediaPage = () => {
       }
       // Handle the response as needed
     } catch (error) {
-      setIsLoading(false);
       console.error("Error submitting form:", error);
     } finally {
       setTimeout(() => {
@@ -496,12 +493,12 @@ const MediaPage = () => {
         }
       }
     } catch (error) {
-      setIsLoading(false);
       errorMessage(
         t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
       );
       console.error("Error submitting form:", error);
     } finally {
+      setIsLoading(false);
       // setTimeout(() => {
       //   setIsLoading(false);
       // }, 20000);

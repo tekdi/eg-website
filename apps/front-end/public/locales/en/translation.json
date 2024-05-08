@@ -684,6 +684,10 @@
   "EXISTING_USER": "Existing User",
   "EXPERIENCE": "Experience",
   "EXPERIENCE_IN_YEARS": "Experience in years",
+  "EXPIRY_CONTENT": {
+    "HEADING": "Warning",
+    "MESSAGE": "The data you are trying to access has expired. Please visit home page"
+  },
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "Explain your claim of the AG Learner",
   "EXPORT": "Export",
   "EXAM_NOT_STARTED_YET": "Exam not started yet",

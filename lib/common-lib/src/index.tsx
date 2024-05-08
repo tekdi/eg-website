@@ -37,6 +37,7 @@ import CheatSheet from './components/CheatSheet'
 import CustomOTPBox from './components/CustomOTPBox'
 import * as eventService from './services/EventService'
 import * as aadhaarService from './services/aadhaarService'
+import * as OnestService from './services/OnestService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
 import ItemComponent from './components/ItemComponent'
@@ -109,7 +110,8 @@ export {
   GeoLocation,
   useLocationData,
   SunbirdPlayer,
-  GATrackPageView
+  GATrackPageView,
+  OnestService
 }
 
 export * from './services/RestClient'

@@ -1,4 +1,4 @@
-import { FrontEndTypo } from "@shiksha/common-lib";
+import { FrontEndTypo, OnestService } from "@shiksha/common-lib";
 import { Box, Divider, HStack, Text } from "native-base";
 import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
@@ -10,10 +10,11 @@ import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "../card";
 import Loader from "./Loader";
+import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
 
 function ScholarshipView() {
-  const { type } = useParams();
+  const { type, jobId } = useParams();
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
@@ -25,8 +26,9 @@ function ScholarshipView() {
   const { t } = useTranslation();
   const [jobInfo, setJobInfo] = useState(state?.product);
   const [jobsData, setJobsData] = useState(null);
+  const [listData, setListData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
-  const { jobId } = useParams();
   const [siteUrl] = useState(window.location.href);
   const [transactionId] = useState(uuidv4());
 
@@ -43,6 +45,27 @@ function ScholarshipView() {
 
   //const jobsData  = selectJson?.responses[0]?.message?.order?.items[0]
   //console.log(jobsData);
+
+  const closeModal = () => {
+    setOpenModal(false);
+    navigate("/");
+  };
+
+  useEffect(async () => {
+    const userDataDetails = localStorage.getItem("userData");
+    const userData = JSON.parse(userDataDetails);
+    const data = {
+      context: type,
+      context_item_id: jobId,
+      user_id: userData.user_id,
+    };
+    let result = await OnestService.getList({ filter: data });
+    if (result?.data.length) {
+      setOpenModal(true);
+      setListData(result?.data);
+    }
+  }, []);
+
   function errorMessage(message) {
     toast.error(message, {
       position: toast.POSITION.BOTTOM_CENTER,
@@ -272,28 +295,37 @@ function ScholarshipView() {
           display="flex"
           justifyContent={["center", "flex-start"]}
         >
-          <FrontEndTypo.Primarybutton
-            marginTop={2}
-            marginRight={[0, 5]}
-            width={["100%", 200]}
-            colorScheme="blue"
-            variant="solid"
-            backgroundColor="blue.500"
-            color="white"
-            onPress={() => {
-              navigate(
-                `/${envConfig?.listLink}/automatedForm/${jobId}/${transactionId}`,
-                {
-                  state: {
-                    jobDetails: jobDetails,
-                  },
-                }
-              );
-              trackReactGA();
-            }}
-          >
-            {t("Apply")}
-          </FrontEndTypo.Primarybutton>
+          {listData.length ? (
+            <OrderSuccessModal
+              isOpen={openModal}
+              onClose={closeModal}
+              orderId={listData[0]?.order_id}
+              message={"You have already applied for this scholarship"}
+            />
+          ) : (
+            <FrontEndTypo.Primarybutton
+              marginTop={2}
+              marginRight={[0, 5]}
+              width={["100%", 200]}
+              colorScheme="blue"
+              variant="solid"
+              backgroundColor="blue.500"
+              color="white"
+              onPress={() => {
+                navigate(
+                  `/${envConfig?.listLink}/automatedForm/${jobId}/${transactionId}`,
+                  {
+                    state: {
+                      jobDetails: jobDetails,
+                    },
+                  }
+                );
+                trackReactGA();
+              }}
+            >
+              {t("Apply")}
+            </FrontEndTypo.Primarybutton>
+          )}
         </Box>
       </Box>
 
