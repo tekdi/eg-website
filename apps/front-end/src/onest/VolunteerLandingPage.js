@@ -27,6 +27,7 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
         "Date Of Birth": authUser?.dob,
         birth_date: authUser?.dob,
         "mobile number": authUser?.mobile,
+        phone: authUser?.mobile,
         contact: authUser?.mobile,
         Address,
         createdAt: moment().format("YYYY-MM-DD HH:mm"),

@@ -1,6 +1,6 @@
 import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
 import axios from "axios";
-import { Alert, Box, Flex, Text, useToast } from "native-base";
+import { Alert, Box, HStack, Link, Text, VStack, useToast } from "native-base";
 import { dataConfig } from "onest/card";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,10 +28,12 @@ const MediaPage = () => {
   const [story, setStory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState(null);
-  const [product, setProduct] = useState(state?.product);
+  const [product, setProduct] = useState();
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
   const toast = useToast();
+  const [urlType, setUrlType] = useState("");
+  const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
     const url = window.location.href;
@@ -68,40 +70,77 @@ const MediaPage = () => {
   }, []);
 
   useEffect(() => {
-    if (state && localStorage.getItem("details")) {
-      fetchInitDetails();
-    } else {
-      var requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ item_id: itemId }),
-      };
+    const fetchData = async () => {
+      const userDataString = localStorage.getItem("userData");
+      const userData = JSON.parse(userDataString);
+      let trackData;
+      if (envConfig?.getTrackData) {
+        trackData = await envConfig.getTrackData({
+          type,
+          itemId,
+          transactionId,
+          user_id: userData?.user_id,
+        });
+      }
+      if (trackData?.params?.type) {
+        let product = JSON.parse(localStorage.getItem("searchProduct"));
+        let obj = {
+          item_id: itemId,
+          title: product.title || "",
+          description: product.description || "",
+          provider_id: product.provider_id || "",
+          provider_name: product.provider_name || "",
+          bpp_id: product.bpp_id || "",
+          bpp_uri: product.bpp_uri || "",
+          icon: product.icon || "",
+          descriptionshort: product.shortDescription || "",
+          media_url: trackData?.params?.url,
+        };
+        setStory([obj]);
+        setUrlType(trackData?.params?.type);
+      } else if (state && userData) {
+        fetchInitDetails();
+        let productData = JSON.parse(localStorage.getItem("searchProduct"));
+        setProduct(productData);
+      } else {
+        var requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ item_id: itemId }),
+        };
 
-      fetch(`${baseUrl}/content/search`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => {
-          result = JSON.parse(result);
-          // setJobInfo(result?.data[db_cache][0]);
-          localStorage.setItem(
-            "unique_id",
-            result?.data[db_cache][0]?.unique_id
-          );
-          setProduct(result?.data[db_cache][0]);
+        fetch(`${baseUrl}/content/search`, requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            result = JSON.parse(result);
+            // setJobInfo(result?.data[db_cache][0]);
+            localStorage.setItem(
+              "unique_id",
+              result?.data[db_cache][0]?.unique_id
+            );
+            setProduct(result?.data[db_cache][0]);
+            localStorage.setItem(
+              "searchProduct",
+              JSON.stringify(result?.data[db_cache][0])
+            );
+            localStorage.setItem(
+              "image_url",
+              result?.data[db_cache][0].image_url
+            );
 
-          let data = JSON.parse(localStorage.getItem("details"));
-          if (data && data?.responses.length) {
-            fetchInitDetails();
-
-            let usrtemp = localStorage.getItem("userData");
-          } else {
-            getSelectDetails(result?.data[db_cache][0]);
-          }
-        })
-        .catch((error) => console.error("error", error));
-    }
-    // fetchConfirmMedia();
+            let data = JSON.parse(localStorage.getItem("details"));
+            if (data && data?.responses.length) {
+              fetchInitDetails();
+            } else {
+              getSelectDetails(result?.data[db_cache][0]);
+            }
+          })
+          .catch((error) => console.error("error", error));
+      }
+    };
+    fetchData();
   }, []);
 
   const getSelectDetails = async (info) => {
@@ -122,7 +161,6 @@ const MediaPage = () => {
             bpp_id: info?.bpp_id,
             bpp_uri: info?.bpp_uri,
             transaction_id: transactionId,
-            // message_id: "06974a96-e996-4e22-9265-230f69f22f57",
             message_id: uuidv4(),
             timestamp: new Date().toISOString(),
           },
@@ -268,7 +306,6 @@ const MediaPage = () => {
           bpp_id: details?.context?.bpp_id,
           bpp_uri: details?.context?.bpp_uri,
           transaction_id: transactionId,
-          // message_id: "63c7e762-787e-4808-a4d6-5260c0d6272d",
           message_id: uuidv4(),
           timestamp: new Date().toISOString(),
         },
@@ -317,6 +354,17 @@ const MediaPage = () => {
             if (responseItem?.message && responseItem?.message?.order) {
               const order = responseItem?.message.order;
               let appId = responseItem.message.order.id;
+
+              order.items[0].tags.forEach((tag) => {
+                tag.descriptor.list.forEach((item) => {
+                  if (item.descriptor.code === "urlType") {
+                    let urlTypeValue = item.value;
+                    setUrlType(urlTypeValue);
+                  }
+                });
+              });
+
+              setOrderId(appId);
               window?.parent?.postMessage({ orderId: appId }, "*");
               if (order.items) {
                 const items = order.items;
@@ -330,16 +378,20 @@ const MediaPage = () => {
                     ) {
                       mediaUrl = item["add-ons"][0]?.descriptor.media[0].url;
                     }
+
+                    let product = JSON.parse(
+                      localStorage.getItem("searchProduct")
+                    );
                     let obj = {
                       item_id: item.id,
-                      title: state.product.title || "",
-                      description: state.product.description || "",
-                      provider_id: state.product.provider_id || "",
-                      provider_name: state.product.provider_name || "",
-                      bpp_id: state.product.bpp_id || "",
-                      bpp_uri: state.product.bpp_uri || "",
-                      icon: state.product.icon || "",
-                      descriptionshort: state.product.shortDescription || "",
+                      title: product.title || "",
+                      description: product.description || "",
+                      provider_id: product.provider_id || "",
+                      provider_name: product.provider_name || "",
+                      bpp_id: product.bpp_id || "",
+                      bpp_uri: product.bpp_uri || "",
+                      icon: product.icon || "",
+                      descriptionshort: product.shortDescription || "",
                       media_url: mediaUrl,
                     };
                     arrayOfObjects.push(obj);
@@ -362,9 +414,15 @@ const MediaPage = () => {
           setIsLoading(false);
         }, 1000);
       } else {
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
         console.error("No valid responses found.");
       }
     } catch (error) {
+      errorMessage(
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+      );
       console.error("Error fetching details:", error);
     } finally {
       setIsLoading(false);
@@ -387,12 +445,8 @@ const MediaPage = () => {
           version: "1.1.0",
           bpp_id: details?.context?.bpp_id,
           bpp_uri: details?.context?.bpp_uri,
-          // bpp_id: "kahani-bpp.tekdinext.com",
-          // bpp_uri: "https://kahani-bpp.tekdinext.com/",
           transaction_id: transactionId,
-          // message_id: "63c7e762-787e-4808-a4d6-5260c0d6272d",
           message_id: uuidv4(),
-          // "message_id": "25a91940-e10c-47a6-a9cf-f39434d686e2",
           timestamp: new Date().toISOString(),
         },
         message: {
@@ -691,14 +745,6 @@ const MediaPage = () => {
   return (
     <Layout>
       <Box p={4}>
-        <Flex justify="space-between" alignItems="center" mb={4}>
-          <Box flex="1"></Box>
-          <Box>
-            <FrontEndTypo.Primarybutton onPress={handleBack}>
-              Back
-            </FrontEndTypo.Primarybutton>
-          </Box>
-        </Flex>
         {!story.length && (
           <Box margin={4}>
             <div id="formContainer"></div>
@@ -734,50 +780,120 @@ const MediaPage = () => {
             </Box>
           </div>
         ) : (
-          <>
-            {story.map((item, index) => {
-              const mediaUrl = item.media_url;
-              if (mediaUrl.endsWith(".mp3")) {
+          story.map((item, index) => {
+            const mediaUrl = item.media_url;
+            if (urlType == "Embed") {
+              if (
+                mediaUrl.includes("youtube.com") ||
+                mediaUrl.includes("youtu.be")
+              ) {
+                return (
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is{" "}
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <YouTubeEmbed key={index} url={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".mp3")) {
                 // MP3 audio
                 return (
-                  <Box pt={2} pb={20}>
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is{" "}
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
                     <AudioPlayer key={index} mediaUrl={mediaUrl} />
-                  </Box>
+                  </VStack>
                 );
               } else if (mediaUrl.endsWith(".pdf")) {
                 // PDF document
                 return (
-                  <Box pt={2} pb={20}>
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is{" "}
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
                     <PDFViewer key={index} src={mediaUrl} />
-                  </Box>
-                );
-              } else if (
-                mediaUrl.includes("youtube.com") ||
-                mediaUrl.includes("youtu.be")
-              ) {
-                // YouTube video
-                return (
-                  <Box pt={2} pb={20}>
-                    <YouTubeEmbed key={index} url={mediaUrl} />
-                  </Box>
+                  </VStack>
                 );
               } else if (mediaUrl.endsWith(".mp4")) {
                 // MP4 video
                 return (
-                  <Box pt={2} pb={20}>
+                  <VStack pt={2} pb={20}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
                     <VideoPlayer key={index} url={mediaUrl} />
-                  </Box>
+                  </VStack>
                 );
               } else {
-                // External website content
                 return (
-                  <Box pt={2} pb={20}>
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
                     <ExternalLink key={index} url={mediaUrl} />
-                  </Box>
+                  </VStack>
                 );
               }
-            })}
-          </>
+            } else {
+              return (
+                // <ExternalLink key={index} url={mediaUrl} />
+                <VStack pt={2} pb={20} mt={20} mb={150}>
+                  <Box maxW={"300px"} maxH={"300px"}>
+                    <img
+                      width={"auto"}
+                      height={"auto"}
+                      maxW={"300px"}
+                      maxH={"300px"}
+                      src={product?.image_url}
+                      alt="Product"
+                    />
+                  </Box>
+                  <Text fontSize={22} py={15} fontWeight={500}>
+                    Thanks for Subscribing ! Your Subscription Id for this
+                    course is
+                    <span>
+                      <b>{orderId}</b>
+                    </span>
+                  </Text>
+                  <Text fontSize={22} p={15} fontWeight={500}>
+                    Please use the below link to access the learning materials.
+                  </Text>
+                  <Link
+                    isExternal // Open link in new tab
+                    rel="noopener noreferrer"
+                    _text={{
+                      color: "blue.400",
+                      fontSize: "20px",
+                    }}
+                    href={mediaUrl}
+                  >
+                    {mediaUrl}
+                  </Link>
+                </VStack>
+              );
+            }
+          })
         )}
       </Box>
     </Layout>
