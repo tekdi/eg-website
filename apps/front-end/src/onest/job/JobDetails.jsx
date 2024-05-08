@@ -16,6 +16,7 @@ import { registerTelementry } from "../api/Apicall";
 import Loader from "./Loader";
 import "./Shared.css";
 import { dataConfig } from "../card";
+import { FrontEndTypo, Loading } from "@shiksha/common-lib";
 
 function JobDetails() {
   const { jobId, type } = useParams();
@@ -214,6 +215,10 @@ function JobDetails() {
     }
   }, [transactionId]); // Runs only once when the component mounts
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div>
       <Box
@@ -310,7 +315,7 @@ function JobDetails() {
           display="flex"
           justifyContent={["center", "flex-start"]}
         >
-          <Button
+          <FrontEndTypo.Primarybutton
             marginTop={2}
             marginRight={[0, 5]}
             width={["100%", 200]}
@@ -331,7 +336,7 @@ function JobDetails() {
             }}
           >
             {t("Apply")}
-          </Button>
+          </FrontEndTypo.Primarybutton>
         </Box>
       </Box>
 
