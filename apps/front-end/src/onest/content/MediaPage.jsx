@@ -780,123 +780,120 @@ const MediaPage = () => {
             </Box>
           </div>
         ) : (
-          <>
-            {story.map((item, index) => {
-              const mediaUrl = item.media_url;
-              if (urlType == "Embed") {
-                if (
-                  mediaUrl.includes("youtube.com") ||
-                  mediaUrl.includes("youtu.be")
-                ) {
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text fontSize={22} p={15} fontWeight={500}>
-                        Thanks for Subscribing ! Your Subscription Id for this
-                        resources is{" "}
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <YouTubeEmbed key={index} url={mediaUrl} />
-                    </VStack>
-                  );
-                } else if (mediaUrl.endsWith(".mp3")) {
-                  // MP3 audio
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text fontSize={22} p={15} fontWeight={500}>
-                        Thanks for Subscribing ! Your Subscription Id for this
-                        resources is{" "}
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <AudioPlayer key={index} mediaUrl={mediaUrl} />
-                    </VStack>
-                  );
-                } else if (mediaUrl.endsWith(".pdf")) {
-                  // PDF document
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text fontSize={22} p={15} fontWeight={500}>
-                        Thanks for Subscribing ! Your Subscription Id for this
-                        resources is{" "}
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <PDFViewer key={index} src={mediaUrl} />
-                    </VStack>
-                  );
-                } else if (mediaUrl.endsWith(".mp4")) {
-                  // MP4 video
-                  return (
-                    <VStack pt={2} pb={20}>
-                      <Text fontSize={22} p={15} fontWeight={500}>
-                        Thanks for Subscribing ! Your Subscription Id for this
-                        resources is
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <VideoPlayer key={index} url={mediaUrl} />
-                    </VStack>
-                  );
-                } else {
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text fontSize={22} p={15} fontWeight={500}>
-                        Thanks for Subscribing ! Your Subscription Id for this
-                        resources is
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <ExternalLink key={index} url={mediaUrl} />
-                    </VStack>
-                  );
-                }
-              } else {
+          story.map((item, index) => {
+            const mediaUrl = item.media_url;
+            if (urlType == "Embed") {
+              if (
+                mediaUrl.includes("youtube.com") ||
+                mediaUrl.includes("youtu.be")
+              ) {
                 return (
-                  // <ExternalLink key={index} url={mediaUrl} />
-                  <VStack pt={2} pb={20} mt={20} mb={150}>
-                    <Box maxW={"300px"} maxH={"300px"}>
-                      <img
-                        width={"auto"}
-                        height={"auto"}
-                        maxW={"300px"}
-                        maxH={"300px"}
-                        src={product?.image_url}
-                        alt="Product"
-                      />
-                    </Box>
-                    <Text fontSize={22} py={15} fontWeight={500}>
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
                       Thanks for Subscribing ! Your Subscription Id for this
-                      course is
+                      resources is{" "}
                       <span>
                         <b>{orderId}</b>
                       </span>
                     </Text>
+                    <YouTubeEmbed key={index} url={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".mp3")) {
+                // MP3 audio
+                return (
+                  <VStack pt={2} pb={20} mb={120}>
                     <Text fontSize={22} p={15} fontWeight={500}>
-                      Please use the below link to access the learning
-                      materials.
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is{" "}
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
                     </Text>
-                    <Link
-                      isExternal // Open link in new tab
-                      rel="noopener noreferrer"
-                      _text={{
-                        color: "blue.400",
-                        fontSize: "20px",
-                      }}
-                      href={mediaUrl}
-                    >
-                      {mediaUrl}
-                    </Link>
+                    <AudioPlayer key={index} mediaUrl={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".pdf")) {
+                // PDF document
+                return (
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is{" "}
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <PDFViewer key={index} src={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".mp4")) {
+                // MP4 video
+                return (
+                  <VStack pt={2} pb={20}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <VideoPlayer key={index} url={mediaUrl} />
+                  </VStack>
+                );
+              } else {
+                return (
+                  <VStack pt={2} pb={20} mb={120}>
+                    <Text fontSize={22} p={15} fontWeight={500}>
+                      Thanks for Subscribing ! Your Subscription Id for this
+                      resources is
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <ExternalLink key={index} url={mediaUrl} />
                   </VStack>
                 );
               }
-            })}
-          </>
+            } else {
+              return (
+                // <ExternalLink key={index} url={mediaUrl} />
+                <VStack pt={2} pb={20} mt={20} mb={150}>
+                  <Box maxW={"300px"} maxH={"300px"}>
+                    <img
+                      width={"auto"}
+                      height={"auto"}
+                      maxW={"300px"}
+                      maxH={"300px"}
+                      src={product?.image_url}
+                      alt="Product"
+                    />
+                  </Box>
+                  <Text fontSize={22} py={15} fontWeight={500}>
+                    Thanks for Subscribing ! Your Subscription Id for this
+                    course is
+                    <span>
+                      <b>{orderId}</b>
+                    </span>
+                  </Text>
+                  <Text fontSize={22} p={15} fontWeight={500}>
+                    Please use the below link to access the learning materials.
+                  </Text>
+                  <Link
+                    isExternal // Open link in new tab
+                    rel="noopener noreferrer"
+                    _text={{
+                      color: "blue.400",
+                      fontSize: "20px",
+                    }}
+                    href={mediaUrl}
+                  >
+                    {mediaUrl}
+                  </Link>
+                </VStack>
+              );
+            }
+          })
         )}
       </Box>
     </Layout>
