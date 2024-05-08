@@ -1,10 +1,16 @@
-import { Box, Button, Divider, HStack, Text } from "native-base";
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  HStack,
+  Text,
+  useToast,
+} from "native-base";
 import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
 import Loader from "./Loader";
@@ -29,17 +35,23 @@ function JobDetails() {
   const [siteUrl, setSiteUrl] = useState(window.location.href);
 
   let [transactionId, settransactionId] = useState(state?.transactionId);
-  console.log(transactionId);
-  //const jobsData  = selectJson?.responses[0]?.message?.order?.items[0]
-  //console.log(jobsData);
+  const toast = useToast();
+
   function errorMessage(message) {
-    toast.error(message, {
-      position: toast.POSITION.BOTTOM_CENTER,
-      autoClose: 5000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
+      },
     });
   }
 
@@ -93,7 +105,13 @@ function JobDetails() {
       const data = await response.json();
       data["context"]["message_id"] = transactionId;
       setJobDetails(data);
-      setJobsData(data?.responses[0]?.message?.order?.items[0]);
+      if (data?.responses[0]?.message?.order?.items[0]) {
+        setJobsData(data?.responses[0]?.message?.order?.items[0]);
+      } else {
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
+      }
       localStorage.setItem("selectRes", JSON.stringify(data));
       if (!data?.responses.length) {
         errorMessage(

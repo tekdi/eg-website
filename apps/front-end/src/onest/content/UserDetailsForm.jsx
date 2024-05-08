@@ -10,6 +10,7 @@ import {
   FormHelperText,
 } from "native-base";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Layout } from "@shiksha/common-lib";
 
 const UserDetailsForm = () => {
   const location = useLocation();
@@ -52,7 +53,7 @@ const UserDetailsForm = () => {
   };
 
   return (
-    <>
+    <Layout>
       {isLoading ? (
         <div
           style={{
@@ -146,7 +147,7 @@ const UserDetailsForm = () => {
           </form>
         </Box>
       )}
-    </>
+    </Layout>
   );
 };
 

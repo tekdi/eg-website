@@ -1,12 +1,12 @@
 // AutomatedForm.js
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
 
-import { Layout } from "@shiksha/common-lib";
+import { Layout, FrontEndTypo } from "@shiksha/common-lib";
 import axios from "axios";
 import {
   Box,
@@ -16,25 +16,31 @@ import {
   FormLabel,
   Input,
   Select,
+  Modal,
+  HStack,
+  VStack,
+  useToast,
+  Alert,
 } from "native-base";
 import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { registerTelementry } from "../api/Apicall";
+import moment from "moment";
 
 const AutomatedForm = () => {
   const location = useLocation();
+  const { jobId, transactionId, type } = useParams();
   const state = location?.state;
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
 
-  const { type } = useParams();
   const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
@@ -45,14 +51,12 @@ const AutomatedForm = () => {
 
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
-  const [siteUrl, setSiteUrl] = useState(window.location.href);
+  // const [siteUrl, setSiteUrl] = useState(window.location.href);
+  const toast = useToast();
 
-  const { jobId } = useParams();
-  const { transactionId } = useParams();
-
-  useEffect(() => {
-    // registerTelementry(siteUrl, transactionId);
-  }, []);
+  // useEffect(() => {
+  //   registerTelementry(siteUrl, transactionId);
+  // }, []);
 
   useEffect(() => {
     const url = window.location.href;
@@ -208,6 +212,14 @@ const AutomatedForm = () => {
       })
       .then((response) => {
         console.log("Response:", response.data);
+        if (envConfig?.onOrderIdGenerate) {
+          envConfig?.onOrderIdGenerate({
+            response,
+            userData,
+            jobId,
+            type,
+          });
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -451,13 +463,20 @@ const AutomatedForm = () => {
   };
 
   function errorMessage(message) {
-    toast.error(message, {
-      position: toast.POSITION.BOTTOM_CENTER,
-      autoClose: 5000,
-      hideProgressBar: false,
-      theme: "colored",
+    toast.show({
+      duration: 5000,
       pauseOnHover: true,
-      toastClassName: "full-width-toast",
+      variant: "solid",
+      render: () => {
+        return (
+          <Alert w="100%" status={"error"}>
+            <HStack space={2} alignItems={"center"}>
+              <Alert.Icon color={type} />
+              <FrontEndTypo.H3 color={type}>{message}</FrontEndTypo.H3>
+            </HStack>
+          </Alert>
+        );
+      },
     });
   }
 
@@ -642,64 +661,6 @@ const AutomatedForm = () => {
       }
       console.error("Error submitting form:", error);
     }
-
-    /* try {
-       await fetch(action, {
-         method: "POST",
-         headers: {
-           'Content-Type': 'multipart/form-data',
-                 },
-         body: urlencoded,
-       })
-         .then((response) => response.text())
-         .then((result) => {
-           if(result){
-           localStorage.setItem('submissionId', result)
-           setTimeout(() => {
-             fetchInitDetails();
-             // getInitJson();
-           }, 7000);
-         }
- 
-         })
-         .catch((error) => {
-           console.log("error", error);
-           errorMessage(error);
-           // return;
-         });
-     } catch (error) {
-       setLoading(false);
- 
-       console.error("Error submitting form:", error);
-     } finally {
-       // setTimeout(() => {
-       //   setLoading(false);
-       // }, 30000);
-     }*/
-  };
-
-  const responseSearch = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      action: "on_init",
-      transaction_id: transactionId,
-    });
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    await fetch(`${baseUrl}/responseSearch`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        confirmDetails(JSON.parse(result));
-      })
-      .catch((error) => console.log("error", error));
   };
 
   const closeModal = () => {
@@ -774,7 +735,17 @@ const AutomatedForm = () => {
 
             const userDataString = localStorage.getItem("userData");
             const userData = JSON.parse(userDataString);
-
+            const createdDateTime = moment(
+              userData.createdAt,
+              "YYYY-MM-DD HH:mm"
+            );
+            const currentDateTime = moment();
+            const timeDiff = moment.duration(
+              currentDateTime.diff(createdDateTime)
+            );
+            if (timeDiff.asSeconds() > envConfig.expiryLimit) {
+              setOpenModal(true);
+            }
             if (userData !== null) {
               // Get all input elements in the HTML content
               const inputElements = form.querySelectorAll("input");
@@ -855,6 +826,38 @@ const AutomatedForm = () => {
       console.error("Error submitting form:", error);
     }
   };
+
+  if (openModal) {
+    return (
+      <Layout loading={loading}>
+        <Modal isOpen={openModal} size="lg">
+          <Modal.Content>
+            <Modal.Header>
+              <FrontEndTypo.H1 alignItems={"center"}>
+                {t("EXPIRY_CONTENT.HEADING")}
+              </FrontEndTypo.H1>
+            </Modal.Header>
+            <Modal.Body p="5">
+              <VStack space="4">
+                <VStack>
+                  <HStack space="4" alignItems={"center"}>
+                    <FrontEndTypo.H2 bold color="textGreyColor.550">
+                      {t("EXPIRY_CONTENT.MESSAGE")}
+                    </FrontEndTypo.H2>
+                  </HStack>
+                </VStack>
+              </VStack>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"center"}>
+              <FrontEndTypo.Primarybutton onPress={(e) => navigate(`/`)}>
+                {t("HOME_PAGE")}
+              </FrontEndTypo.Primarybutton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </Layout>
+    );
+  }
 
   return (
     <Layout loading={loading}>

@@ -1,3 +1,4 @@
+import { FrontEndTypo } from "@shiksha/common-lib";
 import { Box, Center, Text, Button, Stack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -26,14 +27,14 @@ const ExternalLink = ({ url }) => {
           }}
         ></iframe>
         <Stack direction="row" justifyContent="center" marginTop="10px">
-          <Button
+          <FrontEndTypo.Primarybutton
             size="md"
             className="custom-button"
             style={{ width: "150px" }}
-            onClick={() => window.open(url, "_blank")}
+            onPress={() => window.open(url, "_blank")}
           >
             Open in New Tab
-          </Button>
+          </FrontEndTypo.Primarybutton>
         </Stack>
       </Box>
     </Center>
