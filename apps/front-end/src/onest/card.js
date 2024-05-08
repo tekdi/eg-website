@@ -76,5 +76,32 @@ export const dataConfig = {
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: "https://eg-content-dev-api.tekdinext.com",
     apiResponce: (e) => e.data.data.kahani_cache_dev,
+    onOrderIdGenerate: async (val) => {
+      const paramData = { url: "", type: "" };
+      paramData.url =
+        val.response.responses[0].message.order.items[0][
+          "add-ons"
+        ][0].descriptor.media[0].url;
+      const list =
+        val.response.responses[0].message.order.items[0].tags[0].descriptor
+          .list;
+      list.forEach((item) => {
+        // Check if the descriptor code is "urlType"
+        if (item.descriptor.code === "urlType") {
+          // If found, extract the value associated with it
+          paramData.type = item.value;
+        }
+      });
+      console.log(paramData);
+      const data = {
+        user_id: val.userData.user_id,
+        context: val.type,
+        context_item_id: val.itemId,
+        status: "created",
+        order_id: val.response.responses[0].message.order.id,
+        params: paramData,
+      };
+      let response = await OnestService.create(data);
+    },
   },
 };
