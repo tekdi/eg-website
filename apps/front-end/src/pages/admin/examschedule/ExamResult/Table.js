@@ -6,7 +6,7 @@ import {
   uploadRegistryService,
 } from "@shiksha/common-lib";
 import { ChipStatus, ExamChipStatus } from "component/Chip";
-import { HStack, VStack, Pressable, Button, Menu } from "native-base";
+import { HStack, VStack, Pressable, Button, Menu, Modal } from "native-base";
 
 import React, {
   memo,
@@ -38,43 +38,43 @@ function Table({
   loading,
   setLoading,
   height,
+  setErrorMsg,
+  errorMsg,
 }) {
   const { t } = useTranslation();
   const [selectedData, setSelectedData] = useState();
-  const [errors, setErrors] = useState();
-  const [file, setFile] = useState();
+  const [selectedRow, setSelectedRow] = useState();
   const navigate = useNavigate();
   const uplodInputRef = useRef();
 
   const handleFileInputChange = (e) => {
-    setErrors(); // Clear any previous errors
-    const file = e.target.files[0];
-    if (file && file.size <= 1024 * 1024 * 9.5) {
-      if (file.type === "application/pdf") {
-        uploadProfile(file);
+    const resultfile = e.target.files[0];
+    if (resultfile && resultfile.size <= 1024 * 1024 * 9.5) {
+      if (resultfile.type === "application/pdf") {
+        uploadProfile(resultfile);
       }
-    } else {
-      setErrors(t("FILE_SIZE"));
     }
   };
 
-  const openFileUploadDialog = () => {
+  const openFileUploadDialog = (row) => {
+    setSelectedRow(row);
     uplodInputRef.current.click();
   };
 
-  const uploadProfile = async (file) => {
+  const uploadProfile = async (resultfile) => {
     setLoading(true);
     const form_data = new FormData();
     const item = {
-      file,
-      document_type: "exam_result",
-      document_sub_type: "result",
-      user_id: localStorage.getItem("id"), // localStorage id of the logged-in user
+      resultfile,
+      board_name: selectedRow?.bordID?.name,
+      board_id: selectedRow?.bordID?.id,
+      enrollment: selectedRow?.enrollment_number,
+      user_id: selectedRow?.beneficiary_user?.beneficiary_id, // localStorage id of the logged-in user
     };
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadFile(
+    const result = await uploadRegistryService.uploadExamResult(
       form_data,
       {},
       (progressEvent) => {
@@ -82,9 +82,10 @@ function Table({
         let percent = Math.floor((loaded * 100) / total);
       }
     );
+    if (!result?.data) {
+      setErrorMsg("ENROLLMENT_NOT_MATCH");
+    }
     setLoading(false);
-    const document_id = result?.data?.insert_documents?.returning?.[0]?.id;
-    setFile(document_id);
   };
 
   const columns = (t, navigate) => [
@@ -200,7 +201,7 @@ function Table({
                 <Menu.Item>
                   <Pressable
                     onPress={() => {
-                      openFileUploadDialog();
+                      openFileUploadDialog(row);
                     }}
                   >
                     <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>

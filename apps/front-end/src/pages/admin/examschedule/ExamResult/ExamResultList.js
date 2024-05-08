@@ -11,6 +11,7 @@ import {
   Input,
   Modal,
   Stack,
+  Alert,
 } from "native-base";
 import {
   getSelectedAcademicYear,
@@ -119,6 +120,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
   const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [errorMsg, setErrorMsg] = useState();
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -486,10 +488,26 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
                 loading={tableLoading}
                 setLoading={setLoading}
                 enumOptions={enumOptions}
+                setErrorMsg={setErrorMsg}
+                errorMsg={errorMsg}
               />
             </Box>
           </ScrollView>
         </Box>
+        <Modal isOpen={errorMsg} size="lg" onClose={() => setErrorMsg()}>
+          <Modal.Content>
+            <Modal.CloseButton />
+
+            <Modal.Body>
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  <AdminTypo.H4>{t(errorMsg)}</AdminTypo.H4>
+                </HStack>
+              </Alert>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
       </HStack>
     </Layout>
   );
