@@ -1712,9 +1712,12 @@
   "EXAM_RESULT_STATUS_SYCT": "SYCT - Subject Yet To Be Cleared in Theory",
   "EXAM_RESULT_STATUS_SYCP": "SYCP - Subject Yet To Be Cleared in Practical",
   "EXAM_RESULT_STATUS_RWH": "RWH - Result Withheld",
-  "EXAM_RESULT_STATUS_XXXX": "XXXX - Fail",
+  "EXAM_RESULT_STATUS_XXXX": "XXXX - Yet to be cleared",
   "ASSIGNED_TO_IP": "Assigned to IP",
   "SUBJECTCODE_ERROR": "Subject code not present",
   "ATTENDANCE_ALERT_MESSAGE": "There is no attendance response for all learners. Do you want to continue ?",
-  "A_PRESENT": "Present"
+  "A_PRESENT": "Present",
+  "ENROLLMENT_NOT_MATCH": "Enrollment not match",
+  "FAILED_READ_PDF": "Failed to read PDF, try again",
+  "INVALID_PDF": "Invalid PDF"
 }

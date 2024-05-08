@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Layout,
   FrontEndTypo,
   enumRegistryService,
   organisationService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio, Alert } from "native-base";
+import { HStack, VStack, Radio, Alert, Modal, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
+import { ExamChipStatus } from "component/Chip";
 
 const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -16,6 +18,9 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState();
   const [data, setData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState();
+  const [errorMsg, setErrorMsg] = useState();
+  const uplodInputRef = useRef();
 
   useEffect(async () => {
     const boardList = await enumRegistryService.boardList();
@@ -34,6 +39,49 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
       limit: "",
     });
     setData(data?.data);
+  };
+
+  const handleFileInputChange = (e) => {
+    const resultfile = e.target.files[0];
+    if (resultfile && resultfile.size <= 1024 * 1024 * 9.5) {
+      if (resultfile.type === "application/pdf") {
+        uploadProfile(resultfile);
+      }
+    }
+  };
+
+  const openFileUploadDialog = (row) => {
+    setSelectedRow(row);
+    uplodInputRef.current.click();
+  };
+
+  const uploadProfile = async (resultfile) => {
+    setLoading(true);
+    const form_data = new FormData();
+    const item = {
+      resultfile,
+      board_name: selectedRow?.bordID?.name,
+      board_id: selectedRow?.bordID?.id,
+      enrollment: selectedRow?.enrollment_number,
+      user_id: selectedRow?.beneficiary_user?.beneficiary_id, // localStorage id of the logged-in user
+    };
+    for (let key in item) {
+      form_data.append(key, item[key]);
+    }
+    const result = await uploadRegistryService.uploadExamResult(
+      form_data,
+      {},
+      (progressEvent) => {
+        const { loaded, total } = progressEvent;
+        let percent = Math.floor((loaded * 100) / total);
+      }
+    );
+    if (!result?.data) {
+      setErrorMsg(result?.message);
+    } else {
+      learnerList();
+    }
+    setLoading(false);
   };
 
   return (
@@ -97,13 +145,22 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                       </FrontEndTypo.H4>
                     </VStack>
                     {item?.beneficiary_user?.exam_results.length > 0 ? (
-                      <FrontEndTypo.H4>
-                        {item?.beneficiary_user?.exam_results?.[0]}
-                      </FrontEndTypo.H4>
+                      <ExamChipStatus
+                        status={
+                          item?.beneficiary_user?.exam_results?.[0]
+                            ?.final_result || ""
+                        }
+                      />
                     ) : (
-                      <FrontEndTypo.H3 color={"blueText.800"}>
-                        {t("UPLOAD")}
-                      </FrontEndTypo.H3>
+                      <Pressable
+                        onPress={() => {
+                          openFileUploadDialog(item);
+                        }}
+                      >
+                        <FrontEndTypo.H3 color={"blueText.800"}>
+                          {t("UPLOAD")}
+                        </FrontEndTypo.H3>
+                      </Pressable>
                     )}
                   </HStack>
                 );
@@ -111,6 +168,27 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
             </>
           )}
         </VStack>
+        <input
+          accept="application/pdf"
+          type="file"
+          style={{ display: "none" }}
+          ref={uplodInputRef}
+          onChange={handleFileInputChange}
+        />
+        <Modal isOpen={errorMsg} size="lg" onClose={() => setErrorMsg()}>
+          <Modal.Content>
+            <Modal.CloseButton />
+
+            <Modal.Body>
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  <FrontEndTypo.H4>{t(errorMsg)}</FrontEndTypo.H4>
+                </HStack>
+              </Alert>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
       </VStack>
     </Layout>
   );

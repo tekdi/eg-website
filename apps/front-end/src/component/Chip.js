@@ -178,8 +178,8 @@ export function ExamChipStatus({ width, status, ...props }) {
   const [newStatus, setNewStatus] = useState(status);
 
   useEffect(() => {
-    switch (status && status?.toLowerCase()) {
-      case "p":
+    switch (status) {
+      case "P":
         setColor("screenedColor");
         setNewStatus(t("EXAM_RESULT_STATUS_P"));
         break;
@@ -202,9 +202,6 @@ export function ExamChipStatus({ width, status, ...props }) {
       case "XXXX":
         setNewStatus(t("EXAM_RESULT_STATUS_XXXX"));
         setColor("selectedColor");
-        break;
-        setNewStatus(t("GROUPS_STATUS_NOT_REGISTERED"));
-        setColor("rejectedColor");
         break;
       default:
         setNewStatus(t("ASSIGNED_TO_IP"));
