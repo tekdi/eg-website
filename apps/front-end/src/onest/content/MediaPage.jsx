@@ -299,6 +299,16 @@ const MediaPage = () => {
       let response = result?.data;
 
       console.log("API Response:", response);
+      if (envConfig?.onOrderIdGenerate) {
+        const userDataString = localStorage.getItem("userData");
+        const userData = JSON.parse(userDataString);
+        envConfig?.onOrderIdGenerate({
+          response,
+          userData,
+          itemId,
+          type,
+        });
+      }
 
       if (response && response?.responses && response?.responses?.length > 0) {
         console.log("res length", response?.responses?.length);
