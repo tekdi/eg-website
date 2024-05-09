@@ -88,7 +88,12 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             <DatePicker setFilter={setFilter} filter={filter} />
           )}
           {filter?.date != "" && (
-            <CustomAccordion data={subjects} date={filter?.date} />
+            <CustomAccordion
+              data={subjects}
+              setFilter={setFilter}
+              setBoardList={setBoardList}
+              date={filter?.date}
+            />
           )}
         </VStack>
       </VStack>

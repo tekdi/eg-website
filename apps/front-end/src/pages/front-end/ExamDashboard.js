@@ -24,13 +24,13 @@ const ExamDashboard = ({ footerLinks }) => {
           title={"LEARNER_EXAM_ATTENDANCE"}
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_ATTENDANCE_OVERVIEW"}
-          navigation={"/examattendanceview"}
+          navigation={"/examattendancereport"}
         />
         <DashboardCard
           title={"LEARNER_EXAM_RESULTS"}
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_RESULTS_OVERVIEW"}
-          navigation={"/examresults"}
+          navigation={"/examresultreport"}
         />
       </VStack>
     </Layout>

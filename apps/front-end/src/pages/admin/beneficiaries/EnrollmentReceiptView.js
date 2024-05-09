@@ -52,9 +52,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
   const handleSetReceiptUrl = async (doc_id) => {
     setIsButtonLoading(true);
-    const newResult = await uploadRegistryService.getOne({
-      document_id: doc_id,
-    });
+    const newResult = await uploadRegistryService.getOne({});
     setReceiptUrl(newResult);
     setFileType(newResult?.key?.split(".").pop());
     setIsButtonLoading(false);

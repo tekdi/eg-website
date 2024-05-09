@@ -3,11 +3,19 @@ import {
   AdminTypo,
   tableCustomStyles,
   enumRegistryService,
+  uploadRegistryService,
 } from "@shiksha/common-lib";
-import { ChipStatus } from "component/Chip";
-import { HStack, VStack, Pressable, Button, Menu } from "native-base";
+import { ChipStatus, ExamChipStatus } from "component/Chip";
+import { HStack, VStack, Pressable, Button, Menu, Modal } from "native-base";
 
-import React, { memo, useCallback, useState, useMemo, useEffect } from "react";
+import React, {
+  memo,
+  useCallback,
+  useState,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -19,155 +27,7 @@ const dropDown = (triggerProps, t) => {
     </Pressable>
   );
 };
-
 const pagination = [10, 15, 25, 50, 100];
-
-const columns = (t, navigate) => [
-  {
-    name: t("PRERAK_ID"),
-    selector: (row) => row?.id,
-    sortable: true,
-    attr: "id",
-    wrap: true,
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("NAME"),
-    selector: (row) => (
-      <HStack display="inline-block" width={"100%"}>
-        <Pressable
-          style={{ flexDirection: "row", justifyContent: "space-between" }}
-          onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
-        >
-          {/* <HStack alignItems={"center"}> */}
-          {/* {row?.profile_photo_1?.name ? (
-                  <ImageView
-                    urlObject={row?.profile_photo_1}
-                    alt="Alternate Text"
-                    width={"35px"}
-                    height={"35px"}
-                  />
-                ) : (
-                  <IconByName
-                    isDisabled
-                    name="AccountCircleLineIcon"
-                    color="gray.300"
-                    _icon={{ size: "35" }}
-                  />
-                )} */}
-          <AdminTypo.H6 bold word-wrap="break-word">
-            {`${row?.first_name} ${row?.last_name || ""}`}
-          </AdminTypo.H6>
-          {/* </HStack> */}
-        </Pressable>
-      </HStack>
-    ),
-    attr: "name",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("DISTRICT"),
-    selector: (row) => row?.district || "-",
-    compact: true,
-  },
-  {
-    name: t("BLOCK"),
-    selector: (row) => row?.block || "-",
-    compact: true,
-  },
-
-  {
-    name: t("MOBILE_NUMBER"),
-    selector: (row) => row?.mobile,
-    attr: "mobile",
-    wrap: true,
-    compact: true,
-  },
-  {
-    name: t("STATUS"),
-    selector: (row) => (
-      <Pressable onPress={() => navigate(`/admin/facilitator/${row?.id}`)}>
-        <ChipStatus py="0.5" px="1" status={row?.program_faciltators?.status} />
-      </Pressable>
-    ),
-    wrap: true,
-    attr: "status",
-    width: "150px",
-    compact: true,
-  },
-  {
-    name: (
-      <VStack display="inline-block" width={"100%"}>
-        {t("OKYC_VERIFICATION")}
-      </VStack>
-    ),
-    // wrap: true,
-    selector: (row) => {
-      return row?.aadhar_verified === "okyc_ip_verified"
-        ? t("OKYC_IP_VERIFIED")
-        : row?.aadhar_verified === "yes"
-        ? t("YES")
-        : t("NO");
-    },
-    compact: true,
-    minWidth: "50px",
-  },
-  {
-    minWidth: "140px",
-    name: t("ACTION"),
-    selector: (row) => (
-      <Button.Group
-        isAttached
-        divider={<div style={{ background: "#333", padding: "0.5px" }} />}
-        my="1"
-        h="6"
-        rounded={"full"}
-        shadow="BlueOutlineShadow"
-        borderWidth="1px"
-      >
-        <Button
-          background="white"
-          px="1.5"
-          _text={{
-            color: "blueText.400",
-            fontSize: "12px",
-            fontWeight: "700",
-          }}
-          onPress={() => {
-            navigate(`/admin/exams/list/${row?.id}`);
-          }}
-        >
-          {t("VIEW")}
-        </Button>
-        <Menu
-          w="190"
-          placement="bottom right"
-          trigger={(triggerProps) => dropDown(triggerProps, t)}
-        >
-          <Menu.Item
-            onPress={() => {
-              navigate(`/admin/exams/list/${row?.id}`);
-            }}
-          >
-            {t("VIEW")}
-          </Menu.Item>
-          <Menu.Item
-            onPress={() => {
-              navigate(`/admin/Certification/${row?.id}`);
-            }}
-          >
-            {t("RESULTS")}
-          </Menu.Item>
-        </Menu>
-      </Button.Group>
-    ),
-    center: true,
-  },
-];
 
 // Table component
 function Table({
@@ -176,11 +36,194 @@ function Table({
   paginationTotalRows,
   data,
   loading,
+  setLoading,
   height,
+  setErrorMsg,
+  errorMsg,
 }) {
   const { t } = useTranslation();
   const [selectedData, setSelectedData] = useState();
+  const [selectedRow, setSelectedRow] = useState();
   const navigate = useNavigate();
+  const uplodInputRef = useRef();
+
+  const handleFileInputChange = (e) => {
+    const resultfile = e.target.files[0];
+    if (resultfile && resultfile.size <= 1024 * 1024 * 9.5) {
+      if (resultfile.type === "application/pdf") {
+        uploadProfile(resultfile);
+      }
+    }
+  };
+
+  const openFileUploadDialog = (row) => {
+    setSelectedRow(row);
+    uplodInputRef.current.click();
+  };
+
+  const uploadProfile = async (resultfile) => {
+    setLoading(true);
+    const form_data = new FormData();
+    const item = {
+      resultfile,
+      board_name: selectedRow?.bordID?.name,
+      board_id: selectedRow?.bordID?.id,
+      enrollment: selectedRow?.enrollment_number,
+      user_id: selectedRow?.beneficiary_user?.beneficiary_id, // localStorage id of the logged-in user
+    };
+    for (let key in item) {
+      form_data.append(key, item[key]);
+    }
+    const result = await uploadRegistryService.uploadExamResult(
+      form_data,
+      {},
+      (progressEvent) => {
+        const { loaded, total } = progressEvent;
+        let percent = Math.floor((loaded * 100) / total);
+      }
+    );
+    if (!result?.data) {
+      setErrorMsg("ENROLLMENT_NOT_MATCH");
+    }
+    setLoading(false);
+  };
+
+  const columns = (t, navigate) => [
+    {
+      name: t("LEARNERS_ID"),
+      selector: (row) => row?.beneficiary_user?.beneficiary_id,
+      sortable: true,
+      attr: "id",
+      wrap: true,
+      width: "100px",
+      compact: true,
+    },
+    {
+      name: t("LEARNERS_NAME"),
+      selector: (row) => (
+        <HStack display="inline-block" width={"100%"}>
+          <AdminTypo.H6 bold word-wrap="break-word">
+            {`${row?.beneficiary_user?.first_name} ${
+              row?.beneficiary_user?.last_name || ""
+            }`}
+          </AdminTypo.H6>
+          {/* </HStack> */}
+        </HStack>
+      ),
+      attr: "learner_name",
+      width: "150px",
+      wrap: true,
+      left: true,
+      compact: true,
+    },
+    {
+      name: t("PRERAK_ID"),
+      selector: (row) => row?.facilitator_id || "-",
+      attr: "prerak_id",
+      compact: true,
+    },
+    {
+      name: t("PRERAK_NAME"),
+      selector: (row) => (
+        <HStack display="inline-block" width={"100%"}>
+          <AdminTypo.H6 bold word-wrap="break-word">
+            {`${row?.facilitator_user?.first_name} ${
+              row?.facilitator_user?.last_name || ""
+            }`}
+          </AdminTypo.H6>
+        </HStack>
+      ),
+      attr: "prerak_name",
+      wrap: true,
+      compact: true,
+    },
+    {
+      name: t("ENROLLMENT_ID"),
+      selector: (row) => row?.enrollment_number || "-",
+      attr: "enrollment_id",
+      wrap: true,
+      compact: true,
+    },
+    {
+      name: t("STATUS"),
+      selector: (row) => (
+        <>
+          <ExamChipStatus
+            status={
+              row?.beneficiary_user?.exam_results?.[0]?.final_result || ""
+            }
+          />
+        </>
+      ),
+      attr: "enrollment_id",
+      wrap: true,
+    },
+    {
+      minWidth: "140px",
+      name: t("ACTION"),
+      selector: (row) => (
+        <Button.Group
+          isAttached
+          divider={<div style={{ background: "#333", padding: "0.5px" }} />}
+          my="1"
+          h="6"
+          p={4}
+          alignItems={"center"}
+          rounded={"full"}
+          shadow="BlueOutlineShadow"
+          borderWidth="1px"
+        >
+          {row?.beneficiary_user?.exam_results.length > 0 ? (
+            <Pressable
+              px="20px"
+              _text={{
+                color: "blueText.400",
+                fontSize: "12px",
+                fontWeight: "700",
+              }}
+              onPress={() => {
+                navigate(
+                  `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
+                  { state: { row } }
+                );
+              }}
+            >
+              <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
+            </Pressable>
+          ) : (
+            <>
+              <AdminTypo.H5>{t("UPLOAD")}</AdminTypo.H5>
+              <Menu
+                w="190"
+                placement="bottom right"
+                trigger={(triggerProps) => dropDown(triggerProps, t)}
+              >
+                <Menu.Item>
+                  <Pressable
+                    onPress={() => {
+                      openFileUploadDialog(row);
+                    }}
+                  >
+                    <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
+                  </Pressable>
+                </Menu.Item>
+                <Menu.Item
+                  onPress={() => {
+                    navigate(
+                      `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
+                    );
+                  }}
+                >
+                  <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
+                </Menu.Item>
+              </Menu>
+            </>
+          )}
+        </Button.Group>
+      ),
+      center: true,
+    },
+  ];
 
   useEffect(() => {
     const getData = async () => {
@@ -189,13 +232,6 @@ function Table({
     };
     getData();
   }, []);
-
-  const handleRowClick = useCallback(
-    (row) => {
-      navigate(`/admin/facilitator/${row?.id}`);
-    },
-    [navigate]
-  );
 
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
@@ -225,6 +261,13 @@ function Table({
               .join(" , ")
           )}
         </AdminTypo.H5>
+        <input
+          accept="application/pdf"
+          type="file"
+          style={{ display: "none" }}
+          ref={uplodInputRef}
+          onChange={handleFileInputChange}
+        />
       </VStack>
       <DataTable
         fixedHeader={true}
@@ -261,7 +304,6 @@ function Table({
           },
           [setFilter, filter]
         )}
-        onRowClicked={handleRowClick}
       />
     </VStack>
   );

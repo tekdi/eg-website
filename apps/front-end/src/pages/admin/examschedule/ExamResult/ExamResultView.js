@@ -1,75 +1,39 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   AdminTypo,
   Breadcrumb,
   AdminLayout as Layout,
   useWindowSize,
-  CardComponent,
   IconByName,
-  cohortService,
-  enumRegistryService,
-  getSelectedProgramId,
-  setSelectedProgramId,
+  organisationService,
+  ImageView,
 } from "@shiksha/common-lib";
-import { HStack, Radio, Select, Stack, VStack } from "native-base";
+import { HStack, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
+import ManualResultView from "./ManualResultView";
 
-const ExamSchedule = (footerLinks) => {
+const ExamResultView = (footerLinks) => {
+  const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
-  const { t } = useTranslation();
-  const [filter, setFilter] = useState({});
-  const [boardList, setBoardList] = useState();
-  const [programList, setProgramList] = useState();
-  const [selectedDate, setSelectedDate] = useState([]);
-  const [isDisable, setIsDisable] = useState(true);
+  const [data, setData] = useState();
+  const location = useLocation();
+  const userData = location?.state?.row;
 
-  useEffect(async () => {
-    const data = await cohortService.getProgramList();
-    setProgramList(data?.data);
-    const localData = await getSelectedProgramId();
-    if (localData === null) {
-      const obj = data?.data?.[0];
-      const defaultData = {
-        program_id: obj?.id,
-        name: obj?.name,
-        state_name: obj?.state?.state_name,
+  useEffect(() => {
+    const fetchData = async () => {
+      const obj = {
+        board_id: userData?.bordID?.id,
+        user_id: userData?.beneficiary_user?.beneficiary_id,
+        enrollment: userData?.enrollment_number,
       };
-      setSelectedProgramId(defaultData);
-    }
-    const boardList = await enumRegistryService.boardList();
-    setBoardList(boardList);
+      const data = await organisationService.resultView(obj);
+      setData(data?.data?.[0]);
+    };
+
+    fetchData();
   }, []);
-
-  const handleProgramChange = async (selectedItem) => {
-    const data = programList.find((e) => e.id == selectedItem);
-    await setSelectedProgramId({
-      program_id: data?.id,
-      program_name: data?.name,
-      state_name: data?.state?.state_name,
-    });
-    setFilter({ ...filter, program_id: selectedItem });
-  };
-
-  const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId });
-  };
-
-  const theoryExams = [
-    "Sindhi",
-    "Rajasthani",
-    "Mathematics",
-    "Data Entry Operations",
-    "Psychology",
-  ];
-  const practicalExams = [
-    "Mathematics",
-    "Data Entry Operations",
-    "Science",
-    "Painting",
-    "Home Science",
-  ];
 
   return (
     <Layout
@@ -108,45 +72,62 @@ const ExamSchedule = (footerLinks) => {
                     {t("LEARNER_EXAM_RESULT")}
                   </AdminTypo.H4>
                 ),
+                link: "/admin/exams/list",
+              },
+              {
+                title: (
+                  <AdminTypo.H4
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    bold
+                  >
+                    {"learner Name"}
+                  </AdminTypo.H4>
+                ),
               },
             ]}
           />
         </HStack>
 
-        <VStack space={4}>
-          <AdminTypo.H5 bold color="textGreyColor.500">
-            Swapnil Phalke
-          </AdminTypo.H5>
-          <HStack space={6}>
+        <HStack justifyContent={"space-between"}>
+          <VStack width={"100%"} height={"1000px"} space={4}>
             <AdminTypo.H6 bold color="textGreyColor.500">
-              {t("ENROLLMENT_NO")} : 123456789
+              {t("ENROLLMENT_NO")} : {data?.enrollment}
             </AdminTypo.H6>
-          </HStack>
-        </VStack>
-        <VStack p={4} pl={0} space={4}>
-          <HStack space={4}>
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title="Theory Exams"
-            >
-              <VStack></VStack>
-            </CardComponent>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("BOARD")} : {userData?.bordID?.name}
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("FATHER_NAME")} : {data?.father || "-"}
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("MOTHER_NAME")} : {data?.mother || "-"}
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("DOB")} : {data?.dob || "-"}
+            </AdminTypo.H6>
+            <AdminTypo.H6 bold color="textGreyColor.500">
+              {t("CLASS")} : {data?.course_class || "-"}
+            </AdminTypo.H6>
 
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ space: 0, flex: 1, bg: "light.100" }}
-              _hstack={{ borderBottomWidth: 0, p: 1 }}
-              title={t("Practical Exams")}
-            ></CardComponent>
-          </HStack>
-        </VStack>
+            {data?.document_id ? (
+              <ImageView
+                frameborder="0"
+                _box={{ flex: 1 }}
+                width="100%"
+                height="100%"
+                source={{ document_id: data?.document_id }}
+                alt="result"
+              />
+            ) : (
+              <ManualResultView data={data} />
+            )}
+          </VStack>
+        </HStack>
       </Stack>
     </Layout>
   );
 };
 
-ExamSchedule.propTypes = {};
-
-export default ExamSchedule;
+export default ExamResultView;

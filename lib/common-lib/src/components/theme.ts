@@ -644,7 +644,8 @@ const DEFAULT_THEME = {
       350: '#CAE9FF',
       400: '#084B82',
       450: '#3F8BF1',
-      700: '#004AAD'
+      700: '#004AAD',
+      800: '#004E9D'
     },
     bgPinkColor: {
       300: '#F9E9DB'
@@ -698,6 +699,7 @@ const DEFAULT_THEME = {
     droppedoutColor: '#FFACAF',
     duplicatedColor: '#E95055',
     warningColor: '#FFCF52',
+    yellowColor: '#FEFFB8',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
 

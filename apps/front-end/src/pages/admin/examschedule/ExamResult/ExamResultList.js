@@ -11,6 +11,7 @@ import {
   Input,
   Modal,
   Stack,
+  Alert,
 } from "native-base";
 import {
   getSelectedAcademicYear,
@@ -25,6 +26,7 @@ import {
   urlData,
   getOptions,
   getSelectedProgramId,
+  organisationService,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
@@ -118,6 +120,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
   const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [errorMsg, setErrorMsg] = useState();
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -138,7 +141,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
 
       let newSchema = getOptions(schemat, {
         key: "status",
-        arr: data?.data?.FACILITATOR_STATUS,
+        arr: data?.data?.EXAM_RESULT_STATUS,
         title: "title",
         value: "value",
       });
@@ -189,12 +192,12 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
     const fetchFilteredData = async () => {
       if (urlFilterApply) {
         setTableLoading(true);
-        const result = await facilitatorRegistryService.filter({
+        const result = await organisationService.examResultLearnerList({
           ...filter,
           limit: filter?.limit || 10,
         });
 
-        setData(result.data?.data);
+        setData(result.data);
         setPaginationTotalRows(result?.data?.totalCount || 0);
 
         setTableLoading(false);
@@ -483,11 +486,28 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
                 paginationTotalRows={paginationTotalRows}
                 data={data}
                 loading={tableLoading}
+                setLoading={setLoading}
                 enumOptions={enumOptions}
+                setErrorMsg={setErrorMsg}
+                errorMsg={errorMsg}
               />
             </Box>
           </ScrollView>
         </Box>
+        <Modal isOpen={errorMsg} size="lg" onClose={() => setErrorMsg()}>
+          <Modal.Content>
+            <Modal.CloseButton />
+
+            <Modal.Body>
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2">
+                  <Alert.Icon />
+                  <AdminTypo.H4>{t(errorMsg)}</AdminTypo.H4>
+                </HStack>
+              </Alert>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
       </HStack>
     </Layout>
   );
