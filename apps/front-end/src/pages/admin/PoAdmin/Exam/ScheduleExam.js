@@ -74,6 +74,7 @@ function ScheduleExam() {
     setTheorySubjects([]);
     setPracticalSubjects([]);
     setIsVisibleEdit(false);
+    setHasDraftStatus(false);
     setProgress(0);
     setEventOverallData([]);
     setPracticalEvent([]);
@@ -81,6 +82,7 @@ function ScheduleExam() {
     setFilter({ program_id: selectedItem });
     setIsDisable(true);
     setIsDisableCancelBtn(true);
+    setIsVisibleEditBtn(false);
   };
 
   const handleProgramChange = async (selectedItem) => {
@@ -94,7 +96,6 @@ function ScheduleExam() {
     setFilter({ ...filter, program_id: selectedItem });
     resetFillData(selectedItem);
     setLoading(false);
-    setHasDraftStatus(false);
   };
 
   useEffect(async () => {
@@ -182,6 +183,8 @@ function ScheduleExam() {
         return subject?.events?.some((event) => event?.status === "draft");
       });
       setHasDraftStatus(isDraft);
+    } else {
+      setIsVisibleEditBtn(false);
     }
   }, [oldSelectedData, selectedDate, hasDraftStatus]);
 
@@ -201,17 +204,9 @@ function ScheduleExam() {
   const handleSelect = (optionId, board) => {
     setFilter({ ...filter, program_id: board?.program_id, board_id: optionId });
     // Edit button visibility (current-reverse)
-    setIsVisibleEdit(false);
-    if (Array.isArray(oldSelectedData)) {
-      const isDraft = oldSelectedData.some((subject) => {
-        return subject?.events?.some((event) => event?.status === "draft");
-      });
-      setIsVisibleEditBtn(isDraft);
-    } else {
-      setIsVisibleEditBtn(false);
-    }
+    setHasDraftStatus(false);
+    setIsVisibleEditBtn(false);
   };
-
   const handleSaveButton = async () => {
     setIsDisable(true);
     const data = await organisationService.PoExamSchedule(selectedDate);
