@@ -1875,6 +1875,7 @@
   "SUBJECTCODE_ERROR": "Subject code not present",
   "ATTENDANCE_ALERT_MESSAGE": "There is no attendance response for all learners. Do you want to continue ?",
   "A_PRESENT": "Present",
+  "SCHEDULE_BANNER": "Yet To Publish",
   "ENROLLMENT_NOT_MATCH": "Enrollment not match",
   "FAILED_READ_PDF": "Failed to read PDF, try again",
   "INVALID_PDF": "Invalid PDF"
