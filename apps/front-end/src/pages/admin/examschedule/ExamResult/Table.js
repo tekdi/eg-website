@@ -5,7 +5,8 @@ import {
   enumRegistryService,
   uploadRegistryService,
 } from "@shiksha/common-lib";
-import { ChipStatus, ExamChipStatus } from "component/Chip";
+import { ChipStatus } from "component/BeneficiaryStatus";
+import { ExamChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Button, Menu, Modal } from "native-base";
 
 import React, {
@@ -145,16 +146,18 @@ function Table({
       compact: true,
     },
     {
-      name: t("STATUS"),
+      name: t("RESULT"),
       selector: (row) => (
-        <>
-          <ExamChipStatus
-            status={
-              row?.beneficiary_user?.exam_results?.[0]?.final_result || ""
-            }
-          />
-        </>
+        <ExamChipStatus
+          status={row?.beneficiary_user?.exam_results?.[0]?.final_result || ""}
+        />
       ),
+      attr: "enrollment_id",
+      wrap: true,
+    },
+    {
+      name: t("STATUS"),
+      selector: (row) => <ChipStatus status={row?.status || "-"} />,
       attr: "enrollment_id",
       wrap: true,
     },

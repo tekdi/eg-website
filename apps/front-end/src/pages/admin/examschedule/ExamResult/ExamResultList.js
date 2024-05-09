@@ -198,7 +198,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
         });
 
         setData(result.data);
-        setPaginationTotalRows(result?.data?.totalCount || 0);
+        setPaginationTotalRows(result?.totalCount || 0);
 
         setTableLoading(false);
       }
@@ -257,7 +257,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
   }, [setFilterObject]);
 
   const exportPrerakCSV = async () => {
-    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
+    await facilitatorRegistryService.exportExamResultCsv(filter);
   };
 
   const handleSearch = useCallback(
