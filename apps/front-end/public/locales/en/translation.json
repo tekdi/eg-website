@@ -1797,6 +1797,7 @@
   "Job_description_is_not_available": "Scholarship Details is not available",
   "Not_Provided": "Not Provided",
   "Thank_you_for_applying_application_number_is": " Thank you for applying! Your application number is",
+  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_APPLICATION": "You have already applied for this scholarship and the application status is",
   "NO_data_available": "No data available for the selected filters.",
   "Delay_in_fetching_the_details": "Sorry, there is a delay in fetching the details/submitting the form, Can you please try again now.",
 

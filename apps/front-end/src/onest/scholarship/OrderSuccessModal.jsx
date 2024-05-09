@@ -2,14 +2,23 @@ import React from "react";
 import { Box, Modal, Text } from "native-base";
 import { useTranslation } from "react-i18next";
 
-const OrderSuccessModal = ({ isOpen, onClose, orderId, message }) => {
+const OrderSuccessModal = ({
+  isOpen,
+  onClose,
+  orderId,
+  message,
+  applied = false,
+}) => {
   const { t } = useTranslation();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.Content textAlign={"center"} padding={10}>
         <Text fontSize={22} fontFamily={"fantasy"}>
-          {t("Thank_you_for_applying_application_number_is")}:
+          {applied
+            ? t("YOU_HAVE_ALREADY_APPLIED_FOR_THIS_APPLICATION")
+            : t("Thank_you_for_applying_application_number_is")}
+          :
         </Text>
         <Modal.CloseButton />
         <Modal.Body alignSelf={"center"} marginTop={7}>

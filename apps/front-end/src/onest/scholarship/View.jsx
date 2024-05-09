@@ -9,6 +9,7 @@ import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "../card";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
+import axios from "axios";
 
 function ScholarshipView() {
   const { type, jobId } = useParams();
@@ -26,6 +27,7 @@ function ScholarshipView() {
   const [listData, setListData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
+  const [status, setStatus] = useState("Applied");
   const [siteUrl] = useState(window.location.href);
   const [transactionId] = useState(uuidv4());
   const toast = useToast();
@@ -33,6 +35,47 @@ function ScholarshipView() {
   const closeModal = () => {
     setOpenModal(false);
     navigate("/");
+  };
+
+  const getApplicationStatus = async (order_id) => {
+    const apiUrl = `${baseUrl}/content/searchOrder/${order_id}`;
+    let searchOrder = {};
+
+    await axios
+      .get(apiUrl)
+      .then((response) => {
+        searchOrder = response.data;
+      })
+      .catch((error) => {
+        console.error("Axios GET request error:", error);
+      });
+
+    const payload = {
+      context: {
+        domain: envConfig.apiLink_DOMAIN,
+        action: "status",
+        version: "1.1.0",
+        bap_id: envConfig.apiLink_BAP_ID,
+        bap_uri: envConfig.apiLink_BAP_URI,
+        bpp_id: searchOrder?.bpp_id,
+        bpp_uri: searchOrder?.bpp_uri,
+        transaction_id: transactionId,
+        message_id: uuidv4(),
+        timestamp: new Date().toISOString(),
+      },
+      message: {
+        order_id: order_id,
+      },
+    };
+
+    const statusTrack = await OnestService.statusTrack(payload);
+    if (statusTrack?.responses[0]?.message) {
+      setStatus(
+        statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
+          ?.descriptor?.name
+      );
+    }
+    setOpenModal(true);
   };
 
   useEffect(() => {
@@ -46,8 +89,8 @@ function ScholarshipView() {
       };
       let result = await OnestService.getList({ filter: data });
       if (result?.data.length) {
-        setOpenModal(true);
         setListData(result?.data);
+        getApplicationStatus(result?.data[0].order_id);
       }
     };
     fetchData();
@@ -298,8 +341,9 @@ function ScholarshipView() {
             <OrderSuccessModal
               isOpen={openModal}
               onClose={closeModal}
-              orderId={listData[0]?.order_id}
+              orderId={status}
               message={"You have already applied for this scholarship"}
+              applied={true}
             />
           ) : (
             <FrontEndTypo.Primarybutton
