@@ -194,7 +194,6 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
         navigate("/examschedule");
       } else {
         setOpenModal();
-        setFilter();
       }
     }
   };
