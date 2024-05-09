@@ -31,6 +31,7 @@ function ScheduleExam() {
   const [filter, setFilter] = useState({});
   const [selectedDate, setSelectedDate] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
+  const [isDisableCancelBtn, setIsDisableCancelBtn] = useState(true);
   const [isVisibleEditBtn, setIsVisibleEditBtn] = useState(false);
   const [isVisibleEdit, setIsVisibleEdit] = useState(false);
   const navigate = useNavigate();
@@ -73,12 +74,15 @@ function ScheduleExam() {
     setTheorySubjects([]);
     setPracticalSubjects([]);
     setIsVisibleEdit(false);
+    setHasDraftStatus(false);
     setProgress(0);
     setEventOverallData([]);
     setPracticalEvent([]);
     setTheoryEvent([]);
     setFilter({ program_id: selectedItem });
     setIsDisable(true);
+    setIsDisableCancelBtn(true);
+    setIsVisibleEditBtn(false);
   };
 
   const handleProgramChange = async (selectedItem) => {
@@ -92,7 +96,6 @@ function ScheduleExam() {
     setFilter({ ...filter, program_id: selectedItem });
     resetFillData(selectedItem);
     setLoading(false);
-    setHasDraftStatus(false);
   };
 
   useEffect(async () => {
@@ -180,6 +183,8 @@ function ScheduleExam() {
         return subject?.events?.some((event) => event?.status === "draft");
       });
       setHasDraftStatus(isDraft);
+    } else {
+      setIsVisibleEditBtn(false);
     }
   }, [oldSelectedData, selectedDate, hasDraftStatus]);
 
@@ -191,6 +196,7 @@ function ScheduleExam() {
           selectedDate.length) > 0;
       if (data === true && selectedDate?.length != 0) {
         setIsDisable(false);
+        setIsDisableCancelBtn(false);
       }
     }
   }, [selectedDate]);
@@ -198,16 +204,9 @@ function ScheduleExam() {
   const handleSelect = (optionId, board) => {
     setFilter({ ...filter, program_id: board?.program_id, board_id: optionId });
     // Edit button visibility (current-reverse)
-    if (Array.isArray(oldSelectedData)) {
-      const isDraft = oldSelectedData.some((subject) => {
-        return subject?.events?.some((event) => event?.status === "draft");
-      });
-      setIsVisibleEditBtn(isDraft);
-    } else {
-      setIsVisibleEditBtn(false);
-    }
+    setHasDraftStatus(false);
+    setIsVisibleEditBtn(false);
   };
-
   const handleSaveButton = async () => {
     setIsDisable(true);
     const data = await organisationService.PoExamSchedule(selectedDate);
@@ -216,6 +215,7 @@ function ScheduleExam() {
       setTheoryEvent([]);
       setSelectedDate([]);
       setIsDisable(true);
+      setIsDisableCancelBtn(true);
       setIsVisibleEdit(false);
       setIsVisibleEditBtn(true);
       const subjectData = await organisationService.getSubjectList({
@@ -225,17 +225,19 @@ function ScheduleExam() {
     }
   };
   const handleCancelButton = async () => {
-    setIsDisable(true);
+    setIsDisableCancelBtn(true);
     const subjectData = await organisationService.getSubjectList({
       id: filter?.board_id,
     });
     setOldSelectedData(subjectData?.data);
     setSelectedDate([]);
+    setIsDisable(true);
     setIsVisibleEdit();
   };
 
   const handleEditButton = () => {
     setIsVisibleEdit(true);
+    setIsDisableCancelBtn(false);
   };
 
   const handlePublish = async () => {
@@ -326,7 +328,7 @@ function ScheduleExam() {
           </VStack>
         </HStack>
 
-        <HStack justifyContent={"space-between"}>
+        <HStack>
           <VStack space={4}>
             <AdminTypo.H5 bold color="textGreyColor.500">
               {t("SELECT_BOARD")}
@@ -437,7 +439,7 @@ function ScheduleExam() {
         </VStack>
         <HStack space={4} alignSelf={"center"}>
           <AdminTypo.Secondarybutton
-            isDisabled={isDisable}
+            isDisabled={isDisableCancelBtn}
             onPress={handleCancelButton}
             icon={<IconByName color="black" name="DeleteBinLineIcon" />}
           >
