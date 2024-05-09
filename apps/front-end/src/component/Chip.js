@@ -180,6 +180,7 @@ export function ExamChipStatus({ width, status, ...props }) {
   useEffect(() => {
     switch (status) {
       case "P":
+      case "PASS":
         setColor("screenedColor");
         setNewStatus(t("EXAM_RESULT_STATUS_P"));
         break;
