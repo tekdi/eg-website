@@ -45,13 +45,10 @@ export const dataConfig = {
     apiLink_DB_CACHE: "jobs_cache_dev",
     apiLink_RESPONSE_DB: "response_cache_dev",
     apiLink_DOMAIN: "onest:work-opportunities",
-    apiLink_BAP_ID: "jobs-bap-dev.tekdinext.com",
-    apiLink_BAP_URI: "https://jobs-bap-dev.tekdinext.com/",
+    apiLink_BAP_ID: "eg-jobs-dev-bap-network.tekdinext.com",
+    apiLink_BAP_URI: "https://eg-jobs-dev-bap-network.tekdinext.com/",
     apiLink_API_BASE_URL: "https://eg-jobs-dev-api.tekdinext.com",
     apiLink_API_LIST_URL: "https://eg-jobs-dev-api.tekdinext.com/jobs/search",
-    apiLink_SUNBIRD_API: "https://sunbirdsaas.com/api/content/v1/read",
-    apiLink_DIKSHA_API: "https://diksha.gov.in/api/content/v1/read",
-    apiLink_IMAGE_URL: "https://kvk-nashik.tekdinext.com",
     imageUrl: "",
     apiResponce: (e) => e.data.data.jobs_cache_dev,
     // render: (e) => {
@@ -77,6 +74,15 @@ export const dataConfig = {
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: "https://eg-content-dev-api.tekdinext.com",
     apiResponce: (e) => e.data.data.kahani_cache_dev,
+    getTrackData: async (e) => {
+      const data = {
+        context: e?.type || "",
+        context_item_id: e?.itemId,
+        user_id: e?.user_id,
+      };
+      let result = await OnestService.getList({ filter: data });
+      return result?.data?.[0];
+    },
     onOrderIdGenerate: async (val) => {
       const paramData = { url: "", type: "" };
       paramData.url =
@@ -93,7 +99,6 @@ export const dataConfig = {
           paramData.type = item.value;
         }
       });
-      console.log(paramData);
       const data = {
         user_id: val.userData.user_id,
         context: val.type,
@@ -102,7 +107,7 @@ export const dataConfig = {
         order_id: val.response.responses[0].message.order.id,
         params: paramData,
       };
-      let response = await OnestService.create(data);
+      await OnestService.create(data);
     },
   },
 };

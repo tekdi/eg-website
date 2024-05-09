@@ -67,7 +67,6 @@ function JobDetails() {
   };
 
   const fetchJobDetails = async (jobInfo) => {
-    console.log(jobInfo);
     try {
       setLoading(true);
       const response = await fetch(`${baseUrl}/select`, {
@@ -127,7 +126,6 @@ function JobDetails() {
   };
 
   useEffect(() => {
-    console.log(window.location.href);
     const url = window.location.href;
 
     const getUrlParams = (url) => {
@@ -171,7 +169,6 @@ function JobDetails() {
     const jsonQueryParam = btoa(jsonString);
 
     const urlTmp = `${window.location.origin}?jsonData=${jsonQueryParam}`;
-    console.log({ urlTmp });
 
     const urlParams = new URLSearchParams(window.location.search);
     const jsonDataParam = urlParams.get("jsonData");
@@ -179,7 +176,6 @@ function JobDetails() {
     if (jsonDataParam) {
       let jsonData = atob(jsonDataParam);
       // let jsonData = decodeURIComponent(jsonDataParam);
-      console.log("Parsed JSON data:", jsonData);
       localStorage.setItem("userData", jsonData);
     }
   }, []);
@@ -206,12 +202,11 @@ function JobDetails() {
       fetch(`${baseUrl}/jobs/search`, requestOptions)
         .then((response) => response.text())
         .then((result) => {
-          console.log("result", result);
           result = JSON.parse(result);
           setJobInfo(result?.data[db_cache][0]);
           fetchJobDetails(result?.data[db_cache][0]);
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.error("error", error));
     }
   }, [transactionId]); // Runs only once when the component mounts
 

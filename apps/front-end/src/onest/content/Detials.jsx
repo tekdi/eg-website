@@ -101,13 +101,8 @@ const Details = () => {
     const result = await post(`${baseUrl}/select`, bodyData);
     let response = result?.data;
     localStorage.setItem("details", JSON.stringify(response));
-    if (!response.responses.length) {
-      errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-      );
-    }
-    if (response.responses[0]?.message?.order?.items[0]) {
-      setDetails(response.responses[0]?.message?.order?.items[0] || {});
+    if (response.responses?.[0]?.message?.order?.items?.[0]) {
+      setDetails(response.responses?.[0].message?.order?.items?.[0] || {});
     } else {
       errorMessage(
         t("Delay_in_fetching_the_details") + "(" + transactionId + ")"

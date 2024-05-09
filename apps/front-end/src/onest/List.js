@@ -18,7 +18,7 @@ import axios from "axios";
 import Layout from "./Layout";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+const limit = 2;
 const List = () => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
@@ -57,7 +57,7 @@ const List = () => {
         }
         if (response) {
           setCardData(response);
-          setFilterCardData(paginateArray(response, 10, page));
+          setFilterCardData(paginateArray(response, limit, page));
           setfilterData(filterToData(configData?.filters, response));
         } else {
           console.error("Failed to fetch data");
@@ -96,7 +96,6 @@ const List = () => {
   }, [filter]);
 
   const handleFilter = (key, value) => {
-    console.log(key, value);
     setFilter((e) => ({
       ...e,
       [key]: value,
@@ -111,15 +110,18 @@ const List = () => {
     // Simulating fetching data from an API
     // In real application, replace this with actual API call
 
-    // Update state with new data
-    console.log("hello");
-    setFilterCardData(paginateArray(cardData, 10, page));
-
     // Increment page number
-    setPage(page + 1);
+    const newPage = page + 1;
+    setPage(newPage);
+
+    // Update state with new data
+    setFilterCardData((e) => [
+      ...(e || []),
+      ...paginateArray(cardData, limit, newPage),
+    ]);
 
     // In this example, let's assume we have only 5 pages of data
-    if (page >= 5) {
+    if (newPage >= Math.ceil(cardData?.length / limit)) {
       setHasMore(false);
     }
   };
@@ -199,7 +201,7 @@ const List = () => {
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
           endMessage={<p>No more items</p>}
-          height={loadingHeight}
+          height={"300px"}
           gap="10px"
         >
           <VStack space="4" alignContent="center" p="4">
@@ -319,7 +321,7 @@ const paginateArray = (dataArray, itemsPerPage, pageNumber) => {
     paginatedArrays.length
   );
 
-  return paginatedArrays[currentPageNumber - 1];
+  return paginatedArrays[currentPageNumber - 1] || [];
   return {
     currentPage: currentPageNumber,
     paginatedArray: paginatedArrays[currentPageNumber - 1],
