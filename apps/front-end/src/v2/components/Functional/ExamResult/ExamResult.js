@@ -30,13 +30,14 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 
   const handleSelect = (optionId) => {
     setFilter({ ...filter, selectedId: optionId, date: "" });
-    learnerList();
+    learnerList(optionId);
   };
 
-  const learnerList = async () => {
+  const learnerList = async (id) => {
     const data = await organisationService.examResultLearnerList({
       ...filter,
       limit: "",
+      boardid: id,
     });
     setData(data?.data);
   };
