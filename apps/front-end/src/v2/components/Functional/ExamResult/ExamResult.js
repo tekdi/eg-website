@@ -20,6 +20,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const [data, setData] = useState([]);
   const [selectedRow, setSelectedRow] = useState();
   const [errorMsg, setErrorMsg] = useState();
+  const [boardId, setBoardId] = useState();
   const uplodInputRef = useRef();
 
   useEffect(async () => {
@@ -31,6 +32,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const handleSelect = (optionId) => {
     setFilter({ ...filter, selectedId: optionId, date: "" });
     learnerList(optionId);
+    setBoardId(optionId);
   };
 
   const learnerList = async (id) => {
@@ -56,6 +58,18 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     uplodInputRef.current.click();
   };
 
+  const statusUpdate = async (selectedRow) => {
+    const obj = {
+      learner_id: selectedRow?.beneficiary_user?.beneficiary_id,
+      status: !selectedRow?.result_upload_status
+        ? "first_time_upload_failed"
+        : selectedRow?.result_upload_status === "first_time_upload_failed" &&
+          "assign_to_ip",
+    };
+    const data = await organisationService.examResultStatusUpdate(obj);
+    learnerList(boardId);
+  };
+
   const uploadProfile = async (resultfile) => {
     setLoading(true);
     const form_data = new FormData();
@@ -79,8 +93,9 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     );
     if (!result?.data) {
       setErrorMsg(result?.message);
+      statusUpdate(selectedRow);
     } else {
-      learnerList();
+      learnerList(boardId);
     }
     setLoading(false);
   };
@@ -145,7 +160,8 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                         } ${item?.beneficiary_user?.last_name || ""}`}
                       </FrontEndTypo.H4>
                     </VStack>
-                    {item?.beneficiary_user?.exam_results.length > 0 ? (
+                    {item?.result_upload_status === "uploaded" ||
+                    item?.result_upload_status === "assign_to_ip" ? (
                       <ExamChipStatus
                         status={
                           item?.beneficiary_user?.exam_results?.[0]
