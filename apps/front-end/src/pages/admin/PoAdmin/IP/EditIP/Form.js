@@ -73,6 +73,7 @@ const baseSchema = {
     learner_per_camp: {
       title: "LEARNERS_PER_TARGET",
       format: "select",
+      type: ["string", "number"],
       enum: ["15", "16", "17", "18", "19", "20"],
     },
     camp_target: {
@@ -92,7 +93,7 @@ export default function App() {
   const navigate = useNavigate();
   const [schema, setSchema] = useState(baseSchema);
   const [formData, setFormData] = useState({});
-  const { step, id } = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     const updateSchema = async () => {
@@ -105,7 +106,8 @@ export default function App() {
         mobile: data?.data?.mobile,
         address: data?.data?.address,
         email_id: data?.data?.email_id,
-        state: data?.data?.program_organisations?.[0]?.program_id,
+        state:
+          data?.data?.program_organisations?.[0]?.program?.state?.state_name,
         learner_target: data?.data?.program_organisations?.[0]?.learner_target,
         learner_per_camp:
           data?.data?.program_organisations?.[0]?.learner_per_camp,
@@ -131,7 +133,6 @@ export default function App() {
 
     updateSchema();
   }, []);
-
   const onChange = async (e, id) => {
     const newData = e.formData;
     if (newData?.state) {
@@ -218,7 +219,7 @@ export default function App() {
 
         <VStack p="4" space={4}>
           <Form
-            key={lang}
+            key={(lang, formData)}
             ref={formRef}
             extraErrors={errors}
             showErrorList={false}
