@@ -20,7 +20,7 @@ import {
   transformErrors,
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Chip from "component/Chip";
 
 const Schema = {
@@ -61,11 +61,12 @@ const Schema = {
       type: "string",
       format: "email",
       title: "EMAIL_ID",
+      readOnly: true,
     },
     state: {
       title: "STATE",
-      type: "string",
       format: "select",
+      type: "string",
     },
     address: {
       title: "IP_ADDRESS",
@@ -85,27 +86,6 @@ const Schema = {
       title: "TARGET_CAMP",
       readOnly: true,
     },
-    // doc_per_cohort_id: {
-    //   type: "string",
-    //   label: "DUE_DILIGENCE_SIGNED_PROPOSAL",
-    //   document_type: "camp",
-    //   document_sub_type: "consent_form",
-    //   format: "FileUpload",
-    // },
-    // doc_per_monthly_id: {
-    //   type: "string",
-    //   label: "QUARTELY_CA_CERTIFIED",
-    //   document_type: "camp",
-    //   document_sub_type: "consent_form",
-    //   format: "FileUpload",
-    // },
-    // doc_quarterly_id: {
-    //   type: "string",
-    //   label: "MONTHLY_UTILIZATION",
-    //   document_type: "camp",
-    //   document_sub_type: "consent_form",
-    //   format: "FileUpload",
-    // },
   },
 };
 
@@ -118,8 +98,25 @@ export default function App() {
   const navigate = useNavigate();
   const [schema, setSchema] = useState({});
   const [formData, setFormData] = useState();
+  const { step, id } = useParams();
 
   useEffect(async () => {
+    if (step === "edit") {
+      const data = await organisationService.getOne({ id });
+      setFormData({
+        name: data?.data?.name,
+        contact_person: data?.data?.contact_person,
+        mobile: data?.data?.mobile,
+        address: data?.data?.address,
+        email_id: data?.data?.email_id,
+        state:
+          data?.data?.program_organisations?.[0]?.program?.state?.state_name,
+        learner_target: data?.data?.program_organisations?.[0]?.learner_target,
+        learner_per_camp:
+          data?.data?.program_organisations?.[0]?.learner_per_camp,
+        camp_target: data?.data?.program_organisations?.[0]?.camp_target,
+      });
+    }
     if (Schema?.properties?.state) {
       const { data } = await cohortService.getProgramList();
       const newData = data.map((e) => ({
@@ -135,7 +132,6 @@ export default function App() {
           value: "id",
         });
       }
-
       setSchema(newSchema);
     }
   }, []);
@@ -147,7 +143,6 @@ export default function App() {
         program_id: newData?.state,
       });
     }
-
     if (id === "root_learner_target" || id === "root_learner_per_camp") {
       const avgCount = Math.ceil(
         newData?.learner_target / newData?.learner_per_camp
@@ -175,6 +170,19 @@ export default function App() {
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data.formData;
+    if (step === "edit") {
+      const result = await organisationService.createOrg(newData);
+      if (!result.error) {
+        navigate("/poadmin/ips");
+      } else {
+        setFormData(newData);
+        setErrors({
+          [result?.key || "name"]: {
+            __errors: [result?.message],
+          },
+        });
+      }
+    }
     const result = await organisationService.createOrg(newData);
     if (!result.error) {
       navigate("/poadmin/ips");
