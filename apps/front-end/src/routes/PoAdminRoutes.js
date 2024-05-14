@@ -8,6 +8,7 @@ const PoDuplicateView = lazy(() =>
 const IPList = lazy(() => import("pages/admin/PoAdmin/IP/List"));
 const IpDetails = lazy(() => import("pages/admin/PoAdmin/IP/View"));
 const IPForm = lazy(() => import("pages/admin/PoAdmin/IP/Form"));
+const IPEditForm = lazy(() => import("pages/admin/PoAdmin/IP/EditIP/Form"));
 const FileView = lazy(() => import("pages/FileView"));
 const Assessment = lazy(() => import("component/Assessment"));
 const PrerakListing = lazy(() => import("pages/admin/PoAdmin/Prerak/List"));
@@ -110,6 +111,10 @@ export default [
   {
     path: "/poadmin/exam-schedule",
     component: ExamSchedule,
+  },
+  {
+    path: "/poadmin/ip/:id/edit",
+    component: IPEditForm,
   },
   { path: "/", component: Home },
   { path: "*", component: NotFound },
