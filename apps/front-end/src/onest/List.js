@@ -221,9 +221,14 @@ const RenderCards = ({ obj, config }) => {
   return (
     <Pressable
       width={"100%"}
-      p="4"
+      p="6"
       borderWidth="1px"
-      borderRadius="md"
+      borderColor="gray.300"
+      borderRadius="lg"
+      alignItems="center"
+      textAlign="center"
+      shadow="4"
+      cursor="pointer"
       onPress={(e) => {
         if (obj?.detailLink) {
           navigate(replaceUrlParam(config?.detailLink, obj));
@@ -233,7 +238,6 @@ const RenderCards = ({ obj, config }) => {
           }
         }
       }}
-      textAlign={"center"}
     >
       {config?.render ? (
         config.render(obj)

@@ -3,6 +3,7 @@ import { OnestService } from "@shiksha/common-lib";
 export const dataConfig = {
   scholarship: {
     title: "Scholarship",
+    TITLE_ENUM: "SCHOLARSHIP",
     searchByKey: "title",
     listLink: "onest/scholarship",
     filters: ["provider_name"],
@@ -31,6 +32,7 @@ export const dataConfig = {
 
   jobs: {
     title: "Jobs",
+    TITLE_ENUM: "JOBS",
     searchByKey: "title",
     listLink: "onest/jobs",
     //apiLink: "https://eg-jobs-dev-api.tekdinext.com",
@@ -63,6 +65,7 @@ export const dataConfig = {
   },
   learning: {
     title: "Learning experiences",
+    TITLE_ENUM: "LEARNING_EXPERIENCES",
     searchByKey: "title",
     listLink: "onest/learning",
     detailLink: "/learning/:id",

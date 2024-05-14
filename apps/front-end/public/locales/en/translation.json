@@ -1866,5 +1866,8 @@
   "UPDATE_LEARNER_EXAM_RESULTS": "Update Learner Exam Results",
   "RESULT_UPLOAD_WARNING": "Upload the pdf file downloaded from the RSOS site. Do not upload image files of the result.",
   "STUDENT_LIST": "Student List",
-  "ENR_NO": "ENR no: "
+  "ENR_NO": "ENR no: ",
+  "SCHOLARSHIP": "Scholarship",
+  "JOBS": "Jobs",
+  "LEARNING_EXPERIENCES": "Digital Learning Resources"
 }
