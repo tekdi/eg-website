@@ -1,0 +1,124 @@
+{
+  "init" : [{
+    "customer": {
+    "person": {
+      "name": "",
+      "gender": "",
+      "age": "",
+      "skills": [
+        {
+          "code": "Android",
+          "name": "Android"
+        },
+        {
+          "code": "AWS",
+          "name": "AWS"
+        }
+      ],
+      "languages": [
+        {
+          "code": "en",
+          "name": "english"
+        },
+        {
+          "code": "ml",
+          "name": "Malayalam"
+        },
+        {
+          "code": "hi",
+          "name": "Hindi"
+        }
+      ],
+      "tags": [
+        {
+          "code": "current-experience",
+          "list": [
+            {
+              "descriptor": {
+                "code": "exp-years",
+                "name": "Experience"
+              },
+              "value": ""
+            },
+            {
+              "descriptor": {
+                "code": "current-company",
+                "name": "Current Company"
+              },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "code": "salary-details",
+          "list": [
+            {
+              "descriptor": {
+                "code": "expected-salary",
+                "name": "Expected Salary"
+              },
+              "value": ""
+            },
+            {
+              "descriptor": {
+                "code": "current-salary",
+                "name": "Current Salary"
+              },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "code": "documents",
+          "list": [
+            {
+              "descriptor": {
+                "code": "resume",
+                "name": "resume"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "phone": "9999999999999",
+      "email": "abc@abc.bc"
+    }
+  }
+},
+{
+  "context": {
+      "domain": "onest:work-opportunities",
+      "action": "init",
+      "version": "1.1.0",
+      "bap_id": "65.0.93.247:8002",
+      "bap_uri": "http://65.0.93.247:8002/",
+      "bpp_id": "dash-beckn.tibilapps.com",
+      "bpp_uri": "https://dash-beckn.tibilapps.com/protocol-network",
+      "transaction_id": "",
+      "message_id": "",
+      "timestamp": "2023-02-06T09:55:41.161Z"
+  },
+  "message": {
+      "order": {
+          "provider": {
+              "id": ""
+          },
+          "items": [
+              {
+                  "id": ""
+              }
+          ],
+          "fulfillments": [
+              {
+                  "id": "",
+                  "customer": {
+                  }
+              }
+          ]
+      }
+  }
+}]
+}

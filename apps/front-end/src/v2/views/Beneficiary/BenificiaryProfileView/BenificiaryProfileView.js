@@ -26,6 +26,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
+import moment from "moment";
 
 export default function BenificiaryProfileView(props) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
@@ -113,6 +114,27 @@ export default function BenificiaryProfileView(props) {
   };
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
+    const Address = [
+      result?.result?.state,
+      result?.result?.district,
+      result?.result?.block,
+      result?.result?.village,
+      result?.result?.grampanchayat,
+    ]
+      .filter((e) => e)
+      .join(", ");
+    const userDetails = {
+      "Student Name":
+        result?.result?.first_name + " " + result?.result?.last_name,
+      email: `${result?.result?.first_name}@gmail.com`,
+      //result?.result?.email_id,
+      "Date Of Birth": result?.result?.dob,
+      "mobile number": result?.result?.mobile,
+      Address,
+      createdAt: moment().format("YYYY-MM-DD HH:mm"),
+      user_id: id,
+    };
+    localStorage.setItem("userData", JSON.stringify(userDetails));
     setBenificiary(result?.result);
     setloading(false);
   }, [reactivateReasonValue, reasonValue]);
@@ -255,6 +277,15 @@ export default function BenificiaryProfileView(props) {
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
+              {[
+                "enrolled_ip_verified",
+                "registered_in_camp",
+                "10th_passed",
+              ].includes(benificiary?.program_beneficiaries?.status) && (
+                <FrontEndTypo.Primarybutton onPress={(e) => navigate("/onest")}>
+                  {t("OPPORTUNITY")}
+                </FrontEndTypo.Primarybutton>
+              )}
             </VStack>
             {(benificiary?.program_beneficiaries?.status == "dropout" ||
               benificiary?.program_beneficiaries?.status == "rejected") && (
