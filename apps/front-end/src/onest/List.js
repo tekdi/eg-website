@@ -18,6 +18,7 @@ import axios from "axios";
 import Layout from "./Layout";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 const limit = 2;
 const List = () => {
   const [cardData, setCardData] = useState();
@@ -77,7 +78,7 @@ const List = () => {
         filterData = cardData.filter((item) => {
           let resp = [];
           const filKeys = Object.keys(filter || {});
-          filKeys.forEach((key) => {
+          filKeys?.forEach((key) => {
             resp = [
               ...resp,
               filter[key] === ""
@@ -159,11 +160,11 @@ const List = () => {
                 return (
                   <Box key={heading} mb="4">
                     <Heading size="sm" mb="2">
-                      {heading}
+                      {convertToTitleCase(heading)}
                     </Heading>
                     {Array.isArray(options) && (
                       <Select
-                        placeholder={`Select ${heading}`}
+                        placeholder={`Select ${convertToTitleCase(heading)}`}
                         onValueChange={(value) => handleFilter(heading, value)}
                         value={filter?.[heading] || ""}
                       >
@@ -201,7 +202,7 @@ const List = () => {
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
           endMessage={<p>No more items</p>}
-          height={"300px"}
+          minHeight={"300px"}
           gap="10px"
         >
           <VStack space="4" alignContent="center" p="4">
@@ -304,7 +305,7 @@ const paginateArray = (dataArray, itemsPerPage, pageNumber) => {
   const paginatedArrays = [];
   let currentPage = [];
 
-  dataArray.forEach((item) => {
+  dataArray?.forEach((item) => {
     if (currentPage.length === itemsPerPage) {
       paginatedArrays.push([...currentPage]);
       currentPage = [];
