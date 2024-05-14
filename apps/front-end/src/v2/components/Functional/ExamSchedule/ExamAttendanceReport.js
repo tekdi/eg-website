@@ -54,27 +54,27 @@ const ExamAttendanceReport = ({ footerLinks }) => {
   const columns = (t) => [
     {
       name: t("SUBJECT"),
-      cell: (row) => `${t(row?.name)} (${t(row?.boardname)})`,
+      cell: (row) => `${row?.name} (${row?.boardname})`,
       wrap: true,
     },
     {
       name: t("TOTAL_STUDENTS"),
-      cell: (row) => t(row?.total_students),
+      cell: (row) => row?.total_students,
       wrap: true,
     },
     {
       name: t("A_PRESENT"),
-      cell: (row) => t(row?.present),
+      cell: (row) => row?.present,
       wrap: true,
     },
     {
       name: t("ABSENT"),
-      cell: (row) => t(row?.absent),
+      cell: (row) => row?.absent,
       wrap: true,
     },
     {
       name: t("NOT_MARKED"),
-      cell: (row) => t(row?.not_marked),
+      cell: (row) => row?.not_marked,
       wrap: true,
     },
   ];

@@ -54,22 +54,22 @@ const ExamResultReport = ({ footerLinks }) => {
   const columns = (t) => [
     {
       name: t("NO_OF_LEARNERS"),
-      cell: (row) => t(row?.total_learners),
+      cell: (row) => row?.total_learners,
       wrap: true,
     },
     {
       name: t("BENEFICIARY_STATUS_10TH_PASSED"),
-      cell: (row) => t(row?.tenth_passed),
+      cell: (row) => row?.tenth_passed,
       wrap: true,
     },
     {
       name: t("BENEFICIARY_STATUS_PRAGATI_SYC"),
-      cell: (row) => t(row?.pragati_syc),
+      cell: (row) => row?.pragati_syc,
       wrap: true,
     },
     {
       name: t("RESULT_UPLOAD_PENDING"),
-      cell: (row) => t(row?.not_uploaded),
+      cell: (row) => row?.not_uploaded,
       wrap: true,
     },
   ];
