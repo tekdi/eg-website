@@ -1,0 +1,61 @@
+{
+    "navigateTo": "/jobDetails",
+    "isFilter": true,
+    "filters": [
+        {
+            "label": "State",
+            "field": "state",
+            "apiEndpoint": "/jobs/getFilter/state"
+        },
+        {
+            "label": "City",
+            "field": "city",
+            "dependentOn": "state",
+            "apiEndpoint": "/jobs/getCity"
+        },
+        {
+            "label": "Sector",
+            "field": "title",
+            "apiEndpoint": "/jobs/getFilter/title",
+            "call": "",
+            "body": {}
+        },
+        {
+            "label": "Gender",
+            "field": "gender",
+            "apiEndpoint": "/jobs/getFilter/gender"
+        },
+        {
+            "label": "Skill",
+            "field": "skills",
+            "apiEndpoint": "/jobs/getFilter/skills"
+        }
+    ],
+    "headers": {
+        "languages": [
+            {
+                "en": "English"
+            },
+            {
+                "hi": "हिंदी"
+            },
+            {
+                "ma": "मराठी"
+            }
+        ],
+        "menus": [
+            {
+                "label": "Status",
+                "navigateTo": "/status"
+            },
+            {
+                "label": "Feedback",
+                "navigateTo": "/feedback"
+            },
+            {
+                "label": "Cancel",
+                "navigateTo": "/"
+            }
+        ]
+    }
+}

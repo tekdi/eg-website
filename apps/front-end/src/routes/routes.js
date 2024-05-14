@@ -1,4 +1,5 @@
 import React, { lazy } from "react";
+import onest from "./onest";
 //v2 code
 //online_facilitator_onboarding
 const FacilitatorRegister = lazy(() =>
@@ -122,6 +123,7 @@ const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
+  ...onest,
   //{ path: "/form", component: Home },
   //old facilitator registration
   /*{

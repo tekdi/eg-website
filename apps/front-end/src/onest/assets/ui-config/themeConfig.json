@@ -1,0 +1,12 @@
+{
+    "primaryColor": "#3182ce",
+    "secColor": "#3498db",
+
+    "txtPrimaryColor": "#3498db",
+    "txtSecColor": "#2ecc71",
+
+    "btnPrimaryColor": "#3182ce",
+    "btnPrimaryBorderColor" : "#3182ce",
+
+    "btnSecColor": "#2ecc71"
+  }

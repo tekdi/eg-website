@@ -1,0 +1,45 @@
+{
+  "siteName": "Onest Generic component",
+  "siteByLine": "ONEST Enabled catalogue for JOBS & Opportunities",
+  "apiEndPoint": "/cache/search",
+
+  "pagination": "10",
+  "orderBy": "2023-10-20T07:46:27.732028+00:00",
+  "filterBy": "default",
+  "footerText": "Developed with ❤️ by Tekdi Technologies ",
+  "headerColor": "white",
+  "headerFontSize": "16",
+
+  "filters": {
+    "minAge": "",
+    "language": "",
+    "contentType": ""
+  },
+
+  "searchFilters": {
+    "sector": [
+      "IOS Developer",
+      "Andorid Developer",
+      "Developer",
+      "Mobile application Developer",
+      "Database Developer",
+      "Sales Executives - Luman Industries Ltd",
+      "Pyhton Developer",
+      "Fullstack Developer",
+      "Marketing - Surya Colour Products Pvt Ltd",
+      ""
+    ],
+    "jobState": [
+      "Maharashtra",
+      "Goa",
+      "Karnataka",
+      "Tamil Nadu",
+      "West Bengal",
+      "Haryana",
+      "Uttar Pradesh",
+      "Andhra Pradesh"
+    ],
+    "jobDistrict": ["Bangalore", "Mumbai", "Hyderabad", "Meerut"]
+  },
+  "logo": "../assets/logo.png"
+}
