@@ -73,7 +73,6 @@ const baseSchema = {
     learner_per_camp: {
       title: "LEARNERS_PER_TARGET",
       format: "select",
-      type: ["string", "number"],
       enum: ["15", "16", "17", "18", "19", "20"],
     },
     camp_target: {
@@ -165,10 +164,25 @@ export default function App() {
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data.formData;
+    const obj = {
+      organisation: {
+        name: newData?.name,
+        contact_person: newData?.contact_person,
+        mobile: newData?.mobile,
+      },
+      program_organisation: {
+        id: id,
+        learner_target: newData?.learner_target,
+        learner_per_camp: newData?.learner_per_camp,
+        camp_target: newData?.camp_target,
+      },
+    };
+
     const result = await organisationService.editOrganisationDetails({
-      data: newData,
+      data: obj,
       id: id,
     });
+
     if (!result.error) {
       navigate("/poadmin/ips");
     } else {
