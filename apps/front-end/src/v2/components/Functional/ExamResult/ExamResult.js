@@ -160,7 +160,10 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                         } ${item?.beneficiary_user?.last_name || ""}`}
                       </FrontEndTypo.H4>
                     </VStack>
+                    {console.log({ item })}
                     {item?.result_upload_status === "uploaded" ||
+                    (item?.result_upload_status === null &&
+                      item?.beneficiary_user?.exam_results?.[0]) ||
                     item?.result_upload_status === "assign_to_ip" ? (
                       <ExamChipStatus
                         status={
