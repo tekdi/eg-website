@@ -28,7 +28,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
 import moment from "moment";
 
-export default function BenificiaryProfileView(props) {
+export default function BenificiaryProfileView({ userTokenInfo }) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
@@ -46,6 +46,7 @@ export default function BenificiaryProfileView(props) {
   const [alert, setAlert] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
+  const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -136,6 +137,19 @@ export default function BenificiaryProfileView(props) {
     };
     localStorage.setItem("userData", JSON.stringify(userDetails));
     setBenificiary(result?.result);
+    const orgResult = await benificiaryRegistoryService.getOrganisation({
+      id: userTokenInfo?.authUser?.program_faciltators?.parent_ip,
+    });
+    if (
+      ["enrolled_ip_verified", "registered_in_camp", "10th_passed"].includes(
+        result?.result?.program_beneficiaries?.status
+      ) &&
+      orgResult?.data?.name.toLowerCase() == "tekdi"
+    ) {
+      setIsDisableOpportunity(true);
+    } else {
+      setIsDisableOpportunity(false);
+    }
     setloading(false);
   }, [reactivateReasonValue, reasonValue]);
 
@@ -277,11 +291,7 @@ export default function BenificiaryProfileView(props) {
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
-              {[
-                "enrolled_ip_verified",
-                "registered_in_camp",
-                "10th_passed",
-              ].includes(benificiary?.program_beneficiaries?.status) && (
+              {isDisableOpportunity && (
                 <FrontEndTypo.Primarybutton onPress={(e) => navigate("/onest")}>
                   {t("OPPORTUNITY")}
                 </FrontEndTypo.Primarybutton>
