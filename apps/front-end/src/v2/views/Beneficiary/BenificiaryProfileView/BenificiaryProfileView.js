@@ -142,7 +142,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     });
     if (
       ["enrolled_ip_verified", "registered_in_camp", "10th_passed"].includes(
-        benificiary?.program_beneficiaries?.status
+        result?.result?.program_beneficiaries?.status
       ) &&
       orgResult?.data?.name.toLowerCase() == "tekdi"
     ) {
