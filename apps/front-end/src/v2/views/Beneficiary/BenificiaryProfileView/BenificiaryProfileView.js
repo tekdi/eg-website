@@ -124,17 +124,28 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     ]
       .filter((e) => e)
       .join(", ");
+    let fullName = [
+      result?.result?.program_beneficiaries?.enrollment_first_name,
+      result?.result?.program_beneficiaries?.enrollment_middle_name,
+      result?.result?.program_beneficiaries?.enrollment_last_name,
+    ]
+      .filter((e) => e)
+      .join(" ");
     const userDetails = {
-      "Student Name":
-        result?.result?.first_name + " " + result?.result?.last_name,
-      email: `${result?.result?.first_name}@gmail.com`,
-      //result?.result?.email_id,
+      "Student Name": fullName,
+      name: fullName,
+      email:
+        result?.result?.email_id || `${result?.result?.first_name}@gmail.com`,
       "Date Of Birth": result?.result?.dob,
+      birth_date: result?.result?.dob,
       "mobile number": result?.result?.mobile,
+      phone: result?.result?.mobile,
+      contact: result?.result?.mobile,
       Address,
       createdAt: moment().format("YYYY-MM-DD HH:mm"),
       user_id: id,
     };
+
     localStorage.setItem("userData", JSON.stringify(userDetails));
     setBenificiary(result?.result);
     const orgResult = await benificiaryRegistoryService.getOrganisation({

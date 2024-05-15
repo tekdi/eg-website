@@ -284,12 +284,16 @@ const RenderCards = ({ obj, config }) => {
             marginLeft={0.5}
             textOverflow="ellipsis"
           >
-            <strong>Description:</strong>{" "}
-            {obj.shortDescription
-              ? obj.shortDescription
-              : obj.description
-              ? obj.description.substring(0, 100) + "..."
-              : ""}
+            <strong>Description</strong>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: obj.shortDescription
+                  ? obj.shortDescription
+                  : obj.description
+                  ? obj.description.substring(0, 100) + "..."
+                  : "",
+              }}
+            />
           </Text>
         </VStack>
       )}
