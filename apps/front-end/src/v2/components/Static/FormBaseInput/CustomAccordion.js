@@ -362,6 +362,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
                       justifyContent={"center"}
                     >
                       <FrontEndTypo.Secondarybutton
+                        isDisabled={isDisable}
                         px="20px"
                         onPress={() => {
                           cancelAttendance(subject?.event_id);
