@@ -25,6 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const baseSchema = {
   type: "object",
   required: [
+    "org_id",
     "name",
     "mobile",
     "contact_person",
@@ -36,6 +37,11 @@ const baseSchema = {
     "learner_per_camp",
   ],
   properties: {
+    org_id: {
+      type: "string",
+      title: "ID",
+      readOnly: true,
+    },
     name: {
       type: "string",
       title: "IP_NAME",
@@ -88,10 +94,11 @@ export default function App() {
   const formRef = useRef();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
   const [schema, setSchema] = useState(baseSchema);
   const [formData, setFormData] = useState({});
+  const [orgId, setOrgId] = useState({});
   const { id } = useParams();
 
   useEffect(() => {
@@ -99,17 +106,17 @@ export default function App() {
       let newSchema = { ...baseSchema };
 
       const data = await organisationService.getOne({ id });
+      setOrgId(data?.data?.program_organisations?.[0]?.id);
       setFormData({
+        org_id: data?.data?.id,
         name: data?.data?.name,
         contact_person: data?.data?.contact_person,
         mobile: data?.data?.mobile,
         address: data?.data?.address,
         email_id: data?.data?.email_id,
-        state:
-          data?.data?.program_organisations?.[0]?.program?.state?.state_name,
+        state: `${data?.data?.program_organisations?.[0]?.program_id}`,
         learner_target: data?.data?.program_organisations?.[0]?.learner_target,
-        learner_per_camp:
-          data?.data?.program_organisations?.[0]?.learner_per_camp,
+        learner_per_camp: `${data?.data?.program_organisations?.[0]?.learner_per_camp}`,
         camp_target: data?.data?.program_organisations?.[0]?.camp_target,
       });
 
@@ -171,7 +178,7 @@ export default function App() {
         mobile: newData?.mobile,
       },
       program_organisation: {
-        id: id,
+        id: orgId,
         learner_target: newData?.learner_target,
         learner_per_camp: newData?.learner_per_camp,
         camp_target: newData?.camp_target,
@@ -223,7 +230,7 @@ export default function App() {
                     textOverflow="ellipsis"
                     bold
                   >
-                    {t("CREATE")}
+                    {t("EDIT")}
                   </AdminTypo.H4>
                 ),
               },
