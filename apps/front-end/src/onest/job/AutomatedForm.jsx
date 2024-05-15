@@ -49,6 +49,7 @@ const AutomatedForm = () => {
   const userData = JSON.parse(userDataString);
   // const [siteUrl, setSiteUrl] = useState(window.location.href);
   const toast = useToast();
+  let confirmPayload = {};
 
   useEffect(() => {
     const url = window.location.href;
@@ -208,6 +209,14 @@ const AutomatedForm = () => {
       })
       .then((response) => {
         console.log("Response:", response.data);
+        if (envConfig?.onOrderIdGenerate) {
+          envConfig?.onOrderIdGenerate({
+            response,
+            userData,
+            jobId,
+            type,
+          });
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -296,6 +305,62 @@ const AutomatedForm = () => {
     }
   };
 
+  const onConfirm = async () => {
+    try {
+      let payload = confirmPayload;
+      payload.context.action = "confirm";
+      // Perform API call with formData
+      const response = await fetch(`${baseUrl}/confirm`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      // Set state and open the modal
+      if (data.responses.length) {
+        let appId = data.responses[0].message.order.id;
+        console.log("orderId", appId);
+
+        localStorage.setItem("applicationId", appId);
+
+        if (data.responses[0].hasOwnProperty("message")) {
+          for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
+            ?.customer?.person?.tags) {
+            // Check if the descriptor code is "instructions"
+            if (
+              tag.descriptor &&
+              (tag.descriptor.code === "instructions" ||
+                tag.descriptor.code === "PROVISION-LETTER")
+            ) {
+              // Read its value
+              const instructionsValue = tag.list[0]?.value || "";
+              localStorage.setItem("instructionsValue", instructionsValue);
+              console.log("Instructions:", instructionsValue);
+              // You can do further processing with the instructions value here
+              break; // If you only want to read the value once found, you can break the loop
+            }
+          }
+        }
+
+        setOrderId(appId);
+        setMessage(message);
+        setModalOpen(true);
+        setLoading(false);
+        storedOrderId(appId);
+      } else {
+        setLoading(false);
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error submitting form:", error);
+    }
+  };
+
   function deepMerge(target, source) {
     for (const key in source) {
       if (source.hasOwnProperty(key)) {
@@ -323,7 +388,7 @@ const AutomatedForm = () => {
       };
 
       // Perform API call with formData
-      const response = await fetch(`${baseUrl}/jobs/responseSearch`, {
+      const response = await fetch(`${baseUrl}/init`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -494,6 +559,8 @@ const AutomatedForm = () => {
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
 
       console.log({ jobDetails });
+      let contactDetails = formData["contact"];
+      contactDetails.phone = formData.contact.phone.toString();
       let initReqBody = initReqBodyJson.init[1];
       initReqBody["context"]["action"] = "init";
       initReqBody["context"]["domain"] = envConfig.apiLink_DOMAIN;
@@ -514,7 +581,7 @@ const AutomatedForm = () => {
       initReqBody.message.order.fulfillments[0]["customer"]["person"] =
         formData["person"];
       initReqBody.message.order.fulfillments[0]["customer"]["contact"] =
-        formData["contact"];
+        contactDetails;
       let tempTags = [
         {
           code: "distributor-details",
@@ -563,6 +630,9 @@ const AutomatedForm = () => {
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
       } else {
+        if (data.responses[0].hasOwnProperty("message")) {
+          confirmPayload = data?.responses[0];
+        }
         if (
           data?.responses[0]?.message?.order?.items[0].hasOwnProperty("xinput")
         ) {
@@ -652,12 +722,13 @@ const AutomatedForm = () => {
           "Content-Type": `application/x-www-form-urlencoded`,
         },
       });
-      console.log(axiosResponse.data);
+      console.log("axiosResponse", axiosResponse.data);
 
       if (axiosResponse.data) {
         localStorage.setItem("submissionId", axiosResponse.data);
         setTimeout(() => {
-          getInitJson();
+          //getInitJson();
+          onConfirm();
         }, 7000);
       }
     } catch (error) {

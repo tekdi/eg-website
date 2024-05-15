@@ -568,6 +568,10 @@
   "EXISTING_IP_USER": "मौजूदा IP उपयोगकर्ता",
   "EXPERIENCE": "अनुभव",
   "EXPERIENCE_IN_YEARS": "अनुभव (वर्षों में)",
+  "EXPIRY_CONTENT": {
+    "HEADING": "चेतावनी",
+    "MESSAGE": "आपकी कोशिश कर रहे डेटा का समय समाप्त हो गया है। कृपया होम पेज पर जाएं।"
+  },
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "शिक्षार्थी के अपने दावे की व्याख्या करें",
   "EXPORT": "निर्यात",
   "EXAM_NOT_STARTED_YET": "परीक्षा अभी शुरू नहीं हुई है",
@@ -1746,6 +1750,7 @@
   "Job_description_is_not_available": "नौकरी का विवरण उपलब्ध नहीं है",
   "Not_Provided": "नहीं प्रदान किया गया",
   "Thank_you_for_applying_application_number_is": "आवेदन करने के लिए धन्यवाद! आपका आवेदन नंबर है",
+  "ALREADY_APPLIED_FOR_THIS_JOB": "आपने इस नौकरी के लिए पहले ही आवेदन कर दिया है और आवेदन की स्थिति यह है",
   "NO_data_available": "चयनित फ़िल्टर के लिए कोई डेटा उपलब्ध नहीं है.",
   "Delay_in_fetching_the_details": "क्षमा करें, विवरण प्राप्त करने/फॉर्म जमा करने में देरी हो रही है, क्या आप कृपया अब पुनः प्रयास कर सकते हैं।",
   "Name": "नाम",
@@ -1787,7 +1792,7 @@
   "Enter_Feedback": "फीडबैक दर्ज करें",
   "Provide_your_feedback_here": "यहाँ अपनी प्रतिक्रिया दें...",
   "Submit_Feedback": "फीडबैक सबमिट करें",
-  "SCHOLARSHIP": "स्कालर्शिप",
+  "SCHOLARSHIP": "स्कॉलरशिप",
   "JOBS": "नौकरियां",
   "LEARNING_EXPERIENCES": "डिजिटल शिक्षण संसाधन"
 }

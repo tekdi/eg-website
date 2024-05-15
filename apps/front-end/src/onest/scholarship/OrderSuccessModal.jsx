@@ -2,13 +2,7 @@ import React from "react";
 import { Box, Modal, Text } from "native-base";
 import { useTranslation } from "react-i18next";
 
-const OrderSuccessModal = ({
-  isOpen,
-  onClose,
-  orderId,
-  message,
-  applied = false,
-}) => {
+const OrderSuccessModal = ({ isOpen, onClose, orderId, applied = false }) => {
   const { t } = useTranslation();
 
   return (
