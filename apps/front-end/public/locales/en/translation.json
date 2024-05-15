@@ -1724,5 +1724,6 @@
   "SCHEDULE_BANNER": "Yet To Publish",
   "ENROLLMENT_NOT_MATCH": "Enrollment not match",
   "FAILED_READ_PDF": "Failed to read PDF, try again",
-  "INVALID_PDF": "Invalid PDF"
+  "INVALID_PDF": "Invalid PDF",
+  "YET_TO_BE_UPLOAD": "Yet to be Uploaded"
 }

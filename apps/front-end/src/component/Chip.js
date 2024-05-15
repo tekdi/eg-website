@@ -204,6 +204,14 @@ export function ExamChipStatus({ width, status, ...props }) {
         setNewStatus(t("EXAM_RESULT_STATUS_XXXX"));
         setColor("selectedColor");
         break;
+      case "yet_to_upload":
+        setNewStatus(t("YET_TO_BE_UPLOAD"));
+        setColor("yellowColor");
+        break;
+      case "assign_to_ip":
+        setNewStatus(t("ASSIGNED_TO_IP"));
+        setColor("yellowColor");
+        break;
       default:
         setNewStatus(t("ASSIGNED_TO_IP"));
         setColor("yellowColor");
