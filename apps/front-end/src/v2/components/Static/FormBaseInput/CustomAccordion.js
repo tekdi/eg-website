@@ -44,7 +44,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
       const isDate = compareDates(date, getexamSyncDate);
       if (date) {
         if (isDate) {
-          if (getIndexData) {
+          if (getIndexData?.length > 0) {
             setLearnerAttendance(getIndexData);
           } else {
             setLearnerAttendance(IndexDatapayload);
