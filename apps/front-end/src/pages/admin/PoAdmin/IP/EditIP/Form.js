@@ -38,7 +38,7 @@ const baseSchema = {
   ],
   properties: {
     org_id: {
-      type: "string",
+      type: "number",
       title: "ID",
       readOnly: true,
     },
