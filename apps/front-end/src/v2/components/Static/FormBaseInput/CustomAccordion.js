@@ -44,7 +44,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
       const isDate = compareDates(date, getexamSyncDate);
       if (date) {
         if (isDate) {
-          if (getIndexData) {
+          if (getIndexData?.length > 0) {
             setLearnerAttendance(getIndexData);
           } else {
             setLearnerAttendance(IndexDatapayload);
@@ -362,6 +362,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
                       justifyContent={"center"}
                     >
                       <FrontEndTypo.Secondarybutton
+                        isDisabled={isDisable}
                         px="20px"
                         onPress={() => {
                           cancelAttendance(subject?.event_id);
