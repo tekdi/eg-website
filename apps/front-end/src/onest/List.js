@@ -19,6 +19,7 @@ import Layout from "./Layout";
 import { FrontEndTypo } from "@shiksha/common-lib";
 // import InfiniteScroll from "react-infinite-scroll-component";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
+import { useTranslation } from "react-i18next";
 const limit = 6;
 const List = () => {
   const [cardData, setCardData] = useState();
@@ -33,6 +34,7 @@ const List = () => {
   // const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
   const [bodyHeight, setBodyHeight] = useState(0);
+  const { t } = useTranslation();
 
   // useEffect(() => {
   //   if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
@@ -126,6 +128,8 @@ const List = () => {
     // In this example, let's assume we have only 5 pages of data
     if (newPage >= Math.ceil(cardData?.length / limit)) {
       setHasMore(false);
+    } else {
+      setHasMore(true);
     }
   };
 
@@ -214,12 +218,12 @@ const List = () => {
           {/* </InfiniteScroll> */}
           {hasMore && (
             <FrontEndTypo.Primarybutton onPress={(e) => fetchData(1)}>
-              {"NEXT"}
+              {t("NEXT")}
             </FrontEndTypo.Primarybutton>
           )}
           {page > 1 && (
             <FrontEndTypo.Primarybutton onPress={(e) => fetchData(-1)}>
-              {"BACK"}
+              {t("BACK")}
             </FrontEndTypo.Primarybutton>
           )}
         </VStack>
