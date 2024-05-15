@@ -1,0 +1,159 @@
+{
+    "context": {
+        "ttl": "PT10M",
+        "action": "select",
+        "timestamp": "2023-12-26T05:23:00.789Z",
+        "message_id": "9fe91807-85d5-46a4-aafd-15f4039ea7c5",
+        "transaction_id": "a9aaecca-10b7-4d19-b640-b047a7c60008",
+        "domain": "onest:work-opportunities",
+        "version": "1.1.0",
+        "bap_id": "jobs-bap.tekdinext.com",
+        "bap_uri": "https://jobs-bap.tekdinext.com",
+        "bpp_id": "dash-beckn.tibilapps.com",
+        "bpp_uri": "https://dash-beckn.tibilapps.com/protocol-network"
+    },
+    "responses": [
+        {
+            "context": {
+                "domain": "onest:work-opportunities",
+                "action": "on_select",
+                "version": "1.1.0",
+                "bpp_id": "dash-beckn.tibilapps.com",
+                "bpp_uri": "",
+                "country": "IND",
+                "city": "std:080",
+                "bap_id": "jobs-bap.tekdinext.com",
+                "bap_uri": "https://jobs-bap.tekdinext.com",
+                "transaction_id": "a9aaecca-10b7-4d19-b640-b047a7c60008",
+                "message_id": "9fe91807-85d5-46a4-aafd-15f4039ea7c5",
+                "ttl": "PT10M",
+                "timestamp": "2023-12-26T05:23:05.452Z"
+            },
+            "message": {
+                "order": {
+                    "provider": {
+                        "id": "1",
+                        "descriptor": {
+                            "name": "PGI technologies"
+                        }
+                    },
+                    "items": [
+                        {
+                            "id": "100",
+                            "descriptor": {
+                                "name": "Business Development Executives - INDIGO Paints"
+                            },
+                            "location_ids": [
+                                "95",
+                                "96"
+                            ],
+                            "fulfillment_ids": [
+                                "1"
+                            ],
+                            "tags": [
+                                {
+                                    "descriptor": {
+                                        "name": "Work Experience"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Min Experience"
+                                            },
+                                            "value": "null"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "Max Experience"
+                                            },
+                                            "value": "null"
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "Educational Qualifications"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Min Qualification"
+                                            },
+                                            "value": "Not Specified"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "Max Qualification"
+                                            },
+                                            "value": "null"
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "Salary Compensation",
+                                        "code": "salary-info"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Min Salary"
+                                            },
+                                            "value": "0"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "Max Salary"
+                                            },
+                                            "value": "0"
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "Gender",
+                                        "code": "gender"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Gender"
+                                            },
+                                            "value": "null"
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "Age",
+                                        "code": "age"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Min Age"
+                                            },
+                                            "value": "18"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "Max Age"
+                                            },
+                                            "value": "40"
+                                        }
+                                    ],
+                                    "display": true
+                                }
+                            ]
+                        }
+                    ],
+                    "type": "DEFAULT"
+                }
+            }
+        }
+    ]
+}

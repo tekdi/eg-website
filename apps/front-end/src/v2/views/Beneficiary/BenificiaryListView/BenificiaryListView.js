@@ -277,39 +277,38 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack ref={ref}>
-        <Pressable
-          onPress={(e) => {
-            [
-              "pragati_mobilizer",
-              "selected_prerak",
-              "selected_for_training",
-              "selected_for_onboarding",
-            ].includes(facilitator.status) && navigate(`/beneficiary`);
-          }}
-        >
-          <HStack p="5" space="5" bg="textMaroonColor.50" alignItems="Center">
-            <IconByName
-              isDisabled
-              name="UserFollowLineIcon"
-              _icon={{ size: "30px" }}
-              onPress={(e) => {
-                navigate("/beneficiary");
-              }}
-            />
-            <VStack flex="0.8">
-              <FrontEndTypo.H3
-                bold
-                color="textGreyColor.800"
-                wordWrap="break-word"
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-              >
-                {t("ADD_MORE_AG")}
-              </FrontEndTypo.H3>
-            </VStack>
-          </HStack>
-        </Pressable>
+        {[
+          "pragati_mobilizer",
+          "selected_prerak",
+          "selected_for_training",
+          "selected_for_onboarding",
+        ].includes(facilitator.status) && (
+          <Pressable
+            onPress={(e) => {
+              navigate(`/beneficiary`);
+            }}
+          >
+            <HStack p="5" space="5" bg="textMaroonColor.50" alignItems="Center">
+              <IconByName
+                isDisabled
+                name="UserFollowLineIcon"
+                _icon={{ size: "30px" }}
+              />
+              <VStack flex="0.8">
+                <FrontEndTypo.H3
+                  bold
+                  color="textGreyColor.800"
+                  wordWrap="break-word"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {t("ADD_MORE_AG")}
+                </FrontEndTypo.H3>
+              </VStack>
+            </HStack>
+          </Pressable>
+        )}
         <HStack
           justifyContent="space-between"
           space="2"

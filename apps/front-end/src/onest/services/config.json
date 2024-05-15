@@ -1,0 +1,29 @@
+{
+    "siteName": "Shikshak Saathi!",
+    "siteByLine": "Listen, Learn & Grow !!!",
+    "apiEndPoint": "/cache/search",
+    
+    "pagination": "10",
+    "orderBy": "2023-10-20T07:46:27.732028+00:00",
+    "filterBy": "default",
+    "footerText": "Developed with ❤️ by Tekdi Technologies ",
+    "headerColor": "white",
+    "headerFontSize": "16",
+    "logo": "../assets/school_logo.png",
+    "isAdvFilter": true,
+    "isSearch": true,
+    
+    "filters": {
+        "minAge": "",
+        "language": "",
+        "contentType": ""
+    },
+    "advFilters": [
+        {
+            "label": "State",
+            "field": "state",
+            "options": [{"state": "All" }]
+        }
+    ]    
+}
+

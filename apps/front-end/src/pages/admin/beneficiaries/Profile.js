@@ -17,6 +17,7 @@ import {
   getSelectedAcademicYear,
   ItemComponent,
   getEnrollmentIds,
+  organisationService,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -205,9 +206,28 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [checkedFields, setCheckedFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
   const [boardName, setBoardName] = useState({});
+  const [boardId, setBoardId] = useState({});
   const [jsonData, setJsonData] = useState();
   const [programUser, setProgramUser] = useState();
   const [localData, setLocalData] = useState();
+  const [publishEvent, setPublishEvent] = useState();
+
+  useEffect(() => {
+    const getSubjectList = async () => {
+      const id = boardId;
+      const subjectData = await organisationService.getSubjectList({ id });
+
+      if (Array.isArray(subjectData?.data)) {
+        const hasDraftEvent = subjectData?.data.some((subject) => {
+          return subject.events.some((event) => {
+            return event.status === "publish";
+          });
+        });
+        setPublishEvent(hasDraftEvent);
+      }
+    };
+    getSubjectList();
+  }, [boardId]);
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -295,6 +315,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       const value = newData?.result?.program_beneficiaries?.enrolled_for_board;
       const boardName = await enumRegistryService.boardName(value);
       setBoardName(boardName?.name);
+      setBoardId(boardName?.id);
       setData(newData?.result);
       setAadhaarValue(newData?.result?.aadhar_no);
       const subjectId = jsonParse(
@@ -1458,18 +1479,19 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   </AdminTypo.H4>
 
                   {data?.program_beneficiaries?.status !==
-                    "enrolled_ip_verified" && (
-                    <IconByName
-                      name="PencilLineIcon"
-                      color="iconColor.200"
-                      _icon={{ size: "25" }}
-                      onPress={(e) => {
-                        navigate(
-                          `/admin/beneficiary/${id}/editEnrollmentDetails`
-                        );
-                      }}
-                    />
-                  )}
+                    "enrolled_ip_verified" &&
+                    !publishEvent && (
+                      <IconByName
+                        name="PencilLineIcon"
+                        color="iconColor.200"
+                        _icon={{ size: "25" }}
+                        onPress={(e) => {
+                          navigate(
+                            `/admin/beneficiary/${id}/editEnrollmentDetails`
+                          );
+                        }}
+                      />
+                    )}
 
                   {data?.program_beneficiaries?.status === "enrolled" && (
                     <AdminTypo.StatusButton

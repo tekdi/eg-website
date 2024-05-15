@@ -172,3 +172,59 @@ export function CampChipStatus({ status, ...props }) {
 CampChipStatus.propTypes = {
   status: PropTypes.string,
 };
+
+export function ExamChipStatus({ width, status, ...props }) {
+  const [color, setColor] = useState("appliedColor");
+  const [newStatus, setNewStatus] = useState(status);
+
+  useEffect(() => {
+    switch (status) {
+      case "P":
+      case "PASS":
+        setColor("screenedColor");
+        setNewStatus(t("EXAM_RESULT_STATUS_P"));
+        break;
+      case "SYC":
+        setNewStatus(t("EXAM_RESULT_STATUS_SYC"));
+        setColor("rejectedColor");
+        break;
+      case "SYCT":
+        setNewStatus(t("EXAM_RESULT_STATUS_SYCT"));
+        setColor("shortlistedColor");
+        break;
+      case "SYCP":
+        setNewStatus(t("EXAM_RESULT_STATUS_SYCP"));
+        setColor("potentialColor");
+        break;
+      case "RWH":
+        setNewStatus(t("EXAM_RESULT_STATUS_RWH"));
+        setColor("selectedColor");
+        break;
+      case "XXXX":
+        setNewStatus(t("EXAM_RESULT_STATUS_XXXX"));
+        setColor("selectedColor");
+        break;
+      default:
+        setNewStatus(t("ASSIGNED_TO_IP"));
+        setColor("yellowColor");
+    }
+  }, [status]);
+
+  return (
+    <Chip
+      px="4"
+      py="2"
+      width={width || "100px"}
+      bg={color}
+      label={newStatus}
+      _text={{
+        textTransform: "capitalize",
+        fontSize: "10px",
+        fontWeight: "500",
+        textAlign: "center",
+      }}
+      rounded="sm"
+      {...props}
+    />
+  );
+}

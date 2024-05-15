@@ -26,6 +26,7 @@ import {
   Switch,
   Text,
   VStack,
+  useToast,
 } from "native-base";
 import {
   Suspense,
@@ -328,6 +329,9 @@ export default function Attendence({ footerLinks }) {
   const [filter, setFilter] = useState({});
   const [eventDates, setEventDates] = useState([]);
   const [enums, setEnums] = useState();
+  const [openStartExam, setOpenStartExam] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const toast = useToast();
 
   const certificateDownload = async (data) => {
     const result = await testRegistryService.postCertificates(data);
@@ -430,6 +434,48 @@ export default function Attendence({ footerLinks }) {
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+  };
+
+  const startExam = async () => {
+    setIsButtonLoading(true);
+    const result = await eventService.startExam(id);
+    if (result?.success === true) {
+      setIsButtonLoading(false);
+      setOpenStartExam(false);
+    } else {
+      setIsButtonLoading(false);
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="error" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <AdminTypo.H6>{result?.message}</AdminTypo.H6>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    }
+  };
+
+  const editEvent = () => {
+    if (event?.params?.start_exam === "yes") {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    } else {
+      navigate(`/admin/event/${id}/edit`);
+    }
   };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
@@ -548,11 +594,12 @@ export default function Attendence({ footerLinks }) {
                   {event?.master_trainer ? event?.master_trainer : ""}
                 </Badge>
               </HStack>
-              <AdminTypo.Secondarybutton
-                onPress={() => navigate(`/admin/event/${id}/edit`)}
-              >
+              <AdminTypo.Secondarybutton onPress={editEvent}>
                 {t("EDIT")}
               </AdminTypo.Secondarybutton>
+              <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(true)}>
+                {t("START_EXAM")}
+              </AdminTypo.PrimaryButton>
             </Stack>
           </VStack>
           <Stack space={4}>
@@ -671,6 +718,36 @@ export default function Attendence({ footerLinks }) {
                 </div>
               </Modal.Body>
             </div>
+          </Modal.Content>
+        </Modal>
+
+        <Modal isOpen={openStartExam} size="xl">
+          <Modal.Content>
+            <Modal.Header textAlign={"center"}>
+              {t("START_EXAM_MODAL_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body p="5">
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_1")}
+              </AdminTypo.H5>
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_2")}
+              </AdminTypo.H5>
+              <AdminTypo.H5>
+                {t("START_EXAM_MODAL_CONTENT.MESSAGE_3")}
+              </AdminTypo.H5>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(false)}>
+                {t("CANCEL")}
+              </AdminTypo.PrimaryButton>
+              <AdminTypo.Secondarybutton
+                isDisabled={isButtonLoading}
+                onPress={startExam}
+              >
+                {t("CONFIRM")}
+              </AdminTypo.Secondarybutton>
+            </Modal.Footer>
           </Modal.Content>
         </Modal>
       </VStack>
