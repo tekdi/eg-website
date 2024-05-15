@@ -342,7 +342,6 @@ function ScholarshipView() {
               isOpen={openModal}
               onClose={closeModal}
               orderId={status}
-              message={"You have already applied for this scholarship"}
               applied={true}
             />
           ) : (

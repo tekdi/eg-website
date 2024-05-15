@@ -60,6 +60,17 @@ export const dataConfig = {
     //     </div>
     //   );
     // },
+    onOrderIdGenerate: async (val) => {
+      const data = {
+        user_id: val.userData.user_id,
+        context: val.type,
+        context_item_id: val.jobId,
+        status: "created",
+        order_id:
+          val.response.data.data.insert_jobs_order_dev.returning[0].order_id,
+      };
+      let response = await OnestService.create(data);
+    },
   },
   learning: {
     title: "LEARNING_EXPERIENCES",
