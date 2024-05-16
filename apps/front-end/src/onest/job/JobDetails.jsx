@@ -48,46 +48,46 @@ function JobDetails() {
     navigate("/");
   };
 
-  // const getApplicationStatus = async (order_id) => {
-  //   const apiUrl = `${baseUrl}/jobs/searchOrder/${order_id}`;
-  //   let searchOrder = {};
+  const getApplicationStatus = async (order_id) => {
+    const apiUrl = `${baseUrl}/user/searchOrder/${order_id}`;
 
-  //   await axios
-  //     .get(apiUrl)
-  //     .then((response) => {
-  //       searchOrder = response.data;
-  //     })
-  //     .catch((error) => {
-  //       console.error("Axios GET request error:", error);
-  //     });
+    await axios
+      .get(apiUrl)
+      .then(async (response) => {
+        console.log("res 1", response);
+        const payload = {
+          context: {
+            domain: envConfig.apiLink_DOMAIN,
+            action: "status",
+            version: "1.1.0",
+            bap_id: envConfig.apiLink_BAP_ID,
+            bap_uri: envConfig.apiLink_BAP_URI,
+            bpp_id: response?.data?.bpp_id,
+            bpp_uri: response?.data?.bpp_uri,
+            transaction_id: transactionId,
+            message_id: uuidv4(),
+            timestamp: new Date().toISOString(),
+          },
+          message: {
+            order_id: order_id,
+          },
+        };
 
-  //   const payload = {
-  //     context: {
-  //       domain: envConfig.apiLink_DOMAIN,
-  //       action: "status",
-  //       version: "1.1.0",
-  //       bap_id: envConfig.apiLink_BAP_ID,
-  //       bap_uri: envConfig.apiLink_BAP_URI,
-  //       bpp_id: searchOrder?.bpp_id,
-  //       bpp_uri: searchOrder?.bpp_uri,
-  //       transaction_id: transactionId,
-  //       message_id: uuidv4(),
-  //       timestamp: new Date().toISOString(),
-  //     },
-  //     message: {
-  //       order_id: order_id,
-  //     },
-  //   };
+        const statusTrack = await OnestService.jobStatusTrack(payload);
+        console.log("res 2", statusTrack);
+        if (statusTrack?.responses[0]?.message) {
+          setStatus(
+            statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
+              ?.descriptor?.name
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Axios GET request error:", error);
+      });
 
-  //   const statusTrack = await OnestService.statusTrack(payload);
-  //   if (statusTrack?.responses[0]?.message) {
-  //     setStatus(
-  //       statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
-  //         ?.descriptor?.name
-  //     );
-  //   }
-  //   setOpenModal(true);
-  // };
+    setOpenModal(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,8 +101,7 @@ function JobDetails() {
       let result = await OnestService.getList({ filter: data });
       if (result?.data.length) {
         setListData(result?.data);
-        setOpenModal(true);
-        //getApplicationStatus(result?.data[0].order_id);
+        getApplicationStatus(result?.data[0].order_id);
       }
     };
     fetchData();

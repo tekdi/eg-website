@@ -39,42 +39,38 @@ function ScholarshipView() {
 
   const getApplicationStatus = async (order_id) => {
     const apiUrl = `${baseUrl}/content/searchOrder/${order_id}`;
-    let searchOrder = {};
 
     await axios
       .get(apiUrl)
-      .then((response) => {
-        searchOrder = response.data;
+      .then(async (response) => {
+        const payload = {
+          context: {
+            domain: envConfig.apiLink_DOMAIN,
+            action: "status",
+            version: "1.1.0",
+            bap_id: envConfig.apiLink_BAP_ID,
+            bap_uri: envConfig.apiLink_BAP_URI,
+            bpp_id: response?.data?.bpp_id,
+            bpp_uri: response?.data?.bpp_uri,
+            transaction_id: transactionId,
+            message_id: uuidv4(),
+            timestamp: new Date().toISOString(),
+          },
+          message: {
+            order_id: order_id,
+          },
+        };
+        const statusTrack = await OnestService.statusTrack(payload);
+        if (statusTrack?.responses[0]?.message) {
+          setStatus(
+            statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
+              ?.descriptor?.name
+          );
+        }
       })
       .catch((error) => {
         console.error("Axios GET request error:", error);
       });
-
-    const payload = {
-      context: {
-        domain: envConfig.apiLink_DOMAIN,
-        action: "status",
-        version: "1.1.0",
-        bap_id: envConfig.apiLink_BAP_ID,
-        bap_uri: envConfig.apiLink_BAP_URI,
-        bpp_id: searchOrder?.bpp_id,
-        bpp_uri: searchOrder?.bpp_uri,
-        transaction_id: transactionId,
-        message_id: uuidv4(),
-        timestamp: new Date().toISOString(),
-      },
-      message: {
-        order_id: order_id,
-      },
-    };
-
-    const statusTrack = await OnestService.statusTrack(payload);
-    if (statusTrack?.responses[0]?.message) {
-      setStatus(
-        statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
-          ?.descriptor?.name
-      );
-    }
     setOpenModal(true);
   };
 
