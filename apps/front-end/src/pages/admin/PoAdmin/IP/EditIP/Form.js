@@ -74,7 +74,7 @@ const baseSchema = {
     },
     learner_target: {
       title: "LEARNER_TARGET",
-      type: ["string", "number"],
+      type: ["number"],
     },
     learner_per_camp: {
       title: "LEARNERS_PER_TARGET",
