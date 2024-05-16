@@ -1,14 +1,12 @@
 // AutomatedForm.js
-import React, { useState, useEffect } from "react";
-import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
-import "./Shared.css";
-import OrderSuccessModal from "./OrderSuccessModal";
+import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
-
 import { useLocation, useNavigate } from "react-router-dom";
-// import Header from "./Header";
-import Loader from "./Loader";
+import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
+import OrderSuccessModal from "./OrderSuccessModal";
+import "./Shared.css";
 
+import axios from "axios";
 import {
   Alert,
   Box,
@@ -21,45 +19,37 @@ import {
   Select,
   useToast,
 } from "native-base";
-import { add } from "lodash";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
-import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "onest/card";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+// import { registerTelementry } from "../api/Apicall";
+import { FrontEndTypo } from "@shiksha/common-lib";
+import Layout from "../Layout";
 
 const AutomatedForm = () => {
   const location = useLocation();
   const state = location?.state;
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
-
-  const { type } = useParams();
+  const { type, jobId, transactionId } = useParams();
   const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
-
   const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [apiResponse, setApiResponse] = useState("");
-
-  const [selectDetails, setSelectDetails] = useState(null);
   const [jobInfo, setJobInfo] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
 
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
-  const [siteUrl, setSiteUrl] = useState(window.location.href);
+  // const [siteUrl, setSiteUrl] = useState(window.location.href);
   const toast = useToast();
-
-  const { jobId } = useParams();
-  const { transactionId } = useParams();
+  let confirmPayload = {};
 
   useEffect(() => {
     const url = window.location.href;
@@ -98,7 +88,7 @@ const AutomatedForm = () => {
       let jsonData = atob(jsonDataParam);
       localStorage.setItem("userData", jsonData);
     }
-    registerTelementry(siteUrl, transactionId);
+    // registerTelementry(siteUrl, transactionId);
   }, []);
 
   const [formData, setFormData] = useState({
@@ -219,6 +209,14 @@ const AutomatedForm = () => {
       })
       .then((response) => {
         console.log("Response:", response.data);
+        if (envConfig?.onOrderIdGenerate) {
+          envConfig?.onOrderIdGenerate({
+            response,
+            userData,
+            jobId,
+            type,
+          });
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -307,6 +305,62 @@ const AutomatedForm = () => {
     }
   };
 
+  const onConfirm = async () => {
+    try {
+      let payload = confirmPayload;
+      payload.context.action = "confirm";
+      // Perform API call with formData
+      const response = await fetch(`${baseUrl}/confirm`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      // Set state and open the modal
+      if (data.responses.length) {
+        let appId = data.responses[0].message.order.id;
+        console.log("orderId", appId);
+
+        localStorage.setItem("applicationId", appId);
+
+        if (data.responses[0].hasOwnProperty("message")) {
+          for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
+            ?.customer?.person?.tags) {
+            // Check if the descriptor code is "instructions"
+            if (
+              tag.descriptor &&
+              (tag.descriptor.code === "instructions" ||
+                tag.descriptor.code === "PROVISION-LETTER")
+            ) {
+              // Read its value
+              const instructionsValue = tag.list[0]?.value || "";
+              localStorage.setItem("instructionsValue", instructionsValue);
+              console.log("Instructions:", instructionsValue);
+              // You can do further processing with the instructions value here
+              break; // If you only want to read the value once found, you can break the loop
+            }
+          }
+        }
+
+        setOrderId(appId);
+        setMessage(message);
+        setModalOpen(true);
+        setLoading(false);
+        storedOrderId(appId);
+      } else {
+        setLoading(false);
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error submitting form:", error);
+    }
+  };
+
   function deepMerge(target, source) {
     for (const key in source) {
       if (source.hasOwnProperty(key)) {
@@ -334,7 +388,7 @@ const AutomatedForm = () => {
       };
 
       // Perform API call with formData
-      const response = await fetch(`${baseUrl}/jobs/responseSearch`, {
+      const response = await fetch(`${baseUrl}/init`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -505,6 +559,8 @@ const AutomatedForm = () => {
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
 
       console.log({ jobDetails });
+      let contactDetails = formData["contact"];
+      contactDetails.phone = formData.contact.phone.toString();
       let initReqBody = initReqBodyJson.init[1];
       initReqBody["context"]["action"] = "init";
       initReqBody["context"]["domain"] = envConfig.apiLink_DOMAIN;
@@ -525,7 +581,7 @@ const AutomatedForm = () => {
       initReqBody.message.order.fulfillments[0]["customer"]["person"] =
         formData["person"];
       initReqBody.message.order.fulfillments[0]["customer"]["contact"] =
-        formData["contact"];
+        contactDetails;
       let tempTags = [
         {
           code: "distributor-details",
@@ -574,6 +630,9 @@ const AutomatedForm = () => {
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
       } else {
+        if (data.responses[0].hasOwnProperty("message")) {
+          confirmPayload = data?.responses[0];
+        }
         if (
           data?.responses[0]?.message?.order?.items[0].hasOwnProperty("xinput")
         ) {
@@ -663,12 +722,13 @@ const AutomatedForm = () => {
           "Content-Type": `application/x-www-form-urlencoded`,
         },
       });
-      console.log(axiosResponse.data);
+      console.log("axiosResponse", axiosResponse.data);
 
       if (axiosResponse.data) {
         localStorage.setItem("submissionId", axiosResponse.data);
         setTimeout(() => {
-          getInitJson();
+          //getInitJson();
+          onConfirm();
         }, 7000);
       }
     } catch (error) {
@@ -857,80 +917,77 @@ const AutomatedForm = () => {
   };
 
   return (
-    <Box marginTop={100}>
-      {/* <Header /> */}
-      {loading && (
-        //show
-        <Loader />
-      )}
-      <Box margin={4}>
-        <div id="formContainer"></div>
-      </Box>
-      {!isAutoForm && (
+    <Layout loading={loading}>
+      <Box marginTop={100}>
         <Box margin={4}>
-          <FormControl mt="4" isInvalid={Boolean(formErrors.person.name)}>
-            <FormLabel>{t("Name")}</FormLabel>
-            <Input
-              type="text"
-              value={formData.person.name}
-              onChange={(e) =>
-                handleInputChange("person", "name", e.target.value)
-              }
-            />
-            <FormErrorMessage>{formErrors.person.name}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl mt="4" isInvalid={Boolean(formErrors.person.gender)}>
-            <FormLabel>{t("Gender")}</FormLabel>
-            <Select
-              value={formData.person.gender}
-              onChange={(e) =>
-                handleInputChange("person", "gender", e.target.value)
-              }
-            >
-              <option value="">{t("Select_Gender")}</option>
-              <option value="male">{t("Male")}</option>
-              <option value="female">{t("Female")}</option>
-              {/* Add more options as needed */}
-            </Select>
-            <FormErrorMessage>{formErrors.person.gender}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl mt="4" isInvalid={Boolean(formErrors.contact.phone)}>
-            <FormLabel>{t("Phone")}</FormLabel>
-            <Input
-              type="number"
-              value={formData.contact.phone}
-              onChange={(e) =>
-                handleInputChange("contact", "phone", e.target.value)
-              }
-            />
-            <FormErrorMessage>{formErrors.contact.phone}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl mt="4" isInvalid={Boolean(formErrors.contact.email)}>
-            <FormLabel>{t("Email")}</FormLabel>
-            <Input
-              type="email"
-              value={formData.contact.email}
-              onChange={(e) =>
-                handleInputChange("contact", "email", e.target.value)
-              }
-            />
-            <FormErrorMessage>{formErrors.contact.email}</FormErrorMessage>
-          </FormControl>
-          <Button mt="6" colorScheme="blue" onClick={fetchInitDetails}>
-            {t("Submit")}
-          </Button>
+          <div id="formContainer"></div>
         </Box>
-      )}
-      <OrderSuccessModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        orderId={orderId}
-        message={message}
-      />
-    </Box>
+        {!isAutoForm && (
+          <Box margin={4}>
+            <FormControl mt="4" isInvalid={Boolean(formErrors.person.name)}>
+              <FormLabel>{t("Name")}</FormLabel>
+              <Input
+                type="text"
+                value={formData.person.name}
+                onChange={(e) =>
+                  handleInputChange("person", "name", e.target.value)
+                }
+              />
+              <FormErrorMessage>{formErrors.person.name}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl mt="4" isInvalid={Boolean(formErrors.person.gender)}>
+              <FormLabel>{t("Gender")}</FormLabel>
+              <Select
+                value={formData.person.gender}
+                onChange={(e) =>
+                  handleInputChange("person", "gender", e.target.value)
+                }
+              >
+                <option value="">{t("Select_Gender")}</option>
+                <option value="male">{t("Male")}</option>
+                <option value="female">{t("Female")}</option>
+                {/* Add more options as needed */}
+              </Select>
+              <FormErrorMessage>{formErrors.person.gender}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl mt="4" isInvalid={Boolean(formErrors.contact.phone)}>
+              <FormLabel>{t("Phone")}</FormLabel>
+              <Input
+                type="number"
+                value={formData.contact.phone}
+                onChange={(e) =>
+                  handleInputChange("contact", "phone", e.target.value)
+                }
+              />
+              <FormErrorMessage>{formErrors.contact.phone}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl mt="4" isInvalid={Boolean(formErrors.contact.email)}>
+              <FormLabel>{t("Email")}</FormLabel>
+              <Input
+                type="email"
+                value={formData.contact.email}
+                onChange={(e) =>
+                  handleInputChange("contact", "email", e.target.value)
+                }
+              />
+              <FormErrorMessage>{formErrors.contact.email}</FormErrorMessage>
+            </FormControl>
+            <Button mt="6" colorScheme="blue" onClick={fetchInitDetails}>
+              {t("Submit")}
+            </Button>
+          </Box>
+        )}
+        <OrderSuccessModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          orderId={orderId}
+          message={message}
+        />
+      </Box>
+    </Layout>
   );
 };
 

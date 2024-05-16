@@ -17,8 +17,10 @@ import { dataConfig } from "./card";
 import axios from "axios";
 import Layout from "./Layout";
 import { FrontEndTypo } from "@shiksha/common-lib";
-import InfiniteScroll from "react-infinite-scroll-component";
-
+// import InfiniteScroll from "react-infinite-scroll-component";
+import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
+import { useTranslation } from "react-i18next";
+const limit = 6;
 const List = () => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
@@ -29,17 +31,18 @@ const List = () => {
   const [filter, setFilter] = useState();
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const [loadingHeight, setLoadingHeight] = useState(0);
+  // const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
   const [bodyHeight, setBodyHeight] = useState(0);
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
-    } else {
-      setLoadingHeight(bodyHeight);
-    }
-  }, [bodyHeight, ref]);
+  // useEffect(() => {
+  //   if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+  //     setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+  //   } else {
+  //     setLoadingHeight(bodyHeight);
+  //   }
+  // }, [bodyHeight, ref]);
 
   useEffect(() => {
     const fetchJobsData = async () => {
@@ -57,7 +60,12 @@ const List = () => {
         }
         if (response) {
           setCardData(response);
-          setFilterCardData(paginateArray(response, 10, page));
+          setFilterCardData(
+            paginateArray({
+              data: response,
+              filter: { page, limit, ...filter },
+            })
+          );
           setfilterData(filterToData(configData?.filters, response));
         } else {
           console.error("Failed to fetch data");
@@ -72,28 +80,25 @@ const List = () => {
 
   useEffect(() => {
     const fethcData = () => {
-      let filterData = cardData;
-      if (filter) {
-        filterData = cardData.filter((item) => {
-          let resp = [];
-          const filKeys = Object.keys(filter || {});
-          filKeys.forEach((key) => {
-            resp = [
-              ...resp,
-              filter[key] === ""
-                ? true
-                : item?.[key]
-                    ?.toLowerCase()
-                    .includes(filter[key]?.toLowerCase()),
-            ];
-          });
-          return resp.filter((e) => e).length === filKeys?.length;
-        });
-      }
-      setFilterCardData(filterData);
+      setFilterCardData(
+        paginateArray({ data: cardData, filter: { page, limit, ...filter } })
+      );
     };
     fethcData();
   }, [filter]);
+
+  useEffect(() => {
+    const fethcData = () => {
+      setFilterCardData((e) => [
+        // ...e,
+        ...paginateArray({
+          data: cardData,
+          filter: { page, limit, ...filter },
+        }),
+      ]);
+    };
+    fethcData();
+  }, [page, limit]);
 
   const handleFilter = (key, value) => {
     setFilter((e) => ({
@@ -106,19 +111,25 @@ const List = () => {
     setShowFiltersModal(true);
   };
 
-  const fetchData = () => {
+  const fetchData = (numData) => {
     // Simulating fetching data from an API
     // In real application, replace this with actual API call
 
-    // Update state with new data
-    setFilterCardData(paginateArray(cardData, 10, page));
-
     // Increment page number
-    setPage(page + 1);
+    const newPage = page + numData;
+    setPage(newPage);
+
+    // Update state with new data
+    // setFilterCardData((e) => [
+    //   ...(e || []),
+    //   ...paginateArray({ data: cardData, filter }),
+    // ]);
 
     // In this example, let's assume we have only 5 pages of data
-    if (page >= 5) {
+    if (newPage >= Math.ceil(cardData?.length / limit)) {
       setHasMore(false);
+    } else {
+      setHasMore(true);
     }
   };
 
@@ -155,11 +166,11 @@ const List = () => {
                 return (
                   <Box key={heading} mb="4">
                     <Heading size="sm" mb="2">
-                      {heading}
+                      {convertToTitleCase(heading)}
                     </Heading>
                     {Array.isArray(options) && (
                       <Select
-                        placeholder={`Select ${heading}`}
+                        placeholder={`Select ${convertToTitleCase(heading)}`}
                         onValueChange={(value) => handleFilter(heading, value)}
                         value={filter?.[heading] || ""}
                       >
@@ -191,21 +202,31 @@ const List = () => {
         </Modal.Content>
       </Modal>
       <VStack flexWrap="wrap" space={4}>
-        <InfiniteScroll
+        {/* <InfiniteScroll
           dataLength={filterCardData?.length || 0}
           next={fetchData}
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
           endMessage={<p>No more items</p>}
-          height={loadingHeight}
+          minHeight={"300px"}
           gap="10px"
-        >
-          <VStack space="4" alignContent="center" p="4">
-            {filterCardData?.map((e) => (
-              <RenderCards key={e} obj={e} config={config} />
-            ))}
-          </VStack>
-        </InfiniteScroll>
+        > */}
+        <VStack space="4" alignContent="center" p="4">
+          {filterCardData?.map((e) => (
+            <RenderCards key={e} obj={e} config={config} />
+          ))}
+          {/* </InfiniteScroll> */}
+          {hasMore && (
+            <FrontEndTypo.Primarybutton onPress={(e) => fetchData(1)}>
+              {t("NEXT")}
+            </FrontEndTypo.Primarybutton>
+          )}
+          {page > 1 && (
+            <FrontEndTypo.Primarybutton onPress={(e) => fetchData(-1)}>
+              {t("BACK")}
+            </FrontEndTypo.Primarybutton>
+          )}
+        </VStack>
       </VStack>
     </Layout>
   );
@@ -216,9 +237,14 @@ const RenderCards = ({ obj, config }) => {
   return (
     <Pressable
       width={"100%"}
-      p="4"
+      p="6"
       borderWidth="1px"
-      borderRadius="md"
+      borderColor="gray.300"
+      borderRadius="lg"
+      alignItems="center"
+      textAlign="center"
+      shadow="4"
+      cursor="pointer"
       onPress={(e) => {
         if (obj?.detailLink) {
           navigate(replaceUrlParam(config?.detailLink, obj));
@@ -228,7 +254,6 @@ const RenderCards = ({ obj, config }) => {
           }
         }
       }}
-      textAlign={"center"}
     >
       {config?.render ? (
         config.render(obj)
@@ -263,12 +288,16 @@ const RenderCards = ({ obj, config }) => {
             marginLeft={0.5}
             textOverflow="ellipsis"
           >
-            <strong>Description:</strong>{" "}
-            {obj.shortDescription
-              ? obj.shortDescription
-              : obj.description
-              ? obj.description.substring(0, 100) + "..."
-              : ""}
+            <strong>Description</strong>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: obj.shortDescription
+                  ? obj.shortDescription
+                  : obj.description
+                  ? obj.description.substring(0, 100) + "..."
+                  : "",
+              }}
+            />
           </Text>
         </VStack>
       )}
@@ -296,12 +325,13 @@ const filterToData = (data, arr) => {
   return result;
 };
 
-const paginateArray = (dataArray, itemsPerPage, pageNumber) => {
+const paginateArray = ({ data, filter }) => {
   const paginatedArrays = [];
   let currentPage = [];
-
-  dataArray.forEach((item) => {
-    if (currentPage.length === itemsPerPage) {
+  const { limit, page, ...filterObj } = filter;
+  let dataArray = filterData({ data, filter: filterObj });
+  dataArray?.forEach((item) => {
+    if (currentPage.length === limit) {
       paginatedArrays.push([...currentPage]);
       currentPage = [];
     }
@@ -312,16 +342,31 @@ const paginateArray = (dataArray, itemsPerPage, pageNumber) => {
     paginatedArrays.push([...currentPage]);
   }
 
-  const currentPageNumber = Math.min(
-    Math.max(1, pageNumber),
-    paginatedArrays.length
-  );
-
-  return paginatedArrays[currentPageNumber - 1];
+  const currentPageNumber = Math.min(Math.max(1, page), paginatedArrays.length);
+  return paginatedArrays[currentPageNumber - 1] || [];
   return {
     currentPage: currentPageNumber,
     paginatedArray: paginatedArrays[currentPageNumber - 1],
   };
+};
+
+const filterData = ({ data, filter }) => {
+  if (!data && !Array.isArray(data)) {
+    return [];
+  }
+  return data.filter((item) => {
+    let resp = [];
+    const filKeys = Object.keys(filter || {});
+    filKeys?.forEach((key) => {
+      resp = [
+        ...resp,
+        filter[key] === ""
+          ? true
+          : item?.[key]?.toLowerCase().includes(filter[key]?.toLowerCase()),
+      ];
+    });
+    return resp.filter((e) => e).length === filKeys?.length;
+  });
 };
 
 export default List;

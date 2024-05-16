@@ -2,16 +2,16 @@ import { OnestService } from "@shiksha/common-lib";
 
 export const dataConfig = {
   scholarship: {
-    title: "Scholarship",
+    title: "SCHOLARSHIP",
     searchByKey: "title",
     listLink: "onest/scholarship",
     filters: ["provider_name"],
     apiLink_DB_CACHE: "scholarship_cache",
     apiLink_RESPONSE_DB: "response_cache_dev",
     apiLink_DOMAIN: "onest:financial-support",
-    apiLink_BAP_ID: "eg-scholarship-dev-bap-network.tekdinext.com",
-    apiLink_BAP_URI: "https://eg-scholarship-dev-bap-network.tekdinext.com/",
-    apiLink_API_BASE_URL: "https://eg-scholarship-dev-api.tekdinext.com",
+    apiLink_BAP_ID: process.env.REACT_APP_SCHOLARSHIPS_BAP_ID,
+    apiLink_BAP_URI: process.env.REACT_APP_SCHOLARSHIPS_BAP_URI,
+    apiLink_API_BASE_URL: process.env.REACT_APP_SCHOLARSHIPS_BASE_URL,
     imageUrl: "",
     apiResponce: (e) => e.data.data.scholarship_cache,
     onOrderIdGenerate: async (val) => {
@@ -30,7 +30,7 @@ export const dataConfig = {
   },
 
   jobs: {
-    title: "Jobs",
+    title: "JOBS",
     searchByKey: "title",
     listLink: "onest/jobs",
     //apiLink: "https://eg-jobs-dev-api.tekdinext.com",
@@ -45,13 +45,10 @@ export const dataConfig = {
     apiLink_DB_CACHE: "jobs_cache_dev",
     apiLink_RESPONSE_DB: "response_cache_dev",
     apiLink_DOMAIN: "onest:work-opportunities",
-    apiLink_BAP_ID: "jobs-bap-dev.tekdinext.com",
-    apiLink_BAP_URI: "https://jobs-bap-dev.tekdinext.com/",
-    apiLink_API_BASE_URL: "https://eg-jobs-dev-api.tekdinext.com",
-    apiLink_API_LIST_URL: "https://eg-jobs-dev-api.tekdinext.com/jobs/search",
-    apiLink_SUNBIRD_API: "https://sunbirdsaas.com/api/content/v1/read",
-    apiLink_DIKSHA_API: "https://diksha.gov.in/api/content/v1/read",
-    apiLink_IMAGE_URL: "https://kvk-nashik.tekdinext.com",
+    apiLink_BAP_ID: process.env.REACT_APP_JOBS_BAP_ID,
+    apiLink_BAP_URI: process.env.REACT_APP_JOBS_BAP_URI,
+    apiLink_API_BASE_URL: process.env.REACT_APP_JOBS_BASE_URL,
+    apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
     imageUrl: "",
     apiResponce: (e) => e.data.data.jobs_cache_dev,
     // render: (e) => {
@@ -63,19 +60,30 @@ export const dataConfig = {
     //     </div>
     //   );
     // },
+    onOrderIdGenerate: async (val) => {
+      const data = {
+        user_id: val.userData.user_id,
+        context: val.type,
+        context_item_id: val.jobId,
+        status: "created",
+        order_id:
+          val.response.data.data.insert_jobs_order_dev.returning[0].order_id,
+      };
+      let response = await OnestService.create(data);
+    },
   },
   learning: {
-    title: "Learning experiences",
+    title: "LEARNING_EXPERIENCES",
     searchByKey: "title",
     listLink: "onest/learning",
     detailLink: "/learning/:id",
     apiLink_DB_CACHE: "kahani_cache_dev",
     apiLink_API_ROUTE: "content",
     apiLink_DOMAIN: "onest:learning-experiences",
-    apiLink_BAP_ID: "eg-content-dev-bap-network.tekdinext.com",
-    apiLink_BAP_URI: "https://eg-content-dev-bap-network.tekdinext.com/",
+    apiLink_BAP_ID: process.env.REACT_APP_LEARNINGS_BAP_ID,
+    apiLink_BAP_URI: process.env.REACT_APP_LEARNINGS_BAP_URI,
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
-    apiLink_API_BASE_URL: "https://eg-content-dev-api.tekdinext.com",
+    apiLink_API_BASE_URL: process.env.REACT_APP_LEARNINGS_BASE_URL,
     apiResponce: (e) => e.data.data.kahani_cache_dev,
     getTrackData: async (e) => {
       const data = {
