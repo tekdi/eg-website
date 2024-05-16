@@ -54,32 +54,35 @@ function JobDetails() {
     await axios
       .get(apiUrl)
       .then(async (response) => {
-        console.log("res 1", response);
-        const payload = {
-          context: {
-            domain: envConfig.apiLink_DOMAIN,
-            action: "status",
-            version: "1.1.0",
-            bap_id: envConfig.apiLink_BAP_ID,
-            bap_uri: envConfig.apiLink_BAP_URI,
-            bpp_id: response?.data?.bpp_id,
-            bpp_uri: response?.data?.bpp_uri,
-            transaction_id: transactionId,
-            message_id: uuidv4(),
-            timestamp: new Date().toISOString(),
-          },
-          message: {
-            order_id: order_id,
-          },
-        };
-
-        const statusTrack = await OnestService.jobStatusTrack(payload);
-        console.log("res 2", statusTrack);
-        if (statusTrack?.responses[0]?.message) {
-          setStatus(
-            statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
-              ?.descriptor?.name
-          );
+        try {
+          console.log("res 1", response);
+          const payload = {
+            context: {
+              domain: envConfig.apiLink_DOMAIN,
+              action: "status",
+              version: "1.1.0",
+              bap_id: envConfig.apiLink_BAP_ID,
+              bap_uri: envConfig.apiLink_BAP_URI,
+              bpp_id: response?.data?.bpp_id,
+              bpp_uri: response?.data?.bpp_uri,
+              transaction_id: transactionId,
+              message_id: uuidv4(),
+              timestamp: new Date().toISOString(),
+            },
+            message: {
+              order_id: order_id,
+            },
+          };
+          const statusTrack = await OnestService.jobStatusTrack(payload);
+          console.log("res 2", statusTrack);
+          if (statusTrack?.responses[0]?.message) {
+            setStatus(
+              statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
+                ?.descriptor?.name
+            );
+          }
+        } catch (e) {
+          console.error("Error constructing payload or handling response:", e);
         }
       })
       .catch((error) => {
