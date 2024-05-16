@@ -55,7 +55,6 @@ function JobDetails() {
       .get(apiUrl)
       .then(async (response) => {
         try {
-          console.log("res 1", response);
           const payload = {
             context: {
               domain: envConfig.apiLink_DOMAIN,
@@ -74,7 +73,6 @@ function JobDetails() {
             },
           };
           const statusTrack = await OnestService.jobStatusTrack(payload);
-          console.log("res 2", statusTrack);
           if (statusTrack?.responses[0]?.message) {
             setStatus(
               statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
