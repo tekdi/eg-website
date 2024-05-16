@@ -1141,7 +1141,7 @@
   "PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "PAYMENT_RECEIPT": "Enrollment Receipt",
   "PAYMENT_RECEIPTS": "Payment Receipt",
-  "PCR_ACTIVITIES": "PCR Activities",
+  "PCR_ACTIVITIES": "PCR Miscellaneous Activities",
   "PCR_CAMP": "PCR Camp",
   "PCR_CAMP_EXECUTION": "PCR Camp Execution",
   "PCR_CAMP_PROFILE": "PCR Camp Profile",
@@ -1882,5 +1882,6 @@
   "SCHEDULE_BANNER": "Yet To Publish",
   "ENROLLMENT_NOT_MATCH": "Enrollment not match",
   "FAILED_READ_PDF": "Failed to read PDF, try again",
-  "INVALID_PDF": "Invalid PDF"
+  "INVALID_PDF": "Invalid PDF",
+  "PCR_LEARNING_ACTIVITIES": "PCR Learning Activities"
 }
