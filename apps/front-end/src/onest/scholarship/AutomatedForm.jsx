@@ -1,39 +1,36 @@
 // AutomatedForm.js
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
-
-import { Layout, FrontEndTypo } from "@shiksha/common-lib";
+import Layout from "../Layout";
+import { FrontEndTypo } from "@shiksha/common-lib";
 import axios from "axios";
 import {
+  Alert,
   Box,
   Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input,
-  Select,
-  Modal,
   HStack,
+  Input,
+  Modal,
+  Select,
   VStack,
   useToast,
-  Alert,
 } from "native-base";
 import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
-import { registerTelementry } from "../api/Apicall";
+// import { registerTelementry } from "../api/Apicall";
 import moment from "moment";
 
 const AutomatedForm = () => {
-  const location = useLocation();
   const { jobId, transactionId, type } = useParams();
-  const state = location?.state;
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);

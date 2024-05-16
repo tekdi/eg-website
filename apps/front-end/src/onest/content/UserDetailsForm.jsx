@@ -10,7 +10,7 @@ import {
   FormHelperText,
 } from "native-base";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Layout } from "@shiksha/common-lib";
+import Layout from "../Layout";
 
 const UserDetailsForm = () => {
   const location = useLocation();

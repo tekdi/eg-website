@@ -1,4 +1,4 @@
-import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
+import { FrontEndTypo, Loading, post } from "@shiksha/common-lib";
 import axios from "axios";
 import { Alert, Box, HStack, Link, Text, VStack, useToast } from "native-base";
 import { dataConfig } from "onest/card";
@@ -12,6 +12,7 @@ import Loader from "../components/Loader";
 import PDFViewer from "../components/PDFViewer";
 import VideoPlayer from "../components/VideoPlayer";
 import YouTubeEmbed from "../components/YouTubeEmbed";
+import Layout from "../Layout";
 
 const MediaPage = () => {
   const location = useLocation();
