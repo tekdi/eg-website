@@ -452,7 +452,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
       <Select
         key={value + items}
         isDisabled={readOnly}
-        selectedValue={value}
+        selectedValue={`${value}`}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
         _selectedItem={{
@@ -464,7 +464,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         {items?.map((item) => (
           <Select.Item
             key={item?.value}
-            value={item?.value}
+            value={`${item?.value}`}
             label={t(item?.label)}
             _text={{ fontSize: 12, fontWeight: 500 }}
           />

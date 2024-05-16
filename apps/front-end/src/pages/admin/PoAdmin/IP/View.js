@@ -89,6 +89,10 @@ function View() {
     setOrganisation(data?.data);
   }, []);
 
+  const handleEditButton = () => {
+    const step = "edit";
+    navigate(`/poadmin/ip/${id}/edit`);
+  };
   return (
     <PoAdminLayout>
       <VStack flex={1} pt="3" space={4} p="2">
@@ -120,6 +124,8 @@ function View() {
             _header={{ bg: "light.100" }}
             _vstack={{ space: 0, flex: 1, bg: "light.100" }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
+            buttonText={<AdminTypo.H5>{t("EDIT")}</AdminTypo.H5>}
+            onButtonClick={handleEditButton}
             item={{
               ...organisation,
               learner_target:
