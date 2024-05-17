@@ -136,11 +136,9 @@ const List = () => {
   };
 
   const removeFilter = (val) => {
-    const { [val]: abcd, ...otherData } = filter;
+    const { [val]: _, ...otherData } = filter;
     setFilter(otherData);
   };
-
-  console.log("filters", config?.filters);
 
   return (
     <Layout getBodyHeight={(e) => setBodyHeight(e)}>
@@ -221,7 +219,7 @@ const List = () => {
             .map((fil, i) => {
               return (
                 <Button
-                  key={i}
+                  key={`filter-button-${fil}`}
                   endIcon={
                     <IconByName
                       name="CloseCircleFillIcon"
@@ -283,8 +281,6 @@ const RenderCards = ({ obj, config }) => {
       borderWidth="1px"
       borderColor="gray.300"
       borderRadius="10px"
-      // alignItems="center"
-      // textAlign="center"
       backgroundColor="blue.100"
       shadow="4"
       cursor="pointer"

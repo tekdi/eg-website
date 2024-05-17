@@ -52,7 +52,6 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
     return (
       <VStack
         p="6"
-        // flex={1}
         borderWidth="1px"
         borderColor="gray.300"
         borderRadius="10px"
