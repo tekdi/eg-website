@@ -13,6 +13,7 @@ import {
   TextArea,
   VStack,
   Heading,
+  Alert,
 } from "native-base";
 import {
   BodySmall,
@@ -47,6 +48,17 @@ export function LabelNameWidget() {
         {t("AS_PER_AADHAAR")}
       </Text>
     </>
+  );
+}
+export function selectSubjectWidget() {
+  const { t } = useTranslation();
+  return (
+    <Alert mt={"-30px"} status="info" alignItems={"start"}>
+      <HStack alignItems="center" space="2">
+        <Alert.Icon />
+        <FrontEndTypo.H4>{t("SELECT_SUBJECT_INFO")}</FrontEndTypo.H4>
+      </HStack>
+    </Alert>
   );
 }
 export function LabelMobileWidget() {
@@ -385,7 +397,7 @@ export const RadioBtn = ({
         <Stack
           direction={{
             base: direction || "column",
-            sm: directionColumn || "row",
+            sm: direction || directionColumn || "row",
           }}
           alignItems={{
             base: "flex-start",
@@ -846,6 +858,7 @@ const widgets = {
   CheckUncheck,
   //v2 widget
   LabelNameWidget,
+  selectSubjectWidget,
   LabelMobileWidget,
   EnrollmentLabelMobileWidget,
   AlreadyOpenLabelWidget,
