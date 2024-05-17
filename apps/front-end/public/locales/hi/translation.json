@@ -534,6 +534,7 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "ENTER_YOUR_AADHAAR_NUMBER": "अपना आधार नंबर दर्ज करें",
   "ENTERED_AADHAR_NOT_EDITABLE": "दर्ज किया गया आधार कार्ड नंबर मे परिवर्तन नही कर सकते. कृपया दर्ज करने से पहले वेरिफाई  करें",
+  "SELECT_SUBJECT_INFO": "उन विषयों का चयन करें जिनके लिए छात्र उपस्थित हुआ है। यदि वे सभी विषयों के लिए उपस्थित नहीं हुए हैं तो इसे बाद में अद्यतन किया जा सकता है।",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
       "NO": "नहीं",
@@ -587,7 +588,7 @@
       "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
       "TITLE": "एक कारण चुनें *"
     },
-    "TITLE": " द्वारा RSOS app का उपयोग",
+    "TITLE": " शिक्षार्थी द्वारा RSOS app का उपयोग",
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
       "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखी",

@@ -533,6 +533,7 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "ENTER_YOUR_AADHAAR_NUMBER": "Enter Your Aadhaar Number",
   "ENTERED_AADHAR_NOT_EDITABLE": "Entered Aadhaar card number is not editable. Please verify before entering",
+  "SELECT_SUBJECT_INFO": "Select the subjects that the student has appeared for. This can be updated afterwards if they haven’t appeared for all the subjects.",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
       "NO": "no",
@@ -586,7 +587,7 @@
       "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
       "TITLE": "Choose the reason *"
     },
-    "TITLE": "'s Use of the RSOS App",
+    "TITLE": "Learner's Use of the RSOS App",
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
       "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
@@ -596,7 +597,7 @@
     },
     "TOOK_EPCP_EXAM_ON_RSOS_APP": {
       "NO": "no",
-      "TITLE": "Are you taking practice tests on the RSOS App?",
+      "TITLE": "Did you take the e-PCP exam on the RSOS App?",
       "YES": "yes"
     }
   },
