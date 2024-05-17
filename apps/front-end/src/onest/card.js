@@ -1,7 +1,9 @@
-import { OnestService } from "@shiksha/common-lib";
+import { IconByName, OnestService } from "@shiksha/common-lib";
 import jobs from "./assets/images/onest-jobs.png";
 import scholarships from "./assets/images/onest-scholarships.png";
 import learnings from "./assets/images/onest-learnings.png";
+import { HStack, Image, Text, VStack } from "native-base";
+import moment from "moment";
 
 export const dataConfig = {
   scholarship: {
@@ -17,6 +19,55 @@ export const dataConfig = {
     apiLink_API_BASE_URL: process.env.REACT_APP_SCHOLARSHIPS_BASE_URL,
     imageUrl: scholarships,
     apiResponce: (e) => e.data.data.scholarship_cache,
+    render: (obj) => {
+      const getDates = (range) => {
+        return `${moment(range.start).format("DD MMM YYYY")} to ${moment(
+          range.end
+        ).format("DD MMM YYYY")}`;
+      };
+      return (
+        <VStack space={4}>
+          {obj?.image_url && (
+            <Image
+              alignSelf={"center"}
+              source={{ uri: obj?.image_url }}
+              size={"lg"}
+              src={obj?.image_url}
+              alt={"no IMAGE"}
+            />
+          )}
+          <Text fontSize={"16px"} fontWeight={600}>
+            {obj?.title}
+          </Text>
+          <HStack alignItems={"center"} space={4}>
+            <IconByName color="gray.700" name="" />
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {obj?.provider_name}
+            </Text>
+          </HStack>
+          <HStack space={4}>
+            <IconByName color="gray.700" name="SuitcaseFillIcon" />
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {`${obj.item.tags[0].list[0].value}. ${obj.item.tags[0].list[0].value}`}
+            </Text>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <IconByName color="gray.700" name="CalendarEventLineIcon" />
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {getDates(obj.item.time.range)}
+            </Text>
+          </HStack>
+          <HStack space={4}>
+            <Text fontSize={"2xl"} paddingLeft={2}>
+              ₹
+            </Text>
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {obj.item?.price?.value ? obj.item.price.value : "-"}
+            </Text>
+          </HStack>
+        </VStack>
+      );
+    },
     onOrderIdGenerate: async (val) => {
       const data = {
         user_id: val.userData.user_id,
@@ -54,15 +105,60 @@ export const dataConfig = {
     apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
     imageUrl: jobs,
     apiResponce: (e) => e.data.data.jobs_cache_dev,
-    // render: (e) => {
-    //   console.log(e);
-    //   return (
-    //     <div>
-    //       <h1>{e.title} </h1>
-    //       <h2>{e.company}</h2>
-    //     </div>
-    //   );
-    // },
+    render: (obj) => {
+      const getSalary = (val1, val2) => {
+        const invalidValues = ["0", "undefined"];
+        if (invalidValues.includes(val1) || invalidValues.includes(val2)) {
+          return "As per Industry Standards";
+        }
+        return `${val1} - ${val2}`;
+      };
+      return (
+        <VStack space={4}>
+          {obj?.image_url && (
+            <Image
+              alignSelf={"center"}
+              source={{ uri: obj?.image_url }}
+              size={"lg"}
+              src={obj?.image_url}
+              alt={"no IMAGE"}
+            />
+          )}
+          <Text fontSize={"16px"} fontWeight={600}>
+            {obj?.title}
+          </Text>
+          <HStack alignItems={"center"} space={4}>
+            <IconByName color="gray.700" name="" />
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {obj?.provider_name}
+            </Text>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <IconByName color="gray.700" name="MapPin2FillIcon" />
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {`${obj.city}, ${obj.state}`}
+            </Text>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <IconByName color="gray.700" name="SuitcaseFillIcon" />
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {obj.fulfillments ? obj.fulfillments : "-"}
+            </Text>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <Text fontSize={"2xl"} paddingLeft={2}>
+              ₹
+            </Text>
+            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+              {getSalary(
+                obj.item.tags[2].list[0].value,
+                obj.item.tags[2].list[1].value
+              )}
+            </Text>
+          </HStack>
+        </VStack>
+      );
+    },
     onOrderIdGenerate: async (val) => {
       const data = {
         user_id: val.userData.user_id,
