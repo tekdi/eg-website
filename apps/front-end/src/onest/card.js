@@ -1,4 +1,7 @@
 import { OnestService } from "@shiksha/common-lib";
+import jobs from "./assets/images/onest-jobs.png";
+import scholarships from "./assets/images/onest-scholarships.png";
+import learnings from "./assets/images/onest-learnings.png";
 
 export const dataConfig = {
   scholarship: {
@@ -12,7 +15,7 @@ export const dataConfig = {
     apiLink_BAP_ID: process.env.REACT_APP_SCHOLARSHIPS_BAP_ID,
     apiLink_BAP_URI: process.env.REACT_APP_SCHOLARSHIPS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_SCHOLARSHIPS_BASE_URL,
-    imageUrl: "",
+    imageUrl: scholarships,
     apiResponce: (e) => e.data.data.scholarship_cache,
     onOrderIdGenerate: async (val) => {
       const data = {
@@ -49,7 +52,7 @@ export const dataConfig = {
     apiLink_BAP_URI: process.env.REACT_APP_JOBS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_JOBS_BASE_URL,
     apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
-    imageUrl: "",
+    imageUrl: jobs,
     apiResponce: (e) => e.data.data.jobs_cache_dev,
     // render: (e) => {
     //   console.log(e);
@@ -84,6 +87,7 @@ export const dataConfig = {
     apiLink_BAP_URI: process.env.REACT_APP_LEARNINGS_BAP_URI,
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: process.env.REACT_APP_LEARNINGS_BASE_URL,
+    imageUrl: learnings,
     apiResponce: (e) => e.data.data.kahani_cache_dev,
     getTrackData: async (e) => {
       const data = {
