@@ -523,6 +523,77 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "ENTER_YOUR_AADHAAR_NUMBER": "Enter Your Aadhaar Number",
   "ENTERED_AADHAR_NOT_EDITABLE": "Entered Aadhaar card number is not editable. Please verify before entering",
+  "SELECT_SUBJECT_INFO": "Select the subjects that the student has appeared for. This can be updated afterwards if they haven’t appeared for all the subjects.",
+  "EPCP": {
+    "HAS_LOGGED_RSOS_APP": {
+      "NO": "no",
+      "TITLE": "Has the learner logged into the RSOS App?",
+      "YES": "yes"
+    },
+    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
+      "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "LACK_OF_TIME": "Lack of time",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
+      "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
+      "TITLE": "Choose the reason "
+    },
+    "RSOS_DOCUMENT_IMAGE": {
+      "TITLE": "Upload an Image of your Document "
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
+      "NO": "no",
+      "TITLE": "Do the learners study through videos/e-books on RSOS App?",
+      "YES": "yes"
+    },
+    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "Difficult to read and understand from mobile",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
+      "LACK_OF_TIME": "Lack of time",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
+      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
+      "TITLE": "Choose the reason *",
+      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "Videos,E-bboks are difficult to understand"
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
+      "NO": "no",
+      "TITLE": "Are you taking practice tests on the RSOS App?",
+      "YES": "yes"
+    },
+    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "Did not understand supporting material or question",
+      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
+      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "Lack of confidence in taking practice tests",
+      "LACK_OF_TIME": "Lack of time",
+      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
+      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
+      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
+      "TITLE": "Choose the reason *"
+    },
+    "TITLE": "Learner's Use of the RSOS App",
+    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
+      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
+      "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
+      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "Lack of confidence in giving e-PCP",
+      "TITLE": "Choose the reason *",
+      "WILL_GIVE_SOON": "Will give soon"
+    },
+    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
+      "NO": "no",
+      "TITLE": "Did you take the e-PCP exam on the RSOS App?",
+      "YES": "yes"
+    }
+  },
+  "EPCP_ACTIVITIES": "e-PCP Activities",
+  "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
+  "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
   "EVALUATION_1": "Rapid Assesment-I",
   "EVALUATION_2": "Rapid Assesment-II",
   "EVENT": "Event",
@@ -1553,80 +1624,9 @@
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "EPCP_ACTIVITIES": "e-PCP Activities",
-  "EPCP_INFO": "Please enter the information associated with the learner's e-PCP exam.",
-  "EPCP_WARNING": "No Learner in a Camp, Add learners first.",
   "LIST_OF_LEARNERS": "List of Learners",
   "PREPARATION_FOR_EXAM": "Preparation for Exam",
   "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
-  "EPCP": {
-    "TITLE": "Learner's Use of the RSOS App",
-    "HAS_LOGGED_RSOS_APP": {
-      "TITLE": "Has the learner logged into the RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP": {
-      "TITLE": "Do the learners study through videos/e-books on RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION": {
-      "TITLE": "Are you taking practice tests on the RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "TOOK_EPCP_EXAM_ON_RSOS_APP": {
-      "TITLE": "Are you taking practice tests on the RSOS App?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "RSOS_DOCUMENT_IMAGE": {
-      "TITLE": "Upload a screenshot of the e-PCP test"
-    },
-    "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason *",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
-      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
-      "LACK_OF_TIME": "Lack of time",
-      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
-      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "DIFFICULT_TO_READ_UNDERSTAND_FROM_MOBILE": "Difficult to read and understand from mobile",
-      "VIDEOS_E-BOOKS-DIFFICULT_TO_UNDERSTAND": "Videos,E-bboks are difficult to understand"
-    },
-    "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS": {
-      "TITLE": "Choose the reason *",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
-      "EXCESSIVE_INTERNET_DATA_USAGE": "Excessive internet data usage",
-      "LACK_OF_TIME": "Lack of time",
-      "NO_SMARTPHONE_AT_HOME": "There is no smartphone at home",
-      "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "LACK_OF_CONFIDENCE_TAKING_PRACTICE_TESTS": "Lack of confidence in taking practice tests",
-      "DIDNT_UNDERSTAND_SUPPORTING_MATERIAL_OR_QUESTIONS": "Did not understand supporting material or question"
-    },
-    "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason *",
-      "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
-      "LACK_OF_CONFIDENCE_GIVING_E_PCP": "Lack of confidence in giving e-PCP",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
-      "WILL_GIVE_SOON": "Will give soon"
-    },
-    "HAS_LOGGED_RSOS_APP_NO_REASONS": {
-      "TITLE": "Choose the reason ",
-      "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
-      "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
-      "LACK_OF_TIME": "Lack of time",
-      "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly"
-    }
-  },
-
   "EXAM_PREPARATION": {
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
       "TITLE1": "Will",
