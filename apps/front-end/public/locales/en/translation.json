@@ -538,6 +538,8 @@
       "LACK_OF_TIME": "Lack of time",
       "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
       "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
+      "DEATH": "Death",
+      "ESCAPED": "escaped",
       "TITLE": "Choose the reason "
     },
     "RSOS_DOCUMENT_IMAGE": {
@@ -632,6 +634,48 @@
   "EVENT_TYPE": "Event Type",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
+  "EXAM_PREPARATION": {
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "NO": "No",
+      "TITLE": "Did the learner receive the  admit card?",
+      "YES": "Yes"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "NO": "No",
+      "NOT_APPLICABLE": "Not Applicable",
+      "TITLE": "Has the learner prepared the practical file?",
+      "YES": "Yes"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
+      "NO_MEANS_TO_TRAVEL": "No mean to travel",
+      "TITLE": "Does the learner have the travel arrangements to the exam center?",
+      "YES": "Yes"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "NO": "No",
+      "TITLE": "Did the learner receive the Exam Time Table?",
+      "YES": "Yes"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "NO": "no",
+      "TITLE1": "Will",
+      "TITLE2": "appear for the exam?",
+      "YES": "yes"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received",
+      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
+      "EXAM_FEAR": "Exam Fear",
+      "FAMILY_RESTRICTIONS": "Family restrictions",
+      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
+      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
+      "ILLNESS": "Illness",
+      "TITLE": "Choose the reason ",
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
+      "OTHER": "Other"
+    }
+  },
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
   "EXIST_LOGIN": "You already have an account for {{state}} {{year}}, proceed to log in instead.",
   "EXISTING_IP_USER": "Existing IP User",
@@ -1627,47 +1671,7 @@
   "LIST_OF_LEARNERS": "List of Learners",
   "PREPARATION_FOR_EXAM": "Preparation for Exam",
   "DO_YOU_KNOW_THE_EXAM_DATES": "Do you know the exam dates?",
-  "EXAM_PREPARATION": {
-    "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE1": "Will",
-      "TITLE2": "appear for the exam?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
-      "TITLE": "Choose the reason ",
-      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
-      "FAMILY_RESTRICTIONS": "Family restrictions",
-      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
-      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
-      "ILLNESS": "Illness",
-      "TRAVEL_ISSUES": "Travel Issues",
-      "EXAM_FEAR": "Exam Fear",
-      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received"
-    },
-    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
-      "TITLE": "Did the learner receive the  admit card?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "TITLE": "Has the learner prepared the practical file?",
-      "YES": "yes",
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable"
-    },
-    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "TITLE": "Does the learner have the travel arrangements to the exam center?",
-      "YES": "yes",
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable"
-    },
-    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "TITLE": "Did the learner receive the Exam Time Table?",
-      "YES": "yes",
-      "NO": "no"
-    }
-  },
+
   "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
   "WILL_BE_DETERMINED": "will be determined",
   "THEY_WONT_GO": "They won't go",
