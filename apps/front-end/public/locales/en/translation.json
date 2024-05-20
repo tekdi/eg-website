@@ -548,6 +548,8 @@
       "LACK_OF_TIME": "Lack of time",
       "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
       "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
+      "DEATH": "Death",
+      "ESCAPED": "escaped",
       "TITLE": "Choose the reason "
     },
     "RSOS_DOCUMENT_IMAGE": {
@@ -650,21 +652,21 @@
       "YES": "yes"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "NO": "no",
+      "NO": "No",
       "NOT_APPLICABLE": "Not Applicable",
       "TITLE": "Has the learner prepared the practical file?",
-      "YES": "yes"
+      "YES": "Yes"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable",
+      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
+      "NO_MEANS_TO_TRAVEL": "No mean to travel",
       "TITLE": "Does the learner have the travel arrangements to the exam center?",
-      "YES": "yes"
+      "YES": "Yes"
     },
     "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "NO": "no",
+      "NO": "No",
       "TITLE": "Did the learner receive the Exam Time Table?",
-      "YES": "yes"
+      "YES": "Yes"
     },
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
       "NO": "no",
@@ -681,7 +683,8 @@
       "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
       "ILLNESS": "Illness",
       "TITLE": "Choose the reason ",
-      "TRAVEL_ISSUES": "Travel Issues"
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
+      "OTHER": "Other"
     }
   },
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
