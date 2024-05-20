@@ -268,10 +268,10 @@ function ScholarshipView() {
     <div>
       <Box
         fontFamily={"Alice"}
-        marginTop={100}
+        marginTop={50}
         padding={4}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
         marginLeft={4}
         marginRight={4}
       >
@@ -386,7 +386,7 @@ function ScholarshipView() {
         padding={4}
         marginTop={5}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
       >
         <Text fontSize={16} fontWeight={700}>
           {t("Scholarship_Description")}
