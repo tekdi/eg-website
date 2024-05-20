@@ -140,8 +140,17 @@ const List = () => {
     setFilter(otherData);
   };
 
+  const handleBack = () => {
+    navigate(`/onest`);
+  };
+
   return (
-    <Layout getBodyHeight={(e) => setBodyHeight(e)}>
+    <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
       <HStack justify="space-between" align="center" p="4" ref={ref}>
         <Input
           flex={11}

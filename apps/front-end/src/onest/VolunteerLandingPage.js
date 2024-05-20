@@ -89,8 +89,16 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
     }
   };
 
+  const handleBack = () => {
+    navigate(`/`);
+  };
+
   return (
-    <Layout>
+    <Layout
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
       <VStack p="4" space={4}>
         {dataConfig.constructor.name === "Object" &&
           dataArray?.map((pItem) => (

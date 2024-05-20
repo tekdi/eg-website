@@ -37,8 +37,16 @@ const LandingPage = ({ userTokenInfo }) => {
     }
   };
 
+  const handleBack = () => {
+    navigate(`/`);
+  };
+
   return (
-    <Layout>
+    <Layout
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
       <VStack p="4" flexWrap="wrap" justifyContent="center" space={4}>
         {dataConfig.constructor.name === "Object" &&
           Object.values(dataConfig).map((item) => {
