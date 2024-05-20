@@ -4,6 +4,7 @@ import {
   Button,
   HStack,
   Heading,
+  IconButton,
   Image,
   Input,
   Modal,
