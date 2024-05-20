@@ -534,11 +534,11 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "ENTER_YOUR_AADHAAR_NUMBER": "अपना आधार नंबर दर्ज करें",
   "ENTERED_AADHAR_NOT_EDITABLE": "दर्ज किया गया आधार कार्ड नंबर मे परिवर्तन नही कर सकते. कृपया दर्ज करने से पहले वेरिफाई  करें",
-  "SELECT_SUBJECT_INFO": "उन विषयों का चयन करें जिनके लिए छात्र उपस्थित हुआ है। यदि वे सभी विषयों के लिए उपस्थित नहीं हुए हैं तो इसे बाद में अद्यतन किया जा सकता है।",
+  "SELECT_SUBJECT_INFO": "उन विषयों का चयन करें जिनके लिए शिक्षार्थी उपस्थित हुआ है। यदि वे सभी विषयों के लिए उपस्थित नहीं हुए हैं तो इसे बाद में अद्यतन किया जा सकता है।",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
       "NO": "नहीं",
-      "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
+      "TITLE": "शिक्षार्थी RSOS App पर लॉगिन कर पाई ?",
       "YES": "हाँ"
     },
     "HAS_LOGGED_RSOS_APP_NO_REASONS": {
@@ -549,6 +549,8 @@
       "LACK_OF_TIME": "समय का अभाव",
       "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
       "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
+      "DEATH": "मृत्यु",
+      "ESCAPED": "पलायन",
       "TITLE": "एक कारण चुनें *"
     },
     "RSOS_DOCUMENT_IMAGE": {
@@ -591,7 +593,7 @@
     "TITLE": " शिक्षार्थी द्वारा RSOS app का उपयोग",
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
-      "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखी",
+      "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखे",
       "LACK_OF_CONFIDENCE_GIVING_E_PCP": "e-PCP देने में आत्मविश्वास की कमी",
       "TITLE": "एक कारण चुनें *",
       "WILL_GIVE_SOON": " जल्द ही देंगे"
@@ -654,12 +656,14 @@
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है",
-      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
+      "TITLE": "क्या शिक्षार्थी ने प्रैक्टिकल फाइल तैयार की है ?",
       "YES": "हाँ"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है",
+      "CANT_AFFORD_TRAVEL_FARE": "किराया वाहान नही कर सकती",
+      "NO_MEANS_TO_TRAVEL": "साधन नही है ",
       "TITLE": "क्या शिक्षार्थी के पास परीक्षा केंद्र तक जाने की व्यवस्था है ?",
       "YES": "हाँ"
     },
@@ -684,7 +688,8 @@
       "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
       "ILLNESS": "बीमारी ।",
       "TITLE": "एक कारण चुनें",
-      "TRAVEL_ISSUES": "यात्रा संबंधी समस्याएं"
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबंधी समस्या,कोई साधान या किराया नहीं",
+      "OTHER": "अन्य"
     }
   },
   "EXAM_SUBMITTED_SUCCESSFULLY": "परीक्षण सफलतापूर्वक सबमिट कर दिया गया है",
