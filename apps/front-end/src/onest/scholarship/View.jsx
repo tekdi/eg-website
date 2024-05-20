@@ -389,7 +389,7 @@ function ScholarshipView() {
         backgroundColor={"white"}
       >
         <Text fontSize={16} fontWeight={700}>
-          {t("Job_Description")}
+          {t("Scholarship_Description")}
         </Text>
 
         {jobInfo?.description ? (
@@ -398,7 +398,7 @@ function ScholarshipView() {
           </Text>
         ) : (
           <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-            {t("Job_description_is_not_available")}{" "}
+            {t("Scholarship_description_is_not_available")}{" "}
           </Text>
         )}
         <Box marginTop={4}>
