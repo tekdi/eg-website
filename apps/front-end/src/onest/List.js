@@ -290,7 +290,7 @@ const RenderCards = ({ obj, config }) => {
       borderWidth="1px"
       borderColor="gray.300"
       borderRadius="10px"
-      backgroundColor="blue.100"
+      backgroundColor="#246DDC1A"
       shadow="4"
       cursor="pointer"
       onPress={(e) => {

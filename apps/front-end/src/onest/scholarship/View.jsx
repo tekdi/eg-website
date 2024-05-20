@@ -268,10 +268,10 @@ function ScholarshipView() {
     <div>
       <Box
         fontFamily={"Alice"}
-        marginTop={100}
+        marginTop={50}
         padding={4}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
         marginLeft={4}
         marginRight={4}
       >
@@ -386,10 +386,10 @@ function ScholarshipView() {
         padding={4}
         marginTop={5}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
       >
         <Text fontSize={16} fontWeight={700}>
-          {t("Job_Description")}
+          {t("Scholarship_Description")}
         </Text>
 
         {jobInfo?.description ? (
@@ -398,7 +398,7 @@ function ScholarshipView() {
           </Text>
         ) : (
           <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-            {t("Job_description_is_not_available")}{" "}
+            {t("Scholarship_description_is_not_available")}{" "}
           </Text>
         )}
         <Box marginTop={4}>
