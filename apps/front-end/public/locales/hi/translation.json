@@ -1151,7 +1151,7 @@
   "PASSWORD_REQUIREMENTS_NOTMATCH": "पासवर्ड में कम से कम आठ अक्षर, कम से कम एक अपरकेस, लोअरकेस अक्षर और एक नंबर होना चाहिए.",
   "PAYMENT_RECEIPT": "नामांकन रसीद",
   "PAYMENT_RECEIPTS": "भुगतान रसीद",
-  "PCR_ACTIVITIES": "PCR गतिविधियाँ",
+  "PCR_ACTIVITIES": "PCR अन्य गतिविधियाँ",
   "PCR_CAMP": "PCR शिविर",
   "PCR_CAMP_EXECUTION": "PCR शिविर संचालन",
   "PCR_CAMP_PROFILE": "PCR शिविर प्रोफाइल",
@@ -1868,5 +1868,6 @@
   "YET_TO_BE_UPLOAD": "अभी भी अपलोड किया जाना बाकी है",
   "SCHOLARSHIP": "स्कॉलरशिप",
   "JOBS": "नौकरियां",
-  "LEARNING_EXPERIENCES": "डिजिटल शिक्षण संसाधन"
+  "LEARNING_EXPERIENCES": "डिजिटल शिक्षण संसाधन",
+  "PCR_LEARNING_ACTIVITIES": "PCR सीखने की गतिविधियाँ"
 }
