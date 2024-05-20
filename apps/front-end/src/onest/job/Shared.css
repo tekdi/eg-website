@@ -1,27 +1,36 @@
-.autoInputField{
-    width: 100%;
-    padding: 5px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc !important;
-    border-radius: 4px  !important;
-    box-sizing: border-box  !important;
-  }
+.autoInputField {
+  width: 100%;
+  padding: 5px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #dddddd !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+}
 
-  .selectField{
-    width: 100%;
-    padding: 10px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc !important;
-    border-radius: 4px  !important;
-    box-sizing: border-box  !important;
-    background: #fff;
-  }
-  
-  .Toastify__toast-container--bottom-center {
-    width: 90% !important;
+.selectField {
+  width: 100%;
+  padding: 10px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #dddddd !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  background: #fff;
+}
+
+.Toastify__toast-container--bottom-center {
+  width: 90% !important;
 }
 .Toastify__toast-theme--colored.Toastify__toast--error {
   font-weight: 700 !important;
+}
+
+.autosubmit {
+  height: 32px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  width: 195px;
+  background-color: #407bff;
+  color: #ffffff;
 }

@@ -25,6 +25,23 @@ export const dataConfig = {
           range.end
         ).format("DD MMM YYYY")}`;
       };
+      const getMinEligibilityValue = (data) => {
+        // Find the object with descriptor.code === "academic-eligibility"
+        const academicEligibility = data.find(
+          (item) => item.descriptor.code === "academic-eligibility"
+        );
+        // If the object is found, proceed to map the "list" array
+        if (academicEligibility) {
+          // Find the value where descriptor.code === "min-eligibility"
+          const minEligibility = academicEligibility.list.find(
+            (listItem) => listItem.descriptor.code === "min-eligibility"
+          );
+          // Return the value if found, otherwise return an empty string
+          return minEligibility ? minEligibility.value : "";
+        }
+
+        return "-";
+      };
       return (
         <VStack space={4}>
           {obj?.image_url && (
@@ -48,7 +65,7 @@ export const dataConfig = {
           <HStack space={4}>
             <IconByName color="gray.700" name="SuitcaseFillIcon" />
             <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
-              {`${obj.item.tags[0].list[0].value}. ${obj.item.tags[0].list[0].value}`}
+              {getMinEligibilityValue(obj.item.tags)}
             </Text>
           </HStack>
           <HStack alignItems={"center"} space={4}>
@@ -130,7 +147,7 @@ export const dataConfig = {
           <HStack alignItems={"center"} space={4}>
             <IconByName color="gray.700" name="" />
             <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
-              {obj?.provider_name}
+              {obj?.item?.creator?.descriptor?.name}
             </Text>
           </HStack>
           <HStack alignItems={"center"} space={4}>
