@@ -9,6 +9,7 @@ import { dataConfig } from "./card";
 function View() {
   const { type } = useParams();
   const envConfig = dataConfig[type];
+  // navigate
   const navigate = useNavigate();
 
   const handleBack = () => {
