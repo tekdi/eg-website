@@ -941,7 +941,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
 
-          <Stack bg="bgYellowColor.400" space="6" p={4}>
+          {/* Temp Comment */}
+
+          {/* <Stack bg="bgYellowColor.400" space="6" p={4}>
             <FrontEndTypo.H2 color="textMaroonColor.400">
               {t("LEARNER_EXAMINATION")}
             </FrontEndTypo.H2>
@@ -957,12 +959,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
             </FrontEndTypo.Primarybutton>
 
-            {/* <FrontEndTypo.Secondarybutton
+            <FrontEndTypo.Secondarybutton
               width="100%"
               onPress={(e) => navigate("/examschedule")}
             >
               {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton> */}
+            </FrontEndTypo.Secondarybutton>
           </Stack>
 
           <DashboardCard
@@ -970,7 +972,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             titleDetail={"LEARNER_EXAMINATION_DETAILS"}
             primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
             navigation={"/examresult"}
-          />
+          /> */}
+
+          {/* Temp Comment  End*/}
         </VStack>
       </VStack>
       <Modal

@@ -9,6 +9,7 @@ import { HStack, VStack, Radio } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
+import { setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 
 const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -93,6 +94,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
               setFilter={setFilter}
               setBoardList={setBoardList}
               date={filter?.date}
+              board={filter?.selectedId}
             />
           )}
         </VStack>
