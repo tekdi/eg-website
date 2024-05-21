@@ -118,6 +118,7 @@ const ExamLearnerList = ({ footerLinks }) => {
     } else if (
       WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "YES" &&
       (DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "NO" ||
+        DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "YET_TO_BE_PROCEED" ||
         HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "NO" ||
         LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
           "NO_MEANS_TO_TRAVEL" ||

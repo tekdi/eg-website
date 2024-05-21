@@ -651,7 +651,8 @@
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "नहीं",
       "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
-      "YES": "हाँ"
+      "YES": "हाँ",
+      "YET_TO_BE_PROCEED": "अभी जारी नही कीय"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
       "NO": "नहीं",
@@ -1706,7 +1707,6 @@
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "IT_WILL_NOT_BE_DETERMINED": "निश्चित नहीं की जाएंगे",
   "THEY_WONT_GO": "नहीं जाएंगे ",
   "WILL_BE_DETERMINED": "निश्चित जाएंगे",
   "VIEW_EXAM_SCHEDULE": "परीक्षा अनुसूची देखें",
