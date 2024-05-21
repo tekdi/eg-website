@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 // import { registerTelementry } from "../api/Apicall";
-import { FrontEndTypo } from "@shiksha/common-lib";
+import { FrontEndTypo, Loading } from "@shiksha/common-lib";
 import Layout from "../Layout";
 
 const AutomatedForm = () => {
@@ -42,7 +42,7 @@ const AutomatedForm = () => {
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
   const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [jobInfo, setJobInfo] = useState(null);
+  const [jobInfo, setJobInfo] = useState();
   const [isAutoForm, setIsAutoForm] = useState(true);
 
   const userDataString = localStorage.getItem("userData");
@@ -437,7 +437,7 @@ const AutomatedForm = () => {
     // }
 
     try {
-      setLoading(true);
+      setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
         ?.responses[0];
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
@@ -551,23 +551,29 @@ const AutomatedForm = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    var requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ item_id: jobId }),
-    };
+    const getData = () => {
+      setLoading(t("FETCHING_THE_DETAILS"));
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_id: jobId }),
+      };
 
-    fetch(`${baseUrl}/jobs/search`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        result = JSON.parse(result);
-        setJobInfo(result?.data[db_cache][0]);
-        localStorage.setItem("unique_id", result?.data[db_cache][0]?.unique_id);
-      })
-      .catch((error) => console.log("error", error));
+      fetch(`${baseUrl}/jobs/search`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          result = JSON.parse(result);
+          setJobInfo(result?.data[db_cache][0]);
+          localStorage.setItem(
+            "unique_id",
+            result?.data[db_cache][0]?.unique_id
+          );
+        })
+        .catch((error) => console.log("error", error));
+    };
+    getData();
   }, []);
 
   useEffect(
@@ -580,11 +586,11 @@ const AutomatedForm = () => {
 
             // let usrtemp = localStorage.getItem("userData");
             /* if(usrtemp){
-       fetchInitDetails(data?.responses[0]);
-       }else{
-         setIsAutoForm(false);
-         setLoading(false);
-       }*/
+              fetchInitDetails(data?.responses[0]);
+              }else{
+                setIsAutoForm(false);
+                setLoading(false);
+            }*/
           } else if (jobInfo) {
             getSelectDetails(jobInfo);
           }
@@ -605,7 +611,7 @@ const AutomatedForm = () => {
   };
 
   const submitFormDetail = async (action, urlencoded) => {
-    setLoading(true);
+    setLoading(t("SUBMITTING"));
     trackReactGA();
 
     try {
@@ -756,8 +762,12 @@ const AutomatedForm = () => {
     }
   };
 
+  if (loading) {
+    return <Loading message={loading} />;
+  }
+
   return (
-    <Layout loading={loading}>
+    <Layout>
       <Box marginTop={100}>
         <Box margin={4}>
           <div id="formContainer"></div>

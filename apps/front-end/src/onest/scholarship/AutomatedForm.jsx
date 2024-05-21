@@ -6,7 +6,7 @@ import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
 import Layout from "../Layout";
-import { FrontEndTypo } from "@shiksha/common-lib";
+import { FrontEndTypo, Loading } from "@shiksha/common-lib";
 import axios from "axios";
 import {
   Alert,
@@ -275,7 +275,6 @@ const AutomatedForm = () => {
             setMessage(message);
             setModalOpen(true);
             setLoading(false);
-            s;
             storedOrderId(appId);
           }
         }
@@ -290,23 +289,6 @@ const AutomatedForm = () => {
       console.error("Error submitting form:", error);
     }
   };
-
-  function deepMerge(target, source) {
-    for (const key in source) {
-      if (source.hasOwnProperty(key)) {
-        if (
-          source[key] instanceof Object &&
-          key in target &&
-          target[key] instanceof Object
-        ) {
-          deepMerge(target[key], source[key]);
-        } else {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  }
 
   const getSelectDetails = async (jobInfo) => {
     try {
@@ -395,7 +377,7 @@ const AutomatedForm = () => {
     localStorage.setItem("initRes", "");
 
     try {
-      setLoading(true);
+      setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
         ?.responses[0];
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
@@ -492,31 +474,37 @@ const AutomatedForm = () => {
     }
   };
   useEffect(() => {
-    setLoading(true);
-    localStorage.setItem("submissionId", "");
-    var requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ item_id: jobId }),
-    };
+    const getData = () => {
+      setLoading(t("FETCHING_THE_DETAILS"));
+      localStorage.setItem("submissionId", "");
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_id: jobId }),
+      };
 
-    fetch(`${baseUrl}/content/search`, requestOptions)
-      .then((response) => response.text())
-      .then(async (result) => {
-        result = JSON.parse(result);
-        setJobInfo(result?.data[db_cache][0]);
-        localStorage.setItem("unique_id", result?.data[db_cache][0]?.unique_id);
-      })
-      .catch((error) => console.log("error", error));
+      fetch(`${baseUrl}/content/search`, requestOptions)
+        .then((response) => response.text())
+        .then(async (result) => {
+          result = JSON.parse(result);
+          setJobInfo(result?.data[db_cache][0]);
+          localStorage.setItem(
+            "unique_id",
+            result?.data[db_cache][0]?.unique_id
+          );
+        })
+        .catch((error) => console.log("error", error));
+    };
+    getData();
   }, []);
 
   useEffect(
     (e) => {
       const fetchData = async () => {
         let data = JSON.parse(localStorage.getItem("selectRes"));
-        if (data && data?.responses.length) {
+        if (data && data?.responses.length && jobInfo) {
           await fetchInitDetails(data?.responses[0]);
 
           // let usrtemp = localStorage.getItem("userData");
@@ -544,7 +532,7 @@ const AutomatedForm = () => {
   };
 
   const submitFormDetail = async (action, urlencoded) => {
-    setLoading(true);
+    setLoading(t("SUBMITTING"));
     trackReactGA();
 
     try {
@@ -739,9 +727,13 @@ const AutomatedForm = () => {
     }
   };
 
+  if (loading) {
+    return <Loading message={loading} />;
+  }
+
   if (openModal) {
     return (
-      <Layout loading={loading}>
+      <Layout>
         <Modal isOpen={openModal} size="lg">
           <Modal.Content>
             <Modal.Header>

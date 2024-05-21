@@ -8,7 +8,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import AudioPlayer from "../components/AudioPlayer";
 import ExternalLink from "../components/ExternalLink";
-import Loader from "../components/Loader";
 import PDFViewer from "../components/PDFViewer";
 import VideoPlayer from "../components/VideoPlayer";
 import YouTubeEmbed from "../components/YouTubeEmbed";
@@ -27,7 +26,7 @@ const MediaPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [story, setStory] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error] = useState(null);
   const [product, setProduct] = useState();
   const [jobInfo, setJobInfo] = useState(null);
@@ -73,7 +72,7 @@ const MediaPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
+      setLoading(t("FETCHING_THE_DETAILS"));
       const userDataString = localStorage.getItem("userData");
       const userData = JSON.parse(userDataString);
       let trackData;
@@ -101,7 +100,7 @@ const MediaPage = () => {
         };
         setStory([obj]);
         setUrlType(trackData?.params?.type);
-        setIsLoading(false);
+        setLoading(false);
       } else {
         var requestOptions = {
           method: "POST",
@@ -163,7 +162,7 @@ const MediaPage = () => {
 
   const getSelectDetails = async (info) => {
     try {
-      //setIsLoading(true);
+      //setLoading(true);
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -200,7 +199,7 @@ const MediaPage = () => {
       const data = await response.json();
       localStorage.setItem("details", JSON.stringify(data));
       if (!data?.responses?.length) {
-        setIsLoading(false);
+        setLoading(false);
         errorMessage(
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
@@ -211,13 +210,13 @@ const MediaPage = () => {
     } catch (error) {
       console.error("Error fetching job details:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const fetchConfirmMedia = async (customInfo) => {
     try {
-      setIsLoading(true);
+      setLoading(t("APPLING"));
       let details = JSON.parse(localStorage.getItem("details"))?.responses[0];
 
       let bodyData = {
@@ -331,12 +330,12 @@ const MediaPage = () => {
             console.error("Error processing response item:", error);
           }
         });
-        setIsLoading(true);
+        setLoading(true);
 
         setStory(arrayOfObjects);
 
         setTimeout(() => {
-          setIsLoading(false);
+          setLoading(false);
         }, 1000);
       } else {
         errorMessage(
@@ -350,12 +349,12 @@ const MediaPage = () => {
       );
       console.error("Error fetching details:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const fetchInitDetails = async () => {
-    setIsLoading(true);
+    setLoading(t("APPLING"));
     try {
       let details = JSON.parse(localStorage.getItem("details"))?.responses[0];
       // localStorage.setItem('details', JSON.stringify(details));
@@ -455,7 +454,7 @@ const MediaPage = () => {
           if (curr < max) {
             searchForm(formUrl);
           } else if (curr == max) {
-            setIsLoading(true);
+            setLoading(true);
             searchForm(formUrl);
             // fetchConfirmMedia();
           }
@@ -469,7 +468,7 @@ const MediaPage = () => {
       );
       console.error("Error submitting form:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -500,7 +499,7 @@ const MediaPage = () => {
 
   const searchForm = async (url) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await fetch(url, {
         method: "GET",
       })
@@ -622,12 +621,12 @@ const MediaPage = () => {
       console.error("Error submitting form:", error);
       setSubmissionStatus("error");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const submitFormDetail = async (action, urlencoded) => {
-    setIsLoading(true);
+    setLoading(t("SUBMITTING"));
     // trackReactGA();
 
     try {
@@ -647,7 +646,7 @@ const MediaPage = () => {
         }, 7000);
       }
     } catch (error) {
-      setIsLoading(false);
+      setLoading(false);
       if (
         error.hasOwnProperty("response") &&
         error.response.hasOwnProperty("data")
@@ -667,9 +666,10 @@ const MediaPage = () => {
   };
 
   // transaction id
-  if (isLoading) {
-    return <Loading />;
+  if (loading) {
+    return <Loading message={loading} />;
   }
+
   return (
     <Layout
       _appBar={{

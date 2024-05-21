@@ -134,7 +134,7 @@ function ScholarshipView() {
 
   const fetchJobDetails = async (jobInfo) => {
     try {
-      setLoading(true);
+      setLoading(t("FETCHING_THE_DETAILS"));
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -261,7 +261,7 @@ function ScholarshipView() {
   }, [transactionId]); // Runs only once when the component mounts
 
   if (loading) {
-    return <Loading />;
+    return <Loading message={loading} />;
   }
 
   return (

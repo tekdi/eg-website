@@ -32,7 +32,7 @@ const Details = () => {
   const fieldsToSkip = ["lastupdatedon", "createdon"];
 
   const [story, setStory] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [transactionId, setTransactionId] = useState(uuidv4());
   // const messageId = uuidv4();
@@ -61,7 +61,7 @@ const Details = () => {
 
   const fetchSelectedCourseData = async () => {
     try {
-      setIsLoading(true);
+      setLoading(t("FETCHING_THE_DETAILS"));
       let productInfo;
 
       if (!product) {
@@ -152,7 +152,7 @@ const Details = () => {
         t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
       );
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -228,13 +228,13 @@ const Details = () => {
   }
 
   // transaction id
-  if (isLoading) {
-    return <Loading />;
+  if (loading) {
+    return <Loading message={loading} />;
   }
 
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <div
           style={{
             display: "flex",
@@ -306,7 +306,7 @@ const Details = () => {
           </Box>
           {details !== undefined && (
             <Box padding={4} borderRadius={15} backgroundColor={"white"}>
-              {details?.tags?.[0]?.descriptor?.list.map((item, itemIndex) => (
+              {details?.tags?.[0]?.descriptor?.list?.map((item, itemIndex) => (
                 <>
                   {!fieldsToSkip.includes(item.descriptor.name) && (
                     <>

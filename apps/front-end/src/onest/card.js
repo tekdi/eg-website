@@ -196,6 +196,7 @@ export const dataConfig = {
     title: "LEARNING_EXPERIENCES",
     searchByKey: "title",
     listLink: "onest/learning",
+    filters: ["provider_name"],
     detailLink: "/learning/:id",
     apiLink_DB_CACHE: "kahani_cache_dev",
     apiLink_API_ROUTE: "content",
