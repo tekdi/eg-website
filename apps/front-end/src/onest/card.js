@@ -189,7 +189,7 @@ export const dataConfig = {
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
       };
-      let response = await OnestService.create(data);
+      await OnestService.create(data);
     },
   },
   learning: {

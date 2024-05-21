@@ -208,7 +208,6 @@ const AutomatedForm = () => {
         },
       })
       .then((response) => {
-        console.log("Response:", response.data);
         if (envConfig?.onOrderIdGenerate) {
           envConfig?.onOrderIdGenerate({
             response,
@@ -266,10 +265,7 @@ const AutomatedForm = () => {
       // Set state and open the modal
       if (data.responses.length) {
         let appId = data.responses[0].message.order.id;
-        console.log("orderId", appId);
-
         localStorage.setItem("applicationId", appId);
-
         if (data.responses[0].hasOwnProperty("message")) {
           for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
             ?.customer?.person?.tags) {
@@ -282,7 +278,6 @@ const AutomatedForm = () => {
               // Read its value
               const instructionsValue = tag.list[0]?.value || "";
               localStorage.setItem("instructionsValue", instructionsValue);
-              console.log("Instructions:", instructionsValue);
               // You can do further processing with the instructions value here
               break; // If you only want to read the value once found, you can break the loop
             }
@@ -322,10 +317,7 @@ const AutomatedForm = () => {
       // Set state and open the modal
       if (data.responses.length) {
         let appId = data.responses[0].message.order.id;
-        console.log("orderId", appId);
-
         localStorage.setItem("applicationId", appId);
-
         if (data.responses[0].hasOwnProperty("message")) {
           for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
             ?.customer?.person?.tags) {
@@ -338,7 +330,6 @@ const AutomatedForm = () => {
               // Read its value
               const instructionsValue = tag.list[0]?.value || "";
               localStorage.setItem("instructionsValue", instructionsValue);
-              console.log("Instructions:", instructionsValue);
               // You can do further processing with the instructions value here
               break; // If you only want to read the value once found, you can break the loop
             }
@@ -359,113 +350,6 @@ const AutomatedForm = () => {
     } catch (error) {
       setLoading(false);
       console.error("Error submitting form:", error);
-    }
-  };
-
-  function deepMerge(target, source) {
-    for (const key in source) {
-      if (source.hasOwnProperty(key)) {
-        if (
-          source[key] instanceof Object &&
-          key in target &&
-          target[key] instanceof Object
-        ) {
-          deepMerge(target[key], source[key]);
-        } else {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  }
-
-  const getInitJson = async () => {
-    try {
-      // setLoading(true);
-
-      const body = {
-        transaction_id: transactionId,
-        action: "on_init",
-      };
-
-      // Perform API call with formData
-      const response = await fetch(`${baseUrl}/init`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json();
-      const formDetails = data?.data[response_cache];
-      //  const index = current + 1;
-
-      if (formDetails.length) {
-        let foundObject;
-
-        for (let i = 0; i < formDetails.length; i++) {
-          const item = formDetails[i];
-          if (
-            item?.response?.message?.order?.items[0]?.xinput?.head?.index
-              ?.cur === current
-          ) {
-            foundObject = item;
-            let fulfillmentsData;
-            currentXinput =
-              foundObject?.response?.message?.order?.items[0]?.xinput;
-
-            if (
-              foundObject?.response?.message?.order.hasOwnProperty(
-                "fulfillments"
-              )
-            ) {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.fulfillments[0];
-            } else {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.items[0]
-                  ?.fulfillments[0];
-            }
-
-            if (
-              currentXinput?.head?.index?.cur === currentXinput?.head?.index.max
-            ) {
-              let arr1 = submitFormData?.customer?.person?.tags;
-              let arr2 = fulfillmentsData?.customer?.person?.tags;
-              let arr3 = arr1?.concat(arr2);
-              submitFormData["customer"]["person"]["tags"] = arr3;
-              // confirmDetails(submitFormData);
-              confirmDetails(fulfillmentsData?.customer);
-            } else {
-              current = current + 1;
-              if (submitFormData) {
-                let arr1 = submitFormData?.customer?.person?.tags;
-                let arr2 = fulfillmentsData?.customer?.person?.tags;
-                let arr3 = arr1?.concat(arr2);
-                submitFormData["customer"]["person"]["tags"] = arr3;
-              } else {
-                submitFormData = fulfillmentsData;
-              }
-              setLoading(false);
-              searchForm(currentXinput.form.url);
-            }
-            break; // Exit the loop once the desired object is found
-          }
-        }
-      } else {
-        setLoading(false);
-        errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-        );
-      }
-      // Handle the response as needed
-    } catch (error) {
-      setLoading(false);
-      console.error("Error submitting form:", error);
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 30000);
     }
   };
 
@@ -543,23 +427,20 @@ const AutomatedForm = () => {
   }
 
   const fetchInitDetails = async () => {
-    let usrtemp = localStorage.getItem("userData");
-    if (!usrtemp) {
-      const errors = validateForm(formData);
-      if (hasErrors(errors)) {
-        setFormErrors(errors);
-        return;
-      }
-    }
+    // let usrtemp = localStorage.getItem("userData");
+    // if (!usrtemp) {
+    //   const errors = validateForm(formData);
+    //   if (hasErrors(errors)) {
+    //     setFormErrors(errors);
+    //     return;
+    //   }
+    // }
 
     try {
       setLoading(true);
-
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
         ?.responses[0];
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
-
-      console.log({ jobDetails });
       let contactDetails = formData["contact"];
       contactDetails.phone = formData.contact.phone.toString();
       let initReqBody = initReqBodyJson.init[1];
@@ -671,7 +552,6 @@ const AutomatedForm = () => {
 
   useEffect(() => {
     setLoading(true);
-
     var requestOptions = {
       method: "POST",
       headers: {
@@ -686,25 +566,36 @@ const AutomatedForm = () => {
         result = JSON.parse(result);
         setJobInfo(result?.data[db_cache][0]);
         localStorage.setItem("unique_id", result?.data[db_cache][0]?.unique_id);
-
-        let data = JSON.parse(localStorage.getItem("selectRes"));
-        if (data && data?.responses.length) {
-          let usrtemp = localStorage.getItem("userData");
-          if (usrtemp) {
-            fetchInitDetails(data?.responses[0]);
-          } else {
-            setIsAutoForm(false);
-            setLoading(false);
-          }
-        } else {
-          getSelectDetails(result?.data[db_cache][0]);
-        }
       })
       .catch((error) => console.log("error", error));
   }, []);
 
+  useEffect(
+    (e) => {
+      const fetchData = async () => {
+        if (jobInfo) {
+          let data = JSON.parse(localStorage.getItem("selectRes"));
+          if (data && data?.responses.length) {
+            await fetchInitDetails(data?.responses[0]);
+
+            // let usrtemp = localStorage.getItem("userData");
+            /* if(usrtemp){
+       fetchInitDetails(data?.responses[0]);
+       }else{
+         setIsAutoForm(false);
+         setLoading(false);
+       }*/
+          } else if (jobInfo) {
+            getSelectDetails(jobInfo);
+          }
+        }
+      };
+      fetchData();
+    },
+    [jobInfo]
+  );
+
   const trackReactGA = () => {
-    console.log("User clicked the Submit form button");
     ReactGA.event({
       category: "Button Click",
       action: "submit_form",
@@ -723,8 +614,6 @@ const AutomatedForm = () => {
           "Content-Type": `application/x-www-form-urlencoded`,
         },
       });
-      console.log("axiosResponse", axiosResponse.data);
-
       if (axiosResponse.data) {
         localStorage.setItem("submissionId", axiosResponse.data);
         setTimeout(() => {
@@ -742,56 +631,6 @@ const AutomatedForm = () => {
       }
       console.error("Error submitting form:", error);
     }
-
-    /* try {
-      await fetch(action, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: urlencoded,
-      })
-        .then((response) => response.text())
-        .then((result) => {
-          setTimeout(() => {
-            getInitJson();
-          }, 7000);
-
-        })
-        .catch((error) => console.log("error", error));
-    } catch (error) {
-      setLoading(false);
-
-      console.error("Error submitting form:", error);
-    } finally {
-      // setTimeout(() => {
-      //   setLoading(false);
-      // }, 30000);
-    }*/
-  };
-
-  const responseSearch = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      action: "on_init",
-      transaction_id: transactionId,
-    });
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    await fetch(`${baseUrl}/jobs/responseSearch`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        confirmDetails(JSON.parse(result));
-      })
-      .catch((error) => console.log("error", error));
   };
 
   const closeModal = () => {

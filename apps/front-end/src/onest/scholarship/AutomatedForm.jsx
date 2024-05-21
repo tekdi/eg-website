@@ -519,7 +519,7 @@ const AutomatedForm = () => {
         if (data && data?.responses.length) {
           await fetchInitDetails(data?.responses[0]);
 
-          let usrtemp = localStorage.getItem("userData");
+          // let usrtemp = localStorage.getItem("userData");
           /* if(usrtemp){
        fetchInitDetails(data?.responses[0]);
        }else{

@@ -102,10 +102,6 @@ const MediaPage = () => {
         setStory([obj]);
         setUrlType(trackData?.params?.type);
         setIsLoading(false);
-      } else if (state && userData) {
-        fetchInitDetails();
-        let productData = JSON.parse(localStorage.getItem("searchProduct"));
-        setProduct(productData);
       } else {
         var requestOptions = {
           method: "POST",
@@ -133,19 +129,37 @@ const MediaPage = () => {
               "image_url",
               result?.data[db_cache][0].image_url
             );
-
-            let data = JSON.parse(localStorage.getItem("details"));
-            if (data && data?.responses.length) {
-              fetchInitDetails();
-            } else {
-              getSelectDetails(result?.data[db_cache][0]);
-            }
           })
           .catch((error) => console.error("error", error));
       }
     };
     fetchData();
   }, []);
+
+  useEffect(
+    (e) => {
+      const fetchData = async () => {
+        if (jobInfo) {
+          let data = JSON.parse(localStorage.getItem("selectRes"));
+          if (data && data?.responses.length) {
+            await fetchInitDetails(data?.responses[0]);
+
+            // let usrtemp = localStorage.getItem("userData");
+            /* if(usrtemp){
+       fetchInitDetails(data?.responses[0]);
+       }else{
+         setIsAutoForm(false);
+         setLoading(false);
+       }*/
+          } else if (jobInfo) {
+            getSelectDetails(jobInfo);
+          }
+        }
+      };
+      fetchData();
+    },
+    [jobInfo]
+  );
 
   const getSelectDetails = async (info) => {
     try {
