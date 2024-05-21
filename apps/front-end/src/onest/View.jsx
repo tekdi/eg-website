@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ScholarshipView from "./scholarship/View";
 import JobDetails from "./job/JobDetails";
 import Details from "./content/Detials";
@@ -9,6 +9,8 @@ import { dataConfig } from "./card";
 function View() {
   const { type } = useParams();
   const envConfig = dataConfig[type];
+  // navigate
+  const navigate = useNavigate();
 
   const handleBack = () => {
     navigate(`/${envConfig?.listLink}`);

@@ -133,15 +133,21 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
     }
   };
 
+  // handleBack
+  const handleBack = () => {
+    navigate(`/`);
+  };
+
   return (
-    <Layout>
+    <Layout
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
       <VStack p="4" space={4}>
         <Carousel
           responsive={responsive}
-          swipeable={true}
-          draggable={true}
           showDots={true}
-          ssr={true} // means to render carousel on server-side.
           infinite={true}
           autoPlaySpeed={1000}
           keyBoardControl={true}
