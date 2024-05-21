@@ -638,7 +638,8 @@
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "No",
       "TITLE": "Did the learner receive the  admit card?",
-      "YES": "Yes"
+      "YES": "Yes",
+      "YET_TO_BE_PROCEED": "Yet to be proceed"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
       "NO": "No",

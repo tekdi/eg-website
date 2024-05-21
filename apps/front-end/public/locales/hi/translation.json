@@ -640,7 +640,8 @@
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "नहीं",
       "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
-      "YES": "हाँ"
+      "YES": "हाँ",
+      "YET_TO_BE_PROCEED": "अभी जारी नही कीय"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
       "NO": "नहीं",
@@ -1675,7 +1676,7 @@
   "LIST_OF_LEARNERS": "शिक्षार्थियों की सूची",
   "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
   "DO_YOU_KNOW_THE_EXAM_DATES": "क्या आप परीक्षा की तारीखों को जानते हैं ?",
-  "IT_WILL_NOT_BE_DETERMINED": "निश्चित नहीं की जाएंगे",
+  "IT_WILL_NOT_BE_DETERMINED": "अभी निश्चित नहीं",
   "THEY_WONT_GO": "नहीं जाएंगे ",
   "WILL_BE_DETERMINED": "निश्चित जाएंगे",
   "LEARNERS_PER_TARGET": "प्रति शिविर औसत शिक्षार्थी",
