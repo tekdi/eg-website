@@ -4,10 +4,12 @@ import {
   Button,
   HStack,
   Heading,
+  IconButton,
   Image,
   Input,
   Modal,
   Pressable,
+  ScrollView,
   Select,
   Text,
   VStack,
@@ -16,7 +18,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { dataConfig } from "./card";
 import axios from "axios";
 import Layout from "./Layout";
-import { FrontEndTypo } from "@shiksha/common-lib";
+import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
 // import InfiniteScroll from "react-infinite-scroll-component";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
@@ -35,6 +37,7 @@ const List = () => {
   const ref = useRef(null);
   const [bodyHeight, setBodyHeight] = useState(0);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
@@ -133,8 +136,22 @@ const List = () => {
     }
   };
 
+  const removeFilter = (val) => {
+    const { [val]: _, ...otherData } = filter;
+    setFilter(otherData);
+  };
+
+  const handleBack = () => {
+    navigate(`/onest`);
+  };
+
   return (
-    <Layout getBodyHeight={(e) => setBodyHeight(e)}>
+    <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
       <HStack justify="space-between" align="center" p="4" ref={ref}>
         <Input
           flex={11}
@@ -143,15 +160,19 @@ const List = () => {
           onChange={(e) =>
             handleFilter(config?.searchByKey || "title", e.target.value)
           }
+          InputRightElement={
+            <IconByName
+              color="grey.100"
+              name="SearchLineIcon"
+              marginRight={2}
+            />
+          }
         />
-        <FrontEndTypo.Primarybutton
-          flex="1"
-          colorScheme="gray"
-          onPress={handleOpenModal}
-          ml={1}
-        >
-          Filters
-        </FrontEndTypo.Primarybutton>
+        {config?.filters &&
+          Array.isArray(config?.filters) &&
+          config?.filters?.length > 0 && (
+            <IconByName name="EqualizerFillIcon" onPress={handleOpenModal} />
+          )}
       </HStack>
       <Modal
         isOpen={showFiltersModal}
@@ -201,6 +222,35 @@ const List = () => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      {filter !== undefined && Object.keys(filter).length > 0 && (
+        <ScrollView horizontal={true} p={4}>
+          {Object.keys(filter)
+            .filter((e) => e !== (config?.searchByKey || "title"))
+            .map((fil, i) => {
+              return (
+                <Button
+                  key={`filter-button-${fil}`}
+                  endIcon={
+                    <IconByName
+                      name="CloseCircleFillIcon"
+                      size="sm"
+                      color={"gray.500"}
+                      onClick={() => removeFilter(fil)}
+                    />
+                  }
+                  backgroundColor={"blueGray.300"}
+                  height={"36px"}
+                  marginRight={"8px"}
+                >
+                  <Text color="gray.500">{filter[fil]}</Text>
+                </Button>
+              );
+            })}
+        </ScrollView>
+      )}
+      <Text p={4} fontSize={"16px"} fontWeight={"500"}>
+        {t(dataConfig[type].title)}
+      </Text>
       <VStack flexWrap="wrap" space={4}>
         {/* <InfiniteScroll
           dataLength={filterCardData?.length || 0}
@@ -240,9 +290,8 @@ const RenderCards = ({ obj, config }) => {
       p="6"
       borderWidth="1px"
       borderColor="gray.300"
-      borderRadius="lg"
-      alignItems="center"
-      textAlign="center"
+      borderRadius="10px"
+      backgroundColor="#246DDC1A"
       shadow="4"
       cursor="pointer"
       onPress={(e) => {
@@ -268,7 +317,7 @@ const RenderCards = ({ obj, config }) => {
               alt={"no IMAGE"}
             />
           )}
-          <Text marginLeft={1} fontSize={["xl", "2xl", "3xl"]}>
+          <Text fontSize={"16px"} fontWeight={500}>
             {obj?.title}
           </Text>
           {obj?.provider_name && (
@@ -276,7 +325,6 @@ const RenderCards = ({ obj, config }) => {
               color="gray.700"
               marginTop={"3"}
               fontWeight={600}
-              marginLeft={1}
               fontSize={["sm", "md"]}
             >
               <strong>Published By:</strong> {obj?.provider_name}
