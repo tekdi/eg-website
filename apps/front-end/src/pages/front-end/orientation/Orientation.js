@@ -394,16 +394,18 @@ export default function Orientation({ footerLinks }) {
       route: "/admin/learners",
     },
     { title: "CAMPS", icon: "CommunityLineIcon", route: "/admin/camps" },
-    {
-      title: "VIEW_EXAM_SCHEDULE",
-      icon: "FileTextLineIcon",
-      route: "/admin/exams/examschedule",
-    },
-    {
-      title: "LEARNER_EXAM_RESULTS",
-      icon: "FileTextLineIcon",
-      route: "/admin/exams/list",
-    },
+    // Temp Comment
+    // {
+    //   title: "VIEW_EXAM_SCHEDULE",
+    //   icon: "FileTextLineIcon",
+    //   route: "/admin/exams/examschedule",
+    // },
+    // {
+    //   title: "LEARNER_EXAM_RESULTS",
+    //   icon: "FileTextLineIcon",
+    //   route: "/admin/exams/list",
+    // },
+    // temp comment end
   ];
 
   return (
