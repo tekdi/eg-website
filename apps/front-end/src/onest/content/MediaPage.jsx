@@ -30,6 +30,7 @@ const MediaPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState(null);
   const [product, setProduct] = useState();
+  const [jobInfo, setJobInfo] = useState(null);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
   const toast = useToast();
@@ -118,7 +119,7 @@ const MediaPage = () => {
           .then((response) => response.text())
           .then((result) => {
             result = JSON.parse(result);
-            // setJobInfo(result?.data[db_cache][0]);
+            setJobInfo(result?.data[db_cache][0]);
             localStorage.setItem(
               "unique_id",
               result?.data[db_cache][0]?.unique_id
@@ -251,6 +252,7 @@ const MediaPage = () => {
           userData,
           itemId,
           type,
+          item: jobInfo,
         });
       }
 

@@ -215,6 +215,7 @@ const AutomatedForm = () => {
             userData,
             jobId,
             type,
+            item: jobInfo,
           });
         }
       })
