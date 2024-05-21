@@ -30,6 +30,7 @@ const MediaPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState(null);
   const [product, setProduct] = useState();
+  const [jobInfo, setJobInfo] = useState(null);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
   const toast = useToast();
@@ -101,10 +102,6 @@ const MediaPage = () => {
         setStory([obj]);
         setUrlType(trackData?.params?.type);
         setIsLoading(false);
-      } else if (state && userData) {
-        fetchInitDetails();
-        let productData = JSON.parse(localStorage.getItem("searchProduct"));
-        setProduct(productData);
       } else {
         var requestOptions = {
           method: "POST",
@@ -118,7 +115,7 @@ const MediaPage = () => {
           .then((response) => response.text())
           .then((result) => {
             result = JSON.parse(result);
-            // setJobInfo(result?.data[db_cache][0]);
+            setJobInfo(result?.data[db_cache][0]);
             localStorage.setItem(
               "unique_id",
               result?.data[db_cache][0]?.unique_id
@@ -132,19 +129,37 @@ const MediaPage = () => {
               "image_url",
               result?.data[db_cache][0].image_url
             );
-
-            let data = JSON.parse(localStorage.getItem("details"));
-            if (data && data?.responses.length) {
-              fetchInitDetails();
-            } else {
-              getSelectDetails(result?.data[db_cache][0]);
-            }
           })
           .catch((error) => console.error("error", error));
       }
     };
     fetchData();
   }, []);
+
+  useEffect(
+    (e) => {
+      const fetchData = async () => {
+        if (jobInfo) {
+          let data = JSON.parse(localStorage.getItem("selectRes"));
+          if (data && data?.responses.length) {
+            await fetchInitDetails(data?.responses[0]);
+
+            // let usrtemp = localStorage.getItem("userData");
+            /* if(usrtemp){
+       fetchInitDetails(data?.responses[0]);
+       }else{
+         setIsAutoForm(false);
+         setLoading(false);
+       }*/
+          } else if (jobInfo) {
+            getSelectDetails(jobInfo);
+          }
+        }
+      };
+      fetchData();
+    },
+    [jobInfo]
+  );
 
   const getSelectDetails = async (info) => {
     try {
@@ -251,6 +266,7 @@ const MediaPage = () => {
           userData,
           itemId,
           type,
+          item: jobInfo,
         });
       }
 

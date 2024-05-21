@@ -75,6 +75,9 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
         .filter((e) => e)
         .join(", ");
       const userDetails = {
+        "Education Qualification":
+          authUser?.qualifications?.qualification_master?.name || "",
+        gender: authUser?.gender || "",
         "Student Name": authUser?.first_name + " " + authUser?.last_name,
         name: authUser?.first_name + " " + authUser?.last_name,
         email: authUser?.email_id || `${authUser?.first_name}@gmail.com`,
@@ -87,6 +90,7 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
         createdAt: moment().format("YYYY-MM-DD HH:mm"),
         user_id: authUser?.id,
       };
+
       localStorage.setItem("userData", JSON.stringify(userDetails));
     };
     fetchData();

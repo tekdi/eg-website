@@ -94,6 +94,8 @@ export const dataConfig = {
         order_id:
           val.response.data.data.insert_scholarship_order_dev.returning[0]
             .order_id,
+        provider_name: val?.item?.provider_name || "",
+        item_name: val?.item?.title || "",
       };
       let response = await OnestService.create(data);
     },
@@ -184,8 +186,10 @@ export const dataConfig = {
         status: "created",
         order_id:
           val.response.data.data.insert_jobs_order_dev.returning[0].order_id,
+        provider_name: val?.item?.provider_name || "",
+        item_name: val?.item?.title || "",
       };
-      let response = await OnestService.create(data);
+      await OnestService.create(data);
     },
   },
   learning: {
@@ -233,6 +237,8 @@ export const dataConfig = {
         context_item_id: val.itemId,
         status: "created",
         order_id: val.response.responses[0].message.order.id,
+        provider_name: val?.item?.provider_name || "",
+        item_name: val?.item?.title || "",
         params: paramData,
       };
       await OnestService.create(data);

@@ -37,6 +37,7 @@ const List = () => {
   const ref = useRef(null);
   const [bodyHeight, setBodyHeight] = useState(0);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
