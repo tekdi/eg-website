@@ -1,45 +1,43 @@
 import {
-  facilitatorRegistryService,
+  AdminTypo,
+  BodyMedium,
+  CardComponent,
+  FrontEndTypo,
   IconByName,
   Layout,
   RedOutlineButton,
-  FrontEndTypo,
-  objProps,
   arrList,
-  BodyMedium,
-  AdminTypo,
-  testRegistryService,
-  removeOnboardingURLData,
-  removeOnboardingMobile,
-  getOnboardingURLData,
-  H1,
-  setSelectedProgramId,
-  getOnboardingMobile,
-  setSelectedAcademicYear,
-  getSelectedProgramId,
   enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getOnboardingURLData,
   getSelectedAcademicYear,
+  CustomAlert,
+  TitleCard,
+  getSelectedProgramId,
+  objProps,
+  removeOnboardingMobile,
+  removeOnboardingURLData,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Stack,
-  Image,
-  Alert,
-  Modal,
-  CloseIcon,
-  Select,
-  CheckIcon,
-} from "native-base";
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import {
-  getIndexedDBItem,
-  setIndexedDBItem,
-} from "../../../src/v2/utils/Helper/JSHelper";
+  Alert,
+  CheckIcon,
+  CloseIcon,
+  HStack,
+  Image,
+  Modal,
+  Select,
+  Stack,
+  VStack,
+} from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { SyncOfflineData } from "v2/utils/OfflineHelper/OfflineHelper";
 import {
   checkPrerakOfflineTimeInterval,
   getIpUserInfo,
@@ -47,6 +45,10 @@ import {
   setIpUserInfo,
   setPrerakOfflineInfo,
 } from "v2/utils/SyncHelper/SyncHelper";
+import {
+  getIndexedDBItem,
+  setIndexedDBItem,
+} from "../../../src/v2/utils/Helper/JSHelper";
 
 const styles = {
   inforBox: {
@@ -74,25 +76,26 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [progress, setProgress] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const fa_id = localStorage.getItem("id");
-  const [isEventActive, setIsEventActive] = useState(false);
-  const [lmsDEtails, setLmsDetails] = useState();
-  const { id } = userTokenInfo?.authUser || [];
-  const [random, setRandom] = useState();
-  const [events, setEvents] = useState("");
+  const [isEventActive, setIsEventActive] = useState();
+  const { id } = userTokenInfo?.authUser || {};
+  const [examButtonText, setExamButtonText] = useState("");
+  const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
 
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
-  const [loadAll, setLoadAll] = useState(false);
   const [cohortData, setCohortData] = useState(null);
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
   const [selectedCohortData, setSelectedCohortData] = useState(null);
   const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+
+  const [env_name] = useState(process.env.NODE_ENV);
 
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
@@ -122,6 +125,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       console.error("Error saving data to IndexedDB:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+      const FetchTime = moment(lastFetchTime, "ddd MMM DD YYYY HH:mm:ss GMTZZ");
+      const currentTime = moment();
+
+      const diffInHours = currentTime.diff(FetchTime, "hours");
+      if (diffInHours >= 48) {
+        setShowWarning(true);
+      } else {
+        setShowWarning(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -212,7 +231,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   useEffect(() => {
     async function fetchData() {
       // ...async operation
-
       if (countLoad == 0) {
         setCountLoad(1);
       }
@@ -247,23 +265,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             await facilitatorRegistryService.getPrerakCertificateDetails({
               id: fa_id,
             });
-          const data =
-            c_data?.data?.filter(
-              (e) => e?.type === "prerak_camp_execution_training"
-            )?.[0] || {};
-          setCertificateData(data);
-          if (data?.lms_test_tracking?.length > 0) {
-            setLmsDetails(data?.lms_test_tracking?.[0]);
-          }
-
-          const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-          const format = "HH:mm:ss";
-          const time = moment(moment().format(format), format);
-          const beforeTime = moment(data?.start_time, format);
-          const afterTime = moment(data?.end_time, format);
-          if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-            setIsEventActive(true);
-          }
+          const data = c_data?.data?.filter(
+            (eventItem) => eventItem?.params?.do_id?.length
+          );
+          setEvents(data);
         } catch (error) {
           console.log(error);
         }
@@ -271,6 +276,49 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     };
     fetchdata();
   }, [selectedCohortData]);
+
+  const setExamEvent = (data) => {
+    if (data) {
+      let isTodayAttendace = [];
+      isTodayAttendace = data?.attendances?.filter(
+        (attendance) =>
+          attendance.user_id == fa_id &&
+          attendance.status == "present" &&
+          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
+      );
+
+      if (data?.lms_test_tracking?.length > 0) {
+        setCertificateData(data?.lms_test_tracking?.[0]);
+      }
+      const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+      const format = "HH:mm:ss";
+      const time = moment(moment().format(format), format);
+      const beforeTime = moment.utc(data?.start_time, format).local();
+      const afterTime = moment.utc(data?.end_time, format).local();
+      let newData = data;
+      if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+        newData = { ...data, event_started: true };
+      }
+      const doIdArray = data?.params?.do_id;
+      if (doIdArray == null || doIdArray.length === 0) {
+        setExamButtonText(t("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE"));
+      } else if (!newData?.event_started) {
+        setExamButtonText(
+          `${t("EVENT_NOT_IN_DURATION")} ${t("START_TIME")} ${beforeTime.format(
+            "hh:mm a"
+          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`
+        );
+      } else if (isTodayAttendace?.length < 1) {
+        setExamButtonText(t("TODAYS_ATTENDANCE_MISSING"));
+      } else if (data?.params?.start_exam != "yes") {
+        setExamButtonText(t("EXAM_NOT_STARTED_YET"));
+      } else {
+        newData = { ...data, take_test: true };
+        setExamButtonText(t("TAKE_TEST"));
+      }
+      setIsEventActive(newData);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -295,7 +343,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   //       id,
   //     });
   //     if (getCertificate?.data?.length > 0) {
-  //       setLmsDetails(getCertificate?.data?.[0]);
+  //       setCertificateData(getCertificate?.data?.[0]);
   //     }
   //   }
   //   fetchData();
@@ -373,7 +421,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   }, [facilitator]);
 
   const handleRandomise = async () => {
-    const doIdArray = modalVisible?.params?.do_id;
+    const doIdArray = isEventActive?.params?.do_id;
     if (typeof doIdArray === "string") {
       return doIdArray;
     }
@@ -381,14 +429,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     const randomizedDoId = doIdArray[array[0] % doIdArray.length];
-    setRandom(randomizedDoId);
     return randomizedDoId;
   };
 
   const startTest = async () => {
+    console.log("hello");
     try {
       const randomizedDoId = await handleRandomise();
-      navigate(`/assessment/events/${modalVisible?.id}/${randomizedDoId}`);
+      navigate(`/assessment/events/${isEventActive?.id}/${randomizedDoId}`);
       navigate(0);
     } catch (error) {
       console.error("Error handling randomization:", error);
@@ -504,6 +552,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     setAcademicYear(item);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await SyncOfflineData(fa_id, isOnline);
+    };
+
+    fetchData();
+  }, [isOnline]);
+
   return (
     <Layout
       loading={loading}
@@ -514,8 +570,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"HOME"}
+      pageTitle={t("HOME")}
     >
-      <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
+      <VStack pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
           {facilitator?.status === "applied" && (
             <InfoBox status={facilitator?.status} progress={progress} />
@@ -524,16 +582,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             {facilitator?.program_faciltators?.status ===
               "selected_for_onboarding" &&
               progress !== 100 && (
-                <Alert status="success" alignItems={"start"}>
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>
-                      {t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
-                    </BodyMedium>
-                  </HStack>
-                </Alert>
+                <VStack px="4">
+                  <CustomAlert
+                    title={t("SELECTED_FOR_ONBOARDING_CONGRATULATIONS_MESSAGE")}
+                    status={"success"}
+                  />
+                </VStack>
               )}
-            <HStack py="4" flex="1" px="4">
+            <HStack py="4" flex="1" px="4" pb={0}>
               {/* <Image
                 source={{
                   uri: "/hello.svg",
@@ -546,85 +602,118 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("HELLO_HOME")}, {facilitator?.first_name}!
               </FrontEndTypo.H1>
             </HStack>
-            {isEventActive
-              ? certificateData?.type == "prerak_camp_execution_training" && (
-                  <HStack py="2" flex="1" px="4">
-                    <FrontEndTypo.Primarybutton
-                      onPress={() => {
-                        setModalVisible(certificateData);
-                        const doIdArray = certificateData?.params?.do_id;
-                        if (doIdArray == null || doIdArray.length === 0) {
-                          setEvents("EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE");
-                        } else {
-                          setEvents("TAKE_TEST");
-                        }
-                      }}
-                    >
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                )
-              : lmsDEtails?.id && (
-                  <HStack py="2" flex="1" px="4">
-                    <FrontEndTypo.Primarybutton
-                      fontSize
-                      onPress={() => {
-                        setModalVisible(certificateData);
-                      }}
-                    >
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </FrontEndTypo.Primarybutton>
-                  </HStack>
-                )}
+            {events?.length ? (
+              <HStack py="2" flex="1" px="4">
+                <FrontEndTypo.Primarybutton
+                  onPress={() => {
+                    setModalVisible(true);
+                  }}
+                >
+                  {t("PRERAK_CERTIFICATION_PROGRAM")}
+                </FrontEndTypo.Primarybutton>
+              </HStack>
+            ) : (
+              certificateData?.id && (
+                <HStack py="2" flex="1" px="4">
+                  <FrontEndTypo.Primarybutton
+                    fontSize
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    {t("PRERAK_CERTIFICATION")}
+                  </FrontEndTypo.Primarybutton>
+                </HStack>
+              )
+            )}
             <Modal
               isOpen={modalVisible}
               onClose={() => setModalVisible()}
               avoidKeyboard
-              size="md"
+              size="full"
             >
               <Modal.Content>
                 <Modal.Header alignItems={"center"}>
-                  <HStack alignItems={"center"}>
-                    <AdminTypo.H4 color="textGreyColor.500">
-                      {t("PRERAK_CERTIFICATION_PROGRAM")}
-                    </AdminTypo.H4>
-                  </HStack>
+                  <VStack alignItems={"center"}>
+                    {isEventActive ? (
+                      <AdminTypo.H4 color="textGreyColor.500" bold>
+                        {`${t("EVENT_ID")} / ${t("NAME")} : ${
+                          isEventActive?.id
+                        } / ${isEventActive?.name}`}
+                      </AdminTypo.H4>
+                    ) : (
+                      <AdminTypo.H4 color="textGreyColor.500">
+                        {t("PRERAK_CERTIFICATION_PROGRAM")}
+                      </AdminTypo.H4>
+                    )}
+                  </VStack>
                 </Modal.Header>
                 <Modal.Body alignItems="center">
-                  <VStack>
-                    {lmsDEtails === undefined && (
+                  <VStack width={"100%"}>
+                    {isEventActive ? (
                       <AdminTypo.H3 color="textGreyColor.500">
-                        {t(events)}
+                        {examButtonText}
                       </AdminTypo.H3>
-                    )}
-                    {lmsDEtails?.certificate_status === null ? (
+                    ) : certificateData?.certificate_status === null ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("CERTIFICATION_IS_PENDING")}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === false &&
-                      lmsDEtails?.score >= floatValue ? (
+                    ) : certificateData?.certificate_status === false &&
+                      certificateData?.score >= floatValue ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_INCOMPLETE`)}
-                        {lmsDEtails?.score?.toFixed(2) + "%"}
+                        {certificateData?.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === true ? (
+                    ) : certificateData?.certificate_status === true ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {lmsDEtails.score?.toFixed(2) + "%"}
+                        {certificateData.score?.toFixed(2) + "%"}
                       </AdminTypo.H3>
-                    ) : lmsDEtails?.certificate_status === false ? (
+                    ) : certificateData?.certificate_status === false ? (
                       <AdminTypo.H3 color="textGreyColor.500">
                         {t("TRAINING_NOT_PASSED")}
                       </AdminTypo.H3>
                     ) : (
-                      <></>
+                      events && (
+                        <TableCard
+                          setExamEvent={setExamEvent}
+                          pagination
+                          data={events}
+                          columns={[
+                            {
+                              name: `${t("EVENT_ID")} / ${t("NAME")}`,
+                              selector: (row) => `${row?.id} / ${row?.name}`,
+                            },
+                            {
+                              name: t("ATTENDANCE"),
+                              selector: (row) => {
+                                const attData = row?.attendances?.filter(
+                                  (attendance) =>
+                                    attendance.user_id == fa_id &&
+                                    attendance.status == "present" &&
+                                    row.end_date ==
+                                      moment(attendance.date_time).format(
+                                        "YYYY-MM-DD"
+                                      )
+                                );
+                                return attData.length > 0 ? "yes" : "no";
+                              },
+                            },
+                            {
+                              name: t("EXAM_START_STATUS"),
+                              selector: (row) =>
+                                row?.params?.start_exam == "yes" ? "yes" : "no",
+                            },
+                          ]}
+                        />
+                      )
                     )}
                   </VStack>
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
                   <HStack space={"6"}>
-                    {lmsDEtails === undefined ||
-                      (lmsDEtails?.certificate_status === true && (
+                    {certificateData === undefined ||
+                      (certificateData?.certificate_status === true && (
                         <FrontEndTypo.DefaultButton
                           textColor={"black"}
                           onPress={() => {
@@ -634,7 +723,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                           {t("GO_BACK")}
                         </FrontEndTypo.DefaultButton>
                       ))}
-                    {lmsDEtails?.certificate_status === false && (
+                    {certificateData?.certificate_status === false && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -644,20 +733,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {lmsDEtails === undefined &&
-                      !(
-                        certificateData?.params?.do_id == null ||
-                        (Array.isArray(certificateData?.params?.do_id) &&
-                          certificateData?.params?.do_id?.length === 0)
-                      ) && (
-                        <FrontEndTypo.DefaultButton
-                          background={"textRed.400"}
-                          onPress={startTest}
-                        >
-                          {t("START_TEST")}
-                        </FrontEndTypo.DefaultButton>
-                      )}
-                    {lmsDEtails?.certificate_status === true && (
+                    {isEventActive?.take_test == true && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={startTest}
+                      >
+                        {t("START_TEST")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
+                    {certificateData?.certificate_status === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={() => {
@@ -665,6 +749,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         }}
                       >
                         {t("VIEW_RESULTS")}
+                      </FrontEndTypo.DefaultButton>
+                    )}
+                    {isEventActive && (
+                      <FrontEndTypo.DefaultButton
+                        background={"textRed.400"}
+                        onPress={(e) => setIsEventActive()}
+                      >
+                        {t("GO_BACK")}
                       </FrontEndTypo.DefaultButton>
                     )}
                   </HStack>
@@ -678,27 +770,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_for_training",
             "selected_for_onboarding",
           ].includes(facilitator.status) && (
-            <Stack>
-              <RedOutlineButton
-                background="bgYellowColor.400"
-                mx="5"
-                p="10"
-                width="40%"
-                shadow="RedBlackShadow"
+            <Stack py={0} px={4}>
+              <TitleCard
+                _icon=""
+                icon={
+                  <IconByName _icon={{ color: "white" }} name="Book2LineIcon" />
+                }
                 onPress={(e) => navigate("/beneficiary")}
               >
-                <Image
-                  source={{
-                    uri: "/images/learner/add_learner.png",
-                  }}
-                  alt="Add AG"
-                  size={"sm"}
-                  resizeMode="contain"
-                />
-                <FrontEndTypo.H4 mt="2" color="textBlack.500" bold>
-                  {t("ADD_AN_AG")}
-                </FrontEndTypo.H4>
-              </RedOutlineButton>
+                <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
+              </TitleCard>
               <Stack px="3">
                 {facilitator?.program_faciltators?.status ===
                   "pragati_mobilizer" && (
@@ -732,17 +813,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
-            <Stack p="5" space={4}>
+            <Stack p="5" pt={0} space={4}>
               {[undefined].includes(facilitator?.aadhar_no) && (
                 <Stack space="3">
-                  <Alert status="warning" alignItems={"start"}>
-                    <HStack alignItems="center" space="2" color>
-                      <Alert.Icon />
-                      <BodyMedium>
-                        {t("ADD_AADHAAR_NUMBER_ERROR_MESSAGE")}
-                      </BodyMedium>
-                    </HStack>
-                  </Alert>
+                  <CustomAlert
+                    status={"danger"}
+                    title={t("ADD_AADHAAR_NUMBER_ERROR_MESSAGE")}
+                  />
                   <FrontEndTypo.Primarybutton
                     onPress={(e) => navigate(`/profile/edit/aadhaar_details`)}
                   >
@@ -754,14 +831,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 facilitator?.aadhaar_verification_mode
               ) && (
                 <Stack space="3">
-                  <Alert status="warning" alignItems={"start"}>
-                    <HStack alignItems="center" space="2" color>
-                      <Alert.Icon />
-                      <BodyMedium>
-                        {t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
-                      </BodyMedium>
-                    </HStack>
-                  </Alert>
+                  <CustomAlert
+                    title={t("COMPLETE_YOUR_AADHAR_VERIFICATION_NOW")}
+                    status={"danger"}
+                  />
                   <FrontEndTypo.Primarybutton
                     onPress={(e) =>
                       navigate(`/aadhaar-kyc/${facilitator?.id}/okyc2`, {
@@ -776,27 +849,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </Stack>
           )}
           {isDocumentUpload() && (
-            <Stack bg="bgYellowColor.400" space="6" p={4}>
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t("UPLOAD_YOUR_DOCUMENTS")}
-              </FrontEndTypo.H2>
-              <FrontEndTypo.H3>
-                {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
-              </FrontEndTypo.H3>
+            <Stack space="6" p={4}>
+              <VStack>
+                <FrontEndTypo.H3 bold color="textGreyColor.750">
+                  {t("UPLOAD_YOUR_DOCUMENTS")}
+                </FrontEndTypo.H3>
+                <FrontEndTypo.H4 color="grayTitleCard">
+                  {t("YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS")}
+                </FrontEndTypo.H4>
+              </VStack>
               {isDocumentUpload("qualifications") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
                     name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
+                    _icon={{ size: "15px" }}
+                    color="floatingLabelColor.500"
                   />
                   <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
+                    <FrontEndTypo.H4 bold color="textGreyColor.750">
                       {t("QUALIFICATION_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
                     </FrontEndTypo.H4>
+                    <FrontEndTypo.H5 color="grayTitleCard">
+                      {t("THIS_CAN_BE_YOUR_HIGHEST_GRADE")}
+                    </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
               )}
@@ -805,46 +881,40 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   <IconByName
                     isDisabled
                     name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
+                    _icon={{ size: "15px" }}
+                    color="floatingLabelColor.500"
                   />
                   <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
+                    <FrontEndTypo.H4 bold color="textGreyColor.750">
                       {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_LETTER_OF")}
                     </FrontEndTypo.H4>
+                    <FrontEndTypo.H5 color="grayTitleCard">
+                      {t("THIS_CAN_BE_LETTER_OF")}
+                    </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
               )}
-              {isDocumentUpload("vo_experience") && (
+              {/* {isDocumentUpload("vo_experience") && (
                 <HStack space="2">
                   <IconByName
                     isDisabled
                     name="CheckboxCircleLineIcon"
-                    _icon={{ size: "20px" }}
+                    _icon={{ size: "15px" }}
+                    color="floatingLabelColor.500"
                   />
                   <VStack width="99%">
-                    <FrontEndTypo.H3 bold>
+                    <FrontEndTypo.H4 bold color="textGreyColor.750">
                       {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H4>
-                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
                     </FrontEndTypo.H4>
+                    <FrontEndTypo.H5 color="grayTitleCard">
+                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
+                    </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-              )}
+              )} */}
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"
-                  endIcon={
-                    <IconByName
-                      isDisabled
-                      name="Upload2FillIcon"
-                      _icon={{ size: "25px" }}
-                      color="gray.800"
-                    />
-                  }
                   onPress={(e) => navigate("/profile")}
                 >
                   {t("UPLOAD_NOW")}
@@ -852,6 +922,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </HStack>
             </Stack>
           )}
+
+          <Stack bg="bgYellowColor.400" space="6" p={4}>
+            <FrontEndTypo.H2 color="textMaroonColor.400">
+              {t("LEARNER_EXAMINATION")}
+            </FrontEndTypo.H2>
+            <FrontEndTypo.H3>
+              {t("LEARNER_EXAMINATION_DETAILS")}
+            </FrontEndTypo.H3>
+
+            <FrontEndTypo.Primarybutton
+              width="100%"
+              onPress={(e) => navigate("/examattendance")}
+            >
+              {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+            </FrontEndTypo.Primarybutton>
+
+            <FrontEndTypo.Secondarybutton
+              width="100%"
+              onPress={(e) => navigate("/examschedule")}
+            >
+              {t("VIEW_EXAM_SCHEDULE")}
+            </FrontEndTypo.Secondarybutton>
+          </Stack>
         </VStack>
       </VStack>
       <Modal
@@ -862,7 +955,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("SELECT_COHORT_INFO")}</H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("SELECT_COHORT_INFO")}
+            </FrontEndTypo.H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
@@ -909,7 +1004,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       >
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("REGISTER_EXIST_CONFIRM")}</H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("REGISTER_EXIST_CONFIRM")}
+            </FrontEndTypo.H1>
             <CloseIcon
               onClick={async () => await removeRegisterExist()}
               style={{ cursor: "pointer" }}
@@ -932,6 +1029,25 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   {t("REGISTER_EXIST_INFO")}
                 </FrontEndTypo.Primarybutton>
               </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={showWarning}
+        safeAreaTop={true}
+        size="xl"
+        _backdrop={{ opacity: "0.7" }}
+      >
+        <Modal.Content>
+          <Modal.Body p="5">
+            <VStack space="5">
+              <Alert status="warning" alignItems={"start"}>
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{t("PLEASE_TURN_ON_YOUR_INTERNET")}</BodyMedium>
+                </HStack>
+              </Alert>
             </VStack>
           </Modal.Body>
         </Modal.Content>
@@ -1083,6 +1199,54 @@ const InfoBox = ({ status, progress }) => {
   }
 
   return infoBox;
+};
+
+const TableCard = ({ data, columns, setExamEvent }) => {
+  const { t } = useTranslation();
+
+  const setData = (item) => {
+    let jsonData = {};
+    columns.forEach((e, key) => {
+      jsonData = { ...jsonData, [key]: e?.selector(item) || "" };
+    });
+    return jsonData;
+  };
+  return (
+    <VStack alignItems={"center"} space="5">
+      {data?.map((item) => (
+        <CardComponent
+          footerComponent={
+            <VStack px="4" p="2">
+              <FrontEndTypo.Primarybutton
+                p="0"
+                onPress={(e) => setExamEvent(item)}
+              >
+                {t("SELECT")}
+              </FrontEndTypo.Primarybutton>
+            </VStack>
+          }
+          key={item}
+          _body={{ bg: "light.100", roundedBottom: 0, p: 4 }}
+          _subHstack={{ flex: 1, space: 2 }}
+          _hstack={{ space: 2 }}
+          _vstack={{
+            width: "100%",
+            space: 0,
+          }}
+          item={setData(item)}
+          arr={columns?.map((e, key) => key) || []}
+          label={
+            columns?.map((e) => ({
+              label: e?.name,
+              _text: { flex: 2 },
+              _value: { flex: 1 },
+            })) || []
+          }
+          isHideProgressBar
+        />
+      ))}
+    </VStack>
+  );
 };
 Dashboard.propTypes = {
   userTokenInfo: PropTypes.any,

@@ -17,7 +17,7 @@ import {
 } from "@shiksha/common-lib";
 import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const EpcpForm = ({ footerLinks }) => {
   const formRef = useRef();
@@ -28,6 +28,8 @@ const EpcpForm = ({ footerLinks }) => {
   const [errors, setErrors] = useState({});
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const user = useLocation();
+  const [learnerData, setLearnerData] = useState(user?.state);
 
   const { id } = useParams();
 
@@ -46,7 +48,11 @@ const EpcpForm = ({ footerLinks }) => {
 
   const schema = {
     type: "object",
-    title: `EPCP.TITLE`,
+    title: `${learnerData?.first_name} ${
+      learnerData?.last_name
+        ? `${learnerData?.middle_name} ${learnerData?.last_name}`
+        : ""
+    } ${t("EPCP.TITLE")}`,
     properties: {
       HAS_LOGGED_RSOS_APP: {
         label: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,

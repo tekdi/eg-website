@@ -6,10 +6,7 @@ import { Alert, Box, HStack, Modal } from "native-base";
 import {
   AgRegistryService,
   Layout,
-  filtersByObject,
   BodyMedium,
-  sendAndVerifyOtp,
-  CustomOTPBox,
   FrontEndTypo,
   getSelectedProgramId,
   getSelectedAcademicYear,
@@ -17,20 +14,15 @@ import {
   IconByName,
   getOptions,
   enumRegistryService,
+  jsonParse,
+  geolocationRegistryService,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import {
-  TitleFieldTemplate,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  ObjectFieldTemplate,
-  ArrayFieldTitleTemplate,
-  BaseInputTemplate,
-  RadioBtn,
-  CustomR,
-  MobileNumber,
+  widgets,
+  templates,
 } from "../../../components/Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import { getIpUserInfo } from "v2/utils/SyncHelper/SyncHelper.js";
@@ -46,7 +38,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [schema, setSchema] = useState({});
   const [credentials, setCredentials] = useState();
   const [submitBtn, setSubmitBtn] = useState();
-  const [addBtn, setAddBtn] = useState(t("YES"));
   const formRef = useRef();
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -115,7 +106,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         ...formData?.role_fields,
         program_id: parseInt(program?.program_id),
         academic_year_id: acadamic?.academic_year_id,
-        org_id: org_id?.program_faciltators?.parent_ip,
+        org_id: authUser?.program_faciltators?.parent_ip,
       },
     };
     let url = await AgRegistryService.createBeneficiary(formDataNew);
@@ -125,42 +116,42 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     }
   };
 
-  const SendOtp = async () => {
-    setIsExistModal(false);
-    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-      ...formData,
-      hash: localStorage.getItem("hash"),
-    });
-    setverifyOtpData(otpData);
-    if (status === true) {
-      const data = await formSubmitCreate(formData);
-      if (data?.error) {
-        const newErrors = {
-          mobile: {
-            __errors:
-              data?.error?.constructor?.name === "String"
-                ? [data?.error]
-                : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-          },
-        };
-        setErrors(newErrors);
-      } else {
-        createBeneficiary();
-      }
-    } else if (status === false) {
-      const newErrors = {
-        otp: {
-          __errors: [t("USER_ENTER_VALID_OTP")],
-        },
-      };
-      setErrors(newErrors);
-    } else {
-      setSchema(newSchema);
-      setotpbtn(true);
-    }
-  };
+  // const SendOtp = async () => {
+  //   setIsExistModal(false);
+  //   const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
+  //     ...formData,
+  //     hash: localStorage.getItem("hash"),
+  //   });
+  //   setverifyOtpData(otpData);
+  //   if (status === true) {
+  //     const data = await formSubmitCreate(formData);
+  //     if (data?.error) {
+  //       const newErrors = {
+  //         mobile: {
+  //           __errors:
+  //             data?.error?.constructor?.name === "String"
+  //               ? [data?.error]
+  //               : data?.error?.constructor?.name === "Array"
+  //               ? data?.error
+  //               : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+  //         },
+  //       };
+  //       setErrors(newErrors);
+  //     } else {
+  //       createBeneficiary();
+  //     }
+  //   } else if (status === false) {
+  //     const newErrors = {
+  //       otp: {
+  //         __errors: [t("USER_ENTER_VALID_OTP")],
+  //       },
+  //     };
+  //     setErrors(newErrors);
+  //   } else {
+  //     setSchema(newSchema);
+  //     setotpbtn(true);
+  //   }
+  // };
 
   const otpfunction = async () => {
     if (formData?.mobile?.length < 10) {
@@ -199,7 +190,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       if (data?.is_data_found) {
         setIsExistModal(true);
       } else {
-        await SendOtp();
+        setStep();
       }
     }
   };
@@ -216,6 +207,140 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         nextPreviewStep();
       }
     }
+  };
+
+  useEffect(() => {
+    if (page === "4") {
+      getLocation();
+    }
+  }, [page]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      if (schema?.properties?.district) {
+        let programSelected = jsonParse(localStorage.getItem("program"));
+        let newSchema = schema;
+
+        newSchema = await setDistric({
+          schemaData: newSchema,
+          state: programSelected?.state_name,
+          district: formData?.district,
+          block: formData?.block,
+          // gramp: formData?.grampanchayat,
+        });
+        setSchema(newSchema);
+      }
+    };
+    fetchData();
+  }, [formData]);
+
+  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.district && state) {
+      const qData = await geolocationRegistryService.getDistricts({
+        name: state,
+      });
+      if (schema["properties"]["district"]) {
+        newSchema = getOptions(newSchema, {
+          key: "district",
+          arr: qData?.districts,
+          title: "district_name",
+          value: "district_name",
+        });
+      }
+      if (schema["properties"]["block"]) {
+        newSchema = await setBlock({
+          gramp,
+          state,
+          district,
+          block,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "district", arr: [] });
+      if (schema["properties"]["block"]) {
+        newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      }
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.block && district) {
+      const qData = await geolocationRegistryService.getBlocks({
+        name: district,
+        state: state,
+      });
+      if (schema["properties"]["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData?.blocks,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+      // if (
+      //   schema?.["properties"]?.["grampanchayat"] &&
+      //   ["BIHAR"].includes(state)
+      // ) {
+      //   newSchema = await setGramp({
+      //     state,
+      //     district,
+      //     block,
+      //     gramp,
+      //     schemaData: newSchema,
+      //   });
+      //   setSchema(newSchema);
+      // } else {
+      newSchema = await setVilage({
+        state,
+        district,
+        block,
+        gramp: "null",
+        schemaData: newSchema,
+      });
+      setSchema(newSchema);
+      // }
+    } else {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
+      });
+      if (schema["properties"]["village"]) {
+        newSchema = getOptions(newSchema, {
+          key: "village",
+          arr: qData?.villages,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        });
+      }
+      setSchema(newSchema);
+    } else {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      setSchema(newSchema);
+    }
+    return newSchema;
   };
 
   useEffect(() => {
@@ -278,16 +403,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         errors.mobile.addError(t("PLEASE_ENTER_VALID_NUMBER"));
       }
     }
-    if (data?.aadhar_token) {
-      if (
-        data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-      ) {
-        errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
-        );
-      }
-    }
+
     if (data?.dob) {
       const years = moment().diff(data?.dob, "years");
       if (years < 12) {
@@ -297,30 +413,25 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         errors?.dob?.addError(t("MAXIMUM_AGE_30_YEAR_OLD"));
       }
     }
-    ["grampanchayat", "first_name", "middle_name", "last_name"].forEach(
-      (key) => {
-        if (
-          key === "first_name" &&
-          data?.first_name?.replace(/ /g, "") === ""
-        ) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
-        }
-
-        if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
-        }
-
-        if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
-          errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
-          );
-        }
+    ["first_name", "middle_name", "last_name"].forEach((key) => {
+      if (key === "first_name" && data?.first_name?.replace(/ /g, "") === "") {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
       }
-    );
+
+      if (key === "last_name" && data?.last_name?.replace(/ /g, "") === "") {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+
+      if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
+        errors?.[key]?.addError(
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+        );
+      }
+    });
 
     return errors;
   };
@@ -357,15 +468,74 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         setErrors(newErrors);
       }
 
-      if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties;
-        const required = schema?.required.filter((item) => item !== "otp");
-        setSchema({ ...schema, properties, required });
-        setFormData((e) => {
-          const { otp, ...fData } = e;
-          return fData;
+      // if (schema?.properties?.otp) {
+      //   const { otp, ...properties } = schema?.properties;
+      //   const required = schema?.required.filter((item) => item !== "otp");
+      //   setSchema({ ...schema, properties, required });
+      //   setFormData((e) => {
+      //     const { otp, ...fData } = e;
+      //     return fData;
+      //   });
+      //   setotpbtn(false);
+      // }
+
+      if (id === "root_state") {
+        await setDistric({
+          schemaData: schema,
+          state: data?.state,
+          district: data?.district,
+          block: data?.block,
         });
-        setotpbtn(false);
+      }
+
+      if (id === "root_district") {
+        await setBlock({
+          district: data?.district,
+          block: null,
+          schemaData: schema,
+        });
+      }
+
+      if (id === "root_block") {
+        await setVilage({ block: data?.block, schemaData: schema });
+      }
+
+      if (id === "root_grampanchayat") {
+        if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
+          const newErrors = {
+            grampanchayat: {
+              __errors: [t("REQUIRED_MESSAGE")],
+            },
+          };
+          setErrors(newErrors);
+        }
+      }
+
+      if (id === "root_address") {
+        if (
+          !data?.address?.match(
+            /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+          ) &&
+          data?.address !== null
+        ) {
+          const newErrors = {
+            address: {
+              __errors: [t("REQUIRED_MESSAGE")],
+            },
+          };
+          setErrors(newErrors);
+        }
+      }
+      if (id === "root_pincode") {
+        const regex = /^[0-9]{6}$/;
+        if (data?.pincode && !regex.test(data.pincode)) {
+          const newErrors = {
+            pincode: {
+              __errors: [t("PINCODE_ERROR")],
+            },
+          };
+          setErrors(newErrors);
+        }
       }
     }
     if (id === "root_dob") {
@@ -390,8 +560,49 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     }
   };
 
+  const getLocation = () => {
+    const location = navigator.geolocation;
+    if (location) {
+      location.getCurrentPosition(showPosition, showError);
+    } else {
+      setAlert(t("GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER"));
+    }
+  };
+
+  const showPosition = (position) => {
+    let lati = position.coords.latitude;
+    let longi = position.coords.longitude;
+
+    setFormData({
+      ...formData,
+      edit_page_type: "add_address",
+      lat: lati?.toString(),
+      long: longi?.toString(),
+    });
+  };
+
+  function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setAlert(t("GEO_USER_DENIED_THE_REQUEST_FOR_GEOLOCATION"));
+
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setAlert(t("GEO_LOCATION_INFORMATION_IS_UNAVAILABLE"));
+
+        break;
+      case error.TIMEOUT:
+        setAlert(t("GEO_THE_REQUEST_TO_GET_USER_LOCATION_TIMED_OUT"));
+
+        break;
+      case error.UNKNOWN_ERROR:
+        setAlert(t("GEO_AN_UNKNOWN_ERROR_OCCURRED"));
+
+        break;
+    }
+  }
+
   const onSubmit = async (data) => {
-    if (addBtn !== t("YES")) setAddBtn(t("YES"));
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -418,27 +629,15 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       let success = false;
       if (id) {
         success = true;
-      } else if (page === "2") {
-        const data = await formSubmitCreate(newFormData);
-        if (data?.error) {
-          const newErrors = {
-            mobile: {
-              __errors: data?.error
-                ? data?.error
-                : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
-        }
       } else if (page <= 1) {
         success = true;
       }
       if (success) {
         setStep();
+      }
+
+      if (page === "4") {
+        createBeneficiary();
       }
     } else {
       const key = Object.keys(errors);
@@ -459,99 +658,109 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       }}
       _footer={{ menues: footerLinks }}
     >
-      <Box py={6} px={4} mb={5}>
-        {/* <Steper
+      {![
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(authUser?.program_faciltators?.status) ? (
+        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+          <HStack alignItems="center" space="2" color>
+            <Alert.Icon />
+            <FrontEndTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H1>
+          </HStack>
+        </Alert>
+      ) : (
+        <Box py={6} px={4} mb={5}>
+          {/* <Steper
           type={"circle"}
           steps={[{ value: "3", label: t("IDENTIFY_THE_AG_LEARNER") }]}
           progress={page === "upload" ? 10 : page}
         /> */}
-        {alert ? (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        ) : (
-          <Fragment />
-        )}
+          {alert ? (
+            <Alert status="warning" alignItems={"start"} mb="3">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <BodyMedium>{alert}</BodyMedium>
+              </HStack>
+            </Alert>
+          ) : (
+            <Fragment />
+          )}
 
-        {page && page !== "" ? (
-          <Form
-            key={lang + addBtn}
-            ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox, MobileNumber }}
-            templates={{
-              FieldTemplate,
-              ArrayFieldTitleTemplate,
-              ObjectFieldTemplate,
-              TitleFieldTemplate,
-              BaseInputTemplate,
-              DescriptionFieldTemplate,
-              BaseInputTemplate,
-            }}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              validator,
-              schema: schema ? schema : {},
-              uiSchema,
-              formData,
-              customValidate,
-              onChange,
-              onError,
-              onSubmit,
-              transformErrors,
-            }}
-          >
-            {page === "2" ? (
-              <FrontEndTypo.Primarybutton
-                mt="3"
-                variant={"primary"}
-                type="submit"
-                onPress={otpfunction}
-              >
-                {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")}
-              </FrontEndTypo.Primarybutton>
-            ) : (
-              <FrontEndTypo.Primarybutton
-                mt="0"
-                variant={"primary"}
-                type="submit"
-                onPress={() => formRef?.current?.submit()}
-              >
-                {pages[pages?.length - 1] === page ? t("NEXT") : submitBtn}
-              </FrontEndTypo.Primarybutton>
-            )}
-          </Form>
-        ) : (
-          <Fragment />
-        )}
+          {page && page !== "" && (
+            <Form
+              key={lang}
+              ref={formRef}
+              extraErrors={errors}
+              showErrorList={false}
+              noHtml5Validate={true}
+              {...{
+                templates,
+                widgets,
+                uiSchema,
+                validator,
+                schema: schema || {},
+                formData,
+                customValidate,
+                onChange,
+                onError,
+                onSubmit,
+                transformErrors,
+              }}
+            >
+              {page === "2" ? (
+                <FrontEndTypo.Primarybutton
+                  mt="3"
+                  variant={"primary"}
+                  type="submit"
+                  onPress={otpfunction}
+                >
+                  {/* {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")} */}
+                  {t("NEXT")}
+                </FrontEndTypo.Primarybutton>
+              ) : (
+                <FrontEndTypo.Primarybutton
+                  mt="0"
+                  variant={"primary"}
+                  type="submit"
+                  onPress={() => formRef?.current?.submit()}
+                >
+                  {t("NEXT")}
+                </FrontEndTypo.Primarybutton>
+              )}
+            </Form>
+          )}
 
-        <Modal isOpen={isExistModal} size="lg">
-          <Modal.Content>
-            <Modal.Body alignItems={"center"} textAlign={"center"} p="5">
-              <IconByName
-                name="ErrorWarningLineIcon"
-                isDisabled
-                color="textMaroonColor.300"
-              />
-              <FrontEndTypo.H3>{t("PROFILE_EXIST")}</FrontEndTypo.H3>
-            </Modal.Body>
-            <Modal.Footer justifyContent={"space-between"}>
-              <FrontEndTypo.Secondarybutton
-                onPress={() => setIsExistModal(false)}
-              >
-                {t("GO_BACK")}
-              </FrontEndTypo.Secondarybutton>
-              <FrontEndTypo.Primarybutton onPress={async () => await SendOtp()}>
-                {t("CONTINUE")}
-              </FrontEndTypo.Primarybutton>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-      </Box>
+          <Modal isOpen={isExistModal} size="lg">
+            <Modal.Content>
+              <Modal.Body alignItems={"center"} textAlign={"center"} p="5">
+                <IconByName
+                  name="ErrorWarningLineIcon"
+                  isDisabled
+                  color="textMaroonColor.300"
+                />
+                <FrontEndTypo.H3>{t("PROFILE_EXIST")}</FrontEndTypo.H3>
+              </Modal.Body>
+              <Modal.Footer justifyContent={"space-between"}>
+                <FrontEndTypo.Secondarybutton
+                  onPress={() => setIsExistModal(false)}
+                >
+                  {t("GO_BACK")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton
+                  onPress={async () => {
+                    await setStep();
+                    setIsExistModal(false);
+                  }}
+                >
+                  {t("CONTINUE")}
+                </FrontEndTypo.Primarybutton>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+        </Box>
+      )}
     </Layout>
   );
 }

@@ -26,6 +26,7 @@ const BenificiaryProfileView = lazy(() =>
 const BenificiaryListView = lazy(() =>
   import("v2/views/Beneficiary/BenificiaryListView/BenificiaryListView")
 );
+const OfflinePage = lazy(() => import("v2/views/OfflinePage/OfflinePage"));
 
 const EpcpForm = lazy(() => import("v2/components/Functional/EPCP/EpcpForm"));
 const EpcpLearnerList = lazy(() =>
@@ -37,6 +38,17 @@ const ExamLearnerList = lazy(() =>
 const ExamForm = lazy(() =>
   import("v2/components/Functional/ExamPreparation/ExamForm")
 );
+const ViewExamSchedule = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ViewExamSchedule")
+);
+const ExamAttendance = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ExamAttendance")
+);
+const ExamAttendanceView = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ExamAttendanceView")
+);
+
+const ExamDashboard = React.lazy(() => import("pages/front-end/ExamDashboard"));
 
 //end v2 code
 
@@ -253,6 +265,27 @@ export default [
   {
     path: "/camps/exampreparation/:id",
     component: ExamForm,
+  },
+  //offlinepage
+  {
+    path: "/offline",
+    component: OfflinePage,
+  },
+  {
+    path: "/examschedule",
+    component: ViewExamSchedule,
+  },
+  {
+    path: "/examattendance",
+    component: ExamAttendance,
+  },
+  {
+    path: "/examattendanceview",
+    component: ExamAttendanceView,
+  },
+  {
+    path: "/dashboardview",
+    component: ExamDashboard,
   },
 
   //end v2 code

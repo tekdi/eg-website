@@ -46,8 +46,10 @@ const LearnerMessage = ({ program_beneficiaries }) => {
   };
 
   return (
-    <HStack color="blueText.450" alignItems="center">
-      <FrontEndTypo.H4 color="blueText.450">{getTitle()}</FrontEndTypo.H4>
+    <HStack color="LearnerListCardLink.500" alignItems="center">
+      <FrontEndTypo.H4 color="LearnerListCardLink.500">
+        {getTitle()}
+      </FrontEndTypo.H4>
     </HStack>
   );
 };
@@ -136,7 +138,7 @@ const List = ({ data }) => {
                 </VStack>
               </HStack>
             </Pressable>
-            <VStack bg="white" alignItems={"end"}>
+            <VStack px={2} bg="white" alignItems={"end"}>
               {item?.program_beneficiaries?.status === "identified" && (
                 <Pressable
                   onPress={() => {
@@ -144,10 +146,14 @@ const List = ({ data }) => {
                   }}
                 >
                   <HStack color="LearnerListCardLink.500" alignItems="center">
-                    <FrontEndTypo.H4 color="blueText.450">
+                    <FrontEndTypo.H4 color="LearnerListCardLink.500">
                       {t("COMPLETE_THE_DOCUMENTATION")}
                     </FrontEndTypo.H4>
-                    <IconByName name="ArrowRightSLineIcon" py="0" />
+                    <IconByName
+                      color="LearnerListCardLink.500"
+                      name="ArrowRightSLineIcon"
+                      py="0"
+                    />
                   </HStack>
                 </Pressable>
               )}
@@ -157,7 +163,7 @@ const List = ({ data }) => {
                     navigate(`/beneficiary/${item?.id}/docschecklist`);
                   }}
                 >
-                  <HStack color="blueText.450" alignItems="center">
+                  <HStack color="LearnerListCardLink.500" alignItems="center">
                     <FrontEndTypo.H4 color="blueText.450">
                       {t("CONTINUE_ENROLLMENT")}
                     </FrontEndTypo.H4>
@@ -171,7 +177,7 @@ const List = ({ data }) => {
                     navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
                   }}
                 >
-                  <HStack color="blueText.450" alignItems="center">
+                  <HStack color="LearnerListCardLink.500" alignItems="center">
                     <FrontEndTypo.H4 color="blueText.450">
                       {t("ENTER_THE_ENROLLMENT_DETAILS")}
                     </FrontEndTypo.H4>
@@ -182,7 +188,11 @@ const List = ({ data }) => {
               {["duplicated", "enrolled_ip_verified"]?.includes(
                 item?.program_beneficiaries?.status
               ) && (
-                <HStack color="blueText.450" alignItems="center" mb="2">
+                <HStack
+                  color="LearnerListCardLink.500"
+                  alignItems="center"
+                  mb="2"
+                >
                   <FrontEndTypo.H4 color="blueText.450">
                     {item?.program_beneficiaries?.status === "duplicated"
                       ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
@@ -283,6 +293,38 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       _footer={{ menues: footerLinks }}
     >
       <VStack ref={ref}>
+        {[
+          "pragati_mobilizer",
+          "selected_prerak",
+          "selected_for_training",
+          "selected_for_onboarding",
+        ].includes(facilitator.status) && (
+          <Pressable
+            onPress={(e) => {
+              navigate(`/beneficiary`);
+            }}
+          >
+            <HStack p="5" space="5" bg="textMaroonColor.50" alignItems="Center">
+              <IconByName
+                isDisabled
+                name="UserFollowLineIcon"
+                _icon={{ size: "30px" }}
+              />
+              <VStack flex="0.8">
+                <FrontEndTypo.H3
+                  bold
+                  color="textGreyColor.800"
+                  wordWrap="break-word"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {t("ADD_MORE_AG")}
+                </FrontEndTypo.H3>
+              </VStack>
+            </HStack>
+          </Pressable>
+        )}
         <HStack
           justifyContent="space-between"
           space="2"
@@ -292,6 +334,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
+              dropdownIcon={
+                <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+              }
               selectedValue={filter?.status}
               placeholder={t("STATUS_ALL")}
               onValueChange={(nextValue) => {
@@ -316,6 +361,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           </Box>
           <Box flex="2">
             <SelectStyle
+              dropdownIcon={
+                <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+              }
               overflowX="hidden"
               selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}

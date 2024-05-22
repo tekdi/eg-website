@@ -1,17 +1,8 @@
-import {
-  Center,
-  VStack,
-  Image,
-  HStack,
-  Text,
-  Input,
-  Stack,
-  Box,
-  Button,
-  Pressable,
-} from "native-base";
-import React, { useEffect, useRef, useState } from "react";
-import { FrontEndTypo, TitleCard, useWindowSize } from "@shiksha/common-lib";
+import { VStack, Image, HStack, Box } from "native-base";
+import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { FrontEndTypo, TitleCard } from "@shiksha/common-lib";
+import { useWindowSize } from "@shiksha/common-lib";
 import { setLanguage, getLanguage } from "v2/utils/Helper/JSHelper";
 import Motif_EG from "../../../assets/Images/Logo/Motif_EG.svg";
 
@@ -61,7 +52,7 @@ export default function ChooseLanguage({ t, languageChanged }) {
 
         <HStack space={4} mt={42}>
           <TitleCard
-            _hstack={{ bg: code === "hi" && "bgRed.500" }}
+            _hstack={{ bg: code === "hi" ? "bgRed.500" : undefined }}
             onPress={() => {
               setCode("hi");
               setLangChanged(true);
@@ -78,7 +69,7 @@ export default function ChooseLanguage({ t, languageChanged }) {
             </FrontEndTypo.H3>
           </TitleCard>
           <TitleCard
-            _hstack={{ bg: code === "en" && "red.500" }}
+            _hstack={{ bg: code === "en" ? "red.500" : undefined }}
             onPress={async () => {
               setCode("en");
               setLangChanged(true);

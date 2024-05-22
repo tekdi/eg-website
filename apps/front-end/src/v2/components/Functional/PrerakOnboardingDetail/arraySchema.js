@@ -27,8 +27,8 @@ export default {
         experience_in_years: {
           label: "EXPERIENCE_IN_YEARS",
           type: "string",
-          format: "RadioBtn",
-          grid: 3,
+          format: "CustomR",
+          grid: 6,
           enumNames: ["<1", "1", "2", "3", "4", "5+"],
           enum: ["0", "1", "2", "3", "4", "5"],
         },

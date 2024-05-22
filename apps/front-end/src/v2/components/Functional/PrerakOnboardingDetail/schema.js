@@ -94,15 +94,16 @@ export default {
           format: "select",
           readOnly: "",
         },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: "string",
-          readOnly: "",
-        },
+
         village: {
           title: "VILLAGE_WARD",
           type: "string",
           format: "select",
+          readOnly: "",
+        },
+        grampanchayat: {
+          title: "GRAMPANCHAYAT",
+          type: "string",
           readOnly: "",
         },
         pincode: {
@@ -125,7 +126,7 @@ export default {
           icons: [
             {
               name: "Female",
-              _icon: { size: "30" },
+              _icon: { size: "30", color: "white" },
             },
             {
               name: "Male",
@@ -185,6 +186,7 @@ export default {
           label: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
           format: "RadioBtn",
+          _stack: { direction: "row", justifyContent: "space-between" },
           grid: 2,
           enum: ["part_time", "full_time"],
           enumNames: ["PART_TIME", "FACILITATOR_FULL_TIME"],
@@ -232,6 +234,7 @@ export default {
           label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
           type: "boolean",
           format: "RadioBtn",
+          _stack: { direction: "row", justifyContent: "space-between" },
         },
         diploma_details: {
           label: "NAME_OF_THE_DIPLOMA",

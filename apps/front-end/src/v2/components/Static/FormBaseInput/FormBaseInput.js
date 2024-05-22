@@ -13,6 +13,7 @@ import {
   TextArea,
   VStack,
   Heading,
+  Checkbox,
 } from "native-base";
 import {
   BodySmall,
@@ -67,10 +68,10 @@ export function EnrollmentLabelMobileWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H2 color="textMaroonColor.400">
+      <FrontEndTypo.H3 color="textGreyColor.750">
         {t("ENROLLMENT_MOBILE_NO")}
-      </FrontEndTypo.H2>
-      <Text color="textMaroonColor.400" mb={1}>
+      </FrontEndTypo.H3>
+      <Text color="textGreyColor.750" mb={1}>
         {t("AS_PER_APPLICATION_RECEIPT")}
       </Text>
     </>
@@ -89,12 +90,12 @@ export function LabelAddressWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H3 color="textGreyColor.750">
+      <FrontEndTypo.H2 mb={1} color="textGreyColor.750">
         {t("ADDRESS")}
-      </FrontEndTypo.H3>
-      <FrontEndTypo.H4 color="textGreyColor.750" mb={1}>
+      </FrontEndTypo.H2>
+      <Text color="textGreyColor.750" mb={1}>
         {t("ADDRESS_DESCRIPTION")}
-      </FrontEndTypo.H4>
+      </Text>
     </>
   );
 }
@@ -485,7 +486,13 @@ export const select = ({ options, value, onChange, required, schema }) => {
                 }),
           }}
         >
-          <Text color={"floatingLabelColor.500"} fontSize="12" fontWeight="400">
+          <Text
+            bg={"white"}
+            zIndex={99999999}
+            color={"floatingLabelColor.500"}
+            fontSize="12"
+            fontWeight="400"
+          >
             {t(label || title)}
             {required ? (
               <Text color={"danger.500"}>*</Text>
@@ -498,9 +505,21 @@ export const select = ({ options, value, onChange, required, schema }) => {
         </FormControl.Label>
       )}
       <Select
+        minH={"56px"}
         key={value + items}
         isDisabled={readOnly}
         selectedValue={value}
+        dropdownIcon={
+          <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+        }
+        borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
+        bg="#FFFFFF"
+        borderWidth={value ? "2px" : "1px"}
+        borderRadius={"4px"}
+        fontSize={"16px"}
+        letterSpacing={"0.5px"}
+        fontWeight={400}
+        lineHeight={"24px"}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
         _selectedItem={{
@@ -514,7 +533,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
             key={item?.value}
             value={item?.value}
             label={t(item?.label)}
-            _text={{ fontSize: 12, fontWeight: 500 }}
+            _text={{ fontSize: 16, fontWeight: 400 }}
           />
         ))}
       </Select>
@@ -523,22 +542,22 @@ export const select = ({ options, value, onChange, required, schema }) => {
 };
 
 // rjsf custom readOnly field
-export const ReadOnly = ({ value, onChange, required, schema }) => {
+export const ReadOnly = ({ value, onChange, _stack, required, schema }) => {
   const { title } = schema || {};
   const { t } = useTranslation();
   return (
     <HStack gap="2">
-      <FrontEndTypo.H3 bold color="textMaroonColor.400">
+      <FrontEndTypo.H4 bold color="floatingLabelColor.500" {..._stack}>
         {t(title)}
-      </FrontEndTypo.H3>
+      </FrontEndTypo.H4>
       <Text fontSize="14" fontWeight="400">
         {required && <Text color={"danger.500"}>*</Text>}
         {value && (
           <Text
             marginLeft={"5px"}
-            fontWeight="700"
-            fontSize={14}
-            color={"#9E9E9E"}
+            fontWeight="600"
+            fontSize={12}
+            color={"grayTitleCard"}
           >
             : {value}
           </Text>
@@ -571,7 +590,7 @@ export const Location = ({ value, onChange, required, schema }) => {
               <FrontEndTypo.H4 bold color="floatingLabelColor.500">
                 {index ? t("LONGITUDE") : t("LATITUDE")}:
               </FrontEndTypo.H4>
-              <FrontEndTypo.H4 color={"#484848"}>
+              <FrontEndTypo.H4 color={"grayTitleCard"}>
                 {value?.[item]}
               </FrontEndTypo.H4>
             </HStack>
@@ -580,7 +599,6 @@ export const Location = ({ value, onChange, required, schema }) => {
 
         {t(error)}
       </HStack>
-      {/* <Button onPress={updateValue}></Button> */}
       <IconByName name="PencilLineIcon" onPress={updateValue} />
     </HStack>
   );
@@ -665,6 +683,7 @@ export const MultiCheck = ({
         return value.indexOf(val) === index;
       });
     }
+    console.log("updatedList", newValue);
 
     let updatedList = [...newValue];
     if (event.target.checked) {
@@ -672,6 +691,7 @@ export const MultiCheck = ({
     } else {
       updatedList.splice(newValue.indexOf(event.target.value), 1);
     }
+    console.log(updatedList, newValue);
     onChange(updatedList);
   };
 
@@ -699,11 +719,7 @@ export const MultiCheck = ({
                     <IconByName
                       {...icons[key]}
                       isDisabled
-                      color={
-                        value === item?.value
-                          ? "floatingLabelColor.500"
-                          : "gray.500"
-                      }
+                      color={value === item?.value ? "eg_blue" : "gray.500"}
                       _icon={{
                         ...(icons?.[key]?.["_icon"]
                           ? icons?.[key]?.["_icon"]
@@ -711,7 +727,7 @@ export const MultiCheck = ({
                       }}
                     />
                   )}
-                  <input
+                  {/* <input
                     checked={
                       value?.constructor?.name === "Array" &&
                       (value?.includes(item?.value) ||
@@ -720,6 +736,21 @@ export const MultiCheck = ({
                     type="checkbox"
                     value={item?.value}
                     onChange={handleCheck}
+                  /> */}
+                  <Checkbox
+                    onChange={(e) =>
+                      handleCheck({
+                        target: { checked: e, value: item?.value },
+                      })
+                    }
+                    value={item?.value}
+                    size="sm"
+                    colorScheme={"eg-blue"}
+                    isChecked={
+                      value?.constructor?.name === "Array" &&
+                      (value?.includes(item?.value) ||
+                        value?.includes(`${item?.value}`))
+                    }
                   />
                   {t(item?.label || item?.title)}
                 </HStack>

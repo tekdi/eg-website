@@ -16,7 +16,9 @@ export default function PcrView() {
 
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
-    const userData = Array.isArray(result?.data) ? result.data.filter((item) => item.user_id == id) : [];
+    const userData = Array.isArray(result?.data)
+      ? result.data.filter((item) => item.user_id == id)
+      : [];
     setData(userData[0]);
   }, []);
 
@@ -35,9 +37,10 @@ export default function PcrView() {
     >
       <Box p="10">
         <CardComponent
-          {...(!data?.endline_learning_level
-            ? { onEdit: (e) => navigate(`/beneficiary/${id}/pcrdetails`) }
-            : {})}
+          // {...(!data?.endline_learning_level
+          //   ? { onEdit: (e) => navigate(`/beneficiary/${id}/pcrdetails`) }
+          //   : {})}
+          {...{ onEdit: (e) => navigate(`/beneficiary/${id}/pcrdetails`) }}
           title={t("PCR_EDUCATION_LEVEL")}
           item={{
             ...data,
@@ -47,15 +50,15 @@ export default function PcrView() {
           }}
           label={[
             "PRIAMRY_LEVEL_EDUCATION",
-            "EVALUATION_1",
-            "EVALUATION_2",
-            "FINAL_LEVEL_EDUCATION",
+            // "EVALUATION_1",
+            // "EVALUATION_2",
+            // "FINAL_LEVEL_EDUCATION",
           ]}
           arr={[
             "baseline_learning_level",
-            "rapid_assessment_first_learning_level",
-            "rapid_assessment_second_learning_level",
-            "endline_learning_level",
+            // "rapid_assessment_first_learning_level",
+            // "rapid_assessment_second_learning_level",
+            // "endline_learning_level",
           ]}
         />
       </Box>

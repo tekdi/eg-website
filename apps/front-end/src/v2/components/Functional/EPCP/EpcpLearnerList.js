@@ -177,7 +177,9 @@ const EpcpLearnerList = ({ footerLinks }) => {
                   borderColor={"gray.300"}
                   p={4}
                   onPress={() => {
-                    navigate(`/camps/epcplearnerlist/${item.user_id}`);
+                    navigate(`/camps/epcplearnerlist/${item.user_id}`, {
+                      state: item,
+                    });
                   }}
                 >
                   <HStack

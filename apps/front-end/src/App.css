@@ -82,7 +82,6 @@ label {
   display: inline-block;
   max-width: 100%;
   margin-bottom: 5px;
-  margin-top: 8px;
   color: #212121;
   font-family: "Poppins";
   font-style: normal;
@@ -350,12 +349,23 @@ ul {
 /* .css-view-1dbjc4n {
   z-index:"auto"
 } */
+.certificae-parent {
+  align-items: "center";
+  overflow: scroll;
+  background-color: #f2e4e1;
+}
+.certificae-height,
 .certificae-height .color {
-  min-height: 210mm;
-  min-width: 919px;
-  max-height: 210mm;
-  max-width: 919px;
-  margin: auto;
+  height: 800px;
+  width: 1140px;
+}
+.certificae-height .color img.m-25px {
+  margin: -17px 10px;
+  height: 740px;
+}
+.certificae-height .color .bg-white {
+  height: 700px;
+  width: 1080px;
 }
 select {
   -webkit-appearance: none;
