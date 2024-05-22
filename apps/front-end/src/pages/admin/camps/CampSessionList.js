@@ -37,12 +37,6 @@ export default function CampSessionList({ footerLinks }) {
   const [error, setError] = useState();
   const navigate = useNavigate();
   const [bodyHeight, setBodyHeight] = useState();
-  const [campType, setCampType] = useState();
-
-  useEffect(async () => {
-    const result = await campService.getCampDetails({ id });
-    setCampType(result?.data?.type);
-  }, [id]);
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -81,6 +75,23 @@ export default function CampSessionList({ footerLinks }) {
     };
     fetchData();
   }, [modalVisible]);
+
+  const getCampSessionsList = async () => {
+    // const campDetails = await campService.getCampDetails({ id });
+    const result = await campService.getCampSessionsList({
+      id: id,
+    });
+    const data = result?.data?.learning_lesson_plans_master || [];
+    setSessionList(data);
+    setSessionActive(getSessionCount(data));
+  };
+
+  useEffect(async () => {
+    await getCampSessionsList();
+    const enumData = await enumRegistryService.listOfEnum();
+    setEnumOptions(enumData?.data ? enumData?.data : {});
+    setLoading(false);
+  }, []);
 
   // const handleStartSession = useCallback(
   //   async (modalVisible) => {
@@ -199,20 +210,6 @@ export default function CampSessionList({ footerLinks }) {
     return { ...sessionData, countSession: count };
   };
 
-  const getCampSessionsList = async () => {
-    const result = await campService.getCampSessionsList({ id: id });
-    const data = result?.data?.learning_lesson_plans_master || [];
-    setSessionList(data);
-    setSessionActive(getSessionCount(data));
-  };
-
-  useEffect(async () => {
-    await getCampSessionsList();
-    const enumData = await enumRegistryService.listOfEnum();
-    setEnumOptions(enumData?.data ? enumData?.data : {});
-    setLoading(false);
-  }, []);
-
   if (loading) {
     return <Loading />;
   }
@@ -233,74 +230,63 @@ export default function CampSessionList({ footerLinks }) {
         "SESSION_LIST"
       )}`}
     >
-      {campType === "pcr" ? (
-        <Alert status="warning" alignItems="start" mb="3" mt="4">
-          <HStack alignItems="center" space="2">
-            <Alert.Icon />
-            <FrontEndTypo.H3>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H3>
+      <Stack>
+        <VStack flex={1} space="5" p="5">
+          <HStack space="2">
+            <IconByName name="BookOpenLineIcon" />
+            <FrontEndTypo.H2 color="textMaroonColor.400">
+              {t("SESSION")}
+            </FrontEndTypo.H2>
           </HStack>
-        </Alert>
-      ) : (
-        <Stack>
-          <VStack flex={1} space="5" p="5">
-            <HStack space="2">
-              <IconByName name="BookOpenLineIcon" />
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t("SESSION")}
-              </FrontEndTypo.H2>
-            </HStack>
-            <ScrollView maxH={bodyHeight - 150} p="4">
-              <SessionList
-                {...{ sessionList, sessionActive, setModalVisible }}
-              />
-            </ScrollView>
+          <ScrollView maxH={bodyHeight - 150} p="4">
+            <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
+          </ScrollView>
+        </VStack>
+        {!sessionActive?.ordering && (
+          <VStack px="4">
+            <FrontEndTypo.Primarybutton
+              onPress={() => {
+                navigate(`/camps/${id}/campexecution/activities`);
+              }}
+            >
+              {t("SUBMIT")}
+            </FrontEndTypo.Primarybutton>
           </VStack>
-          {!sessionActive?.ordering && (
-            <VStack px="4">
-              <FrontEndTypo.Primarybutton
-                onPress={() => {
-                  navigate(`/camps/${id}/campexecution/activities`);
-                }}
+        )}
+        <Modal isOpen={modalVisible} avoidKeyboard size="xl">
+          <Modal.Content>
+            <Modal.Header>
+              <FrontEndTypo.H3
+                textAlign="center"
+                color="textMaroonColor.400"
+                bold
               >
-                {t("SUBMIT")}
-              </FrontEndTypo.Primarybutton>
-            </VStack>
-          )}
-          <Modal isOpen={modalVisible} avoidKeyboard size="xl">
-            <Modal.Content>
-              <Modal.Header>
-                <FrontEndTypo.H3
-                  textAlign="center"
-                  color="textMaroonColor.400"
-                  bold
-                >
-                  {t("LESSON")} {sessionDetails?.ordering}
-                </FrontEndTypo.H3>
-                <Modal.CloseButton
-                  onPress={() => {
-                    setModalVisible();
-                    setSubmitStatus();
-                  }}
-                />
-              </Modal.Header>
-              <Modal.Body p="6">
-                <SessionActions
-                  {...{
-                    sessionActive,
-                    isDisable,
-                    enumOptions,
-                    submitStatus,
-                    setSubmitStatus,
-                    handlePartiallyDone,
-                    handleCancel,
-                    error,
-                  }}
-                />
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-        </Stack>
-      )}
+                {t("LESSON")} {sessionDetails?.ordering}
+              </FrontEndTypo.H3>
+              <Modal.CloseButton
+                onPress={() => {
+                  setModalVisible();
+                  setSubmitStatus();
+                }}
+              />
+            </Modal.Header>
+            <Modal.Body p="6">
+              <SessionActions
+                {...{
+                  sessionActive,
+                  isDisable,
+                  enumOptions,
+                  submitStatus,
+                  setSubmitStatus,
+                  handlePartiallyDone,
+                  handleCancel,
+                  error,
+                }}
+              />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      </Stack>
     </Layout>
   );
 }

@@ -37,14 +37,15 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       stepTitle={t("ATTENDANCE")}
     >
       <List userTokenInfo={userTokenInfo} />
-      {/* <VStack p="4" space="5">
+      <VStack p="4" space="5">
         {stateName === "RAJASTHAN" && (
           <>
             <EpcpCard />
-            <ExamPreparationCard />
+            {/* Temp Comment */}
+            {/* <ExamPreparationCard /> */}
           </>
         )}
-      </VStack> */}
+      </VStack>
     </Layout>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "@shiksha/common-lib";
 
 import guestRoutes from "./routes/guestRoutes";
+import { volunteerRoute } from "./routes/onest";
 import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
 import PoAdminRoutes from "./routes/PoAdminRoutes";
@@ -53,16 +54,20 @@ function App() {
         logout();
         window.location.reload();
       }
-
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
-
       if (hasura?.roles?.includes("facilitator")) {
         setAccessRoutes(routes);
       } else if (hasura?.roles?.includes("program_owner")) {
         setAccessRoutes(PoAdminRoutes);
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
+      } else if (
+        hasura?.roles?.filter((e) => {
+          return ["volunteer", "beneficiary"].includes(e);
+        }).length > 0
+      ) {
+        setAccessRoutes(volunteerRoute);
       } else {
         logout();
         window.location.reload();
@@ -99,7 +104,7 @@ function App() {
         {
           title: "DASHBOARD",
           icon: "DashboardLineIcon",
-          route: "/table",
+          route: "/dashboardview",
         },
       ]}
       userTokenInfo={userTokenInfo}

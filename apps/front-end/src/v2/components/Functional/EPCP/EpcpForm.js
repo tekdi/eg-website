@@ -15,7 +15,7 @@ import {
   ObservationService,
   jsonParse,
 } from "@shiksha/common-lib";
-import { Box } from "native-base";
+import { Box, HStack } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -30,6 +30,8 @@ const EpcpForm = ({ footerLinks }) => {
   const navigate = useNavigate();
   const user = useLocation();
   const [learnerData, setLearnerData] = useState(user?.state);
+  const [subjects, setSubjects] = useState();
+  const [subjectList, setSubjectList] = useState([]);
 
   const { id } = useParams();
 
@@ -42,7 +44,6 @@ const EpcpForm = ({ footerLinks }) => {
       ? jsonParse(data?.[index]?.fields?.[0]?.enum)
       : [];
     const prefixedData = Newdata?.map((item) => prefix + item);
-
     return prefixedData;
   };
 
@@ -65,7 +66,7 @@ const EpcpForm = ({ footerLinks }) => {
     },
     allOf: [
       {
-        // if  RSOS_APP is "YES" view all the options
+        // if RSOS_APP is "YES" view all the options
         if: {
           properties: {
             HAS_LOGGED_RSOS_APP: {
@@ -75,24 +76,6 @@ const EpcpForm = ({ footerLinks }) => {
         },
         then: {
           properties: {
-            STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP: {
-              label: "EPCP.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP.TITLE",
-              type: ["string", "null"],
-              direction: "row",
-              format: "RadioBtn",
-              enum: sortEnums("", 0),
-              default: null,
-            },
-            STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS: {},
-            TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION: {
-              label: "EPCP.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION.TITLE",
-              type: ["string", "null"],
-              direction: "row",
-              format: "RadioBtn",
-              enum: sortEnums("", 0),
-              default: null,
-            },
-            TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS: {},
             TOOK_EPCP_EXAM_ON_RSOS_APP: {
               label: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
               type: ["string", "null"],
@@ -101,12 +84,11 @@ const EpcpForm = ({ footerLinks }) => {
               enum: sortEnums("", 0),
               default: null,
             },
-            TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: {},
           },
         },
       },
-      // if  RSOS_APP is "no" hide all the options and view reason
       {
+        // if RSOS_APP is "NO" hide all the options and view reason
         if: {
           properties: {
             HAS_LOGGED_RSOS_APP: {
@@ -120,100 +102,16 @@ const EpcpForm = ({ footerLinks }) => {
               label: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",
+              direction: "column",
               enum: sortEnums("EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.", 1),
             },
           },
           required: ["HAS_LOGGED_RSOS_APP_NO_REASONS"],
         },
       },
-      // if  RSOS_APP is "YES" and STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP is "no" view video reasons below it.
-      // if  RSOS_APP is "YES" and STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP is "YES" hide video reasons below it.
       {
-        if: {
-          properties: {
-            HAS_LOGGED_RSOS_APP: {
-              const: "YES",
-            },
-            STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP: {
-              const: "NO",
-            },
-          },
-        },
-        then: {
-          properties: {
-            STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS: {
-              format: "RadioBtn",
-              label:
-                "EPCP.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.TITLE",
-              type: "string",
-              enum: sortEnums(
-                "EPCP.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.",
-                3
-              ),
-            },
-          },
-          required: ["HAS_LOGGED_RSOS_APP_NO_REASONS"],
-        },
-        else: {
-          properties: {
-            STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS: {
-              format: "hidden",
-              label:
-                "EPCP.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.TITLE",
-              type: "string",
-              enum: sortEnums(
-                "EPCP.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.",
-                3
-              ),
-            },
-          },
-        },
-      },
-      // if  RSOS_APP is "Yes" and TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION is "no" view test reasons below it.
-      // if  RSOS_APP is "Yes" and TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION is "yes" hide test reasons below it.
-      {
-        if: {
-          properties: {
-            HAS_LOGGED_RSOS_APP: {
-              const: "YES",
-            },
-            TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION: {
-              const: "NO",
-            },
-          },
-        },
-        then: {
-          properties: {
-            TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS: {
-              format: "RadioBtn",
-              label:
-                "EPCP.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.TITLE",
-              type: "string",
-              enum: sortEnums(
-                "EPCP.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.",
-                5
-              ),
-            },
-          },
-        },
-        else: {
-          properties: {
-            TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS: {
-              format: "hidden",
-              label:
-                "EPCP.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.TITLE",
-              type: "string",
-              enum: sortEnums(
-                "EPCP.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.",
-                5
-              ),
-            },
-          },
-        },
-      },
-      // if  RSOS_APP is "YES" and TOOK_EPCP_EXAM_ON_RSOS_APP is "no" view test reasons below it.
-      // if  RSOS_APP is "YES" and TOOK_EPCP_EXAM_ON_RSOS_APP is "YES" hide test reasons below it.
-      {
+        // if RSOS_APP is "YES" and TOOK_EPCP_EXAM_ON_RSOS_APP is "NO" view test reasons below it
+        // if RSOS_APP is "YES" and TOOK_EPCP_EXAM_ON_RSOS_APP is "YES" hide test reasons below it
         if: {
           properties: {
             HAS_LOGGED_RSOS_APP: {
@@ -230,22 +128,10 @@ const EpcpForm = ({ footerLinks }) => {
               format: "RadioBtn",
               label: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
+              direction: "column",
               enum: sortEnums(
                 "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.",
-                7
-              ),
-            },
-          },
-        },
-        else: {
-          properties: {
-            TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: {
-              format: "hidden",
-              label: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
-              type: "string",
-              enum: sortEnums(
-                "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.",
-                7
+                3
               ),
             },
           },
@@ -264,26 +150,37 @@ const EpcpForm = ({ footerLinks }) => {
         },
         then: {
           properties: {
-            RSOS_DOCUMENT_IMAGE: {
-              label: "EPCP.RSOS_DOCUMENT_IMAGE.TITLE",
-              document_type: "epcp",
-              type: ["string", "number"],
-              format: "FileUpload",
+            selectSubject: {
+              type: "string",
+            },
+            SELECTED_SUBJECT_BY_LEARNER: {
+              minItems: 1,
+              maxItems: 7,
+              type: "array",
+              items: {
+                type: ["string", "number"],
+                enum: subjects?.id,
+                enumNames: subjects?.name,
+              },
+              uniqueItems: true,
             },
           },
-          required: ["RSOS_DOCUMENT_IMAGE"],
+          required: ["SELECTED_SUBJECT_BY_LEARNER"],
         },
       },
-
       {
-        required: [
-          "HAS_LOGGED_RSOS_APP",
-          "TOOK_EPCP_EXAM_ON_RSOS_APP",
-          "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP",
-          "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION",
-        ],
+        required: ["HAS_LOGGED_RSOS_APP", "TOOK_EPCP_EXAM_ON_RSOS_APP"],
       },
     ],
+  };
+
+  const uiSchema = {
+    selectSubject: {
+      "ui:widget": "selectSubjectWidget",
+    },
+    SELECTED_SUBJECT_BY_LEARNER: {
+      "ui:widget": "checkboxes",
+    },
   };
 
   const onChange = async (e, id) => {
@@ -300,38 +197,10 @@ const EpcpForm = ({ footerLinks }) => {
       } else if (data?.HAS_LOGGED_RSOS_APP === "NO") {
         setFormData({
           ...newData,
-          STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP: null,
-          TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION: null,
           TOOK_EPCP_EXAM_ON_RSOS_APP: null,
           TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: null,
-          TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS: null,
-          STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS: null,
-          RSOS_DOCUMENT_IMAGE: null,
+          SELECTED_SUBJECT_BY_LEARNER: null,
         });
-      }
-    } else if (id === "root_STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP") {
-      if (
-        data?.HAS_LOGGED_RSOS_APP === "YES" &&
-        data?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP === "YES"
-      ) {
-        setFormData({
-          ...newData,
-          STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS: "",
-        });
-      } else {
-        setFormData(newData);
-      }
-    } else if (id === "root_TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION") {
-      if (
-        data?.HAS_LOGGED_RSOS_APP === "YES" &&
-        data?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION === "YES"
-      ) {
-        setFormData({
-          ...newData,
-          TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS: "",
-        });
-      } else {
-        setFormData(newData);
       }
     } else if (id === "root_TOOK_EPCP_EXAM_ON_RSOS_APP") {
       if (
@@ -348,7 +217,7 @@ const EpcpForm = ({ footerLinks }) => {
       ) {
         setFormData({
           ...newData,
-          RSOS_DOCUMENT_IMAGE: "",
+          SELECTED_SUBJECT_BY_LEARNER: "",
         });
       }
     } else {
@@ -377,62 +246,6 @@ const EpcpForm = ({ footerLinks }) => {
       setErrors(newErrors);
     } else if (
       newFormData?.HAS_LOGGED_RSOS_APP === "YES" &&
-      !newFormData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP &&
-      !newFormData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION &&
-      !newFormData?.TOOK_EPCP_EXAM_ON_RSOS_APP
-    ) {
-      const newErrors = {
-        STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-        TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-        TOOK_EPCP_EXAM_ON_RSOS_APP: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-      };
-      setErrors(newErrors);
-    } else if (
-      newFormData?.HAS_LOGGED_RSOS_APP &&
-      newFormData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP === "NO" &&
-      !newFormData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS
-    ) {
-      const newErrors = {
-        STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-      };
-      setErrors(newErrors);
-    } else if (
-      newFormData?.HAS_LOGGED_RSOS_APP &&
-      newFormData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP &&
-      !newFormData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION &&
-      !newFormData?.TOOK_EPCP_EXAM_ON_RSOS_APP
-    ) {
-      const newErrors = {
-        TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-        TOOK_EPCP_EXAM_ON_RSOS_APP: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-      };
-      setErrors(newErrors);
-    } else if (
-      newFormData?.HAS_LOGGED_RSOS_APP &&
-      newFormData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION === "NO" &&
-      !newFormData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS
-    ) {
-      const newErrors = {
-        TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-      };
-      setErrors(newErrors);
-    } else if (
-      newFormData?.HAS_LOGGED_RSOS_APP &&
-      newFormData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION &&
       !newFormData?.TOOK_EPCP_EXAM_ON_RSOS_APP
     ) {
       const newErrors = {
@@ -455,23 +268,42 @@ const EpcpForm = ({ footerLinks }) => {
     } else if (
       newFormData?.HAS_LOGGED_RSOS_APP &&
       newFormData?.TOOK_EPCP_EXAM_ON_RSOS_APP === "YES" &&
-      !newFormData?.RSOS_DOCUMENT_IMAGE
+      !newFormData?.SELECTED_SUBJECT_BY_LEARNER
     ) {
       const newErrors = {
-        RSOS_DOCUMENT_IMAGE: {
+        SELECTED_SUBJECT_BY_LEARNER: {
           __errors: [t("REQUIRED_MESSAGE")],
         },
       };
       setErrors(newErrors);
+    } else if (
+      newFormData?.HAS_LOGGED_RSOS_APP &&
+      newFormData?.TOOK_EPCP_EXAM_ON_RSOS_APP === "YES" &&
+      newFormData?.SELECTED_SUBJECT_BY_LEARNER
+    ) {
+      const filterformData = {
+        ...newFormData,
+        SELECTED_SUBJECT_BY_LEARNER: subjectList?.map((subject) => ({
+          name: subject?.name,
+          id: subject?.id,
+          selected: newFormData.SELECTED_SUBJECT_BY_LEARNER.includes(
+            subject?.id
+          )
+            ? "yes"
+            : "no",
+        })),
+      };
+      const payload = finalPayload(id, filterformData, data);
+      PostData(payload);
     } else {
       const payload = finalPayload(id, formData, data);
       PostData(payload);
-      navigate("/camps/epcplearnerlist/");
     }
   };
 
   const PostData = async (payload) => {
     const data = await ObservationService.postBulkData(payload);
+    navigate("/camps/epcplearnerlist/");
   };
 
   const onSubmit = async () => {
@@ -481,8 +313,17 @@ const EpcpForm = ({ footerLinks }) => {
   const getFieldResponseByTitle = (title) => {
     // Find the object in data array where fields title matches the given title
     const field = data.find((item) => item.fields[0].title === title);
-    // If field is found, return its field_responses data, otherwise return null
-    return field?.field_responses?.[0]?.response_value || "";
+    if (title === "SELECTED_SUBJECT_BY_LEARNER") {
+      const res = field?.field_responses?.[0]?.response_value || "[]";
+      const subjectsArray = JSON.parse(res);
+      const selectedIds = subjectsArray
+        .filter((subject) => subject.selected === "yes")
+        .map((subject) => subject.id);
+      return selectedIds || "";
+    } else {
+      // If field is found, return its field_responses data, otherwise return null
+      return field?.field_responses?.[0]?.response_value || "";
+    }
   };
 
   useEffect(() => {
@@ -493,7 +334,20 @@ const EpcpForm = ({ footerLinks }) => {
         observation
       );
       setData(getData?.data?.[0]?.observation_fields);
+      const getSubject = await ObservationService.subjectList(id);
+
+      setSubjectList(getSubject?.data?.subjectsArray);
+      const filteredSubjects = getSubject?.data?.subjectsArray.reduce(
+        (acc, subject) => {
+          acc.id.push(subject.id);
+          acc.name.push(subject.name);
+          return acc;
+        },
+        { id: [], name: [] }
+      );
+      setSubjects(filteredSubjects);
     };
+
     fetchData();
     setLoading(false);
   }, []);
@@ -502,7 +356,6 @@ const EpcpForm = ({ footerLinks }) => {
     setLoading(true);
     setFormData({
       ...formData,
-
       HAS_LOGGED_RSOS_APP: getFieldResponseByTitle("HAS_LOGGED_RSOS_APP"),
       HAS_LOGGED_RSOS_APP_NO_REASONS: getFieldResponseByTitle(
         "HAS_LOGGED_RSOS_APP_NO_REASONS"
@@ -511,32 +364,11 @@ const EpcpForm = ({ footerLinks }) => {
             "HAS_LOGGED_RSOS_APP_NO_REASONS"
           )}`
         : "",
-      STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP: getFieldResponseByTitle(
-        "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP"
-      ),
-      TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION: getFieldResponseByTitle(
-        "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION"
-      ),
+
       TOOK_EPCP_EXAM_ON_RSOS_APP: getFieldResponseByTitle(
         "TOOK_EPCP_EXAM_ON_RSOS_APP"
       ),
 
-      STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS:
-        getFieldResponseByTitle(
-          "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS"
-        )
-          ? `EPCP.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.${getFieldResponseByTitle(
-              "STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS"
-            )}`
-          : "",
-      TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS:
-        getFieldResponseByTitle(
-          "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS"
-        )
-          ? `EPCP.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.${getFieldResponseByTitle(
-              "TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS"
-            )}`
-          : "",
       TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: getFieldResponseByTitle(
         "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS"
       )
@@ -545,7 +377,9 @@ const EpcpForm = ({ footerLinks }) => {
           )}`
         : "",
 
-      RSOS_DOCUMENT_IMAGE: getFieldResponseByTitle("RSOS_DOCUMENT_IMAGE"),
+      SELECTED_SUBJECT_BY_LEARNER: getFieldResponseByTitle(
+        "SELECTED_SUBJECT_BY_LEARNER"
+      ),
     });
     setLoading(false);
   }, [data]);
@@ -573,7 +407,7 @@ const EpcpForm = ({ footerLinks }) => {
             templates,
             validator,
             schema: schema || {},
-            //uiSchema,
+            uiSchema,
             formData,
             onChange,
             onSubmit,
@@ -585,6 +419,7 @@ const EpcpForm = ({ footerLinks }) => {
             isLoading={loading}
             type="submit"
             onPress={() => onSubmit()}
+            mt={"20px"}
           >
             {t("SUBMIT")}
           </FrontEndTypo.Primarybutton>

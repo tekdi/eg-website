@@ -85,43 +85,54 @@ const ExamLearnerList = ({ footerLinks }) => {
   };
 
   const getStatus = (responses) => {
-    const response1 = responses.find((response) => response.field_id === 10);
-    const response2 = responses.find((response) => response.field_id === 11);
-    const response3 = responses.find((response) => response.field_id === 12);
-    const response4 = responses.find((response) => response.field_id === 13);
-    const response5 = responses.find((response) => response.field_id === 14);
-    const response6 = responses.find((response) => response.field_id === 15);
+    const WILL_LEARNER_APPEAR_FOR_EXAM = responses.find(
+      (response) => response.field_id === 10
+    );
+    const WILL_LEARNER_APPEAR_FOR_EXAM_REASONS = responses.find(
+      (response) => response.field_id === 11
+    );
+    const DID_LEARNER_RECEIVE_ADMIT_CARD = responses.find(
+      (response) => response.field_id === 12
+    );
+    const HAS_LEARNER_PREPARED_PRACTICAL_FILE = responses.find(
+      (response) => response.field_id === 13
+    );
+    const LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER = responses.find(
+      (response) => response.field_id === 14
+    );
+    // const response6 = responses.find((response) => response.field_id === 15);
     if (
-      !response1 ||
-      !response2 ||
-      !response3 ||
-      !response4 ||
-      !response5 ||
-      !response6
+      !WILL_LEARNER_APPEAR_FOR_EXAM ||
+      !WILL_LEARNER_APPEAR_FOR_EXAM_REASONS ||
+      !DID_LEARNER_RECEIVE_ADMIT_CARD ||
+      !HAS_LEARNER_PREPARED_PRACTICAL_FILE ||
+      !LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER
     ) {
       return "not_entered";
     } else if (
-      response1.response_value === "NO" &&
-      response2 &&
-      response2.response_value !== ""
+      WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "NO" &&
+      WILL_LEARNER_APPEAR_FOR_EXAM_REASONS &&
+      WILL_LEARNER_APPEAR_FOR_EXAM_REASONS.response_value !== ""
     ) {
       return "not_started";
     } else if (
-      response1.response_value === "YES" &&
-      (response3.response_value === "NO" ||
-        response4.response_value === "NO" ||
-        response5.response_value === "NO" ||
-        response6.response_value === "NO")
+      WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "YES" &&
+      (DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "NO" ||
+        DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "YET_TO_BE_PROCEED" ||
+        HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "NO" ||
+        LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
+          "NO_MEANS_TO_TRAVEL" ||
+        LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
+          "CANT_AFFORD_TRAVEL_FARE")
     ) {
       return "in_progress";
     } else if (
-      response1.response_value === "YES" &&
-      response3.response_value === "YES" &&
-      (response4.response_value === "YES" ||
-        response4.response_value === "NOT_APPLICABLE") &&
-      (response5.response_value === "YES" ||
-        response5.response_value === "NOT_APPLICABLE") &&
-      response6.response_value === "YES"
+      WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "YES" &&
+      DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "YES" &&
+      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
+        "YES" &&
+      (HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "YES" ||
+        HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "NOT_APPLICABLE")
     ) {
       return "completed";
     } else if (responses.every((response) => response.response_value === "")) {

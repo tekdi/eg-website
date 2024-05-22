@@ -128,12 +128,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
             </FrontEndTypo.H1>
           </VStack>
 
-          <DataTable
-            bg="light.100"
-            customStyles={tableCustomStyles}
-            columns={columnsMemoized}
-            data={certificateData}
-          />
+          <TableCard columns={columnsMemoized} data={certificateData} />
         </VStack>
       </VStack>
       <Modal isOpen={downloadCertificate} size="xl">
@@ -170,3 +165,39 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+const TableCard = ({ data, columns }) => {
+  const { t } = useTranslation();
+
+  const setData = (item) => {
+    let jsonData = {};
+    columns.forEach((e, key) => {
+      jsonData = { ...jsonData, [key]: e?.selector(item) || "" };
+    });
+    return jsonData;
+  };
+  return (
+    <VStack alignItems={"center"} space="5">
+      {data?.map((item) => (
+        <CardComponent
+          key={item}
+          _body={{ bg: "white", p: 4 }}
+          _subHstack={{ flex: 1, space: 2 }}
+          _hstack={{ space: 2 }}
+          _vstack={{
+            width: "100%",
+            space: 0,
+          }}
+          item={setData(item)}
+          arr={columns?.map((e, key) => key) || []}
+          label={
+            columns?.map((e) => ({
+              label: e?.name,
+            })) || []
+          }
+          isHideProgressBar
+        />
+      ))}
+    </VStack>
+  );
+};

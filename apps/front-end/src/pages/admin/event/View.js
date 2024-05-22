@@ -8,7 +8,6 @@ import {
   enumRegistryService,
   eventService,
   testRegistryService,
-  BodyMedium,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import html2canvas from "html2canvas";
@@ -451,12 +450,31 @@ export default function Attendence({ footerLinks }) {
             <Alert status="error" alignItems={"start"} mb="3" mt="4">
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{result?.message}</BodyMedium>
+                <AdminTypo.H6>{result?.message}</AdminTypo.H6>
               </HStack>
             </Alert>
           );
         },
       });
+    }
+  };
+
+  const editEvent = () => {
+    if (event?.params?.start_exam === "yes") {
+      toast.show({
+        render: () => {
+          return (
+            <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon />
+                <AdminTypo.H6>{t("EDIT_EVENT_WARNING")}</AdminTypo.H6>
+              </HStack>
+            </Alert>
+          );
+        },
+      });
+    } else {
+      navigate(`/admin/event/${id}/edit`);
     }
   };
 
@@ -576,9 +594,7 @@ export default function Attendence({ footerLinks }) {
                   {event?.master_trainer ? event?.master_trainer : ""}
                 </Badge>
               </HStack>
-              <AdminTypo.Secondarybutton
-                onPress={() => navigate(`/admin/event/${id}/edit`)}
-              >
+              <AdminTypo.Secondarybutton onPress={editEvent}>
                 {t("EDIT")}
               </AdminTypo.Secondarybutton>
               <AdminTypo.PrimaryButton onPress={() => setOpenStartExam(true)}>

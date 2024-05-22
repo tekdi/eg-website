@@ -74,40 +74,49 @@ const EpcpForm = ({ footerLinks }) => {
         },
         then: {
           properties: {
-            DID_LEARNER_RECEIVE_ADMIT_CARD: {
-              label: "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
-              type: ["string", "null"],
-              direction: "row",
-              format: "RadioBtn",
-              enum: sortEnums("", 0),
-              default: null,
-            },
             HAS_LEARNER_PREPARED_PRACTICAL_FILE: {
               label:
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
-              enum: sortEnums("", 3),
+              enum: sortEnums(
+                "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.",
+                3
+              ),
               default: null,
             },
             LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: {
               label:
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.TITLE",
               type: ["string", "null"],
-              direction: "row",
+              direction: "column",
               format: "RadioBtn",
-              enum: sortEnums("", 3),
+              enum: sortEnums(
+                "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.",
+                4
+              ),
               default: null,
             },
-            LEARNER_RECEIVED_EXAM_TIME_TABLE: {
-              label: "EXAM_PREPARATION.LEARNER_RECEIVED_EXAM_TIME_TABLE.TITLE",
+            DID_LEARNER_RECEIVE_ADMIT_CARD: {
+              label: "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
-              enum: sortEnums("", 0),
+              enum: sortEnums(
+                "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.",
+                2
+              ),
               default: null,
             },
+            // LEARNER_RECEIVED_EXAM_TIME_TABLE: {
+            //   label: "EXAM_PREPARATION.LEARNER_RECEIVED_EXAM_TIME_TABLE.TITLE",
+            //   type: ["string", "null"],
+            //   direction: "row",
+            //   format: "RadioBtn",
+            //   enum: sortEnums("", 0),
+            //   default: null,
+            // },
           },
         },
       },
@@ -143,7 +152,6 @@ const EpcpForm = ({ footerLinks }) => {
           "DID_LEARNER_RECEIVE_ADMIT_CARD",
           "HAS_LEARNER_PREPARED_PRACTICAL_FILE",
           "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER",
-          "LEARNER_RECEIVED_EXAM_TIME_TABLE",
         ],
       },
     ],
@@ -165,7 +173,7 @@ const EpcpForm = ({ footerLinks }) => {
           DID_LEARNER_RECEIVE_ADMIT_CARD: null,
           HAS_LEARNER_PREPARED_PRACTICAL_FILE: null,
           LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: null,
-          LEARNER_RECEIVED_EXAM_TIME_TABLE: null,
+          // LEARNER_RECEIVED_EXAM_TIME_TABLE: null,
         });
       }
     } else {
@@ -225,19 +233,6 @@ const EpcpForm = ({ footerLinks }) => {
         },
       };
       setErrors(newErrors);
-    } else if (
-      newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM &&
-      newFormData?.DID_LEARNER_RECEIVE_ADMIT_CARD &&
-      newFormData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE &&
-      newFormData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER &&
-      !newFormData?.LEARNER_RECEIVED_EXAM_TIME_TABLE
-    ) {
-      const newErrors = {
-        LEARNER_RECEIVED_EXAM_TIME_TABLE: {
-          __errors: [t("REQUIRED_MESSAGE")],
-        },
-      };
-      setErrors(newErrors);
     } else {
       const payload = finalPayload(id, formData, data);
       PostData(payload);
@@ -289,19 +284,19 @@ const EpcpForm = ({ footerLinks }) => {
             "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS"
           )}`
         : "",
-      DID_LEARNER_RECEIVE_ADMIT_CARD: getFieldResponseByTitle(
+      DID_LEARNER_RECEIVE_ADMIT_CARD: `EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.${getFieldResponseByTitle(
         "DID_LEARNER_RECEIVE_ADMIT_CARD"
-      ),
-      HAS_LEARNER_PREPARED_PRACTICAL_FILE: getFieldResponseByTitle(
+      )}`,
+      HAS_LEARNER_PREPARED_PRACTICAL_FILE: `EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.${getFieldResponseByTitle(
         "HAS_LEARNER_PREPARED_PRACTICAL_FILE"
-      ),
-      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: getFieldResponseByTitle(
+      )}`,
+      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: `EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.${getFieldResponseByTitle(
         "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER"
-      ),
+      )}`,
 
-      LEARNER_RECEIVED_EXAM_TIME_TABLE: getFieldResponseByTitle(
-        "LEARNER_RECEIVED_EXAM_TIME_TABLE"
-      ),
+      // LEARNER_RECEIVED_EXAM_TIME_TABLE: getFieldResponseByTitle(
+      //   "LEARNER_RECEIVED_EXAM_TIME_TABLE"
+      // ),
     });
     setLoading(false);
   }, [data]);

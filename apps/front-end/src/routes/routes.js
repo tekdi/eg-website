@@ -1,4 +1,5 @@
 import React, { lazy } from "react";
+import onest from "./onest";
 //v2 code
 //online_facilitator_onboarding
 const FacilitatorRegister = lazy(() =>
@@ -37,6 +38,23 @@ const ExamLearnerList = lazy(() =>
 );
 const ExamForm = lazy(() =>
   import("v2/components/Functional/ExamPreparation/ExamForm")
+);
+const ViewExamSchedule = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ViewExamSchedule")
+);
+const ExamAttendance = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ExamAttendance")
+);
+const ExamAttendanceReport = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/ExamAttendanceReport")
+);
+
+const ExamDashboard = React.lazy(() => import("pages/front-end/ExamDashboard"));
+const ExamResultReport = React.lazy(() =>
+  import("v2/components/Functional/ExamResult/ExamResultReport")
+);
+const ExamResult = React.lazy(() =>
+  import("v2/components/Functional/ExamResult/ExamResult")
 );
 
 //end v2 code
@@ -122,6 +140,7 @@ const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 const Assessment = React.lazy(() => import("component/Assessment"));
 
 export default [
+  ...onest,
   //{ path: "/form", component: Home },
   //old facilitator registration
   /*{
@@ -259,6 +278,30 @@ export default [
   {
     path: "/offline",
     component: OfflinePage,
+  },
+  {
+    path: "/examschedule",
+    component: ViewExamSchedule,
+  },
+  {
+    path: "/examattendance",
+    component: ExamAttendance,
+  },
+  {
+    path: "/examattendancereport",
+    component: ExamAttendanceReport,
+  },
+  {
+    path: "/dashboardview",
+    component: ExamDashboard,
+  },
+  {
+    path: "/examresultreport",
+    component: ExamResultReport,
+  },
+  {
+    path: "/examresult",
+    component: ExamResult,
   },
 
   //end v2 code

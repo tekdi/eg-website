@@ -202,3 +202,16 @@ export function generateUniqueRandomNumber() {
 
   return parseInt(uniqueNumber);
 }
+
+export function convertToTitleCase(inputString) {
+  // Split the input string into words based on underscore '_'
+  let words = inputString.split("_");
+  // Capitalize the first letter of each word and convert the rest of the letters to lowercase
+  let capitalizedWords = words.map((word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
+  // Join the capitalized words back together with a space ' ' between them
+  let outputString = capitalizedWords.join(" ");
+
+  return outputString;
+}
