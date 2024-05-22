@@ -16,7 +16,9 @@ import { registerTelementry } from "../api/Apicall";
 import Loader from "./Loader";
 import "./Shared.css";
 import { dataConfig } from "../card";
-import { FrontEndTypo, Loading } from "@shiksha/common-lib";
+import { FrontEndTypo, Loading, OnestService } from "@shiksha/common-lib";
+import OrderSuccessModal from "./OrderSuccessModal";
+import axios from "axios";
 
 function JobDetails() {
   const { jobId, type } = useParams();
@@ -34,9 +36,84 @@ function JobDetails() {
   const [jobsData, setJobsData] = useState(null);
   const [jobDetails, setJobDetails] = useState(null);
   const [siteUrl, setSiteUrl] = useState(window.location.href);
+  const [listData, setListData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [status, setStatus] = useState("Applied");
 
   let [transactionId, settransactionId] = useState(state?.transactionId);
   const toast = useToast();
+
+  const closeModal = () => {
+    setOpenModal(false);
+    navigate("/");
+  };
+
+  const getApplicationStatus = async (order_id) => {
+    const apiUrl = `${baseUrl}/user/searchOrder/${order_id}`;
+
+    try {
+      await axios
+        .get(apiUrl)
+        .then(async (response) => {
+          try {
+            const payload = {
+              context: {
+                domain: envConfig.apiLink_DOMAIN,
+                action: "status",
+                version: "1.1.0",
+                bap_id: envConfig.apiLink_BAP_ID,
+                bap_uri: envConfig.apiLink_BAP_URI,
+                bpp_id: response?.data?.bpp_id,
+                bpp_uri: response?.data?.bpp_uri,
+                transaction_id: transactionId,
+                message_id: uuidv4(),
+                timestamp: new Date().toISOString(),
+              },
+              message: {
+                order_id: order_id,
+              },
+            };
+            const statusTrack = await OnestService.jobStatusTrack(payload);
+            if (statusTrack?.responses[0]?.message) {
+              setStatus(
+                statusTrack?.responses[0]?.message?.order?.fulfillments[0]
+                  ?.state?.descriptor?.name
+              );
+            }
+          } catch (e) {
+            console.error(
+              "Error constructing payload or handling response:",
+              e
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Axios GET request error:", error);
+        });
+    } catch (error) {
+      console.log("error", error);
+    }
+
+    setOpenModal(true);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userDataDetails = localStorage.getItem("userData");
+      const userData = JSON.parse(userDataDetails);
+      const data = {
+        context: type,
+        context_item_id: jobId,
+        user_id: userData.user_id,
+      };
+      let result = await OnestService.getList({ filter: data });
+      if (result?.data.length) {
+        setListData(result?.data);
+        getApplicationStatus(result?.data[0].order_id);
+      }
+    };
+    fetchData();
+  }, []);
 
   function errorMessage(message) {
     toast.show({
@@ -67,9 +144,8 @@ function JobDetails() {
   };
 
   const fetchJobDetails = async (jobInfo) => {
-    console.log(jobInfo);
     try {
-      setLoading(true);
+      setLoading(t("FETCHING_THE_DETAILS"));
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -127,7 +203,6 @@ function JobDetails() {
   };
 
   useEffect(() => {
-    console.log(window.location.href);
     const url = window.location.href;
 
     const getUrlParams = (url) => {
@@ -171,7 +246,6 @@ function JobDetails() {
     const jsonQueryParam = btoa(jsonString);
 
     const urlTmp = `${window.location.origin}?jsonData=${jsonQueryParam}`;
-    console.log({ urlTmp });
 
     const urlParams = new URLSearchParams(window.location.search);
     const jsonDataParam = urlParams.get("jsonData");
@@ -179,7 +253,6 @@ function JobDetails() {
     if (jsonDataParam) {
       let jsonData = atob(jsonDataParam);
       // let jsonData = decodeURIComponent(jsonDataParam);
-      console.log("Parsed JSON data:", jsonData);
       localStorage.setItem("userData", jsonData);
     }
   }, []);
@@ -206,27 +279,26 @@ function JobDetails() {
       fetch(`${baseUrl}/jobs/search`, requestOptions)
         .then((response) => response.text())
         .then((result) => {
-          console.log("result", result);
           result = JSON.parse(result);
           setJobInfo(result?.data[db_cache][0]);
           fetchJobDetails(result?.data[db_cache][0]);
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => console.error("error", error));
     }
   }, [transactionId]); // Runs only once when the component mounts
 
   if (loading) {
-    return <Loading />;
+    return <Loading message={loading} />;
   }
 
   return (
     <div>
       <Box
         fontFamily={"Alice"}
-        marginTop={100}
+        marginTop={50}
         padding={4}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
         marginLeft={4}
         marginRight={4}
       >
@@ -315,28 +387,37 @@ function JobDetails() {
           display="flex"
           justifyContent={["center", "flex-start"]}
         >
-          <FrontEndTypo.Primarybutton
-            marginTop={2}
-            marginRight={[0, 5]}
-            width={["100%", 200]}
-            colorScheme="blue"
-            variant="solid"
-            backgroundColor="blue.500"
-            color="white"
-            onPress={() => {
-              navigate(
-                `/${envConfig?.listLink}/automatedForm/${jobId}/${transactionId}`,
-                {
-                  state: {
-                    jobDetails: jobDetails,
-                  },
-                }
-              );
-              trackReactGA();
-            }}
-          >
-            {t("Apply")}
-          </FrontEndTypo.Primarybutton>
+          {listData.length ? (
+            <OrderSuccessModal
+              isOpen={openModal}
+              onClose={closeModal}
+              orderId={status}
+              applied={true}
+            />
+          ) : (
+            <FrontEndTypo.Primarybutton
+              marginTop={2}
+              marginRight={[0, 5]}
+              width={["100%", 200]}
+              colorScheme="blue"
+              variant="solid"
+              backgroundColor="blue.500"
+              color="white"
+              onPress={() => {
+                navigate(
+                  `/${envConfig?.listLink}/automatedForm/${jobId}/${transactionId}`,
+                  {
+                    state: {
+                      jobDetails: jobDetails,
+                    },
+                  }
+                );
+                trackReactGA();
+              }}
+            >
+              {t("Apply")}
+            </FrontEndTypo.Primarybutton>
+          )}
         </Box>
       </Box>
 
@@ -350,7 +431,7 @@ function JobDetails() {
           padding={4}
           marginTop={5}
           borderRadius={15}
-          backgroundColor={"white"}
+          backgroundColor={"#246DDC1A"}
         >
           <Text fontSize={16} fontWeight={700}>
             {t("Job_Description")}

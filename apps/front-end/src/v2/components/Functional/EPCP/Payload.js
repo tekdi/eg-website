@@ -23,66 +23,13 @@ export function finalPayload(id, formData, field) {
               formData?.HAS_LOGGED_RSOS_APP_NO_REASONS.split(".").length - 1
             ] || "",
     },
+
     {
       observation_id: field?.[0]?.observation_id,
       context: "users",
       context_id: parseInt(id),
       field_id: "",
       fields_sequence: 3,
-      observation_fields_id: "",
-      response_value: formData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP || "",
-    },
-    {
-      observation_id: field?.[0]?.observation_id,
-      context: "users",
-      context_id: parseInt(id),
-      field_id: "",
-      fields_sequence: 4,
-      observation_fields_id: "",
-      response_value:
-        formData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS
-          ? formData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.split(
-              "."
-            )[
-              formData?.STUDY_THROUGH_VIDEOS_EBOOKS_ON_RSOS_APP_NO_REASONS.split(
-                "."
-              ).length - 1
-            ]
-          : "",
-    },
-    {
-      observation_id: field?.[0]?.observation_id,
-      context: "users",
-      context_id: parseInt(id),
-      field_id: "",
-      fields_sequence: 5,
-      observation_fields_id: "",
-      response_value: formData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION || "",
-    },
-    {
-      observation_id: field?.[0]?.observation_id,
-      context: "users",
-      context_id: parseInt(id),
-      field_id: "",
-      fields_sequence: 6,
-      observation_fields_id: "",
-      response_value:
-        formData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS
-          ? formData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.split(
-              "."
-            )[
-              formData?.TAKING_PRACTICE_TESTS_ON_RSOS_APPLICATION_NO_REASONS.split(
-                "."
-              ).length - 1
-            ]
-          : "",
-    },
-    {
-      observation_id: field?.[0]?.observation_id,
-      context: "users",
-      context_id: parseInt(id),
-      field_id: "",
-      fields_sequence: 7,
       observation_fields_id: "",
       response_value: formData?.TOOK_EPCP_EXAM_ON_RSOS_APP || "",
     },
@@ -91,7 +38,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 8,
+      fields_sequence: 4,
       observation_fields_id: "",
       response_value: formData?.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS
         ? formData?.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.split(".")[
@@ -105,11 +52,14 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 9,
+      fields_sequence: 5,
       observation_fields_id: "",
       response_value:
         formData?.TOOK_EPCP_EXAM_ON_RSOS_APP === "YES"
-          ? formData?.RSOS_DOCUMENT_IMAGE
+          ? JSON.stringify(formData?.SELECTED_SUBJECT_BY_LEARNER).replace(
+              /"/g,
+              '\\"'
+            )
           : "",
     },
   ];

@@ -1,14 +1,12 @@
 // AutomatedForm.js
-import React, { useState, useEffect } from "react";
-import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
-import "./Shared.css";
-import OrderSuccessModal from "./OrderSuccessModal";
+import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
-
 import { useLocation, useNavigate } from "react-router-dom";
-// import Header from "./Header";
-import Loader from "./Loader";
+import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
+import OrderSuccessModal from "./OrderSuccessModal";
+import "./Shared.css";
 
+import axios from "axios";
 import {
   Alert,
   Box,
@@ -21,45 +19,37 @@ import {
   Select,
   useToast,
 } from "native-base";
-import { add } from "lodash";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
-import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "onest/card";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+// import { registerTelementry } from "../api/Apicall";
+import { FrontEndTypo, Loading } from "@shiksha/common-lib";
+import Layout from "../Layout";
 
 const AutomatedForm = () => {
   const location = useLocation();
   const state = location?.state;
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
-
-  const { type } = useParams();
+  const { type, jobId, transactionId } = useParams();
   const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
-
   const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [apiResponse, setApiResponse] = useState("");
-
-  const [selectDetails, setSelectDetails] = useState(null);
-  const [jobInfo, setJobInfo] = useState(null);
+  const [jobInfo, setJobInfo] = useState();
   const [isAutoForm, setIsAutoForm] = useState(true);
 
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
-  const [siteUrl, setSiteUrl] = useState(window.location.href);
+  // const [siteUrl, setSiteUrl] = useState(window.location.href);
   const toast = useToast();
-
-  const { jobId } = useParams();
-  const { transactionId } = useParams();
+  let confirmPayload = {};
 
   useEffect(() => {
     const url = window.location.href;
@@ -98,7 +88,7 @@ const AutomatedForm = () => {
       let jsonData = atob(jsonDataParam);
       localStorage.setItem("userData", jsonData);
     }
-    registerTelementry(siteUrl, transactionId);
+    // registerTelementry(siteUrl, transactionId);
   }, []);
 
   const [formData, setFormData] = useState({
@@ -218,7 +208,15 @@ const AutomatedForm = () => {
         },
       })
       .then((response) => {
-        console.log("Response:", response.data);
+        if (envConfig?.onOrderIdGenerate) {
+          envConfig?.onOrderIdGenerate({
+            response,
+            userData,
+            jobId,
+            type,
+            item: jobInfo,
+          });
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -267,10 +265,7 @@ const AutomatedForm = () => {
       // Set state and open the modal
       if (data.responses.length) {
         let appId = data.responses[0].message.order.id;
-        console.log("orderId", appId);
-
         localStorage.setItem("applicationId", appId);
-
         if (data.responses[0].hasOwnProperty("message")) {
           for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
             ?.customer?.person?.tags) {
@@ -283,7 +278,6 @@ const AutomatedForm = () => {
               // Read its value
               const instructionsValue = tag.list[0]?.value || "";
               localStorage.setItem("instructionsValue", instructionsValue);
-              console.log("Instructions:", instructionsValue);
               // You can do further processing with the instructions value here
               break; // If you only want to read the value once found, you can break the loop
             }
@@ -307,110 +301,55 @@ const AutomatedForm = () => {
     }
   };
 
-  function deepMerge(target, source) {
-    for (const key in source) {
-      if (source.hasOwnProperty(key)) {
-        if (
-          source[key] instanceof Object &&
-          key in target &&
-          target[key] instanceof Object
-        ) {
-          deepMerge(target[key], source[key]);
-        } else {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  }
-
-  const getInitJson = async () => {
+  const onConfirm = async () => {
     try {
-      // setLoading(true);
-
-      const body = {
-        transaction_id: transactionId,
-        action: "on_init",
-      };
-
+      let payload = confirmPayload;
+      payload.context.action = "confirm";
       // Perform API call with formData
-      const response = await fetch(`${baseUrl}/jobs/responseSearch`, {
+      const response = await fetch(`${baseUrl}/confirm`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
-      const formDetails = data?.data[response_cache];
-      //  const index = current + 1;
-
-      if (formDetails.length) {
-        let foundObject;
-
-        for (let i = 0; i < formDetails.length; i++) {
-          const item = formDetails[i];
-          if (
-            item?.response?.message?.order?.items[0]?.xinput?.head?.index
-              ?.cur === current
-          ) {
-            foundObject = item;
-            let fulfillmentsData;
-            currentXinput =
-              foundObject?.response?.message?.order?.items[0]?.xinput;
-
+      // Set state and open the modal
+      if (data.responses.length) {
+        let appId = data.responses[0].message.order.id;
+        localStorage.setItem("applicationId", appId);
+        if (data.responses[0].hasOwnProperty("message")) {
+          for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
+            ?.customer?.person?.tags) {
+            // Check if the descriptor code is "instructions"
             if (
-              foundObject?.response?.message?.order.hasOwnProperty(
-                "fulfillments"
-              )
+              tag.descriptor &&
+              (tag.descriptor.code === "instructions" ||
+                tag.descriptor.code === "PROVISION-LETTER")
             ) {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.fulfillments[0];
-            } else {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.items[0]
-                  ?.fulfillments[0];
+              // Read its value
+              const instructionsValue = tag.list[0]?.value || "";
+              localStorage.setItem("instructionsValue", instructionsValue);
+              // You can do further processing with the instructions value here
+              break; // If you only want to read the value once found, you can break the loop
             }
-
-            if (
-              currentXinput?.head?.index?.cur === currentXinput?.head?.index.max
-            ) {
-              let arr1 = submitFormData?.customer?.person?.tags;
-              let arr2 = fulfillmentsData?.customer?.person?.tags;
-              let arr3 = arr1?.concat(arr2);
-              submitFormData["customer"]["person"]["tags"] = arr3;
-              // confirmDetails(submitFormData);
-              confirmDetails(fulfillmentsData?.customer);
-            } else {
-              current = current + 1;
-              if (submitFormData) {
-                let arr1 = submitFormData?.customer?.person?.tags;
-                let arr2 = fulfillmentsData?.customer?.person?.tags;
-                let arr3 = arr1?.concat(arr2);
-                submitFormData["customer"]["person"]["tags"] = arr3;
-              } else {
-                submitFormData = fulfillmentsData;
-              }
-              setLoading(false);
-              searchForm(currentXinput.form.url);
-            }
-            break; // Exit the loop once the desired object is found
           }
         }
+
+        setOrderId(appId);
+        setMessage(message);
+        setModalOpen(true);
+        setLoading(false);
+        storedOrderId(appId);
       } else {
         setLoading(false);
         errorMessage(
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
       }
-      // Handle the response as needed
     } catch (error) {
       setLoading(false);
       console.error("Error submitting form:", error);
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 30000);
     }
   };
 
@@ -488,23 +427,22 @@ const AutomatedForm = () => {
   }
 
   const fetchInitDetails = async () => {
-    let usrtemp = localStorage.getItem("userData");
-    if (!usrtemp) {
-      const errors = validateForm(formData);
-      if (hasErrors(errors)) {
-        setFormErrors(errors);
-        return;
-      }
-    }
+    // let usrtemp = localStorage.getItem("userData");
+    // if (!usrtemp) {
+    //   const errors = validateForm(formData);
+    //   if (hasErrors(errors)) {
+    //     setFormErrors(errors);
+    //     return;
+    //   }
+    // }
 
     try {
-      setLoading(true);
-
+      setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
         ?.responses[0];
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
-
-      console.log({ jobDetails });
+      let contactDetails = formData["contact"];
+      contactDetails.phone = formData.contact.phone.toString();
       let initReqBody = initReqBodyJson.init[1];
       initReqBody["context"]["action"] = "init";
       initReqBody["context"]["domain"] = envConfig.apiLink_DOMAIN;
@@ -525,7 +463,7 @@ const AutomatedForm = () => {
       initReqBody.message.order.fulfillments[0]["customer"]["person"] =
         formData["person"];
       initReqBody.message.order.fulfillments[0]["customer"]["contact"] =
-        formData["contact"];
+        contactDetails;
       let tempTags = [
         {
           code: "distributor-details",
@@ -574,6 +512,9 @@ const AutomatedForm = () => {
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
       } else {
+        if (data.responses[0].hasOwnProperty("message")) {
+          confirmPayload = data?.responses[0];
+        }
         if (
           data?.responses[0]?.message?.order?.items[0].hasOwnProperty("xinput")
         ) {
@@ -610,41 +551,57 @@ const AutomatedForm = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
+    const getData = () => {
+      setLoading(t("FETCHING_THE_DETAILS"));
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_id: jobId }),
+      };
 
-    var requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ item_id: jobId }),
+      fetch(`${baseUrl}/jobs/search`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          result = JSON.parse(result);
+          setJobInfo(result?.data[db_cache][0]);
+          localStorage.setItem(
+            "unique_id",
+            result?.data[db_cache][0]?.unique_id
+          );
+        })
+        .catch((error) => console.log("error", error));
     };
-
-    fetch(`${baseUrl}/jobs/search`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        result = JSON.parse(result);
-        setJobInfo(result?.data[db_cache][0]);
-        localStorage.setItem("unique_id", result?.data[db_cache][0]?.unique_id);
-
-        let data = JSON.parse(localStorage.getItem("selectRes"));
-        if (data && data?.responses.length) {
-          let usrtemp = localStorage.getItem("userData");
-          if (usrtemp) {
-            fetchInitDetails(data?.responses[0]);
-          } else {
-            setIsAutoForm(false);
-            setLoading(false);
-          }
-        } else {
-          getSelectDetails(result?.data[db_cache][0]);
-        }
-      })
-      .catch((error) => console.log("error", error));
+    getData();
   }, []);
 
+  useEffect(
+    (e) => {
+      const fetchData = async () => {
+        if (jobInfo) {
+          let data = JSON.parse(localStorage.getItem("selectRes"));
+          if (data && data?.responses.length) {
+            await fetchInitDetails(data?.responses[0]);
+
+            // let usrtemp = localStorage.getItem("userData");
+            /* if(usrtemp){
+              fetchInitDetails(data?.responses[0]);
+              }else{
+                setIsAutoForm(false);
+                setLoading(false);
+            }*/
+          } else if (jobInfo) {
+            getSelectDetails(jobInfo);
+          }
+        }
+      };
+      fetchData();
+    },
+    [jobInfo]
+  );
+
   const trackReactGA = () => {
-    console.log("User clicked the Submit form button");
     ReactGA.event({
       category: "Button Click",
       action: "submit_form",
@@ -654,7 +611,7 @@ const AutomatedForm = () => {
   };
 
   const submitFormDetail = async (action, urlencoded) => {
-    setLoading(true);
+    setLoading(t("SUBMITTING"));
     trackReactGA();
 
     try {
@@ -663,12 +620,11 @@ const AutomatedForm = () => {
           "Content-Type": `application/x-www-form-urlencoded`,
         },
       });
-      console.log(axiosResponse.data);
-
       if (axiosResponse.data) {
         localStorage.setItem("submissionId", axiosResponse.data);
         setTimeout(() => {
-          getInitJson();
+          //getInitJson();
+          onConfirm();
         }, 7000);
       }
     } catch (error) {
@@ -681,56 +637,6 @@ const AutomatedForm = () => {
       }
       console.error("Error submitting form:", error);
     }
-
-    /* try {
-      await fetch(action, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: urlencoded,
-      })
-        .then((response) => response.text())
-        .then((result) => {
-          setTimeout(() => {
-            getInitJson();
-          }, 7000);
-
-        })
-        .catch((error) => console.log("error", error));
-    } catch (error) {
-      setLoading(false);
-
-      console.error("Error submitting form:", error);
-    } finally {
-      // setTimeout(() => {
-      //   setLoading(false);
-      // }, 30000);
-    }*/
-  };
-
-  const responseSearch = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      action: "on_init",
-      transaction_id: transactionId,
-    });
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    await fetch(`${baseUrl}/jobs/responseSearch`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        confirmDetails(JSON.parse(result));
-      })
-      .catch((error) => console.log("error", error));
   };
 
   const closeModal = () => {
@@ -856,81 +762,82 @@ const AutomatedForm = () => {
     }
   };
 
+  if (loading) {
+    return <Loading message={loading} />;
+  }
+
   return (
-    <Box marginTop={100}>
-      {/* <Header /> */}
-      {loading && (
-        //show
-        <Loader />
-      )}
-      <Box margin={4}>
-        <div id="formContainer"></div>
-      </Box>
-      {!isAutoForm && (
+    <Layout>
+      <Box marginTop={100}>
         <Box margin={4}>
-          <FormControl mt="4" isInvalid={Boolean(formErrors.person.name)}>
-            <FormLabel>{t("Name")}</FormLabel>
-            <Input
-              type="text"
-              value={formData.person.name}
-              onChange={(e) =>
-                handleInputChange("person", "name", e.target.value)
-              }
-            />
-            <FormErrorMessage>{formErrors.person.name}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl mt="4" isInvalid={Boolean(formErrors.person.gender)}>
-            <FormLabel>{t("Gender")}</FormLabel>
-            <Select
-              value={formData.person.gender}
-              onChange={(e) =>
-                handleInputChange("person", "gender", e.target.value)
-              }
-            >
-              <option value="">{t("Select_Gender")}</option>
-              <option value="male">{t("Male")}</option>
-              <option value="female">{t("Female")}</option>
-              {/* Add more options as needed */}
-            </Select>
-            <FormErrorMessage>{formErrors.person.gender}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl mt="4" isInvalid={Boolean(formErrors.contact.phone)}>
-            <FormLabel>{t("Phone")}</FormLabel>
-            <Input
-              type="number"
-              value={formData.contact.phone}
-              onChange={(e) =>
-                handleInputChange("contact", "phone", e.target.value)
-              }
-            />
-            <FormErrorMessage>{formErrors.contact.phone}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl mt="4" isInvalid={Boolean(formErrors.contact.email)}>
-            <FormLabel>{t("Email")}</FormLabel>
-            <Input
-              type="email"
-              value={formData.contact.email}
-              onChange={(e) =>
-                handleInputChange("contact", "email", e.target.value)
-              }
-            />
-            <FormErrorMessage>{formErrors.contact.email}</FormErrorMessage>
-          </FormControl>
-          <Button mt="6" colorScheme="blue" onClick={fetchInitDetails}>
-            {t("Submit")}
-          </Button>
+          <div id="formContainer"></div>
         </Box>
-      )}
-      <OrderSuccessModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        orderId={orderId}
-        message={message}
-      />
-    </Box>
+        {!isAutoForm && (
+          <Box margin={4}>
+            <FormControl mt="4" isInvalid={Boolean(formErrors.person.name)}>
+              <FormLabel>{t("Name")}</FormLabel>
+              <Input
+                type="text"
+                value={formData.person.name}
+                onChange={(e) =>
+                  handleInputChange("person", "name", e.target.value)
+                }
+              />
+              <FormErrorMessage>{formErrors.person.name}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl mt="4" isInvalid={Boolean(formErrors.person.gender)}>
+              <FormLabel>{t("Gender")}</FormLabel>
+              <Select
+                value={formData.person.gender}
+                onChange={(e) =>
+                  handleInputChange("person", "gender", e.target.value)
+                }
+              >
+                <option value="">{t("Select_Gender")}</option>
+                <option value="male">{t("Male")}</option>
+                <option value="female">{t("Female")}</option>
+                {/* Add more options as needed */}
+              </Select>
+              <FormErrorMessage>{formErrors.person.gender}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl mt="4" isInvalid={Boolean(formErrors.contact.phone)}>
+              <FormLabel>{t("Phone")}</FormLabel>
+              <Input
+                type="number"
+                value={formData.contact.phone}
+                onChange={(e) =>
+                  handleInputChange("contact", "phone", e.target.value)
+                }
+              />
+              <FormErrorMessage>{formErrors.contact.phone}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl mt="4" isInvalid={Boolean(formErrors.contact.email)}>
+              <FormLabel>{t("Email")}</FormLabel>
+              <Input
+                type="email"
+                value={formData.contact.email}
+                onChange={(e) =>
+                  handleInputChange("contact", "email", e.target.value)
+                }
+              />
+              <FormErrorMessage>{formErrors.contact.email}</FormErrorMessage>
+            </FormControl>
+            <Button mt="6" colorScheme="blue" onClick={fetchInitDetails}>
+              {t("Submit")}
+            </Button>
+          </Box>
+        )}
+        <OrderSuccessModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          orderId={orderId}
+          message={message}
+        />
+      </Box>
+    </Layout>
   );
 };
 

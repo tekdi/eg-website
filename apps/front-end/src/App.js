@@ -54,7 +54,6 @@ function App() {
         logout();
         window.location.reload();
       }
-
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
       if (hasura?.roles?.includes("facilitator")) {
@@ -63,7 +62,11 @@ function App() {
         setAccessRoutes(PoAdminRoutes);
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
-      } else if (hasura?.roles?.includes("volunteer")) {
+      } else if (
+        hasura?.roles?.filter((e) => {
+          return ["volunteer", "beneficiary"].includes(e);
+        }).length > 0
+      ) {
         setAccessRoutes(volunteerRoute);
       } else {
         logout();

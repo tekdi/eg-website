@@ -87,9 +87,13 @@ const EpcpLearnerList = ({ footerLinks }) => {
   const getStatus = (responses) => {
     const response1 = responses.find((response) => response.field_id === 1);
     const response2 = responses.find((response) => response.field_id === 2);
-    const response3 = responses.find((response) => response.field_id === 3);
-    const response5 = responses.find((response) => response.field_id === 5);
-    const response7 = responses.find((response) => response.field_id === 7);
+    const response3 = responses.find((response) => response.field_id === 7);
+    const response5 = responses.find((response) => response.field_id === 8);
+    const response7 = responses.find((response) => response.field_id === 16);
+    const subjects = JSON.parse(response7?.response_value || "[]");
+    const allSelectedYes = subjects.every(
+      (subject) => subject.selected === "yes"
+    );
     if (!response1 || !response2 || !response3 || !response5 || !response7) {
       return "not_entered";
     } else if (
@@ -99,17 +103,17 @@ const EpcpLearnerList = ({ footerLinks }) => {
     ) {
       return "not_started";
     } else if (
-      response1.response_value === "YES" &&
-      (response3.response_value === "NO" ||
-        response5.response_value === "NO" ||
-        response7.response_value === "NO")
+      (response1.response_value === "YES" &&
+        response3.response_value === "NO") ||
+      (response1.response_value === "YES" &&
+        response3.response_value === "YES" &&
+        !allSelectedYes)
     ) {
       return "in_progress";
     } else if (
       response1.response_value === "YES" &&
       response3.response_value === "YES" &&
-      response5.response_value === "YES" &&
-      response7.response_value === "YES"
+      allSelectedYes
     ) {
       return "completed";
     } else if (responses.every((response) => response.response_value === "")) {

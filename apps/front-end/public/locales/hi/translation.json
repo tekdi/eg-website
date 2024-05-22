@@ -124,6 +124,7 @@
   "APPLIED": "आवेदन किया",
   "APPLIED_BUT_PENDING": "आवेदन किया किन्तु प्रक्रिया में है",
   "APPLIED_NEW_FOR_CHANGE": " नए/परिवर्तन के लिए आवेदन किया",
+  "APPLING": "अप्लाई...",
   "APPLY_FOR_LEAVE": "छुट्टी के लिए आवेदन करें",
   "APPLY_NOW": "अभी अप्लाई करें",
   "APPLY_SCHOLARSHIP": "स्कालर्शिप अप्लाई करें",
@@ -152,6 +153,7 @@
   "AVAILABLE": "उपलब्ध",
   "AVERAGE": "औसत",
   "BACHELORS": "बैचलर्स",
+  "BACK": "पिछला",
   "BACK_VIEW": "पिछला दृश्य",
   "BANK_PASSBOOK": "बैंक पासबुक",
   "BANNER": "बैनर",
@@ -533,10 +535,11 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "ENTER_YOUR_AADHAAR_NUMBER": "अपना आधार नंबर दर्ज करें",
   "ENTERED_AADHAR_NOT_EDITABLE": "दर्ज किया गया आधार कार्ड नंबर मे परिवर्तन नही कर सकते. कृपया दर्ज करने से पहले वेरिफाई  करें",
+  "SELECT_SUBJECT_INFO": "उन विषयों का चयन करें जिनके लिए शिक्षार्थी उपस्थित हुआ है। यदि वे सभी विषयों के लिए उपस्थित नहीं हुए हैं तो इसे बाद में अद्यतन किया जा सकता है।",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
       "NO": "नहीं",
-      "TITLE": "शिक्षार्थी RSOS App पर login करती हैं ?",
+      "TITLE": "शिक्षार्थी RSOS App पर लॉगिन कर पाई ?",
       "YES": "हाँ"
     },
     "HAS_LOGGED_RSOS_APP_NO_REASONS": {
@@ -547,6 +550,8 @@
       "LACK_OF_TIME": "समय का अभाव",
       "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
       "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
+      "DEATH": "मृत्यु",
+      "ESCAPED": "पलायन",
       "TITLE": "एक कारण चुनें *"
     },
     "RSOS_DOCUMENT_IMAGE": {
@@ -586,10 +591,10 @@
       "SMARTPHONE_UNAVAILABLE_FOR_READING": "स्मार्टफोन पढ़ने के लिए उपलब्ध नहीं होता",
       "TITLE": "एक कारण चुनें *"
     },
-    "TITLE": " द्वारा RSOS app का उपयोग",
+    "TITLE": " शिक्षार्थी द्वारा RSOS app का उपयोग",
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
-      "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखी",
+      "DIDNT_WATCH_ALL_VIDEOS": "सभी वीडियो नहीं देखे",
       "LACK_OF_CONFIDENCE_GIVING_E_PCP": "e-PCP देने में आत्मविश्वास की कमी",
       "TITLE": "एक कारण चुनें *",
       "WILL_GIVE_SOON": " जल्द ही देंगे"
@@ -647,17 +652,20 @@
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "नहीं",
       "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
-      "YES": "हाँ"
+      "YES": "हाँ",
+      "YET_TO_BE_PROCEED": "अभी जारी नही कीय"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है",
-      "TITLE": "क्या शिक्षार्थी ने व्यावहारिक फाइल तैयार की है ?",
+      "TITLE": "क्या शिक्षार्थी ने प्रैक्टिकल फाइल तैयार की है ?",
       "YES": "हाँ"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है",
+      "CANT_AFFORD_TRAVEL_FARE": "किराया वाहान नही कर सकती",
+      "NO_MEANS_TO_TRAVEL": "साधन नही है ",
       "TITLE": "क्या शिक्षार्थी के पास परीक्षा केंद्र तक जाने की व्यवस्था है ?",
       "YES": "हाँ"
     },
@@ -682,7 +690,8 @@
       "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
       "ILLNESS": "बीमारी ।",
       "TITLE": "एक कारण चुनें",
-      "TRAVEL_ISSUES": "यात्रा संबंधी समस्याएं"
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबंधी समस्या,कोई साधान या किराया नहीं",
+      "OTHER": "अन्य"
     }
   },
   "EXAM_SUBMITTED_SUCCESSFULLY": "परीक्षण सफलतापूर्वक सबमिट कर दिया गया है",
@@ -1040,13 +1049,15 @@
   "MISCELLANEOUS_ACTIVITIES_E_PCP_ACTIVITIES": "ई.पी.सी.पी.गतिविधियाँ",
   "MISCELLANEOUS_ACTIVITIES_FAMILY_VISIT": "परिवार का दौरा;",
   "MISCELLANEOUS_ACTIVITIES_FINANCIAL_LITERACY": "वित्तीय साक्षरता",
-  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "फॉर्मेटिव असेसमेंट",
   "MISCELLANEOUS_ACTIVITIES_LINKAGES": "संबंध",
   "MISCELLANEOUS_ACTIVITIES_PCR": "विविध गतिविधियाँ PCR",
+  "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "फॉर्मेटिव असेसमेंट",
+  "MISCELLANEOUS_ACTIVITIES_REVISION": "दोहरान",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_INTERVENTION": "रोल मॉडल हस्तक्षेप;",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_VISIT": "रोल मॉडल यात्रा",
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "स्कूल शिक्षक का दौरा",
   "MISCELLANEOUS_ACTIVITIES_STAKEHOLDER_VISIT": "हितधारक का दौरा;",
+  "MISCELLANEOUS_ACTIVITIES_STAKEHOLDER_OR_TEACHER_VISIT": "हितधारक/शिक्षक का दौरा",
   "MISSILINEOUS_SUCCESS_MESSAGE": "विविध गतिविधियाँ सफलतापूर्वक गईं",
   "MOBILE_NO": "मोबाइल नंबर",
   "MOBILE_NUMBER": "मोबाइल नंबर",
@@ -1118,7 +1129,6 @@
   "OPEN_SCHOOL_GOVERNMENT_ACTIVITY_PRACTICAL_FILE": "व्यावहारिक फ़ाइल",
   "OPEN_SCHOOL_GOVERNMENT_ACTIVITY_TEXT_BOOK_COLLECTION": "पाठ्य पुस्तक संग्रह",
   "OPTIONAL": "वैकल्पिक",
-  "OPPORTUNITY": "अवसर",
   "ORGANISATION": "संगठन",
   "ORGANISATION_EMAIL": "संगठन ईमेल",
   "ORIENTATION": "ओरिएंटेशन",
@@ -1143,7 +1153,7 @@
   "PASSWORD_REQUIREMENTS_NOTMATCH": "पासवर्ड में कम से कम आठ अक्षर, कम से कम एक अपरकेस, लोअरकेस अक्षर और एक नंबर होना चाहिए.",
   "PAYMENT_RECEIPT": "नामांकन रसीद",
   "PAYMENT_RECEIPTS": "भुगतान रसीद",
-  "PCR_ACTIVITIES": "PCR गतिविधियाँ",
+  "PCR_ACTIVITIES": "PCR अन्य गतिविधियाँ",
   "PCR_CAMP": "PCR शिविर",
   "PCR_CAMP_EXECUTION": "PCR शिविर संचालन",
   "PCR_CAMP_PROFILE": "PCR शिविर प्रोफाइल",
@@ -1246,6 +1256,7 @@
   "PRERAK_LIST": "प्रेरक की सूची",
   "PRERAK_MOBILIZER": "प्रेरक मोबिलाइज़र",
   "PRERAK_MOVED_BACK": "वापस चले गए",
+  "OPPORTUNITY": "अवसर",
   "PRERAK_MOVING_AWAY": "हट जाना",
   "PRERAK_NAME": "प्रेरक का नाम",
   "PRERAK_NUMBER": "प्रेरक नंबर",
@@ -1680,6 +1691,7 @@
   "YESTERDAY": "बीता हुआ कल",
   "YOU_ARE_NOW_A_PRAGATI_MOBILIZER": "अब आप एक प्रगति मोबिलाइज़र हैं",
   "YOU_CAN_NOW_SCHEDULE_AN_INTERVIEW_WITH_THE_APPROVED_CANDIDATE": "अब आप स्वीकृत उम्मीदवार के साथ इंटरव्यू शेड्यूल कर सकते हैं!",
+  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_APPLICATION": "आपने इस छात्रवृत्ति के लिए पहले से ही आवेदन किया हुआ है और आवेदन की स्थिति है",
   "YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS": "अपने प्रगति उन्मुखीकरण में भाग लेने से पहले आपको इन दस्तावेजों को अपलोड करना होगा",
   "YOU_NOT_ELIGIBLE": "आप पद के लिए पात्र नहीं हो सकते हैं",
   "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": "उपलब्ध शिविर स्थापित करने के लिए आपको कम से कम 15 शिक्षार्थी शिक्षार्थियों को नामांकित करने की आवश्यकता होगी",
@@ -1696,7 +1708,6 @@
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
-  "IT_WILL_NOT_BE_DETERMINED": "निश्चित नहीं की जाएंगे",
   "THEY_WONT_GO": "नहीं जाएंगे ",
   "WILL_BE_DETERMINED": "निश्चित जाएंगे",
   "VIEW_EXAM_SCHEDULE": "परीक्षा अनुसूची देखें",
@@ -1719,7 +1730,6 @@
   "NOT_MARKED": "अपडेट नहीं किया",
   "TOTAL_STUDENTS": "कुल शिक्षार्थी",
   "SUBJECT": "विषय",
-
   "welcome": "JOB Seeker",
   "footerText": "टेकडी टेक्नोलॉजीज द्वारा",
   "footerText1": "विकसित",
@@ -1730,29 +1740,11 @@
   "type": "क्षेत्र",
   "target": "लक्ष्य-उपयोगकर्ता",
   "branch": "शाखा",
-
   "actor": "अभिनेता",
   "video": "वीडियो",
   "audio": "ऑडियो",
   "read": "पढ़ना",
   "other": "अन्य",
-
-  "1": "१",
-  "2": "२",
-  "3": "३",
-  "4": "४",
-  "5": "५",
-  "6": "६",
-  "7": "७",
-  "8": "८",
-  "9": "९",
-  "10": "१०",
-  "11": "११",
-  "12": "१२",
-  "13": "१३",
-  "14": "१४",
-  "15": "१५",
-  "16": "१६",
   "student": "विद्यार्थी",
   "parent": "माता-पिता",
   "teacher": "अध्यापक",
@@ -1761,7 +1753,6 @@
   "button3": "QR स्कैन",
   "button4": "गतिविधि एक्सप्लोरर",
   "button5": "दीक्षा एआई डिस्कवरी",
-
   "conceptButton": "संकल्पना स्पष्टता वीडियो",
   "QuestionsButton": "पूछे जाने वाले प्रश्न",
   "PracticeButton": "अभ्यास पत्रक",
@@ -1773,7 +1764,6 @@
   "Headers": "हेडर",
   "Other": "अन्य",
   "List_Order": "सूची आदेश",
-
   "language": "भाषा",
   "Theme": "थीम",
   "Age": "उम्र",
@@ -1799,11 +1789,14 @@
   "Immediate_Joiner": "तत्काल योजक",
   "Job_Description": "नौकरी का विवरण",
   "Job_description_is_not_available": "नौकरी का विवरण उपलब्ध नहीं है",
+  "Scholarship_Description": "स्कॉलरशिप का विवरण",
+  "Scholarship_description_is_not_available": "स्कॉलरशिप का विवरण उपलब्ध नहीं है",
   "Not_Provided": "नहीं प्रदान किया गया",
   "Thank_you_for_applying_application_number_is": "आवेदन करने के लिए धन्यवाद! आपका आवेदन नंबर है",
+  "ALREADY_APPLIED_FOR_THIS_JOB": "आपने इस नौकरी के लिए पहले ही आवेदन कर दिया है और आवेदन की स्थिति यह है",
   "NO_data_available": "चयनित फ़िल्टर के लिए कोई डेटा उपलब्ध नहीं है.",
   "Delay_in_fetching_the_details": "क्षमा करें, विवरण प्राप्त करने/फॉर्म जमा करने में देरी हो रही है, क्या आप कृपया अब पुनः प्रयास कर सकते हैं।",
-
+  "FETCHING_THE_DETAILS": "डेटा ले रहे हैं...",
   "Name": "नाम",
   "Application_Submitted_Date": "आवेदन जमा करने की तारीख",
   "Job_Title": "नौकरी का शीर्षक",
@@ -1818,7 +1811,6 @@
   "JOB_APPLICATION_STATUS": "छात्रवृत्ति आवेदन की स्थिति",
   "APPLICATION_STATUS": "आवेदन की स्थिति",
   "Check_Another_Application_Status": "एक और आवेदन की स्थिति जाँचें",
-
   "Name_is_required": "नाम आवश्यक है",
   "Gender_is_required": "लिंग आवश्यक है",
   "Phone_number_is_required": "फ़ोन नंबर आवश्यक है",
@@ -1876,5 +1868,11 @@
   "SCHEDULE_BANNER": "अभी प्रकाशित होना बाकी है",
   "ENROLLMENT_NOT_MATCH": "नामांकन मेल नहीं खाता",
   "FAILED_READ_PDF": "पी. डी. एफ. पढ़ने में विफल, फिर से प्रयास करें",
-  "INVALID_PDF": "अमान्य पीडीएफ"
+  "INVALID_PDF": "अमान्य पीडीएफ",
+  "YET_TO_BE_UPLOAD": "अभी भी अपलोड किया जाना बाकी है",
+  "SCHOLARSHIP": "स्कॉलरशिप",
+  "JOBS": "नौकरियाँ और इंटर्नशिप",
+  "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
+  "PCR_LEARNING_ACTIVITIES": "PCR सीखने की गतिविधियाँ",
+  "CAMP_EXECUTION": "शिविर संचालन"
 }

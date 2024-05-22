@@ -1,4 +1,4 @@
-import { FrontEndTypo, Layout, Loading, post } from "@shiksha/common-lib";
+import { FrontEndTypo, Loading, post } from "@shiksha/common-lib";
 import axios from "axios";
 import { Alert, Box, HStack, Link, Text, VStack, useToast } from "native-base";
 import { dataConfig } from "onest/card";
@@ -8,10 +8,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import AudioPlayer from "../components/AudioPlayer";
 import ExternalLink from "../components/ExternalLink";
-import Loader from "../components/Loader";
 import PDFViewer from "../components/PDFViewer";
 import VideoPlayer from "../components/VideoPlayer";
 import YouTubeEmbed from "../components/YouTubeEmbed";
+import Layout from "../Layout";
 
 const MediaPage = () => {
   const location = useLocation();
@@ -26,9 +26,10 @@ const MediaPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [story, setStory] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error] = useState(null);
   const [product, setProduct] = useState();
+  const [jobInfo, setJobInfo] = useState(null);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isAutoForm, setIsAutoForm] = useState(true);
   const toast = useToast();
@@ -71,6 +72,7 @@ const MediaPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(t("FETCHING_THE_DETAILS"));
       const userDataString = localStorage.getItem("userData");
       const userData = JSON.parse(userDataString);
       let trackData;
@@ -98,10 +100,7 @@ const MediaPage = () => {
         };
         setStory([obj]);
         setUrlType(trackData?.params?.type);
-      } else if (state && userData) {
-        fetchInitDetails();
-        let productData = JSON.parse(localStorage.getItem("searchProduct"));
-        setProduct(productData);
+        setLoading(false);
       } else {
         var requestOptions = {
           method: "POST",
@@ -115,7 +114,7 @@ const MediaPage = () => {
           .then((response) => response.text())
           .then((result) => {
             result = JSON.parse(result);
-            // setJobInfo(result?.data[db_cache][0]);
+            setJobInfo(result?.data[db_cache][0]);
             localStorage.setItem(
               "unique_id",
               result?.data[db_cache][0]?.unique_id
@@ -129,13 +128,6 @@ const MediaPage = () => {
               "image_url",
               result?.data[db_cache][0].image_url
             );
-
-            let data = JSON.parse(localStorage.getItem("details"));
-            if (data && data?.responses.length) {
-              fetchInitDetails();
-            } else {
-              getSelectDetails(result?.data[db_cache][0]);
-            }
           })
           .catch((error) => console.error("error", error));
       }
@@ -143,9 +135,34 @@ const MediaPage = () => {
     fetchData();
   }, []);
 
+  useEffect(
+    (e) => {
+      const fetchData = async () => {
+        if (jobInfo) {
+          let data = JSON.parse(localStorage.getItem("selectRes"));
+          if (data && data?.responses.length) {
+            await fetchInitDetails(data?.responses[0]);
+
+            // let usrtemp = localStorage.getItem("userData");
+            /* if(usrtemp){
+       fetchInitDetails(data?.responses[0]);
+       }else{
+         setIsAutoForm(false);
+         setLoading(false);
+       }*/
+          } else if (jobInfo) {
+            getSelectDetails(jobInfo);
+          }
+        }
+      };
+      fetchData();
+    },
+    [jobInfo]
+  );
+
   const getSelectDetails = async (info) => {
     try {
-      //setIsLoading(true);
+      //setLoading(true);
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -182,118 +199,24 @@ const MediaPage = () => {
       const data = await response.json();
       localStorage.setItem("details", JSON.stringify(data));
       if (!data?.responses?.length) {
-        setIsLoading(false);
+        setLoading(false);
         errorMessage(
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
-        /*if (data.responses[0].message.order.items[0].xinput.form.url) {
-          searchForm(data.responses[0].message.order.items[0].xinput.form.url)
-        }
-        setIsLoading(false);*/
-        // setjobDetails(data?.responses[0]);
         fetchInitDetails();
       }
     } catch (error) {
       console.error("Error fetching job details:", error);
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getInitJson = async () => {
-    try {
-      // setIsLoading(true);
-
-      const body = {
-        transaction_id: transactionId,
-        action: "on_init",
-      };
-
-      // Perform API call with formData
-      const response = await fetch(`${baseUrl}/responseSearch`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json();
-      const formDetails = data?.data[response_cache];
-      //  const index = current + 1;
-
-      if (formDetails.length) {
-        let foundObject;
-
-        for (let i = 0; i < formDetails.length; i++) {
-          const item = formDetails[i];
-          if (
-            item?.response?.message?.order?.items[0]?.xinput?.head?.index
-              ?.cur === current
-          ) {
-            foundObject = item;
-            let fulfillmentsData;
-            currentXinput =
-              foundObject?.response?.message?.order?.items[0]?.xinput;
-
-            if (
-              foundObject?.response?.message?.order.hasOwnProperty(
-                "fulfillments"
-              )
-            ) {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.fulfillments[0];
-            } else {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.items[0]
-                  ?.fulfillments[0];
-            }
-
-            if (
-              currentXinput?.head?.index?.cur === currentXinput?.head?.index.max
-            ) {
-              let arr1 = submitFormData?.customer?.person?.tags;
-              let arr2 = fulfillmentsData?.customer?.person?.tags;
-              let arr3 = arr1?.concat(arr2);
-              submitFormData["customer"]["person"]["tags"] = arr3;
-              // confirmDetails(submitFormData);
-              fetchConfirmMedia(fulfillmentsData?.customer);
-            } else {
-              current = current + 1;
-              if (submitFormData) {
-                let arr1 = submitFormData?.customer?.person?.tags;
-                let arr2 = fulfillmentsData?.customer?.person?.tags;
-                let arr3 = arr1?.concat(arr2);
-                submitFormData["customer"]["person"]["tags"] = arr3;
-              } else {
-                submitFormData = fulfillmentsData;
-              }
-              setIsLoading(false);
-              searchForm(currentXinput.form.url);
-            }
-            break; // Exit the loop once the desired object is found
-          }
-        }
-      } else {
-        setIsLoading(false);
-        errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-        );
-      }
-      // Handle the response as needed
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 30000);
+      setLoading(false);
     }
   };
 
   const fetchConfirmMedia = async (customInfo) => {
     try {
-      setIsLoading(true);
+      setLoading(t("APPLING"));
       let details = JSON.parse(localStorage.getItem("details"))?.responses[0];
 
       let bodyData = {
@@ -342,6 +265,7 @@ const MediaPage = () => {
           userData,
           itemId,
           type,
+          item: jobInfo,
         });
       }
 
@@ -406,12 +330,12 @@ const MediaPage = () => {
             console.error("Error processing response item:", error);
           }
         });
-        setIsLoading(true);
+        setLoading(true);
 
         setStory(arrayOfObjects);
 
         setTimeout(() => {
-          setIsLoading(false);
+          setLoading(false);
         }, 1000);
       } else {
         errorMessage(
@@ -425,12 +349,12 @@ const MediaPage = () => {
       );
       console.error("Error fetching details:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const fetchInitDetails = async () => {
-    setIsLoading(true);
+    setLoading(t("APPLING"));
     try {
       let details = JSON.parse(localStorage.getItem("details"))?.responses[0];
       // localStorage.setItem('details', JSON.stringify(details));
@@ -512,7 +436,6 @@ const MediaPage = () => {
       const data = result?.data;
       localStorage.setItem("initRes", JSON.stringify(data?.responses[0]));
       if (!data || !data?.responses.length) {
-        setIsLoading(false);
         errorMessage(
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
         );
@@ -531,11 +454,10 @@ const MediaPage = () => {
           if (curr < max) {
             searchForm(formUrl);
           } else if (curr == max) {
-            setIsLoading(true);
+            setLoading(true);
             searchForm(formUrl);
             // fetchConfirmMedia();
           }
-          setIsLoading(false);
         } else {
           fetchConfirmMedia(formData);
         }
@@ -546,10 +468,7 @@ const MediaPage = () => {
       );
       console.error("Error submitting form:", error);
     } finally {
-      setIsLoading(false);
-      // setTimeout(() => {
-      //   setIsLoading(false);
-      // }, 20000);
+      setLoading(false);
     }
   };
 
@@ -580,6 +499,7 @@ const MediaPage = () => {
 
   const searchForm = async (url) => {
     try {
+      setLoading(true);
       await fetch(url, {
         method: "GET",
       })
@@ -700,11 +620,13 @@ const MediaPage = () => {
     } catch (error) {
       console.error("Error submitting form:", error);
       setSubmissionStatus("error");
+    } finally {
+      setLoading(false);
     }
   };
 
   const submitFormDetail = async (action, urlencoded) => {
-    setIsLoading(true);
+    setLoading(t("SUBMITTING"));
     // trackReactGA();
 
     try {
@@ -724,7 +646,7 @@ const MediaPage = () => {
         }, 7000);
       }
     } catch (error) {
-      setIsLoading(false);
+      setLoading(false);
       if (
         error.hasOwnProperty("response") &&
         error.response.hasOwnProperty("data")
@@ -736,34 +658,31 @@ const MediaPage = () => {
   };
 
   const handleBack = () => {
-    navigate(`/${envConfig?.listLink}/${itemId}`);
+    if (urlType) {
+      navigate(`/${envConfig?.listLink}`);
+    } else {
+      navigate(`/${envConfig?.listLink}/${itemId}`);
+    }
   };
+
   // transaction id
-  if (isLoading) {
-    return <Loading />;
+  if (loading) {
+    return <Loading message={loading} />;
   }
+
   return (
-    <Layout>
+    <Layout
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
       <Box p={4}>
         {!story.length && (
           <Box margin={4}>
             <div id="formContainer"></div>
           </Box>
         )}
-        {isLoading ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "100vh",
-            }}
-          >
-            <Box textAlign="center">
-              <Loader />
-            </Box>
-          </div>
-        ) : error ? (
+        {error ? (
           <div
             style={{
               display: "flex",

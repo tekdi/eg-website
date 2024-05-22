@@ -15,23 +15,22 @@ import {
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import { useNavigate } from "react-router-dom";
 
-const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
+const CustomAccordion = ({ data, date, board, setFilter }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [openAccordion, setOpenAccordion] = useState(null);
   const [learnerAttendance, setLearnerAttendance] = useState([]);
   const [mainAttendance, setMainAttendance] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
-  const [isCancelDisable, setCancelIsDisable] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [checkLearner, setCheckLeaner] = useState();
-  const [subjectData, setSubjectData] = useState();
-  const [attendanceData, setAttendanceData] = useState([]);
 
   const compareDates = (date1, date2) => {
     const parsedDate1 = new Date(date1);
     const parsedDate2 = new Date(date2);
     return parsedDate1.toDateString() === parsedDate2.toDateString();
+  };
+  const compareBoards = (board, indexBoard) => {
+    return board === indexBoard;
   };
 
   useEffect(() => {
@@ -40,16 +39,22 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
       const IndexDatapayload = convertPayload(data);
       const getIndexData = await getIndexedDBItem("exam_attendance");
       const getexamSyncDate = await getIndexedDBItem("examSyncDate");
+      const getexamSyncBoard = await getIndexedDBItem("examSyncBoard");
+      const stringIndexDatapayload = JSON.stringify(IndexDatapayload);
+      const stringgetIndexData = JSON.stringify(getIndexData);
       setMainAttendance(IndexDatapayload || []);
       const isDate = compareDates(date, getexamSyncDate);
+      const isBoard = compareBoards(board, getexamSyncBoard);
       if (date) {
         if (isDate) {
-          if (getIndexData) {
+          if (getIndexData?.length > 0 && isBoard) {
             setLearnerAttendance(getIndexData);
           } else {
             setLearnerAttendance(IndexDatapayload);
             if (IndexDatapayload.length > 0) {
               setIndexedDBItem("exam_attendance", IndexDatapayload);
+            } else {
+              setIndexedDBItem("exam_attendance", []);
             }
           }
         } else {
@@ -57,21 +62,18 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
             setIndexedDBItem("exam_attendance", IndexDatapayload);
             setLearnerAttendance(IndexDatapayload);
             setIndexedDBItem("examSyncDate", date);
+            setIndexedDBItem("examSyncBoard", board);
           }
         }
       }
 
-      const stringIndexDatapayload = JSON.stringify(IndexDatapayload);
-      const stringgetIndexData = JSON.stringify(getIndexData);
       if (
         isDate &&
-        (stringIndexDatapayload !== stringgetIndexData || !getIndexData)
+        (stringIndexDatapayload == stringgetIndexData || !getIndexData)
       ) {
         setIsDisable(false);
-        setCancelIsDisable(false);
       } else {
         setIsDisable(true);
-        setCancelIsDisable(true);
       }
     };
     fetchData();
@@ -100,7 +102,6 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
   };
 
   const toggleAccordion = (index, subject) => {
-    setSubjectData(subject);
     setOpenAccordion(openAccordion === index ? null : index);
   };
 
@@ -134,37 +135,11 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
 
   const markAttendance = async (user, event_id, attendance) => {
     setIsDisable(false);
-    setCancelIsDisable(false);
     const AttendaceData = await StoreAttendanceToIndexDB(
       user,
       event_id,
       attendance
     );
-    const presenceStatus = [];
-    AttendaceData?.forEach((item) => {
-      const key = Object.keys(item)[0];
-      const status = item[key];
-      if (status === "present" || status === "absent") {
-        presenceStatus.push({
-          key: key,
-          status: status,
-        });
-      }
-    });
-
-    const result = `${event_id}_${user?.user_id}`;
-
-    // Check if the result already exists in the array
-    if (!attendanceData.includes(result)) {
-      const updatedResults = [...attendanceData, result];
-      setAttendanceData(updatedResults);
-    }
-
-    const datalength = subjectData?.data?.length;
-
-    const extractedData = data.flatMap((subject) => subject.data);
-    const check = extractedData?.length == presenceStatus?.length;
-    setCheckLeaner({ check: check, size: extractedData?.length });
     const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
     setLearnerAttendance(mergedPayload);
   };
@@ -176,29 +151,31 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
       return key.startsWith(event_id + "_");
     });
 
-    const unmatchedPayload = payload.filter((item) => {
-      const key = Object.keys(item)[0];
-      return !key.startsWith(event_id + "_");
-    });
-
     const finalPayload = await transformAttendanceResponse(
       matchedPayload,
       date
     );
-    const result = await organisationService.markExamAttendance(finalPayload);
-    if (result?.success) {
-      setIsDisable(true);
-      setCancelIsDisable(true);
 
-      if (checkLearner?.check === true && checkLearner?.size > 1) {
-        navigate("/examschedule");
-      } else {
-        setOpenModal();
+    const hasBlankStatus = finalPayload.some((item) => item.status === "");
+
+    if (hasBlankStatus) {
+      setOpenModal(finalPayload);
+    } else {
+      const result = await organisationService.markExamAttendance(finalPayload);
+      if (result?.success) {
+        setIsDisable(true);
       }
     }
   };
 
-  let event_id = 600;
+  const SaveModalAttendance = async (finalPayload) => {
+    const newData = finalPayload?.filter((item) => item?.status?.trim() !== "");
+    const result = await organisationService.markExamAttendance(newData);
+    if (result?.success) {
+      setIsDisable(true);
+      setOpenModal(false);
+    }
+  };
 
   const generateNewPayload = (original, updated, event_id) => {
     const newPayload = updated.map((originalItem) => {
@@ -207,7 +184,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
         const updatedItem = original.find(
           (item) => Object.keys(item)[0] === key
         );
-        return updatedItem ? updatedItem : originalItem;
+        return updatedItem || originalItem;
       } else {
         return originalItem;
       }
@@ -216,7 +193,6 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
   };
 
   const cancelAttendance = async (event_id) => {
-    setAttendanceData([]);
     if (mainAttendance.length > 0) {
       const newPayload = generateNewPayload(
         mainAttendance,
@@ -229,7 +205,6 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
       setLearnerAttendance([]);
     }
     setIsDisable(true);
-    setCancelIsDisable(true);
   };
   return (
     <VStack space={4}>
@@ -362,6 +337,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
                       justifyContent={"center"}
                     >
                       <FrontEndTypo.Secondarybutton
+                        isDisabled={isDisable}
                         px="20px"
                         onPress={() => {
                           cancelAttendance(subject?.event_id);
@@ -373,9 +349,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
                         px="20px"
                         isDisabled={isDisable}
                         onPress={() => {
-                          checkLearner?.check === true
-                            ? SaveAttendance(subject?.event_id)
-                            : setOpenModal(subject?.event_id);
+                          SaveAttendance(subject?.event_id);
                         }}
                       >
                         {t("SAVE")}
@@ -409,7 +383,7 @@ const CustomAccordion = ({ data, date, setBoardList, setFilter }) => {
                 px="20px"
                 isDisabled={isDisable}
                 onPress={() => {
-                  SaveAttendance(openModal);
+                  SaveModalAttendance(openModal);
                 }}
               >
                 {t("YES")}

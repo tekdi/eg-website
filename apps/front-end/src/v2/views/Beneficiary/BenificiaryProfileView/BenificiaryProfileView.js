@@ -28,7 +28,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
 import moment from "moment";
 
-export default function BenificiaryProfileView(props) {
+export default function BenificiaryProfileView({ userTokenInfo }) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
@@ -46,6 +46,7 @@ export default function BenificiaryProfileView(props) {
   const [alert, setAlert] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
+  const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -123,19 +124,42 @@ export default function BenificiaryProfileView(props) {
     ]
       .filter((e) => e)
       .join(", ");
+    let fullName = [
+      result?.result?.program_beneficiaries?.enrollment_first_name,
+      result?.result?.program_beneficiaries?.enrollment_middle_name,
+      result?.result?.program_beneficiaries?.enrollment_last_name,
+    ]
+      .filter((e) => e)
+      .join(" ");
     const userDetails = {
-      "Student Name":
-        result?.result?.first_name + " " + result?.result?.last_name,
-      email: `${result?.result?.first_name}@gmail.com`,
-      //result?.result?.email_id,
+      "Student Name": fullName,
+      name: fullName,
+      email:
+        result?.result?.email_id || `${result?.result?.first_name}@gmail.com`,
       "Date Of Birth": result?.result?.dob,
+      birth_date: result?.result?.dob,
       "mobile number": result?.result?.mobile,
+      phone: result?.result?.mobile,
+      contact: result?.result?.mobile,
       Address,
       createdAt: moment().format("YYYY-MM-DD HH:mm"),
       user_id: id,
     };
     localStorage.setItem("userData", JSON.stringify(userDetails));
     setBenificiary(result?.result);
+    const orgResult = await benificiaryRegistoryService.getOrganisation({
+      id: userTokenInfo?.authUser?.program_faciltators?.parent_ip,
+    });
+    if (
+      ["enrolled_ip_verified", "registered_in_camp", "10th_passed"].includes(
+        result?.result?.program_beneficiaries?.status
+      ) &&
+      orgResult?.data?.name.toLowerCase() == "tekdi"
+    ) {
+      setIsDisableOpportunity(true);
+    } else {
+      setIsDisableOpportunity(false);
+    }
     setloading(false);
   }, [reactivateReasonValue, reasonValue]);
 
@@ -277,11 +301,7 @@ export default function BenificiaryProfileView(props) {
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
-              {[
-                "enrolled_ip_verified",
-                "registered_in_camp",
-                "10th_passed",
-              ].includes(benificiary?.program_beneficiaries?.status) && (
+              {isDisableOpportunity && (
                 <FrontEndTypo.Primarybutton onPress={(e) => navigate("/onest")}>
                   {t("OPPORTUNITY")}
                 </FrontEndTypo.Primarybutton>

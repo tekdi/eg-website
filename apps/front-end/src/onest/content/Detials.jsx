@@ -32,7 +32,7 @@ const Details = () => {
   const fieldsToSkip = ["lastupdatedon", "createdon"];
 
   const [story, setStory] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [transactionId, setTransactionId] = useState(uuidv4());
   // const messageId = uuidv4();
@@ -60,179 +60,151 @@ const Details = () => {
   }
 
   const fetchSelectedCourseData = async () => {
-    // try {
-    setIsLoading(true);
-    let productInfo;
+    try {
+      setLoading(t("FETCHING_THE_DETAILS"));
+      let productInfo;
 
-    if (!product) {
-      productInfo = JSON.parse(localStorage.getItem("searchProduct"));
-    } else {
-      productInfo = product;
-    }
+      if (!product) {
+        productInfo = JSON.parse(localStorage.getItem("searchProduct"));
+      } else {
+        productInfo = product;
+      }
 
-    let bodyData = {
-      context: {
-        domain: envConfig?.apiLink_DOMAIN,
-        action: "select",
-        version: "1.1.0",
-        bap_id: envConfig?.apiLink_BAP_ID,
-        bap_uri: envConfig?.apiLink_BAP_URI,
-        bpp_id: productInfo?.bpp_id,
-        bpp_uri: productInfo?.bpp_uri,
-        transaction_id: transactionId,
-        message_id: uuidv4(),
-        // message_id: "06974a96-e996-4e22-9265-230f69f22f57",
-        timestamp: new Date().toISOString(),
-      },
-      message: {
-        order: {
-          provider: {
-            id: productInfo?.provider_id,
-          },
-          items: [
-            {
-              id: productInfo?.item_id,
-            },
-          ],
+      let bodyData = {
+        context: {
+          domain: envConfig?.apiLink_DOMAIN,
+          action: "select",
+          version: "1.1.0",
+          bap_id: envConfig?.apiLink_BAP_ID,
+          bap_uri: envConfig?.apiLink_BAP_URI,
+          bpp_id: productInfo?.bpp_id,
+          bpp_uri: productInfo?.bpp_uri,
+          transaction_id: transactionId,
+          message_id: uuidv4(),
+          // message_id: "06974a96-e996-4e22-9265-230f69f22f57",
+          timestamp: new Date().toISOString(),
         },
-      },
-    };
+        message: {
+          order: {
+            provider: {
+              id: productInfo?.provider_id,
+            },
+            items: [
+              {
+                id: productInfo?.item_id,
+              },
+            ],
+          },
+        },
+      };
 
-    const result = await post(`${baseUrl}/select`, bodyData);
-    let response = result?.data;
-    localStorage.setItem("details", JSON.stringify(response));
-    if (response.responses?.[0].message?.order?.items?.[0]) {
-      setDetails(response.responses?.[0].message?.order?.items?.[0] || {});
-    } else {
-      errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-      );
-    }
-    // console.log("resp", response);
-    if (response && response.responses && response.responses.length > 0) {
-      // console.log("Entered 1");
-      let arrayOfObjects = [];
-      let uniqueItemIds = new Set();
+      const result = await post(`${baseUrl}/select`, bodyData);
+      let response = result?.data;
+      localStorage.setItem("details", JSON.stringify(response));
+      if (response.responses?.[0]?.message?.order?.items?.[0]) {
+        setDetails(response.responses?.[0].message?.order?.items?.[0] || {});
+      } else {
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
+      }
+      // console.log("resp", response);
+      if (response && response.responses && response.responses.length > 0) {
+        // console.log("Entered 1");
+        let arrayOfObjects = [];
+        let uniqueItemIds = new Set();
 
-      for (const responses of response.responses) {
-        const provider = responses.message.order;
-        for (const item of provider.items) {
-          if (!uniqueItemIds.has(item.id)) {
-            let obj = {
-              item_id: item.id,
-              title: productInfo.title,
-              description: productInfo.description
-                ? productInfo.description
-                : "",
-              long_desc: item.descriptor.long_desc,
-              provider_id: productInfo.provider_id,
-              provider_name: productInfo.provider_name,
-              bpp_id: productInfo.bpp_id,
-              bpp_uri: productInfo.bpp_uri,
-              icon: productInfo.icon ? productInfo.icon : "",
-              descriptionshort: productInfo.shortDescription
-                ? productInfo.shortDescription
-                : "",
-            };
-            arrayOfObjects.push(obj);
-            uniqueItemIds.add(item.id);
+        for (const responses of response.responses) {
+          const provider = responses.message.order;
+          for (const item of provider.items) {
+            if (!uniqueItemIds.has(item.id)) {
+              let obj = {
+                item_id: item.id,
+                title: productInfo.title,
+                description: productInfo.description
+                  ? productInfo.description
+                  : "",
+                long_desc: item.descriptor.long_desc,
+                provider_id: productInfo.provider_id,
+                provider_name: productInfo.provider_name,
+                bpp_id: productInfo.bpp_id,
+                bpp_uri: productInfo.bpp_uri,
+                icon: productInfo.icon ? productInfo.icon : "",
+                descriptionshort: productInfo.shortDescription
+                  ? productInfo.shortDescription
+                  : "",
+              };
+              arrayOfObjects.push(obj);
+              uniqueItemIds.add(item.id);
+            }
           }
         }
+        setStory(arrayOfObjects[0]);
+        // console.log("arrayOfObjects", arrayOfObjects);
+      } else {
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        );
       }
-
-      setStory(arrayOfObjects[0]);
-      // console.log("arrayOfObjects", arrayOfObjects);
-
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching details:", error);
       errorMessage(
         t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
       );
+    } finally {
+      setLoading(false);
     }
-    // } catch (error) {
-    //   console.error("Error fetching details:", error);
-    //   setIsLoading(false);
-    //   errorMessage(
-    //     t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-    //   );
-
-    //   // setError("Error fetching details. Please try again.");
-    // }
   };
-
   useEffect(() => {
-    // registerTelementry(siteUrl, transactionId);
+    const fetchData = async () => {
+      // registerTelementry(siteUrl, transactionId);
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_id: jobId }),
+      };
 
-    console.log(window.location.href);
-    const url = window.location.href;
+      fetch(`${baseUrl}/content/search`, requestOptions)
+        .then((response) => response.text())
+        .then(async (result) => {
+          result = JSON.parse(result);
+          setProduct(result?.data[db_cache]?.[0]);
+          localStorage.setItem(
+            "searchProduct",
+            JSON.stringify(result?.data[db_cache]?.[0])
+          );
 
-    const getUrlParams = (url) => {
-      const params = {};
-      const parser = document.createElement("a");
-      parser.href = url;
-      const query = parser.search.substring(1);
-      const vars = query.split("&");
-      for (const pair of vars) {
-        const [key, value] = pair.split("=");
-        params[key] = decodeURIComponent(value);
-      }
-      return params;
+          const userDataString = localStorage.getItem("userData");
+          const userData = JSON.parse(userDataString);
+          let trackData;
+          if (envConfig?.getTrackData) {
+            trackData = await envConfig.getTrackData({
+              type,
+              itemId: jobId,
+              transactionId,
+              user_id: userData?.user_id,
+            });
+          }
+
+          if (trackData?.params?.type) {
+            handleSubscribe(result?.data[db_cache]?.[0]);
+          } else if (transactionId !== undefined) {
+            fetchSelectedCourseData(result?.data[db_cache]?.[0]);
+          }
+        });
     };
-
-    const params = getUrlParams(url);
-
-    if (params["agent-id"]) {
-      localStorage.setItem("agent-id", params["agent-id"]);
-    }
-
-    if (params["distributor-name"]) {
-      localStorage.setItem("distributor-name", params["distributor-name"]);
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const jsonDataParam = urlParams.get("jsonData");
-
-    if (jsonDataParam) {
-      let jsonData = atob(jsonDataParam);
-      console.log("Parsed JSON data:", jsonData);
-      localStorage.setItem("userData", jsonData);
-    }
-  }, []);
-
-  useEffect(() => {
-    // registerTelementry(siteUrl, transactionId);
-    var requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ item_id: jobId }),
-    };
-
-    fetch(`${baseUrl}/content/search`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        result = JSON.parse(result);
-        setProduct(result?.data[db_cache]?.[0]);
-        localStorage.setItem(
-          "searchProduct",
-          JSON.stringify(result?.data[db_cache]?.[0])
-        );
-
-        if (transactionId !== undefined) {
-          fetchSelectedCourseData(result?.data[db_cache]?.[0]);
-        }
-      });
+    fetchData();
     // .catch((error) => console.log("error", error));
   }, [transactionId]); // Runs only once when the component mounts
 
-  const handleSubscribe = () => {
+  const handleSubscribe = (productData) => {
     navigate(
-      `/${envConfig?.listLink}/confirm/${product?.item_id}/${transactionId}`,
+      `/${envConfig?.listLink}/confirm/${productData?.item_id}/${transactionId}`,
       {
         state: {
-          product: product,
+          product: productData,
           transactionId: transactionId,
         },
       }
@@ -256,13 +228,13 @@ const Details = () => {
   }
 
   // transaction id
-  if (isLoading) {
-    return <Loading />;
+  if (loading) {
+    return <Loading message={loading} />;
   }
 
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <div
           style={{
             display: "flex",
@@ -319,7 +291,7 @@ const Details = () => {
             <FrontEndTypo.Primarybutton
               mt={3}
               className="custom-button"
-              onPress={handleSubscribe}
+              onPress={(e) => handleSubscribe(product)}
               mb={7}
               marginTop={2}
               marginRight={[0, 5]}
@@ -334,7 +306,7 @@ const Details = () => {
           </Box>
           {details !== undefined && (
             <Box padding={4} borderRadius={15} backgroundColor={"white"}>
-              {details?.tags?.[0]?.descriptor?.list.map((item, itemIndex) => (
+              {details?.tags?.[0]?.descriptor?.list?.map((item, itemIndex) => (
                 <>
                   {!fieldsToSkip.includes(item.descriptor.name) && (
                     <>
@@ -387,16 +359,6 @@ const Details = () => {
               ))}
             </Box>
           )}
-
-          {/* <Button mt={3} className='custom-button' onClick={() => {
-            navigate(`/confirm/${product?.item_id}`, {
-              state: {
-                product: story,
-                product: product,
-                transactionId: transactionId
-              },
-            });
-          }}>{t('SUBSCRIBE')}</Button> */}
         </Box>
       )}
     </>

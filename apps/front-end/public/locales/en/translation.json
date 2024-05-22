@@ -123,6 +123,7 @@
   "APPLIED": "Applied",
   "APPLIED_BUT_PENDING": "Applied But Pending",
   "APPLIED_NEW_FOR_CHANGE": "Applied new for change",
+  "APPLING": "Appling...",
   "APPLY_FOR_LEAVE": "Apply For Leave",
   "APPLY_NOW": "Apply Now",
   "APPLY_SCHOLARSHIP": "Apply scholarship",
@@ -151,6 +152,7 @@
   "AVAILABLE": "Available",
   "AVERAGE": "Average",
   "BACHELORS": "Bachelors",
+  "BACK": "Back",
   "BACK_VIEW": "Back View",
   "BANK_PASSBOOK": "Bank Passbook",
   "BANNER": "Banner",
@@ -532,6 +534,7 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "ENTER_YOUR_AADHAAR_NUMBER": "Enter Your Aadhaar Number",
   "ENTERED_AADHAR_NOT_EDITABLE": "Entered Aadhaar card number is not editable. Please verify before entering",
+  "SELECT_SUBJECT_INFO": "Select the subjects that the student has appeared for. This can be updated afterwards if they haven’t appeared for all the subjects.",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
       "NO": "no",
@@ -546,6 +549,8 @@
       "LACK_OF_TIME": "Lack of time",
       "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
       "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
+      "DEATH": "Death",
+      "ESCAPED": "escaped",
       "TITLE": "Choose the reason "
     },
     "RSOS_DOCUMENT_IMAGE": {
@@ -585,7 +590,7 @@
       "SMARTPHONE_UNAVAILABLE_FOR_READING": "Smartphone is not available for reading",
       "TITLE": "Choose the reason *"
     },
-    "TITLE": "'s Use of the RSOS App",
+    "TITLE": "Learner's Use of the RSOS App",
     "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS": {
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
       "DIDNT_WATCH_ALL_VIDEOS": "Did not watch all the videos",
@@ -595,7 +600,7 @@
     },
     "TOOK_EPCP_EXAM_ON_RSOS_APP": {
       "NO": "no",
-      "TITLE": "Are you taking practice tests on the RSOS App?",
+      "TITLE": "Did you take the e-PCP exam on the RSOS App?",
       "YES": "yes"
     }
   },
@@ -645,24 +650,25 @@
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "no",
       "TITLE": "Did the learner receive the  admit card?",
-      "YES": "yes"
+      "YES": "Yes",
+      "YET_TO_BE_PROCEED": "Yet to be proceed"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "NO": "no",
+      "NO": "No",
       "NOT_APPLICABLE": "Not Applicable",
       "TITLE": "Has the learner prepared the practical file?",
-      "YES": "yes"
+      "YES": "Yes"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable",
+      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
+      "NO_MEANS_TO_TRAVEL": "No mean to travel",
       "TITLE": "Does the learner have the travel arrangements to the exam center?",
-      "YES": "yes"
+      "YES": "Yes"
     },
     "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "NO": "no",
+      "NO": "No",
       "TITLE": "Did the learner receive the Exam Time Table?",
-      "YES": "yes"
+      "YES": "Yes"
     },
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
       "NO": "no",
@@ -679,7 +685,8 @@
       "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
       "ILLNESS": "Illness",
       "TITLE": "Choose the reason ",
-      "TRAVEL_ISSUES": "Travel Issues"
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
+      "OTHER": "Other"
     }
   },
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
@@ -1041,10 +1048,12 @@
   "MISCELLANEOUS_ACTIVITIES_FORMATIVE_ASSESSMENT": "Formative Assessment",
   "MISCELLANEOUS_ACTIVITIES_LINKAGES": "Linkages",
   "MISCELLANEOUS_ACTIVITIES_PCR": "Miscellaneous activities PCR",
+  "MISCELLANEOUS_ACTIVITIES_REVISION": "Revision",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_INTERVENTION": "Role model intervention",
   "MISCELLANEOUS_ACTIVITIES_ROLE_MODEL_VISIT": "Role model visit",
   "MISCELLANEOUS_ACTIVITIES_SCHOOL_TEACHER_VISIT": "School teacher visit",
   "MISCELLANEOUS_ACTIVITIES_STAKEHOLDER_VISIT": "Stakeholder visit",
+  "MISCELLANEOUS_ACTIVITIES_STAKEHOLDER_OR_TEACHER_VISIT": "Stakeholder/Teacher visit",
   "MISSILINEOUS_SUCCESS_MESSAGE": "Miscellaneous Activities Saved Successfully",
   "MOBILE_NO": "Mobile No",
   "MOBILE_NUMBER": "Mobile Number",
@@ -1141,7 +1150,7 @@
   "PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "PAYMENT_RECEIPT": "Enrollment Receipt",
   "PAYMENT_RECEIPTS": "Payment Receipt",
-  "PCR_ACTIVITIES": "PCR Activities",
+  "PCR_ACTIVITIES": "PCR Miscellaneous Activities",
   "PCR_CAMP": "PCR Camp",
   "PCR_CAMP_EXECUTION": "PCR Camp Execution",
   "PCR_CAMP_PROFILE": "PCR Camp Profile",
@@ -1678,6 +1687,7 @@
   "YESTERDAY": "Yesterday",
   "YOU_ARE_NOW_A_PRAGATI_MOBILIZER": "You are Now a Pragati Mobilizer",
   "YOU_CAN_NOW_SCHEDULE_AN_INTERVIEW_WITH_THE_APPROVED_CANDIDATE": "You can now Schedule an Interview with the approved candidate!",
+  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_APPLICATION": "You have already applied for this scholarship and the application status is",
   "YOU_NEED_TO_UPLOAD_THESE_DOCUMENTS": "You need to upload these documents before attending your Pragati orientation",
   "YOU_NOT_ELIGIBLE": "You may not be eligible for the position",
   "YOU_WILL_NEED_TO_ENROLL_ATLEAST_15_AG_LEARNERS_TO": " You will need to Enroll atleast 15 Learner to set up available camp",
@@ -1694,11 +1704,9 @@
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-
   "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
   "WILL_BE_DETERMINED": "will be determined",
   "THEY_WONT_GO": "They won't go",
-
   "VIEW_EXAM_SCHEDULE": "View Exam Schedule",
   "LEARNER_EXAM_RESULTS": "Learner Exam Results",
   "LEARNER_EXAM_RESULT": "Learner Exam Result",
@@ -1719,43 +1727,23 @@
   "NOT_MARKED": "Not Marked",
   "TOTAL_STUDENTS": "Total Students",
   "SUBJECT": "Subject",
-
   "welcome": "VISTAAR",
   "footerText": "Developed with",
   "footerText1": "by Tekdi Technologies",
   "onestText": "Vistaar",
-
   "state": "State",
   "district": "District",
   "type": "Region",
   "target": "Target-Users",
   "branch": "Branch",
-
   "actor": "Actor",
   "video": "Video",
   "audio": "Audio",
   "read": "Read",
   "other": "Other",
-  "1": "1",
-  "2": "2",
-  "3": "3",
-  "4": "4",
-  "5": "5",
-  "6": "6",
-  "7": "7",
-  "8": "8",
-  "9": "9",
-  "10": "10",
-  "11": "11",
-  "12": "12",
-  "13": "13",
-  "14": "14",
-  "15": "15",
-  "16": "16",
   "student": "Student",
   "parent": "Parent",
   "teacher": "Teacher",
-
   "button1": "Kahani Explorer",
   "button2": "AI Chatbot",
   "button3": "QR Scan",
@@ -1772,7 +1760,6 @@
   "Headers": "Headers",
   "Other": "Other",
   "List_Order": "List Order",
-
   "language": "Language",
   "Theme": "Theme",
   "Age": "Age",
@@ -1798,13 +1785,16 @@
   "As_Industry_Standard": "As per Industry Standard",
   "Full_Time": "Full Time",
   "Immediate_Joiner": "Immediate Joiner",
-  "Job_Description": "Scholarship Details",
-  "Job_description_is_not_available": "Scholarship Details is not available",
+  "Job_Description": "Job Details",
+  "Job_description_is_not_available": "Job Details are not available",
+  "Scholarship_Description": "Scholarship Details",
+  "Scholarship_description_is_not_available": "Scholarship Details are not available",
   "Not_Provided": "Not Provided",
   "Thank_you_for_applying_application_number_is": " Thank you for applying! Your application number is",
+  "ALREADY_APPLIED_FOR_THIS_JOB": "You have already applied for this job and the application status is",
   "NO_data_available": "No data available for the selected filters.",
   "Delay_in_fetching_the_details": "Sorry, there is a delay in fetching the details/submitting the form, Can you please try again now.",
-
+  "FETCHING_THE_DETAILS": "Fetching the details ...",
   "Name": "Name",
   "Application_Submitted_Date": "Application Submitted Date",
   "Job_Title": "Scholarship Title",
@@ -1813,15 +1803,12 @@
   "Status_is_not_available_Application_ID": "Status is not available for this Application ID",
   "Please_Enter_valid_Application_ID": "Please Enter valid Application ID",
   "CHECK_JOB_APPLICATION_STATUS": "CHECK SCHOLARSHIP APPLICATION STATUS",
-
   "Enter_Application_ID": "Enter Application ID",
   "Check_Status": "Check Status",
-
   "Application_ID_is_required": "Application ID is required",
   "JOB_APPLICATION_STATUS": "SCHOLARSHIP APPLICATION STATUS",
   "APPLICATION_STATUS": "APPLICATION STATUS",
   "Check_Another_Application_Status": "Check Another Application Status",
-
   "Name_is_required": "Name is required",
   "Gender_is_required": "Gender is required",
   "Phone_number_is_required": "Phone number is required",
@@ -1835,21 +1822,15 @@
   "Email": "Email",
   "Phone": "Phone",
   "Submit": "Submit",
-
   "Status": "Status",
   "Feedback": "Feedback",
   "Cancel": "Cancel",
-
   "Select": "Select",
   "State": "State",
   "City": "City",
   "Skill": "Skill",
   "Search": "Search",
   "Reset": "Reset",
-
-  "Enter_Feedback": "Enter_Feedback",
-  "Provide_your_feedback_here": "Provide your feedback here...",
-  "Submit_Feedback": "Submit Feedback",
   "UPLOAD_PDF": "Upload pdf",
   "MANUAL_UPLOAD": "Manual Upload",
   "SUBJECT_NAME": "Subject Name (code)",
@@ -1882,5 +1863,14 @@
   "SCHEDULE_BANNER": "Yet To Publish",
   "ENROLLMENT_NOT_MATCH": "Enrollment not match",
   "FAILED_READ_PDF": "Failed to read PDF, try again",
-  "INVALID_PDF": "Invalid PDF"
+  "INVALID_PDF": "Invalid PDF",
+  "YET_TO_BE_UPLOAD": "Yet to be Uploaded",
+  "Enter_Feedback": "Enter_Feedback",
+  "Provide_your_feedback_here": "Provide your feedback here...",
+  "Submit_Feedback": "Submit Feedback",
+  "SCHOLARSHIP": "Scholarships",
+  "JOBS": "Jobs & Internships",
+  "LEARNING_EXPERIENCES": "Skill Development &  Learning",
+  "PCR_LEARNING_ACTIVITIES": "PCR Learning Activities",
+  "CAMP_EXECUTION": "Camp Execution"
 }

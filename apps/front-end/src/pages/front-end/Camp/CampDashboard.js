@@ -38,7 +38,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         {stateName === "RAJASTHAN" && (
           <>
             <EpcpCard />
-            <ExamPreparationCard />
+            {/* Temp Comment */}
+            {/* <ExamPreparationCard /> */}
           </>
         )}
       </VStack>
