@@ -6,7 +6,7 @@ import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
 import Layout from "../Layout";
-import { FrontEndTypo } from "@shiksha/common-lib";
+import { FrontEndTypo, Loading } from "@shiksha/common-lib";
 import axios from "axios";
 import {
   Alert,
@@ -86,7 +86,6 @@ const AutomatedForm = () => {
 
     if (jsonDataParam) {
       let jsonData = atob(jsonDataParam);
-      console.log("Parsed JSON data:", jsonData);
       localStorage.setItem("userData", jsonData);
     }
   }, []);
@@ -208,13 +207,13 @@ const AutomatedForm = () => {
         },
       })
       .then((response) => {
-        console.log("Response:", response.data);
         if (envConfig?.onOrderIdGenerate) {
           envConfig?.onOrderIdGenerate({
             response,
             userData,
             jobId,
             type,
+            item: jobInfo,
           });
         }
       })
@@ -271,7 +270,6 @@ const AutomatedForm = () => {
           if (data.responses[i].hasOwnProperty("message")) {
             setLoading(false);
             let appId = data.responses[i].message.order.id;
-            console.log("orderId", appId);
             window?.parent?.postMessage({ orderId: appId }, "*");
             setOrderId(appId);
             setMessage(message);
@@ -289,113 +287,6 @@ const AutomatedForm = () => {
     } catch (error) {
       setLoading(false);
       console.error("Error submitting form:", error);
-    }
-  };
-
-  function deepMerge(target, source) {
-    for (const key in source) {
-      if (source.hasOwnProperty(key)) {
-        if (
-          source[key] instanceof Object &&
-          key in target &&
-          target[key] instanceof Object
-        ) {
-          deepMerge(target[key], source[key]);
-        } else {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  }
-
-  const getInitJson = async () => {
-    try {
-      // setLoading(true);
-
-      const body = {
-        transaction_id: transactionId,
-        action: "on_init",
-      };
-
-      // Perform API call with formData
-      const response = await fetch(`${baseUrl}/responseSearch`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json();
-      const formDetails = data?.data[response_cache];
-      //  const index = current + 1;
-
-      if (formDetails.length) {
-        let foundObject;
-
-        for (let i = 0; i < formDetails.length; i++) {
-          const item = formDetails[i];
-          if (
-            item?.response?.message?.order?.items[0]?.xinput?.head?.index
-              ?.cur === current
-          ) {
-            foundObject = item;
-            let fulfillmentsData;
-            currentXinput =
-              foundObject?.response?.message?.order?.items[0]?.xinput;
-
-            if (
-              foundObject?.response?.message?.order.hasOwnProperty(
-                "fulfillments"
-              )
-            ) {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.fulfillments[0];
-            } else {
-              fulfillmentsData =
-                foundObject?.response?.message?.order?.items[0]
-                  ?.fulfillments[0];
-            }
-
-            if (
-              currentXinput?.head?.index?.cur === currentXinput?.head?.index.max
-            ) {
-              let arr1 = submitFormData?.customer?.person?.tags;
-              let arr2 = fulfillmentsData?.customer?.person?.tags;
-              let arr3 = arr1?.concat(arr2);
-              submitFormData["customer"]["person"]["tags"] = arr3;
-              // confirmDetails(submitFormData);
-              confirmDetails(fulfillmentsData?.customer);
-            } else {
-              current = current + 1;
-              if (submitFormData) {
-                let arr1 = submitFormData?.customer?.person?.tags;
-                let arr2 = fulfillmentsData?.customer?.person?.tags;
-                let arr3 = arr1?.concat(arr2);
-                submitFormData["customer"]["person"]["tags"] = arr3;
-              } else {
-                submitFormData = fulfillmentsData;
-              }
-              setLoading(false);
-              searchForm(currentXinput.form.url);
-            }
-            break; // Exit the loop once the desired object is found
-          }
-        }
-      } else {
-        setLoading(false);
-        errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-        );
-      }
-      // Handle the response as needed
-    } catch (error) {
-      setLoading(false);
-      console.error("Error submitting form:", error);
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 30000);
     }
   };
 
@@ -486,7 +377,7 @@ const AutomatedForm = () => {
     localStorage.setItem("initRes", "");
 
     try {
-      setLoading(true);
+      setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
         ?.responses[0];
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
@@ -582,43 +473,55 @@ const AutomatedForm = () => {
       // }, 20000);
     }
   };
-
   useEffect(() => {
-    setLoading(true);
-    localStorage.setItem("submissionId", "");
-    var requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ item_id: jobId }),
+    const getData = () => {
+      setLoading(t("FETCHING_THE_DETAILS"));
+      localStorage.setItem("submissionId", "");
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_id: jobId }),
+      };
+
+      fetch(`${baseUrl}/content/search`, requestOptions)
+        .then((response) => response.text())
+        .then(async (result) => {
+          result = JSON.parse(result);
+          setJobInfo(result?.data[db_cache][0]);
+          localStorage.setItem(
+            "unique_id",
+            result?.data[db_cache][0]?.unique_id
+          );
+        })
+        .catch((error) => console.log("error", error));
     };
-
-    fetch(`${baseUrl}/content/search`, requestOptions)
-      .then((response) => response.text())
-      .then(async (result) => {
-        result = JSON.parse(result);
-        setJobInfo(result?.data[db_cache][0]);
-        localStorage.setItem("unique_id", result?.data[db_cache][0]?.unique_id);
-
-        let data = JSON.parse(localStorage.getItem("selectRes"));
-        if (data && data?.responses.length) {
-          await fetchInitDetails(data?.responses[0]);
-
-          let usrtemp = localStorage.getItem("userData");
-          /* if(usrtemp){
-           fetchInitDetails(data?.responses[0]);
-           }else{
-             setIsAutoForm(false);
-             setLoading(false);
-           }*/
-        } else {
-          getSelectDetails(result?.data[db_cache][0]);
-        }
-      })
-      .catch((error) => console.log("error", error));
+    getData();
   }, []);
 
+  useEffect(
+    (e) => {
+      const fetchData = async () => {
+        let data = JSON.parse(localStorage.getItem("selectRes"));
+        if (data && data?.responses.length && jobInfo) {
+          await fetchInitDetails(data?.responses[0]);
+
+          // let usrtemp = localStorage.getItem("userData");
+          /* if(usrtemp){
+       fetchInitDetails(data?.responses[0]);
+       }else{
+         setIsAutoForm(false);
+         setLoading(false);
+       }*/
+        } else if (jobInfo) {
+          getSelectDetails(jobInfo);
+        }
+      };
+      fetchData();
+    },
+    [jobInfo]
+  );
   const trackReactGA = () => {
     ReactGA.event({
       category: "Button Click",
@@ -629,7 +532,7 @@ const AutomatedForm = () => {
   };
 
   const submitFormDetail = async (action, urlencoded) => {
-    setLoading(true);
+    setLoading(t("SUBMITTING"));
     trackReactGA();
 
     try {
@@ -824,9 +727,13 @@ const AutomatedForm = () => {
     }
   };
 
+  if (loading) {
+    return <Loading message={loading} />;
+  }
+
   if (openModal) {
     return (
-      <Layout loading={loading}>
+      <Layout>
         <Modal isOpen={openModal} size="lg">
           <Modal.Content>
             <Modal.Header>

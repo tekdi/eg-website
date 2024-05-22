@@ -34,14 +34,15 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       _footer={{ menues: footerLinks }}
     >
       <List userTokenInfo={userTokenInfo} />
-      {/* <VStack p="4" space="5">
+      <VStack p="4" space="5">
         {stateName === "RAJASTHAN" && (
           <>
             <EpcpCard />
-            <ExamPreparationCard />
+            {/* Temp Comment */}
+            {/* <ExamPreparationCard /> */}
           </>
         )}
-      </VStack> */}
+      </VStack>
     </Layout>
   );
 }

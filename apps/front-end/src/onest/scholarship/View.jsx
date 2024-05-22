@@ -39,42 +39,50 @@ function ScholarshipView() {
 
   const getApplicationStatus = async (order_id) => {
     const apiUrl = `${baseUrl}/content/searchOrder/${order_id}`;
-    let searchOrder = {};
 
-    await axios
-      .get(apiUrl)
-      .then((response) => {
-        searchOrder = response.data;
-      })
-      .catch((error) => {
-        console.error("Axios GET request error:", error);
-      });
-
-    const payload = {
-      context: {
-        domain: envConfig.apiLink_DOMAIN,
-        action: "status",
-        version: "1.1.0",
-        bap_id: envConfig.apiLink_BAP_ID,
-        bap_uri: envConfig.apiLink_BAP_URI,
-        bpp_id: searchOrder?.bpp_id,
-        bpp_uri: searchOrder?.bpp_uri,
-        transaction_id: transactionId,
-        message_id: uuidv4(),
-        timestamp: new Date().toISOString(),
-      },
-      message: {
-        order_id: order_id,
-      },
-    };
-
-    const statusTrack = await OnestService.statusTrack(payload);
-    if (statusTrack?.responses[0]?.message) {
-      setStatus(
-        statusTrack?.responses[0]?.message?.order?.fulfillments[0]?.state
-          ?.descriptor?.name
-      );
+    try {
+      await axios
+        .get(apiUrl)
+        .then(async (response) => {
+          try {
+            const payload = {
+              context: {
+                domain: envConfig.apiLink_DOMAIN,
+                action: "status",
+                version: "1.1.0",
+                bap_id: envConfig.apiLink_BAP_ID,
+                bap_uri: envConfig.apiLink_BAP_URI,
+                bpp_id: response?.data?.bpp_id,
+                bpp_uri: response?.data?.bpp_uri,
+                transaction_id: transactionId,
+                message_id: uuidv4(),
+                timestamp: new Date().toISOString(),
+              },
+              message: {
+                order_id: order_id,
+              },
+            };
+            const statusTrack = await OnestService.statusTrack(payload);
+            if (statusTrack?.responses[0]?.message) {
+              setStatus(
+                statusTrack?.responses[0]?.message?.order?.fulfillments[0]
+                  ?.state?.descriptor?.name
+              );
+            }
+          } catch (e) {
+            console.error(
+              "Error constructing payload or handling response:",
+              e
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Axios GET request error:", error);
+        });
+    } catch (error) {
+      console.log("error ::", error);
     }
+
     setOpenModal(true);
   };
 
@@ -126,7 +134,7 @@ function ScholarshipView() {
 
   const fetchJobDetails = async (jobInfo) => {
     try {
-      setLoading(true);
+      setLoading(t("FETCHING_THE_DETAILS"));
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -253,17 +261,17 @@ function ScholarshipView() {
   }, [transactionId]); // Runs only once when the component mounts
 
   if (loading) {
-    return <Loading />;
+    return <Loading message={loading} />;
   }
 
   return (
     <div>
       <Box
         fontFamily={"Alice"}
-        marginTop={100}
+        marginTop={50}
         padding={4}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
         marginLeft={4}
         marginRight={4}
       >
@@ -378,10 +386,10 @@ function ScholarshipView() {
         padding={4}
         marginTop={5}
         borderRadius={15}
-        backgroundColor={"white"}
+        backgroundColor={"#246DDC1A"}
       >
         <Text fontSize={16} fontWeight={700}>
-          {t("Job_Description")}
+          {t("Scholarship_Description")}
         </Text>
 
         {jobInfo?.description ? (
@@ -390,7 +398,7 @@ function ScholarshipView() {
           </Text>
         ) : (
           <Text marginTop={2} fontSize={["xs", "sm"]} color={"gray.700"}>
-            {t("Job_description_is_not_available")}{" "}
+            {t("Scholarship_description_is_not_available")}{" "}
           </Text>
         )}
         <Box marginTop={4}>

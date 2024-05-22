@@ -78,6 +78,21 @@ const Assessment = React.lazy(() => import("component/Assessment"));
 
 const EventForm = React.lazy(() => import("pages/admin/event/EventForm"));
 
+// Exam Schedule
+
+const ExamSchedule = React.lazy(() =>
+  import("pages/admin/examschedule/ExamSchedule")
+);
+const ExamResultList = React.lazy(() =>
+  import("pages/admin/examschedule/ExamResult/ExamResultList")
+);
+const ManualExamResult = React.lazy(() =>
+  import("pages/admin/examschedule/ExamResult/ManualExamResult")
+);
+const ExamResultView = React.lazy(() =>
+  import("pages/admin/examschedule/ExamResult/ExamResultView")
+);
+
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
   { path: "/admin/Certification/:id", component: Certification },
@@ -158,4 +173,10 @@ export default [
   { path: "/admin/event/:id/:step", component: EventForm },
 
   { path: "*", component: NotFound },
+
+  // Exam Schedule Routes
+  { path: "/admin/exams/examschedule", component: ExamSchedule },
+  { path: "/admin/exams/list", component: ExamResultList },
+  { path: "/admin/exams/list/:id", component: ManualExamResult },
+  { path: "/admin/exams/list/result/:id", component: ExamResultView },
 ];

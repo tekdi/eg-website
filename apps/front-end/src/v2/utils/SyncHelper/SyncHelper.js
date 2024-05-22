@@ -342,3 +342,49 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
 
   return merged;
 };
+
+let payload = [];
+
+export const StoreAttendanceToIndexDB = async (user, event_id, attendance) => {
+  payload = (await getIndexedDBItem("exam_attendance")) || [];
+  let users = user?.user_id;
+
+  const key = `${event_id}_${user?.user_id}`;
+  const obj = { [key]: attendance };
+  const index = payload?.findIndex((item) => Object.keys(item)[0] === key);
+
+  if (index !== -1) {
+    // If the key exists, update its attendance
+    payload[index][key] = attendance;
+  } else {
+    // If the key doesn't exist, add the new attendance object to the payload
+    payload.push(obj);
+  }
+  setIndexedDBItem("exam_attendance", payload);
+  return payload;
+};
+
+export const transformAttendanceResponse = async (response, date) => {
+  const transformedData = response.map((item) => {
+    const [eventId, userId] = Object.keys(item)[0].split("_");
+    const status = Object.values(item)[0];
+    return {
+      event_id: parseInt(eventId),
+      user_id: parseInt(userId),
+      attendance_date: `${date}T12:00:00.30822+00:00`, // Replace with any fixed time
+      status: status,
+    };
+  });
+  return transformedData;
+};
+
+export const CheckUserIdInPayload = (user, learnerAttendance, event_id) => {
+  const key = `${event_id}_${user.user_id}`;
+  // Find the item in learnerAttendance array with matching user_id
+  const matchingItem = learnerAttendance.find((item) => {
+    const keyUserId = Object.keys(item)[0];
+    return keyUserId === key;
+  });
+  // If a matching item is found, return its value, otherwise return null
+  return matchingItem ? Object.values(matchingItem)[0] : null;
+};

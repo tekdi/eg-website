@@ -145,7 +145,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       createdAt: moment().format("YYYY-MM-DD HH:mm"),
       user_id: id,
     };
-
     localStorage.setItem("userData", JSON.stringify(userDetails));
     setBenificiary(result?.result);
     const orgResult = await benificiaryRegistoryService.getOrganisation({

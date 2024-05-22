@@ -5,7 +5,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 10,
+      fields_sequence: 1,
       observation_fields_id: "",
       response_value: formData?.WILL_LEARNER_APPEAR_FOR_EXAM || "",
     },
@@ -14,7 +14,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 11,
+      fields_sequence: 2,
       observation_fields_id: "",
       response_value:
         formData?.WILL_LEARNER_APPEAR_FOR_EXAM === "YES"
@@ -22,45 +22,57 @@ export function finalPayload(id, formData, field) {
           : formData?.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.split(".")[
               formData?.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.split(".")
                 .length - 1
-            ] || "",
+            ],
     },
     {
       observation_id: field?.[0]?.observation_id,
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 12,
+      fields_sequence: 5,
       observation_fields_id: "",
-      response_value: formData?.DID_LEARNER_RECEIVE_ADMIT_CARD || "",
+      response_value: formData?.DID_LEARNER_RECEIVE_ADMIT_CARD
+        ? formData?.DID_LEARNER_RECEIVE_ADMIT_CARD.split(".")[
+            formData?.DID_LEARNER_RECEIVE_ADMIT_CARD.split(".").length - 1
+          ]
+        : "",
     },
     {
       observation_id: field?.[0]?.observation_id,
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 13,
+      fields_sequence: 3,
       observation_fields_id: "",
-      response_value: formData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE || "",
+      response_value: formData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE
+        ? formData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE.split(".")[
+            formData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE.split(".").length - 1
+          ]
+        : "",
     },
     {
       observation_id: field?.[0]?.observation_id,
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 14,
+      fields_sequence: 4,
       observation_fields_id: "",
-      response_value:
-        formData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER || "",
+      response_value: formData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER
+        ? formData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.split(".")[
+            formData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.split(".")
+              .length - 1
+          ]
+        : "",
     },
-    {
-      observation_id: field?.[0]?.observation_id,
-      context: "users",
-      context_id: parseInt(id),
-      field_id: "",
-      fields_sequence: 15,
-      observation_fields_id: "",
-      response_value: formData?.LEARNER_RECEIVED_EXAM_TIME_TABLE || "",
-    },
+    // {
+    //   observation_id: field?.[0]?.observation_id,
+    //   context: "users",
+    //   context_id: parseInt(id),
+    //   field_id: "",
+    //   fields_sequence: 15,
+    //   observation_fields_id: "",
+    //   response_value: formData?.LEARNER_RECEIVED_EXAM_TIME_TABLE || "",
+    // },
   ];
 
   const updatedPayload = payload
@@ -68,7 +80,6 @@ export function finalPayload(id, formData, field) {
       const correspondingField = field.find(
         (fieldItem) => fieldItem.fields_sequence === payloadItem.fields_sequence
       );
-
       if (correspondingField) {
         return {
           ...payloadItem,

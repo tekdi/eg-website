@@ -117,39 +117,40 @@ export default function CampTodayActivities({
       _footer={{ menues: footerLinks }}
     >
       <VStack p="4" space={4}>
-        {campType?.type === "main" && (
-          <CardComponent
-            _vstack={{
-              flex: 1,
-              borderColor: sessionList === true && "greenIconColor",
-            }}
-            _body={{ pt: 4 }}
-          >
-            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-              <HStack alignItems="center" justifyContent="center" space={3}>
-                <Image
-                  source={{
-                    uri: "/images/activities/learning-activity.png",
-                  }}
-                  resizeMode="contain"
-                  alignSelf={"center"}
-                  w="75px"
-                  h="60px"
+        <CardComponent
+          _vstack={{
+            flex: 1,
+            borderColor: sessionList === true && "greenIconColor",
+          }}
+          _body={{ pt: 4 }}
+        >
+          <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
+            <HStack alignItems="center" justifyContent="center" space={3}>
+              <Image
+                source={{
+                  uri: "/images/activities/learning-activity.png",
+                }}
+                resizeMode="contain"
+                alignSelf={"center"}
+                w="75px"
+                h="60px"
+              />
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {campType?.type === "main"
+                  ? t("LEARNING_ACTIVITIES")
+                  : t("PCR_LEARNING_ACTIVITIES")}
+              </FrontEndTypo.H2>
+              {sessionList === true && (
+                <IconByName
+                  name="CheckboxCircleFillIcon"
+                  _icon={{ size: "36" }}
+                  color="successColor"
                 />
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("LEARNING_ACTIVITIES")}
-                </FrontEndTypo.H2>
-                {sessionList === true && (
-                  <IconByName
-                    name="CheckboxCircleFillIcon"
-                    _icon={{ size: "36" }}
-                    color="successColor"
-                  />
-                )}
-              </HStack>
-            </Pressable>
-          </CardComponent>
-        )}
+              )}
+            </HStack>
+          </Pressable>
+        </CardComponent>
+
         <CardComponent
           _vstack={{
             flex: 1,
