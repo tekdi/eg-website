@@ -637,7 +637,6 @@
   "EXAM": "Exam",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
-  "EXAM_PREPARATION": {
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
   "EXIST_LOGIN": "You already have an account for {{state}} {{year}}, proceed to log in instead.",
   "EXISTING_IP_USER": "Existing IP User",
