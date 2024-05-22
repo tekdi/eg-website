@@ -198,7 +198,6 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
             }}
             alignItems="center"
             p="2"
-            shadow={2}
           >
             <HStack
               borderColor={"textRed.350"}

@@ -823,6 +823,7 @@ const DEFAULT_THEME = {
       100: '#e0e0e0'
     },
     footerBorderGray: '#D4D4D4',
+    dashboardCardBorder: '#DCDCDC',
     textRed: {
       100: '#ff7b7b',
       200: '#ff5252',

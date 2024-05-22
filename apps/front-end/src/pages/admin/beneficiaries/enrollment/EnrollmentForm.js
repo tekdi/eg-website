@@ -274,8 +274,8 @@ export default function App(footerLinks) {
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
   const [uiSchema, setUiSchema] = React.useState({
-    subjects: {
-      "ui:widget": "checkboxes",
+    subjects1: {
+      "ui:widget": "MultiCheck",
     },
     enrollment_date: {
       "ui:widget": "alt-date",

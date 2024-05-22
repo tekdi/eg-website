@@ -57,8 +57,24 @@ export default function PrerakOnboardingArrayForm({
     type === "reference_details"
       ? "REFERENCE_DETAILS"
       : type === "experience"
-      ? "JOB_EXPERIENCE"
+      ? "2_VOLUNTEER_AND_WORK_DETAILS"
       : "ADD_VOLUNTEER_EXPERIENCE";
+  const stepLabelList =
+    type === "reference_details"
+      ? "3_REFERENCE_DETAILS"
+      : type === "experience"
+      ? "2_VOLUNTEER_AND_WORK_DETAILS"
+      : "2_VOLUNTEER_AND_WORK_DETAILS";
+
+  const stepLabelListTwo =
+    type === "experience" ? "" : "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE";
+
+  const stepLabelLinks =
+    type === "reference_details"
+      ? "REFERENCE_DETAILS"
+      : type === "experience"
+      ? "ADD_ANOTHER_JOB_EXPERIENCE"
+      : "ADD_ANOTHER_VOLUNTEER_EXPERIENCE";
 
   const stepTitle = type === "experience" ? "JOB_TITLE" : "VOLUNTEER_TITLE";
   const nextPreviewStep = async (p = "n") => {
@@ -146,7 +162,8 @@ export default function PrerakOnboardingArrayForm({
               "experience_in_years",
               "related_to_teaching",
             ],
-            title: stepLabel,
+            title: stepLabelList,
+            description: stepLabel,
           };
           setSchema(updatedSchema);
         } else {
@@ -445,6 +462,20 @@ export default function PrerakOnboardingArrayForm({
         <Box py={6} px={4} mb={5}>
           {!addMore ? (
             <VStack space={"4"}>
+              <FrontEndTypo.H1
+                color="textGreyColor.900"
+                lineHeight="30px"
+                fontWeight="600"
+              >
+                {`${t(stepLabelList)}`}
+              </FrontEndTypo.H1>
+              <FrontEndTypo.H3
+                color="textGreyColor.750"
+                lineHeight="21px"
+                fontWeight="600"
+              >
+                {`${t(stepLabelListTwo)}`}
+              </FrontEndTypo.H3>
               {type == "vo_experience"
                 ? data &&
                   data.constructor.name === "Array" &&
@@ -536,7 +567,7 @@ export default function PrerakOnboardingArrayForm({
                     _icon={{ size: "16px" }}
                     style={{ fontSize: "8px", marginRight: "4px" }}
                   />
-                  {`${t(stepLabel)}`}
+                  {`${t(stepLabelLinks)}`}
                 </FrontEndTypo.H5>
               </Button>
               <Box alignItems={"center"}>

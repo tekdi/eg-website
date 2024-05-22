@@ -30,6 +30,7 @@ import {
   useLocationData,
   H3,
   H4,
+  H1,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
@@ -80,7 +81,7 @@ export function EnrollmentLabelMobileWidget() {
 export function AlreadyOpenLabelWidget() {
   const { t } = useTranslation();
   return (
-    <Text color="textMaroonColor.400" mb={1}>
+    <Text color="textGreyColor.750" mb={1}>
       {t("ALREADY_OPEN_LABEL")}
     </Text>
   );
@@ -90,12 +91,21 @@ export function LabelAddressWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H2 mb={1} color="textGreyColor.750">
+      <FrontEndTypo.H3
+        fontWeight="600"
+        lineHeight="21px"
+        color="textGreyColor.750"
+        mb="6"
+      >
         {t("ADDRESS")}
-      </FrontEndTypo.H2>
-      <Text color="textGreyColor.750" mb={1}>
+      </FrontEndTypo.H3>
+      <FrontEndTypo.H4
+        fontWeight="600"
+        lineHeight="18px"
+        color="textGreyColor.750"
+      >
         {t("ADDRESS_DESCRIPTION")}
-      </Text>
+      </FrontEndTypo.H4>
     </>
   );
 }
@@ -176,9 +186,14 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
     <VStack pb="3">
-      <BodySmall id={id} color="textGreyColor.750">
+      <FrontEndTypo.H3
+        id={id}
+        fontWeight="600"
+        lineHeight="21"
+        color="textGreyColor.750"
+      >
         {t(description)}
-      </BodySmall>
+      </FrontEndTypo.H3>
     </VStack>
   );
 };
@@ -288,7 +303,7 @@ export const FieldTemplate = ({
   return (
     <VStack
       style={style}
-      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
     >
       {(!schema?.format ||
         !["hidden", "CheckUncheck"].includes(schema?.format)) &&
@@ -297,9 +312,13 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <H4 color="textGreyColor.750">
+                  <FrontEndTypo.H1
+                    color="textGreyColor.900"
+                    fontWeight="600"
+                    lineHeight="30px"
+                  >
                     {t(schema?.label ? schema?.label : label)}
-                  </H4>
+                  </FrontEndTypo.H1>
                   <H3 color="textGreyColor.750">{required ? "*" : null}</H3>
                 </HStack>
               </label>
@@ -494,13 +513,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
             fontWeight="400"
           >
             {t(label || title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}
@@ -836,13 +849,7 @@ const Textarea = ({
         >
           <Text fontSize="12" fontWeight="400">
             {t(title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}

@@ -2,7 +2,8 @@ export default {
   type: "step",
   properties: {
     basic_details: {
-      title: "FULL_NAME",
+      title: "1_BASIC_DETAILS",
+      description: "FULL_NAME",
       step_name: "BASIC_DETAILS",
       type: "object",
       required: ["first_name", "dob"],
@@ -23,7 +24,7 @@ export default {
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         dob: {
-          label: "DATE_OF_BIRTH",
+          description: "DATE_OF_BIRTH",
           type: "string",
           format: "date",
         },
@@ -31,7 +32,8 @@ export default {
     },
     contact_details: {
       step_name: "CONTACT_DETAILS",
-      title: "CONTACT_INFORMATION",
+      title: "1_BASIC_DETAILS",
+      description: "CONTACT_INFORMATION",
       type: "object",
       required: ["mobile", "device_ownership", "device_type"],
       properties: {
@@ -41,7 +43,7 @@ export default {
           format: "MobileNumber",
         },
         device_ownership: {
-          label: "DO_YOU_OWN_A_MOBILE_PHONE",
+          description: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
           format: "RadioBtn",
           enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
@@ -49,7 +51,7 @@ export default {
           readOnly: "",
         },
         device_type: {
-          label: "TYPE_OF_MOBILE_PHONE",
+          description: "TYPE_OF_MOBILE_PHONE",
           type: "string",
           format: "CustomR",
           grid: 2,
@@ -57,11 +59,13 @@ export default {
           readOnly: "",
         },
         alternative_mobile_number: {
+          description: "ALTERNATIVE_NUMBER",
           type: "number",
-          title: "ALTERNATIVE_NUMBER",
+          title: "MOBILE_NUMBER",
           format: "MobileNumber",
         },
         email_id: {
+          description: "EMAIL_ID",
           type: "string",
           format: "email",
           title: "EMAIL_ID",
@@ -71,6 +75,7 @@ export default {
 
     address_details: {
       step_name: "ADDRESS_DETAILS",
+      title: "1_BASIC_DETAILS",
       type: "object",
       required: ["district", "block", "village"],
       properties: {
@@ -115,11 +120,12 @@ export default {
     },
     personal_details: {
       step_name: "PERSONAL_DETAILS",
+      title: "1_BASIC_DETAILS",
       type: "object",
       required: ["gender", "marital_status", "social_category"],
       properties: {
         gender: {
-          label: "GENDER",
+          description: "GENDER",
           type: "string",
           format: "CustomR",
           grid: 3,
@@ -141,13 +147,13 @@ export default {
           enum: ["female", "male", "other"],
         },
         marital_status: {
-          label: "MARITAL_STATUS",
+          description: "MARITAL_STATUS",
           type: "string",
           format: "RadioBtn",
           grid: 2,
         },
         social_category: {
-          label: "SOCIAL_CATEGORY",
+          description: "SOCIAL_CATEGORY",
           type: "string",
           format: "RadioBtn",
           grid: 2,
@@ -155,7 +161,8 @@ export default {
       },
     },
     reference_details: {
-      title: "ADD_A_REFERENCE",
+      title: "3_REFERENCE_DETAILS",
+      description: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
       required: ["name", "designation", "contact_number"],
@@ -179,11 +186,12 @@ export default {
     },
     work_availability_details: {
       step_name: "OTHER_DETAILS",
+      title: "4_OTHER_DETAILS",
       type: "object",
       required: ["availability"],
       properties: {
         availability: {
-          label: "YOUR_WORK_AVAILABILITY_WILL_BE",
+          description: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
@@ -203,9 +211,10 @@ export default {
         "diploma_details",
       ],
       type: "object",
+      title: "2_VOLUNTEER_AND_WORK_DETAILS",
       properties: {
         qualification_master_id: {
-          label: "YOUR_HIGHEST_QUALIFICATION",
+          description: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string", "number"],
           format: "RadioBtn",
           grid: 2,
@@ -215,14 +224,15 @@ export default {
         //   title: "TYPE_OF_DOCUMENT",
         // },
         qualification_reference_document_id: {
-          label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
+          description: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
           document_type: "highest_qualification_document",
           type: ["string", "number"],
           format: "OfflineFileUpload",
+          uploadTitle: "UPLOAD_FROM_PHONE",
         },
         qualification_ids: {
           type: "array",
-          label: "TEACHING_RALATED_DEGREE",
+          description: "TEACHING_RALATED_DEGREE",
           format: "MultiCheck",
           grid: 1,
           items: {
@@ -231,13 +241,13 @@ export default {
           uniqueItems: true,
         },
         has_diploma: {
-          label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
+          description: "HAVE_YOU_DONE_YOUR_DIPLOMA",
           type: "boolean",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
         },
         diploma_details: {
-          label: "NAME_OF_THE_DIPLOMA",
+          description: "NAME_OF_THE_DIPLOMA",
           type: "string",
         },
       },
@@ -250,7 +260,7 @@ export default {
       required: ["aadhar_no"],
       properties: {
         aadhar_no: {
-          title: "AADHAAR_NUMBER",
+          description: "AADHAAR_NUMBER",
           type: ["string", "number"],
           format: "Aadhaar",
         },

@@ -1,21 +1,29 @@
 import {
-  facilitatorRegistryService,
-  t,
+  CardComponent,
+  FrontEndTypo,
   IconByName,
   Layout,
-  benificiaryRegistoryService,
-  FrontEndTypo,
-  SelectStyle,
   Loading,
-  CardComponent,
+  SelectStyle,
+  arrList,
+  benificiaryRegistoryService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  t,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable, Stack } from "native-base";
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import Chip, { ChipStatus } from "component/BeneficiaryStatus";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
+import { Box, HStack, Pressable, Select, VStack } from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useNavigate } from "react-router-dom";
+import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = useState({});
@@ -58,7 +66,18 @@ const List = ({ data }) => {
   const navigate = useNavigate();
 
   return (
-    <VStack space="4" p="4" alignContent="center">
+    <VStack
+      space="4"
+      p="4"
+      alignContent="center"
+      // overflowY={"scroll"}
+      // h={"50vh"}
+      // css={{
+      //   "&::-webkit-scrollbar": {
+      //     display: "none", // Hide the scrollbar in WebKit browsers
+      //   },
+      // }}
+    >
       {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
         data &&
         data?.constructor?.name === "Array" &&
@@ -82,7 +101,10 @@ const List = ({ data }) => {
                 borderBottomWidth={"1px"}
               >
                 <Clipboard text={item?.id}>
-                  <FrontEndTypo.H4 color="floatingLabelColor.500" bold>
+                  <FrontEndTypo.H4
+                    color="floatingLabelColor.500"
+                    fontWeight={"600"}
+                  >
                     {item?.id}
                   </FrontEndTypo.H4>
                 </Clipboard>
@@ -99,7 +121,10 @@ const List = ({ data }) => {
                   >
                     {item?.program_beneficiaries?.status ===
                     "enrolled_ip_verified" ? (
-                      <FrontEndTypo.H3 bold color="textGreyColor.800">
+                      <FrontEndTypo.H3
+                        fontWeight={"600"}
+                        color="textGreyColor.800"
+                      >
                         {item?.program_beneficiaries?.enrollment_first_name}
                         {item?.program_beneficiaries?.enrollment_middle_name &&
                           item?.program_beneficiaries
@@ -111,7 +136,7 @@ const List = ({ data }) => {
                           ` ${item?.program_beneficiaries?.enrollment_last_name}`}
                       </FrontEndTypo.H3>
                     ) : (
-                      <FrontEndTypo.H4 bold color="grayTitleCard">
+                      <FrontEndTypo.H4 fontWeight={"600"} color="grayTitleCard">
                         {item?.first_name}
                         {item?.middle_name &&
                           item?.middle_name !== "null" &&
@@ -228,7 +253,6 @@ const styles = {
 };
 
 export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
-  const [facilitator, setFacilitator] = useState({});
   const navigate = useNavigate();
   const [filter, setFilter] = useState({ limit: 6 });
   const [data, setData] = useState([]);
@@ -238,7 +262,264 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
+  const refButton = useRef(null);
+
+  // PROFILE DATA IMPORTS
+  const [facilitator, setFacilitator] = useState({ notLoaded: true });
   const fa_id = localStorage.getItem("id");
+  const [loading, setLoading] = useState(true);
+  const [countLoad, setCountLoad] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [academicYear, setAcademicYear] = useState(null);
+  const [academicData, setAcademicData] = useState([]);
+  const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
+
+  const saveDataToIndexedDB = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    try {
+      const [ListOfEnum, qualification, editRequest] = await Promise.all([
+        enumRegistryService.listOfEnum(),
+        enumRegistryService.getQualificationAll(),
+        facilitatorRegistryService.getEditRequests(obj),
+        // enumRegistryService.userInfo(),
+      ]);
+      const currentTime = moment().toString();
+      await Promise.all([
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("qualification", qualification),
+        setIndexedDBItem("lastFetchTime", currentTime),
+        setIndexedDBItem("editRequest", editRequest),
+      ]);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operation
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        //get user info
+        if (userTokenInfo) {
+          const IpUserInfo = await getIpUserInfo(fa_id);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        try {
+          const c_data =
+            await facilitatorRegistryService.getPrerakCertificateDetails({
+              id: fa_id,
+            });
+          const data =
+            c_data?.data?.filter(
+              (eventItem) =>
+                eventItem?.params?.do_id?.length &&
+                eventItem?.lms_test_tracking?.length < 1
+            )?.[0] || {};
+          if (data) {
+            setIsTodayAttendace(
+              data?.attendances.filter(
+                (attendance) =>
+                  attendance.user_id == fa_id &&
+                  attendance.status == "present" &&
+                  data.end_date ==
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
+            );
+
+            setCertificateData(data);
+            if (data?.lms_test_tracking?.length > 0) {
+              setLmsDetails(data?.lms_test_tracking?.[0]);
+            }
+            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+            const format = "HH:mm:ss";
+            const time = moment(moment().format(format), format);
+            const beforeTime = moment.utc(data?.start_time, format).local();
+            const afterTime = moment.utc(data?.end_time, format).local();
+            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+              setIsEventActive(true);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchdata();
+  }, [selectedCohortData]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
+        });
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
+      }
+    }
+    fetchData();
+  }, [academicYear]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const res = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...res,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            [
+              "device_ownership",
+              "mobile",
+              "device_type",
+              "gender",
+              "marital_status",
+              "social_category",
+              "name",
+              "contact_number",
+              "availability",
+              "aadhar_no",
+              "aadhaar_verification_mode",
+              "aadhar_verified",
+              "qualification_ids",
+              "qua_name",
+            ]
+          )
+        );
+        //check exist user registered
+        try {
+          let onboardingURLData = await getOnboardingURLData();
+          setCohortData(onboardingURLData?.cohortData);
+          setProgramData(onboardingURLData?.programData);
+          //get program id and store in localstorage
+
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          setSelectedProgramData(program_data[0]);
+          await setSelectedProgramId(program_data[0]);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no != null &&
+            mobile_no_onboarding != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            localStorage.setItem("loadCohort", "yes");
+            setIsUserRegisterExist(true);
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {}
+      }
+    }
+    fetchData();
+  }, [facilitator]);
+
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+        await checkDataToIndex();
+        await checkUserToIndex();
+      } else {
+        setSelectCohortForm(true);
+      }
+    }
+  };
+  const checkDataToIndex = async () => {
+    // Online Data Fetch Time Interval
+    const timeInterval = 30;
+    const enums = await getIndexedDBItem("enums");
+    const qualification = await getIndexedDBItem("qualification");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const editRequest = await getIndexedDBItem("editRequest");
+    let timeExpired = false;
+    if (lastFetchTime) {
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= timeInterval) {
+        timeExpired = true;
+      }
+    }
+    if (
+      isOnline &&
+      (!enums ||
+        !qualification ||
+        !editRequest ||
+        timeExpired ||
+        !lastFetchTime ||
+        editRequest?.status === 400)
+    ) {
+      await saveDataToIndexedDB();
+    }
+  };
 
   useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -248,8 +529,16 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   }, []);
 
   useEffect(() => {
-    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    if (
+      ref?.current?.clientHeight >= 0 &&
+      refButton?.current?.clientHeight >= 0 &&
+      bodyHeight >= 0
+    ) {
+      setLoadingHeight(
+        bodyHeight -
+          ref?.current?.clientHeight -
+          refButton?.current?.clientHeight
+      );
     } else {
       setLoadingHeight(bodyHeight);
     }
@@ -288,43 +577,17 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           setFilter({ ...filter, search: value, page: 1 });
         },
         _box: { bg: "white", shadow: "appBarShadow" },
+        profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
       }}
-      // _page={{ _scollView: { bg: "formBg.500" } }}
+      facilitator={facilitator}
       _footer={{ menues: footerLinks }}
     >
       <VStack ref={ref}>
-        {[
-          "pragati_mobilizer",
-          "selected_prerak",
-          "selected_for_training",
-          "selected_for_onboarding",
-        ].includes(facilitator.status) && (
-          <Pressable
-            onPress={(e) => {
-              navigate(`/beneficiary`);
-            }}
-          >
-            <HStack p="5" space="5" bg="textMaroonColor.50" alignItems="Center">
-              <IconByName
-                isDisabled
-                name="UserFollowLineIcon"
-                _icon={{ size: "30px" }}
-              />
-              <VStack flex="0.8">
-                <FrontEndTypo.H3
-                  bold
-                  color="textGreyColor.800"
-                  wordWrap="break-word"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {t("ADD_MORE_AG")}
-                </FrontEndTypo.H3>
-              </VStack>
-            </HStack>
-          </Pressable>
-        )}
+        <FrontEndTypo.H1 fontWeight="600" mx="4" my="6" mb="0">
+          {t("LEARNER_LIST")}
+        </FrontEndTypo.H1>
         <HStack
           justifyContent="space-between"
           space="2"
@@ -400,7 +663,11 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           height={loadingHeight}
           loader={<Loading height="100" />}
           endMessage={
-            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
+            <FrontEndTypo.H3
+              fontWeight={"600"}
+              display="inherit"
+              textAlign="center"
+            >
               {data?.length > 0
                 ? t("COMMON_NO_MORE_RECORDS")
                 : t("DATA_NOT_FOUND")}
@@ -410,61 +677,41 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           pullDownToRefreshThreshold={50}
         >
           <List data={data} />
-          <Pressable
-            onPress={(e) => {
-              if (
-                [
-                  "pragati_mobilizer",
-                  "selected_prerak",
-                  "selected_for_training",
-                  "selected_for_onboarding",
-                ].includes(facilitator.status)
-              ) {
-                navigate(`/beneficiary`);
-              } else {
-                navigate("/beneficiary");
-              }
-            }}
-          >
-            {/* <HStack alignItems="Center">
-              <IconByName
-                isDisabled
-                name="UserFollowLineIcon"
-                _icon={{ size: "30px" }}
-                onPress={(e) => {
-                  navigate("/beneficiary");
-                }}
-              />
-              <VStack flex="0.8"> */}
-            <FrontEndTypo.Secondarybutton
-              onPress={(e) => {
-                if (
-                  [
-                    "pragati_mobilizer",
-                    "selected_prerak",
-                    "selected_for_training",
-                    "selected_for_onboarding",
-                  ].includes(facilitator.status)
-                ) {
-                  navigate(`/beneficiary`);
-                } else {
-                  navigate("/beneficiary");
-                }
-              }}
-              // rightIcon={}
-              mx="auto"
-              my="2"
-              minW="70%"
-            >
-              {t("ADD_MORE_AG")}
-            </FrontEndTypo.Secondarybutton>
-            {/* </VStack>
-            </HStack> */}
-          </Pressable>
         </InfiniteScroll>
       ) : (
         <Loading height={loadingHeight} />
       )}
+      <HStack
+        ref={refButton}
+        width={"100%"}
+        bg={"white"}
+        flex={1}
+        safeAreaTop
+        position="fixed"
+        bottom="70px"
+        zIndex={"9999999"}
+      >
+        <FrontEndTypo.Secondarybutton
+          onPress={(e) => {
+            if (
+              [
+                "pragati_mobilizer",
+                "selected_prerak",
+                "selected_for_training",
+                "selected_for_onboarding",
+              ].includes(facilitator.status)
+            ) {
+              navigate(`/beneficiary`);
+            } else {
+              navigate("/beneficiary");
+            }
+          }}
+          mx="auto"
+          my="2"
+        >
+          {t("ADD_MORE_AG")}
+        </FrontEndTypo.Secondarybutton>
+      </HStack>
     </Layout>
   );
 }

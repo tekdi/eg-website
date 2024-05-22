@@ -3,8 +3,8 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "CONTACT_DETAILS",
-
+      title: "BASIC_DETAILS",
+      description: "CONTACT_DETAILS",
       type: "object",
       required: ["mobile"],
       properties: {
@@ -14,7 +14,7 @@ export default {
         },
         mark_as_whatsapp_number: {
           type: "string",
-          label: "MARK_AS_WHATSAPP_REGISTER",
+          description: "MARK_AS_WHATSAPP_REGISTER",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
           enumNames: ["YES", "NO"],
@@ -22,7 +22,7 @@ export default {
         },
         device_type: {
           type: "string",
-          label: "TYPE_OF_MOBILE_PHONE",
+          description: "TYPE_OF_MOBILE_PHONE",
           format: "CustomR",
           grid: 2,
           icons: [
@@ -34,18 +34,19 @@ export default {
         },
         device_ownership: {
           type: "string",
-          label: "MARK_OWNERSHIP",
+          description: "MARK_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
 
         alternative_mobile_number: {
+          description: "ALTERNATIVE_NUMBER",
           type: ["number", "null"],
-          title: "ALTERNATIVE_NUMBER",
+          title: "MOBILE_NUMBER",
         },
         alternative_device_type: {
-          label: "TYPE_OF_MOBILE_PHONE",
+          description: "TYPE_OF_MOBILE_PHONE",
           format: "RadioBtn",
           type: "string",
           enumNames: ["SMARTPHONE", "BASIC"],
@@ -53,13 +54,14 @@ export default {
         },
         alternative_device_ownership: {
           type: "string",
-          label: "MARK_OWNERSHIP",
+          description: "MARK_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
 
         email_id: {
+          description: "EMAIL_ID",
           type: "string",
           format: "email",
           title: "EMAIL_ID",

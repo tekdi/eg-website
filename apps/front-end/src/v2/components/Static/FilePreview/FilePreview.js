@@ -55,7 +55,7 @@ export default function FilePreview({
           <iframe
             src={pdf}
             width="100%"
-            height="500px"
+            height="150px"
             title="PDF Preview"
           ></iframe>
         ) : (
