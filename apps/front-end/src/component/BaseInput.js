@@ -335,7 +335,6 @@ export const RadioBtn = ({
         </FormControl.Label>
       )}
       <Radio.Group
-        colorScheme="eG_Blue"
         key={items}
         pb="4"
         value={value}
@@ -361,7 +360,7 @@ export const RadioBtn = ({
               key={item?.value}
               value={item?.value}
               size="lg"
-              colorScheme="eG_Blue"
+              colorScheme="blue"
               _text={{ fontSize: 12, fontWeight: 500 }}
               isDisabled={readOnly}
             >

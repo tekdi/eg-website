@@ -5,6 +5,7 @@ import {
   ImageView,
   CardComponent,
   IconByName,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
@@ -141,12 +142,7 @@ function CampExecutionEnd({ facilitator, learnerCount }) {
             </CardComponent>
           </VStack>
         </Box>
-        <Alert status="warning">
-          <HStack alignItems={"center"} space={2}>
-            <Alert.Icon />
-            <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
-          </HStack>
-        </Alert>
+        <CustomAlert status={""} title={t("DONT_CLOSE_SCREEN")} />
         <FrontEndTypo.Secondarybutton
           onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
         >

@@ -312,7 +312,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
   );
 }
 
-CampDashboard.propTypes = {
+CampDashboard.PropTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };

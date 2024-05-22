@@ -415,7 +415,7 @@
   "DEACTIVATE_MSG": "After assigning the learner to this Pragati Mobilizer, rest of the duplicated learner will be deactivated. Do you want to continue ? If Yes click 'confirm'. If No click on 'Cancel' button.",
   "DEACTIVATED_PAGE_MSG": "This learner profile is deactivated. Hence cannot be edited. Please press back button to go to home page.",
   "DEGREE": "Degree",
-  "DELETE" : "Delete",
+  "DELETE": "Delete",
   "DELETE_EVENT": "Delete Event",
   "DESCRIPTION": "Enter the Description",
   "DESIGNATION": "Designation",
@@ -488,7 +488,7 @@
   "END_TIME": "End time",
   "END_TIME_SHOULD_BE_GREATER_THAN_START_TIME": "End time should be greater than start time",
   "ENGLISH": "English",
-  "En" : "En",
+  "En": "En",
   "ENROLL_15_OR_MORE": "You need to Enroll 15 or more Learners to set up a viable camp",
   "ENROLLED": "Enrolled",
   "ENROLLEMENT_VERIFICATION_STATUS_CHANGE_REQUIRED": "Change Required",
@@ -642,51 +642,9 @@
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
   "EXAM_PREPARATION": {
-    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
-      "NO": "no",
-      "TITLE": "Did the learner receive the  admit card?",
-      "YES": "yes"
-    },
-    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable",
-      "TITLE": "Has the learner prepared the practical file?",
-      "YES": "yes"
-    },
-    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable",
-      "TITLE": "Does the learner have the travel arrangements to the exam center?",
-      "YES": "yes"
-    },
-    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "NO": "no",
-      "TITLE": "Did the learner receive the Exam Time Table?",
-      "YES": "yes"
-    },
-    "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "NO": "no",
-      "TITLE1": "Will",
-      "TITLE2": "appear for the exam?",
-      "YES": "yes"
-    },
-    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
-      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received",
-      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
-      "EXAM_FEAR": "Exam Fear",
-      "FAMILY_RESTRICTIONS": "Family restrictions",
-      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
-      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
-      "ILLNESS": "Illness",
-      "TITLE": "Choose the reason ",
-      "TRAVEL_ISSUES": "Travel Issues"
-    }
-  },
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
   "EXIST_LOGIN": "You already have an account for {{state}} {{year}}, proceed to log in instead.",
-  "EXISTING_IP": "Existing IP",
   "EXISTING_IP_USER": "Existing IP User",
-  "EXISTING_USER": "Existing User",
   "EXPERIENCE": "Experience",
   "EXPERIENCE_IN_YEARS": "Experience in years",
   "EXPLAIN_YOUR_CLAIM_OF_THE_AG_LEARNER": "Explain your claim of the AG Learner",
@@ -835,7 +793,7 @@
   "HAVE_YOU_UPDATED_AADHAAR_CARD": "Have you updated aadhaar card?",
   "HELP": "Help",
   "HINDI": "Hindi",
-  "HIN" : "हिं",
+  "HIN": "हिं",
   "HOME": "Home",
   "HOME_PAGE": "Home Page",
   "HOW_CAN_CONTACT_YOU": "How Can we Contact You?",
@@ -951,7 +909,6 @@
   "LEARNERS_INFO": "Learner Info",
   "LEARNERS_LIST": "Learner's List",
   "LEARNERS_NAME": "Learner's Name",
-  "LEARNERS_PER_TARGET": "Average learners per camp",
   "LEARNERS_SUBJECT_CSV": "Learner's subject CSV",
   "LEARNERS_TARGET": "Learner's Target",
   "LEARNERS_WHATSAPP_NUMBER": "(WhatsApp phone number that is readily available to the learner)",
@@ -993,7 +950,9 @@
   "LEARNER_LIST": "Learners List",
   "MAIN_CAMP": "Main Camp",
   "MAIN_CAMP_EXECUTION": "Main Camp Execution",
+  "CAMP_EXECUTION": "Camp Execution",
   "MAIN_CAMP_PROFILE": "Main Camp Profile",
+  "CAMP_PROFILE": "Camp Profile",
   "MAIN_CAMP_SETTINGS": "Main Camp Settings",
   "MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS": "Make sure you have the following list of documents with you when you attend the orientation",
   "MALE": "Male",
@@ -1027,7 +986,7 @@
   "MEMBER_DETAILS": "Member Details",
   "ADD_MEMBER": "Add Member",
   "MENTION_YOUR_REASON": "Mention your reason",
-  "MENU" : "Menu",
+  "MENU": "Menu",
   "MIDDLE_NAME": "Middle Name",
   "MIGRATION_RELATED_TO_EMPLOYMENT": "Migration related to employment",
   "MINIMUM_AGE_12_YEAR_OLD": "Minimum age 12 year old",
@@ -1531,8 +1490,8 @@
   "TEACHING_RALATED_DEGREE": "Teaching Related Degree",
   "TEACHING_RELATED": "Teaching Related",
   "TELL_IN_DETAIL": "Tell Us in Detail",
-  "HELLO": "Hello!",
-  "HELLO_HOME" : "HELLO",
+  "HELLO_HOME": "HELLO",
+  "HELLO": "Hello",
   "TELL_US_YOUR_NAME": "Tell us your Name",
   "TELL_US_YOUR_NAME_AS_PER_AADHAAR_CARD": "Tell us your name as per aadhaar card",
   "TERMS_AND_CONDITIONS": "* Terms and Conditions",
@@ -1711,11 +1670,57 @@
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-
+  "EXAM_PREPARATION": {
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "TITLE": "Will the learner appear for the exam?",
+      "YES": "yes",
+      "NO": "no"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "TITLE": "Choose the reason ",
+      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
+      "FAMILY_RESTRICTIONS": "Family restrictions",
+      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
+      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
+      "ILLNESS": "Illness",
+      "TRAVEL_ISSUES": "Travel Issues",
+      "EXAM_FEAR": "Exam Fear",
+      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received"
+    },
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "TITLE": "Did the learner receive the  admit card?",
+      "YES": "yes",
+      "NO": "no"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "TITLE": "Has the learner prepared the practical file?",
+      "YES": "yes",
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "TITLE": "Does the learner have the travel arrangements to the exam center?",
+      "YES": "yes",
+      "NO": "no",
+      "NOT_APPLICABLE": "Not Applicable"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "TITLE": "Did the learner receive the Exam Time Table?",
+      "YES": "yes",
+      "NO": "no"
+    }
+  },
+  "LEARNERS_PER_TARGET": "Average learners per camp",
+  "CREATE": "Create",
+  "EXISTING_IP": "Existing IP",
+  "EXISTING_USER": "Existing User",
+  "CHANGE_LANGUGAE": "Change Language",
+  "PCR_CAMPS": "PCR Camps",
+  "MAIN_CAMPS": "Main Camps",
+  "PCR_CAMP_ALERT_MESSAGE": "These camps will convert to Main Camps after the PCR activities are Complete",
   "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
   "WILL_BE_DETERMINED": "will be determined",
   "THEY_WONT_GO": "They won't go",
-
   "VIEW_EXAM_SCHEDULE": "View Exam Schedule",
   "LEARNER_EXAM_RESULTS": "Learner Exam Results",
   "LEARNER_EXAM_RESULT": "Learner Exam Result",
@@ -1726,7 +1731,6 @@
   "THEORY": "Theory",
   "MARK_LEARNER_EXAM_ATTENDANCE": "Mark Learner Exam Attendance",
   "EXAM_WARNING": "No Learners for the exam",
-  "LEARNER_STATUS_COUNT": "Learner Status Count",
   "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "Access all information of your learner's status",
   "LEARNER_STATUS_OVERVIEW": "Learner Status Overview",
   "LEARNER_EXAM_ATTENDANCE": "Learner Exam Attendance",

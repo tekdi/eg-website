@@ -211,112 +211,123 @@ export default function CampAttendancePage({ activityId }) {
 
   if (userData?.id) {
     return (
-      <Suspense fallback={<Loading />}>
-        <Camera
-          facing={true}
-          headerComponent={
-            <VStack bg="black" flex="1" py="2" px="4">
-              <HStack
-                space={2}
-                divider={
-                  <FrontEndTypo.H6 color="white" bold>
-                    :
-                  </FrontEndTypo.H6>
-                }
-              >
-                <FrontEndTypo.H3 color="white">{t("NAME")}</FrontEndTypo.H3>
-                <FrontEndTypo.H3 color="white">
-                  {`${[
-                    userData?.program_beneficiaries[0]?.enrollment_first_name,
-                    userData?.program_beneficiaries[0]?.enrollment_middle_name,
-                    userData?.program_beneficiaries[0]?.enrollment_last_name,
-                  ]
-                    .filter((e) => e)
-                    .join(" ")}`}
-                </FrontEndTypo.H3>
-              </HStack>
-              <HStack
-                space={2}
-                divider={
-                  <FrontEndTypo.H6 color="white" bold>
-                    :
-                  </FrontEndTypo.H6>
-                }
-              >
-                <FrontEndTypo.H3 color="white">
-                  {t("LATITUDE")} {t("LONGITUDE")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H3 color="white">
-                  {`${[data.lat, data.long].filter((e) => e).join(" ")}`}
-                </FrontEndTypo.H3>
-              </HStack>
-              {error && (
-                <FrontEndTypo.H4 style={{ color: "red" }}>
-                  {error}
-                </FrontEndTypo.H4>
-              )}
-            </VStack>
-          }
-          messageComponent={
-            <VStack>
-              <FrontEndTypo.H3 color="white" textAlign="center">
-                {t("ATTENDANCE_PHOTO_MSG")}
-              </FrontEndTypo.H3>
-            </VStack>
-          }
-          loading={
-            progress && (
-              <VStack space={4} justifyContent="center" p="4">
-                <Spinner
-                  color={"primary.500"}
-                  accessibilityLabel="Loading posts"
-                  size="lg"
-                />
-                <Progress value={progress} colorScheme="red" />
-                <FrontEndTypo.H3 textAlign="center" color="white">
-                  {progress}%
-                </FrontEndTypo.H3>
-              </VStack>
-            )
-          }
-          {...{
-            onFinish: (e) => uploadAttendence(userData, PRESENT, true),
-            cameraModal: true,
-            setCameraModal: async (item) => {
-              setUserData();
-            },
-            cameraUrl,
-            filePreFix: `camp_leaner_attendace_user_id_${userData?.id}_`,
-            setCameraUrl: async (url, file) => {
-              setProgress(0);
-              if (file) {
-                setError("");
-                let formData = new FormData();
-                formData.append("user_id", userData?.id);
-                formData.append("document_type", "camp_attendance");
-                formData.append("file", file);
-                const uploadDoc = await uploadRegistryService.uploadFile(
-                  formData,
-                  {},
-                  (progressEvent) => {
-                    const { loaded, total } = progressEvent;
-                    let percent = Math.floor((loaded * 100) / total);
-                    setProgress(percent);
-                  }
-                );
-                if (uploadDoc) {
-                  setCameraFile(uploadDoc);
-                }
-                setCameraUrl({ url, file });
-              } else if (cameraUrl) {
-                setCameraUrl();
-              } else {
-                setUserData();
+      <Layout>
+        <Suspense fallback={<Loading />}>
+          <VStack padding={"4"} space={4}>
+            <FrontEndTypo.H2>{t("MARK_ATTENDANCE")}</FrontEndTypo.H2>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
+              "CAMP_ID"
+            )} : ${id}`}</FrontEndTypo.H4>
+            <Camera
+              facing={true}
+              headerComponent={
+                <VStack bg="black" flex="1" py="2" px="4">
+                  <HStack
+                    space={2}
+                    divider={
+                      <FrontEndTypo.H6 color="white" bold>
+                        :
+                      </FrontEndTypo.H6>
+                    }
+                  >
+                    <FrontEndTypo.H3 color="white">{t("NAME")}</FrontEndTypo.H3>
+                    <FrontEndTypo.H3 color="white">
+                      {`${[
+                        userData?.program_beneficiaries[0]
+                          ?.enrollment_first_name,
+                        userData?.program_beneficiaries[0]
+                          ?.enrollment_middle_name,
+                        userData?.program_beneficiaries[0]
+                          ?.enrollment_last_name,
+                      ]
+                        .filter((e) => e)
+                        .join(" ")}`}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                  <HStack
+                    space={2}
+                    divider={
+                      <FrontEndTypo.H6 color="white" bold>
+                        :
+                      </FrontEndTypo.H6>
+                    }
+                  >
+                    <FrontEndTypo.H3 color="white">
+                      {t("LATITUDE")} {t("LONGITUDE")}
+                    </FrontEndTypo.H3>
+                    <FrontEndTypo.H3 color="white">
+                      {`${[data.lat, data.long].filter((e) => e).join(" ")}`}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                  {error && (
+                    <FrontEndTypo.H4 style={{ color: "red" }}>
+                      {error}
+                    </FrontEndTypo.H4>
+                  )}
+                </VStack>
               }
-            },
-          }}
-        />
-      </Suspense>
+              messageComponent={
+                <VStack>
+                  <FrontEndTypo.H3 color="white" textAlign="center">
+                    {t("ATTENDANCE_PHOTO_MSG")}
+                  </FrontEndTypo.H3>
+                </VStack>
+              }
+              loading={
+                progress && (
+                  <VStack space={4} justifyContent="center" p="4">
+                    <Spinner
+                      color={"primary.500"}
+                      accessibilityLabel="Loading posts"
+                      size="lg"
+                    />
+                    <Progress value={progress} colorScheme="red" />
+                    <FrontEndTypo.H3 textAlign="center" color="white">
+                      {progress}%
+                    </FrontEndTypo.H3>
+                  </VStack>
+                )
+              }
+              {...{
+                onFinish: (e) => uploadAttendence(userData, PRESENT, true),
+                cameraModal: true,
+                setCameraModal: async (item) => {
+                  setUserData();
+                },
+                cameraUrl,
+                filePreFix: `camp_leaner_attendace_user_id_${userData?.id}_`,
+                setCameraUrl: async (url, file) => {
+                  setProgress(0);
+                  if (file) {
+                    setError("");
+                    let formData = new FormData();
+                    formData.append("user_id", userData?.id);
+                    formData.append("document_type", "camp_attendance");
+                    formData.append("file", file);
+                    const uploadDoc = await uploadRegistryService.uploadFile(
+                      formData,
+                      {},
+                      (progressEvent) => {
+                        const { loaded, total } = progressEvent;
+                        let percent = Math.floor((loaded * 100) / total);
+                        setProgress(percent);
+                      }
+                    );
+                    if (uploadDoc) {
+                      setCameraFile(uploadDoc);
+                    }
+                    setCameraUrl({ url, file });
+                  } else if (cameraUrl) {
+                    setCameraUrl();
+                  } else {
+                    setUserData();
+                  }
+                },
+              }}
+            />
+          </VStack>
+        </Suspense>
+      </Layout>
     );
   }
 
