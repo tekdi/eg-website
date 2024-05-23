@@ -78,6 +78,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = useState();
   const { id } = userTokenInfo?.authUser || {};
   const [examButtonText, setExamButtonText] = useState("");
+  const prerak_status = localStorage.getItem("status");
   const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -574,12 +575,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     >
       <VStack bg="primary.50" pb="5" style={{ zIndex: -1 }}>
         <VStack space="5">
-          {facilitator?.status === "applied" && (
-            <InfoBox status={facilitator?.status} progress={progress} />
+          {prerak_status === "applied" && (
+            <InfoBox status={prerak_status} progress={progress} />
           )}
           <Stack>
-            {facilitator?.program_faciltators?.status ===
-              "selected_for_onboarding" &&
+            {prerak_status === "selected_for_onboarding" &&
               progress !== 100 && (
                 <Alert status="success" alignItems={"start"}>
                   <HStack alignItems="center" space="2" color>
@@ -770,7 +770,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_prerak",
             "selected_for_training",
             "selected_for_onboarding",
-          ].includes(facilitator.status) && (
+          ].includes(prerak_status) && (
             <Stack>
               <RedOutlineButton
                 background="bgYellowColor.400"
@@ -802,23 +802,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Stack>
             </Stack>
           )}
-          {["applied", ""]?.includes(facilitator.status) &&
-            progress !== 100 && (
-              <Stack>
-                <VStack p="5" pt={1}>
-                  <FrontEndTypo.Primarybutton
-                    //old route for complete profile
-                    //onPress={(e) => navigate("/profile/edit/basic_details")}
-                    //old route for complete profile
-                    onPress={(e) => navigate("/profile/edit/basic_details")}
-                    bold
-                    flex="1"
-                  >
-                    {t("COMPLETE_FORM")}
-                  </FrontEndTypo.Primarybutton>
-                </VStack>
-              </Stack>
-            )}
+          {["applied", ""]?.includes(prerak_status) && progress !== 100 && (
+            <Stack>
+              <VStack p="5" pt={1}>
+                <FrontEndTypo.Primarybutton
+                  //old route for complete profile
+                  //onPress={(e) => navigate("/profile/edit/basic_details")}
+                  //old route for complete profile
+                  onPress={(e) => navigate("/profile/edit/basic_details")}
+                  bold
+                  flex="1"
+                >
+                  {t("COMPLETE_FORM")}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
+            </Stack>
+          )}
           {!["yes"].includes(facilitator?.aadhar_verified) && (
             <Stack p="5" space={4}>
               {[undefined].includes(facilitator?.aadhar_no) && (
