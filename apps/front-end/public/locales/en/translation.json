@@ -1507,7 +1507,7 @@
   "TEACHING_QUALIFICATION_M_ED": "M.Ed",
   "TEACHING_QUALIFICATION_NONE": "None",
   "TEACHING_QUALIFICATION_STC": "STC",
-  "TEACHING_RALATED_DEGREE": "Teaching Related Degree",
+  "TEACHING_RALATED_DEGREE": "Do you have a teaching degree?",
   "TEACHING_RELATED": "Teaching Related",
   "TELL_IN_DETAIL": "Tell Us in Detail",
   "HELLO_HOME": "HELLO",
@@ -1684,7 +1684,7 @@
   "YOUR_APPLICATION_IS_SUBMITTED_SUCCESSFULLY": "your Application is submitted Successfully!",
   "YOUR_APPLICATION_IS_UNDER_REVIEW": "Your Application is Under Review",
   "YOUR_CALENDAR": "Your Calender",
-  "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
+  "YOUR_HIGHEST_QUALIFICATION": "What is your highest education?",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
@@ -1905,5 +1905,6 @@
   "JOBS": "Jobs & Internships",
   "LEARNING_EXPERIENCES": "Skill Development &  Learning",
   "PCR_LEARNING_ACTIVITIES": "PCR Learning Activities",
-  "CAMP_EXECUTION": "Camp Execution"
+  "CAMP_EXECUTION": "Camp Execution",
+  "UPLOAD_FROM_PHONE": "Upload from Phone"
 }
