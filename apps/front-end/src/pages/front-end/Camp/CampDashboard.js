@@ -25,8 +25,6 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     fetchData();
   }, []);
 
-.
-
   return (
     <Layout
       _appBar={{
