@@ -611,8 +611,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 resizeMode="contain"
               />
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                {t("WELCOME")} {facilitator?.first_name}, new changes v1 24 may
-                24
+                {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
             {events?.length ? (
