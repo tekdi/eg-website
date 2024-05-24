@@ -546,10 +546,11 @@
       "APPLICATION_NOT_RUNNING_PROPERLY": "एप्लिकेशन ठीक से नहीं चलती ",
       "DONT_HAVE_INTERNET_RECHARGE": "इंटरनेट का रिचार्ज नही है",
       "DONT_KNOW_ABOUT_APPLICATION": "एप्लीकेशन के बारे में पता नहीं है",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "मोबाइल चलाना नहीं आता",
+      "INVALID_ID_PASSWORD": "अमान्य आईडी-पासवर्ड",
       "LACK_OF_TIME": "समय का अभाव",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "घर/कैंप/गांव में नेटवर्क की समस्या",
+      "NETWORK_PROBLEM_AT_HOME_VILLAGE": "घर/गांव में नेटवर्क की समस्या",
       "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
+      "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "स्मार्टफोन उपलब्ध नहीं है/मोबाइल चलाना नहीं आता",
       "DEATH": "मृत्यु",
       "ESCAPED": "पलायन",
       "TITLE": "एक कारण चुनें *"

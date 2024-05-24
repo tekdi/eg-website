@@ -545,10 +545,10 @@
       "APPLICATION_NOT_RUNNING_PROPERLY": "The application is not running properly",
       "DONT_HAVE_INTERNET_RECHARGE": "No internet recharge",
       "DONT_KNOW_ABOUT_APPLICATION": "Don't know about the application",
-      "DONT_KNOW_HOW_TO_USE_MOBILE": "Don't know how to use mobile",
+      "INVALID_ID_PASSWORD": "Invalid Id/Password",
       "LACK_OF_TIME": "Lack of time",
-      "NETWORK_PROBLEM_AT_HOME_CAMP_VILLAGE": "Network problem at home/camp/village",
-      "SMARTPHONE_NOT_AVAILABLE": "Smartphone is not available",
+      "NETWORK_PROBLEM_AT_HOME_VILLAGE": "Network problem at home/village",
+      "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "Smartphone is not available/Don't know how to use mobile",
       "DEATH": "Death",
       "ESCAPED": "escaped",
       "TITLE": "Choose the reason "
