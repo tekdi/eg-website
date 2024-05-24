@@ -1,7 +1,6 @@
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import {
-  AdminTypo,
   CardComponent,
   CustomAlert,
   FrontEndTypo,
@@ -25,10 +24,6 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import schema1 from "./schema";
-import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
-import { Alert, Box, VStack } from "native-base";
-import PropTypes from "prop-types";
 
 export default function CommunityView({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
