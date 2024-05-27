@@ -75,7 +75,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = useState();
   const { id } = userTokenInfo?.authUser || {};
   const [examButtonText, setExamButtonText] = useState("");
-  const prerak_status = localStorage.getItem("status");
+  const [prerak_status, SetPrerak_status] = useState("");
   const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -91,6 +91,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
+  const [disable, setDisable] = useState(false);
 
   const [env_name] = useState(process.env.NODE_ENV);
 
@@ -98,6 +99,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
+
+  useEffect(() => {
+    SetPrerak_status(localStorage.getItem("status"));
+  }, [localStorage.getItem("status")]);
 
   const saveDataToIndexedDB = async () => {
     const obj = {
@@ -167,9 +172,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const timeExpired = await checkPrerakOfflineTimeInterval();
     let academic_Id = await getSelectedAcademicYear();
     if (
-      isOnline &&
-      academic_Id &&
-      (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo)
+      isOnline ||
+      (isOnline &&
+        academic_Id &&
+        (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo))
     ) {
       await setIpUserInfo(fa_id);
       await setPrerakOfflineInfo(fa_id);
@@ -430,7 +436,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const startTest = async () => {
-    console.log("hello");
     try {
       const randomizedDoId = await handleRandomise();
       navigate(`/assessment/events/${isEventActive?.id}/${randomizedDoId}`);
@@ -546,7 +551,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const handleAcademicYear = async (item) => {
-    setAcademicYear(item);
+    if (item !== "__NativebasePlaceholder__") {
+      setAcademicYear(item);
+      setDisable(false);
+    } else {
+      setAcademicYear(item);
+      setDisable(true);
+    }
   };
 
   useEffect(() => {
@@ -1020,6 +1031,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   onPress={async (e) => {
                     selectAcademicYear();
                   }}
+                  isDisabled={disable}
                 >
                   {t("SELECT_COHORT_NEXT")}
                 </FrontEndTypo.Primarybutton>

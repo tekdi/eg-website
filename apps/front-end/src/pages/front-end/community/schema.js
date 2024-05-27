@@ -1,6 +1,8 @@
 export default {
   type: "object",
   required: ["first_name", "contact_number", "designation"],
+  title: "ADD_COMMUNITY_MEMBER",
+  description: "MEMBER_DETAILS",
   properties: {
     first_name: {
       type: "string",
