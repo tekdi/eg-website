@@ -451,6 +451,7 @@
   "DONT_ALLOW_MOBILE": "यह मोबाइल नंबर पहले से ही शिक्षार्थी खाते के लिए उपयोग में है। इसलिए आप रजिस्टर करने के लिए आगे नहीं बढ़ सकते।",
   "DONT_CLOSE_SCREEN": "इस स्क्रीन को बंद न करें। कैंप  के अंत में हमें आज का अनुभव ज़रूर साझा करें",
   "DONT_HAVE_AN_ACCOUNT": "खाता नहीं है?",
+  "DONT_KNOW": "पता नहीं।",
   "DONTS": "नहीं",
   "DOWNLOAD": "डाउनलोड",
   "DOWNLOAD_CERTIFICATE": "प्रमाणपत्र डाउनलोड करे",
@@ -535,6 +536,7 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "आपके मोबाइल नंबर पर भेजा गया यूजरनेम और पासवर्ड दर्ज करें",
   "ENTER_YOUR_AADHAAR_NUMBER": "अपना आधार नंबर दर्ज करें",
   "ENTERED_AADHAR_NOT_EDITABLE": "दर्ज किया गया आधार कार्ड नंबर मे परिवर्तन नही कर सकते. कृपया दर्ज करने से पहले वेरिफाई  करें",
+  "EXAM_FEE_DATE": "परीक्षा शुल्क भुगतान की तिथि",
   "SELECT_SUBJECT_INFO": "उन विषयों का चयन करें जिनके लिए शिक्षार्थी उपस्थित हुआ है। यदि वे सभी विषयों के लिए उपस्थित नहीं हुए हैं तो इसे बाद में अद्यतन किया जा सकता है।",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
@@ -1514,6 +1516,7 @@
   "SUPPORT_IN_PROBLEM_SOLVING": "समस्या समाधान करने में ",
   "SUPPORT_IN_READING_WRITING": "पढ़ने-लिखने में मदद",
   "SUPPORT_TO_STUDY_ONLINE": "ऑनलाइन कैसे पढ़ा जाए",
+  "SYC_QUESTION": "यह शिक्षार्थी एस. वाई. सी. है। क्या वह अगली परीक्षा के लिए आवेदन करने जा रही है?",
   "SYLLABUS_COMPLETED": "सत्र पूरा हो गया",
   "SYLLABUS_INCOMPLETED": "सत्र अंशिक पूरा हुआ",
   "TAKE_A_PHOTO": "फोटो खींचें",
@@ -1874,5 +1877,7 @@
   "JOBS": "नौकरियाँ और इंटर्नशिप",
   "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
   "PCR_LEARNING_ACTIVITIES": "PCR सीखने की गतिविधियाँ",
-  "CAMP_EXECUTION": "शिविर संचालन"
+  "CAMP_EXECUTION": "शिविर संचालन",
+  "RECEIPT_OF_EXAM_FEES_PAYMENT": "परीक्षा शुल्क भुगतान की रसीद",
+  "RECEIPT_OF_EXAM_FEES_PAYMENT_DESCRIPTION": "कृपया परीक्षा शुल्क भुगतान रसीद की एक स्पष्ट तस्वीर या पीडीएफ अपलोड करें।"
 }
