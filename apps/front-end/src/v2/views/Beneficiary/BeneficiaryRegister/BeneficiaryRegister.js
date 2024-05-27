@@ -717,15 +717,23 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                   type="submit"
                   onPress={otpfunction}
                 >
-                  {/* {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")} */}
                   {t("NEXT")}
                 </FrontEndTypo.Primarybutton>
               ) : (
                 <FrontEndTypo.Primarybutton
-                  mt="0"
+                  mt="5"
+                  p="4"
                   variant={"primary"}
                   type="submit"
-                  onPress={() => formRef?.current?.submit()}
+                  onPress={() => {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    } else {
+                      if (formRef.current.validateForm()) {
+                        formRef?.current?.submit();
+                      }
+                    }
+                  }}
                 >
                   {t("NEXT")}
                 </FrontEndTypo.Primarybutton>
