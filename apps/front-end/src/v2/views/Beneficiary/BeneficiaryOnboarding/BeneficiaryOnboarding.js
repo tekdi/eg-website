@@ -12,6 +12,7 @@ import LearnerDuplicate from "v2/components/Functional/LearnerOnboardingDetails/
 import LearnerFormUpdate from "v2/components/Functional/LearnerOnboardingDetails/LearnerFormUpdate";
 import PcrDetails from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrDetails";
 import PcrView from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrView";
+import PsycCycle from "v2/components/Functional/LearnerUpdateDetail/psyc_cycle/PsycCycle";
 
 export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
@@ -94,6 +95,10 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
       case "pcrview":
         return (
           <PcrView userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
+        );
+      case "psyc":
+        return (
+          <PsycCycle userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
         );
       default:
         return (

@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 
-const FileUpload = ({ value, onChange, schema }) => {
+const FileUpload = ({ value, onChange, schema, uiSchema }) => {
   const {
     label,
     title,
@@ -23,6 +23,8 @@ const FileUpload = ({ value, onChange, schema }) => {
     dimensionsValidation,
     isReduce,
   } = schema || {};
+
+  const { readonly } = uiSchema || {};
 
   const uplodInputRef = useRef();
   const [loading, setLoading] = useState(false);
@@ -162,6 +164,7 @@ const FileUpload = ({ value, onChange, schema }) => {
             type="file"
             style={{ display: "none" }}
             ref={uplodInputRef}
+            disabled={readonly}
             onChange={handleFileInputChange}
           />
           <Box alignItems="center">
