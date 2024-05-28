@@ -9,30 +9,30 @@ import FamilyDetails from "v2/components/Functional/LearnerUpdateDetail/family-d
 import PersonalDetails from "v2/components/Functional/LearnerUpdateDetail/personal-details/personaldetails";
 import ReferenceDetails from "v2/components/Functional/LearnerUpdateDetail/reference-details/referencedetails";
 
-export default function BeneficiaryUpdate({ userTokenInfo, footerLinks }) {
+export default function BeneficiaryUpdate(props) {
   const { type } = useParams();
   const renderUpdateStep = () => {
     switch (type) {
       case "basic-info":
-        return <BasicDetails />;
+        return <BasicDetails {...props} />;
       case "contact-info":
-        return <ContactDetailsEdit />;
+        return <ContactDetailsEdit {...props} />;
       case "address":
-        return <AddressEdit />;
+        return <AddressEdit {...props} />;
       case "personal-details":
-        return <PersonalDetails />;
+        return <PersonalDetails {...props} />;
       case "family-details":
-        return <FamilyDetails />;
+        return <FamilyDetails {...props} />;
       case "education":
-        return <EducationDetails />;
+        return <EducationDetails {...props} />;
       case "future-education":
-        return <FutureStudy userTokenInfo={userTokenInfo} />;
+        return <FutureStudy {...props} />;
       case "enrollment-details":
-        return <EnrollmentForm />;
+        return <EnrollmentForm {...props} />;
       case "reference-details":
-        return <ReferenceDetails />;
+        return <ReferenceDetails {...props} />;
       default:
-        return <BasicDetails />;
+        return <BasicDetails {...props} />;
     }
   };
 
