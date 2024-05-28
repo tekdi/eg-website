@@ -55,6 +55,8 @@ export default function TableView({ footerLinks, userTokenInfo }) {
     }
   }, []);
 
+  // Save Data to Index DB
+
   const saveDataToIndexedDB = async () => {
     const obj = {
       edit_req_for_context: "users",
