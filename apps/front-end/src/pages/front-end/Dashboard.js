@@ -953,7 +953,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
           {/* Temp Comment */}
 
-          {/* <Stack bg="bgYellowColor.400" space="6" p={4}>
+          <Stack bg="bgYellowColor.400" space="6" p={4}>
             <FrontEndTypo.H2 color="textMaroonColor.400">
               {t("LEARNER_EXAMINATION")}
             </FrontEndTypo.H2>
@@ -982,7 +982,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             titleDetail={"LEARNER_EXAMINATION_DETAILS"}
             primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
             navigation={"/examresult"}
-          /> */}
+          />
 
           {/* Temp Comment  End*/}
         </VStack>
