@@ -974,7 +974,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               onPress={(e) => navigate("/examschedule")}
             >
               {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton>/*}
+        </FrontEndTypo.Secondarybutton>*/}
           </Stack>
 
           <DashboardCard
