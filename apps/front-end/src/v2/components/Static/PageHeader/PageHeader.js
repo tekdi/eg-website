@@ -1,17 +1,6 @@
 import { BodyLarge, IconByName } from "@shiksha/common-lib";
 import { Box, Button, HStack, Image, Modal } from "native-base";
 import React, { useState } from "react";
-import {
-  Box,
-  Center,
-  Stack,
-  ScrollView,
-  HStack,
-  Button,
-  Modal,
-  Pressable,
-  Image,
-} from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";
 import LanguageChange from "../../../assets/Images/Icon/LanguageChange.png";
 
