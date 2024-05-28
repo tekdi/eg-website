@@ -277,7 +277,7 @@ export default function EnrollmentForm() {
 
   const [uiSchema, setUiSchema] = useState({
     subjects: {
-      "ui:widget": "checkboxes",
+      "ui:widget": "MultiCheck",
     },
     enrollment_date: {
       "ui:widget": "alt-date",

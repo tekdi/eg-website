@@ -7,14 +7,16 @@ export default {
       type: "object",
       properties: {
         marital_status: {
-          label: "MARITAL_STATUS",
+          title: "MARITAL_STATUS",
+          description: "MARITAL_STATUS",
           type: "string",
-          format: "CustomR",
+          format: "RadioBtn",
         },
         social_category: {
-          label: "SOCIAL_CATEGORY",
+          title: "SOCIAL_CATEGORY",
+          description: "SOCIAL_CATEGORY",
           type: "string",
-          format: "CustomR",
+          format: "RadioBtn",
         },
       },
     },

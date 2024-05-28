@@ -3,7 +3,8 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "FULL_NAME",
+      title: "BASIC_DETAILS",
+      description: "FULL_NAME",
       type: "object",
       required: ["first_name"],
       properties: {
@@ -25,7 +26,7 @@ export default {
         dob: {
           type: ["string", "null"],
           format: "date",
-          title: "DATE_OF_BIRTH_AS_PER_AADHAAR",
+          description: "DATE_OF_BIRTH",
         },
         edit_page_type: {
           type: "string",
