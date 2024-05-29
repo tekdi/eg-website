@@ -47,11 +47,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = useState(false);
   const [isExistModal, setIsExistModal] = useState(false);
-  const [prerakStatus, SetPrerakStatus] = useState("");
-
-  useEffect(() => {
-    SetPrerakStatus(localStorage.getItem("status"));
-  }, [localStorage.getItem("status")]);
+  const prerakStatus = localStorage.getItem("status");
 
   const onPressBackButton = async (e) => {
     setotpbtn(false);

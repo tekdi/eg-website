@@ -98,7 +98,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
       {},
       (progressEvent) => {
         const { loaded, total } = progressEvent;
-        let percent = Math.floor((loaded * 100) / total);
+        const percent = Math.floor((loaded * 100) / total);
       }
     );
     if (!result?.data) {
