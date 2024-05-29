@@ -40,6 +40,9 @@ jobs:
           REACT_APP_LEARNINGS_BAP_ID: ${{ secrets.REACT_APP_LEARNINGS_BAP_ID }}
           REACT_APP_LEARNINGS_BAP_URI: ${{ secrets.REACT_APP_LEARNINGS_BAP_URI }}
           REACT_APP_LEARNINGS_BASE_URL: ${{ secrets.REACT_APP_LEARNINGS_BASE_URL }}
+          REACT_APP_SCHOLARSHIP_DB_CACHE: ${{ secrets.REACT_APP_SCHOLARSHIP_DB_CACHE }}
+          REACT_APP_JOBS_DB_CAHCE: ${{ secrets.REACT_APP_JOBS_DB_CAHCE }}
+          REACT_APP_LEARNINGS_DB_CAHCE: ${{ secrets.REACT_APP_LEARNINGS_DB_CAHCE }}
           
       - name: Create Lerna Bundles for Submodules
         run: |
