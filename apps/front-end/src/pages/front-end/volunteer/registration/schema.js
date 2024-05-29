@@ -6,7 +6,7 @@ export default {
       title: "TELL_US_YOUR_NAME",
       description: "AS_PER_AADHAAR",
       type: "object",
-      required: ["first_name"],
+      required: ["first_name", "gender", "email_id", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -47,6 +47,7 @@ export default {
         },
 
         email_id: {
+          require,
           type: "string",
           format: "email",
           title: "EMAIL_ID",
@@ -62,7 +63,7 @@ export default {
     2: {
       title: "WHERE_DO_YOU_CURRENTLY_LIVE",
       type: "object",
-      required: ["state"],
+      required: ["state", "pincode"],
       properties: {
         state: {
           title: "STATE",
@@ -110,7 +111,7 @@ export default {
     4: {
       title: "CONTACT_INFORMATION",
       type: "object",
-      required: ["qualification"],
+      required: ["mobile"],
       properties: {
         mobile: {
           type: "number",

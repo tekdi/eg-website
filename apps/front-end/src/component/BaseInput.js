@@ -237,7 +237,7 @@ export const FieldTemplate = ({
                   >
                     {t(schema?.label ? schema?.label : label)}
                   </FrontEndTypo.H1>
-                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                  <H2 color="duplicatedColor">{required ? "*" : null}</H2>
                 </HStack>
               </label>
             )}
