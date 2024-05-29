@@ -170,11 +170,14 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     setUrlFilterApply(true);
   }, []);
 
-  useEffect(async () => {
-    const result = await enumRegistryService.getStatuswiseCount();
-    setCampFilterStatus(result);
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
+  useEffect(() => {
+    async function fetchData() {
+      const result = await enumRegistryService.getStatuswiseCount();
+      setCampFilterStatus(result);
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+    }
+    fetchData();
   }, []);
 
   const getData = async () => {
@@ -310,7 +313,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             style={{
               position: "absolute",
               top: 0,
-              left: "0",
+              left: `0`,
               transition: "left 0.3s ease",
               width: "250px",
               height: "100%",
