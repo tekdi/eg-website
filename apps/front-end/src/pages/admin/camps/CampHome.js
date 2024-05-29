@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, select } from "../../../component/BaseInput";
@@ -14,6 +14,7 @@ import {
   Modal,
   Alert,
   useToast,
+  Stack,
 } from "native-base";
 import {
   AdminTypo,
@@ -142,33 +143,41 @@ const closePcrColuman = (t) => [
 
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const [filter, setFilter] = React.useState({ limit: 10 });
+  const [filter, setFilter] = useState({ limit: 10 });
   const [Width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
   const navigate = useNavigate();
-  const [data, setData] = React.useState([]);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
-  const [campFilterStatus, setCampFilterStatus] = React.useState([]);
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [data, setData] = useState([]);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
+  const [campFilterStatus, setCampFilterStatus] = useState([]);
+  const [enumOptions, setEnumOptions] = useState({});
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const toast = useToast();
   const [debounced, setDebounced] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  React.useEffect(() => {
+  const handleOpenButtonClick = () => {
+    setIsDrawerOpen((prevState) => !prevState);
+  };
+
+  useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
 
-  React.useEffect(async () => {
-    const result = await enumRegistryService.getStatuswiseCount();
-    setCampFilterStatus(result);
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
+  useEffect(() => {
+    async function fetchData() {
+      const result = await enumRegistryService.getStatuswiseCount();
+      setCampFilterStatus(result);
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+    }
+    fetchData();
   }, []);
 
   const getData = async () => {
@@ -184,7 +193,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getData();
   }, [filter]);
 
@@ -298,24 +307,77 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
           </AdminTypo.Secondarybutton>
         )}
       </HStack>
-      <HStack>
-        <Box
-          flex={[2, 2, 1]}
-          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
-        >
-          <HStack ref={ref}></HStack>
-          <ScrollView
-            maxH={
-              Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
-            }
-            temp={Width}
+      <HStack ml="-1">
+        <Stack style={{ position: "relative", overflowX: "hidden" }}>
+          <Stack
+            style={{
+              position: "absolute",
+              top: 0,
+              left: `0`,
+              transition: "left 0.3s ease",
+              width: "250px",
+              height: "100%",
+              background: "white",
+              zIndex: 1,
+            }}
           >
-            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
-          </ScrollView>
-        </Box>
+            <Box
+              flex={[2, 2, 1]}
+              style={{
+                borderRightColor: "dividerColor",
+                borderRightWidth: "2px",
+              }}
+            >
+              <ScrollView
+                maxH={
+                  Height -
+                  (refAppBar?.clientHeight + ref?.current?.clientHeight)
+                }
+                temp={Width}
+              >
+                {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+              </ScrollView>
+            </Box>
+          </Stack>
+
+          <Stack
+            style={{
+              marginLeft: isDrawerOpen ? "250px" : "0",
+              transition: "margin-left 0.3s ease",
+            }}
+          />
+        </Stack>
+        <VStack
+          ml={"-1"}
+          rounded={"xs"}
+          height={"50px"}
+          bg={
+            filter?.district || filter?.state || filter?.block || filter?.status
+              ? "textRed.400"
+              : "#E0E0E0"
+          }
+          justifyContent="center"
+          onClick={handleOpenButtonClick}
+        >
+          <IconByName
+            name={isDrawerOpen ? "ArrowLeftSLineIcon" : "FilterLineIcon"}
+            color={
+              filter?.state ||
+              filter?.district ||
+              filter?.block ||
+              filter?.status
+                ? "white"
+                : "black"
+            }
+            _icon={{ size: "30px" }}
+          />
+        </VStack>
 
         <Box flex={[5, 5, 4]}>
-          <ScrollView>
+          <ScrollView
+            maxH={Height - refAppBar?.clientHeight - 72}
+            minH={Height - refAppBar?.clientHeight - 72}
+          >
             <HStack pb="2">
               {Array?.isArray(campFilterStatus) &&
                 campFilterStatus?.map((item) => {
@@ -373,13 +435,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                 defaultSortAsc
                 paginationServer
                 data={data}
-                onChangeRowsPerPage={React.useCallback(
+                onChangeRowsPerPage={useCallback(
                   (e) => {
                     setFilter({ ...filter, limit: e, page: 1 });
                   },
                   [setFilter, filter]
                 )}
-                onChangePage={React.useCallback(
+                onChangePage={useCallback(
                   (e) => {
                     setFilter({ ...filter, page: e });
                   },
@@ -446,10 +508,10 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
 
 export const Filter = ({ filter, setFilter }) => {
   const { t } = useTranslation();
-  const [getDistrictsAll, setGetDistrictsAll] = React.useState();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
-  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
-  const [facilitator, setFacilitator] = React.useState([]);
+  const [getDistrictsAll, setGetDistrictsAll] = useState();
+  const [getBlocksAll, setGetBlocksAll] = useState();
+  const [facilitatorFilter, setFacilitatorFilter] = useState({});
+  const [facilitator, setFacilitator] = useState([]);
 
   const setFilterObject = (data) => {
     const { facilitator: newFacilitator, ...otherData } = data;
@@ -476,10 +538,7 @@ export const Filter = ({ filter, setFilter }) => {
     });
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   const schema = {
     type: "object",
@@ -536,7 +595,7 @@ export const Filter = ({ filter, setFilter }) => {
     },
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
       let name = programResult?.state_name;
@@ -551,7 +610,7 @@ export const Filter = ({ filter, setFilter }) => {
     fetchData();
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let blockData = [];
     if (filter?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -561,7 +620,7 @@ export const Filter = ({ filter, setFilter }) => {
     setGetBlocksAll(blockData);
   }, [filter?.district]);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     async (data) => {
       const {
         district: newDistrict,
@@ -588,7 +647,7 @@ export const Filter = ({ filter, setFilter }) => {
     setFilterObject({});
     setFacilitatorFilter({});
   };
-  React.useEffect(async () => {
+  useEffect(async () => {
     const { error, ...result } = await facilitatorRegistryService.searchByCamp(
       facilitatorFilter
     );
@@ -645,7 +704,7 @@ export const Filter = ({ filter, setFilter }) => {
       </Box>
       <AdminTypo.H5>{t("PRERAK")}</AdminTypo.H5>
       <Input
-        w="100%"
+        w="95%"
         height="32px"
         placeholder={t("SEARCH")}
         variant="outline"
