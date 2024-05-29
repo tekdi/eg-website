@@ -8,12 +8,10 @@ import {
   IconByName,
   Layout,
   facilitatorRegistryService,
-  geolocationRegistryService,
   getOnboardingURLData,
   getOptions,
   login,
   setOnboardingMobile,
-  uploadRegistryService,
 } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
@@ -22,11 +20,11 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useScreenshot } from "use-screenshot-hook";
-import { templates, widgets } from "../../../component/BaseInput";
-import Steper from "../../../component/Steper";
-import schema1 from "./registration/schema";
-import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
 import ChooseLanguage from "v2/components/Functional/ChooseLanguage/ChooseLanguage";
+import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
+import { templates, widgets } from "../../../component/BaseInput";
+import schema1 from "./registration/schema";
+import PageLayout from "v2/components/Static/PageLayout/PageLayout";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -65,13 +63,9 @@ export default function App({ facilitator, ip, onClick }) {
   const [page, setPage] = React.useState("logoScreen");
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
   const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [cameraFile, setCameraFile] = React.useState();
   const [submitBtn, setSubmitBtn] = React.useState();
   const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
   const [alert, setAlert] = React.useState();
@@ -182,47 +176,8 @@ export default function App({ facilitator, ip, onClick }) {
           }
         }
       }
-      if (schema["properties"]["degree"]) {
-        newSchema = getOptions(newSchema, {
-          key: "degree",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "teaching" },
-        });
-      }
       setSchema(newSchema);
       setLoading(false);
-    }
-
-    if (schema?.properties?.state) {
-      setLoading(true);
-      const qData = await geolocationRegistryService.getStates();
-      let newSchema = schema;
-      if (schema["properties"]["state"]) {
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: qData?.states,
-          title: "state_name",
-          value: "state_name",
-        });
-      }
-      newSchema = await setDistric({
-        schemaData: newSchema,
-        state: formData?.state,
-        district: formData?.district,
-        block: formData?.block,
-      });
-      setSchema(newSchema);
-      setLoading(false);
-    }
-
-    if (schema?.properties?.device_ownership) {
-      if (formData?.device_ownership == "no") {
-        setAlert(t("YOU_NOT_ELIGIBLE"));
-      } else {
-        setAlert();
-      }
     }
   }, [page]);
 
@@ -372,108 +327,6 @@ export default function App({ facilitator, ip, onClick }) {
     });
   };
 
-  const setDistric = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({
-          district,
-          block,
-          state,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
-  const setBlock = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-        state: state,
-      });
-      console.log(qData);
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
-  const setVilage = async ({ state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-        state,
-        district,
-        gramp: "null",
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData?.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
   const checkMobileExist = async (mobile) => {
     // const result = await facilitatorRegistryService.isUserExist({ mobile });
     if (result?.data) {
@@ -569,7 +422,6 @@ export default function App({ facilitator, ip, onClick }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
-    setFormData(newData);
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
@@ -580,27 +432,6 @@ export default function App({ facilitator, ip, onClick }) {
         const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
-        setFormData((e) => {
-          const { otp, ...fData } = e;
-          return fData;
-        });
-      }
-    }
-    if (id === "root_aadhar_no") {
-      let { aadhar_no, ...otherError } = errors || {};
-      setErrors(otherError);
-      if (data?.aadhar_no?.toString()?.length === 12) {
-        const result = await userExist({
-          aadhar_no: data?.aadhar_no,
-        });
-        if (result?.success) {
-          const newErrors = {
-            aadhar_no: {
-              __errors: [t("AADHAAR_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
       }
     }
 
@@ -618,43 +449,6 @@ export default function App({ facilitator, ip, onClick }) {
           setAlert();
         }
       }
-    }
-
-    if (id === "root_device_ownership") {
-      if (schema?.properties?.device_ownership) {
-        if (data?.device_ownership == "no") {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
-      }
-    }
-
-    if (id === "root_state") {
-      await setDistric({
-        schemaData: schema,
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-      });
-    }
-
-    if (id === "root_district") {
-      await setBlock({
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-        schemaData: schema,
-      });
-    }
-
-    if (id === "root_block") {
-      await setVilage({
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-        schemaData: schema,
-      });
     }
 
     if (id === "root_otp") {
@@ -684,6 +478,8 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
+    console.log("sad");
+
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -782,7 +578,9 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   if (page == "logoScreen") {
-    return <LogoScreen />;
+    return (
+      <PageLayout t={t} isPageMiddle={true} customComponent={<LogoScreen />} />
+    );
   } else if (page == "chooseLangauge") {
     return <ChooseLanguage t={t} languageChanged={changeLanguage} />;
   }
@@ -791,18 +589,19 @@ export default function App({ facilitator, ip, onClick }) {
     <Layout
       _appBar={{
         onPressBackButton,
-        exceptIconsShow:
-          `${page}` === "1" ? ["menuBtn"] : ["menuBtn", "notificationBtn"],
         name: `${ip?.name}`.trim(),
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        onlyIconsShow: ["backBtn"],
+        onlyIconsShow: ["langBtn"],
+        funLangChange: () => {
+          setPage("chooseLangauge");
+        },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        <Box px="2" pb="1">
+        {/* <Box px="2" pb="1">
           <Steper
             type={"circle"}
             steps={[
@@ -813,7 +612,7 @@ export default function App({ facilitator, ip, onClick }) {
             ]}
             progress={page}
           />
-        </Box>
+        </Box> */}
 
         {/* <CustomAlert
           title={t("REGISTER_MESSAGE")

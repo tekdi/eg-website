@@ -333,6 +333,7 @@ export const RadioBtn = ({
         </FormControl.Label>
       )}
       <Radio.Group
+        colorScheme="eg-blue"
         key={items}
         pb="4"
         value={value}
@@ -350,15 +351,15 @@ export const RadioBtn = ({
           }}
           space={4}
           w="75%"
-          {..._stack}
           gap="4"
+          {..._stack}
         >
           {items?.map((item) => (
             <Radio
               key={item?.value}
               value={item?.value}
-              size="lg"
-              colorScheme="blue"
+              size="sm"
+              colorScheme="eg-blue"
               _text={{ fontSize: 12, fontWeight: 500 }}
               isDisabled={readOnly}
             >

@@ -62,32 +62,32 @@ export default {
     2: {
       title: "WHERE_DO_YOU_CURRENTLY_LIVE",
       type: "object",
-      required: ["state", "district", "block", "village"],
+      required: ["state"],
       properties: {
         state: {
           title: "STATE",
           type: "string",
-          format: "select",
+          // format: "select",
         },
-        district: {
-          title: "DISTRICT",
-          type: "string",
-          format: "select",
-        },
-        block: {
-          title: "BLOCK",
-          type: "string",
-          format: "select",
-        },
-        village: {
-          title: "VILLAGE_WARD",
-          type: "string",
-          format: "select",
-        },
-        grampanchayat: {
-          title: "GRAMPANCHAYAT",
-          type: "string",
-        },
+        // district: {
+        //   title: "DISTRICT",
+        //   type: "string",
+        //   format: "select",
+        // },
+        // block: {
+        //   title: "BLOCK",
+        //   type: "string",
+        //   format: "select",
+        // },
+        // village: {
+        //   title: "VILLAGE_WARD",
+        //   type: "string",
+        //   format: "select",
+        // },
+        // grampanchayat: {
+        //   title: "GRAMPANCHAYAT",
+        //   type: "string",
+        // },
         pincode: {
           title: "PINCODE",
           type: "string",
@@ -102,13 +102,13 @@ export default {
       properties: {
         qualification: {
           type: ["string", "number"],
-          format: "CustomR",
+          format: "RadioBtn",
           grid: 2,
         },
       },
     },
     4: {
-      title: "YOUR_HIGHEST_QUALIFICATION",
+      title: "CONTACT_INFORMATION",
       type: "object",
       required: ["qualification"],
       properties: {
