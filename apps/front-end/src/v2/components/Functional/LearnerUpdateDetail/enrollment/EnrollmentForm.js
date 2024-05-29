@@ -432,8 +432,15 @@ export default function EnrollmentForm() {
     switch (key) {
       case "enrollment_mobile_no":
         const mobile = data?.enrollment_mobile_no;
-        const regex = /^([+]\d{2})?\d{10}$/;
-        if (!mobile || !mobile?.match(regex)) {
+        const regex = /^[1-9][0-9]{0,9}$/;
+        if (
+          !mobile ||
+          !mobile?.match(regex) ||
+          !(
+            data?.enrollment_mobile_no > 6000000000 &&
+            data?.enrollment_mobile_no < 9999999999
+          )
+        ) {
           error = { [key]: t("REQUIRED_MESSAGE") };
         }
         break;

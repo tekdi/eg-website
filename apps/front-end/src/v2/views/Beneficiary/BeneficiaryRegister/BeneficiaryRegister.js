@@ -47,6 +47,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = useState(false);
   const [isExistModal, setIsExistModal] = useState(false);
+  const prerakStatus = localStorage.getItem("status");
 
   const onPressBackButton = async (e) => {
     setotpbtn(false);
@@ -664,7 +665,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         "selected_prerak",
         "selected_for_training",
         "selected_for_onboarding",
-      ].includes(authUser?.program_faciltators?.status) ? (
+      ].includes(prerakStatus) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
