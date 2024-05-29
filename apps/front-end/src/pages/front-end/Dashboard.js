@@ -105,7 +105,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     SetPrerak_status(localStorage.getItem("status"));
-  }, [localStorage.getItem("status")]);
+  }, [localStorage.getItem("status"), selectCohortForm]);
 
   const saveDataToIndexedDB = async () => {
     const obj = {
@@ -181,7 +181,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo))
     ) {
       await setIpUserInfo(fa_id);
-      await setPrerakOfflineInfo(fa_id);
+      const data = await setPrerakOfflineInfo(fa_id);
+      SetPrerak_status(data?.program_faciltators?.status);
     }
   };
 
