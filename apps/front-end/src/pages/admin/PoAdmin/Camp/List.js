@@ -200,7 +200,9 @@ function CampList({ userTokenInfo }) {
                       }}
                     >
                       {item.status === "all" ? (
-                        <AdminTypo.H5>{t("ALL")}</AdminTypo.H5>
+                        <AdminTypo.H5 bold color={"textMaroonColor.600"}>
+                          {`${t("ALL")}(${paginationTotalRows})`}
+                        </AdminTypo.H5>
                       ) : (
                         <GetEnumValue
                           t={t}
@@ -209,7 +211,8 @@ function CampList({ userTokenInfo }) {
                           enumApiData={enumOptions}
                         />
                       )}
-                      {filter?.status == t(item?.status)
+                      {filter?.status != "all" &&
+                      filter?.status == t(item?.status)
                         ? `(${paginationTotalRows})` + " "
                         : " "}
                     </AdminTypo.H6>
