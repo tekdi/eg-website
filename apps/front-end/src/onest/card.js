@@ -18,7 +18,7 @@ export const dataConfig = {
     apiLink_BAP_URI: process.env.REACT_APP_SCHOLARSHIPS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_SCHOLARSHIPS_BASE_URL,
     imageUrl: scholarships,
-    apiResponce: (e) => e.data.data[process.env.REACT_APP_SCHOLARSHIP_DB_CACHE],
+    apiResponse: (e) => e.data.data[process.env.REACT_APP_SCHOLARSHIP_DB_CACHE],
     render: (obj) => {
       const getDates = (range) => {
         return `${moment(range.start).format("DD MMM YYYY")} to ${moment(
@@ -123,7 +123,7 @@ export const dataConfig = {
     apiLink_API_BASE_URL: process.env.REACT_APP_JOBS_BASE_URL,
     apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
     imageUrl: jobs,
-    apiResponce: (e) => e.data.data[process.env.REACT_APP_JOBS_DB_CACHE],
+    apiResponse: (e) => e.data.data[process.env.REACT_APP_JOBS_DB_CACHE],
     render: (obj) => {
       const getSalary = (val1, val2) => {
         const invalidValues = ["0", "undefined"];
@@ -206,7 +206,7 @@ export const dataConfig = {
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: process.env.REACT_APP_LEARNINGS_BASE_URL,
     imageUrl: learnings,
-    apiResponce: (e) => e.data.data[process.env.REACT_APP_LEARNINGS_DB_CACHE],
+    apiResponse: (e) => e.data.data[process.env.REACT_APP_LEARNINGS_DB_CACHE],
     getTrackData: async (e) => {
       const data = {
         context: e?.type || "",
