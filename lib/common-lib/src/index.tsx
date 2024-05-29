@@ -51,6 +51,7 @@ import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
 import * as testRegistryService from './services/testRegistryService'
+import * as volunteerRegistryService from './services/volunteerRegistryService'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
@@ -115,7 +116,8 @@ export {
   CustomAlert,
   SunbirdPlayer,
   GATrackPageView,
-  OnestService
+  OnestService,
+  volunteerRegistryService
 }
 
 export * from './services/RestClient'

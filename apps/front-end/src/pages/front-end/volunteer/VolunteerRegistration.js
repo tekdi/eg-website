@@ -11,6 +11,9 @@ import {
   getOnboardingURLData,
   getOptions,
   login,
+  removeOnboardingMobile,
+  removeOnboardingURLData,
+  sendAndVerifyOtp,
   setOnboardingMobile,
 } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard.js";
@@ -22,9 +25,9 @@ import { useNavigate } from "react-router-dom";
 import { useScreenshot } from "use-screenshot-hook";
 import ChooseLanguage from "v2/components/Functional/ChooseLanguage/ChooseLanguage";
 import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
+import PageLayout from "v2/components/Static/PageLayout/PageLayout";
 import { templates, widgets } from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
-import PageLayout from "v2/components/Static/PageLayout/PageLayout";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -114,7 +117,6 @@ export default function App({ facilitator, ip, onClick }) {
     setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
-    console.log(index, page, pages);
     if (index !== undefined) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
@@ -328,7 +330,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    // const result = await facilitatorRegistryService.isUserExist({ mobile });
+    const result = await facilitatorRegistryService.isUserExist({ mobile });
     if (result?.data) {
       let response_isUserExist = result?.data;
       if (
@@ -478,8 +480,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
-    console.log("sad");
-
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -511,57 +511,60 @@ export default function App({ facilitator, ip, onClick }) {
         success = true;
         // }
       } else if (page === "4") {
-        // const resultCheck = await checkMobileExist(newFormData?.mobile);
-        // if (!resultCheck) {
-        //   if (!schema?.properties?.otp) {
-        //     const { otp: data, ...allData } = newFormData || {};
-        //     setFormData(allData);
-        //     newFormData = allData;
-        //     let { mobile, otp, ...otherError } = errors || {};
-        //     setErrors(otherError);
-        //   }
-        //   const { status, newSchema } = await sendAndVerifyOtp(schema, {
-        //     ...newFormData,
-        //     hash: localStorage.getItem("hash"),
-        //   });
-        //   if (status === true) {
-        //     const data = await formSubmitCreate(newFormData);
-        //     if (data?.error) {
-        //       const newErrors = {
-        //         mobile: {
-        //           __errors:
-        //             data?.error?.constructor?.name === "String"
-        //               ? [data?.error]
-        //               : data?.error?.constructor?.name === "Array"
-        //               ? data?.error
-        //               : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-        //         },
-        //       };
-        //       setErrors(newErrors);
-        //     } else {
-        //       if (data?.username && data?.password) {
-        //         await removeOnboardingURLData();
-        //         await removeOnboardingMobile();
-        //         setCredentials(data);
-        //       }
-        //     }
-        //   } else if (status === false) {
-        //     const newErrors = {
-        //       otp: {
-        //         __errors: [t("USER_ENTER_VALID_OTP")],
-        //       },
-        //     };
-        //     setErrors(newErrors);
-        //   } else {
-        //     setSchema(newSchema);
-        //   }
-        // }
+        const resultCheck = await checkMobileExist(newFormData?.mobile);
+        if (!resultCheck) {
+          if (!schema?.properties?.otp) {
+            const { otp: data, ...allData } = newFormData || {};
+            setFormData(allData);
+            newFormData = allData;
+            let { mobile, otp, ...otherError } = errors || {};
+            setErrors(otherError);
+          }
+          const { status, newSchema } = await sendAndVerifyOtp(
+            schema,
+            {
+              ...newFormData,
+              hash: localStorage.getItem("hash"),
+            },
+            "volunteer"
+          );
+          if (status === true) {
+            const data = await formSubmitCreate(newFormData);
+            if (data?.error) {
+              const newErrors = {
+                mobile: {
+                  __errors:
+                    data?.error?.constructor?.name === "String"
+                      ? [data?.error]
+                      : data?.error?.constructor?.name === "Array"
+                      ? data?.error
+                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                },
+              };
+              setErrors(newErrors);
+            } else {
+              if (data?.username && data?.password) {
+                await removeOnboardingURLData();
+                await removeOnboardingMobile();
+                setCredentials(data);
+              }
+            }
+          } else if (status === false) {
+            const newErrors = {
+              otp: {
+                __errors: [t("USER_ENTER_VALID_OTP")],
+              },
+            };
+            setErrors(newErrors);
+          } else {
+            setSchema(newSchema);
+          }
+        }
       } else if (page <= 1) {
         success = true;
       } else {
         success = true;
       }
-      console.log(success);
       if (success) {
         setStep();
       }
