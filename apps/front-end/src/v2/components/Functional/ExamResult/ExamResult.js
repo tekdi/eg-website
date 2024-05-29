@@ -5,8 +5,17 @@ import {
   enumRegistryService,
   organisationService,
   uploadRegistryService,
+  ImageView,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio, Alert, Modal, Pressable } from "native-base";
+import {
+  HStack,
+  VStack,
+  Radio,
+  Alert,
+  Modal,
+  Pressable,
+  Stack,
+} from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
@@ -21,6 +30,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const [selectedRow, setSelectedRow] = useState();
   const [errorMsg, setErrorMsg] = useState();
   const [boardId, setBoardId] = useState();
+  const [openView, setOpenView] = useState("");
   const uplodInputRef = useRef();
 
   useEffect(async () => {
@@ -162,12 +172,25 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                     </VStack>
                     {item?.result_upload_status === "uploaded" ||
                     item?.result_upload_status === "assign_to_ip" ? (
-                      <ExamChipStatus
-                        status={
-                          item?.beneficiary_user?.exam_results?.[0]
-                            ?.final_result || ""
-                        }
-                      />
+                      <HStack alignItems={"center"} space={4}>
+                        <ExamChipStatus
+                          status={
+                            item?.beneficiary_user?.exam_results?.[0]
+                              ?.final_result || ""
+                          }
+                        />
+                        <Pressable
+                          onPress={() => {
+                            setOpenView(
+                              item?.beneficiary_user?.exam_results?.[0]
+                            );
+                          }}
+                        >
+                          <FrontEndTypo.H3 color={"blueText.800"}>
+                            {t("VIEW")}
+                          </FrontEndTypo.H3>
+                        </Pressable>
+                      </HStack>
                     ) : (
                       <Pressable
                         onPress={() => {
@@ -203,6 +226,24 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                   <FrontEndTypo.H4>{t(errorMsg)}</FrontEndTypo.H4>
                 </HStack>
               </Alert>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+        <Modal isOpen={openView} size="xl" onClose={() => setOpenView()}>
+          <Modal.Content>
+            <Modal.CloseButton />
+
+            <Modal.Body>
+              <ImageView
+                source={{ document_id: openView?.document_id }}
+                alt="Result"
+                width="100%"
+                height="300"
+                borderRadius="5px"
+                borderWidth="1px"
+                borderColor="worksheetBoxText.100"
+                alignSelf="Center"
+              />
             </Modal.Body>
           </Modal.Content>
         </Modal>
