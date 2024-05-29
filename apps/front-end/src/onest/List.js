@@ -58,8 +58,8 @@ const List = () => {
             `${configData?.apiLink_API_BASE_URL}/content/search`,
           configData?.payload || {}
         );
-        if (configData.apiResponce) {
-          response = configData.apiResponce(response);
+        if (configData.apiResponse) {
+          response = configData.apiResponse(response);
         }
         if (response) {
           setCardData(response);
