@@ -115,7 +115,7 @@ export const dataConfig = {
       "gender",
       "company",
     ],
-    apiLink_DB_CACHE: process.env.REACT_APP_JOBS_DB_CAHCE,
+    apiLink_DB_CACHE: process.env.REACT_APP_JOBS_DB_CACHE,
     apiLink_RESPONSE_DB: "response_cache_dev",
     apiLink_DOMAIN: "onest:work-opportunities",
     apiLink_BAP_ID: process.env.REACT_APP_JOBS_BAP_ID,
@@ -123,7 +123,7 @@ export const dataConfig = {
     apiLink_API_BASE_URL: process.env.REACT_APP_JOBS_BASE_URL,
     apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
     imageUrl: jobs,
-    apiResponce: (e) => e.data.data[process.env.REACT_APP_JOBS_DB_CAHCE],
+    apiResponce: (e) => e.data.data[process.env.REACT_APP_JOBS_DB_CACHE],
     render: (obj) => {
       const getSalary = (val1, val2) => {
         const invalidValues = ["0", "undefined"];
@@ -198,7 +198,7 @@ export const dataConfig = {
     listLink: "onest/learning",
     filters: ["provider_name"],
     detailLink: "/learning/:id",
-    apiLink_DB_CACHE: process.env.REACT_APP_LEARNINGS_DB_CAHCE,
+    apiLink_DB_CACHE: process.env.REACT_APP_LEARNINGS_DB_CACHE,
     apiLink_API_ROUTE: "content",
     apiLink_DOMAIN: "onest:learning-experiences",
     apiLink_BAP_ID: process.env.REACT_APP_LEARNINGS_BAP_ID,
@@ -206,7 +206,7 @@ export const dataConfig = {
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: process.env.REACT_APP_LEARNINGS_BASE_URL,
     imageUrl: learnings,
-    apiResponce: (e) => e.data.data[process.env.REACT_APP_LEARNINGS_DB_CAHCE],
+    apiResponce: (e) => e.data.data[process.env.REACT_APP_LEARNINGS_DB_CACHE],
     getTrackData: async (e) => {
       const data = {
         context: e?.type || "",
