@@ -7,6 +7,7 @@ import {
   setSelectedProgramId,
   useWindowSize,
   cohortService,
+  AdminTypo,
 } from "@shiksha/common-lib";
 import PropTypes from "prop-types";
 import { VStack, Select, HStack } from "native-base";
@@ -76,7 +77,7 @@ export default function Reports({ footerLinks }) {
       const data = ipId1Data?.[reportName];
       setData(data);
     }
-  }, [localProgramData, localAcademicData, filter?.program_id]);
+  }, [localProgramData, localAcademicData, filter?.program_id, name]);
 
   const handleProgramChange = async (selectedItem) => {
     const data = programList.find((e) => e.program_id == selectedItem);
@@ -87,7 +88,6 @@ export default function Reports({ footerLinks }) {
     });
     setFilter((prevFilter) => ({ ...prevFilter, program_id: selectedItem }));
   };
-
   return (
     <Layout
       w={Width}
@@ -116,15 +116,21 @@ export default function Reports({ footerLinks }) {
           ))}
         </Select>
       </HStack>
-      <VStack>
-        <iframe
-          title="reports"
-          src={data}
-          frameBorder="0"
-          width="100%"
-          height="900"
-        />
-      </VStack>
+      {data !== null ? (
+        <VStack>
+          <iframe
+            title="reports"
+            src={data}
+            frameBorder="0"
+            width="100%"
+            height="900"
+          />
+        </VStack>
+      ) : (
+        <VStack alignSelf={"center"}>
+          <AdminTypo.H1>{t("DATA_NOT_FOUND")}</AdminTypo.H1>
+        </VStack>
+      )}
     </Layout>
   );
 }

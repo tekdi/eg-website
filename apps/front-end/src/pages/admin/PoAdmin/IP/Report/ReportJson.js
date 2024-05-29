@@ -25,6 +25,6 @@ export const report = {
     "learner-report-3-2":
       "https://egmb.tekdinext.com/public/question/2851ffaa-d571-4f8f-bee0-93cca6907b26",
 
-    "camp-report-3-2": "",
+    "camp-report-3-2": null,
   },
 };
