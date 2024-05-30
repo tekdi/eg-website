@@ -175,13 +175,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const timeExpired = await checkPrerakOfflineTimeInterval();
     let academic_Id = await getSelectedAcademicYear();
     if (
-      isOnline ||
-      (isOnline &&
-        academic_Id &&
-        (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo))
+      isOnline &&
+      academic_Id &&
+      (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo)
     ) {
       await setIpUserInfo(fa_id);
-      await setPrerakOfflineInfo(fa_id);
+      const data = await setPrerakOfflineInfo(fa_id);
+      SetPrerak_status(data?.program_faciltators?.status);
     }
   };
 

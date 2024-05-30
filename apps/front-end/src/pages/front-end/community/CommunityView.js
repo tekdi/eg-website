@@ -48,9 +48,8 @@ export default function CommunityView({ footerLinks }) {
     const getData = await benificiaryRegistoryService.getCommunityReferences({
       context: "community.user",
     });
-    const {
-      data: { community_response },
-    } = getData || {};
+    const { data: { community_response } = {} } = getData ?? {};
+
     setData(community_response);
   }, []);
 
@@ -120,6 +119,8 @@ export default function CommunityView({ footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"COMMUNITY_REFRENCE"}
+      pageTitle={t("COMMUNITY_REFRENCE")}
     >
       <Box p="4">
         {!addMore ||

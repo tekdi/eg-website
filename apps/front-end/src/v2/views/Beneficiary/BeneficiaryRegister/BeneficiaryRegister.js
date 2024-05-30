@@ -47,6 +47,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = useState(false);
   const [isExistModal, setIsExistModal] = useState(false);
+  const prerakStatus = localStorage.getItem("status");
 
   const onPressBackButton = async (e) => {
     setotpbtn(false);
@@ -658,13 +659,16 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY_ONBOADING"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("ONBOARDING")}
     >
       {![
         "pragati_mobilizer",
         "selected_prerak",
         "selected_for_training",
         "selected_for_onboarding",
-      ].includes(authUser?.program_faciltators?.status) ? (
+      ].includes(prerakStatus) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -717,15 +721,23 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                   type="submit"
                   onPress={otpfunction}
                 >
-                  {/* {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")} */}
                   {t("NEXT")}
                 </FrontEndTypo.Primarybutton>
               ) : (
                 <FrontEndTypo.Primarybutton
-                  mt="0"
+                  mt="5"
+                  p="4"
                   variant={"primary"}
                   type="submit"
-                  onPress={() => formRef?.current?.submit()}
+                  onPress={() => {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    } else {
+                      if (formRef.current.validateForm()) {
+                        formRef?.current?.submit();
+                      }
+                    }
+                  }}
                 >
                   {t("NEXT")}
                 </FrontEndTypo.Primarybutton>
