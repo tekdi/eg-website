@@ -45,7 +45,7 @@ registerRoute(
 
 // Cache API calls using a network-first strategy
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/api/'),
+  ({ url }) => url.pathname.startsWith('/mw/'),
   new NetworkFirst({
     cacheName: "api-cache",
     networkTimeoutSeconds: 10,
