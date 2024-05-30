@@ -131,6 +131,8 @@ const EpcpLearnerList = ({ footerLinks }) => {
         onlyIconsShow: ["backBtn", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"EPCP_LIST"}
+      pageTitle={t("EPCP_LIST")}
     >
       {leanerList.length === 0 ? (
         <Alert mt={4} status="warning">
