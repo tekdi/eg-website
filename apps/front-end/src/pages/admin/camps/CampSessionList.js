@@ -224,6 +224,11 @@ export default function CampSessionList({ footerLinks }) {
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _footer={{ menues: footerLinks }}
       getBodyHeight={(e) => setBodyHeight(e)}
+      analyticsPageTitle={"CAMP_SESSION_LIST"}
+      pageTitle={t("CAMP")}
+      stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
+        "SESSION_LIST"
+      )}`}
     >
       <Stack>
         <VStack flex={1} space="5" p="5">

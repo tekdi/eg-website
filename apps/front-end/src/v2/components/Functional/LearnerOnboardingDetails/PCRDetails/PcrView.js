@@ -34,6 +34,9 @@ export default function PcrView() {
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      analyticsPageTitle={"BENEFICIARY_PCR_VIEW"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("PCR_DETAILS")}
     >
       <Box p="10">
         <CardComponent
