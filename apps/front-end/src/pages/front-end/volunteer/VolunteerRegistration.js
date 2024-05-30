@@ -15,6 +15,7 @@ import {
   removeOnboardingURLData,
   sendAndVerifyOtp,
   setOnboardingMobile,
+  volunteerRegistryService,
 } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
@@ -60,7 +61,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [isUserExistModal, setIsUserExistModal] = useState(false);
   const [isUserExistResponse, setIsUserExistResponse] = useState(null);
   const [isLoginShow, setIsLoginShow] = useState(false);
-  const [isUserExistModalText, setIsUserExistModalText] = useState("");
   const [isUserExistStatus, setIsUserExistStatus] = useState("");
 
   const [page, setPage] = React.useState("logoScreen");
@@ -96,10 +96,13 @@ export default function App({ facilitator, ip, onClick }) {
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
-  React.useEffect(() => {
-    if (page && credentials) {
-      getImage();
-    }
+  useEffect(() => {
+    const init = () => {
+      if (page && credentials) {
+        getImage();
+      }
+    };
+    init();
   }, [page, credentials]);
 
   const uiSchema = {
@@ -149,38 +152,42 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  React.useEffect(async () => {
-    if (schema?.properties?.qualification) {
-      setLoading(true);
-      const qData = await facilitatorRegistryService.getQualificationAll();
-      let newSchema = schema;
-      if (schema["properties"]["qualification"]) {
-        newSchema = getOptions(newSchema, {
-          key: "qualification",
-          arr: qData,
-          title: "name",
-          value: "id",
-          filters: { type: "qualification" },
-        });
-        if (newSchema?.properties?.qualification) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex = newSchema?.properties?.qualification?.enum[index];
+  useEffect(() => {
+    const init = async () => {
+      if (schema?.properties?.qualification) {
+        setLoading(true);
+        const qData = await facilitatorRegistryService.getQualificationAll();
+        let newSchema = schema;
+        if (schema["properties"]["qualification"]) {
+          newSchema = getOptions(newSchema, {
+            key: "qualification",
+            arr: qData,
+            title: "name",
+            value: "name",
+            filters: { type: "qualification" },
+          });
+          if (newSchema?.properties?.qualification) {
+            let valueIndex = "";
+            newSchema?.properties?.qualification?.enumNames?.forEach(
+              (e, index) => {
+                if (e.match("12")) {
+                  valueIndex =
+                    newSchema?.properties?.qualification?.enum[index];
+                }
               }
+            );
+            if (valueIndex !== "" && formData.qualification == valueIndex) {
+              setAlert(t("YOU_NOT_ELIGIBLE"));
+            } else {
+              setAlert();
             }
-          );
-          if (valueIndex !== "" && formData.qualification == valueIndex) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
           }
         }
+        setSchema(newSchema);
+        setLoading(false);
       }
-      setSchema(newSchema);
-      setLoading(false);
-    }
+    };
+    init();
   }, [page]);
 
   const setFormInfo = () => {
@@ -210,14 +217,17 @@ export default function App({ facilitator, ip, onClick }) {
     setFormData({});
   };
 
-  React.useEffect(() => {
-    if (page == "logoScreen") {
-      //wait for 1 second
-      const delay = 750; // 1 second in milliseconds
-      setTimeout(async () => {
-        setPage("chooseLangauge");
-      }, delay);
-    }
+  useEffect(() => {
+    const init = () => {
+      if (page == "logoScreen") {
+        //wait for 1 second
+        const delay = 750; // 1 second in milliseconds
+        setTimeout(async () => {
+          setPage("chooseLangauge");
+        }, delay);
+      }
+    };
+    init();
   }, [page]);
 
   // const userExist = async (filters) => {
@@ -330,7 +340,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const checkMobileExist = async (mobile) => {
-    const result = await facilitatorRegistryService.isUserExist({ mobile });
+    const result = await volunteerRegistryService.isUserExist({ mobile });
     if (result?.data) {
       let response_isUserExist = result?.data;
       if (
@@ -345,11 +355,10 @@ export default function App({ facilitator, ip, onClick }) {
           },
         };
         setErrors(newErrors);
-        setIsUserExistModal(true);
         setIsUserExistResponse(response_isUserExist);
         if (response_isUserExist?.program_beneficiaries.length > 0) {
           setIsUserExistStatus("DONT_ALLOW_MOBILE");
-          setIsUserExistModalText(t("DONT_ALLOW_MOBILE"));
+          setIsUserExistModal(t("DONT_ALLOW_MOBILE"));
           setIsLoginShow(false);
         } else if (response_isUserExist?.program_faciltators.length > 0) {
           for (
@@ -363,7 +372,7 @@ export default function App({ facilitator, ip, onClick }) {
                 facilator_data?.academic_year_id == cohortData?.academic_year_id
               ) {
                 setIsUserExistStatus("EXIST_LOGIN");
-                setIsUserExistModalText(
+                setIsUserExistModal(
                   t("EXIST_LOGIN")
                     .replace("{{state}}", programData?.program_name)
                     .replace("{{year}}", cohortData?.academic_year_name)
@@ -382,7 +391,7 @@ export default function App({ facilitator, ip, onClick }) {
                 //     programId: facilator_data?.program_id,
                 //   });
                 setIsUserExistStatus("REGISTER_EXIST");
-                setIsUserExistModalText(
+                setIsUserExistModal(
                   t("REGISTER_EXIST")
                     .replace("{{state}}", programData?.program_name)
                     .replace("{{year}}", cohortData?.academic_year_name)
@@ -400,7 +409,7 @@ export default function App({ facilitator, ip, onClick }) {
               //   programId: facilator_data?.program_id,
               // });
               setIsUserExistStatus("DONT_ALLOW");
-              setIsUserExistModalText(
+              setIsUserExistModal(
                 t("DONT_ALLOW")
                   .replace("{{state}}", programData?.program_name)
                   .replace("{{year}}", cohortData?.academic_year_name)
@@ -414,7 +423,7 @@ export default function App({ facilitator, ip, onClick }) {
         }
         return true;
       } else {
-        setIsUserExistModal(false);
+        setIsUserExistModal();
         setIsUserExistResponse(null);
       }
     }
@@ -439,6 +448,7 @@ export default function App({ facilitator, ip, onClick }) {
 
     if (id === "root_qualification") {
       if (schema?.properties?.qualification) {
+        console.log(schema?.properties?.qualification);
         let valueIndex = "";
         schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
           if (e.match("12")) {
@@ -475,7 +485,7 @@ export default function App({ facilitator, ip, onClick }) {
     ) {
       navigate("/");
     } else {
-      setIsUserExistModal(false);
+      setIsUserExistModal();
     }
   };
 
@@ -498,7 +508,7 @@ export default function App({ facilitator, ip, onClick }) {
     const newData = {
       ...formData,
       ...newFormData,
-      ["form_step_number"]: parseInt(page) + 1,
+      // ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
 
@@ -520,22 +530,18 @@ export default function App({ facilitator, ip, onClick }) {
             let { mobile, otp, ...otherError } = errors || {};
             setErrors(otherError);
           }
-          const { status, newSchema } = await sendAndVerifyOtp(
-            schema,
-            {
-              ...newFormData,
-              hash: localStorage.getItem("hash"),
-            },
-            "volunteer"
-          );
+          const { status, newSchema } = await sendAndVerifyOtp(schema, {
+            ...newFormData,
+            hash: localStorage.getItem("hash"),
+          });
           if (status === true) {
             const data = await formSubmitCreate(newFormData);
-            if (data?.error) {
+            if (!data?.success) {
               const newErrors = {
                 mobile: {
                   __errors:
-                    data?.error?.constructor?.name === "String"
-                      ? [data?.error]
+                    data?.message?.constructor?.name === "String"
+                      ? [data?.message]
                       : data?.error?.constructor?.name === "Array"
                       ? data?.error
                       : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
@@ -576,6 +582,12 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
+  console.log(formData);
+  const formSubmitCreate = async () => {
+    const result = await volunteerRegistryService.create(formData);
+    return result;
+  };
+
   const changeLanguage = () => {
     setFormInfo();
   };
@@ -587,7 +599,7 @@ export default function App({ facilitator, ip, onClick }) {
   } else if (page == "chooseLangauge") {
     return <ChooseLanguage t={t} languageChanged={changeLanguage} />;
   }
-
+  console.log("1", page);
   return (
     <Layout
       _appBar={{
@@ -604,29 +616,9 @@ export default function App({ facilitator, ip, onClick }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {/* <Box px="2" pb="1">
-          <Steper
-            type={"circle"}
-            steps={[
-              { value: "1", label: t("BASIC_DETAILS") },
-              { value: "1", label: t("ADDRESS") },
-              { value: "1", label: t("QUALIFICATION") },
-              { value: "1", label: t("CONTACT") },
-            ]}
-            progress={page}
-          />
-        </Box> */}
-
-        {/* <CustomAlert
-          title={t("REGISTER_MESSAGE")
-            .replace("{{state}}", programData?.program_name)
-            .replace("{{year}}", cohortData?.academic_year_name)}
-          status={"customAlertinfo"}
-        />
-        {alert && <CustomAlert status={"danger"} title={alert} />} */}
         {page && page !== "" && (
           <Form
-            key={lang}
+            key={lang + page}
             ref={formRef}
             extraErrors={errors}
             showErrorList={false}
@@ -652,6 +644,7 @@ export default function App({ facilitator, ip, onClick }) {
                 type="submit"
                 onPress={(e) => {
                   formRef?.current?.submit();
+                  console.log("1", page);
                 }}
               >
                 {schema?.properties?.otp ? t("VERIFY_OTP") : t("SEND_OTP")}
@@ -685,7 +678,7 @@ export default function App({ facilitator, ip, onClick }) {
                 <Alert.Icon />
               </H1>
               <FrontEndTypo.H2 textAlign="center">
-                {isUserExistModalText}
+                {isUserExistModal}
               </FrontEndTypo.H2>
               <HStack space="5" pt="5">
                 <FrontEndTypo.Primarybutton

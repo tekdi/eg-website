@@ -6,7 +6,7 @@ export default {
       title: "TELL_US_YOUR_NAME",
       description: "AS_PER_AADHAAR",
       type: "object",
-      required: ["first_name", "gender", "email_id", "dob"],
+      required: ["first_name", "last_name", "gender", "email_id", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -102,7 +102,7 @@ export default {
       required: ["qualification"],
       properties: {
         qualification: {
-          type: ["string", "number"],
+          type: ["string"],
           format: "RadioBtn",
           grid: 2,
         },
