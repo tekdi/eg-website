@@ -20,6 +20,7 @@ const ExamDashboard = ({ footerLinks }) => {
           primaryBtn={"LEARNER_STATUS_OVERVIEW"}
           navigation={"/table"}
         />
+
         {/* Temp Comment */}
         {/* <DashboardCard
           title={"LEARNER_EXAM_ATTENDANCE"}
