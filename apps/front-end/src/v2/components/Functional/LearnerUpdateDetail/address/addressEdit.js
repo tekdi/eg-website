@@ -446,6 +446,9 @@ export default function AddressEdit({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_ADDRESS_EDIT"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("ADDRESS_EDIT")}
     >
       <Box py={6} px={4} mb={5}>
         {alert && (

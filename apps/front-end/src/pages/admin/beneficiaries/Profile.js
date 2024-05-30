@@ -1478,8 +1478,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     {t("ENROLLMENT_DETAILS")}
                   </AdminTypo.H4>
 
-                  {data?.program_beneficiaries?.status !==
-                    "enrolled_ip_verified" &&
+                  {!["enrolled_ip_verified", "registered_in_camp"].includes(
+                    data?.program_beneficiaries?.status
+                  ) &&
                     !publishEvent && (
                       <IconByName
                         name="PencilLineIcon"

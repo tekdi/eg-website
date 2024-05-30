@@ -33,6 +33,8 @@ export default function TableView({ footerLinks }) {
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"LEARNERS_OVERVIEW"}
+      pageTitle={t("DASHBOARD")}
     >
       <VStack space="4" p="5" alignContent="center" bg="bgGreyColor.200">
         <HStack justifyContent="space-between" px="2">
