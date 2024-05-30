@@ -16,7 +16,7 @@ export default function NotFound({ goBack }) {
           />
           <VStack space={"5"} alignItems="center">
             <H1>{t("NOT_FOUND")}</H1>
-            <Button onPress={(e) => (goBack ? goBack : navigator("/login"))}>
+            <Button onPress={(e) => (goBack ? goBack : navigator("/"))}>
               {t("GO_TO_BACK")}
             </Button>
           </VStack>

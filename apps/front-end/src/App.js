@@ -14,6 +14,7 @@ import {
 import guestRoutes from "./routes/guestRoutes";
 import { volunteerRoute } from "./routes/onest";
 import routes from "./routes/routes";
+import volunteerAdmin from "./routes/volunteerAdmin";
 import adminRoutes from "./routes/admin";
 import PoAdminRoutes from "./routes/PoAdminRoutes";
 import { getIndexedDBItem, getUserId } from "v2/utils/Helper/JSHelper";
@@ -62,6 +63,8 @@ function App() {
         setAccessRoutes(PoAdminRoutes);
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
+      } else if (hasura?.roles?.includes("volunteer_admin")) {
+        setAccessRoutes(volunteerAdmin);
       } else if (
         hasura?.roles?.filter((e) => {
           return ["volunteer", "beneficiary"].includes(e);
