@@ -19,7 +19,7 @@ import {
 } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
-import { Alert, Box, HStack, Modal, VStack } from "native-base";
+import { Box, HStack, Modal, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -32,37 +32,6 @@ import schema1 from "./registration/schema";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
-  //fetch URL data and store fix for 2 times render useEffect call
-  const [countLoad, setCountLoad] = useState(0);
-  const [cohortData, setCohortData] = useState(null);
-  const [programData, setProgramData] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      if (countLoad == 0) {
-        setCountLoad(1);
-      }
-      if (countLoad == 1) {
-        //do page load first operation
-        let onboardingURLData = await getOnboardingURLData();
-        setCohortData(onboardingURLData?.cohortData);
-        setProgramData(onboardingURLData?.programData);
-        //end do page load first operation
-        setCountLoad(2);
-      } else if (countLoad == 2) {
-        setCountLoad(3);
-      }
-    }
-    fetchData();
-  }, [countLoad]);
-
-  //already registred modals
-  const [isUserExistModal, setIsUserExistModal] = useState(false);
-  const [isUserExistResponse, setIsUserExistResponse] = useState(null);
-  const [isLoginShow, setIsLoginShow] = useState(false);
-  const [isUserExistStatus, setIsUserExistStatus] = useState("");
-
   const [page, setPage] = React.useState("logoScreen");
   const [pages, setPages] = React.useState();
   const [schema, setSchema] = React.useState({});
@@ -194,20 +163,8 @@ export default function App({ facilitator, ip, onClick }) {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      const arr = ["1", "2"];
-      const { id } = {};
-      let newPage = [];
-      if (id) {
-        newPage = newSteps.filter((e) => !arr.includes(e));
-        //  const pageSet = form_step_number ? form_step_number : 3;
-        const pageSet = "3";
-        setPage(pageSet);
-        setSchema(properties[pageSet]);
-      } else {
-        newPage = newSteps.filter((e) => arr.includes(e));
-        setPage(newPage[0]);
-        setSchema(properties[newPage[0]]);
-      }
+      setPage(newSteps[0]);
+      setSchema(properties[newSteps[0]]);
       setPages(newSteps);
       let minYear = moment().subtract("years", 50);
       let maxYear = moment().subtract("years", 18);
@@ -256,52 +213,16 @@ export default function App({ facilitator, ip, onClick }) {
           error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
         }
         break;
-      case "aadhar_no":
-        if (
-          data?.aadhar_no &&
-          !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-        ) {
-          error = { aadhar_no: t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER") };
-        }
-        break;
+      // case "state":
+      //   if (isNaN(data?.mobile)) {
+      //     error = { mobile: t("PLEASE_ENTER_VALID_STATE") };
+      //   }
+      //   break;
       case "dob":
         const years = moment().diff(data?.dob, "years");
         if (years < 18) {
           error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
         }
-        break;
-      case "grampanchayat":
-      case "first_name":
-      case "last_name":
-      case "middle_name":
-        // do some thing
-        break;
-      case "vo_experience":
-      case "experience":
-        ["vo_experience", "experience"].forEach((keyex) => {
-          data?.[keyex]?.map((item, index) => {
-            ["role_title", "organization", "description"].forEach((key) => {
-              if (item?.[key]) {
-                if (
-                  !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
-                  item?.[key]?.replaceAll(" ", "") === ""
-                ) {
-                  errors[keyex][index]?.[key]?.addError(
-                    `${t("REQUIRED_MESSAGE")} ${t(
-                      schema?.properties?.[key]?.title
-                    )}`
-                  );
-                } else if (key === "description" && item?.[key].length > 200) {
-                  errors[keyex][index]?.[key]?.addError(
-                    `${t("MAX_LENGHT_200")} ${t(
-                      schema?.properties?.[key]?.title
-                    )}`
-                  );
-                }
-              }
-            });
-          });
-        });
         break;
       default:
         break;
@@ -342,89 +263,14 @@ export default function App({ facilitator, ip, onClick }) {
   const checkMobileExist = async (mobile) => {
     const result = await volunteerRegistryService.isUserExist({ mobile });
     if (result?.data) {
-      let response_isUserExist = result?.data;
-      if (
-        (response_isUserExist?.program_faciltators &&
-          response_isUserExist?.program_faciltators.length > 0) ||
-        (response_isUserExist?.program_beneficiaries &&
-          response_isUserExist?.program_beneficiaries.length > 0)
-      ) {
+      let response_isUserExist = result?.data?.user_roles || [];
+      if (response_isUserExist?.length > 0) {
         const newErrors = {
           mobile: {
             __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
           },
         };
         setErrors(newErrors);
-        setIsUserExistResponse(response_isUserExist);
-        if (response_isUserExist?.program_beneficiaries.length > 0) {
-          setIsUserExistStatus("DONT_ALLOW_MOBILE");
-          setIsUserExistModal(t("DONT_ALLOW_MOBILE"));
-          setIsLoginShow(false);
-        } else if (response_isUserExist?.program_faciltators.length > 0) {
-          for (
-            let i = 0;
-            i < response_isUserExist?.program_faciltators.length;
-            i++
-          ) {
-            let facilator_data = response_isUserExist?.program_faciltators[i];
-            if (facilator_data?.program_id == programData?.program_id) {
-              if (
-                facilator_data?.academic_year_id == cohortData?.academic_year_id
-              ) {
-                setIsUserExistStatus("EXIST_LOGIN");
-                setIsUserExistModal(
-                  t("EXIST_LOGIN")
-                    .replace("{{state}}", programData?.program_name)
-                    .replace("{{year}}", cohortData?.academic_year_name)
-                );
-                setIsLoginShow(true);
-                break;
-              } else if (
-                facilator_data?.academic_year_id != cohortData?.academic_year_id
-              ) {
-                // const academic_year =
-                //   await facilitatorRegistryService.getCohort({
-                //     cohortId: facilator_data?.academic_year_id,
-                //   });
-                // const program_data =
-                //   await facilitatorRegistryService.getProgram({
-                //     programId: facilator_data?.program_id,
-                //   });
-                setIsUserExistStatus("REGISTER_EXIST");
-                setIsUserExistModal(
-                  t("REGISTER_EXIST")
-                    .replace("{{state}}", programData?.program_name)
-                    .replace("{{year}}", cohortData?.academic_year_name)
-                    .replace("{{old_state}}", program_data[0]?.program_name)
-                    .replace("{{old_year}}", academic_year?.academic_year_name)
-                );
-                setOnboardingMobile(mobile);
-                setIsLoginShow(true);
-              }
-            } else {
-              // const academic_year = await facilitatorRegistryService.getCohort({
-              //   cohortId: facilator_data?.academic_year_id,
-              // });
-              // const program_data = await facilitatorRegistryService.getProgram({
-              //   programId: facilator_data?.program_id,
-              // });
-              setIsUserExistStatus("DONT_ALLOW");
-              setIsUserExistModal(
-                t("DONT_ALLOW")
-                  .replace("{{state}}", programData?.program_name)
-                  .replace("{{year}}", cohortData?.academic_year_name)
-                  .replace("{{old_state}}", program_data[0]?.program_name)
-                  .replace("{{old_year}}", academic_year?.academic_year_name)
-              );
-              setIsLoginShow(false);
-              break;
-            }
-          }
-        }
-        return true;
-      } else {
-        setIsUserExistModal();
-        setIsUserExistResponse(null);
       }
     }
     return false;
@@ -432,13 +278,13 @@ export default function App({ facilitator, ip, onClick }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
-    const newData = { ...formData, ...data };
+    // const newData = { ...formData, ...data };
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
-      // if (data?.mobile?.toString()?.length === 10) {
-      //   await checkMobileExist(data?.mobile);
-      // }
+      if (data?.mobile?.toString()?.length === 10) {
+        await checkMobileExist(data?.mobile);
+      }
       if (schema?.properties?.otp) {
         const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
@@ -448,7 +294,6 @@ export default function App({ facilitator, ip, onClick }) {
 
     if (id === "root_qualification") {
       if (schema?.properties?.qualification) {
-        console.log(schema?.properties?.qualification);
         let valueIndex = "";
         schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
           if (e.match("12")) {
@@ -475,17 +320,6 @@ export default function App({ facilitator, ip, onClick }) {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
       goErrorPage(key);
-    }
-  };
-
-  const userExistClick = () => {
-    if (
-      isUserExistStatus == "EXIST_LOGIN" ||
-      isUserExistStatus == "REGISTER_EXIST"
-    ) {
-      navigate("/");
-    } else {
-      setIsUserExistModal();
     }
   };
 
@@ -535,8 +369,8 @@ export default function App({ facilitator, ip, onClick }) {
             hash: localStorage.getItem("hash"),
           });
           if (status === true) {
-            const data = await formSubmitCreate(newFormData);
-            if (!data?.success) {
+            const { data, success } = await formSubmitCreate(newFormData);
+            if (!success) {
               const newErrors = {
                 mobile: {
                   __errors:
@@ -549,6 +383,7 @@ export default function App({ facilitator, ip, onClick }) {
               };
               setErrors(newErrors);
             } else {
+              console.log(data);
               if (data?.username && data?.password) {
                 await removeOnboardingURLData();
                 await removeOnboardingMobile();
@@ -582,7 +417,6 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  console.log(formData);
   const formSubmitCreate = async () => {
     const result = await volunteerRegistryService.create(formData);
     return result;
@@ -599,7 +433,7 @@ export default function App({ facilitator, ip, onClick }) {
   } else if (page == "chooseLangauge") {
     return <ChooseLanguage t={t} languageChanged={changeLanguage} />;
   }
-  console.log("1", page);
+
   return (
     <Layout
       _appBar={{
@@ -644,7 +478,6 @@ export default function App({ facilitator, ip, onClick }) {
                 type="submit"
                 onPress={(e) => {
                   formRef?.current?.submit();
-                  console.log("1", page);
                 }}
               >
                 {schema?.properties?.otp ? t("VERIFY_OTP") : t("SEND_OTP")}
@@ -665,35 +498,6 @@ export default function App({ facilitator, ip, onClick }) {
           </Form>
         )}
       </Box>
-      <Modal
-        isOpen={isUserExistModal}
-        safeAreaTop={true}
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
-      >
-        <Modal.Content>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <H1 textAlign="center">
-                <Alert.Icon />
-              </H1>
-              <FrontEndTypo.H2 textAlign="center">
-                {isUserExistModal}
-              </FrontEndTypo.H2>
-              <HStack space="5" pt="5">
-                <FrontEndTypo.Primarybutton
-                  flex={1}
-                  onPress={async (e) => {
-                    userExistClick();
-                  }}
-                >
-                  {isLoginShow ? t("LOGIN") : t("OK")}
-                </FrontEndTypo.Primarybutton>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
       <Modal
         isOpen={credentials}
         safeAreaTop={true}
