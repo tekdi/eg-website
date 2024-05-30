@@ -48,7 +48,7 @@ registerRoute(
 
 // Fallback for other requests
 registerRoute(
-  ({ request }) => request.destination !== "image" && request.mode !== "navigate" && !request.url.includes('/api/'),
+  ({ request }) => request.destination !== "image" && request.mode !== "navigate" && !request.url.includes('/mw/'),
   new StaleWhileRevalidate({
     cacheName: "default-cache",
     plugins: [
