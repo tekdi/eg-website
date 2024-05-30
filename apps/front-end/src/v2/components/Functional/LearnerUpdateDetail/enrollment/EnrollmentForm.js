@@ -589,7 +589,7 @@ export default function EnrollmentForm() {
           },
         });
       } else {
-        const { enrollment_number, ...otherErrors } = errors;
+        const { enrollment_number, ...otherErrors } = errors ?? {};
         setErrors(otherErrors);
         return true;
       }

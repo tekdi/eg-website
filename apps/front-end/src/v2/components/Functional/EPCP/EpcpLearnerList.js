@@ -17,10 +17,10 @@ const EpcpLearnerList = ({ footerLinks }) => {
 
   const flattenList = (list) => {
     let flattenedArray = [];
-    list.forEach((item) => {
-      item.group.group_users.forEach((userObj) => {
-        const { user_id, first_name, middle_name, last_name } = userObj.user;
-        flattenedArray.push({
+    list?.forEach((item) => {
+      item?.group?.group_users?.forEach((userObj) => {
+        const { user_id, first_name, middle_name, last_name } = userObj?.user;
+        flattenedArray?.push({
           user_id,
           first_name,
           middle_name: middle_name || "",
