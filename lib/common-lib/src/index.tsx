@@ -53,6 +53,7 @@ import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
 import GATrackPageView from './services/AnalyticsService'
+import * as volunteerRegistryService from './services/volunteerRegistryService'
 
 // export
 export {
@@ -111,7 +112,8 @@ export {
   SunbirdPlayer,
   GATrackPageView,
   OnestService,
-  VolunteerAdminLayout
+  VolunteerAdminLayout,
+  volunteerRegistryService
 }
 
 export * from './services/RestClient'
