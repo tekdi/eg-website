@@ -87,12 +87,12 @@ export const dataConfig = {
     },
     onOrderIdGenerate: async (val) => {
       const data = {
-        user_id: val.userData.user_id,
-        context: val.type,
-        context_item_id: val.jobId,
+        user_id: val?.userData.user_id,
+        context: val?.type,
+        context_item_id: val?.jobId,
         status: "created",
         order_id:
-          val.response?.data?.data?.[
+          val?.response?.data?.data?.[
             process.env.REACT_APP_SCHOLARSHIPS_INSERT_ORDER
           ]?.returning?.[0]?.order_id,
         provider_name: val?.item?.provider_name || "",
@@ -180,12 +180,12 @@ export const dataConfig = {
     },
     onOrderIdGenerate: async (val) => {
       const data = {
-        user_id: val.userData.user_id,
-        context: val.type,
-        context_item_id: val.jobId,
+        user_id: val?.userData.user_id,
+        context: val?.type,
+        context_item_id: val?.jobId,
         status: "created",
         order_id:
-          val.response?.data?.data[process.env.REACT_APP_JOBS_INSERT_ORDER]
+          val?.response?.data?.data[process.env.REACT_APP_JOBS_INSERT_ORDER]
             ?.returning?.[0]?.order_id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
@@ -220,11 +220,11 @@ export const dataConfig = {
     onOrderIdGenerate: async (val) => {
       const paramData = { url: "", type: "" };
       paramData.url =
-        val.response.responses[0].message.order.items[0][
+        val?.response.responses[0].message.order.items[0][
           "add-ons"
         ][0].descriptor.media[0].url;
       const list =
-        val.response.responses[0].message.order.items[0].tags[0].descriptor
+        val?.response.responses[0].message.order.items[0].tags[0].descriptor
           .list;
       list.forEach((item) => {
         // Check if the descriptor code is "urlType"
@@ -234,11 +234,11 @@ export const dataConfig = {
         }
       });
       const data = {
-        user_id: val.userData.user_id,
-        context: val.type,
-        context_item_id: val.itemId,
+        user_id: val?.userData.user_id,
+        context: val?.type,
+        context_item_id: val?.itemId,
         status: "created",
-        order_id: val.response.responses[0].message.order.id,
+        order_id: val?.response.responses[0].message.order.id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
         params: paramData,
