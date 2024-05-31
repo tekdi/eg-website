@@ -175,9 +175,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     const timeExpired = await checkPrerakOfflineTimeInterval();
     let academic_Id = await getSelectedAcademicYear();
     if (
-      isOnline &&
-      academic_Id &&
-      (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo)
+      isOnline ||
+      (academic_Id &&
+        (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo))
     ) {
       await setIpUserInfo(fa_id);
       const data = await setPrerakOfflineInfo(fa_id);
@@ -386,6 +386,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         );
         //check exist user registered
         try {
+          setLoading(true);
           let onboardingURLData = await getOnboardingURLData();
           setCohortData(onboardingURLData?.cohortData);
           setProgramData(onboardingURLData?.programData);
@@ -420,6 +421,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             setIsUserRegisterExist(false);
             await showSelectCohort();
           }
+          setLoading(false);
         } catch (e) {}
       }
     }
@@ -554,10 +556,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const handleAcademicYear = async (item) => {
+    console.log("hiiii");
     if (item !== "__NativebasePlaceholder__") {
       setAcademicYear(item);
       setDisable(false);
     } else {
+      console.log({ item });
       setAcademicYear(item);
       setDisable(true);
     }
@@ -611,7 +615,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 resizeMode="contain"
               />
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                {t("WELCOME")} {facilitator?.first_name}, v11 27 may 24
+                {t("WELCOME")} {facilitator?.first_name}, v12 31 may 24
               </FrontEndTypo.H1>
             </HStack>
             {events?.length ? (
