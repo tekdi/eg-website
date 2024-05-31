@@ -1154,6 +1154,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     );
   }
 
+  console.log({ page });
   return (
     <Layout
       _appBar={{

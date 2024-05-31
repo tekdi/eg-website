@@ -34,7 +34,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_DASHBOARD"}
       pageTitle={t("CAMP_DASHBOARD")}
-      stepTitle={t("ATTENDANCE")}
+      // stepTitle={t("ATTENDANCE")}
     >
       <List userTokenInfo={userTokenInfo} />
       <VStack p="4" space="5">
