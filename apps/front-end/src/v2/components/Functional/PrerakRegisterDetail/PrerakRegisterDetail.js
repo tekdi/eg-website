@@ -666,14 +666,23 @@ export default function PrerakRegisterDetail({
   };
   const formSubmitCreate = async () => {
     let first_name = registerFormData?.first_name
-      ? registerFormData.first_name.replaceAll(" ", "")
+      ? typeof registerFormData.first_name === "string"
+        ? registerFormData.first_name.replaceAll(" ", "")
+        : ""
       : "";
+
     let middle_name = registerFormData?.middle_name
-      ? registerFormData.middle_name.replaceAll(" ", "")
+      ? typeof registerFormData.middle_name === "string"
+        ? registerFormData.middle_name.replaceAll(" ", "")
+        : ""
       : "";
+
     let last_name = registerFormData?.last_name
-      ? registerFormData.last_name.replaceAll(" ", "")
+      ? typeof registerFormData.last_name === "string"
+        ? registerFormData.last_name.replaceAll(" ", "")
+        : ""
       : "";
+
     let lang = localStorage.getItem("lang");
 
     let state = registerFormData?.state;

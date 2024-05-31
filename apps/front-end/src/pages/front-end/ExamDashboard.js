@@ -9,7 +9,11 @@ const ExamDashboard = ({ footerLinks }) => {
   const { t } = useTranslation();
 
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
+    <Layout
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+      pageTitle={t("DASHBOARD")}
+    >
       <VStack bg="primary.50" p="5" space={4} style={{ zIndex: -1 }}>
         <FrontEndTypo.H2 color="textMaroonColor.400">
           {t("DASHBOARD")}
