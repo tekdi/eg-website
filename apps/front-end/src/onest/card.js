@@ -100,7 +100,7 @@ export const dataConfig = {
       };
       let response = await OnestService.create(data);
     },
-    expiryLimit: 180, //seconds
+    expiryLimit: 600, //seconds
   },
 
   jobs: {
