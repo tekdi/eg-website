@@ -549,8 +549,8 @@
       "LACK_OF_TIME": "Lack of time",
       "NETWORK_PROBLEM_AT_HOME_VILLAGE": "Network problem at home/village",
       "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "Smartphone is not available/Don't know how to use mobile",
-      "DEATH": "Death",
-      "ESCAPED": "escaped",
+      "LEARNER_DEATH": "Learner's Death",
+      "LEARNER_ESCAPED": "Learner escaped",
       "TITLE": "Choose the reason "
     },
     "RSOS_DOCUMENT_IMAGE": {
@@ -686,6 +686,8 @@
       "ILLNESS": "Illness",
       "TITLE": "Choose the reason ",
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
+      "LEARNER_DEATH": "Learner's Death",
+      "LEARNER_ESCAPED": "Learner escaped",
       "OTHER": "Other"
     }
   },
