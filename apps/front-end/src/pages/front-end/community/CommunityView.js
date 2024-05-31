@@ -50,7 +50,7 @@ export default function CommunityView({ footerLinks }) {
     });
     const {
       data: { community_response },
-    } = getData || {};
+    } = getData ?? {};
     setData(community_response);
   }, []);
 

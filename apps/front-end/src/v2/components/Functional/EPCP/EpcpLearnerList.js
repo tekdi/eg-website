@@ -17,8 +17,8 @@ const EpcpLearnerList = ({ footerLinks }) => {
 
   const flattenList = (list) => {
     let flattenedArray = [];
-    list.forEach((item) => {
-      item.group.group_users.forEach((userObj) => {
+    list?.forEach((item) => {
+      item?.group?.group_users?.forEach((userObj) => {
         const { user_id, first_name, middle_name, last_name } = userObj.user;
         flattenedArray.push({
           user_id,
@@ -40,7 +40,7 @@ const EpcpLearnerList = ({ footerLinks }) => {
       let observation = "EPCP";
       const listData = await ObservationService.getCampLearnerList();
       const flattenedList = flattenList(listData?.data);
-      const userIds = listData?.data.flatMap((group) =>
+      const userIds = listData?.data?.flatMap((group) =>
         group.group.group_users.map((user) => user.user.user_id)
       );
       const data = await ObservationService.getSubmissionData(
