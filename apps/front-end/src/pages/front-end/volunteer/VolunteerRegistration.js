@@ -442,7 +442,7 @@ export default function App({ facilitator, ip, onClick }) {
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        onlyIconsShow: ["langBtn"],
+        onlyIconsShow: ["langAppBtn"],
         funLangChange: () => {
           setPage("chooseLangauge");
         },
