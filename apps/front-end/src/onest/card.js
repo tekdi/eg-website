@@ -12,13 +12,13 @@ export const dataConfig = {
     listLink: "onest/scholarship",
     filters: ["provider_name"],
     apiLink_DB_CACHE: process.env.REACT_APP_SCHOLARSHIP_DB_CACHE,
-    apiLink_RESPONSE_DB: "response_cache_dev",
     apiLink_DOMAIN: process.env.REACT_APP_SCHOLARSHIP_DOMAIN,
     apiLink_BAP_ID: process.env.REACT_APP_SCHOLARSHIPS_BAP_ID,
     apiLink_BAP_URI: process.env.REACT_APP_SCHOLARSHIPS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_SCHOLARSHIPS_BASE_URL,
     imageUrl: scholarships,
-    apiResponse: (e) => e.data.data[process.env.REACT_APP_SCHOLARSHIP_DB_CACHE],
+    apiResponse: (e) =>
+      e?.data?.data?.[process.env.REACT_APP_SCHOLARSHIP_DB_CACHE],
     render: (obj) => {
       const getDates = (range) => {
         return `${moment(range.start).format("DD MMM YYYY")} to ${moment(
@@ -92,13 +92,13 @@ export const dataConfig = {
         context_item_id: val.jobId,
         status: "created",
         order_id:
-          val.response.data.data[
+          val.response?.data?.data?.[
             process.env.REACT_APP_SCHOLARSHIPS_INSERT_ORDER
-          ].returning[0].order_id,
+          ]?.returning?.[0]?.order_id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
       };
-      let response = await OnestService.create(data);
+      await OnestService.create(data);
     },
     expiryLimit: 600, //seconds
   },
@@ -117,14 +117,13 @@ export const dataConfig = {
       "company",
     ],
     apiLink_DB_CACHE: process.env.REACT_APP_JOBS_DB_CACHE,
-    apiLink_RESPONSE_DB: "response_cache_dev",
     apiLink_DOMAIN: process.env.REACT_APP_JOBS_DOMAIN,
     apiLink_BAP_ID: process.env.REACT_APP_JOBS_BAP_ID,
     apiLink_BAP_URI: process.env.REACT_APP_JOBS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_JOBS_BASE_URL,
     apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
     imageUrl: jobs,
-    apiResponse: (e) => e.data.data[process.env.REACT_APP_JOBS_DB_CACHE],
+    apiResponse: (e) => e?.data?.data?.[process.env.REACT_APP_JOBS_DB_CACHE],
     render: (obj) => {
       const getSalary = (val1, val2) => {
         const invalidValues = ["0", "undefined"];
@@ -186,8 +185,8 @@ export const dataConfig = {
         context_item_id: val.jobId,
         status: "created",
         order_id:
-          val.response.data.data[process.env.REACT_APP_JOBS_INSERT_ORDER]
-            .returning[0].order_id,
+          val.response?.data?.data[process.env.REACT_APP_JOBS_INSERT_ORDER]
+            ?.returning?.[0]?.order_id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
       };
