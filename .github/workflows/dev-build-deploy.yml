@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - feat-new-branding-3.0 
+      - feat-new-branding-3.0
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
