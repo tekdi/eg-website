@@ -186,7 +186,8 @@ export const dataConfig = {
         context_item_id: val.jobId,
         status: "created",
         order_id:
-          val.response.data.data.insert_jobs_order_dev.returning[0].order_id,
+          val.response.data.data[process.env.REACT_APP_JOBS_INSERT_ORDER]
+            .returning[0].order_id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
       };
