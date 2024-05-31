@@ -421,95 +421,96 @@ const List = memo(
   }) => {
     return (
       <VStack space="4" p="4" alignContent="center">
-        {groupUsers?.map((item) => {
-          return (
-            <HStack key={item} flex="1" minHeight={12}>
-              <UserCard
-                _hstack={{
-                  ...(!isEditable?.[item.id] && item?.attendances?.[0]?.status
-                    ? { py: 0 }
-                    : // : item?.attendances?.[0]?.status &&
-                      //   item?.attendances?.[0]?.status !== PRESENT
-                      // ? { p: 0, pl: 4 }
-                      { p: 0 }),
-                  space: 1,
-                  flex: 1,
-                  bg:
-                    isEditable?.[item.id] || !item?.attendances?.[0]?.status
-                      ? "white"
-                      : item?.attendances?.[0]?.status === PRESENT
-                      ? "green.100"
-                      : item?.attendances?.[0]?.status === ABSENT
-                      ? "red.100"
-                      : "",
-                }}
-                _vstack={{ py: 2 }}
-                _image={{ size: 45, color: "gray" }}
-                leftElement={
-                  (isEditable?.[item.id] ||
-                    !item?.attendances?.[0]?.status) && (
-                    <IconByName
-                      onPress={(e) => {
-                        uploadAttendence(item, ABSENT, true);
-                      }}
-                      height="100%"
-                      roundedRight="0"
-                      bg="red.100"
-                      name="CloseCircleLineIcon"
-                      _icon={{ size: "25px", color: "gray" }}
-                    />
-                  )
-                }
-                rightElement={
-                  isEditable?.[item.id] || !item?.attendances?.[0]?.status ? (
-                    <IconByName
-                      onPress={(e) => {
-                        addAttendance(item);
-                      }}
-                      height="100%"
-                      roundedLeft="0"
-                      bg="green.100"
-                      name="CheckboxCircleLineIcon"
-                      _icon={{ size: "25px", color: "gray" }}
-                    />
-                  ) : (
-                    <IconByName
-                      name="EditBoxLineIcon"
-                      _icon={{ color: "garkGray", size: "15" }}
-                      bg="gray.100"
-                      shadow="4"
-                      rounded="full"
-                      onPress={(e) =>
-                        setIsEditable({
-                          ...isEditable,
-                          [item.id]: !isEditable?.[item.id],
-                        })
-                      }
-                    />
-                  )
-                }
-                title={[
-                  item?.program_beneficiaries[0]?.enrollment_first_name,
-                  item?.program_beneficiaries[0]?.enrollment_middle_name,
-                  item?.program_beneficiaries[0]?.enrollment_last_name,
-                ]
-                  .filter((e) => e)
-                  .join(" ")}
-                // subTitle={
-                //   <HStack>
-                //     <RenderAttendee row={item?.attendances?.[0] || {}} t={t} />
-                //   </HStack>
-                // }
-                // image={
-                //   item?.profile_photo_1?.fileUrl
-                //     ? { urlObject: item?.profile_photo_1 }
-                //     : null
-                // }
-                isIdtag={item?.id}
-              />
-            </HStack>
-          );
-        })}
+        {Array.isArray(groupUsers) &&
+          groupUsers?.map((item) => {
+            return (
+              <HStack key={item} flex="1" minHeight={12}>
+                <UserCard
+                  _hstack={{
+                    ...(!isEditable?.[item.id] && item?.attendances?.[0]?.status
+                      ? { py: 0 }
+                      : // : item?.attendances?.[0]?.status &&
+                        //   item?.attendances?.[0]?.status !== PRESENT
+                        // ? { p: 0, pl: 4 }
+                        { p: 0 }),
+                    space: 1,
+                    flex: 1,
+                    bg:
+                      isEditable?.[item.id] || !item?.attendances?.[0]?.status
+                        ? "white"
+                        : item?.attendances?.[0]?.status === PRESENT
+                        ? "green.100"
+                        : item?.attendances?.[0]?.status === ABSENT
+                        ? "red.100"
+                        : "",
+                  }}
+                  _vstack={{ py: 2 }}
+                  _image={{ size: 45, color: "gray" }}
+                  leftElement={
+                    (isEditable?.[item.id] ||
+                      !item?.attendances?.[0]?.status) && (
+                      <IconByName
+                        onPress={(e) => {
+                          uploadAttendence(item, ABSENT, true);
+                        }}
+                        height="100%"
+                        roundedRight="0"
+                        bg="red.100"
+                        name="CloseCircleLineIcon"
+                        _icon={{ size: "25px", color: "gray" }}
+                      />
+                    )
+                  }
+                  rightElement={
+                    isEditable?.[item.id] || !item?.attendances?.[0]?.status ? (
+                      <IconByName
+                        onPress={(e) => {
+                          addAttendance(item);
+                        }}
+                        height="100%"
+                        roundedLeft="0"
+                        bg="green.100"
+                        name="CheckboxCircleLineIcon"
+                        _icon={{ size: "25px", color: "gray" }}
+                      />
+                    ) : (
+                      <IconByName
+                        name="EditBoxLineIcon"
+                        _icon={{ color: "garkGray", size: "15" }}
+                        bg="gray.100"
+                        shadow="4"
+                        rounded="full"
+                        onPress={(e) =>
+                          setIsEditable({
+                            ...isEditable,
+                            [item.id]: !isEditable?.[item.id],
+                          })
+                        }
+                      />
+                    )
+                  }
+                  title={[
+                    item?.program_beneficiaries[0]?.enrollment_first_name,
+                    item?.program_beneficiaries[0]?.enrollment_middle_name,
+                    item?.program_beneficiaries[0]?.enrollment_last_name,
+                  ]
+                    .filter((e) => e)
+                    .join(" ")}
+                  // subTitle={
+                  //   <HStack>
+                  //     <RenderAttendee row={item?.attendances?.[0] || {}} t={t} />
+                  //   </HStack>
+                  // }
+                  // image={
+                  //   item?.profile_photo_1?.fileUrl
+                  //     ? { urlObject: item?.profile_photo_1 }
+                  //     : null
+                  // }
+                  isIdtag={item?.id}
+                />
+              </HStack>
+            );
+          })}
       </VStack>
     );
   }

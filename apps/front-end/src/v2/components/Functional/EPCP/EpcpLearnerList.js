@@ -40,7 +40,7 @@ const EpcpLearnerList = ({ footerLinks }) => {
       let observation = "EPCP";
       const listData = await ObservationService.getCampLearnerList();
       const flattenedList = flattenList(listData?.data);
-      const userIds = listData?.data.flatMap((group) =>
+      const userIds = listData?.data?.flatMap((group) =>
         group.group.group_users.map((user) => user.user.user_id)
       );
       const data = await ObservationService.getSubmissionData(

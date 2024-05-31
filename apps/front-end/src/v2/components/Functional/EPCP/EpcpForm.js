@@ -15,7 +15,7 @@ import {
   ObservationService,
   jsonParse,
 } from "@shiksha/common-lib";
-import { Box, HStack } from "native-base";
+import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -312,13 +312,13 @@ const EpcpForm = ({ footerLinks }) => {
 
   const getFieldResponseByTitle = (title) => {
     // Find the object in data array where fields title matches the given title
-    const field = data.find((item) => item.fields[0].title === title);
+    const field = data?.find((item) => item.fields[0].title === title);
     if (title === "SELECTED_SUBJECT_BY_LEARNER") {
       const res = field?.field_responses?.[0]?.response_value || "[]";
       const subjectsArray = JSON.parse(res);
       const selectedIds = subjectsArray
-        .filter((subject) => subject.selected === "yes")
-        .map((subject) => subject.id);
+        ?.filter((subject) => subject.selected === "yes")
+        ?.map((subject) => subject.id);
       return selectedIds || "";
     } else {
       // If field is found, return its field_responses data, otherwise return null

@@ -34,10 +34,10 @@ export default function CampSetting({ footerLinks }) {
   const navigate = useNavigate();
 
   const handleDayClick = (day) => {
-    if (selectedDays?.includes(day)) {
-      setSelectedDays(selectedDays?.filter((d) => d !== day));
+    if (Array.isArray(selectedDays) && selectedDays.includes(day)) {
+      setSelectedDays(selectedDays.filter((d) => d !== day));
     } else {
-      setSelectedDays(day);
+      setSelectedDays([day]);
     }
   };
 
