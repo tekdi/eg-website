@@ -551,9 +551,10 @@
       "NETWORK_PROBLEM_AT_HOME_VILLAGE": "घर/गांव में नेटवर्क की समस्या",
       "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
       "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "स्मार्टफोन उपलब्ध नहीं है/मोबाइल चलाना नहीं आता",
-      "DEATH": " शिक्षार्थी की मृत्यु",
-      "ESCAPED": " शिक्षार्थी की पलायन",
-      "TITLE": "एक कारण चुनें *"
+      "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
+      "LEARNER_ESCAPED": "शिक्षार्थी का पलायन",
+      "OTHER": "अन्य",
+      "TITLE": "एक कारण चुनें"
     },
     "RSOS_DOCUMENT_IMAGE": {
       "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
@@ -692,8 +693,8 @@
       "ILLNESS": "बीमारी ।",
       "TITLE": "एक कारण चुनें",
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबन्धित समस्या_साधन या किराया नही",
-      "LEARNER_DEATH": " शिक्षार्थी की मृत्यु",
-      "LEARNER_ESCAPED": " शिक्षार्थी की पलायन",
+      "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
+      "LEARNER_ESCAPED": "शिक्षार्थी का पलायन",
       "OTHER": "अन्य"
     }
   },
