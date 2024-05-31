@@ -106,7 +106,7 @@ function JobDetails() {
         context_item_id: jobId,
         user_id: userData.user_id,
       };
-      let result = await OnestService.getList({ filter: data });
+      let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
         setListData(result?.data);
         getApplicationStatus(result?.data[0].order_id);

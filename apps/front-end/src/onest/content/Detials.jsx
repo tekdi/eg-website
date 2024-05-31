@@ -306,7 +306,7 @@ const Details = () => {
           </Box>
           {details !== undefined && (
             <Box padding={4} borderRadius={15} backgroundColor={"white"}>
-              {details?.tags?.[0]?.descriptor?.list?.map((item, itemIndex) => (
+              {details?.tags?.[0]?.list?.map((item, itemIndex) => (
                 <>
                   {!fieldsToSkip.includes(item.descriptor.name) && (
                     <>
