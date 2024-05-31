@@ -32,7 +32,7 @@ const Details = () => {
   const fieldsToSkip = ["lastupdatedon", "createdon"];
 
   const [story, setStory] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [transactionId, setTransactionId] = useState(uuidv4());
   // const messageId = uuidv4();
@@ -273,11 +273,11 @@ const Details = () => {
           <Box padding={4} borderRadius={15} backgroundColor={"white"} mb={5}>
             <Flex justify="space-between" alignItems="center">
               <Box>
-                {product.image_url && (
+                {/* {product.image_url && (
                   <Box width={80} height={"auto"}>
                     <img src={product.image_url} alt="Product" />
                   </Box>
-                )}
+                )} */}
               </Box>
             </Flex>
 

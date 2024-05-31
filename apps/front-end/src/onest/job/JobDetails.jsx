@@ -50,7 +50,7 @@ function JobDetails() {
 
   const getApplicationStatus = async (order_id) => {
     const apiUrl = `${baseUrl}/user/searchOrder/${order_id}`;
-
+    setLoading(t("FETCHING_THE_DETAILS"));
     try {
       await axios
         .get(apiUrl)
@@ -92,9 +92,10 @@ function JobDetails() {
         });
     } catch (error) {
       console.log("error", error);
+    } finally {
+      setLoading(false);
+      setOpenModal(true);
     }
-
-    setOpenModal(true);
   };
 
   useEffect(() => {
