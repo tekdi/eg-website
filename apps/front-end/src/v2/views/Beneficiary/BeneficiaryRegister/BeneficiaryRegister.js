@@ -155,46 +155,27 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   // };
 
   const otpfunction = async () => {
-    if (formData?.mobile?.length < 10) {
-      const data = await formSubmitCreate(formData);
-
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("MINIMUM_LENGTH_IS_10")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
-      const data = await formSubmitCreate(formData);
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("PLEASE_ENTER_VALID_NUMBER")],
-          otpbtn,
-        },
-      };
-      setErrors(newErrors);
-    }
-    if (formData?.mobile?.length === 10) {
+    if (
+      formData?.mobile?.length === 10 &&
+      formData?.mobile > 6000000000 &&
+      formData?.mobile < 9999999999
+    ) {
       const data = await benificiaryRegistoryService.isUserExists(formData);
       if (data?.is_data_found) {
         setIsExistModal(true);
       } else {
         setStep();
       }
+    } else {
+      const newErrors = {
+        mobile: {
+          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
     }
   };
+  // TODO document why this block is empty
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -382,8 +363,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     fetchData();
   }, []);
 
-  const formSubmitCreate = async (formData) => {};
-
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
@@ -468,17 +447,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         };
         setErrors(newErrors);
       }
-
-      // if (schema?.properties?.otp) {
-      //   const { otp, ...properties } = schema?.properties;
-      //   const required = schema?.required.filter((item) => item !== "otp");
-      //   setSchema({ ...schema, properties, required });
-      //   setFormData((e) => {
-      //     const { otp, ...fData } = e;
-      //     return fData;
-      //   });
-      //   setotpbtn(false);
-      // }
 
       if (id === "root_state") {
         await setDistric({

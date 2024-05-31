@@ -549,9 +549,10 @@
       "LACK_OF_TIME": "Lack of time",
       "NETWORK_PROBLEM_AT_HOME_VILLAGE": "Network problem at home/village",
       "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "Smartphone is not available/Don't know how to use mobile",
-      "DEATH": "Death",
-      "ESCAPED": "escaped",
-      "TITLE": "Choose the reason "
+      "LEARNER_DEATH": "Learner's Death",
+      "LEARNER_ESCAPED": "Learner escaped",
+      "OTHER": "Other",
+      "TITLE": "Choose the reason"
     },
     "RSOS_DOCUMENT_IMAGE": {
       "TITLE": "Upload an Image of your Document "
@@ -686,6 +687,8 @@
       "ILLNESS": "Illness",
       "TITLE": "Choose the reason ",
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
+      "LEARNER_DEATH": "Learner's Death",
+      "LEARNER_ESCAPED": "Learner escaped",
       "OTHER": "Other"
     }
   },
@@ -1884,5 +1887,6 @@
   "JOBS": "Jobs & Internships",
   "LEARNING_EXPERIENCES": "Skill Development &  Learning",
   "PCR_LEARNING_ACTIVITIES": "Neev Learning Activities",
-  "CAMP_EXECUTION": "Camp Execution"
+  "CAMP_EXECUTION": "Camp Execution",
+  "EPCP_REPORT": "EPCP"
 }

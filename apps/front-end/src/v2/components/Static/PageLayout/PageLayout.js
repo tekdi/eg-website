@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Center, Stack, ScrollView } from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";
 import PageHeader from "../PageHeader/PageHeader";
