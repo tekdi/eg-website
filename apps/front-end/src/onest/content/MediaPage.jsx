@@ -21,7 +21,6 @@ const MediaPage = () => {
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
-  const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
 
   const navigate = useNavigate();
   const { t } = useTranslation();
