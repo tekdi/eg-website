@@ -214,34 +214,44 @@ export const dataConfig = {
         context_item_id: e?.itemId,
         user_id: e?.user_id,
       };
-      let result = await OnestService.getList({ filter: data });
+      let result = await OnestService.getList({ filters: data });
+
+      if (
+        result?.data?.length &&
+        typeof result?.data?.[0].params === "string"
+      ) {
+        try {
+          result.data[0].params = JSON.parse(result.data[0].params);
+        } catch (e) {
+          console.error("Error parsing params:", e);
+        }
+      }
       return result?.data?.[0];
     },
     onOrderIdGenerate: async (val) => {
       const paramData = { url: "", type: "" };
       paramData.url =
-        val?.response.responses[0].message.order.items[0][
-          "add-ons"
-        ][0].descriptor.media[0].url;
-      const list =
-        val?.response.responses[0].message.order.items[0].tags[0].descriptor
-          .list;
-      list.forEach((item) => {
-        // Check if the descriptor code is "urlType"
-        if (item.descriptor.code === "urlType") {
-          // If found, extract the value associated with it
-          paramData.type = item.value;
-        }
-      });
+        val.response.responses?.[0]?.message.order?.fulfillments?.[0]?.stops?.[0]?.instructions?.media?.[0]?.url;
+      paramData.type =
+        val.response.responses?.[0]?.message.order?.fulfillments?.[0]?.stops?.[0]?.type;
+      // const list =
+      //   val.response.responses[0].message.order.items[0].tags[0].list;
+      // list.forEach((item) => {
+      //   // Check if the descriptor code is "urlType"
+      //   if (item.descriptor.code === "urlType") {
+      //     // If found, extract the value associated with it
+      //     paramData.type = item.value;
+      //   }
+      // });
       const data = {
-        user_id: val?.userData.user_id,
+        user_id: val?.userData?.user_id,
         context: val?.type,
         context_item_id: val?.itemId,
         status: "created",
-        order_id: val?.response.responses[0].message.order.id,
+        order_id: val?.response?.responses?.[0]?.message.order.id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
-        params: paramData,
+        params: JSON.stringify(paramData),
       };
       await OnestService.create(data);
     },
