@@ -666,14 +666,23 @@ export default function PrerakRegisterDetail({
   };
   const formSubmitCreate = async () => {
     let first_name = registerFormData?.first_name
-      ? registerFormData.first_name.replaceAll(" ", "")
+      ? typeof registerFormData.first_name === "string"
+        ? registerFormData.first_name.replaceAll(" ", "")
+        : ""
       : "";
+
     let middle_name = registerFormData?.middle_name
-      ? registerFormData.middle_name.replaceAll(" ", "")
+      ? typeof registerFormData.middle_name === "string"
+        ? registerFormData.middle_name.replaceAll(" ", "")
+        : ""
       : "";
+
     let last_name = registerFormData?.last_name
-      ? registerFormData.last_name.replaceAll(" ", "")
+      ? typeof registerFormData.last_name === "string"
+        ? registerFormData.last_name.replaceAll(" ", "")
+        : ""
       : "";
+
     let lang = localStorage.getItem("lang");
 
     let state = registerFormData?.state;
@@ -706,7 +715,14 @@ export default function PrerakRegisterDetail({
   return (
     <>
       {isLoading ? (
-        <PageLayout t={t} isPageMiddle={true} customComponent={<Loader />} />
+        <PageLayout
+          t={t}
+          isPageMiddle={true}
+          customComponent={<Loader />}
+          analyticsPageTitle={"FACILITATOR_ONBOADING"}
+          pageTitle={t("FACILITATOR")}
+          stepTitle={t("ONBOARDING")}
+        />
       ) : (
         <VStack flex={3} space={5}>
           <Box py={6} px={4} mb={5}>

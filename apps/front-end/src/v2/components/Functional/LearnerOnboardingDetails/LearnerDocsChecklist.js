@@ -119,6 +119,9 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY_DOCUMENT_CHECKLIST"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("DOCUMENTS_CHECKLIST")}
     >
       {[
         "dropout",

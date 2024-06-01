@@ -124,6 +124,9 @@ export default function CampSelectedLearners() {
         onPressBackButton,
         _box: { bg: "white" },
       }}
+      analyticsPageTitle={"CAMP_SELECT_LREARNER"}
+      pageTitle={t("CAMP")}
+      stepTitle={t("LEARNERS_IN_CAMP")}
     >
       <Box py={6} px={4} mb={5}>
         <AdminTypo.H3 color={"textMaroonColor.400"}>

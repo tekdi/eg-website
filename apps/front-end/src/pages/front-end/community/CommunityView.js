@@ -50,7 +50,7 @@ export default function CommunityView({ footerLinks }) {
     });
     const {
       data: { community_response },
-    } = getData || {};
+    } = getData ?? {};
     setData(community_response);
   }, []);
 
@@ -120,6 +120,8 @@ export default function CommunityView({ footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"COMMUNITY_REFRENCE"}
+      pageTitle={t("COMMUNITY_REFRENCE")}
     >
       <Box p="4">
         {!addMore ||

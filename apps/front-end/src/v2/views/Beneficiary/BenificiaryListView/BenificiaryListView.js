@@ -223,6 +223,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
   const fa_id = localStorage.getItem("id");
+  const prerak_status = localStorage.getItem("status");
 
   useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -275,6 +276,8 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY_LIST"}
+      pageTitle={t("BENEFICIARY_LIST")}
     >
       <VStack ref={ref}>
         {[
@@ -282,7 +285,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           "selected_prerak",
           "selected_for_training",
           "selected_for_onboarding",
-        ].includes(facilitator.status) && (
+        ].includes(prerak_status) && (
           <Pressable
             onPress={(e) => {
               navigate(`/beneficiary`);

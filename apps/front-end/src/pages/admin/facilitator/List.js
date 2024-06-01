@@ -117,7 +117,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [program, setProgram] = useState();
   const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -361,7 +361,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                   >
                     <AdminTypo.H4> {t("INVITATION_LINK")}</AdminTypo.H4>
                     <Clipboard
-                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users[0]?.organisation_id}&cohort_id=${academicYear?.academic_year_id}&program_id=${program?.program_id}`}
+                      text={`${process.env.REACT_APP_BASE_URL}/facilitator-self-onboarding?org_id=${userTokenInfo?.authUser?.program_users?.[0]?.organisation_id}&cohort_id=${academicYear?.academic_year_id}&program_id=${program?.program_id}`}
                     >
                       <HStack space="3">
                         <IconByName

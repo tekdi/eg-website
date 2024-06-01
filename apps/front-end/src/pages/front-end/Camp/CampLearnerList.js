@@ -25,7 +25,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
   const [selectedIds, setSelectedIds] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
 
-  const selectAllChecked = selectedIds.length === nonRegisteredUser?.length;
+  const selectAllChecked = selectedIds?.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
     navigate("/camps");
   };
