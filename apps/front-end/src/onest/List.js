@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import axios from "axios";
 import {
   Box,
   Button,
   HStack,
   Heading,
-  IconButton,
   Image,
   Input,
   Modal,
@@ -14,14 +14,13 @@ import {
   Text,
   VStack,
 } from "native-base";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { dataConfig } from "./card";
-import axios from "axios";
 import Layout from "./Layout";
-import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import { dataConfig } from "./card";
 // import InfiniteScroll from "react-infinite-scroll-component";
-import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
+import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 const limit = 6;
 const List = () => {
   const [cardData, setCardData] = useState();
