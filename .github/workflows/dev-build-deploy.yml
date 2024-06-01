@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - feat-sw-fix
+      - release-2.1.5
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
@@ -48,7 +48,7 @@ jobs:
           REACT_APP_LEARNINGS_BASE_URL: ${{ secrets.REACT_APP_LEARNINGS_BASE_URL }}
           REACT_APP_LEARNINGS_DB_CACHE: ${{ secrets.REACT_APP_LEARNINGS_DB_CACHE }}
           REACT_APP_LEARNINGS_DOMAIN: ${{ secrets.REACT_APP_LEARNINGS_DOMAIN }}
-          
+
       - name: Create Lerna Bundles for Submodules
         run: |
           sh ./scripts/pack-prod-build.sh
