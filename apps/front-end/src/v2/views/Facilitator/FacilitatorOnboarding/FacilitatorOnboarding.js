@@ -155,6 +155,9 @@ function FacilitatorOnboarding() {
               navigatePage={navigatePage}
             />
           }
+          analyticsPageTitle={"FACILITATOR_ONBOADING"}
+          pageTitle={t("FACILITATOR")}
+          stepTitle={step}
         />
       );
     } else if (arrayformValue.includes(activeScreenName)) {
@@ -172,6 +175,9 @@ function FacilitatorOnboarding() {
               navigatePage={navigatePage}
             />
           }
+          analyticsPageTitle={"FACILITATOR_ONBOADING"}
+          pageTitle={t("FACILITATOR")}
+          stepTitle={step}
         />
       );
     } else {

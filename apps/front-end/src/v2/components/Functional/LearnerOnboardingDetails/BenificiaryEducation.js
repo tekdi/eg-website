@@ -93,6 +93,9 @@ export default function BenificiaryEducation() {
           navigate(`/beneficiary/profile/${userId}`);
         },
       }}
+      analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("EDUCATION_DETAILS")}
     >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
