@@ -1,6 +1,7 @@
 // import { get, post, update as coreUpdate, patch, distory } from "./index";
-import config from "./config.json";
+import { get, patch, post } from "@shiksha/common-lib";
 import apiPath from "./ApiUrl.json";
+import config from "./config.json";
 
 const baseUrl = "import.meta.env.VITE_API_BASE_URL";
 const env = "import.meta.env";
