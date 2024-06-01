@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import axios from "axios";
 import {
   Box,
   Button,
   HStack,
   Heading,
-  IconButton,
   Image,
   Input,
   Modal,
@@ -14,14 +14,13 @@ import {
   Text,
   VStack,
 } from "native-base";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { dataConfig } from "./card";
-import axios from "axios";
 import Layout from "./Layout";
-import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
+import { dataConfig } from "./card";
 // import InfiniteScroll from "react-infinite-scroll-component";
-import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
+import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 const limit = 6;
 const List = () => {
   const [cardData, setCardData] = useState();
@@ -38,7 +37,7 @@ const List = () => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+
   // useEffect(() => {
   //   if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
   //     setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
@@ -49,7 +48,6 @@ const List = () => {
 
   useEffect(() => {
     const fetchJobsData = async () => {
-      setLoading(t("FETCHING_THE_DETAILS"));
       try {
         let response;
         const configData = dataConfig[type] || {};
@@ -76,8 +74,6 @@ const List = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -147,10 +143,6 @@ const List = () => {
   const handleBack = () => {
     navigate(`/onest`);
   };
-
-  if (loading) {
-    return <Loading message={loading} />;
-  }
 
   return (
     <Layout
@@ -269,20 +261,16 @@ const List = () => {
           gap="10px"
         > */}
         <VStack space="4" alignContent="center" p="4">
-          {filterCardData?.length ? (
-            filterCardData?.map((e) => (
-              <RenderCards key={e} obj={e} config={config} />
-            ))
-          ) : (
-            <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
-          )}
+          {filterCardData?.map((e) => (
+            <RenderCards key={e} obj={e} config={config} />
+          ))}
           {/* </InfiniteScroll> */}
-          {hasMore && filterCardData?.length > 0 && (
+          {hasMore && (
             <FrontEndTypo.Primarybutton onPress={(e) => fetchData(1)}>
               {t("NEXT")}
             </FrontEndTypo.Primarybutton>
           )}
-          {page > 1 && filterCardData?.length > 0 && (
+          {page > 1 && (
             <FrontEndTypo.Primarybutton onPress={(e) => fetchData(-1)}>
               {t("BACK")}
             </FrontEndTypo.Primarybutton>
