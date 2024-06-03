@@ -9,7 +9,11 @@ const ExamDashboard = ({ footerLinks }) => {
   const { t } = useTranslation();
 
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
+    <Layout
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+      pageTitle={t("DASHBOARD")}
+    >
       <VStack bg="primary.50" p="5" space={4} style={{ zIndex: -1 }}>
         <FrontEndTypo.H2 color="textMaroonColor.400">
           {t("DASHBOARD")}
@@ -20,7 +24,9 @@ const ExamDashboard = ({ footerLinks }) => {
           primaryBtn={"LEARNER_STATUS_OVERVIEW"}
           navigation={"/table"}
         />
-        {/*<DashboardCard
+
+        {/* Temp Comment */}
+        {/* <DashboardCard
           title={"LEARNER_EXAM_ATTENDANCE"}
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_ATTENDANCE_OVERVIEW"}
@@ -31,7 +37,8 @@ const ExamDashboard = ({ footerLinks }) => {
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_RESULTS_OVERVIEW"}
           navigation={"/examresultreport"}
-        />*/}
+        /> */}
+        {/* Temp Comment  End*/}
       </VStack>
     </Layout>
   );

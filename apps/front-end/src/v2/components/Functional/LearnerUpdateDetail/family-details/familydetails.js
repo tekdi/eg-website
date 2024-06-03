@@ -326,6 +326,9 @@ export default function FamilyDetails({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_FAMILY_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("FAMILY_DETAILS")}
     >
       {formData?.program_beneficiaries?.status === "enrolled_ip_verified" &&
       fields.length <= 0 ? (

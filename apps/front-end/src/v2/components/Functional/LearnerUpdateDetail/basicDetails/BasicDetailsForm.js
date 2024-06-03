@@ -228,6 +228,9 @@ export default function BasicDetailsForm({ id }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_ADDRESS_FORM"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("BASIC_DETAILS")}
     >
       {formData?.program_beneficiaries?.status === "enrolled_ip_verified" ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
