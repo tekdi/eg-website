@@ -173,12 +173,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     let academic_Id = await getSelectedAcademicYear();
     if (
       isOnline ||
-      (isOnline &&
-        academic_Id &&
+      (academic_Id &&
         (!GetSyncTime || !offlinePrerakData || timeExpired || !IpUserInfo))
     ) {
       await setIpUserInfo(fa_id);
-      await setPrerakOfflineInfo(fa_id);
+      const data = await setPrerakOfflineInfo(fa_id);
+      SetPrerak_status(data?.program_faciltators?.status);
     }
   };
 
@@ -383,6 +383,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         );
         //check exist user registered
         try {
+          setLoading(true);
           let onboardingURLData = await getOnboardingURLData();
           setCohortData(onboardingURLData?.cohortData);
           setProgramData(onboardingURLData?.programData);
@@ -417,6 +418,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             setIsUserRegisterExist(false);
             await showSelectCohort();
           }
+          setLoading(false);
         } catch (e) {}
       }
     }
@@ -551,10 +553,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const handleAcademicYear = async (item) => {
+    console.log("hiiii");
     if (item !== "__NativebasePlaceholder__") {
       setAcademicYear(item);
       setDisable(false);
     } else {
+      console.log({ item });
       setAcademicYear(item);
       setDisable(true);
     }

@@ -306,6 +306,8 @@ export default function TableView({ footerLinks, userTokenInfo }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"LEARNERS_OVERVIEW"}
+      pageTitle={t("DASHBOARD")}
     >
       <VStack space="4" p="5" alignContent="center" bg="white">
         <HStack justifyContent="space-between" px="2" pt={1}>

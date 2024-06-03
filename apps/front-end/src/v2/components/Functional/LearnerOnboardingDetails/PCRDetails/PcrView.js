@@ -305,6 +305,9 @@ export default function PcrView(userTokenInfo) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       facilitator={facilitator}
+      analyticsPageTitle={"BENEFICIARY_PCR_VIEW"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("PCR_DETAILS")}
     >
       <Box p="5">
         <FrontEndTypo.H1 fontWeight="600" mb="3">

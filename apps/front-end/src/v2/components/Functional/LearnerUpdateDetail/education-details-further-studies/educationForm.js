@@ -343,6 +343,9 @@ export default function App({ onClick, id }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_EDUCATION_FORM"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("EDUCATION")}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (

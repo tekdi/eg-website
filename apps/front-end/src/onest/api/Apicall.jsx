@@ -1,5 +1,6 @@
-import config from "./config.json";
+import { get, patch, post } from "@shiksha/common-lib";
 import telementryJson from "../assets/bodyJson/telementry.json";
+import config from "./config.json";
 
 const baseUrl = "import.meta.env.VITE_API_BASE_URL";
 //const baseUrl = 'https://jobs-api.tekdinext.com';

@@ -1014,6 +1014,8 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         }}
         _page={{ _scollView: { bg: "white" } }}
         _footer={{ menues: footerLinks }}
+        analyticsPageTitle={"BENEFICIARY"}
+        pageTitle={t("BENEFICIARY")}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <Center>
@@ -1091,6 +1093,8 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         }}
         _page={{ _scollView: { bg: "white" } }}
         _footer={{ menues: footerLinks }}
+        analyticsPageTitle={"BENEFICIARY"}
+        pageTitle={t("BENEFICIARY")}
       >
         <VStack py={6} px={4} mb={5} space="6">
           <H1 color="red.1000">{t("ADD_AG_PROFILE_PHOTO")}</H1>
@@ -1161,6 +1165,24 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={() => {
+        switch (page) {
+          case "1":
+            return t("CONTACT_INFORMATION");
+          case "2":
+            return t("COMPLETE_ADDRESS");
+          case "3":
+            return t("PERSONAL_DETAILS");
+          case "4":
+            return t("EDUCATION_DETAILS");
+          case "5":
+            return t("ASPIRATION_MAPPING");
+          default:
+            return "";
+        }
+      }}
     >
       <Box py={6} px={4} mb={5}>
         {/* <Steper
