@@ -23,6 +23,8 @@ jobs:
           yarn workspace @shiksha/common-lib build
           yarn install
           npx update-browserslist-db@latest
+          yarn add prettier@latest
+          yarn add eslint-plugin-prettier@latest
           yarn build
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
@@ -79,10 +81,10 @@ jobs:
             cd /home/ubuntu
             tar -xvf eg-website.tar -C /var/www/html/
 
-      - name: Notify on Slack channel
-        uses: iRoachie/slack-github-actions@v2.3.2
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-        if: ${{ always() }}
+     # - name: Notify on Slack channel
+     #   uses: iRoachie/slack-github-actions@v2.3.2
+     #   env:
+     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+     #   with:
+     #     status: ${{ job.status }}
+     #   if: ${{ always() }}
