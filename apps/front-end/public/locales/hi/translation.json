@@ -653,7 +653,7 @@
   "EXAM_PREPARATION": {
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "नहीं",
-      "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
+      "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ ?",
       "YES": "हाँ",
       "YET_TO_BE_PROCEED": "अभी जारी नही हुआ"
     },
@@ -690,7 +690,7 @@
       "FAMILY_RESTRICTIONS": "पारिवारिक प्रतिबंध",
       "GETTING_MARRIED/HAD_BABY": "शादी करना / बच्चा होना",
       "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
-      "ILLNESS": "बीमारी ।",
+      "ILLNESS": "बीमारी",
       "TITLE": "एक कारण चुनें",
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबन्धित समस्या_साधन या किराया नही",
       "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
@@ -1105,7 +1105,7 @@
   "NOT_BAD": "बुरा नहीं",
   "NOT_ELIGIBLE": "पात्र नहीं",
   "NOT_ENROLLED": "अनामांकित",
-  "NOT_ENTERED": "दर्ज नहीं",
+  "NOT_ENTERED": "जानकारी दर्ज नहीं",
   "NOT_FOUND": "नहीं मिला",
   "NOT_INTERESTED": "दिलचस्पी नहीं है ",
   "NOT_REGISTER": "रजिस्ट्रेशन नहीं करें",
@@ -1713,8 +1713,8 @@
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
   "IT_WILL_NOT_BE_DETERMINED": "अभी निश्चित नहीं",
-  "THEY_WONT_GO": "नहीं जाएंगे ",
-  "WILL_BE_DETERMINED": "निश्चित जाएंगे",
+  "THEY_WONT_GO": "नहीं ",
+  "WILL_BE_DETERMINED": "हाँ",
   "CAMP_DASHBOARD": "शिविर डैशबोर्ड",
   "CAMP_OTHER_PLANS": "शिविर अन्य योजना",
   "CAMP_FORM": "शिविर फॉर्म",
