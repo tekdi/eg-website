@@ -44,12 +44,10 @@ export default function List({ footerLinks, userTokenInfo }) {
     const fetchFilteredData = async () => {
       if (urlFilterApply) {
         setTableLoading(true);
-        console.log("API");
         const result = await volunteerRegistryService.getData({
           ...filter,
           limit: filter?.limit || 10,
         });
-        console.log(result);
         setData(result.data);
         setPaginationTotalRows(result?.data?.totalCount || 0);
 
@@ -66,7 +64,6 @@ export default function List({ footerLinks, userTokenInfo }) {
       if (Object.keys(data).find((e) => arr.includes(e))?.length)
         setFilter(data);
       setUrlFilterApply(true);
-      console.log("abc");
     };
     init();
   }, []);
