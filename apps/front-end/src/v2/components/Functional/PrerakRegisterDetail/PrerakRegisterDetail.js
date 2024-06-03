@@ -722,6 +722,7 @@ export default function PrerakRegisterDetail({
     );
     return result;
   };
+
   return (
     <>
       {isLoading ? (

@@ -29,7 +29,7 @@ export default function ChooseLanguage({ t, languageChanged }) {
           uri: Motif_EG,
         }}
         w={width}
-        h={height - ref?.current?.clientHeight}
+        h={height - (ref?.current?.clientHeight + 70)}
       />
       <Box p="5" ref={ref}>
         <FrontEndTypo.H1
