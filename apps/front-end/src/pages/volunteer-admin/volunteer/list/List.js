@@ -55,7 +55,7 @@ export default function List({ footerLinks, userTokenInfo }) {
       }
     };
     fetchFilteredData();
-  }, [urlFilterApply]);
+  }, [urlFilterApply, filter, filter?.limit]);
 
   useEffect(() => {
     const init = () => {

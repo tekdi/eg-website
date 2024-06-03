@@ -98,8 +98,7 @@ const columns = (t) => [
     selector: (row) => (
       <HStack alignItems={"center"} space="2">
         <AdminTypo.H5 bold>
-          {row?.first_name + " "}
-          {row?.last_name ? row?.last_name : ""}
+          `${row?.first_name} `{row?.last_name ? row?.last_name : ""}
         </AdminTypo.H5>
       </HStack>
     ),
@@ -199,7 +198,7 @@ export default function FacilitatorView({ footerLinks }) {
       setFieldCheck(field || []);
     };
     fetchData();
-  }, []);
+  }, [id]);
 
   const editRequest = async () => {
     setIsButtonLoading(true);

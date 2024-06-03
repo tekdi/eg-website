@@ -16,17 +16,11 @@ function Shortlisted({ status, setStatus, update, data }) {
           {t("INTERVIEW_CONDUCTED")}
         </AdminTypo.H5>
         <HStack alignItems="center">
-          <IconByName
-            color="interviewIconColor"
-            name="TimeLineIcon"
-          ></IconByName>
+          <IconByName color="interviewIconColor" name="TimeLineIcon" />
           <AdminTypo.H6 className="fw-500" color="textGreyColor.800">
             16th May , 11:00 {t("TO")} 12:00
           </AdminTypo.H6>
-          <IconByName
-            color="interviewIconColor"
-            name="MapPinLineIcon"
-          ></IconByName>
+          <IconByName color="interviewIconColor" name="MapPinLineIcon" />
           <AdminTypo.H6 className="fw-500" color="textGreyColor.800">
             {t("ON_PHONE")}
           </AdminTypo.H6>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -14,9 +14,9 @@ export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setData(userTokenInfo?.authUser);
-  }, []);
+  }, [userTokenInfo?.authUser]);
 
   if (!data) {
     return <Loading />;

@@ -305,7 +305,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                       if (
                         (showModal?.reason &&
                           reason &&
-                          reason?.toLowerCase() != "other") ||
+                          reason?.toLowerCase() !== "other") ||
                         !showModal?.reason
                       ) {
                         update(showModal?.status);

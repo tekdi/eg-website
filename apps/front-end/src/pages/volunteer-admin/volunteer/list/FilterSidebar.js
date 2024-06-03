@@ -267,7 +267,7 @@ export default function FilterSidebar() {
                     validator={validator}
                     formData={filter}
                   >
-                    <Button display={"none"} type="submit"></Button>
+                    <Button display={"none"} type="submit" />
                   </Form>
                 </Box>
               </VStack>
