@@ -21,11 +21,11 @@ jobs:
         run: |
           yarn install
           yarn workspace @shiksha/common-lib build
-          yarn install
+          yarn clean install --legacy-peer-deps
           npx update-browserslist-db@latest
           yarn add prettier@latest
           yarn add eslint-plugin-prettier@latest
-          yarn build --legacy-peer-deps
+          yarn build 
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
