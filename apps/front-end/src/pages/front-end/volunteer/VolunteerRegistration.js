@@ -157,7 +157,7 @@ export default function App({ facilitator, ip, onClick }) {
       }
     };
     init();
-  }, [page, formData.qualification, schema?.properties?.qualification]]);
+  }, [page, formData.qualification, schema?.properties?.qualification]);
 
   const setFormInfo = () => {
     if (schema1.type === "step") {
@@ -193,12 +193,12 @@ export default function App({ facilitator, ip, onClick }) {
 
   const goErrorPage = (key) => {
     if (key) {
-      for (const e of pages){
+      for (const e of pages) {
         const data = schema1["properties"][e]["properties"][key];
         if (data) {
           setStep(e);
         }
-      };
+      }
     }
   };
 
@@ -232,13 +232,13 @@ export default function App({ facilitator, ip, onClick }) {
 
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
-    for (const key of arr){
+    for (const key of arr) {
       const isValid = validate(data, key);
       if (isValid?.[key]) {
         if (!errors?.[key]?.__errors.includes(isValid[key]))
           err?.[key]?.addError(isValid[key]);
       }
-    };
+    }
 
     return err;
   };
