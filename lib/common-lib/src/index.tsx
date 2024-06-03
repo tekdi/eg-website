@@ -116,8 +116,8 @@ export {
   SunbirdPlayer,
   GATrackPageView,
   OnestService,
-  volunteerRegistryService,
-  VolunteerAdminLayout
+  VolunteerAdminLayout,
+  volunteerRegistryService
 }
 
 export * from './services/RestClient'
