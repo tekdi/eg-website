@@ -124,7 +124,6 @@ const columns = (t) => [
 ];
 
 export default function FacilitatorView({ footerLinks }) {
-  return <h1>Hello</h1>;
   const toast = useToast();
 
   const { id } = useParams();
