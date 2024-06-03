@@ -345,6 +345,9 @@ export default function BenificiaryBasicDetails(userTokenInfo) {
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
+      analyticsPageTitle={"BENEFICIARY_BASIC_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("BASIC_DETAILS")}
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <FrontEndTypo.H1 fontWeight="600" mx="4" mt="6">

@@ -216,6 +216,9 @@ export default function PersonalDetails({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_PERSONAL_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("PERSONAL_DETAILS")}
     >
       <Box py={6} px={4} mb={5}>
         {/* Box */}

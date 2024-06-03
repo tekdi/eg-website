@@ -56,6 +56,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = useState(false);
   const [isExistModal, setIsExistModal] = useState(false);
+  const prerakStatus = localStorage.getItem("status");
 
   // PROFILE DATA IMPORTS
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -182,46 +183,27 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   // };
 
   const otpfunction = async () => {
-    if (formData?.mobile?.length < 10) {
-      const data = await formSubmitCreate(formData);
-
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("MINIMUM_LENGTH_IS_10")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
-      const data = await formSubmitCreate(formData);
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("PLEASE_ENTER_VALID_NUMBER")],
-          otpbtn,
-        },
-      };
-      setErrors(newErrors);
-    }
-    if (formData?.mobile?.length === 10) {
+    if (
+      formData?.mobile?.length === 10 &&
+      formData?.mobile > 6000000000 &&
+      formData?.mobile < 9999999999
+    ) {
       const data = await benificiaryRegistoryService.isUserExists(formData);
       if (data?.is_data_found) {
         setIsExistModal(true);
       } else {
         setStep();
       }
+    } else {
+      const newErrors = {
+        mobile: {
+          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+        },
+      };
+      setErrors(newErrors);
     }
   };
+  // TODO document why this block is empty
 
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
@@ -409,8 +391,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     fetchData();
   }, []);
 
-  const formSubmitCreate = async (formData) => {};
-
   const goErrorPage = (key) => {
     if (key) {
       pages.forEach((e) => {
@@ -495,17 +475,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         };
         setErrors(newErrors);
       }
-
-      // if (schema?.properties?.otp) {
-      //   const { otp, ...properties } = schema?.properties;
-      //   const required = schema?.required.filter((item) => item !== "otp");
-      //   setSchema({ ...schema, properties, required });
-      //   setFormData((e) => {
-      //     const { otp, ...fData } = e;
-      //     return fData;
-      //   });
-      //   setotpbtn(false);
-      // }
 
       if (id === "root_state") {
         await setDistric({
@@ -927,13 +896,16 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY_ONBOADING"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("ONBOARDING")}
     >
       {![
         "pragati_mobilizer",
         "selected_prerak",
         "selected_for_training",
         "selected_for_onboarding",
-      ].includes(authUser?.program_faciltators?.status) ? (
+      ].includes(prerakStatus) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
@@ -986,15 +958,23 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                   type="submit"
                   onPress={otpfunction}
                 >
-                  {/* {otpbtn ? t("VERIFY_OTP") : t("SEND_OTP")} */}
                   {t("NEXT")}
                 </FrontEndTypo.Primarybutton>
               ) : (
                 <FrontEndTypo.Primarybutton
-                  mt="0"
+                  mt="5"
+                  p="4"
                   variant={"primary"}
                   type="submit"
-                  onPress={() => formRef?.current?.submit()}
+                  onPress={() => {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    } else {
+                      if (formRef.current.validateForm()) {
+                        formRef?.current?.submit();
+                      }
+                    }
+                  }}
                 >
                   {t("NEXT")}
                 </FrontEndTypo.Primarybutton>

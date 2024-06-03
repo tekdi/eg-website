@@ -134,6 +134,8 @@ export default {
           title: "PINCODE",
           type: "string",
           readOnly: "",
+          regex: /^\d{0,6}$/,
+          _input: { keyboardType: "numeric" },
         },
       },
     },

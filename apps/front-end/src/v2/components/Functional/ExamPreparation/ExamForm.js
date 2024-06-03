@@ -309,6 +309,8 @@ const EpcpForm = ({ footerLinks }) => {
         onlyIconsShow: ["backBtn", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"EXAM_PREPARATION_FORM"}
+      pageTitle={t("CAMP_EXAM_PREPARATION")}
     >
       <Box p={4}>
         <Form

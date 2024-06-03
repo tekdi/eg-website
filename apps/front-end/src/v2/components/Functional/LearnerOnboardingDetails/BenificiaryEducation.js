@@ -362,6 +362,9 @@ export default function BenificiaryEducation(userTokenInfo) {
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
+      analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("EDUCATION_DETAILS")}
     >
       <VStack bg="white" px="5" py="3">
         <FrontEndTypo.H1 fontWeight="600" mb="3" mt="3">

@@ -287,6 +287,7 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      pageTitle={t("DASHBOARD")}
     >
       <VStack bg="white" p="5" space={4} style={{ zIndex: -1 }}>
         <VStack space={"4"} p={"2"}>
@@ -308,6 +309,8 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
           primaryBtn={"LEARNER_STATUS_OVERVIEW"}
           navigation={"/table"}
         />
+
+        {/* Temp Comment */}
         {/* <DashboardCard
           title={"LEARNER_EXAM_ATTENDANCE"}
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
@@ -318,8 +321,9 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
           title={"LEARNER_EXAM_RESULTS"}
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_RESULTS_OVERVIEW"}
-          navigation={"/examresults"}
+          navigation={"/examresultreport"}
         /> */}
+        {/* Temp Comment  End*/}
       </VStack>
     </Layout>
   );

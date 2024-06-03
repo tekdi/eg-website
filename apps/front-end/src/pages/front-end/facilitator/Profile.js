@@ -68,6 +68,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"FACILITATOR_PROFILE"}
+      pageTitle={t("FACILITATOR")}
+      stepTitle={t("PROFILE")}
     >
       <VStack pb="10">
         <VStack paddingLeft="16px" pt={4} paddingRight="16px" space="24px">

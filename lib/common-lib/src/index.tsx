@@ -3,6 +3,7 @@ import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import Layout from './components/layout/Layout'
 import AdminLayout from './components/admin_layout/Layout'
+import VolunteerAdminLayout from './components/volunteer-admin/Layout'
 import SearchLayout from './components/SearchLayout'
 import IconByName from './components/IconByName'
 import Widget from './components/Widget'
@@ -14,7 +15,6 @@ import ProgressBar from './components/ProgressBar'
 import Tab from './components/Tab'
 import Loading from './components/Loading'
 import SunbirdPlayer from './components/SunbirdPlayer'
-import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import * as enumRegistryService from './services/enumRegistryService'
 import * as authRegistryService from './services/authRegistryService'
@@ -69,7 +69,6 @@ export {
   PoAdminLayout,
   SearchLayout,
   IconByName,
-  FilterButton,
   Widget,
   Collapsible,
   Menu,
@@ -117,7 +116,8 @@ export {
   SunbirdPlayer,
   GATrackPageView,
   OnestService,
-  volunteerRegistryService
+  volunteerRegistryService,
+  VolunteerAdminLayout
 }
 
 export * from './services/RestClient'

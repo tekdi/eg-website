@@ -333,6 +333,9 @@ export default function BenificiaryAddress(userTokenInfo) {
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
+      analyticsPageTitle={"BENEFICIARY_ADDRESS_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("ADDRESS_DETAILS")}
     >
       <VStack bg="white" p={"11px"}>
         <FrontEndTypo.H1 fontWeight="600" mb="3" mt="3">

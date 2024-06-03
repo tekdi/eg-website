@@ -246,6 +246,9 @@ export default function FutureStudy({ userTokenInfo }) {
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      analyticsPageTitle={"BENEFICIARY_FUTURE_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("LEARNER_ASPIRATION")}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (
