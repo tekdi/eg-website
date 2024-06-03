@@ -61,7 +61,7 @@ export default function App({ facilitator, ip, onClick }) {
   const { image, takeScreenshot } = useScreenshot();
   const getImage = () => takeScreenshot({ ref });
   const downloadImage = () => {
-    var FileSaver = require("file-saver");
+    const FileSaver = require("file-saver");
     FileSaver.saveAs(`${image}`, "image.png");
   };
 
@@ -72,7 +72,7 @@ export default function App({ facilitator, ip, onClick }) {
       }
     };
     init();
-  }, [page, credentials]);
+  }, [page, credentials, getImage]);
 
   const uiSchema = {
     dob: {
@@ -145,7 +145,7 @@ export default function App({ facilitator, ip, onClick }) {
                 }
               }
             );
-            if (valueIndex !== "" && formData.qualification == valueIndex) {
+            if (valueIndex !== "" && formData.qualification === valueIndex) {
               setAlert(t("YOU_NOT_ELIGIBLE"));
             } else {
               setAlert();
@@ -157,7 +157,7 @@ export default function App({ facilitator, ip, onClick }) {
       }
     };
     init();
-  }, [page]);
+  }, [page, formData.qualification, schema?.properties?.qualification]]);
 
   const setFormInfo = () => {
     if (schema1.type === "step") {
@@ -176,7 +176,7 @@ export default function App({ facilitator, ip, onClick }) {
 
   useEffect(() => {
     const init = () => {
-      if (page == "logoScreen") {
+      if (page === "logoScreen") {
         //wait for 1 second
         const delay = 750; // 1 second in milliseconds
         setTimeout(async () => {
@@ -193,12 +193,12 @@ export default function App({ facilitator, ip, onClick }) {
 
   const goErrorPage = (key) => {
     if (key) {
-      pages.forEach((e) => {
+      for (const e of pages){
         const data = schema1["properties"][e]["properties"][key];
         if (data) {
           setStep(e);
         }
-      });
+      };
     }
   };
 
@@ -232,13 +232,13 @@ export default function App({ facilitator, ip, onClick }) {
 
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
-    arr.forEach((key) => {
+    for (const key of arr){
       const isValid = validate(data, key);
       if (isValid?.[key]) {
         if (!errors?.[key]?.__errors.includes(isValid[key]))
           err?.[key]?.addError(isValid[key]);
       }
-    });
+    };
 
     return err;
   };
@@ -300,7 +300,7 @@ export default function App({ facilitator, ip, onClick }) {
             valueIndex = schema?.properties?.qualification?.enum[index];
           }
         });
-        if (valueIndex !== "" && data.qualification == valueIndex) {
+        if (valueIndex !== "" && data.qualification === valueIndex) {
           setAlert(t("YOU_NOT_ELIGIBLE"));
         } else {
           setAlert();
