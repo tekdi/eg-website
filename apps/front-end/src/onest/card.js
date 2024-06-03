@@ -11,14 +11,14 @@ export const dataConfig = {
     searchByKey: "title",
     listLink: "onest/scholarship",
     filters: ["provider_name"],
-    apiLink_DB_CACHE: "scholarship_cache",
-    apiLink_RESPONSE_DB: "response_cache_dev",
-    apiLink_DOMAIN: "onest:financial-support",
+    apiLink_DB_CACHE: process.env.REACT_APP_SCHOLARSHIP_DB_CACHE,
+    apiLink_DOMAIN: process.env.REACT_APP_SCHOLARSHIP_DOMAIN,
     apiLink_BAP_ID: process.env.REACT_APP_SCHOLARSHIPS_BAP_ID,
     apiLink_BAP_URI: process.env.REACT_APP_SCHOLARSHIPS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_SCHOLARSHIPS_BASE_URL,
     imageUrl: scholarships,
-    apiResponce: (e) => e.data.data.scholarship_cache,
+    apiResponse: (e) =>
+      e?.data?.data?.[process.env.REACT_APP_SCHOLARSHIP_DB_CACHE],
     render: (obj) => {
       const getDates = (range) => {
         return `${moment(range.start).format("DD MMM YYYY")} to ${moment(
@@ -87,19 +87,20 @@ export const dataConfig = {
     },
     onOrderIdGenerate: async (val) => {
       const data = {
-        user_id: val.userData.user_id,
-        context: val.type,
-        context_item_id: val.jobId,
+        user_id: val?.userData.user_id,
+        context: val?.type,
+        context_item_id: val?.jobId,
         status: "created",
         order_id:
-          val.response.data.data.insert_scholarship_order_dev.returning[0]
-            .order_id,
+          val?.response?.data?.data?.[
+            process.env.REACT_APP_SCHOLARSHIPS_INSERT_ORDER
+          ]?.returning?.[0]?.order_id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
       };
-      let response = await OnestService.create(data);
+      await OnestService.create(data);
     },
-    expiryLimit: 180, //seconds
+    expiryLimit: 600, //seconds
   },
 
   jobs: {
@@ -115,15 +116,14 @@ export const dataConfig = {
       "gender",
       "company",
     ],
-    apiLink_DB_CACHE: "jobs_cache_dev",
-    apiLink_RESPONSE_DB: "response_cache_dev",
-    apiLink_DOMAIN: "onest:work-opportunities",
+    apiLink_DB_CACHE: process.env.REACT_APP_JOBS_DB_CACHE,
+    apiLink_DOMAIN: process.env.REACT_APP_JOBS_DOMAIN,
     apiLink_BAP_ID: process.env.REACT_APP_JOBS_BAP_ID,
     apiLink_BAP_URI: process.env.REACT_APP_JOBS_BAP_URI,
     apiLink_API_BASE_URL: process.env.REACT_APP_JOBS_BASE_URL,
     apiLink_API_LIST_URL: `${process.env.REACT_APP_JOBS_BASE_URL}/jobs/search`,
     imageUrl: jobs,
-    apiResponce: (e) => e.data.data.jobs_cache_dev,
+    apiResponse: (e) => e?.data?.data?.[process.env.REACT_APP_JOBS_DB_CACHE],
     render: (obj) => {
       const getSalary = (val1, val2) => {
         const invalidValues = ["0", "undefined"];
@@ -180,12 +180,13 @@ export const dataConfig = {
     },
     onOrderIdGenerate: async (val) => {
       const data = {
-        user_id: val.userData.user_id,
-        context: val.type,
-        context_item_id: val.jobId,
+        user_id: val?.userData.user_id,
+        context: val?.type,
+        context_item_id: val?.jobId,
         status: "created",
         order_id:
-          val.response.data.data.insert_jobs_order_dev.returning[0].order_id,
+          val?.response?.data?.data[process.env.REACT_APP_JOBS_INSERT_ORDER]
+            ?.returning?.[0]?.order_id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
       };
@@ -198,49 +199,59 @@ export const dataConfig = {
     listLink: "onest/learning",
     filters: ["provider_name"],
     detailLink: "/learning/:id",
-    apiLink_DB_CACHE: "kahani_cache_dev",
+    apiLink_DB_CACHE: process.env.REACT_APP_LEARNINGS_DB_CACHE,
     apiLink_API_ROUTE: "content",
-    apiLink_DOMAIN: "onest:learning-experiences",
+    apiLink_DOMAIN: process.env.REACT_APP_LEARNINGS_DOMAIN,
     apiLink_BAP_ID: process.env.REACT_APP_LEARNINGS_BAP_ID,
     apiLink_BAP_URI: process.env.REACT_APP_LEARNINGS_BAP_URI,
     // apiLink_API_BASE_URL: "https://kahani-api.tekdinext.com",
     apiLink_API_BASE_URL: process.env.REACT_APP_LEARNINGS_BASE_URL,
     imageUrl: learnings,
-    apiResponce: (e) => e.data.data.kahani_cache_dev,
+    apiResponse: (e) => e.data.data[process.env.REACT_APP_LEARNINGS_DB_CACHE],
     getTrackData: async (e) => {
       const data = {
         context: e?.type || "",
         context_item_id: e?.itemId,
         user_id: e?.user_id,
       };
-      let result = await OnestService.getList({ filter: data });
+      let result = await OnestService.getList({ filters: data });
+
+      if (
+        result?.data?.length &&
+        typeof result?.data?.[0].params === "string"
+      ) {
+        try {
+          result.data[0].params = JSON.parse(result.data[0].params);
+        } catch (e) {
+          console.error("Error parsing params:", e);
+        }
+      }
       return result?.data?.[0];
     },
     onOrderIdGenerate: async (val) => {
       const paramData = { url: "", type: "" };
       paramData.url =
-        val.response.responses[0].message.order.items[0][
-          "add-ons"
-        ][0].descriptor.media[0].url;
-      const list =
-        val.response.responses[0].message.order.items[0].tags[0].descriptor
-          .list;
-      list.forEach((item) => {
-        // Check if the descriptor code is "urlType"
-        if (item.descriptor.code === "urlType") {
-          // If found, extract the value associated with it
-          paramData.type = item.value;
-        }
-      });
+        val.response.responses?.[0]?.message.order?.fulfillments?.[0]?.stops?.[0]?.instructions?.media?.[0]?.url;
+      paramData.type =
+        val.response.responses?.[0]?.message.order?.fulfillments?.[0]?.stops?.[0]?.type;
+      // const list =
+      //   val.response.responses[0].message.order.items[0].tags[0].list;
+      // list.forEach((item) => {
+      //   // Check if the descriptor code is "urlType"
+      //   if (item.descriptor.code === "urlType") {
+      //     // If found, extract the value associated with it
+      //     paramData.type = item.value;
+      //   }
+      // });
       const data = {
-        user_id: val.userData.user_id,
-        context: val.type,
-        context_item_id: val.itemId,
+        user_id: val?.userData?.user_id,
+        context: val?.type,
+        context_item_id: val?.itemId,
         status: "created",
-        order_id: val.response.responses[0].message.order.id,
+        order_id: val?.response?.responses?.[0]?.message.order.id,
         provider_name: val?.item?.provider_name || "",
         item_name: val?.item?.title || "",
-        params: paramData,
+        params: JSON.stringify(paramData),
       };
       await OnestService.create(data);
     },

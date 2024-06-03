@@ -326,6 +326,9 @@ export default function FamilyDetails({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_FAMILY_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("FAMILY_DETAILS")}
     >
       {formData?.program_beneficiaries?.status === "enrolled_ip_verified" &&
       fields.length <= 0 ? (
@@ -375,14 +378,17 @@ export default function FamilyDetails({ ip }) {
                 transformErrors,
               }}
             >
-              <FrontEndTypo.Primarybutton
-                isDisabled={isDisable}
-                mt="5"
-                type="submit"
-                onPress={() => formRef?.current?.submit()}
-              >
-                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-              </FrontEndTypo.Primarybutton>
+              <Box display={"flex"} alignItems={"center"}>
+                <FrontEndTypo.Primarybutton
+                  isDisabled={isDisable}
+                  minW="60%"
+                  mt="5"
+                  type="submit"
+                  onPress={() => formRef?.current?.submit()}
+                >
+                  {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+                </FrontEndTypo.Primarybutton>
+              </Box>
             </Form>
           ) : (
             <React.Fragment />

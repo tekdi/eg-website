@@ -40,8 +40,10 @@ import * as aadhaarService from './services/aadhaarService'
 import * as OnestService from './services/OnestService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
+import CustomAlert from './components/frontend_component/CustomAlert'
 import ItemComponent from './components/ItemComponent'
 import CardComponent from './components/frontend_component/CardComponent'
+import TitleCard from './components/frontend_component/TitleCard'
 import PoAdminLayout from './components/Po_admin_layout/Layout'
 import { MapComponent } from './components/frontend_component/MapComponent'
 import CustomRadio from './components/frontend_component/CustomRadio'
@@ -49,6 +51,7 @@ import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
 import * as testRegistryService from './services/testRegistryService'
+import * as volunteerRegistryService from './services/volunteerRegistryService'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
@@ -102,6 +105,7 @@ export {
   GetEnumValue,
   ItemComponent,
   CardComponent,
+  TitleCard,
   Breadcrumb,
   MapComponent,
   CheckUncheck,
@@ -109,6 +113,7 @@ export {
   UserCard,
   GeoLocation,
   useLocationData,
+  CustomAlert,
   SunbirdPlayer,
   GATrackPageView,
   OnestService,

@@ -115,6 +115,11 @@ export default function CampTodayActivities({
     <Layout
       _appBar={t("ADD_TODAYS_ACTIVITIES")}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"CAMP_ACTIVITIES"}
+      pageTitle={t("TODAYS_ACTIVITIES")}
+      stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
+        "TODAYS_ACTIVITIES"
+      )}`}
     >
       <VStack p="4" space={4}>
         <CardComponent

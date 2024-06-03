@@ -11,15 +11,16 @@ const SetConsentLang = () => {
   const ConsentJson = ConsentLang[lang || "en"];
 
   return (
-    <VStack space={2} pb={3} textAlign={"center"}>
-      <FrontEndTypo.H4 lineHeight={"24px"}>
+    <VStack space={1} pb={3}>
+      <FrontEndTypo.H3 mb="35px">{ConsentJson?.TITLE}</FrontEndTypo.H3>
+      <FrontEndTypo.H3 lineHeight="17.07px">
         {ConsentJson?.TEXT_1}
-      </FrontEndTypo.H4>
-      <FrontEndTypo.H4>{ConsentJson?.TEXT_2}</FrontEndTypo.H4>
-      <FrontEndTypo.H4>{ConsentJson?.TEXT_3}</FrontEndTypo.H4>
-      <FrontEndTypo.H4 textAlign={"center"}>
+      </FrontEndTypo.H3>
+      <FrontEndTypo.H3>{ConsentJson?.TEXT_2}</FrontEndTypo.H3>
+      <FrontEndTypo.H3>{ConsentJson?.TEXT_3}</FrontEndTypo.H3>
+      <FrontEndTypo.H3 lineHeight="17.07px" mb="25px">
         {ConsentJson?.TEXT_4}
-      </FrontEndTypo.H4>
+      </FrontEndTypo.H3>
     </VStack>
   );
 };

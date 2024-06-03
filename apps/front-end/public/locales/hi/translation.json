@@ -32,6 +32,7 @@
   "AADHAR_SHOULD_12_DIGIT": "अपने आधार कार्ड पर अंकित 12 अंकों का नंबर दर्ज करें",
   "AADHAR_UPLOAD_CLEAR": "हटाए और नया अपलोड करे",
   "AADHAR_UPLOAD_KYC": "आधार फोटो OKYC",
+  "ADD_MEMBER": "सदस्य जोड़ें",
   "ABSENT": "अनुपस्थित",
   "ACADEMIC_YEAR": "शैक्षणिक वर्ष",
   "ACCEPT": "स्वीकार करना",
@@ -552,9 +553,10 @@
       "NETWORK_PROBLEM_AT_HOME_VILLAGE": "घर/गांव में नेटवर्क की समस्या",
       "SMARTPHONE_NOT_AVAILABLE": "स्मार्टफोन उपलब्ध नहीं है",
       "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "स्मार्टफोन उपलब्ध नहीं है/मोबाइल चलाना नहीं आता",
-      "DEATH": "मृत्यु",
-      "ESCAPED": "पलायन",
-      "TITLE": "एक कारण चुनें *"
+      "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
+      "LEARNER_ESCAPED": "शिक्षार्थी का पलायन",
+      "OTHER": "अन्य",
+      "TITLE": "एक कारण चुनें"
     },
     "RSOS_DOCUMENT_IMAGE": {
       "TITLE": "अपने दस्तावेज़ की एक फ़ोटो अपलोड करें"
@@ -655,18 +657,18 @@
       "NO": "नहीं",
       "TITLE": "क्या शिक्षार्थी को प्रवेश पत्र प्राप्त हुआ था ?",
       "YES": "हाँ",
-      "YET_TO_BE_PROCEED": "अभी जारी नही कीय"
+      "YET_TO_BE_PROCEED": "अभी जारी नही हुआ"
     },
     "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
       "NO": "नहीं",
-      "NOT_APPLICABLE": "लागू नहीं होता है",
+      "NOT_APPLICABLE": "लागू नहीं",
       "TITLE": "क्या शिक्षार्थी ने प्रैक्टिकल फाइल तैयार की है ?",
       "YES": "हाँ"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
       "NO": "नहीं",
       "NOT_APPLICABLE": "लागू नहीं होता है",
-      "CANT_AFFORD_TRAVEL_FARE": "किराया वाहान नही कर सकती",
+      "CANT_AFFORD_TRAVEL_FARE": "किराया वहन नही कर सकती",
       "NO_MEANS_TO_TRAVEL": "साधन नही है ",
       "TITLE": "क्या शिक्षार्थी के पास परीक्षा केंद्र तक जाने की व्यवस्था है ?",
       "YES": "हाँ"
@@ -680,7 +682,7 @@
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
       "NO": "नहीं",
       "TITLE1": "क्या ",
-      "TITLE2": " परीक्षा में उपस्थित होंगे ?",
+      "TITLE2": "परीक्षा मे भाग लेगी ?",
       "YES": "हाँ"
     },
     "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
@@ -692,7 +694,9 @@
       "HOUSEHOLD_RESPONSIBILITIES": "घरेलू जिम्मेदारियां",
       "ILLNESS": "बीमारी ।",
       "TITLE": "एक कारण चुनें",
-      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबंधी समस्या,कोई साधान या किराया नहीं",
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबन्धित समस्या_साधन या किराया नही",
+      "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
+      "LEARNER_ESCAPED": "शिक्षार्थी का पलायन",
       "OTHER": "अन्य"
     }
   },
@@ -1713,8 +1717,21 @@
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
+  "IT_WILL_NOT_BE_DETERMINED": "अभी निश्चित नहीं",
   "THEY_WONT_GO": "नहीं जाएंगे ",
   "WILL_BE_DETERMINED": "निश्चित जाएंगे",
+  "CAMP_DASHBOARD": "शिविर डैशबोर्ड",
+  "CAMP_OTHER_PLANS": "शिविर अन्य योजना",
+  "CAMP_FORM": "शिविर फॉर्म",
+  "EPCP_LIST": "EPCP सूची",
+  "CAMP_EXAM_PREPARATION": "परीक्षा की तैयारी",
+  "BENEFICIARY": "शिक्षार्थी",
+  "FACILITATOR": "शिक्षार्थी",
+  "JOURNEY": "यात्रा",
+  "ADDRESS_FORM": "पता फॉर्म",
+  "ADDRESS_EDIT": "संपादित",
+  "ONBOARDING": "ऑनबोर्डिंग",
+  "BENEFICIARY_LIST": "सूची",
   "VIEW_EXAM_SCHEDULE": "परीक्षा अनुसूची देखें",
   "LEARNER_EXAM_RESULTS": "शिक्षार्थी परीक्षा परिणाम",
   "LEARNER_EXAM_RESULT": "शिक्षार्थी परीक्षा परिणाम",
@@ -1878,6 +1895,8 @@
   "SCHOLARSHIP": "स्कॉलरशिप",
   "JOBS": "नौकरियाँ और इंटर्नशिप",
   "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
+  "UPLOAD_FROM_PHONE": "फ़ोन से अपलोड करें",
   "PCR_LEARNING_ACTIVITIES": "नीव सीखने की गतिविधियाँ",
-  "CAMP_EXECUTION": "शिविर संचालन"
+  "CAMP_EXECUTION": "शिविर संचालन",
+  "EPCP_REPORT": "EPCP"
 }

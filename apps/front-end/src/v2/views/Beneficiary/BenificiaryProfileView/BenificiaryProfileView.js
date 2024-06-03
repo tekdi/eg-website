@@ -1,38 +1,43 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import {
-  HStack,
-  VStack,
-  Box,
-  Progress,
-  Divider,
-  Actionsheet,
-  Alert,
-  ScrollView,
-  Stack,
-} from "native-base";
-import {
-  FrontEndTypo,
-  IconByName,
-  Layout,
-  benificiaryRegistoryService,
-  enumRegistryService,
-  t,
-  ImageView,
   BodyMedium,
   CustomRadio,
+  FrontEndTypo,
+  IconByName,
+  ImageView,
+  Layout,
   arrList,
+  benificiaryRegistoryService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
+  t,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
-import moment from "moment";
+import {
+  Actionsheet,
+  Alert,
+  Box,
+  Divider,
+  HStack,
+  Progress,
+  ScrollView,
+  Stack,
+  VStack,
+} from "native-base";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
-export default function BenificiaryProfileView({ userTokenInfo }) {
+export default function BenificiaryProfileView(props, userTokenInfo) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
-  const [loading, setloading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState({});
   const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
@@ -46,7 +51,262 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
   const [alert, setAlert] = React.useState();
   const [isDisable, setIsDisable] = React.useState(false);
   const navigate = useNavigate();
-  const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
+
+  // PROFILE DATA IMPORTS
+  const [facilitator, setFacilitator] = useState({ notLoaded: true });
+  const fa_id = localStorage.getItem("id");
+  const [countLoad, setCountLoad] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [academicYear, setAcademicYear] = useState(null);
+  const [academicData, setAcademicData] = useState([]);
+  const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
+
+  const saveDataToIndexedDB = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    try {
+      const [ListOfEnum, qualification, editRequest] = await Promise.all([
+        enumRegistryService.listOfEnum(),
+        enumRegistryService.getQualificationAll(),
+        facilitatorRegistryService.getEditRequests(obj),
+        // enumRegistryService.userInfo(),
+      ]);
+      const currentTime = moment().toString();
+      await Promise.all([
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("qualification", qualification),
+        setIndexedDBItem("lastFetchTime", currentTime),
+        setIndexedDBItem("editRequest", editRequest),
+      ]);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operation
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        //get user info
+        if (userTokenInfo) {
+          const IpUserInfo = await getIpUserInfo(fa_id);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        try {
+          const c_data =
+            await facilitatorRegistryService.getPrerakCertificateDetails({
+              id: fa_id,
+            });
+          const data =
+            c_data?.data?.filter(
+              (eventItem) =>
+                eventItem?.params?.do_id?.length &&
+                eventItem?.lms_test_tracking?.length < 1
+            )?.[0] || {};
+          if (data) {
+            setIsTodayAttendace(
+              data?.attendances.filter(
+                (attendance) =>
+                  attendance.user_id == fa_id &&
+                  attendance.status == "present" &&
+                  data.end_date ==
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
+            );
+
+            setCertificateData(data);
+            if (data?.lms_test_tracking?.length > 0) {
+              setLmsDetails(data?.lms_test_tracking?.[0]);
+            }
+            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+            const format = "HH:mm:ss";
+            const time = moment(moment().format(format), format);
+            const beforeTime = moment.utc(data?.start_time, format).local();
+            const afterTime = moment.utc(data?.end_time, format).local();
+            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+              setIsEventActive(true);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchdata();
+  }, [selectedCohortData]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
+        });
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
+      }
+    }
+    fetchData();
+  }, [academicYear]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const res = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...res,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            [
+              "device_ownership",
+              "mobile",
+              "device_type",
+              "gender",
+              "marital_status",
+              "social_category",
+              "name",
+              "contact_number",
+              "availability",
+              "aadhar_no",
+              "aadhaar_verification_mode",
+              "aadhar_verified",
+              "qualification_ids",
+              "qua_name",
+            ]
+          )
+        );
+        //check exist user registered
+        try {
+          let onboardingURLData = await getOnboardingURLData();
+          setCohortData(onboardingURLData?.cohortData);
+          setProgramData(onboardingURLData?.programData);
+          //get program id and store in localstorage
+
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          setSelectedProgramData(program_data[0]);
+          await setSelectedProgramId(program_data[0]);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no != null &&
+            mobile_no_onboarding != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            localStorage.setItem("loadCohort", "yes");
+            setIsUserRegisterExist(true);
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {}
+      }
+    }
+    fetchData();
+  }, [facilitator]);
+
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+        await checkDataToIndex();
+        await checkUserToIndex();
+      } else {
+        setSelectCohortForm(true);
+      }
+    }
+  };
+  const checkDataToIndex = async () => {
+    // Online Data Fetch Time Interval
+    const timeInterval = 30;
+    const enums = await getIndexedDBItem("enums");
+    const qualification = await getIndexedDBItem("qualification");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const editRequest = await getIndexedDBItem("editRequest");
+    let timeExpired = false;
+    if (lastFetchTime) {
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= timeInterval) {
+        timeExpired = true;
+      }
+    }
+    if (
+      isOnline &&
+      (!enums ||
+        !qualification ||
+        !editRequest ||
+        timeExpired ||
+        !lastFetchTime ||
+        editRequest?.status === 400)
+    ) {
+      await saveDataToIndexedDB();
+    }
+  };
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -115,52 +375,8 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
   };
   React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
-    const Address = [
-      result?.result?.state,
-      result?.result?.district,
-      result?.result?.block,
-      result?.result?.village,
-      result?.result?.grampanchayat,
-    ]
-      .filter((e) => e)
-      .join(", ");
-    let fullName = [
-      result?.result?.program_beneficiaries?.enrollment_first_name,
-      result?.result?.program_beneficiaries?.enrollment_middle_name,
-      result?.result?.program_beneficiaries?.enrollment_last_name,
-    ]
-      .filter((e) => e)
-      .join(" ");
-    const userDetails = {
-      "Student Name": fullName,
-      name: fullName,
-      email:
-        result?.result?.email_id || `${result?.result?.first_name}@gmail.com`,
-      "Date Of Birth": result?.result?.dob,
-      birth_date: result?.result?.dob,
-      "mobile number": result?.result?.mobile,
-      phone: result?.result?.mobile,
-      contact: result?.result?.mobile,
-      Address,
-      createdAt: moment().format("YYYY-MM-DD HH:mm"),
-      user_id: id,
-    };
-    localStorage.setItem("userData", JSON.stringify(userDetails));
     setBenificiary(result?.result);
-    const orgResult = await benificiaryRegistoryService.getOrganisation({
-      id: userTokenInfo?.authUser?.program_faciltators?.parent_ip,
-    });
-    if (
-      ["enrolled_ip_verified", "registered_in_camp", "10th_passed"].includes(
-        result?.result?.program_beneficiaries?.status
-      ) &&
-      orgResult?.data?.name.toLowerCase() == "tekdi"
-    ) {
-      setIsDisableOpportunity(true);
-    } else {
-      setIsDisableOpportunity(false);
-    }
-    setloading(false);
+    setLoading(false);
   }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
@@ -176,12 +392,38 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       // case "enrolled_ip_verified":
       case null:
         return (
-          <FrontEndTypo.Secondarybutton
-            onPress={(e) => setIsOpenDropOut(true)}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
+          <Box
+            bg="boxBackgroundColour.100"
+            borderBottomColor={"garyTitleCardBorder"}
+            borderBottomWidth={"1px"}
+            borderBottomStyle={"solid"}
           >
-            {t("MARK_AS_DROPOUT")}
-          </FrontEndTypo.Secondarybutton>
+            <VStack>
+              <VStack space="2">
+                <HStack alignItems="Center" justifyContent="space-between">
+                  <HStack space="md" alignItems="Center">
+                    <FrontEndTypo.H3
+                      onPress={(e) => setIsOpenDropOut(true)}
+                      fontWeight={"600"}
+                      color="textRed.350"
+                    >
+                      {t("MARK_AS_DROPOUT")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => setIsOpenDropOut(true)}
+                        _icon={{ size: "20", color: "#D53546" }}
+                      />
+                    )}
+                </HStack>
+              </VStack>
+            </VStack>
+          </Box>
         );
       default:
         return <React.Fragment></React.Fragment>;
@@ -217,12 +459,39 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       // case "enrolled_ip_verified":
       case null:
         return (
-          <FrontEndTypo.Secondarybutton
-            onPress={(e) => setIsOpenReject(true)}
-            leftIcon={<IconByName name="UserUnfollowLineIcon" isDisabled />}
-          >
-            {t("REJECT")}
-          </FrontEndTypo.Secondarybutton>
+          <Box bg="white">
+            <VStack>
+              <VStack space="2">
+                <HStack alignItems="Center" justifyContent="space-between">
+                  <HStack space="md" alignItems="Center">
+                    {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
+                    <FrontEndTypo.H3
+                      onPress={(e) => setIsOpenReject(true)}
+                      fontWeight={"600"}
+                      color="textRed.350"
+                    >
+                      {t("REJECT")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+
+                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                    benificiary?.program_beneficiaries?.status !==
+                      "rejected" && (
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={(e) => setIsOpenReject(true)}
+                        _icon={{ size: "20", color: "#D53546" }}
+                      />
+                    )}
+                </HStack>
+              </VStack>
+              {/* <Divider
+                orientation="horizontal"
+                bg="btnGray.100"
+                thickness="1"
+              /> */}
+            </VStack>
+          </Box>
         );
       default:
         return <React.Fragment></React.Fragment>;
@@ -236,8 +505,14 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
         onPressBackButton: (e) => {
           navigate("/beneficiary/list");
         },
+        profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
       }}
+      facilitator={facilitator}
       loading={loading}
+      analyticsPageTitle={"BENEFICIARY_PROFILE"}
+      pageTitle={t("BENEFICIARY_PROFILE")}
     >
       {benificiary?.is_deactivated ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
@@ -247,65 +522,81 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
           </HStack>
         </Alert>
       ) : (
-        <VStack paddingBottom="64px" bg="bgGreyColor.200">
+        <VStack paddingBottom="64px">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-            <VStack alignItems="Center" pt="20px">
-              {benificiary?.profile_photo_1?.id ? (
-                <ImageView
-                  source={{
-                    document_id: benificiary?.profile_photo_1?.id,
-                  }}
-                  // alt="Alternate Text"
-                  width={"190px"}
-                  height={"190px"}
-                />
-              ) : (
-                <IconByName
-                  isDisabled
-                  name="AccountCircleLineIcon"
-                  color="gray.300"
-                  _icon={{ size: "190px" }}
-                />
-              )}
+            <VStack pt="20px">
+              <FrontEndTypo.H1 mb="4" fontWeight="600">
+                {t("LEARNER_PROFILE")}
+              </FrontEndTypo.H1>
+              <HStack alignItems={"center"} space={4} mb={6}>
+                {benificiary?.profile_photo_1?.id ? (
+                  <ImageView
+                    source={{
+                      document_id: benificiary?.profile_photo_1?.id,
+                    }}
+                    alt="Beneficiary Profile Photo"
+                    width={"64px"}
+                    height={"64px"}
+                  />
+                ) : (
+                  <IconByName
+                    isDisabled
+                    name="AccountCircleLineIcon"
+                    color="gray.300"
+                    _icon={{ size: "64px" }}
+                  />
+                )}
 
-              {benificiary?.program_beneficiaries?.status !==
-              "enrolled_ip_verified" ? (
-                <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.first_name}
-                  {benificiary?.middle_name &&
-                    benificiary?.middle_name !== "null" &&
-                    ` ${benificiary.middle_name}`}
-                  {benificiary?.last_name &&
-                    benificiary?.last_name !== "null" &&
-                    ` ${benificiary?.last_name}`}
-                </FrontEndTypo.H2>
-              ) : (
-                <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.program_beneficiaries?.enrollment_first_name}
-                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
-                    benificiary?.program_beneficiaries
-                      ?.enrollment_middle_name !== "null" &&
-                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
-                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
-                    benificiary?.program_beneficiaries?.enrollment_last_name !==
-                      "null" &&
-                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
-                </FrontEndTypo.H2>
-              )}
-              <Clipboard text={benificiary?.id}>
-                <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
-              </Clipboard>
+                <VStack>
+                  {benificiary?.program_beneficiaries?.status !==
+                  "enrolled_ip_verified" ? (
+                    <FrontEndTypo.H3
+                      fontWeight={"600"}
+                      color="textGreyColor.750"
+                    >
+                      {benificiary?.first_name}
+                      {benificiary?.middle_name &&
+                        benificiary?.middle_name !== "null" &&
+                        ` ${benificiary.middle_name}`}
+                      {benificiary?.last_name &&
+                        benificiary?.last_name !== "null" &&
+                        ` ${benificiary?.last_name}`}
+                    </FrontEndTypo.H3>
+                  ) : (
+                    <FrontEndTypo.H3
+                      fontWeight={"600"}
+                      color="textGreyColor.750"
+                    >
+                      {
+                        benificiary?.program_beneficiaries
+                          ?.enrollment_first_name
+                      }
+                      {benificiary?.program_beneficiaries
+                        ?.enrollment_middle_name &&
+                        benificiary?.program_beneficiaries
+                          ?.enrollment_middle_name !== "null" &&
+                        ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
+                      {benificiary?.program_beneficiaries
+                        ?.enrollment_last_name &&
+                        benificiary?.program_beneficiaries
+                          ?.enrollment_last_name !== "null" &&
+                        ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                    </FrontEndTypo.H3>
+                  )}
+                  <Clipboard text={benificiary?.id}>
+                    <FrontEndTypo.H3 color="textGreyColor.750">
+                      {benificiary?.id}
+                    </FrontEndTypo.H3>
+                  </Clipboard>
+                </VStack>
+              </HStack>
               <ChipStatus
+                width="fit-content"
                 status={benificiary?.program_beneficiaries?.status}
                 is_duplicate={benificiary?.is_duplicate}
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
-              {isDisableOpportunity && (
-                <FrontEndTypo.Primarybutton onPress={(e) => navigate("/onest")}>
-                  {t("OPPORTUNITY")}
-                </FrontEndTypo.Primarybutton>
-              )}
             </VStack>
             {(benificiary?.program_beneficiaries?.status == "dropout" ||
               benificiary?.program_beneficiaries?.status == "rejected") && (
@@ -320,62 +611,72 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 </HStack>
               </Alert>
             )}
+            <Box>
+              <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+                {t("PROFILE_PROGRESS")}
+              </FrontEndTypo.H3>
+              <Box mt={3}>
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      ...(res?.references?.[0] ? res?.references?.[0] : {}),
+                    },
+                    [
+                      "email_id",
+                      "mobile",
+                      "alternative_mobile_number",
+                      "device_type",
+                      "device_ownership",
+                      "mark_as_whatsapp_number",
+                      "father_first_name",
+                      "father_middle_name",
+                      "father_last_name",
+                      "mother_first_name",
+                      "mother_middle_name",
+                      "mother_last_name",
+                      "social_category",
+                      "marital_status",
+                      "first_name",
+                      "middle_name",
+                      "last_name",
+                      "relation",
+                      "contact_number",
+                      "district",
+                      "state",
+                      "block",
+                      "village",
+                      "aadhar_no",
+                      "aadhaar_verification_mode",
+                      "aadhar_verified",
+                    ]
+                  )}
+                  size="xs"
+                  colorScheme="danger"
+                />
+              </Box>
+            </Box>
+            <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+              {t("PROFILE_DETAILS")}
+            </FrontEndTypo.H3>
             <Box
               bg="boxBackgroundColour.100"
-              borderColor="btnGray.100"
-              borderRadius="10px"
+              borderColor="garyTitleCardBorder"
+              borderRadius="5px"
               borderWidth="1px"
-              pb="6"
+              shadow={"LearnerProfileViewShadow"}
+              pb="4"
             >
               <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <FrontEndTypo.H3 bold color="textGreyColor.800">
-                  {t("PROFILE_DETAILS")}
-                </FrontEndTypo.H3>
-                <Box paddingTop="2">
-                  <Progress
-                    value={arrList(
-                      {
-                        ...res,
-                        ...(res?.references?.[0] ? res?.references?.[0] : {}),
-                      },
-                      [
-                        "email_id",
-                        "mobile",
-                        "alternative_mobile_number",
-                        "device_type",
-                        "device_ownership",
-                        "mark_as_whatsapp_number",
-                        "father_first_name",
-                        "father_middle_name",
-                        "father_last_name",
-                        "mother_first_name",
-                        "mother_middle_name",
-                        "mother_last_name",
-                        "social_category",
-                        "marital_status",
-                        "first_name",
-                        "middle_name",
-                        "last_name",
-                        "relation",
-                        "contact_number",
-                        "district",
-                        "state",
-                        "block",
-                        "village",
-                        "aadhar_no",
-                        "aadhaar_verification_mode",
-                        "aadhar_verified",
-                      ]
-                    )}
-                    size="xs"
-                    colorScheme="danger"
-                  />
-                </Box>
-                <VStack space="2" paddingTop="5">
+                <VStack space="2">
                   <HStack alignItems="Center" justifyContent="space-between">
                     <HStack space="md" alignItems="Center">
-                      <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-                      <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
+                      <FrontEndTypo.H3
+                        fontWeight={"600"}
+                        color="floatingLabelColor.500"
+                      >
+                        {t("BASIC_DETAILS")}
+                      </FrontEndTypo.H3>
                     </HStack>
 
                     {benificiary?.program_beneficiaries?.status !== "dropout" &&
@@ -386,7 +687,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/basicdetails`);
                           }}
-                          color="textMaroonColor.400"
+                          _icon={{ size: "20", color: "#1F1D76" }}
                         />
                       )}
                   </HStack>
@@ -397,12 +698,15 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                   />
                   <HStack alignItems="Center" justifyContent="space-between">
                     <HStack alignItems="Center" space="md">
-                      <IconByName
+                      {/* <IconByName
                         name="MapPinLineIcon"
                         _icon={{ size: "20" }}
-                      />
+                      /> */}
 
-                      <FrontEndTypo.H3 color="textGreyColor.800">
+                      <FrontEndTypo.H3
+                        fontWeight={"600"}
+                        color="floatingLabelColor.500"
+                      >
                         {t("ADD_YOUR_ADDRESS")}
                       </FrontEndTypo.H3>
                     </HStack>
@@ -414,7 +718,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/addressdetails`);
                           }}
-                          color="textMaroonColor.400"
+                          _icon={{ size: "20", color: "#1F1D76" }}
                         />
                       )}
                   </HStack>
@@ -448,14 +752,18 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
               </VStack>
             </Box>
 
+            <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+              {t("OTHER_DETAILS")}
+            </FrontEndTypo.H3>
             <VStack
+              shadow={"LearnerProfileViewShadow"}
               bg="boxBackgroundColour.100"
-              borderColor="btnGray.100"
-              borderRadius="10px"
+              borderColor="garyTitleCardBorder"
+              borderRadius="5px"
               borderWidth="1px"
               px="4"
               p="2"
-              pb="6"
+              pb="3"
               divider={
                 <Divider
                   orientation="horizontal"
@@ -470,7 +778,10 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 p="3"
                 pr="0"
               >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
                   {t("DOCUMENT_CHECKLIST")}
                 </FrontEndTypo.H3>
                 {![
@@ -485,7 +796,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/docschecklist`);
                     }}
-                    color="textMaroonColor.400"
+                    _icon={{ size: "20", color: "#1F1D76" }}
                   />
                 )}
               </HStack>
@@ -495,7 +806,10 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 pr="0"
                 p="3"
               >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
                   {t("EDUCATION_DETAILS")}
                 </FrontEndTypo.H3>
                 {benificiary?.program_beneficiaries?.status !== "dropout" &&
@@ -505,7 +819,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/educationdetails`);
                       }}
-                      color="textMaroonColor.400"
+                      _icon={{ size: "20", color: "#1F1D76" }}
                     />
                   )}
               </HStack>
@@ -524,7 +838,10 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 p="3"
                 pr="0"
               >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
                   {t("ENROLLMENT_DETAILS")}
                 </FrontEndTypo.H3>
 
@@ -535,7 +852,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/enrollmentdetails`);
                       }}
-                      color="textMaroonColor.400"
+                      _icon={{ size: "20", color: "#1F1D76" }}
                     />
                   )}
               </HStack>
@@ -546,7 +863,10 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 p="3"
                 pr="1"
               >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
                   {t("PCR_DETAILS")}
                 </FrontEndTypo.H3>
                 <IconByName
@@ -556,6 +876,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                   onPress={(e) => {
                     navigate(`/beneficiary/${id}/pcrview`);
                   }}
+                  _icon={{ size: "20", color: "#1F1D76" }}
                 />
               </HStack>
               <HStack
@@ -564,7 +885,10 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 p="3"
                 pr="1"
               >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
                   {t("JOURNEY_IN_PROJECT_PRAGATI")}
                 </FrontEndTypo.H3>
                 <IconByName
@@ -574,12 +898,27 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                   onPress={(e) => {
                     navigate(`/beneficiary/${id}/benificiaryJourney`);
                   }}
+                  _icon={{ size: "20", color: "#1F1D76" }}
                 />
               </HStack>
             </VStack>
-            {renderDropoutButton()}
-            {renderReactivateButton()}
-            {renderRejectButton()}
+
+            <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+              {t("LEARNER_ACTIONS")}
+            </FrontEndTypo.H3>
+            <VStack
+              borderColor="garyTitleCardBorder"
+              borderRadius="5px"
+              borderWidth="1px"
+              shadow={"LearnerProfileViewShadow"}
+              px={3}
+              py={4}
+              backgroundColor={"white"}
+            >
+              {renderDropoutButton()}
+              {renderReactivateButton()}
+              {renderRejectButton()}
+            </VStack>
           </VStack>
         </VStack>
       )}
@@ -597,7 +936,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
               />
             </VStack>
 
-            <FrontEndTypo.H1 bold color="textGreyColor.450">
+            <FrontEndTypo.H1 fontWeight={"600"} color="textGreyColor.450">
               {t("AG_PROFILE_ARE_YOU_SURE")}
             </FrontEndTypo.H1>
             <FrontEndTypo.H2 color="textGreyColor.450">
@@ -657,7 +996,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 onPress={(e) => setIsOpenReactive(false)}
               />
             </VStack>
-            <FrontEndTypo.H1 bold color="textGreyColor.450">
+            <FrontEndTypo.H1 fontWeight={"600"} color="textGreyColor.450">
               {t("AG_PROFILE_ARE_YOU_SURE")}
             </FrontEndTypo.H1>
             <FrontEndTypo.H2 color="textGreyColor.450">
@@ -718,7 +1057,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
             />
           </VStack>
 
-          <FrontEndTypo.H1 bold color="textGreyColor.450">
+          <FrontEndTypo.H1 fontWeight={"600"} color="textGreyColor.450">
             {t("AG_PROFILE_ARE_YOU_SURE")}
           </FrontEndTypo.H1>
 

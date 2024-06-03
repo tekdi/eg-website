@@ -78,19 +78,21 @@ function Home() {
                   navigate(item?.route);
                 }}
               >
-                <BoxBlue
-                  width={"200px"}
-                  height={"150px"}
-                  justifyContent="center"
-                  // pl="3"
-                >
-                  <VStack alignItems={"center"}>
-                    <IconByName name={item?.icon} _icon={{ size: 35 }} />
-                    <AdminTypo.H6 bold pt="4">
-                      {t(item?.title)}
-                    </AdminTypo.H6>
-                  </VStack>
-                </BoxBlue>
+                {item?.route !== "/poadmin/reports" && (
+                  <BoxBlue
+                    width={"200px"}
+                    height={"150px"}
+                    justifyContent="center"
+                    // pl="3"
+                  >
+                    <VStack alignItems={"center"}>
+                      <IconByName name={item?.icon} _icon={{ size: 35 }} />
+                      <AdminTypo.H6 bold pt="4">
+                        {t(item?.title)}
+                      </AdminTypo.H6>
+                    </VStack>
+                  </BoxBlue>
+                )}
               </Pressable>
             ))}
         </HStack>
