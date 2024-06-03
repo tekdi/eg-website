@@ -22,6 +22,7 @@ jobs:
           yarn install
           yarn workspace @shiksha/common-lib build
           yarn install
+          npx update-browserslist-db@latest
           yarn build
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
