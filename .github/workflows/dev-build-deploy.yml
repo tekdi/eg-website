@@ -25,7 +25,7 @@ jobs:
           npx update-browserslist-db@latest
           yarn add prettier@latest
           yarn add eslint-plugin-prettier@latest
-          yarn build
+          yarn build --legacy-peer-deps
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
