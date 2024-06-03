@@ -167,70 +167,66 @@ function Table({
     {
       minWidth: "140px",
       name: t("ACTION"),
-      selector: (row) =>
-        row?.result_upload_status === "uploaded" ||
-        row?.result_upload_status === "assign_to_ip" ? (
-          <Button.Group
-            isAttached
-            divider={<div style={{ background: "#333", padding: "0.5px" }} />}
-            my="1"
-            h="6"
-            p={4}
-            alignItems={"center"}
-            rounded={"full"}
-            shadow="BlueOutlineShadow"
-            borderWidth="1px"
-          >
-            {row?.beneficiary_user?.exam_results.length > 0 ? (
-              <Pressable
-                px="20px"
-                _text={{
-                  color: "blueText.400",
-                  fontSize: "12px",
-                  fontWeight: "700",
-                }}
-                onPress={() => {
-                  navigate(
-                    `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
-                    { state: { row } }
-                  );
-                }}
+      selector: (row) => (
+        <Button.Group
+          isAttached
+          divider={<div style={{ background: "#333", padding: "0.5px" }} />}
+          my="1"
+          h="6"
+          p={4}
+          alignItems={"center"}
+          rounded={"full"}
+          shadow="BlueOutlineShadow"
+          borderWidth="1px"
+        >
+          {row?.beneficiary_user?.exam_results.length > 0 ? (
+            <Pressable
+              px="20px"
+              _text={{
+                color: "blueText.400",
+                fontSize: "12px",
+                fontWeight: "700",
+              }}
+              onPress={() => {
+                navigate(
+                  `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
+                  { state: { row } }
+                );
+              }}
+            >
+              <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
+            </Pressable>
+          ) : (
+            <Button.Group>
+              <AdminTypo.H5>{t("UPLOAD")}</AdminTypo.H5>
+              <Menu
+                w="190"
+                placement="bottom right"
+                trigger={(triggerProps) => dropDown(triggerProps, t)}
               >
-                <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
-              </Pressable>
-            ) : (
-              <>
-                <AdminTypo.H5>{t("UPLOAD")}</AdminTypo.H5>
-                <Menu
-                  w="190"
-                  placement="bottom right"
-                  trigger={(triggerProps) => dropDown(triggerProps, t)}
-                >
-                  <Menu.Item>
-                    <Pressable
-                      onPress={() => {
-                        openFileUploadDialog(row);
-                      }}
-                    >
-                      <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
-                    </Pressable>
-                  </Menu.Item>
-                  <Menu.Item
+                <Menu.Item>
+                  <Pressable
                     onPress={() => {
-                      navigate(
-                        `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
-                      );
+                      openFileUploadDialog(row);
                     }}
                   >
-                    <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
-                  </Menu.Item>
-                </Menu>
-              </>
-            )}
-          </Button.Group>
-        ) : (
-          "-"
-        ),
+                    <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
+                  </Pressable>
+                </Menu.Item>
+                <Menu.Item
+                  onPress={() => {
+                    navigate(
+                      `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
+                    );
+                  }}
+                >
+                  <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
+                </Menu.Item>
+              </Menu>
+            </Button.Group>
+          )}
+        </Button.Group>
+      ),
       center: true,
     },
   ];

@@ -520,6 +520,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       await saveDataToIndexedDB();
     }
   };
+  const prerak_status = localStorage.getItem("status");
 
   useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -583,6 +584,8 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       }}
       facilitator={facilitator}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY_LIST"}
+      pageTitle={t("BENEFICIARY_LIST")}
     >
       <VStack ref={ref}>
         <FrontEndTypo.H1 fontWeight="600" mx="4" my="6" mb="0">

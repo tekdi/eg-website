@@ -333,6 +333,9 @@ export default function BenificiaryEnrollment(userTokenInfo) {
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
+      analyticsPageTitle={"BENEFICIARY_ENROLLMENT_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("ENROLLMENT_DETAILS")}
     >
       <VStack p="5" pt="0" space={4}>
         <EnrollmentMessage

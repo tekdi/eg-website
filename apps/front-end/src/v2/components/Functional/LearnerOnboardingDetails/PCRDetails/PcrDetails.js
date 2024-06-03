@@ -137,6 +137,9 @@ const PcrDetails = () => {
           navigate(`/beneficiary/${id}/pcrview`);
         },
       }}
+      analyticsPageTitle={"BENEFICIARY_PCR_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("PCR_DETAILS")}
     >
       <ScrollView>
         <VStack p="4">

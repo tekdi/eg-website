@@ -358,6 +358,9 @@ export default function BenificiaryJourney(userTokenInfo) {
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
+      analyticsPageTitle={"BENEFICIARY_JOURNEY"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("JOURNEY")}
     >
       <HStack alignItems={"center"} mt={5} ml={5}>
         {benificiary?.profile_photo_1?.id ? (
