@@ -38,7 +38,6 @@ const AutomatedForm = () => {
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
 
-  const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
@@ -645,81 +644,83 @@ const AutomatedForm = () => {
             );
             if (timeDiff.asSeconds() > envConfig.expiryLimit) {
               setOpenModal(true);
-            }
-            if (userData !== null) {
-              // Get all input elements in the HTML content
-              const inputElements = form.querySelectorAll("input");
+            } else {
+              if (userData !== null) {
+                // Get all input elements in the HTML content
+                const inputElements = form.querySelectorAll("input");
 
-              // Loop through each input element
-              inputElements.forEach((input) => {
-                // Get the name attribute of the input element
-                const inputName = input.getAttribute("name");
-
-                // Check if the input name exists in the userData
-                if (
-                  userData &&
-                  userData[inputName] !== undefined &&
-                  input.type !== "file" &&
-                  input.type !== "radio"
-                ) {
-                  // Set the value of the input element to the corresponding value from the userData
-                  input.value = userData[inputName];
-                }
-
-                if (input.type === "checkbox" && userData[inputName] === true) {
-                  input.checked = true;
-                }
-
-                if (
-                  input.type === "radio" &&
-                  userData[inputName] === input.value
-                ) {
-                  input.checked = true;
-                }
-              });
-
-              const selectElements = form.querySelectorAll("select");
-
-              // Loop through each select element
-              selectElements.forEach((select) => {
-                // Get the name attribute of the select element
-                const selectName = select.getAttribute("name");
-
-                // Check if the select name exists in the userData
-                if (userData && userData[selectName] !== undefined) {
-                  // Find the option with the corresponding value
-                  const optionToSelect = select.querySelector(
-                    `option[value="${userData[selectName]}"]`
-                  );
-
-                  // If the option is found, set its selected attribute to true
-                  if (optionToSelect) {
-                    optionToSelect.selected = true;
+                // Loop through each input element
+                inputElements.forEach((input) => {
+                  // Get the name attribute of the input element
+                  const inputName = input.getAttribute("name");
+                  // Check if the input name exists in the userData
+                  if (
+                    userData &&
+                    userData[inputName] !== undefined &&
+                    input.type !== "file" &&
+                    input.type !== "radio"
+                  ) {
+                    // Set the value of the input element to the corresponding value from the userData
+                    input.value = userData[inputName];
                   }
-                }
+
+                  if (
+                    input.type === "checkbox" &&
+                    userData[inputName] === true
+                  ) {
+                    input.checked = true;
+                  }
+
+                  if (
+                    input.type === "radio" &&
+                    userData[inputName] === input.value
+                  ) {
+                    input.checked = true;
+                  }
+                });
+
+                const selectElements = form.querySelectorAll("select");
+                // Loop through each select element
+                selectElements.forEach((select) => {
+                  // Get the name attribute of the select element
+                  const selectName = select.getAttribute("name");
+
+                  // Check if the select name exists in the userData
+                  if (userData && userData[selectName] !== undefined) {
+                    // Find the option with the corresponding value
+                    const optionToSelect = select.querySelector(
+                      `option[value="${userData[selectName]}"]`
+                    );
+
+                    // If the option is found, set its selected attribute to true
+                    if (optionToSelect) {
+                      optionToSelect.selected = true;
+                    }
+                  }
+                });
+              }
+
+              form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const formDataTmp = new FormData(form);
+                var urlencoded = new URLSearchParams();
+
+                let formDataObject = {};
+
+                formDataTmp.forEach(function (value, key) {
+                  formDataObject[key] = value;
+                  urlencoded.append(key, value.toString());
+                });
+
+                localStorage.setItem(
+                  "autoFormData",
+                  JSON.stringify(formDataObject)
+                );
+                // setFormData({...formData['person'] , ...localStorage.getItem('autoFormData')})
+
+                submitFormDetail(form.action, formDataTmp);
               });
             }
-
-            form.addEventListener("submit", (e) => {
-              e.preventDefault();
-              const formDataTmp = new FormData(form);
-              var urlencoded = new URLSearchParams();
-
-              let formDataObject = {};
-
-              formDataTmp.forEach(function (value, key) {
-                formDataObject[key] = value;
-                urlencoded.append(key, value.toString());
-              });
-
-              localStorage.setItem(
-                "autoFormData",
-                JSON.stringify(formDataObject)
-              );
-              // setFormData({...formData['person'] , ...localStorage.getItem('autoFormData')})
-
-              submitFormDetail(form.action, formDataTmp);
-            });
           }
         });
     } catch (error) {
