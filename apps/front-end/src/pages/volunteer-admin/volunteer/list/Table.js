@@ -97,22 +97,22 @@ const columns = (t, navigate) => [
     compact: true,
   },
 
-  {
-    minWidth: "140px",
-    name: t("ACTION"),
-    selector: (row) => (
-      <AdminTypo.Secondarybutton
-        h="6"
-        my="3"
-        onPress={() => {
-          navigate(`/admin-volunteer/volunteers/${row?.id}`);
-        }}
-      >
-        {t("VIEW")}
-      </AdminTypo.Secondarybutton>
-    ),
-    center: true,
-  },
+  // {
+  //   minWidth: "140px",
+  //   name: t("ACTION"),
+  //   selector: (row) => (
+  //     <AdminTypo.Secondarybutton
+  //       h="6"
+  //       my="3"
+  //       onPress={() => {
+  //         navigate(`/admin-volunteer/volunteers/${row?.id}`);
+  //       }}
+  //     >
+  //       {t("VIEW")}
+  //     </AdminTypo.Secondarybutton>
+  //   ),
+  //   center: true,
+  // },
 ];
 
 // Table component
