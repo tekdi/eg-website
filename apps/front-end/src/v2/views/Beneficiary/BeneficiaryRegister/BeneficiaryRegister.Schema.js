@@ -68,9 +68,13 @@ export default {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
           format: "CustomR",
+          grid: 2,
+          icons: [
+            { name: "SmartphoneLineIcon" },
+            { name: "CellphoneLineIcon" },
+          ],
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
-          grid: "2",
         },
         device_ownership: {
           type: "string",
@@ -130,6 +134,8 @@ export default {
           title: "PINCODE",
           type: "string",
           readOnly: "",
+          regex: /^\d{0,6}$/,
+          _input: { keyboardType: "numeric" },
         },
       },
     },

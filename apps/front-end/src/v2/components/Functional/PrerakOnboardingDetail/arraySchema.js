@@ -23,27 +23,26 @@ export default {
         description: {
           title: "DESCRIPTION",
           type: ["string", "null"],
-          format: "Textarea",
-          rows: 3,
         },
         experience_in_years: {
-          label: "EXPERIENCE_IN_YEARS",
+          description: "EXPERIENCE_IN_YEARS",
           type: "string",
           format: "CustomR",
-          grid: 3,
+          grid: 6,
           enumNames: ["<1", "1", "2", "3", "4", "5+"],
           enum: ["0", "1", "2", "3", "4", "5"],
         },
         related_to_teaching: {
-          label: "IS_THE_JOB_RELATED_TO_TEACHING",
+          description: "IS_THE_JOB_RELATED_TO_TEACHING",
           type: "string",
+          _stack: { direction: "row", justifyContent: "space-between" },
           format: "RadioBtn",
           enumNames: ["Yes", "No"],
           enum: ["yes", "no"],
         },
         reference_details: {
           type: "object",
-          label: "REFERENCE_DETAILS",
+          description: "REFERENCE_DETAILS",
           required: ["name", "contact_number"],
           properties: {
             name: {

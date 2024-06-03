@@ -37,7 +37,6 @@ const AutomatedForm = () => {
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
   const { type, jobId, transactionId } = useParams();
-  const response_cache = dataConfig[type].apiLink_RESPONSE_DB;
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
@@ -444,26 +443,26 @@ const AutomatedForm = () => {
       let contactDetails = formData["contact"];
       contactDetails.phone = formData.contact.phone.toString();
       let initReqBody = initReqBodyJson.init[1];
-      initReqBody["context"]["action"] = "init";
-      initReqBody["context"]["domain"] = envConfig.apiLink_DOMAIN;
-      initReqBody["context"]["bap_id"] = envConfig.apiLink_BAP_ID;
-      initReqBody["context"]["bap_uri"] = envConfig.apiLink_BAP_URI;
-      initReqBody["context"]["bpp_id"] = jobDetails?.context?.bpp_id;
-      initReqBody["context"]["bpp_uri"] = jobDetails?.context?.bpp_uri;
-      initReqBody["context"]["transaction_id"] = transactionId;
-      initReqBody["context"]["timestamp"] = new Date().toISOString();
-      initReqBody["context"]["message_id"] = uuidv4();
-      initReqBody.message.order.provider["id"] =
-        jobDetails?.message?.order?.provider?.id;
-      initReqBody.message.order.items[0]["id"] =
-        jobDetails?.message?.order?.items[0]?.id;
-      initReqBody.message.order.fulfillments[0]["id"] =
-        jobDetails?.message?.order?.items[0]?.fulfillment_ids[0];
+      // initReqBody["context"]["action"] = "init";
+      // initReqBody["context"]["domain"] = envConfig.apiLink_DOMAIN;
+      // initReqBody["context"]["bap_id"] = envConfig.apiLink_BAP_ID;
+      // initReqBody["context"]["bap_uri"] = envConfig.apiLink_BAP_URI;
+      // initReqBody["context"]["bpp_id"] = jobDetails?.context?.bpp_id;
+      // initReqBody["context"]["bpp_uri"] = jobDetails?.context?.bpp_uri;
+      // initReqBody["context"]["transaction_id"] = transactionId;
+      // initReqBody["context"]["timestamp"] = new Date().toISOString();
+      // initReqBody["context"]["message_id"] = uuidv4();
+      // initReqBody.message.order.provider["id"] =
+      //   jobDetails?.message?.order?.provider?.id;
+      // initReqBody.message.order.items[0]["id"] =
+      //   jobDetails?.message?.order?.items[0]?.id;
+      // initReqBody.message.order.fulfillments[0]["id"] =
+      //   jobDetails?.message?.order?.items[0]?.fulfillment_ids[0];
 
-      initReqBody.message.order.fulfillments[0]["customer"]["person"] =
-        formData["person"];
-      initReqBody.message.order.fulfillments[0]["customer"]["contact"] =
-        contactDetails;
+      // initReqBody.message.order.fulfillments[0]["customer"]["person"] =
+      //   formData["person"];
+      // initReqBody.message.order.fulfillments[0]["customer"]["contact"] =
+      //   contactDetails;
       let tempTags = [
         {
           code: "distributor-details",
@@ -491,9 +490,46 @@ const AutomatedForm = () => {
           ],
         },
       ];
+      let bodyData = {
+        context: {
+          domain: envConfig?.apiLink_DOMAIN,
+          bap_id: envConfig?.apiLink_BAP_ID,
+          bap_uri: envConfig?.apiLink_BAP_URI,
+          transaction_id: transactionId,
+          action: "init",
+          version: "1.1.0",
+          bpp_id: jobDetails?.context?.bpp_id,
+          bpp_uri: jobDetails?.context?.bpp_uri,
+          transaction_id: transactionId,
+          message_id: uuidv4(),
+          timestamp: new Date().toISOString(),
+        },
+        message: {
+          order: {
+            provider: {
+              id: jobDetails?.message?.order?.provider?.id,
+            },
+            items: [
+              {
+                id: jobDetails?.message?.order?.items[0]?.id,
+                // fulfillment_ids: customInfo?.items[0]?.fulfillment_ids,
+              },
+            ],
+            fulfillments: [
+              {
+                id: jobDetails?.message?.order?.items[0]?.fulfillment_ids[0],
+                customer: {
+                  person: { ...formData["person"], tags: tempTags },
+                  contact: contactDetails,
+                },
+              },
+            ],
+          },
+        },
+      };
 
-      initReqBody.message.order.fulfillments[0]["customer"]["person"]["tags"] =
-        tempTags;
+      // initReqBody.message.order.fulfillments[0]["customer"]["person"]["tags"] =
+      //   tempTags;
 
       let paramBody = initReqBody;
 
@@ -503,7 +539,7 @@ const AutomatedForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(paramBody),
+        body: JSON.stringify(bodyData),
       });
       const data = await response.json();
       if (!data || !data?.responses.length) {

@@ -252,6 +252,9 @@ export default function ReferenceDetails({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_REFERENCE_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("REFERENCE_DETAILS")}
     >
       <Box py={6} px={4} mb={5}>
         {alert && (
@@ -289,15 +292,18 @@ export default function ReferenceDetails({ ip }) {
               transformErrors,
             }}
           >
-            <FrontEndTypo.Primarybutton
-              isLoading={isButtonLoading}
-              mt="3"
-              variant={"primary"}
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
-            >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </FrontEndTypo.Primarybutton>
+            <Box display={"flex"} alignItems={"center"}>
+              <FrontEndTypo.Primarybutton
+                isLoading={isButtonLoading}
+                minW="60%"
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={() => formRef?.current?.submit()}
+              >
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            </Box>
           </Form>
         ) : (
           <React.Fragment />

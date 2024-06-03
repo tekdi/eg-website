@@ -41,6 +41,7 @@ function ScholarshipView() {
     const apiUrl = `${baseUrl}/content/searchOrder/${order_id}`;
 
     try {
+      setLoading(true);
       await axios
         .get(apiUrl)
         .then(async (response) => {
@@ -81,9 +82,10 @@ function ScholarshipView() {
         });
     } catch (error) {
       console.log("error ::", error);
+    } finally {
+      setLoading(false);
+      setOpenModal(true);
     }
-
-    setOpenModal(true);
   };
 
   useEffect(() => {
@@ -95,7 +97,7 @@ function ScholarshipView() {
         context_item_id: jobId,
         user_id: userData.user_id,
       };
-      let result = await OnestService.getList({ filter: data });
+      let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
         setListData(result?.data);
         getApplicationStatus(result?.data[0].order_id);
