@@ -978,10 +978,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               onPress={(e) => navigate("/examschedule")}
             >
               {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton>
-          </Stack>
+            </FrontEndTypo.Secondarybutton> 
+          </Stack> */}
 
-          <DashboardCard
+          {/* <DashboardCard
             title={"LEARNER_EXAM_RESULTS"}
             titleDetail={"LEARNER_EXAMINATION_DETAILS"}
             primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
