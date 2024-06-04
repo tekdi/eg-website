@@ -26,7 +26,7 @@ const ExamDashboard = ({ footerLinks }) => {
         />
 
         {/* Temp Comment */}
-        <DashboardCard
+        {/* <DashboardCard
           title={"LEARNER_EXAM_ATTENDANCE"}
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_ATTENDANCE_OVERVIEW"}
@@ -37,7 +37,7 @@ const ExamDashboard = ({ footerLinks }) => {
           titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
           primaryBtn={"LEARNER_EXAM_RESULTS_OVERVIEW"}
           navigation={"/examresultreport"}
-        />
+        /> */}
         {/* Temp Comment  End*/}
       </VStack>
     </Layout>
