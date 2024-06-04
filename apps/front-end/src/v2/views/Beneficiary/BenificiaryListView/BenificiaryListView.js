@@ -89,8 +89,13 @@ const List = ({ data }) => {
                     overflow="hidden"
                     textOverflow="ellipsis"
                   >
-                    {item?.program_beneficiaries?.status ===
-                    "enrolled_ip_verified" ? (
+                    {[
+                      "enrolled_ip_verified",
+                      "registered_in_camp",
+                      "ineligible_for_pragati_camp",
+                      "10th_passed",
+                      "pragati_syc",
+                    ].includes(item?.program_beneficiaries?.status) ? (
                       <FrontEndTypo.H3 bold color="textGreyColor.800">
                         {item?.program_beneficiaries?.enrollment_first_name}
                         {item?.program_beneficiaries?.enrollment_middle_name &&
