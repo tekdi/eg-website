@@ -177,9 +177,9 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       }}
       analyticsPageTitle={"CAMP_REGISTRATION"}
       pageTitle={t("CAMP")}
-      stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
-        "PROFILE"
-      )}`}
+      stepTitle={`${
+        campDetails?.type === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")
+      }/${t("PROFILE")}`}
     >
       <VStack p="4" space={4}>
         <HStack margin={"auto"} mt={3} space={4}>
