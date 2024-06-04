@@ -12,7 +12,7 @@ import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { registerTelementry } from "../api/Apicall";
+// import { registerTelementry } from "../api/Apicall";
 import Loader from "./Loader";
 import "./Shared.css";
 import { dataConfig } from "../card";
@@ -266,7 +266,7 @@ function JobDetails() {
     if (transactionId === undefined) {
       settransactionId(uuidv4()); // Update state only when necessary
     } else {
-      registerTelementry(siteUrl, transactionId);
+      // registerTelementry(siteUrl, transactionId);
 
       // ReactGA.pageview(window.location.pathname + window.location.search);
       var requestOptions = {
