@@ -4,17 +4,17 @@ const Dashboard = React.lazy(() => import("pages/volunteer-admin/Dashboard"));
 const NotFound = React.lazy(() => import("pages/NotFound"));
 
 // facilitator
-const VolunteerList = React.lazy(() =>
-  import("pages/volunteer-admin/volunteer/list/List")
+const VolunteerView = React.lazy(() =>
+  import("pages/volunteer-admin/volunteer/View")
 );
 
 const VolunteerReports = React.lazy(() =>
   import("pages/volunteer-admin/reports/VolunteerReports")
 );
 
-const VolunteerView = React.lazy(() => {
-  import("pages/volunteer-admin/volunteer/View");
-});
+const VolunteerList = React.lazy(() =>
+  import("pages/volunteer-admin/volunteer/list/List")
+);
 
 export default [
   { path: "/admin-volunteer", component: Dashboard },

@@ -1,23 +1,10 @@
-import {
-  IconByName,
-  AdminTypo,
-  tableCustomStyles,
-  enumRegistryService,
-} from "@shiksha/common-lib";
-import { HStack, VStack, Pressable, Button, Menu } from "native-base";
-import { ChipStatus } from "./ChipStatus";
-import React, { memo, useCallback, useState, useMemo, useEffect } from "react";
+import { AdminTypo, tableCustomStyles } from "@shiksha/common-lib";
+import { HStack, Pressable, VStack } from "native-base";
+import { memo, useCallback, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
-const dropDown = (triggerProps, t) => {
-  return (
-    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
-    </Pressable>
-  );
-};
+import { ChipStatus } from "./ChipStatus";
 
 const pagination = [10, 15, 25, 50, 100];
 
@@ -97,22 +84,22 @@ const columns = (t, navigate) => [
     compact: true,
   },
 
-  // {
-  //   minWidth: "140px",
-  //   name: t("ACTION"),
-  //   selector: (row) => (
-  //     <AdminTypo.Secondarybutton
-  //       h="6"
-  //       my="3"
-  //       onPress={() => {
-  //         navigate(`/admin-volunteer/volunteers/${row?.id}`);
-  //       }}
-  //     >
-  //       {t("VIEW")}
-  //     </AdminTypo.Secondarybutton>
-  //   ),
-  //   center: true,
-  // },
+  {
+    minWidth: "140px",
+    name: t("ACTION"),
+    selector: (row) => (
+      <AdminTypo.Secondarybutton
+        h="6"
+        my="3"
+        onPress={() => {
+          navigate(`/admin-volunteer/volunteers/${row?.id}`);
+        }}
+      >
+        {t("VIEW")}
+      </AdminTypo.Secondarybutton>
+    ),
+    center: true,
+  },
 ];
 
 // Table component
@@ -126,13 +113,6 @@ function Table({
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const handleRowClick = useCallback(
-    (row) => {
-      navigate(`/admin/facilitator/${row?.id}`);
-    },
-    [navigate]
-  );
 
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
@@ -173,7 +153,6 @@ function Table({
           },
           [setFilter, filter]
         )}
-        onRowClicked={handleRowClick}
       />
     </VStack>
   );
