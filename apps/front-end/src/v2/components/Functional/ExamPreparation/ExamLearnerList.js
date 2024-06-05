@@ -17,14 +17,14 @@ const ExamLearnerList = ({ footerLinks }) => {
 
   const flattenList = (list) => {
     let flattenedArray = [];
-    list.forEach((item) => {
-      item.group.group_users.forEach((userObj) => {
-        const { user_id, first_name, middle_name, last_name } = userObj.user;
-        flattenedArray.push({
+    list?.forEach((item) => {
+      item?.group?.group_users?.forEach((userObj) => {
+        const { user_id, program_beneficiaries } = userObj?.user;
+        flattenedArray?.push({
           user_id,
-          first_name,
-          middle_name: middle_name || "",
-          last_name: last_name || "",
+          first_name: program_beneficiaries?.[0]?.enrollment_first_name,
+          middle_name: program_beneficiaries?.[0]?.enrollment_middle_name,
+          last_name: program_beneficiaries?.[0]?.enrollment_last_name,
           group_id: item.group.group_id,
           camp_id: item.camp_id,
         });
