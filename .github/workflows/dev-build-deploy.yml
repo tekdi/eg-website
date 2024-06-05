@@ -93,10 +93,10 @@ jobs:
             cd /home/ubuntu
             tar -xvf eg-website.tar -C /var/www/html/
 
-    #  - name: Notify on Slack channel
-    #    uses: iRoachie/slack-github-actions@v2.3.2
-    #    env:
-     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-    #    with:
-    #      status: ${{ job.status }}
-    #    if: ${{ always() }}
+      - name: Notify on Slack channel
+        uses: iRoachie/slack-github-actions@v2.3.2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+        if: ${{ always() }}
