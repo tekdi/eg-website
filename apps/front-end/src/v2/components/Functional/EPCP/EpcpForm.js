@@ -51,7 +51,7 @@ const EpcpForm = ({ footerLinks }) => {
     type: "object",
     title: `${learnerData?.first_name} ${
       learnerData?.last_name
-        ? `${learnerData?.middle_name} ${learnerData?.last_name}`
+        ? `${learnerData?.middle_name || ""} ${learnerData?.last_name}`
         : ""
     } ${t("EPCP.TITLE")}`,
     properties: {

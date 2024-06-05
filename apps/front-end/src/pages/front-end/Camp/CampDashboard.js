@@ -36,7 +36,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
           <>
             <EpcpCard />
             {/* Temp Comment */}
-            {/* <ExamPreparationCard /> */}
+            <ExamPreparationCard />
             {/* Temp Comment  End*/}
           </>
         )}

@@ -51,8 +51,13 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
                     _icon={{ size: "35" }}
                   />
                 )}
-                {row?.program_beneficiaries?.status ===
-                "enrolled_ip_verified" ? (
+                {[
+                  "enrolled_ip_verified",
+                  "registered_in_camp",
+                  "ineligible_for_pragati_camp",
+                  "10th_passed",
+                  "pragati_syc",
+                ].includes(row?.program_beneficiaries?.status) ? (
                   <AdminTypo.H6 bold>
                     {row?.program_beneficiaries?.enrollment_first_name + " "}
                     {row?.program_beneficiaries?.enrollment_last_name
