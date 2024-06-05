@@ -250,7 +250,7 @@ const EpcpForm = ({ footerLinks }) => {
 
   const getFieldResponseByTitle = (title) => {
     // Find the object in data array where fields title matches the given title
-    const field = data.find((item) => item.fields[0].title === title);
+    const field = data?.find((item) => item.fields[0].title === title);
     // If field is found, return its field_responses data, otherwise return null
     return field?.field_responses?.[0]?.response_value || "";
   };
