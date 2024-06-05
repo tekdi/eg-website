@@ -18,7 +18,10 @@ jobs:
           node-version: 18.0.0
 
       - name: Generate React Build
-        run:  yarn install
+        run:  yarn install --legacy-peer-deps
+
+      - name: Install caniuse-lite
+        run: npm install caniuse-lite --legacy-peer-deps
 
       - name: Update Browserslist DB
         run: npx update-browserslist-db@latest --legacy-peer-deps
@@ -27,7 +30,7 @@ jobs:
         run: yarn workspace @shiksha/common-lib build
 
       - name: Install dependencies again
-        run: yarn install
+        run: yarn install --legacy-peer-deps
 
 
       - name: Set CI environment variable to false
