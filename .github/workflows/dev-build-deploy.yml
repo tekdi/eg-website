@@ -18,11 +18,23 @@ jobs:
           node-version: 18.0.0
 
       - name: Generate React Build
-        run: |
-          yarn install
-          yarn workspace @shiksha/common-lib build
-          yarn install
-          yarn build
+        run:  yarn install
+
+      - name: Update Browserslist DB
+        run: npx update-browserslist-db@latest
+
+      - name: Build common-lib
+        run: yarn workspace @shiksha/common-lib build
+
+      - name: Install dependencies again
+        run: yarn install
+
+
+      - name: Set CI environment variable to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
+      - name: Build front-end
+        run: yarn build
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
@@ -78,10 +90,10 @@ jobs:
             cd /home/ubuntu
             tar -xvf eg-website.tar -C /var/www/html/
 
-      - name: Notify on Slack channel
-        uses: iRoachie/slack-github-actions@v2.3.2
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-        if: ${{ always() }}
+    #  - name: Notify on Slack channel
+    #    uses: iRoachie/slack-github-actions@v2.3.2
+    #    env:
+     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    #    with:
+    #      status: ${{ job.status }}
+    #    if: ${{ always() }}
