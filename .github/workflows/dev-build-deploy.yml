@@ -21,7 +21,7 @@ jobs:
         run:  yarn install
 
       - name: Update Browserslist DB
-        run: npx update-browserslist-db@latest
+        run: npx update-browserslist-db@latest --legacy-peer-deps
 
       - name: Build common-lib
         run: yarn workspace @shiksha/common-lib build
