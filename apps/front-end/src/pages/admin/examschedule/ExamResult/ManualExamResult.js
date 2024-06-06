@@ -6,23 +6,9 @@ import {
   useWindowSize,
   CardComponent,
   IconByName,
-  PoAdminLayout,
-  cohortService,
-  enumRegistryService,
-  getSelectedProgramId,
   organisationService,
-  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import {
-  Alert,
-  HStack,
-  Progress,
-  Radio,
-  ScrollView,
-  Select,
-  Stack,
-  VStack,
-} from "native-base";
+import { Alert, HStack, ScrollView, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import TextBox from "./TextBox";
@@ -181,22 +167,10 @@ function ManualExamResult(footerLinks) {
           data?.enrollment_middle_name || ""
         } ${data?.data?.enrollment_last_name || ""}`,
         father: data?.user?.core_beneficiaries?.father_first_name
-          ? `${data?.user?.core_beneficiaries?.father_first_name} ${
-              data?.user?.core_beneficiaries?.father_middle_name &&
-              data?.user?.core_beneficiaries?.father_middle_name
-            } ${
-              data?.user?.core_beneficiaries?.father_last_name &&
-              data?.user?.core_beneficiaries?.father_last_name
-            }`
+          ? `${data?.user?.core_beneficiaries?.father_first_name} ${data?.user?.core_beneficiaries?.father_middle_name} ${data?.user?.core_beneficiaries?.father_last_name}`
           : "",
         mother: data?.user?.core_beneficiaries?.mother_first_name
-          ? `${data?.user?.core_beneficiaries?.mother_first_name} ${
-              data?.user?.core_beneficiaries?.mother_middle_name &&
-              data?.user?.core_beneficiaries?.mother_middle_name
-            } ${
-              data?.user?.core_beneficiaries?.mother_last_name &&
-              data?.user?.core_beneficiaries?.mother_last_name
-            }`
+          ? `${data?.user?.core_beneficiaries?.mother_first_name} ${data?.user?.core_beneficiaries?.mother_middle_name} ${data?.user?.core_beneficiaries?.mother_last_name}`
           : "",
         dob: data?.enrollment_dob,
         course_class: "10th",
