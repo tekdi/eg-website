@@ -1,13 +1,11 @@
 import {
   AdminTypo,
   PoAdminLayout,
-  organisationService,
   getOptions,
   IconByName,
-  cohortService,
   setSelectedProgramId,
   Breadcrumb,
-  validation,
+  enumRegistryService,
   eventService,
 } from "@shiksha/common-lib";
 import { Button, HStack, VStack } from "native-base";
@@ -21,41 +19,36 @@ import {
   transformErrors,
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 const baseSchema = {
   type: "object",
-  required: [
-    "id",
-    "do_id",
-    "event_type",
-    "status"
-  ],
+  required: ["id", "do_id", "event_type", "status"],
   properties: {
     id: {
-      type: "string",
+      type: "number",
       title: "ID",
       label: "ID",
       readOnly: true,
-      // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
     do_id: {
       type: "string",
       title: "DO-ID",
-      label: "DO-ID",
-      // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+      label: "DO-ID"
     },
     event_type: {
       type: "string",
-      title: "EVENT_TYPE",
       label: "EVENT_TYPE",
-      // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+      title: "EVENT_TYPE",
+      format: "select",
     },
     status: {
       type: "string",
       title: "STATUS",
-      label:"STATUS"
-      // format: "MobileNumber",
+      label: "STATUS",
+      format: "select",
+      enum: ["active", "inactive"],
+      enumNames: ["Active", "Inactive"],
     },
   },
 };
@@ -69,50 +62,28 @@ export default function App() {
   const navigate = useNavigate();
   const [schema, setSchema] = useState(baseSchema);
   const [formData, setFormData] = useState({});
-  const [orgId, setOrgId] = useState({});
   const { id } = useParams();
+  const location = useLocation();
+  const [event, setEvent] = useState(location.state?.eventData || undefined);
 
-  useEffect(() => {
-    const updateSchema = async () => {
-      let newSchema = { ...baseSchema };
-
-      const data = await eventService.getOneDoId({ id });
-      // setOrgId(data?.data?.program_organisations?.[0]?.id);
-      setFormData({
-do_id: data?.do_id,
-event_type: data?.event_type,
-status : data?.status
-        // org_id: data?.data?.id,
-        // name: data?.data?.name,
-        // contact_person: data?.data?.contact_person,
-        // mobile: data?.data?.mobile,
-        // address: data?.data?.address,
-        // email_id: data?.data?.email_id,
-        // state: `${data?.data?.program_organisations?.[0]?.program_id}`,
-        // learner_target: data?.data?.program_organisations?.[0]?.learner_target,
-        // learner_per_camp: `${data?.data?.program_organisations?.[0]?.learner_per_camp}`,
-        // camp_target: data?.data?.program_organisations?.[0]?.camp_target,
-      });
-
-      if (newSchema.properties.state) {
-        const { data } = await cohortService.getProgramList();
-        const newData = data.map((e) => ({
-          ...e,
-          state_name: `${e?.state?.state_name}`,
-        }));
-
-        newSchema = getOptions(newSchema, {
-          key: "state",
-          arr: newData,
-          title: "state_name",
-          value: "id",
-        });
-      }
-      setSchema(newSchema);
-    };
-
-    updateSchema();
+  useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    let newSchema = { ...baseSchema };
+    setFormData({
+      ...event,
+    });
+    newSchema = getOptions(newSchema, {
+      key: "event_type",
+      arr: result?.data?.FACILITATOR_EVENT_TYPE?.map((e) => ({
+        ...e,
+        title: t(e.title),
+      })),
+      title: "title",
+      value: "value",
+    });
+    setSchema(newSchema);
   }, []);
+
   const onChange = async (e, id) => {
     const newData = e.formData;
     if (newData?.state) {
@@ -120,48 +91,14 @@ status : data?.status
         program_id: newData?.state,
       });
     }
-    if (id === "root_learner_target" || id === "root_learner_per_camp") {
-      const avgCount = Math.ceil(
-        newData?.learner_target / newData?.learner_per_camp
-      );
-      const updatedFormData = { ...newData, camp_target: avgCount };
-      setFormData(updatedFormData);
-    }
   };
-  // const customValidate = (data, err) => {
-  //   if (data?.mobile) {
-  //     const isValid = validation({
-  //       data: data?.mobile,
-  //       key: "mobile",
-  //       type: "mobile",
-  //     });
-  //     if (isValid) {
-  //       err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
-  //     }
-  //   }
-  //   return err;
-  // };
 
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = data.formData;
-    const obj = {
-      organisation: {
-        name: newData?.name,
-        contact_person: newData?.contact_person,
-        mobile: newData?.mobile,
-      },
-      program_organisation: {
-        id: orgId,
-        learner_target: newData?.learner_target,
-        learner_per_camp: newData?.learner_per_camp,
-        camp_target: newData?.camp_target,
-      },
-    };
-
-    const result = await organisationService.editOrganisationDetails({
-      data: obj,
-      id: id,
+    const result = await eventService.updateEventDoId({
+      data: data.formData,
+      id: data.formData.id,
     });
 
     if (!result.error) {
@@ -194,7 +131,7 @@ status : data?.status
                   </HStack>
                 ),
                 link: "/poadmin/do-ids",
-                icon: "GroupLineIcon", 
+                icon: "GroupLineIcon",
               },
               {
                 title: (
@@ -228,7 +165,6 @@ status : data?.status
               onError,
               onSubmit,
               onChange,
-              customValidate,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >

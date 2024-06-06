@@ -4,7 +4,6 @@ import {
   PoAdminLayout,
   cohortService,
   getSelectedProgramId,
-  organisationService,
   setSelectedProgramId,
   eventService,
 } from "@shiksha/common-lib";
@@ -26,14 +25,14 @@ export const CustomStyles = {
       background: "#E0E0E0",
       color: "#616161",
       size: "16px",
-      justifyContent: "center", // override the alignment of columns
+      justifyContent: "center",
     },
   },
   cells: {
     style: {
       color: "#616161",
       size: "19px",
-      justifyContent: "center", // override the alignment of columns
+      justifyContent: "center",
     },
   },
 };
@@ -72,37 +71,6 @@ const columns = (t, navigate) => [
     left: true,
     compact: true,
   },
-
-  // {
-  //   name: t("MOBILE_NUMBER"),
-  //   selector: (row) => row?.mobile || "-",
-  //   attr: "mobile",
-  //   wrap: true,
-  //   compact: true,
-  // },
-  // {
-  //   name: t("CONTACT_PERSON"),
-  //   selector: (row) => row?.contact_person || "-",
-  //   compact: true,
-  // },
-  // {
-  //   minWidth: "140px",
-  //   name: t("ACTION"),
-  //   selector: (row) => (
-  //     <AdminTypo.Secondarybutton
-  //       background="white"
-  //       px="3"
-  //       my="2"
-  //       h="8"
-  //       onPress={() => {
-  //         navigate(`/poadmin/ips/${row?.id}`);
-  //       }}
-  //     >
-  //       {t("VIEW")}
-  //     </AdminTypo.Secondarybutton>
-  //   ),
-  //   center: true,
-  // },
 ];
 const pagination = [10, 15, 25, 50, 100];
 
@@ -160,14 +128,20 @@ export default function List() {
   };
 
   const handleSearch = (e) => {
-    setFilter((item) => ({ ...item, search: e.nativeEvent.text, page: 1 }));
+    setFilter((item) => ({
+      ...item,
+      filter: { event_type: e.nativeEvent.text },
+      page: 1,
+    }));
   };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   const handleRowClick = useCallback(
     (row) => {
-      navigate(`/poadmin/do-ids/${row?.id}`);
+      navigate(`/poadmin/do-ids/${row?.id}`, {
+        state: { eventData: row },
+      });
     },
     [navigate]
   );
@@ -248,15 +222,10 @@ export default function List() {
                 }
                 onPress={(e) => navigate("/poadmin/do-ids/create")}
               >
-                {t("ADD_DO_IDS")}
+                {t("ADD")}
               </Button>
             )}
-          >
-            {/* <Menu.Item onPress={(e) => navigate("/poadmin/ips/create")}>
-              {t("ADD_NEW_IP_USER")}
-            </Menu.Item> */}
-            
-          </Menu>
+          ></Menu>
           <Select
             minH="40px"
             maxH="40px"
@@ -281,7 +250,7 @@ export default function List() {
             ...CustomStyles,
             rows: {
               style: {
-                minHeight: "50px", // override the row height
+                minHeight: "50px",
                 cursor: "pointer",
               },
             },
