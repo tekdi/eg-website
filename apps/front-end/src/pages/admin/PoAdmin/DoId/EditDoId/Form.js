@@ -24,12 +24,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 const baseSchema = {
   type: "object",
-  required: [
-    "id",
-    "do_id",
-    "event_type",
-    // "status"
-  ],
+  required: ["id", "do_id", "event_type", "status"],
   properties: {
     id: {
       type: "number",
@@ -56,7 +51,9 @@ const baseSchema = {
       type: "string",
       title: "STATUS",
       label: "STATUS",
-      // format: "MobileNumber",
+      format: "select",
+      enum: ["active", "inactive"], // Add enum values for status
+      enumNames: ["Active", "Inactive"], // Optional: Display names for the enum values
     },
   },
 };

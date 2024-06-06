@@ -7,7 +7,7 @@ import {
   Breadcrumb,
   validation,
   eventService,
-  enumRegistryService
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { Button, HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -26,15 +26,11 @@ const Schema = {
   // title: "CREATE_IP",
   // description: "ADD_A_IP",
   type: "object",
-  required: [
-    "do_id",
-    "event_type",
-    // "status"
-  ],
+  required: ["do_id", "event_type", "status"],
   properties: {
     do_id: {
       type: "string",
-      label:"DO_ID",
+      label: "DO_ID",
       title: "DO_ID",
       // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
@@ -42,14 +38,17 @@ const Schema = {
       type: "string",
       label: "EVENT_TYPE",
       title: "EVENT_TYPE",
-      format: "select"
+      format: "select",
     },
-    
-    // status: {
-    //   type: "string",
-    //   title: "STATUS",
-    // },
-   
+
+    status: {
+      type: "string",
+      label: "STATUS",
+      title: "STATUS",
+      format: "select",
+      enum: ["active", "inactive"], // Add enum values for status
+      enumNames: ["Active", "Inactive"], // Optional: Display names for the enum values
+    },
   },
 };
 
@@ -114,8 +113,6 @@ export default function App() {
     setSchema(newSchema);
   }, []);
 
-  
-
   return (
     <PoAdminLayout _appBar={{ setLang }}>
       <VStack p={4}>
@@ -172,7 +169,6 @@ export default function App() {
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
-            
             <HStack space={6} justifyContent={"center"} my="4">
               <AdminTypo.Secondarybutton
                 icon={

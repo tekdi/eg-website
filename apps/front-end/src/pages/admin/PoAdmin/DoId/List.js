@@ -131,6 +131,7 @@ export default function List() {
     },
     [filter]
   );
+  console.log("filter", filter);
 
   useEffect(async () => {
     const data = await cohortService.getProgramList();
@@ -167,7 +168,7 @@ export default function List() {
 
   const handleRowClick = useCallback(
     (row) => {
-      navigate(`/poadmin/do-ids/${row?.id}`,{
+      navigate(`/poadmin/do-ids/${row?.id}`, {
         state: { eventData: row },
       });
     },
@@ -257,7 +258,6 @@ export default function List() {
             {/* <Menu.Item onPress={(e) => navigate("/poadmin/ips/create")}>
               {t("ADD_NEW_IP_USER")}
             </Menu.Item> */}
-            
           </Menu>
           <Select
             minH="40px"
