@@ -270,8 +270,13 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 />
               )}
 
-              {benificiary?.program_beneficiaries?.status !==
-              "enrolled_ip_verified" ? (
+              {![
+                "enrolled_ip_verified",
+                "registered_in_camp",
+                "ineligible_for_pragati_camp",
+                "10th_passed",
+                "pragati_syc",
+              ].includes(benificiary?.program_beneficiaries?.status) ? (
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
                   {benificiary?.first_name}
                   {benificiary?.middle_name &&
