@@ -1,10 +1,8 @@
 import {
   AdminTypo,
   PoAdminLayout,
-  organisationService,
   getOptions,
   IconByName,
-  cohortService,
   setSelectedProgramId,
   Breadcrumb,
   validation,
@@ -23,8 +21,6 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import Chip from "component/Chip";
-// import Schema from "./Schema";
 
 const Schema = {
   // title: "CREATE_IP",
@@ -42,11 +38,6 @@ const Schema = {
       title: "DO_ID",
       // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    // event_type: {
-    //   type: "string",
-    //   title: "EVENT_TYPE",
-    //   // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-    // },
     event_type: {
       type: "string",
       label: "EVENT_TYPE",
@@ -73,27 +64,6 @@ export default function App() {
   const [formData, setFormData] = useState();
   const [enumSchema, setEnumSchema] = useState();
 
-  // useEffect(async () => {
-  //   if (Schema?.properties?.do_id) {
-  //     const { data } = await cohortService.getProgramList();
-  //     const newData = data.map((e) => ({
-  //       ...e,
-  //       state_name: `${e?.state?.state_name}`,
-  //     }));
-  //     let newSchema = Schema;
-  //     if (Schema["properties"]["state"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "state",
-  //         arr: newData,
-  //         title: "state_name",
-  //         value: "id",
-  //       });
-  //     }
-
-  //     setSchema(newSchema);
-  //   }
-  // }, []);
-
   const onChange = async (e, id) => {
     const newData = e.formData;
     if (newData?.state) {
@@ -111,20 +81,6 @@ export default function App() {
       setFormData(updatedFormData);
     }
   };
-
-  // const customValidate = (data, err) => {
-  //   if (data?.mobile) {
-  //     const isValid = validation({
-  //       data: data?.mobile,
-  //       key: "mobile",
-  //       type: "mobile",
-  //     });
-  //     if (isValid) {
-  //       err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
-  //     }
-  //   }
-  //   return err;
-  // };
 
   const onSubmit = async (data) => {
     setLoading(true);
