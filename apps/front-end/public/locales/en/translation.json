@@ -805,6 +805,7 @@
   "GRAMPANCHAYAT": "Grampanchayat/Nagar Palika/Nigam",
   "GROUPS_STATUS_APPROVED": "Approved",
   "VOLUNTEER_STATUS_APPROVED": "Approved",
+  "VOLUNTEER_MESSAGE_NOT_APPROVED": "Your access request is pending approval. Please contact the administrator for further assistance.",
   "APPROVED": "Approved",
   "GROUPS_STATUS_CAMP_INITIATED": "Camp Initiated",
   "GROUPS_STATUS_CAMP_IP_VERIFIED": "Camp Ip Verified",

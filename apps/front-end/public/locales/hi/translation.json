@@ -849,6 +849,7 @@
   "GRAMPANCHAYAT": "ग्राम पंचायत/नगर पालिका/नगर निगम.",
   "GROUPS_STATUS_APPROVED": "सत्यापित",
   "VOLUNTEER_STATUS_APPROVED": "सत्यापित",
+  "VOLUNTEER_MESSAGE_NOT_APPROVED": "अनुमति मिलनेमें इंतज़ार है। जानकारी के लिए एडमिन से संपर्क करें।",
   "APPROVED": "सत्यापित",
   "VOLUNTEER_CONFIRM_STATUS": "क्या आप वाकई आगे बढ़ना चाहते हैं?",
   "GROUPS_STATUS_CAMP_INITIATED": "शिविर शुरू किया",

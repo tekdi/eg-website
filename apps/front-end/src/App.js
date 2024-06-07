@@ -12,7 +12,7 @@ import {
 } from "@shiksha/common-lib";
 
 import guestRoutes from "./routes/guestRoutes";
-import { volunteerRoute } from "./routes/onest";
+import { volunteerRoute, notAccessRoute } from "./routes/onest";
 import routes from "./routes/routes";
 import volunteerAdmin from "./routes/volunteerAdmin";
 import adminRoutes from "./routes/admin";
@@ -70,7 +70,16 @@ function App() {
           return ["volunteer", "beneficiary"].includes(e);
         }).length > 0
       ) {
-        setAccessRoutes(volunteerRoute);
+        const status = user?.user_roles?.[0]?.status;
+        if (hasura?.roles?.includes("volunteer")) {
+          if (status === "approved") {
+            setAccessRoutes(volunteerRoute);
+          } else {
+            setAccessRoutes(notAccessRoute);
+          }
+        } else {
+          setAccessRoutes(volunteerRoute);
+        }
       } else {
         logout();
         window.location.reload();
