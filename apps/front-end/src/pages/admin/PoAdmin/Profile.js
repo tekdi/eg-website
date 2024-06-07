@@ -9,6 +9,7 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function Profile({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
@@ -156,3 +157,8 @@ export default function Profile({ footerLinks, userTokenInfo }) {
     </PoAdminLayout>
   );
 }
+
+Profile.PropTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

@@ -1,4 +1,10 @@
-import React from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { useNavigate } from "react-router-dom";
@@ -36,18 +42,16 @@ export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const refSubHeader = React.useRef(null);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const refSubHeader = useRef(null);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
+  const [filter, setFilter] = useState({ limit: 10 });
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
 
-  const [filter, setFilter] = React.useState({ limit: 10 });
-  const [loading, setLoading] = React.useState(true);
-
-  const [data, setData] = React.useState([]);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-
-  const dropDown = React.useCallback((triggerProps, t) => {
+  const dropDown = useCallback((triggerProps, t) => {
     return (
       <Pressable accessibilityLabel="More options menu" {...triggerProps}>
         <HStack
@@ -87,7 +91,7 @@ export default function AdminHome({ footerLinks }) {
     );
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
       const result = await benificiaryRegistoryService.beneficiariesFilter(
@@ -101,21 +105,21 @@ export default function AdminHome({ footerLinks }) {
     }
   }, [filter]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
 
-  const exportBeneficiaryCSV = React.useCallback(async () => {
+  const exportBeneficiaryCSV = useCallback(async () => {
     await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
   }, [filter]);
 
-  const exportSubjectCSV = React.useCallback(async () => {
+  const exportSubjectCSV = useCallback(async () => {
     await benificiaryRegistoryService.exportBeneficiariesSubjectsCsv(filter);
   }, [filter]);
 
-  const setMenu = React.useCallback(
+  const setMenu = useCallback(
     (e) => {
       if (e === "export_subject") {
         exportSubjectCSV();
@@ -130,10 +134,7 @@ export default function AdminHome({ footerLinks }) {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout
@@ -270,15 +271,15 @@ export default function AdminHome({ footerLinks }) {
 
 export const Filter = ({ filter, setFilter }) => {
   const { t } = useTranslation();
-  const [facilitator, setFacilitator] = React.useState([]);
-  const [getDistrictsAll, setGetDistrictsAll] = React.useState();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
-  const [facilitatorFilter, setFacilitatorFilter] = React.useState({});
+  const [facilitator, setFacilitator] = useState([]);
+  const [getDistrictsAll, setGetDistrictsAll] = useState();
+  const [getBlocksAll, setGetBlocksAll] = useState();
+  const [facilitatorFilter, setFacilitatorFilter] = useState({});
 
   // facilitator pagination
-  const [isMore, setIsMore] = React.useState("");
+  const [isMore, setIsMore] = useState("");
 
-  const setFilterObject = React.useCallback(
+  const setFilterObject = useCallback(
     (data) => {
       const { facilitator: newFacilitator, ...otherData } = data;
       const facilitator =
@@ -293,7 +294,7 @@ export const Filter = ({ filter, setFilter }) => {
     [facilitatorFilter]
   );
 
-  const schema = React.useMemo(() => {
+  const schema = useMemo(() => {
     return {
       type: "object",
       properties: {
@@ -331,7 +332,7 @@ export const Filter = ({ filter, setFilter }) => {
     };
   }, [getDistrictsAll, getBlocksAll]);
 
-  const uiSchema = React.useMemo(() => {
+  const uiSchema = useMemo(() => {
     return {
       district: {
         "ui:widget": MultiCheck,
@@ -344,7 +345,7 @@ export const Filter = ({ filter, setFilter }) => {
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
       let name = programResult?.state_name;
@@ -359,7 +360,7 @@ export const Filter = ({ filter, setFilter }) => {
     fetchData();
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let blockData = [];
     if (filter?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -371,7 +372,7 @@ export const Filter = ({ filter, setFilter }) => {
     }
   }, [filter?.district]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const facilitatorDetails = async () => {
       let newFilter = {};
       ["district", "block", "status"].forEach((e) => {
@@ -409,7 +410,7 @@ export const Filter = ({ filter, setFilter }) => {
     facilitatorDetails();
   }, [facilitatorFilter]);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     async (data) => {
       const { district: newDistrict, block: newBlock } = data?.formData || {};
       const { district, block, ...remainData } = filter || {};
@@ -426,7 +427,7 @@ export const Filter = ({ filter, setFilter }) => {
     [filter, setFilterObject]
   );
 
-  const clearFilter = React.useCallback(() => {
+  const clearFilter = useCallback(() => {
     setFilter({});
     setFilterObject({});
   }, [setFilterObject]);
@@ -439,7 +440,7 @@ export const Filter = ({ filter, setFilter }) => {
     });
   };
 
-  const debouncedHandlePrerakSearch = React.useCallback(
+  const debouncedHandlePrerakSearch = useCallback(
     debounce(handlePrerakSearch, 1000),
     []
   );

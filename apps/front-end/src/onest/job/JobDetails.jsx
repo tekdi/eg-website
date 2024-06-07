@@ -1,7 +1,6 @@
 import {
   Alert,
   Box,
-  Button,
   Divider,
   HStack,
   Text,
@@ -18,7 +17,6 @@ import "./Shared.css";
 import { dataConfig } from "../card";
 import { FrontEndTypo, Loading, OnestService } from "@shiksha/common-lib";
 import OrderSuccessModal from "./OrderSuccessModal";
-import axios from "axios";
 
 function JobDetails() {
   const { jobId, type } = useParams();

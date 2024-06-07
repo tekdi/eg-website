@@ -16,7 +16,7 @@ import {
   getUiSchema,
 } from "@shiksha/common-lib";
 import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import schema1 from "./schema.js";
 //updateSchemaEnum
 import { debounce } from "lodash";
@@ -31,6 +31,7 @@ import {
   validator,
   widgets,
 } from "../../../../component/BaseInput.js";
+import PropTypes from "prop-types";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   let { state_name } = await getSelectedProgramId();
@@ -254,26 +255,26 @@ const getSubjects = async (schemaData, value, page) => {
 };
 // App
 export default function App(footerLinks) {
-  const [RefAppBar, setRefAppBar] = React.useState();
+  const [RefAppBar, setRefAppBar] = useState();
   const { step, id } = useParams();
   const userId = id;
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [fixedSchema, setFixedSchema] = React.useState({});
-  const [benificiary, setBenificiary] = React.useState({});
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [lang] = React.useState(localStorage.getItem("lang"));
-  const [notMatched, setNotMatched] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [btnLoading, setBtnLoading] = React.useState(false);
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [fixedSchema, setFixedSchema] = useState({});
+  const [benificiary, setBenificiary] = useState({});
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [lang] = useState(localStorage.getItem("lang"));
+  const [notMatched, setNotMatched] = useState();
+  const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
-  const [uiSchema, setUiSchema] = React.useState({
+  const [uiSchema, setUiSchema] = useState({
     subjects: {
       "ui:widget": "checkboxes",
     },
@@ -446,7 +447,7 @@ export default function App(footerLinks) {
     return err;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
     const newStep = step || newSteps[0];
@@ -454,7 +455,7 @@ export default function App(footerLinks) {
     setPages(newSteps);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (page) {
       let { state_name } = await getSelectedProgramId();
 
@@ -922,3 +923,7 @@ const AlertCustom = ({ alert }) => (
     </HStack>
   </Alert>
 );
+
+App.PropTypes = {
+  footerLinks: PropTypes.any,
+};

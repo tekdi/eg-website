@@ -14,6 +14,7 @@ export default function AdminReports({ footerLinks }) {
   const reportName = `${name?.name}-report`;
   const data = ipId1Data?.[reportName];
 
+  console.log({ data });
   return (
     <Layout
       w={Width}

@@ -8,19 +8,20 @@ import {
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
-import React from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
-  const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
+  const [beneficiaryStatus, setBeneficiaryStatus] = useState();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const columns = React.useCallback(
+  const columns = useCallback(
     (t, navigate) => [
       {
         name: t("LEARNERS_ID"),
@@ -148,23 +149,23 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     []
   );
 
-  const fetchEnumRegistry = React.useCallback(async () => {
+  const fetchEnumRegistry = useCallback(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchEnumRegistry();
   }, [fetchEnumRegistry]);
 
-  const handleRowClick = React.useCallback(
+  const handleRowClick = useCallback(
     (row) => {
       navigate(`/admin/beneficiary/${row?.id}`);
     },
     [navigate]
   );
 
-  const filteredStatusText = React.useMemo(() => {
+  const filteredStatusText = useMemo(() => {
     return (
       <Text
         color={!filter?.status ? "textMaroonColor.600" : ""}
@@ -182,7 +183,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     );
   }, [filter, paginationTotalRows, setFilter, t]);
 
-  const statusTexts = React.useMemo(() => {
+  const statusTexts = useMemo(() => {
     return beneficiaryStatus?.map((item) => (
       <Text
         key={item}
@@ -200,10 +201,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     ));
   }, [beneficiaryStatus, filter, paginationTotalRows, setFilter, t]);
 
-  const columnsMemoized = React.useMemo(
-    () => columns(t, navigate),
-    [t, navigate]
-  );
+  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
@@ -224,13 +222,13 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
         paginationTotalRows={paginationTotalRows}
         paginationDefaultPage={filter?.page || 1}
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
-        onChangeRowsPerPage={React.useCallback(
+        onChangeRowsPerPage={useCallback(
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
           [setFilter, filter]
         )}
-        onChangePage={React.useCallback(
+        onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
@@ -243,4 +241,11 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   );
 }
 
-export default React.memo(Table);
+Table.PropTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.func,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+};
+export default memo(Table);

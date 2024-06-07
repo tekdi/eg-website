@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   HStack,
@@ -11,7 +11,6 @@ import {
 } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
 import {
   IconByName,
   AdminTypo,
@@ -26,7 +25,6 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
-
 
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
@@ -59,21 +57,21 @@ function CustomFieldTemplate({ id, classNames, label, required, children }) {
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const ref = React.useRef(null);
+  const ref = useRef(null);
   const [Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({});
-  const [data, setData] = React.useState();
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [refAppBar, setRefAppBar] = useState();
+  const [loading, setLoading] = useState(true);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({});
+  const [data, setData] = useState();
+  const [getDistrictsAll, setgetDistrictsAll] = useState();
+  const [getBlocksAll, setGetBlocksAll] = useState();
 
   const navigate = useNavigate();
 
   // facilitator pagination
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const learnerStatus =
       await facilitatorRegistryService.learnerStatusDistribution(filter);
     setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
@@ -81,7 +79,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setLoading(false);
   }, [filter]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let name = "RAJASTHAN";
     const getDistricts = await geolocationRegistryService.getDistricts({
       name,
@@ -89,7 +87,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setgetDistrictsAll(getDistricts?.districts);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let blockData = [];
     if (filter?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -103,7 +101,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilter(data);
     setQueryParameters(data);
   };
-
 
   const schema = {
     type: "object",
@@ -176,13 +173,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-    
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
@@ -246,7 +239,6 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   placeholder="search"
                   variant="outline"
                   onChange={debouncedHandleSearch}
-
                 />
                 <Form
                   schema={schema}
