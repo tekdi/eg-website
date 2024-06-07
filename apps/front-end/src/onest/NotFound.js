@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import { VStack } from "native-base";
 
 export default function App({ userTokenInfo: { authUser } }) {
+  // add user info for drawer
   return (
     <Layout
       facilitator={{

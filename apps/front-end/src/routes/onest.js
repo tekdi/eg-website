@@ -2,6 +2,7 @@ import React from "react";
 const VolunteerLandingPage = React.lazy(() =>
   import("onest/VolunteerLandingPage")
 );
+// add profile page
 const Profile = React.lazy(() => import("pages/front-end/volunteer/Profile"));
 const NotFound = React.lazy(() => import("onest/NotFound"));
 const LandingPage = React.lazy(() => import("onest/LandingPage"));
