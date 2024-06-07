@@ -4,11 +4,18 @@ import { Alert, HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function App({ children, _appBar, _drawer, ...props }) {
+// add userAccess
+export default function App({
+  children,
+  userAccess,
+  _appBar,
+  _drawer,
+  ...props
+}) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const userDetails = JSON.parse(localStorage.getItem("userData"));
-  if (userDetails?.user_id) {
+  if (userDetails?.user_id || userAccess) {
     return (
       <Layout
         allowRoles={["facilitator", "volunteer", "beneficiary"]}

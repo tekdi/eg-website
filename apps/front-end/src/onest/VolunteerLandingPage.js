@@ -143,6 +143,7 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser } }) => {
 
   return (
     <Layout
+      userAccess
       _appBar={{
         onPressBackButton: handleBack,
       }}
