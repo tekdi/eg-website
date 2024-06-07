@@ -3,11 +3,12 @@ import React from "react";
 import Layout from "./Layout";
 import { VStack } from "native-base";
 
-export default function App() {
+export default function App({ userTokenInfo: { authUser } }) {
   return (
     <Layout
-      _appBar={{
-        onlyIconsShow: ["helpAppBtn"],
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.use_role?.[0],
       }}
     >
       <VStack p="4">
