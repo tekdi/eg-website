@@ -76,7 +76,7 @@ const columns = (t, navigate) => [
   {
     name: t("STATUS"),
     selector: (row) => (
-      <ChipStatus py="0.5" px="1" status={row?.program_faciltators?.status} />
+      <ChipStatus py="0.5" px="1" status={row?.user_roles?.[0]?.status} />
     ),
     wrap: true,
     attr: "status",
