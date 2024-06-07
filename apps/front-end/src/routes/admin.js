@@ -93,6 +93,10 @@ const ExamResultView = React.lazy(() =>
   import("pages/admin/examschedule/ExamResult/ExamResultView")
 );
 
+// PC-User
+
+const PcAdd = React.lazy(() => import("pages/admin/pcScreen/PcAdd"));
+
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
   { path: "/admin/Certification/:id", component: Certification },
@@ -179,4 +183,6 @@ export default [
   { path: "/admin/exams/list", component: ExamResultList },
   { path: "/admin/exams/list/:id", component: ManualExamResult },
   { path: "/admin/exams/list/result/:id", component: ExamResultView },
+  // Pc-users
+  { path: "/admin/addpcuser", component: PcAdd },
 ];
