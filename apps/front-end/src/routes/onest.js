@@ -2,6 +2,8 @@ import React from "react";
 const VolunteerLandingPage = React.lazy(() =>
   import("onest/VolunteerLandingPage")
 );
+// add profile page
+const Profile = React.lazy(() => import("pages/front-end/volunteer/Profile"));
 const NotFound = React.lazy(() => import("onest/NotFound"));
 const LandingPage = React.lazy(() => import("onest/LandingPage"));
 const MediaPage = React.lazy(() => import("onest/content/MediaPage"));
@@ -13,6 +15,7 @@ const List = React.lazy(() => import("onest/List"));
 const View = React.lazy(() => import("onest/View"));
 export const notAccessRoute = [{ path: "*", component: NotFound }];
 const route = [
+  { path: "/profile", component: Profile },
   { path: "/onest", component: LandingPage },
   { path: "/onest/:type", component: List },
   { path: "/onest/:type/:jobId", component: View },

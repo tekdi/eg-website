@@ -40,11 +40,8 @@ export default function App({ facilitator, ip, onClick }) {
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
-  //   const { form_step_number } = facilitator;
   const { t } = useTranslation();
-  //   if (form_step_number && parseInt(form_step_number) >= 10) {
-  //     navigate("/dashboard");
-  //   }
+  // const {id} = useParams();
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -152,7 +149,7 @@ export default function App({ facilitator, ip, onClick }) {
       }
     };
     init();
-  }, [page, formData?.qualification, schema?.properties?.qualification]);
+  }, [page]);
 
   const setFormInfo = () => {
     if (schema1.type === "step") {
@@ -319,6 +316,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     let newFormData = data.formData;
     if (schema?.properties?.first_name) {
       newFormData = {
@@ -410,6 +408,7 @@ export default function App({ facilitator, ip, onClick }) {
         goErrorPage(key[0]);
       }
     }
+    setLoading(false);
   };
 
   const formSubmitCreate = async () => {

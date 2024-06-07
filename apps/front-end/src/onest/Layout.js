@@ -4,7 +4,7 @@ import { Alert, HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export default function App({ children, _appBar, ...props }) {
+export default function App({ children, _appBar, _drawer, ...props }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const userDetails = JSON.parse(localStorage.getItem("userData"));
@@ -15,6 +15,11 @@ export default function App({ children, _appBar, ...props }) {
         _appBar={{
           onlyIconsShow: ["loginBtn", "backBtn", "userInfo", "langBtn"],
           ..._appBar,
+        }}
+        _drawer={{
+          isHideProgress: true,
+          exceptIconsShow: ["resultsBtn"],
+          ...(_drawer || {}),
         }}
         {...props}
       >

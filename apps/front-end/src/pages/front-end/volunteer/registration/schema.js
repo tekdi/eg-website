@@ -102,6 +102,7 @@ export default {
       required: ["qualification"],
       properties: {
         qualification: {
+          title: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string"],
           format: "RadioBtn",
           grid: 2,
