@@ -13,10 +13,10 @@ export function ChipStatus({ width, status, ...props }) {
     switch (status && status?.toLowerCase()) {
       case "approved":
         setColor("potentialColor");
-        setNewStatus(t("APPROVED"));
+        setNewStatus(t("VOLUNTEER_STATUS_APPROVED"));
         break;
       default:
-        setNewStatus(t("applied"));
+        setNewStatus(t("VOLUNTEER_STATUS_APPLIED"));
         setColor("appliedColor");
     }
   }, [status]);

@@ -1,26 +1,21 @@
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import {
-  BodySmall,
   FrontEndTypo,
-  H1,
-  H3,
   IconByName,
   Layout,
   facilitatorRegistryService,
-  getOnboardingURLData,
   getOptions,
   login,
   removeOnboardingMobile,
   removeOnboardingURLData,
   sendAndVerifyOtp,
-  setOnboardingMobile,
   volunteerRegistryService,
 } from "@shiksha/common-lib";
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
 import { Box, HStack, Modal, VStack } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useScreenshot } from "use-screenshot-hook";
@@ -157,7 +152,7 @@ export default function App({ facilitator, ip, onClick }) {
       }
     };
     init();
-  }, [page, formData.qualification, schema?.properties?.qualification]);
+  }, [page, formData?.qualification, schema?.properties?.qualification]);
 
   const setFormInfo = () => {
     if (schema1.type === "step") {
@@ -431,7 +426,11 @@ export default function App({ facilitator, ip, onClick }) {
       <PageLayout t={t} isPageMiddle={true} customComponent={<LogoScreen />} />
     );
   } else if (page == "chooseLangauge") {
-    return <ChooseLanguage t={t} languageChanged={changeLanguage} />;
+    return (
+      <Layout isCenter _center={{ alignItems: "normal" }}>
+        <ChooseLanguage t={t} languageChanged={changeLanguage} />
+      </Layout>
+    );
   }
 
   return (
@@ -506,7 +505,9 @@ export default function App({ facilitator, ip, onClick }) {
       >
         <Modal.Content>
           <Modal.Header p="5" borderBottomWidth="0">
-            <H1 textAlign="center">{t("STORE_YOUR_CREDENTIALS")}</H1>
+            <FrontEndTypo.H1 textAlign="center">
+              {t("STORE_YOUR_CREDENTIALS")}
+            </FrontEndTypo.H1>
           </Modal.Header>
           <Modal.Body p="5" pb="10">
             <VStack space="5">
@@ -520,8 +521,8 @@ export default function App({ facilitator, ip, onClick }) {
                 w="100%"
               >
                 <HStack alignItems="center" space="1" flex="1">
-                  <H3 flex="0.3">{t("USERNAME")}</H3>
-                  <BodySmall
+                  <FrontEndTypo.H3 flex="0.3">{t("USERNAME")}</FrontEndTypo.H3>
+                  <FrontEndTypo.H4
                     py="1"
                     px="2"
                     flex="0.7"
@@ -533,11 +534,11 @@ export default function App({ facilitator, ip, onClick }) {
                     borderColor="success.500"
                   >
                     {credentials?.username}
-                  </BodySmall>
+                  </FrontEndTypo.H4>
                 </HStack>
                 <HStack alignItems="center" space="1" flex="1">
-                  <H3 flex="0.3">{t("PASSWORD")}</H3>
-                  <BodySmall
+                  <FrontEndTypo.H3 flex="0.3">{t("PASSWORD")}</FrontEndTypo.H3>
+                  <FrontEndTypo.H4
                     py="1"
                     px="2"
                     flex="0.7"
@@ -549,7 +550,7 @@ export default function App({ facilitator, ip, onClick }) {
                     borderColor="success.500"
                   >
                     {credentials?.password}
-                  </BodySmall>
+                  </FrontEndTypo.H4>
                 </HStack>
               </VStack>
               <VStack alignItems="center">
@@ -567,9 +568,9 @@ export default function App({ facilitator, ip, onClick }) {
                       rounded="full"
                       color="blue.300"
                     />
-                    <H3 color="blue.300">
+                    <FrontEndTypo.H3 color="blue.300">
                       {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </H3>
+                    </FrontEndTypo.H3>
                   </HStack>
                 </Clipboard>
               </VStack>
