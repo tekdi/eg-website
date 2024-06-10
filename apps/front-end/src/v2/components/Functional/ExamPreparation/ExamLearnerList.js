@@ -17,14 +17,14 @@ const ExamLearnerList = ({ footerLinks }) => {
 
   const flattenList = (list) => {
     let flattenedArray = [];
-    list.forEach((item) => {
-      item.group.group_users.forEach((userObj) => {
-        const { user_id, first_name, middle_name, last_name } = userObj.user;
-        flattenedArray.push({
+    list?.forEach((item) => {
+      item?.group?.group_users?.forEach((userObj) => {
+        const { user_id, program_beneficiaries } = userObj?.user;
+        flattenedArray?.push({
           user_id,
-          first_name,
-          middle_name: middle_name || "",
-          last_name: last_name || "",
+          first_name: program_beneficiaries?.[0]?.enrollment_first_name,
+          middle_name: program_beneficiaries?.[0]?.enrollment_middle_name,
+          last_name: program_beneficiaries?.[0]?.enrollment_last_name,
           group_id: item.group.group_id,
           camp_id: item.camp_id,
         });
@@ -57,12 +57,12 @@ const ExamLearnerList = ({ footerLinks }) => {
   const mergingData = (flattenedList, report) => {
     const mergedArray = flattenedList?.map((user) => {
       const userData = { ...user };
-      const responses = report.reduce((acc, observation) => {
-        const fieldResponse = observation.field_responses.find(
+      const responses = report?.reduce((acc, observation) => {
+        const fieldResponse = observation?.field_responses?.find(
           (response) => response.context_id === user.user_id
         );
         if (fieldResponse) {
-          acc.push({
+          acc?.push({
             field_id: observation.field_id,
             response_value: fieldResponse.response_value,
           });
@@ -85,19 +85,19 @@ const ExamLearnerList = ({ footerLinks }) => {
   };
 
   const getStatus = (responses) => {
-    const WILL_LEARNER_APPEAR_FOR_EXAM = responses.find(
+    const WILL_LEARNER_APPEAR_FOR_EXAM = responses?.find(
       (response) => response.field_id === 10
     );
-    const WILL_LEARNER_APPEAR_FOR_EXAM_REASONS = responses.find(
+    const WILL_LEARNER_APPEAR_FOR_EXAM_REASONS = responses?.find(
       (response) => response.field_id === 11
     );
-    const DID_LEARNER_RECEIVE_ADMIT_CARD = responses.find(
+    const DID_LEARNER_RECEIVE_ADMIT_CARD = responses?.find(
       (response) => response.field_id === 12
     );
-    const HAS_LEARNER_PREPARED_PRACTICAL_FILE = responses.find(
+    const HAS_LEARNER_PREPARED_PRACTICAL_FILE = responses?.find(
       (response) => response.field_id === 13
     );
-    const LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER = responses.find(
+    const LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER = responses?.find(
       (response) => response.field_id === 14
     );
     // const response6 = responses.find((response) => response.field_id === 15);
