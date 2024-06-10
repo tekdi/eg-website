@@ -99,6 +99,7 @@ export default function List() {
     },
     [filter]
   );
+  console.log("filter", filter);
 
   useEffect(async () => {
     const data = await cohortService.getProgramList();

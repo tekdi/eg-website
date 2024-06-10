@@ -34,7 +34,7 @@ const baseSchema = {
     do_id: {
       type: "string",
       title: "DO-ID",
-      label: "DO-ID"
+      label: "DO-ID",
     },
     event_type: {
       type: "string",

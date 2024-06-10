@@ -29,7 +29,7 @@ const Schema = {
     do_id: {
       type: "string",
       label: "DO_ID",
-      title: "DO_ID"
+      title: "DO_ID",
     },
     event_type: {
       type: "string",
@@ -67,7 +67,7 @@ export default function App() {
         program_id: newData?.state,
       });
     }
-      setFormData(newData);
+    setFormData(newData);
   };
 
   const onSubmit = async (data) => {
