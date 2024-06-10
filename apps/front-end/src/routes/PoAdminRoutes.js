@@ -9,7 +9,9 @@ const IPList = lazy(() => import("pages/admin/PoAdmin/IP/List"));
 const DoidList = lazy(() => import("pages/admin/PoAdmin/DoId/List"));
 const DoidForm = lazy(() => import("pages/admin/PoAdmin/DoId/Form"));
 const DoidDetails = lazy(() => import("pages/admin/PoAdmin/DoId/View"));
-const DoidEditForm = lazy(() => import("pages/admin/PoAdmin/DoId/EditDoId/Form"));
+const DoidEditForm = lazy(() =>
+  import("pages/admin/PoAdmin/DoId/EditDoId/Form")
+);
 const IpDetails = lazy(() => import("pages/admin/PoAdmin/IP/View"));
 const IPForm = lazy(() => import("pages/admin/PoAdmin/IP/Form"));
 const IPEditForm = lazy(() => import("pages/admin/PoAdmin/IP/EditIP/Form"));
@@ -133,14 +135,17 @@ export default [
     component: DoidForm,
   },
   {
-    path: "/poadmin/do-id/:id/edit",
-    component: DoidEditForm,
+    path: "/poadmin/do-ids/:id/edit",
+    component: DoidForm,
   },
+  // {
+  //   path: "/poadmin/do-id/:id/edit",
+  //   component: DoidEditForm,
+  // },
   {
     path: "/poadmin/do-ids/:id",
     component: DoidDetails,
   },
   { path: "/", component: Home },
   { path: "*", component: NotFound },
-  
 ];

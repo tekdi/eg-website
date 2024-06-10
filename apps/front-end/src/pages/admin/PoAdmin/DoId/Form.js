@@ -1,3 +1,8 @@
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
 import {
   AdminTypo,
   PoAdminLayout,
@@ -5,60 +10,65 @@ import {
   IconByName,
   setSelectedProgramId,
   Breadcrumb,
-  validation,
-  eventService,
   enumRegistryService,
+  eventService,
 } from "@shiksha/common-lib";
-import { Button, HStack, VStack } from "native-base";
-import React, { useEffect, useRef, useState } from "react";
-import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
+import { HStack, VStack } from "native-base";
 import {
   widgets,
   templates,
   onError,
   transformErrors,
 } from "component/BaseInput";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import Schema from "./Schema";
 
-const Schema = {
-  type: "object",
-  required: ["do_id", "event_type", "status"],
-  properties: {
-    do_id: {
-      type: "string",
-      label: "DO_ID",
-      title: "DO_ID"
-    },
-    event_type: {
-      type: "string",
-      label: "EVENT_TYPE",
-      title: "EVENT_TYPE",
-      format: "select",
-    },
-
-    status: {
-      type: "string",
-      label: "STATUS",
-      title: "STATUS",
-      format: "select",
-      enum: ["active", "inactive"],
-      enumNames: ["Active", "Inactive"],
-    },
-  },
-};
-
-export default function App() {
+export default function AddEditForm() {
   const { t } = useTranslation();
   const formRef = useRef();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
-  const [schema, setSchema] = useState({});
-  const [formData, setFormData] = useState();
-  const [enumSchema, setEnumSchema] = useState();
+  const { id } = useParams();
+  const location = useLocation();
+  const [schema, setSchema] = useState(Schema);
+  const [formData, setFormData] = useState({});
+  const [event, setEvent] = useState(location.state?.eventData || undefined);
+
+  useEffect(async () => {
+    const result = await enumRegistryService.listOfEnum();
+    let newSchema = { ...Schema };
+
+    if (event && event.id) {
+      newSchema = {
+        ...newSchema,
+        required: [...newSchema.required, "id"],
+        properties: {
+          id: {
+            type: "number",
+            title: "ID",
+            label: "ID",
+            readOnly: true,
+          },
+          ...(newSchema?.properties || {}),
+        },
+      };
+      setFormData({
+        ...event,
+      });
+    }
+
+    newSchema = getOptions(newSchema, {
+      key: "event_type",
+      arr: result?.data?.FACILITATOR_EVENT_TYPE?.map((e) => ({
+        ...e,
+        title: t(e.title),
+      })),
+      title: "title",
+      value: "value",
+    });
+    setSchema(newSchema);
+  }, []);
 
   const onChange = async (e, id) => {
     const newData = e.formData;
@@ -67,13 +77,21 @@ export default function App() {
         program_id: newData?.state,
       });
     }
-      setFormData(newData);
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
+
     const newData = data.formData;
-    const result = await eventService.createDoId(newData);
+    let result;
+    if (event && event.id) {
+      result = await eventService.updateEventDoId({
+        data: data.formData,
+        id: data.formData.id,
+      });
+    } else {
+      result = await eventService.createDoId(newData);
+    }
     if (!result.error) {
       navigate("/poadmin/do-ids");
     } else {
@@ -87,20 +105,9 @@ export default function App() {
     setLoading(false);
   };
 
-  useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    let newSchema = Schema;
-    newSchema = getOptions(newSchema, {
-      key: "event_type",
-      arr: result?.data?.FACILITATOR_EVENT_TYPE?.map((e) => ({
-        ...e,
-        title: t(e.title),
-      })),
-      title: "title",
-      value: "value",
-    });
-    setSchema(newSchema);
-  }, []);
+  if (!schema) {
+    return <div>Loading...</div>; // Or any loading indicator
+  }
 
   return (
     <PoAdminLayout _appBar={{ setLang }}>
@@ -129,7 +136,7 @@ export default function App() {
                     textOverflow="ellipsis"
                     bold
                   >
-                    {t("CREATE")}
+                    {event && event.id ? t("EDIT") : t("CREATE")}
                   </AdminTypo.H4>
                 ),
               },
@@ -153,7 +160,6 @@ export default function App() {
               onError,
               onSubmit,
               onChange,
-              enumSchema,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
