@@ -96,6 +96,8 @@ const ExamResultView = React.lazy(() =>
 // PC-User
 
 const PcAdd = React.lazy(() => import("pages/admin/pcScreen/PcAdd"));
+const PcList = React.lazy(() => import("pages/admin/pcScreen/List"));
+const PcView = React.lazy(() => import("pages/admin/pcScreen/View"));
 
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
@@ -175,6 +177,11 @@ export default [
 
   { path: "/admin/event/create", component: EventForm },
   { path: "/admin/event/:id/:step", component: EventForm },
+
+  // pc screens
+
+  { path: "/admin/pc", component: PcList },
+  { path: "/admin/pc/:id", component: PcView },
 
   { path: "*", component: NotFound },
 
