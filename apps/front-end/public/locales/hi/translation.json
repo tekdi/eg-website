@@ -553,6 +553,7 @@
       "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "स्मार्टफोन उपलब्ध नहीं है/मोबाइल चलाना नहीं आता",
       "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
       "LEARNER_ESCAPED": "शिक्षार्थी का पलायन",
+      "LEARNER_MIGRATION": "शिक्षार्थी का पलायन",
       "OTHER": "अन्य",
       "TITLE": "एक कारण चुनें"
     },
@@ -695,6 +696,7 @@
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "यात्रा संबन्धित समस्या_साधन या किराया नही",
       "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
       "LEARNER_ESCAPED": "शिक्षार्थी का पलायन",
+      "LEARNER_MIGRATION": "Learner's migration",
       "OTHER": "अन्य"
     }
   },
