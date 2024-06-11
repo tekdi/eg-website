@@ -1,8 +1,8 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
+  useMemo,
   useState,
 } from "react";
 import Form from "@rjsf/core";
@@ -18,6 +18,7 @@ import {
   Text,
   Menu,
   Pressable,
+  Stack,
 } from "native-base";
 import {
   IconByName,
@@ -46,10 +47,15 @@ export default function AdminHome({ footerLinks }) {
   const ref = useRef(null);
   const refSubHeader = useRef(null);
   const [urlFilterApply, setUrlFilterApply] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [filter, setFilter] = useState({ limit: 10 });
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+
+  const handleOpenButtonClick = () => {
+    setIsDrawerOpen((prevState) => !prevState);
+  };
 
   const dropDown = useCallback((triggerProps, t) => {
     return (
@@ -220,24 +226,74 @@ export default function AdminHome({ footerLinks }) {
           </HStack>
         </HStack>
       </HStack>
-      <HStack flex={[5, 5, 4]}>
-        <Box
-          flex={[2, 2, 1]}
-          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
-        >
-          <HStack ref={ref}></HStack>
-          <ScrollView
-            maxH={
-              Height -
-              (refAppBar?.clientHeight +
-                ref?.current?.clientHeight +
-                refSubHeader?.current?.clientHeight)
-            }
-            pr="2"
+      <HStack ml="-1">
+        <Stack style={{ position: "relative", overflowX: "hidden" }}>
+          <Stack
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "0",
+              transition: "left 0.3s ease",
+              width: "250px",
+              height: "100%",
+              background: "white",
+              zIndex: 1,
+            }}
           >
-            {urlFilterApply && <Filter {...{ filter, setFilter }} />}
-          </ScrollView>
-        </Box>
+            <Box
+              flex={[2, 2, 1]}
+              style={{
+                borderRightColor: "dividerColor",
+                borderRightWidth: "2px",
+              }}
+            >
+              <ScrollView
+                maxH={
+                  Height -
+                  (refAppBar?.clientHeight +
+                    ref?.current?.clientHeight +
+                    refSubHeader?.current?.clientHeight)
+                }
+                pr="2"
+              >
+                {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+              </ScrollView>
+            </Box>
+          </Stack>
+
+          <Stack
+            style={{
+              marginLeft: isDrawerOpen ? "250px" : "0",
+              transition: "margin-left 0.3s ease",
+            }}
+          />
+        </Stack>
+        <VStack
+          ml={"-1"}
+          rounded={"xs"}
+          height={"50px"}
+          bg={
+            filter?.district || filter?.state || filter?.block || filter?.status
+              ? "textRed.400"
+              : "#E0E0E0"
+          }
+          justifyContent="center"
+          onClick={handleOpenButtonClick}
+        >
+          <IconByName
+            name={isDrawerOpen ? "ArrowLeftSLineIcon" : "FilterLineIcon"}
+            color={
+              filter?.state ||
+              filter?.district ||
+              filter?.block ||
+              filter?.status
+                ? "white"
+                : "black"
+            }
+            _icon={{ size: "30px" }}
+          />
+        </VStack>
+
         <Box flex={[5, 5, 4]}>
           <ScrollView
             maxH={
@@ -249,7 +305,7 @@ export default function AdminHome({ footerLinks }) {
               (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
             }
           >
-            <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
+            <Box roundedBottom={"2xl"} pl="0" px={4}>
               <Table
                 customStyles={tableCustomStyles}
                 filter={filter}

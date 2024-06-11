@@ -252,6 +252,9 @@ export default function ReferenceDetails({ ip }) {
         setLang,
       }}
       _page={{ _scollView: { bg: "white" } }}
+      analyticsPageTitle={"BENEFICIARY_REFERENCE_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("REFERENCE_DETAILS")}
     >
       <Box py={6} px={4} mb={5}>
         {alert && (

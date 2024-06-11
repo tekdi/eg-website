@@ -48,7 +48,7 @@ function JobDetails() {
 
   const getApplicationStatus = async (order_id) => {
     const apiUrl = `${baseUrl}/user/searchOrder/${order_id}`;
-
+    setLoading(t("FETCHING_THE_DETAILS"));
     try {
       await axios
         .get(apiUrl)
@@ -90,9 +90,10 @@ function JobDetails() {
         });
     } catch (error) {
       console.log("error", error);
+    } finally {
+      setLoading(false);
+      setOpenModal(true);
     }
-
-    setOpenModal(true);
   };
 
   useEffect(() => {
@@ -104,7 +105,7 @@ function JobDetails() {
         context_item_id: jobId,
         user_id: userData.user_id,
       };
-      let result = await OnestService.getList({ filter: data });
+      let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
         setListData(result?.data);
         getApplicationStatus(result?.data[0].order_id);

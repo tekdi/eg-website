@@ -65,6 +65,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"FACILITATOR_PROFILE"}
+      pageTitle={t("FACILITATOR")}
+      stepTitle={t("PROFILE")}
     >
       <VStack bg="bgGreyColor.200" pb="10">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">

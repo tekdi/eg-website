@@ -54,7 +54,8 @@ export default function List({ userTokenInfo }) {
     } else {
       setCommunityLength(2);
     }
-    setIpStatus(userTokenInfo?.authUser?.program_faciltators?.status);
+    const prerak_status = localStorage.getItem("status");
+    setIpStatus(prerak_status);
     setEnumOptions(enums?.data || {});
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data);

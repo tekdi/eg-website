@@ -37,6 +37,7 @@ export default function CampSessionList({ footerLinks }) {
   const [error, setError] = useState();
   const navigate = useNavigate();
   const [bodyHeight, setBodyHeight] = useState();
+  const [campDetails, setCampDetails] = useState();
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -55,7 +56,7 @@ export default function CampSessionList({ footerLinks }) {
   }, [modalVisible]);
 
   useEffect(() => {
-    const completeItem = sessionList.filter(
+    const completeItem = sessionList?.filter(
       (item) => item?.session_tracks?.[0]?.status === "complete"
     );
     const lastCompleteItem = completeItem.pop();
@@ -77,7 +78,8 @@ export default function CampSessionList({ footerLinks }) {
   }, [modalVisible]);
 
   const getCampSessionsList = async () => {
-    // const campDetails = await campService.getCampDetails({ id });
+    const campDetails = await campService.getCampDetails({ id });
+    setCampDetails(campDetails?.data);
     const result = await campService.getCampSessionsList({
       id: id,
     });
@@ -224,6 +226,11 @@ export default function CampSessionList({ footerLinks }) {
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _footer={{ menues: footerLinks }}
       getBodyHeight={(e) => setBodyHeight(e)}
+      analyticsPageTitle={"CAMP_SESSION_LIST"}
+      pageTitle={t("CAMP")}
+      stepTitle={`${
+        campDetails?.type === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")
+      }/${t("SESSION_LIST")}`}
     >
       <Stack>
         <VStack flex={1} space="5" p="5">

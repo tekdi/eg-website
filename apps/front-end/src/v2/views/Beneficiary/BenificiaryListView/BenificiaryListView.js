@@ -89,8 +89,13 @@ const List = ({ data }) => {
                     overflow="hidden"
                     textOverflow="ellipsis"
                   >
-                    {item?.program_beneficiaries?.status ===
-                    "enrolled_ip_verified" ? (
+                    {[
+                      "enrolled_ip_verified",
+                      "registered_in_camp",
+                      "ineligible_for_pragati_camp",
+                      "10th_passed",
+                      "pragati_syc",
+                    ].includes(item?.program_beneficiaries?.status) ? (
                       <FrontEndTypo.H3 bold color="textGreyColor.800">
                         {item?.program_beneficiaries?.enrollment_first_name}
                         {item?.program_beneficiaries?.enrollment_middle_name &&
@@ -223,6 +228,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
   const fa_id = localStorage.getItem("id");
+  const prerak_status = localStorage.getItem("status");
 
   useEffect(async () => {
     const data = await benificiaryRegistoryService.getStatusList();
@@ -275,6 +281,8 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"BENEFICIARY_LIST"}
+      pageTitle={t("BENEFICIARY_LIST")}
     >
       <VStack ref={ref}>
         {[
@@ -282,7 +290,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           "selected_prerak",
           "selected_for_training",
           "selected_for_onboarding",
-        ].includes(facilitator.status) && (
+        ].includes(prerak_status) && (
           <Pressable
             onPress={(e) => {
               navigate(`/beneficiary`);

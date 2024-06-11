@@ -117,7 +117,7 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [program, setProgram] = useState();
   const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);

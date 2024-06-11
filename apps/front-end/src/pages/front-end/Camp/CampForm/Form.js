@@ -536,6 +536,9 @@ export default function App({ footerLinks }) {
       _page={{ _scollView: { bg: "formBg.500" } }}
       _footer={{ menues: footerLinks }}
       loading={loading || !campDetails?.group?.status}
+      analyticsPageTitle={"CAMP"}
+      pageTitle={t("CAMP_FORM")}
+      stepTitle={step}
     >
       {["camp_ip_verified", "inactive"].includes(campDetails?.group?.status) ? (
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">

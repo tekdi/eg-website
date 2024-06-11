@@ -684,8 +684,7 @@ export default function PrerakRegisterDetail({
       : "";
 
     let lang = localStorage.getItem("lang");
-
-    let state = registerFormData?.state;
+    let state = programData?.state_name;
     let district = registerFormData?.district;
     let block = registerFormData?.block;
     let village = registerFormData?.village;
@@ -715,7 +714,14 @@ export default function PrerakRegisterDetail({
   return (
     <>
       {isLoading ? (
-        <PageLayout t={t} isPageMiddle={true} customComponent={<Loader />} />
+        <PageLayout
+          t={t}
+          isPageMiddle={true}
+          customComponent={<Loader />}
+          analyticsPageTitle={"FACILITATOR_ONBOADING"}
+          pageTitle={t("FACILITATOR")}
+          stepTitle={t("ONBOARDING")}
+        />
       ) : (
         <VStack flex={3} space={5}>
           <Box py={6} px={4} mb={5}>

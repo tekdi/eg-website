@@ -15,6 +15,7 @@ import {
   GetEnumValue,
   mapDistance,
   FrontEndTypo,
+  setFilterLocalStorage,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -240,7 +241,9 @@ export default function View({ footerLinks }) {
       status,
     });
     if (result?.status === 200) {
-      navigate(`/admin/camps?status=${status}&page=1`);
+      const obj = { limit: 10, page: 1, status: status };
+      setFilterLocalStorage("camp_filter", obj);
+      navigate(`/admin/camps`);
     } else {
       setIsButtonLoading(false);
       setErrorList(result?.message);

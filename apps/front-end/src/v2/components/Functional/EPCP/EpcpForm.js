@@ -51,7 +51,7 @@ const EpcpForm = ({ footerLinks }) => {
     type: "object",
     title: `${learnerData?.first_name} ${
       learnerData?.last_name
-        ? `${learnerData?.middle_name} ${learnerData?.last_name}`
+        ? `${learnerData?.middle_name || ""} ${learnerData?.last_name}`
         : ""
     } ${t("EPCP.TITLE")}`,
     properties: {
@@ -392,6 +392,8 @@ const EpcpForm = ({ footerLinks }) => {
         onlyIconsShow: ["backBtn", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"EPCP"}
+      pageTitle={t("EPCP")}
     >
       <Box p={4}>
         <Form

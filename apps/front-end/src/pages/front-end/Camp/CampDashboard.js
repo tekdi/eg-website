@@ -26,6 +26,9 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
       _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"CAMP_DASHBOARD"}
+      pageTitle={t("CAMP_DASHBOARD")}
+      // stepTitle={t("ATTENDANCE")}
     >
       <List userTokenInfo={userTokenInfo} />
       <VStack p="4" space="5">
@@ -33,7 +36,8 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
           <>
             <EpcpCard />
             {/* Temp Comment */}
-            {/* <ExamPreparationCard /> */}
+            <ExamPreparationCard />
+            {/* Temp Comment  End*/}
           </>
         )}
       </VStack>
