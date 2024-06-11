@@ -92,16 +92,12 @@ export default function AddEditForm() {
     } else {
       result = await eventService.createDoId(newData);
     }
-    if (!result.error) {
-      navigate("/poadmin/do-ids");
-    } else {
+    if (result.error) {
       setFormData(newData);
-      setErrors({
-        [result?.key || "name"]: {
-          __errors: [result?.message],
-        },
-      });
+      setErrors({ [result?.key || "name"]: { __errors: [result?.message] } });
+      return;
     }
+    navigate("/poadmin/do-ids");
     setLoading(false);
   };
 
@@ -146,7 +142,7 @@ export default function AddEditForm() {
 
         <VStack p="4" space={4}>
           <Form
-            key={lang}
+            key={`${lang}-${JSON.stringify(formData)}`}
             ref={formRef}
             extraErrors={errors}
             showErrorList={false}

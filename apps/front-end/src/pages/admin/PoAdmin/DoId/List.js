@@ -50,8 +50,6 @@ const columns = (t, navigate) => [
   {
     name: t("DO_ID"),
     selector: (row) => row?.do_id,
-    sortable: true,
-    sortField: "do_id",
     // width: "150px",
     wrap: true,
     left: true,
@@ -225,7 +223,7 @@ export default function List() {
                 {t("ADD")}
               </Button>
             )}
-          ></Menu>
+          />
           <Select
             minH="40px"
             maxH="40px"
