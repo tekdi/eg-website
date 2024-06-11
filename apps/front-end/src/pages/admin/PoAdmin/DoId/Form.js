@@ -39,7 +39,7 @@ export default function AddEditForm() {
     const result = await enumRegistryService.listOfEnum();
     let newSchema = { ...Schema };
 
-    if (event && event.id) {
+    if (event.id) {
       newSchema = {
         ...newSchema,
         required: [...newSchema.required, "id"],
@@ -84,21 +84,26 @@ export default function AddEditForm() {
 
     const newData = data.formData;
     let result;
-    if (event && event.id) {
-      result = await eventService.updateEventDoId({
-        data: data.formData,
-        id: data.formData.id,
-      });
-    } else {
-      result = await eventService.createDoId(newData);
+    try {
+      if (event.id) {
+        result = await eventService.updateEventDoId({
+          data: data.formData,
+          id: data.formData.id,
+        });
+      } else {
+        result = await eventService.createDoId(newData);
+      }
+      if (result.error) {
+        setFormData(newData);
+        setErrors({ [result?.key || "name"]: { __errors: [result?.message] } });
+        return;
+      }
+      navigate("/poadmin/do-ids");
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to submit form:", error);
+      setErrors({ submit: { __errors: ["An unexpected error occurred"] } });
     }
-    if (result.error) {
-      setFormData(newData);
-      setErrors({ [result?.key || "name"]: { __errors: [result?.message] } });
-      return;
-    }
-    navigate("/poadmin/do-ids");
-    setLoading(false);
   };
 
   if (!schema) {
@@ -132,7 +137,7 @@ export default function AddEditForm() {
                     textOverflow="ellipsis"
                     bold
                   >
-                    {event && event.id ? t("EDIT") : t("CREATE")}
+                    {event.id ? t("EDIT") : t("CREATE")}
                   </AdminTypo.H4>
                 ),
               },
