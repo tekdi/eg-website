@@ -21,7 +21,6 @@ function View() {
 
   const handleEditButton = () => {
     const step = "edit";
-    // navigate(`/poadmin/do-id/${id}/edit`, {
     navigate(`/poadmin/do-ids/${id}/edit`, {
       state: { eventData: event },
     });

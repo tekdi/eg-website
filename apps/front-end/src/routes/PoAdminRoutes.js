@@ -138,10 +138,6 @@ export default [
     path: "/poadmin/do-ids/:id/edit",
     component: DoidForm,
   },
-  // {
-  //   path: "/poadmin/do-id/:id/edit",
-  //   component: DoidEditForm,
-  // },
   {
     path: "/poadmin/do-ids/:id",
     component: DoidDetails,
