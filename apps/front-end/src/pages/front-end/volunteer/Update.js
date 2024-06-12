@@ -3,7 +3,6 @@ import validator from "@rjsf/validator-ajv8";
 import {
   FrontEndTypo,
   IconByName,
-  Layout,
   facilitatorRegistryService,
   getOptions,
   login,
@@ -15,67 +14,43 @@ import {
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
 import { Box, HStack, Modal, VStack } from "native-base";
-import React, { useEffect } from "react";
+import Layout from "onest/Layout";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useScreenshot } from "use-screenshot-hook";
-import ChooseLanguage from "v2/components/Functional/ChooseLanguage/ChooseLanguage";
-import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
-import PageLayout from "v2/components/Static/PageLayout/PageLayout";
+import { useNavigate, useParams } from "react-router-dom";
 import { templates, widgets } from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
+import NotFound from "pages/NotFound";
+
+const uiSchema = {
+  dob: {
+    "ui:widget": "alt-date",
+    "ui:options": {
+      hideNowButton: true,
+      hideClearButton: true,
+      format: "DMY",
+    },
+  },
+};
 
 // App
-export default function App({ facilitator, ip, onClick }) {
-  const [page, setPage] = React.useState("logoScreen");
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = React.useState(false);
+export default function App({ userTokenInfo: { authUser } }) {
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [credentials, setCredentials] = useState();
+  const formRef = useRef();
+  const [formData, setFormData] = useState();
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const {id} = useParams();
+  const { page } = useParams();
+  const [mobileConditon, setMobileConditon] = useState(false);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
-  };
-  const ref = React.createRef(null);
-  const { image, takeScreenshot } = useScreenshot();
-  const getImage = () => takeScreenshot({ ref });
-  const downloadImage = () => {
-    const FileSaver = require("file-saver");
-    FileSaver.saveAs(`${image}`, "image.png");
-  };
-
-  useEffect(() => {
-    const init = () => {
-      if (page && credentials) {
-        getImage();
-      }
-    };
-    init();
-  }, [page, credentials, getImage]);
-
-  const uiSchema = {
-    dob: {
-      "ui:widget": "alt-date",
-      "ui:options": {
-        yearsRange: yearsRange,
-        hideNowButton: true,
-        hideClearButton: true,
-        format: "DMY",
-      },
-    },
+    await nextPreviewStep("p");
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -90,8 +65,7 @@ export default function App({ facilitator, ip, onClick }) {
         nextIndex = pages[index - 1];
       }
       if (nextIndex !== undefined) {
-        setPage(nextIndex);
-        setSchema(properties[nextIndex]);
+        navigate(`/profile/${nextIndex}/edit`);
       } else if (pageStape.toLowerCase() === "n") {
         // await formSubmitUpdate({ ...formData, form_step_number: "10" });
         // setPage("upload");
@@ -105,8 +79,7 @@ export default function App({ facilitator, ip, onClick }) {
       const properties = schema1.properties;
       if (pageNumber !== "") {
         if (page !== pageNumber) {
-          setPage(pageNumber);
-          setSchema(properties[pageNumber]);
+          setSchema(properties[page]);
         }
       } else {
         nextPreviewStep();
@@ -115,74 +88,57 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   useEffect(() => {
-    const init = async () => {
-      if (schema?.properties?.qualification) {
-        setLoading(true);
-        const qData = await facilitatorRegistryService.getQualificationAll();
-        let newSchema = schema;
-        if (schema["properties"]["qualification"]) {
-          newSchema = getOptions(newSchema, {
-            key: "qualification",
-            arr: qData,
-            title: "name",
-            value: "name",
-            filters: { type: "qualification" },
+    const setFormInfo = async () => {
+      if (schema1.type === "step") {
+        const properties = schema1.properties;
+        const newSteps = Object.keys(properties);
+        setPages(newSteps);
+        if (["1", "2", "4"].includes(page)) {
+          setSchema(properties[page]);
+          setFormData(authUser);
+        } else if (page == 3) {
+          setFormData({
+            qualification: authUser?.qualifications?.qualification_master?.name,
           });
-          if (newSchema?.properties?.qualification) {
-            let valueIndex = "";
-            newSchema?.properties?.qualification?.enumNames?.forEach(
-              (e, index) => {
-                if (e.match("12")) {
-                  valueIndex =
-                    newSchema?.properties?.qualification?.enum[index];
-                }
+          await setQualificationsData(properties[page]);
+        }
+      }
+    };
+    setFormInfo();
+  }, [page]);
+
+  const setQualificationsData = async (newSchema) => {
+    if (newSchema?.properties?.qualification) {
+      setLoading(true);
+      const qData = await facilitatorRegistryService.getQualificationAll();
+      if (newSchema["properties"]["qualification"]) {
+        newSchema = getOptions(newSchema, {
+          key: "qualification",
+          arr: qData,
+          title: "name",
+          value: "name",
+          filters: { type: "qualification" },
+        });
+        if (newSchema?.properties?.qualification) {
+          let valueIndex = "";
+          newSchema?.properties?.qualification?.enumNames?.forEach(
+            (e, index) => {
+              if (e.match("12")) {
+                valueIndex = newSchema?.properties?.qualification?.enum[index];
               }
-            );
-            if (valueIndex !== "" && formData.qualification === valueIndex) {
-              setAlert(t("YOU_NOT_ELIGIBLE"));
-            } else {
-              setAlert();
             }
+          );
+          if (valueIndex !== "" && formData?.qualification === valueIndex) {
+            setAlert(t("YOU_NOT_ELIGIBLE"));
+          } else {
+            setAlert();
           }
         }
-        setSchema(newSchema);
-        setLoading(false);
       }
-    };
-    init();
-  }, [page]);
-
-  const setFormInfo = () => {
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      setPage(newSteps[0]);
-      setSchema(properties[newSteps[0]]);
-      setPages(newSteps);
-      let minYear = moment().subtract("years", 50);
-      let maxYear = moment().subtract("years", 18);
-      setYearsRange([minYear.year(), maxYear.year()]);
-      setSubmitBtn(t("NEXT"));
+      setSchema(newSchema);
+      setLoading(false);
     }
-    setFormData({});
   };
-
-  useEffect(() => {
-    const init = () => {
-      if (page === "logoScreen") {
-        //wait for 1 second
-        const delay = 750; // 1 second in milliseconds
-        setTimeout(async () => {
-          setPage("chooseLangauge");
-        }, delay);
-      }
-    };
-    init();
-  }, [page]);
-
-  // const userExist = async (filters) => {
-  //   return await facilitatorRegistryService.isExist(filters);
-  // };
 
   const goErrorPage = (key) => {
     if (key) {
@@ -264,6 +220,8 @@ export default function App({ facilitator, ip, onClick }) {
           },
         };
         setErrors(newErrors);
+        setMobileConditon(false);
+        return true;
       }
     }
     return false;
@@ -276,7 +234,10 @@ export default function App({ facilitator, ip, onClick }) {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
       if (data?.mobile?.toString()?.length === 10) {
-        await checkMobileExist(data?.mobile);
+        const result = await checkMobileExist(data?.mobile);
+        if (!result) {
+          setMobileConditon(true);
+        }
       }
       if (schema?.properties?.otp) {
         const { otp, ...properties } = schema?.properties || {};
@@ -343,67 +304,76 @@ export default function App({ facilitator, ip, onClick }) {
     setFormData(newData);
 
     if (_.isEmpty(errors) || errors?.otp) {
-      const { id } = {};
+      const { id } = authUser;
       let success = false;
       if (id) {
-        // const data = await formSubmitUpdate(newData);
-        // if (!_.isEmpty(data)) {
-        success = true;
-        // }
-      } else if (page === "4") {
-        const resultCheck = await checkMobileExist(newFormData?.mobile);
-        if (!resultCheck) {
-          if (!schema?.properties?.otp) {
-            const { otp: data, ...allData } = newFormData || {};
-            setFormData(allData);
-            newFormData = allData;
-            let { mobile, otp, ...otherError } = errors || {};
-            setErrors(otherError);
-          }
-          const { status, newSchema } = await sendAndVerifyOtp(schema, {
-            ...newFormData,
-            hash: localStorage.getItem("hash"),
-          });
-          if (status === true) {
-            const { data, success } = await formSubmitCreate(newFormData);
-            if (!success) {
-              const newErrors = {
-                mobile: {
-                  __errors:
-                    data?.message?.constructor?.name === "String"
-                      ? [data?.message]
-                      : data?.error?.constructor?.name === "Array"
-                      ? data?.error
-                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-                },
-              };
-              setErrors(newErrors);
-            } else {
-              console.log(data);
-              if (data?.username && data?.password) {
-                await removeOnboardingURLData();
-                await removeOnboardingMobile();
-                setCredentials(data);
+        switch (page) {
+          case 1:
+            break;
+          case 4:
+            const resultCheck = await checkMobileExist(newFormData?.mobile);
+            if (!resultCheck) {
+              if (!schema?.properties?.otp) {
+                const { otp: data, ...allData } = newFormData || {};
+                setFormData(allData);
+                newFormData = allData;
+                let { mobile, otp, ...otherError } = errors || {};
+                setErrors(otherError);
+              }
+              const { status, newSchema } = await sendAndVerifyOtp(schema, {
+                ...newFormData,
+                hash: localStorage.getItem("hash"),
+              });
+              if (status === true) {
+                const { data, success } = await formSubmitUpdate(newFormData);
+                if (!success) {
+                  const newErrors = {
+                    mobile: {
+                      __errors:
+                        data?.message?.constructor?.name === "String"
+                          ? [data?.message]
+                          : data?.error?.constructor?.name === "Array"
+                          ? data?.error
+                          : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                    },
+                  };
+                  setErrors(newErrors);
+                } else {
+                  console.log(data);
+                  if (data?.username && data?.password) {
+                    await removeOnboardingURLData();
+                    await removeOnboardingMobile();
+                    setCredentials(data);
+                  }
+                }
+              } else if (status === false) {
+                const newErrors = {
+                  otp: {
+                    __errors: [t("USER_ENTER_VALID_OTP")],
+                  },
+                };
+                setErrors(newErrors);
+              } else {
+                setSchema(newSchema);
               }
             }
-          } else if (status === false) {
-            const newErrors = {
-              otp: {
-                __errors: [t("USER_ENTER_VALID_OTP")],
-              },
-            };
-            setErrors(newErrors);
-          } else {
-            setSchema(newSchema);
-          }
+            break;
+
+          default:
+            break;
         }
+        success = true;
       } else if (page <= 1) {
         success = true;
       } else {
         success = true;
       }
       if (success) {
-        setStep();
+        if (localStorage.getItem("backToProfile") === "false") {
+          nextPreviewStep();
+        } else {
+          navigate(`/profile`);
+        }
       }
     } else {
       const key = Object.keys(errors);
@@ -414,44 +384,35 @@ export default function App({ facilitator, ip, onClick }) {
     setLoading(false);
   };
 
-  const formSubmitCreate = async () => {
-    const result = await volunteerRegistryService.create(formData);
-    return result;
+  const formSubmitUpdate = async () => {
+    console.log(formData);
+    // const result = await volunteerRegistryService.selfUpdate(formData);
+    // return result;
   };
 
-  const changeLanguage = () => {
-    setFormInfo();
+  const onClickSubmit = (backToProfile) => {
+    if (formRef.current.validateForm()) {
+      formRef?.current?.submit();
+    }
+    localStorage.setItem("backToProfile", backToProfile);
   };
-
-  if (page == "logoScreen") {
-    return (
-      <PageLayout t={t} isPageMiddle={true} customComponent={<LogoScreen />} />
-    );
-  } else if (page == "chooseLangauge") {
-    return (
-      <Layout isCenter _center={{ alignItems: "normal" }}>
-        <ChooseLanguage t={t} languageChanged={changeLanguage} />
-      </Layout>
-    );
-  }
 
   return (
     <Layout
       _appBar={{
         onPressBackButton,
-        name: `${ip?.name}`.trim(),
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        onlyIconsShow: ["langAppBtn"],
-        funLangChange: () => {
-          setPage("chooseLangauge");
-        },
+        // onlyIconsShow: ["langAppBtn"],
+        // funLangChange: () => {
+        //   setPage("chooseLangauge");
+        // },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
       <Box py={6} px={4} mb={5}>
-        {page && page !== "" && (
+        {page && page >= "1" && page <= "4" ? (
           <Form
             key={lang + page}
             ref={formRef}
@@ -472,7 +433,7 @@ export default function App({ facilitator, ip, onClick }) {
               transformErrors,
             }}
           >
-            {page === "4" ? (
+            {mobileConditon && page === "4" ? (
               <FrontEndTypo.Primarybutton
                 mt="3"
                 variant={"primary"}
@@ -484,19 +445,30 @@ export default function App({ facilitator, ip, onClick }) {
                 {schema?.properties?.otp ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
-              <FrontEndTypo.Primarybutton
-                isLoading={loading}
-                type="submit"
-                p="4"
-                mt="10"
-                onPress={(e) => {
-                  formRef?.current?.submit();
-                }}
-              >
-                {pages[pages?.length - 1] === page ? t("SUBMIT") : submitBtn}
-              </FrontEndTypo.Primarybutton>
+              <Box alignItems={"center"}>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  minWidth="60%"
+                  mt="4"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("SAVE_AND_NEXT")}
+                </FrontEndTypo.Primarybutton>
+
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("SAVE_AND_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
             )}
           </Form>
+        ) : (
+          <NotFound goBack={(e) => navigate(-1)} />
         )}
       </Box>
       <Modal
