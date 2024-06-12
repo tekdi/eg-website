@@ -39,7 +39,7 @@ export default function AddEditForm() {
     const result = await enumRegistryService.listOfEnum();
     let newSchema = { ...Schema };
 
-    if (event.id) {
+    if (event && event.id) {
       newSchema = {
         ...newSchema,
         required: [...newSchema.required, "id"],
@@ -85,7 +85,7 @@ export default function AddEditForm() {
     const newData = data.formData;
     let result;
     try {
-      if (event.id) {
+      if (event && event.id) {
         result = await eventService.updateEventDoId({
           data: data.formData,
           id: data.formData.id,
@@ -137,7 +137,7 @@ export default function AddEditForm() {
                     textOverflow="ellipsis"
                     bold
                   >
-                    {event.id ? t("EDIT") : t("CREATE")}
+                    {event && event.id ? t("EDIT") : t("CREATE")}
                   </AdminTypo.H4>
                 ),
               },
