@@ -546,50 +546,39 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     _icon={{ size: "64px" }}
                   />
                 )}
-
-                <VStack>
-                  {benificiary?.program_beneficiaries?.status !==
-                  "enrolled_ip_verified" ? (
-                    <FrontEndTypo.H3
-                      fontWeight={"600"}
-                      color="textGreyColor.750"
-                    >
-                      {benificiary?.first_name}
-                      {benificiary?.middle_name &&
-                        benificiary?.middle_name !== "null" &&
-                        ` ${benificiary.middle_name}`}
-                      {benificiary?.last_name &&
-                        benificiary?.last_name !== "null" &&
-                        ` ${benificiary?.last_name}`}
-                    </FrontEndTypo.H3>
-                  ) : (
-                    <FrontEndTypo.H3
-                      fontWeight={"600"}
-                      color="textGreyColor.750"
-                    >
-                      {
-                        benificiary?.program_beneficiaries
-                          ?.enrollment_first_name
-                      }
-                      {benificiary?.program_beneficiaries
-                        ?.enrollment_middle_name &&
-                        benificiary?.program_beneficiaries
-                          ?.enrollment_middle_name !== "null" &&
-                        ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
-                      {benificiary?.program_beneficiaries
-                        ?.enrollment_last_name &&
-                        benificiary?.program_beneficiaries
-                          ?.enrollment_last_name !== "null" &&
-                        ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
-                    </FrontEndTypo.H3>
-                  )}
-                  <Clipboard text={benificiary?.id}>
-                    <FrontEndTypo.H3 color="textGreyColor.750">
-                      {benificiary?.id}
-                    </FrontEndTypo.H3>
-                  </Clipboard>
-                </VStack>
               </HStack>
+              {![
+                "enrolled_ip_verified",
+                "registered_in_camp",
+                "ineligible_for_pragati_camp",
+                "10th_passed",
+                "pragati_syc",
+              ].includes(benificiary?.program_beneficiaries?.status) ? (
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {benificiary?.first_name}
+                  {benificiary?.middle_name &&
+                    benificiary?.middle_name !== "null" &&
+                    ` ${benificiary.middle_name}`}
+                  {benificiary?.last_name &&
+                    benificiary?.last_name !== "null" &&
+                    ` ${benificiary?.last_name}`}
+                </FrontEndTypo.H2>
+              ) : (
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {benificiary?.program_beneficiaries?.enrollment_first_name}
+                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
+                    benificiary?.program_beneficiaries
+                      ?.enrollment_middle_name !== "null" &&
+                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
+                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
+                    benificiary?.program_beneficiaries?.enrollment_last_name !==
+                      "null" &&
+                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                </FrontEndTypo.H2>
+              )}
+              <Clipboard text={benificiary?.id}>
+                <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
+              </Clipboard>
               <ChipStatus
                 width="fit-content"
                 status={benificiary?.program_beneficiaries?.status}
