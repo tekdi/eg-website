@@ -1,29 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AdminTypo,
   PoAdminLayout,
   CardComponent,
   IconByName,
   Breadcrumb,
+  eventService,
 } from "@shiksha/common-lib";
 import { HStack, Menu, Stack, VStack } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function View() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const location = useLocation();
-  const [event, setEvent] = useState(location.state?.eventData || undefined);
+  const [doId, setDoId] = useState();
 
   const navigate = useNavigate();
 
+  useEffect(async () => {
+    const data = await eventService.getOneDoIdDetails({ id });
+    setDoId(data?.data);
+  }, []);
+
   const handleEditButton = () => {
     const step = "edit";
-    navigate(`/poadmin/do-ids/${id}/edit`, {
-      state: { eventData: event },
-    });
+    navigate(`/poadmin/do-ids/${id}/edit`);
   };
   return (
     <PoAdminLayout>
@@ -60,7 +63,7 @@ function View() {
             buttonText={<AdminTypo.H5>{t("EDIT")}</AdminTypo.H5>}
             onButtonClick={handleEditButton}
             item={{
-              ...event,
+              ...doId,
             }}
             title={t("BASIC_DETAILS")}
             label={["ID", "DO_ID", "EVENT_TYPE", "STATUS"]}

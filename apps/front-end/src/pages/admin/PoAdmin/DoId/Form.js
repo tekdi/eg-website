@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -30,16 +30,17 @@ export default function AddEditForm() {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
   const { id } = useParams();
-  const location = useLocation();
   const [schema, setSchema] = useState(Schema);
   const [formData, setFormData] = useState({});
-  const [event, setEvent] = useState(location.state?.eventData || undefined);
+  const [doId, setDoId] = useState();
 
   useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     let newSchema = { ...Schema };
 
-    if (event && event.id) {
+    if (id) {
+      const data = await eventService.getOneDoIdDetails({ id });
+      setDoId(data?.data);
       newSchema = {
         ...newSchema,
         required: [...newSchema.required, "id"],
@@ -54,7 +55,7 @@ export default function AddEditForm() {
         },
       };
       setFormData({
-        ...event,
+        ...data?.data,
       });
     }
 
@@ -85,7 +86,7 @@ export default function AddEditForm() {
     const newData = data.formData;
     let result;
     try {
-      if (event && event.id) {
+      if (id) {
         result = await eventService.updateEventDoId({
           data: data.formData,
           id: data.formData.id,
@@ -137,7 +138,7 @@ export default function AddEditForm() {
                     textOverflow="ellipsis"
                     bold
                   >
-                    {event && event.id ? t("EDIT") : t("CREATE")}
+                    {id ? t("EDIT") : t("CREATE")}
                   </AdminTypo.H4>
                 ),
               },

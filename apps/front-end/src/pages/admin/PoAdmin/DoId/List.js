@@ -137,9 +137,7 @@ export default function List() {
 
   const handleRowClick = useCallback(
     (row) => {
-      navigate(`/poadmin/do-ids/${row?.id}`, {
-        state: { eventData: row },
-      });
+      navigate(`/poadmin/do-ids/${row?.id}`);
     },
     [navigate]
   );
