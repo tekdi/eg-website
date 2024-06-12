@@ -524,7 +524,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
       ) : (
         <VStack paddingBottom="64px">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-            <VStack pt="20px">
+            <VStack alignItems="Center" pt="20px">
               <FrontEndTypo.H1 mb="4" fontWeight="600">
                 {t("LEARNER_PROFILE")}
               </FrontEndTypo.H1>
@@ -534,16 +534,16 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     source={{
                       document_id: benificiary?.profile_photo_1?.id,
                     }}
-                    alt="Beneficiary Profile Photo"
-                    width={"64px"}
-                    height={"64px"}
+                    // alt="Alternate Text"
+                    width={"190px"}
+                    height={"190px"}
                   />
                 ) : (
                   <IconByName
                     isDisabled
                     name="AccountCircleLineIcon"
                     color="gray.300"
-                    _icon={{ size: "64px" }}
+                    _icon={{ size: "190px" }}
                   />
                 )}
               </HStack>
