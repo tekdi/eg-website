@@ -21,15 +21,18 @@ import {
   templates,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { getLanguage } from "v2/utils/Helper/JSHelper";
+import { useNavigate } from "react-router-dom";
 
 const PcAdd = ({ footerLinks }) => {
   const [lang] = useState(getLanguage());
   const { t } = useTranslation();
   const formRef = useRef();
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(true);
   const [schema, setSchema] = useState({});
   const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +45,7 @@ const PcAdd = ({ footerLinks }) => {
         value: "state_name",
       });
       setSchema(newSchema);
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -171,16 +175,23 @@ const PcAdd = ({ footerLinks }) => {
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     const payload = getPayload(newFormData);
-    await cohortService.registerPC(payload);
+    const result = await cohortService.registerPC(payload);
+    console.log(result?.success);
+    if (result?.success) {
+      navigate("/admin/pc");
+    } else {
+      setError(result?.message);
+    }
   };
 
   const getPayload = (newFormData) => {
     const nameParts = newFormData?.first_name.split(" ");
+    console.log({ nameParts });
     let firstName, middleName, lastName;
     if (nameParts.length) {
       firstName = nameParts[0];
-      middleName = nameParts[1];
-      lastName = nameParts[2];
+      middleName = nameParts[2] ? nameParts[1] : "";
+      lastName = nameParts[2] || nameParts[1];
     }
     const payload = {
       first_name: firstName,
@@ -261,7 +272,7 @@ const PcAdd = ({ footerLinks }) => {
               <IconByName isDisabled name="Home4LineIcon" />
               <AdminTypo.H4
                 onPress={() => {
-                  navigate("/admin");
+                  navigate("/admin/pc");
                 }}
               >
                 {t("ALL_PRAGATI_COORDINATOR")}
@@ -294,6 +305,14 @@ const PcAdd = ({ footerLinks }) => {
             transformErrors,
           }}
         >
+          {error && (
+            <AdminTypo.H4
+              color="textMaroonColor.400"
+              style={{ display: "block", marginTop: "10px" }}
+            >
+              {t(error)}
+            </AdminTypo.H4>
+          )}
           <HStack space={4} alignItems={"center"} justifyContent={"center"}>
             <FrontEndTypo.Secondarybutton
               isLoading={loading}

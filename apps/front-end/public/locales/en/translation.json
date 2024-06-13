@@ -1891,5 +1891,11 @@
   "EPCP_REPORT": "EPCP",
   "ALL_PRAGATI_COORDINATOR": "All Pragati Coordinators",
   "SEARCH_BY_PC_NAME": "Search by PC Name",
-  "ASSIGNED_PRERAK_LIST": "Assigned Preraks List"
+  "ASSIGNED_PRERAK_LIST": "Assigned Preraks List",
+  "COORDINATORS_NAME": "Coordinator’s Name",
+  "ASSIGN_PRERAKS": "Assign Preraks",
+  "CREATE_A_PRAGATI_COORDINATOR": "Create a Pragati Coordinator",
+  "ADD_PC": "Add Pc",
+  "PC_LIST": "PC list",
+  "VIEW_DAILY_ACTVITIES": "View Daily Actvities"
 }

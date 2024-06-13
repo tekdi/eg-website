@@ -1,14 +1,15 @@
 export const schema1 = {
   type: "object",
-  // required: [
-  //   "first_name",
-  //   "mobile",
-  //   "email_id",
-  //   "state",
-  //   "district",
-  //   "block",
-  //   "village",
-  // ],
+  required: [
+    "first_name",
+    "mobile",
+    "email_id",
+    "state",
+    "district",
+    "block",
+    "village",
+    "address",
+  ],
   properties: {
     first_name: {
       type: "string",

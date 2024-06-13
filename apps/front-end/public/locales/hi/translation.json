@@ -1892,5 +1892,10 @@
   "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
   "PCR_LEARNING_ACTIVITIES": "नीव सीखने की गतिविधियाँ",
   "CAMP_EXECUTION": "शिविर संचालन",
-  "EPCP_REPORT": "EPCP"
+  "EPCP_REPORT": "EPCP",
+  "COORDINATORS_NAME": "संयोजक का नाम",
+  "ASSIGN_PRERAKS": "प्रेरक नियुक्त करें",
+  "CREATE_A_PRAGATI_COORDINATOR": "प्रगति समन्वयक बनाएँ",
+  "ADD_PC": "पीसी जोड़ें",
+  "PC_LIST": "पीसी सूची"
 }
