@@ -155,7 +155,7 @@ const CustomAccordion = ({ data, date, board, setFilter }) => {
       matchedPayload,
       date
     );
-
+    console.log("");
     const hasBlankStatus = finalPayload.some((item) => item.status === "");
 
     if (hasBlankStatus) {
