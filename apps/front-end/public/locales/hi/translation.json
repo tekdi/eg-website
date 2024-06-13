@@ -1908,5 +1908,6 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC शिक्षार्थी - SYC परीक्षा पहले ही हो चुकी",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "प्रेगनेंसी का समय है / बच्चा बहुत छोटा है",
   "ADMIT_CARD_NOT_FOUND": "एडमिट कार्ड नहीं मिला",
-  "OTHERS": "अन्य"
+  "OTHERS": "अन्य",
+  "SELECT_ABSENT_REASON": "अनुपस्थित कारण चुनें"
 }
