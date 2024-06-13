@@ -4,13 +4,12 @@ import {
   PoAdminLayout,
   eventService,
 } from "@shiksha/common-lib";
-import { Button, HStack, Input, Select, VStack, Menu } from "native-base";
+import { Button, HStack, Input, VStack, Menu } from "native-base";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { logDOM } from "@testing-library/react";
 
 export const CustomStyles = {
   rows: {
@@ -326,28 +325,7 @@ export default function List() {
             <Menu.Item onPress={(e) => navigate("/poadmin/address/create")}>
               {t("ADD_NEW_ADDRESS")}
             </Menu.Item>
-            {/* <Menu.Item onPress={(e) => navigate("/poadmin/ips/exist/create")}>
-                {t("EXISTING_IP_USER")}
-              </Menu.Item> */}
           </Menu>
-          {/* <Select
-            minH="40px"
-            maxH="40px"
-            selectedValue={`${filter?.program_id}`}
-            minWidth="200"
-            accessibilityLabel="Choose Service"
-            placeholder={t("SELECT")}
-            mt={1}
-            onValueChange={handleProgramChange}
-          >
-            {programList?.map((item) => (
-              <Select.Item
-                key={item?.id}
-                label={item?.state?.state_name}
-                value={`${item?.id}`}
-              />
-            ))}
-          </Select> */}
         </HStack>
         <DataTable
           customStyles={{
