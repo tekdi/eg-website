@@ -1897,5 +1897,8 @@
   "ASSIGN_PRERAKS": "प्रेरक नियुक्त करें",
   "CREATE_A_PRAGATI_COORDINATOR": "प्रगति समन्वयक बनाएँ",
   "ADD_PC": "पीसी जोड़ें",
-  "PC_LIST": "पीसी सूची"
+  "PC_LIST": "पीसी सूची",
+  "ADD_PRERAK": "प्रेरक जोड़ें",
+  "REMOVE_PRERAK": "प्रेरक हटाएँ",
+  "PRERAK_ASSIGNED": "प्रेरक को नियुक्त किया गया"
 }

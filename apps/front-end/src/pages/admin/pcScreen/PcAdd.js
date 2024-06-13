@@ -176,7 +176,6 @@ const PcAdd = ({ footerLinks }) => {
     let newFormData = data.formData;
     const payload = getPayload(newFormData);
     const result = await cohortService.registerPC(payload);
-    console.log(result?.success);
     if (result?.success) {
       navigate("/admin/pc");
     } else {
@@ -186,7 +185,6 @@ const PcAdd = ({ footerLinks }) => {
 
   const getPayload = (newFormData) => {
     const nameParts = newFormData?.first_name.split(" ");
-    console.log({ nameParts });
     let firstName, middleName, lastName;
     if (nameParts.length) {
       firstName = nameParts[0];

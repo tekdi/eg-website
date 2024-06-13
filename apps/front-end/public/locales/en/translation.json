@@ -1897,5 +1897,8 @@
   "CREATE_A_PRAGATI_COORDINATOR": "Create a Pragati Coordinator",
   "ADD_PC": "Add Pc",
   "PC_LIST": "PC list",
-  "VIEW_DAILY_ACTVITIES": "View Daily Actvities"
+  "VIEW_DAILY_ACTVITIES": "View Daily Actvities",
+  "ADD_PRERAK": "Add Prerak",
+  "REMOVE_PRERAK": "Remove Prerak",
+  "PRERAK_ASSIGNED": "Prerak Assigned"
 }

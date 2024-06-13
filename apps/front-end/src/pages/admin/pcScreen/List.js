@@ -183,10 +183,9 @@ export default function List({ footerLinks, userTokenInfo }) {
           ...filter,
           limit: filter?.limit || 10,
         });
-        console.log({ result });
         setData(result.data);
 
-        setPaginationTotalRows(result?.data?.totalCount || 0);
+        setPaginationTotalRows(result?.data?.total_count || 0);
 
         setTableLoading(false);
       }

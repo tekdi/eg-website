@@ -18,6 +18,7 @@ function View() {
   const { t } = useTranslation();
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
+  const [assignPrerak, setassignPrerak] = useState();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -303,10 +304,10 @@ function View() {
             </HStack>
           </VStack>
           <HStack flex="0.5" justifyContent="center">
-            {data?.profile_photo_1?.name ? (
+            {pcData?.profile_photo_1?.name ? (
               <ImageView
                 source={{
-                  uri: data?.profile_photo_1?.name,
+                  uri: pcData?.profile_photo_1?.name,
                 }}
                 alt="profile photo"
                 width={"180px"}
@@ -337,6 +338,7 @@ function View() {
               }, ${pcData?.village ?? ""}${
                 pcData?.address ? `, ${pcData?.address}` : ""
               }`,
+              prerak_assigned: assignPrerak,
             }}
             title={t("BASIC_DETAILS")}
             label={[
@@ -358,7 +360,7 @@ function View() {
           />
         </HStack>
 
-        <AssignedList setPcData={setPcData} />
+        <AssignedList setPcData={setPcData} setassignPrerak={setassignPrerak} />
       </VStack>
     </AdminLayout>
   );

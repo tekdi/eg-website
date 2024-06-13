@@ -36,7 +36,7 @@ import { MultiCheck } from "../../../component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-const AssignedList = ({ assignedData, setPcData }) => {
+const AssignedList = ({ setPcData, setassignPrerak }) => {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
   const { id } = useParams();
@@ -165,10 +165,11 @@ const AssignedList = ({ assignedData, setPcData }) => {
     });
 
     setPaginationTotalRows(
-      Apidata?.data?.totalCount ? Apidata?.data?.totalCount : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
     );
     setData(Apidata?.data?.facilitators);
     setPcData(Apidata?.data?.users?.[0]);
+    setassignPrerak(Apidata?.data?.preraks_assigned);
   };
 
   const fetchPrerakList = async () => {
@@ -176,9 +177,8 @@ const AssignedList = ({ assignedData, setPcData }) => {
       id: id,
       ...filter,
     });
-    console.log({ Apidata });
     setPaginationTotalRows(
-      Apidata?.data?.totalCount ? Apidata?.data?.totalCount : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
     );
     setData(Apidata?.data?.program_facilitator_data);
   };
@@ -212,7 +212,6 @@ const AssignedList = ({ assignedData, setPcData }) => {
   };
 
   const AddRemovePrerak = async (action) => {
-    console.log({ selectedRows });
     const userIds = selectedRows.map(
       (item) => item.user_id || item.facilitator_id
     );
@@ -225,8 +224,6 @@ const AssignedList = ({ assignedData, setPcData }) => {
     if (Apidata?.data) {
       navigate("/admin/pc");
     }
-
-    console.log({ Apidata });
   };
 
   const handleAddPrerak = async () => {
@@ -253,7 +250,6 @@ const AssignedList = ({ assignedData, setPcData }) => {
   };
 
   const handleCancel = () => {
-    setData(assignedData);
     setIsSelectable(false);
     setSelectedRows([]);
     setAddPrerakCount(0);
@@ -313,7 +309,6 @@ const AssignedList = ({ assignedData, setPcData }) => {
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
-    console.log({ e, id, newData });
     setFormData(data);
     if (id === "root_district") {
       setFilter({ ...filter, district: data?.district });
@@ -336,7 +331,7 @@ const AssignedList = ({ assignedData, setPcData }) => {
     <Stack backgroundColor={"identifiedColor"} alignContent={"center"}>
       <HStack alignItems={"center"} p={4} justifyContent={"space-between"}>
         <AdminTypo.H6 bold color={"textGreyColor.500"}>
-          {t("ASSIGNED_PRERAK_LIST")}
+          {isAddingPrerak ? t("PRERAK_LIST") : t("ASSIGNED_PRERAK_LIST")}
         </AdminTypo.H6>
         <HStack space={4} alignItems={"center"} justifyContent={"center"}>
           <Input
