@@ -8,6 +8,8 @@ import {
   campService,
   enumRegistryService,
   benificiaryRegistoryService,
+  TitleCard,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -73,13 +75,13 @@ export default function List({ userTokenInfo }) {
       <VStack p="4" space="5">
         {campList?.camps?.length < 2 && (
           <VStack
-            bg="boxBackgroundColour.200"
+            // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
             borderRadius="10px"
             borderWidth="1px"
             padding="4"
             shadow="AlertShadow"
-            background={"bgYellowColor.400"}
+            // background={"bgYellowColor.400"}
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
               ipStatus
@@ -138,16 +140,17 @@ export default function List({ userTokenInfo }) {
                     {campList?.pcr_camp?.map((item, i) => {
                       const index = i + 1;
                       return (
-                        <Pressable
-                          key={item}
+                        <TitleCard
+                          _icon=""
+                          icon={
+                            <IconByName
+                              _icon={{ color: "white" }}
+                              name="Book2LineIcon"
+                            />
+                          }
                           onPress={() => {
                             setCampSelected(item);
                           }}
-                          bg="boxBackgroundColour.100"
-                          shadow="AlertShadow"
-                          borderRadius="10px"
-                          py={3}
-                          px={5}
                         >
                           <HStack
                             alignItems={"center"}
@@ -202,7 +205,7 @@ export default function List({ userTokenInfo }) {
                               />
                             </HStack>
                           </HStack>
-                        </Pressable>
+                        </TitleCard>
                       );
                     })}
                     {campCount >= 0 && campCount < 2 && (
@@ -218,13 +221,7 @@ export default function List({ userTokenInfo }) {
                         </FrontEndTypo.H3>
                       </FrontEndTypo.Secondarybutton>
                     )}
-
-                    <Alert status="warning" alignItems={"start"} width={"100%"}>
-                      <HStack alignItems="center" space="2" color>
-                        <Alert.Icon />
-                        <BodyMedium>{t("CAMP_WARNING")}</BodyMedium>
-                      </HStack>
-                    </Alert>
+                    <CustomAlert title={t("CAMP_WARNING")} status={"info"} />
                   </VStack>
                 ) : (
                   <Alert status="warning" alignItems={"start"} width={"100%"}>
