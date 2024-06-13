@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HStack, VStack, Text, Pressable, Modal } from "native-base";
+import { HStack, VStack, Text, Pressable, Modal, Radio } from "native-base";
 import {
   IconByName,
   FrontEndTypo,
@@ -25,6 +25,22 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   const [isDisable, setIsDisable] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [accessData, SetAccessData] = useState(false);
+  const [AbsentModal, setAbsentModal] = useState();
+  const [selectedReason, setSelectedReason] = useState("");
+
+  const absentReasonsList = [
+    "LEARNER_DEATH",
+    "LEARNER_MIGRATION",
+    "SUDDEN_INCIDENT",
+    "FORM_REJECTED",
+    "LEARNER_IS_SICK",
+    "TRAVEL_RELATED_PROBLEM_NO_MEANS_OR_FARE",
+    "FEAR_OF_EXAMS",
+    "SYC_LEARNER_SYC_EXAM_ALREADY_DONE",
+    "PREGNANCY_THE_BABY_IS_VERY_SMALL",
+    "ADMIT_CARD_NOT_FOUND",
+    "OTHERS",
+  ];
 
   const compareDates = (date1, date2) => {
     const parsedDate1 = new Date(date1);
@@ -145,14 +161,21 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   };
 
   const markAttendance = async (user, event_id, attendance) => {
-    setIsDisable(false);
-    const AttendaceData = await StoreAttendanceToIndexDB(
-      user,
-      event_id,
-      attendance
-    );
-    const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
-    setLearnerAttendance(mergedPayload);
+    if (attendance === "absent" && !selectedReason) {
+      setAbsentModal({ user, event_id, attendance });
+    } else {
+      setIsDisable(false);
+      const AttendaceData = await StoreAttendanceToIndexDB(
+        user,
+        event_id,
+        attendance,
+        attendance === "absent" && selectedReason
+      );
+      const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
+      setLearnerAttendance(mergedPayload);
+      setAbsentModal();
+      setSelectedReason("");
+    }
   };
 
   const SaveAttendance = async (event_id) => {
@@ -409,6 +432,64 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
               >
                 {t("NO")}
               </FrontEndTypo.Secondarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal isOpen={AbsentModal} size="lg">
+        <Modal.Content>
+          <Modal.Header alignItems={"center"}>
+            {t("SELECT_ABSENT_REASON")}
+          </Modal.Header>
+          <Modal.Body p="5">
+            <VStack space="4">
+              <Radio.Group
+                name="myRadioGroup"
+                accessibilityLabel="favorite number"
+                value={selectedReason}
+                onChange={(nextValue) => {
+                  setSelectedReason(nextValue);
+                }}
+              >
+                {absentReasonsList?.map((item, index) => {
+                  return (
+                    <Radio my={2} value={item}>
+                      {t(item)}
+                    </Radio>
+                  );
+                })}
+              </Radio.Group>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <HStack
+              space={4}
+              width={"100%"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <FrontEndTypo.Secondarybutton
+                px="20px"
+                onPress={() => {
+                  setAbsentModal();
+                  setSelectedReason("");
+                }}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                px="20px"
+                isDisabled={!selectedReason}
+                onPress={() => {
+                  markAttendance(
+                    AbsentModal?.user,
+                    AbsentModal?.event_id,
+                    "absent"
+                  );
+                }}
+              >
+                {t("SAVE")}
+              </FrontEndTypo.Primarybutton>
             </HStack>
           </Modal.Footer>
         </Modal.Content>
