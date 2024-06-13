@@ -14,8 +14,9 @@ import {
 } from "v2/utils/SyncHelper/SyncHelper";
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
-const CustomAccordion = ({ data, date, board, setFilter }) => {
+const CustomAccordion = ({ data, date, board, maxDate }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [openAccordion, setOpenAccordion] = useState(null);
@@ -23,6 +24,7 @@ const CustomAccordion = ({ data, date, board, setFilter }) => {
   const [mainAttendance, setMainAttendance] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [accessData, SetAccessData] = useState(false);
 
   const compareDates = (date1, date2) => {
     const parsedDate1 = new Date(date1);
@@ -67,6 +69,15 @@ const CustomAccordion = ({ data, date, board, setFilter }) => {
         }
       }
 
+      const currentDateFormatted = moment().format("YYYY-MM-DD");
+      const maxDateDisable = moment(currentDateFormatted, "YYYY/MM/DD").isAfter(
+        maxDate
+      );
+      if (maxDateDisable) {
+        SetAccessData(true);
+      } else {
+        SetAccessData(false);
+      }
       if (
         isDate &&
         (stringIndexDatapayload == stringgetIndexData || !getIndexData)
@@ -268,6 +279,7 @@ const CustomAccordion = ({ data, date, board, setFilter }) => {
                                     space={4}
                                   >
                                     <Pressable
+                                      isDisabled={accessData}
                                       onPress={() =>
                                         markAttendance(
                                           user,
@@ -293,6 +305,7 @@ const CustomAccordion = ({ data, date, board, setFilter }) => {
                                       </VStack>
                                     </Pressable>
                                     <Pressable
+                                      isDisabled={accessData}
                                       onPress={() =>
                                         markAttendance(
                                           user,
