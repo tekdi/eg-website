@@ -88,8 +88,8 @@ export default function AddEditForm() {
     try {
       if (id) {
         result = await eventService.updateEventDoId({
-          data: data.formData,
-          id: data.formData.id,
+          data: newData,
+          id: newData.id,
         });
       } else {
         result = await eventService.createDoId(newData);
@@ -108,7 +108,7 @@ export default function AddEditForm() {
   };
 
   if (!schema) {
-    return <div>Loading...</div>; // Or any loading indicator
+    return <div>Loading form data, please wait...</div>;
   }
 
   return (

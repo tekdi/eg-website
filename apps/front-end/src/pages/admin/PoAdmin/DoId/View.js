@@ -20,12 +20,15 @@ function View() {
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const data = await eventService.getOneDoIdDetails({ id });
-    setDoId(data?.data);
+    try {
+      const data = await eventService.getOneDoIdDetails({ id });
+      setDoId(data?.data);
+    } catch (error) {
+      console.error("Failed to fetch doId details:", error);
+    }
   }, []);
 
   const handleEditButton = () => {
-    const step = "edit";
     navigate(`/poadmin/do-ids/${id}/edit`);
   };
   return (
