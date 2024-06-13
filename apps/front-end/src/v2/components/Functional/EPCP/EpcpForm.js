@@ -56,7 +56,7 @@ const EpcpForm = ({ footerLinks }) => {
     } ${t("EPCP.TITLE")}`,
     properties: {
       HAS_LOGGED_RSOS_APP: {
-        label: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
+        description: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
         type: "string",
         direction: "row",
         format: "RadioBtn",
@@ -77,7 +77,7 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             TOOK_EPCP_EXAM_ON_RSOS_APP: {
-              label: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
+              description: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
@@ -99,7 +99,7 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             HAS_LOGGED_RSOS_APP_NO_REASONS: {
-              label: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
+              description: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",
               direction: "column",
@@ -126,7 +126,7 @@ const EpcpForm = ({ footerLinks }) => {
           properties: {
             TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: {
               format: "RadioBtn",
-              label: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
+              description: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               direction: "column",
               enum: sortEnums(
