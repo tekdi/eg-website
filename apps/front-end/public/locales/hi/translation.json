@@ -32,6 +32,7 @@
   "AADHAR_SHOULD_12_DIGIT": "अपने आधार कार्ड पर अंकित 12 अंकों का नंबर दर्ज करें",
   "AADHAR_UPLOAD_CLEAR": "हटाए और नया अपलोड करे",
   "AADHAR_UPLOAD_KYC": "आधार फोटो OKYC",
+  "ADD_MEMBER": "सदस्य जोड़ें",
   "ABSENT": "अनुपस्थित",
   "ACADEMIC_YEAR": "शैक्षणिक वर्ष",
   "ACCEPT": "स्वीकार करना",
@@ -1892,6 +1893,7 @@
   "SCHOLARSHIP": "स्कॉलरशिप",
   "JOBS": "नौकरियाँ और इंटर्नशिप",
   "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
+  "UPLOAD_FROM_PHONE": "फ़ोन से अपलोड करें",
   "PCR_LEARNING_ACTIVITIES": "नीव सीखने की गतिविधियाँ",
   "CAMP_EXECUTION": "शिविर संचालन",
   "EPCP_REPORT": "EPCP"

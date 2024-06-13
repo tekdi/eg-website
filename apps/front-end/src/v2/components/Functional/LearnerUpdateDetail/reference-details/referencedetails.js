@@ -292,15 +292,18 @@ export default function ReferenceDetails({ ip }) {
               transformErrors,
             }}
           >
-            <FrontEndTypo.Primarybutton
-              isLoading={isButtonLoading}
-              mt="3"
-              variant={"primary"}
-              type="submit"
-              onPress={() => formRef?.current?.submit()}
-            >
-              {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-            </FrontEndTypo.Primarybutton>
+            <Box display={"flex"} alignItems={"center"}>
+              <FrontEndTypo.Primarybutton
+                isLoading={isButtonLoading}
+                minW="60%"
+                mt="3"
+                variant={"primary"}
+                type="submit"
+                onPress={() => formRef?.current?.submit()}
+              >
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+              </FrontEndTypo.Primarybutton>
+            </Box>
           </Form>
         ) : (
           <React.Fragment />

@@ -3,7 +3,8 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "ADDRESS",
+      title: "ADDRESS_DETAILS",
+      description: "ADDRESS",
       type: "object",
       required: ["state", "district", "block", "village", "grampanchayat"],
       properties: {

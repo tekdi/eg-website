@@ -1,44 +1,51 @@
-import React from "react";
-import { HStack, VStack, Box, Progress } from "native-base";
 import {
-  arrList,
-  IconByName,
+  CardComponent,
   FrontEndTypo,
-  benificiaryRegistoryService,
-  Layout,
-  enumRegistryService,
   GetEnumValue,
+  Layout,
+  arrList,
+  benificiaryRegistoryService,
+  enumRegistryService,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  getSelectedProgramId,
   getUniqueArray,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
-import Chip from "component/Chip";
+import { Text, VStack } from "native-base";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 const GetOptions = ({ array, enumType, enumApiData }) => {
   const { t } = useTranslation();
   return (
     <VStack>
       {getUniqueArray(array)?.map((item, index) => (
-        <Chip
-          textAlign="center"
-          lineHeight="14px"
-          bg="gray.100"
-          label={
-            <GetEnumValue
-              fontSize="14px"
-              key={index}
-              t={t}
-              enumOptionValue={item}
-              {...{ enumType, enumApiData }}
-            />
-          }
-        />
+        <Text
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="24px"
+          color={"inputValueColor"}
+        >
+          <GetEnumValue
+            fontSize="14px"
+            key={index}
+            t={t}
+            enumOptionValue={item}
+            {...{ enumType, enumApiData }}
+          />
+        </Text>
       ))}
     </VStack>
   );
 };
 
-export default function BenificiaryEducation() {
+export default function BenificiaryEducation(userTokenInfo) {
   const params = useParams();
   const [benificiary, setbenificiary] = React.useState();
   const [userId, setUserId] = React.useState(params?.id);
@@ -46,6 +53,25 @@ export default function BenificiaryEducation() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [requestData, setRequestData] = React.useState([]);
+
+  // PROFILE DATA IMPORTS
+  const [facilitator, setFacilitator] = useState({ notLoaded: true });
+  const fa_id = localStorage.getItem("id");
+  const [loading, setLoading] = useState(true);
+  const [countLoad, setCountLoad] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [academicYear, setAcademicYear] = useState(null);
+  const [academicData, setAcademicData] = useState([]);
+  const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
 
   React.useEffect(() => {
     benificiaryDetails();
@@ -84,6 +110,245 @@ export default function BenificiaryEducation() {
       requestData.includes("learning_level")
     );
   };
+
+  const saveDataToIndexedDB = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    try {
+      const [ListOfEnum, qualification, editRequest] = await Promise.all([
+        enumRegistryService.listOfEnum(),
+        enumRegistryService.getQualificationAll(),
+        facilitatorRegistryService.getEditRequests(obj),
+        // enumRegistryService.userInfo(),
+      ]);
+      const currentTime = moment().toString();
+      await Promise.all([
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("qualification", qualification),
+        setIndexedDBItem("lastFetchTime", currentTime),
+        setIndexedDBItem("editRequest", editRequest),
+      ]);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operation
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        //get user info
+        if (userTokenInfo) {
+          const IpUserInfo = await getIpUserInfo(fa_id);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        try {
+          const c_data =
+            await facilitatorRegistryService.getPrerakCertificateDetails({
+              id: fa_id,
+            });
+          const data =
+            c_data?.data?.filter(
+              (eventItem) =>
+                eventItem?.params?.do_id?.length &&
+                eventItem?.lms_test_tracking?.length < 1
+            )?.[0] || {};
+          if (data) {
+            setIsTodayAttendace(
+              data?.attendances.filter(
+                (attendance) =>
+                  attendance.user_id == fa_id &&
+                  attendance.status == "present" &&
+                  data.end_date ==
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
+            );
+
+            setCertificateData(data);
+            if (data?.lms_test_tracking?.length > 0) {
+              setLmsDetails(data?.lms_test_tracking?.[0]);
+            }
+            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+            const format = "HH:mm:ss";
+            const time = moment(moment().format(format), format);
+            const beforeTime = moment.utc(data?.start_time, format).local();
+            const afterTime = moment.utc(data?.end_time, format).local();
+            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+              setIsEventActive(true);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchdata();
+  }, [selectedCohortData]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
+        });
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
+      }
+    }
+    fetchData();
+  }, [academicYear]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const res = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...res,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            [
+              "device_ownership",
+              "mobile",
+              "device_type",
+              "gender",
+              "marital_status",
+              "social_category",
+              "name",
+              "contact_number",
+              "availability",
+              "aadhar_no",
+              "aadhaar_verification_mode",
+              "aadhar_verified",
+              "qualification_ids",
+              "qua_name",
+            ]
+          )
+        );
+        //check exist user registered
+        try {
+          let onboardingURLData = await getOnboardingURLData();
+          setCohortData(onboardingURLData?.cohortData);
+          setProgramData(onboardingURLData?.programData);
+          //get program id and store in localstorage
+
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          setSelectedProgramData(program_data[0]);
+          await setSelectedProgramId(program_data[0]);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no != null &&
+            mobile_no_onboarding != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            localStorage.setItem("loadCohort", "yes");
+            setIsUserRegisterExist(true);
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {}
+      }
+    }
+    fetchData();
+  }, [facilitator]);
+
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+        await checkDataToIndex();
+        await checkUserToIndex();
+      } else {
+        setSelectCohortForm(true);
+      }
+    }
+  };
+  const checkDataToIndex = async () => {
+    // Online Data Fetch Time Interval
+    const timeInterval = 30;
+    const enums = await getIndexedDBItem("enums");
+    const qualification = await getIndexedDBItem("qualification");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const editRequest = await getIndexedDBItem("editRequest");
+    let timeExpired = false;
+    if (lastFetchTime) {
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= timeInterval) {
+        timeExpired = true;
+      }
+    }
+    if (
+      isOnline &&
+      (!enums ||
+        !qualification ||
+        !editRequest ||
+        timeExpired ||
+        !lastFetchTime ||
+        editRequest?.status === 400)
+    ) {
+      await saveDataToIndexedDB();
+    }
+  };
+
   return (
     <Layout
       _appBar={{
@@ -92,439 +357,256 @@ export default function BenificiaryEducation() {
         onPressBackButton: (e) => {
           navigate(`/beneficiary/profile/${userId}`);
         },
+        profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
       }}
+      facilitator={facilitator}
       analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("EDUCATION_DETAILS")}
     >
-      <VStack bg="bgGreyColor.200">
-        <VStack px="5" pt="3">
-          <VStack
-            px="5"
-            py="4"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack
-              space={2}
-              justifyContent={"space-between"}
-              alignItems="Center"
-            >
-              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
-                {t("EDUCATION_DETAILS")}
-              </FrontEndTypo.H3>
-              {isEducationalDetailsEdit() && (
-                <IconByName
-                  name="EditBoxLineIcon"
-                  _icon={{ size: "20" }}
-                  color="iconColor.100"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/edit/${userId}/education`);
-                  }}
-                />
-              )}
-            </HStack>
-            <Box paddingTop="2">
-              <Progress
-                value={arrList(benificiary?.core_beneficiaries, [
-                  "last_standard_of_education",
-                  "last_standard_of_education_year",
-                  "previous_school_type",
-                  "reason_of_leaving_education",
-                ])}
-                size="xs"
-                colorScheme="textMaroonColor"
-              />
-            </Box>
-            <VStack space="2" paddingTop="5">
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("TYPE_OF_LEARNER")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {/* {benificiary?.core_beneficiaries?.last_standard_of_education
-                    ? benificiary?.core_beneficiaries
-                        ?.last_standard_of_education
-                    : "-"} */}
-                  {benificiary?.core_beneficiaries?.type_of_learner ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"TYPE_OF_LEARNER"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries?.type_of_learner
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-              {["school_dropout", "already_enrolled_in_open_school"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
-              ) && (
-                <HStack
-                  space={2}
-                  alignItems="Center"
-                  borderBottomWidth="1px"
-                  borderBottomColor="appliedColor"
-                >
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="3"
-                    pb="2"
-                  >
-                    {t("LAST_STANDARD_OF_EDUCATION")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3
-                    color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="4"
-                  >
-                    {benificiary?.core_beneficiaries
-                      ?.last_standard_of_education ? (
-                      <GetEnumValue
-                        t={t}
-                        enumType={"LAST_STANDARD_OF_EDUCATION"}
-                        enumOptionValue={
-                          benificiary?.core_beneficiaries
-                            ?.last_standard_of_education
-                        }
-                        enumApiData={enumOptions}
-                      />
-                    ) : (
-                      "-"
-                    )}
-                  </FrontEndTypo.H3>
-                </HStack>
-              )}
-
-              {["school_dropout", "already_enrolled_in_open_school"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
-              ) && (
-                <HStack
-                  space={2}
-                  alignItems="Center"
-                  borderBottomWidth="1px"
-                  borderBottomColor="appliedColor"
-                >
-                  <FrontEndTypo.H3
-                    color="textGreyColor.50"
-                    fontWeight="400"
-                    flex="3"
-                    pb="2"
-                  >
-                    {t("LAST_YEAR_OF_EDUCATION")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3
-                    color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="4"
-                  >
-                    {benificiary?.core_beneficiaries
-                      ?.last_standard_of_education_year
-                      ? benificiary?.core_beneficiaries
-                          ?.last_standard_of_education_year
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-              )}
-
-              {[
+      <VStack bg="white" px="5" py="3">
+        <FrontEndTypo.H1 fontWeight="600" mb="3" mt="3">
+          {t("EDUCATION_DETAILS")}
+        </FrontEndTypo.H1>
+        <CardComponent
+          _vstack={{ space: 0 }}
+          _hstack={{ borderBottomWidth: 0 }}
+          title={t("EDUCATION_DETAILS")}
+          label={[
+            "TYPE_OF_LEARNER",
+            "REASON_FOR_LEAVING",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              [
                 "school_dropout",
                 "already_open_school_syc",
                 "already_enrolled_in_open_school",
-              ].includes(benificiary?.core_beneficiaries?.type_of_learner) && (
-                <HStack
-                  space={2}
-                  alignItems="Center"
-                  borderBottomWidth="1px"
-                  borderBottomColor="appliedColor"
-                >
-                  <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                    {t("PREVIOUS_SCHOOL_TYPE")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
-                    {benificiary?.core_beneficiaries?.previous_school_type ? (
-                      <GetEnumValue
-                        t={t}
-                        enumType={"PREVIOUS_SCHOOL_TYPE"}
-                        enumOptionValue={
-                          benificiary?.core_beneficiaries?.previous_school_type
-                        }
-                        enumApiData={enumOptions}
-                      />
-                    ) : (
-                      "-"
-                    )}
-                  </FrontEndTypo.H3>
-                </HStack>
-              )}
-
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-                paddingBottom={4}
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
-                  {t("REASON_FOR_LEAVING")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries
-                    ?.reason_of_leaving_education ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"REASON_OF_LEAVING_EDUCATION"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries
-                          ?.reason_of_leaving_education
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              {["already_open_school_syc"].includes(
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
+              "LAST_STANDARD_OF_EDUCATION",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              [
+                "school_dropout",
+                "already_open_school_syc",
+                "already_enrolled_in_open_school",
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
+              "LAST_YEAR_OF_EDUCATION",
+            "PREVIOUS_SCHOOL_TYPE",
+            "REASON_OF_LEAVING_EDUCATION",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              ["already_open_school_syc"].includes(
                 benificiary?.core_beneficiaries?.type_of_learner
-              ) && (
-                <HStack space={2} alignItems="Center">
-                  <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
-                    {t("REGISTERED_IN_TENTH_DATE")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3
-                    color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="4"
-                  >
-                    {benificiary?.core_beneficiaries?.education_10th_date
-                      ? benificiary?.core_beneficiaries?.education_10th_date
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-              )}
-
-              {["stream_2_mainstream_syc"].includes(
+              ) &&
+              "REGISTERED_IN_TENTH_DATE",
+            benificiary?.core_beneficiaries?.type_of_learner &&
+              ["already_open_school_syc"].includes(
                 benificiary?.core_beneficiaries?.type_of_learner
-              ) && (
-                <HStack space={2} alignItems="Center">
-                  <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
-                    {t("IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM")}
-                  </FrontEndTypo.H3>
-
-                  <FrontEndTypo.H3
-                    color="textGreyColor.800"
-                    fontWeight="400"
-                    flex="4"
-                  >
-                    {benificiary?.core_beneficiaries?.education_10th_exam_year
-                      ? benificiary?.core_beneficiaries
-                          ?.education_10th_exam_year
-                      : "-"}
-                  </FrontEndTypo.H3>
-                </HStack>
-              )}
-            </VStack>
-          </VStack>
-          <VStack
-            px="5"
-            py="4"
-            mb="3"
-            borderRadius="10px"
-            borderWidth="1px"
-            bg="white"
-            borderColor="appliedColor"
-          >
-            <HStack
-              space={2}
-              justifyContent={"space-between"}
-              alignItems="Center"
-            >
-              <FrontEndTypo.H3 fontWeight="700" bold color="textGreyColor.800">
-                {t("LEARNER_ASPIRATION")}
-              </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                _icon={{ size: "20" }}
-                color="iconColor.100"
-                onPress={(e) => {
-                  navigate(`/beneficiary/edit/${userId}/future-education`);
-                }}
+              ) &&
+              "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+          ].filter(Boolean)}
+          item={{
+            type_of_learner: benificiary?.core_beneficiaries
+              ?.type_of_learner ? (
+              <GetEnumValue
+                t={t}
+                enumType={"TYPE_OF_LEARNER"}
+                enumOptionValue={benificiary.core_beneficiaries.type_of_learner}
+                enumApiData={enumOptions}
               />
-            </HStack>
-            <Box paddingTop="2">
-              <Progress
-                value={arrList(benificiary?.core_beneficiaries, [
+            ) : (
+              "-"
+            ),
+
+            reason_of_leaving_education: benificiary?.core_beneficiaries
+              ?.reason_of_leaving_education ? (
+              <GetEnumValue
+                t={t}
+                enumType={"REASON_OF_LEAVING_EDUCATION"}
+                enumOptionValue={
+                  benificiary.core_beneficiaries.reason_of_leaving_education
+                }
+                enumApiData={enumOptions}
+              />
+            ) : (
+              "-"
+            ),
+
+            ...(benificiary?.core_beneficiaries?.type_of_learner &&
+              [
+                "school_dropout",
+                "already_open_school_syc",
+                "already_enrolled_in_open_school",
+              ].includes(benificiary?.core_beneficiaries?.type_of_learner) && {
+                last_standard_of_education: benificiary?.core_beneficiaries
+                  ?.last_standard_of_education ? (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"LAST_STANDARD_OF_EDUCATION"}
+                    enumOptionValue={
+                      benificiary.core_beneficiaries.last_standard_of_education
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ) : (
+                  "-"
+                ),
+
+                last_year_of_education: benificiary?.core_beneficiaries
+                  ?.last_year_of_education ? (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"LAST_YEAR_OF_EDUCATION"}
+                    enumOptionValue={
+                      benificiary.core_beneficiaries.last_year_of_education
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ) : (
+                  "-"
+                ),
+
+                previous_school_type: benificiary?.core_beneficiaries
+                  ?.previous_school_type ? (
+                  <GetEnumValue
+                    t={t}
+                    enumType={"PREVIOUS_SCHOOL_TYPE"}
+                    enumOptionValue={
+                      benificiary.core_beneficiaries.previous_school_type
+                    }
+                    enumApiData={enumOptions}
+                  />
+                ) : (
+                  "-"
+                ),
+
+                education_10th_date:
+                  benificiary?.core_beneficiaries?.type_of_learner ===
+                  "already_open_school_syc"
+                    ? benificiary?.core_beneficiaries?.education_10th_date ||
+                      "-"
+                    : undefined,
+                education_10th_exam_year:
+                  benificiary?.core_beneficiaries?.type_of_learner ===
+                  "already_open_school_syc"
+                    ? benificiary?.core_beneficiaries
+                        ?.education_10th_exam_year || "-"
+                    : undefined,
+              }),
+          }}
+          arr={(() => {
+            let arr = [];
+            if (
+              benificiary?.core_beneficiaries?.type_of_learner ||
+              benificiary?.core_beneficiaries?.reason_of_leaving_education
+            ) {
+              arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
+              if (
+                [
+                  "school_dropout",
+                  "already_open_school_syc",
+                  "already_enrolled_in_open_school",
+                ].includes(benificiary?.core_beneficiaries?.type_of_learner)
+              ) {
+                arr = [
+                  ...arr,
                   "last_standard_of_education",
                   "last_standard_of_education_year",
                   "previous_school_type",
-                  "reason_of_leaving_education",
-                ])}
-                size="xs"
-                colorScheme="textMaroonColor"
-              />
-            </Box>
-            <VStack space="2" paddingTop="5">
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("MOTIVATION_TO_PASS_10TH")}
-                </FrontEndTypo.H3>
+                ];
+              }
+              if (
+                benificiary?.core_beneficiaries?.type_of_learner ===
+                "already_open_school_syc"
+              ) {
+                arr = [
+                  ...arr,
+                  "education_10th_date",
+                  "education_10th_exam_year",
+                ];
+              }
+            }
+            return arr;
+          })()}
+          onEdit={(e) => {
+            navigate(`/beneficiary/edit/${userId}/education`);
+          }}
+        />
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
-                  {benificiary?.program_beneficiaries?.learning_motivation ? (
-                    <GetOptions
-                      array={
-                        benificiary?.program_beneficiaries?.learning_motivation
-                      }
-                      enumApiData={enumOptions}
-                      enumType={"LEARNING_MOTIVATION"}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
+        <VStack mt={6} mb={2}>
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("LEARNER_ASPIRATION")}
+            label={[
+              "MOTIVATION_TO_PASS_10TH",
+              "SUPPORT_FROM_PRAGATI",
+              "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+              "CAREER_ASPIRATION",
+              "REMARKS",
+            ]}
+            item={{
+              learning_motivation:
+                benificiary?.program_beneficiaries?.learning_motivation &&
+                benificiary.program_beneficiaries.learning_motivation.length >
+                  0 ? (
+                  <GetOptions
+                    array={
+                      benificiary.program_beneficiaries.learning_motivation
+                    }
+                    enumApiData={enumOptions}
+                    enumType={"LEARNING_MOTIVATION"}
+                  />
+                ) : (
+                  "-"
+                ),
 
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("SUPPORT_FROM_PRAGATI")}
-                </FrontEndTypo.H3>
+              type_of_support_needed:
+                benificiary?.program_beneficiaries?.type_of_support_needed &&
+                benificiary.program_beneficiaries.type_of_support_needed
+                  .length > 0 ? (
+                  <GetOptions
+                    array={
+                      benificiary.program_beneficiaries.type_of_support_needed
+                    }
+                    enumApiData={enumOptions}
+                    enumType={"TYPE_OF_SUPPORT_NEEDED"}
+                  />
+                ) : (
+                  "-"
+                ),
 
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.program_beneficiaries
-                    ?.type_of_support_needed ? (
-                    <GetOptions
-                      array={
-                        benificiary?.program_beneficiaries
-                          ?.type_of_support_needed
-                      }
-                      enumApiData={enumOptions}
-                      enumType={"TYPE_OF_SUPPORT_NEEDED"}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.50" flex="3" pb="2">
-                  {t("WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES")}
-                </FrontEndTypo.H3>
+              parent_support:
+                benificiary?.core_beneficiaries?.parent_support ?? "-",
 
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries?.parent_support
-                    ? benificiary?.core_beneficiaries?.parent_support
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("CAREER_ASPIRATION")}
-                </FrontEndTypo.H3>
+              career_aspiration: benificiary?.core_beneficiaries
+                ?.career_aspiration ? (
+                <GetEnumValue
+                  t={t}
+                  enumOptionValue={
+                    benificiary.core_beneficiaries.career_aspiration
+                  }
+                  enumApiData={enumOptions}
+                  enumType={"CAREER_ASPERATION"}
+                />
+              ) : (
+                "-"
+              ),
 
-                <FrontEndTypo.H3 color="textGreyColor.800" flex="4">
-                  {benificiary?.core_beneficiaries?.career_aspiration ? (
-                    <GetEnumValue
-                      t={t}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries?.career_aspiration
-                      }
-                      enumApiData={enumOptions}
-                      enumType={"CAREER_ASPIRATION"}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </FrontEndTypo.H3>
-              </HStack>
-
-              <HStack alignItems="Center" space={2}>
-                <FrontEndTypo.H3
-                  color="textGreyColor.50"
-                  fontWeight="400"
-                  flex="3"
-                  pb="2"
-                >
-                  {t("REMARKS")}
-                </FrontEndTypo.H3>
-
-                <FrontEndTypo.H3
-                  color="textGreyColor.800"
-                  fontWeight="400"
-                  flex="4"
-                >
-                  {benificiary?.core_beneficiaries?.career_aspiration_details
-                    ? benificiary?.core_beneficiaries?.career_aspiration_details
-                    : "-"}
-                </FrontEndTypo.H3>
-              </HStack>
-            </VStack>
-          </VStack>
+              career_aspiration_details:
+                benificiary?.core_beneficiaries?.career_aspiration_details ||
+                "-",
+            }}
+            arr={[
+              "learning_motivation",
+              "type_of_support_needed",
+              "parent_support",
+              "career_aspiration",
+              "education_10th_exam_year",
+            ]}
+            onEdit={(e) => {
+              navigate(`/beneficiary/edit/${userId}/future-education`);
+            }}
+          />
         </VStack>
       </VStack>
     </Layout>
