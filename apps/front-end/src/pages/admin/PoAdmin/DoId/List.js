@@ -89,7 +89,7 @@ export default function List() {
           order_by: { id: "asc" },
           ...filter,
         });
-        setDoIds(data);
+        setDoIds(data?.data);
         setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
