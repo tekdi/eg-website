@@ -116,16 +116,6 @@ export default function App({ userTokenInfo: { authUser } }) {
           value: "name",
           filters: { type: "qualification" },
         });
-        if (newSchema?.properties?.qualification) {
-          let valueIndex = "";
-          newSchema?.properties?.qualification?.enumNames?.forEach(
-            (e, index) => {
-              if (e.match("12")) {
-                valueIndex = newSchema?.properties?.qualification?.enum[index];
-              }
-            }
-          );
-        }
       }
       setSchema(newSchema);
       setLoading(false);
@@ -222,7 +212,9 @@ export default function App({ userTokenInfo: { authUser } }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
-    // const newData = { ...formData, ...data };
+    // update setFormData onchange
+    const newData = { ...formData, ...data };
+    setFormData(newData);
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
@@ -237,8 +229,6 @@ export default function App({ userTokenInfo: { authUser } }) {
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
       }
-      const newData = { ...formData, ...data };
-      setFormData(newData);
     }
 
     if (id === "root_pincode") {
@@ -250,17 +240,6 @@ export default function App({ userTokenInfo: { authUser } }) {
           },
         };
         setErrors(newErrors);
-      }
-    }
-
-    if (id === "root_qualification") {
-      if (schema?.properties?.qualification) {
-        let valueIndex = "";
-        schema?.properties?.qualification?.enumNames?.forEach((e, index) => {
-          if (e.match("12")) {
-            valueIndex = schema?.properties?.qualification?.enum[index];
-          }
-        });
       }
     }
 
