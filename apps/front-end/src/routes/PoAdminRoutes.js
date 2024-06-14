@@ -36,7 +36,6 @@ const ExamSchedule = lazy(() =>
 );
 
 const PoReports = lazy(() => import("pages/admin/PoAdmin/IP/Report/Report"));
-const AddressDetails = lazy(() => import("pages/admin/PoAdmin/Address/View"));
 const AddressList = lazy(() => import("pages/admin/PoAdmin/Address/List"));
 export default [
   {
