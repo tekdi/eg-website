@@ -6,6 +6,9 @@ const PoDuplicateView = lazy(() =>
   import("pages/admin/PoAdmin/PoDuplicateView")
 );
 const IPList = lazy(() => import("pages/admin/PoAdmin/IP/List"));
+const DoidList = lazy(() => import("pages/admin/PoAdmin/DoId/List"));
+const DoidForm = lazy(() => import("pages/admin/PoAdmin/DoId/Form"));
+const DoidDetails = lazy(() => import("pages/admin/PoAdmin/DoId/View"));
 const IpDetails = lazy(() => import("pages/admin/PoAdmin/IP/View"));
 const IPForm = lazy(() => import("pages/admin/PoAdmin/IP/Form"));
 const IPEditForm = lazy(() => import("pages/admin/PoAdmin/IP/EditIP/Form"));
@@ -124,6 +127,22 @@ export default [
   {
     path: "/poadmin/address",
     component: AddressList,
+  },
+  {
+    path: "/poadmin/do-ids",
+    component: DoidList,
+  },
+  {
+    path: "/poadmin/do-ids/create",
+    component: DoidForm,
+  },
+  {
+    path: "/poadmin/do-ids/:id/edit",
+    component: DoidForm,
+  },
+  {
+    path: "/poadmin/do-ids/:id",
+    component: DoidDetails,
   },
   { path: "/", component: Home },
   { path: "*", component: NotFound },
