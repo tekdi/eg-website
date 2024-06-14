@@ -1350,6 +1350,7 @@
   "RESEND": "Resend",
   "RESEND_MY_USERNAME": "Resend my UserName",
   "RESEND_OTP": "Resend OTP",
+  "SERVER_ERROR": "500 Internal Server Error",
   "RESET_FILTER": "Reset Filter",
   "RESOLVE_DUPLICATION": "Resolve Duplication",
   "RESULTS": "Results",

@@ -2,25 +2,21 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import {
   FrontEndTypo,
-  IconByName,
   facilitatorRegistryService,
+  filterObject,
   getOptions,
-  login,
-  removeOnboardingMobile,
-  removeOnboardingURLData,
   sendAndVerifyOtp,
   volunteerRegistryService,
 } from "@shiksha/common-lib";
-import Clipboard from "component/Clipboard.js";
 import moment from "moment";
-import { Box, HStack, Modal, VStack } from "native-base";
+import { Box } from "native-base";
 import Layout from "onest/Layout";
+import NotFound from "pages/NotFound";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { templates, widgets } from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
-import NotFound from "pages/NotFound";
 
 const uiSchema = {
   dob: {
@@ -37,11 +33,9 @@ const uiSchema = {
 export default function App({ userTokenInfo: { authUser } }) {
   const [pages, setPages] = useState();
   const [schema, setSchema] = useState({});
-  const [credentials, setCredentials] = useState();
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
-  const [alert, setAlert] = useState();
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -54,7 +48,6 @@ export default function App({ userTokenInfo: { authUser } }) {
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
     if (index !== undefined) {
@@ -95,7 +88,11 @@ export default function App({ userTokenInfo: { authUser } }) {
         setPages(newSteps);
         if (["1", "2", "4"].includes(page)) {
           setSchema(properties[page]);
-          setFormData(authUser);
+          const userObj = filterObject(
+            authUser,
+            Object.keys(properties?.[page]?.properties || {})
+          );
+          setFormData(userObj);
         } else if (page == 3) {
           setFormData({
             qualification: authUser?.qualifications?.qualification_master?.name,
@@ -128,11 +125,6 @@ export default function App({ userTokenInfo: { authUser } }) {
               }
             }
           );
-          if (valueIndex !== "" && formData?.qualification === valueIndex) {
-            setAlert(t("YOU_NOT_ELIGIBLE"));
-          } else {
-            setAlert();
-          }
         }
       }
       setSchema(newSchema);
@@ -229,6 +221,7 @@ export default function App({ userTokenInfo: { authUser } }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
+    setErrors();
     // const newData = { ...formData, ...data };
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
@@ -248,6 +241,18 @@ export default function App({ userTokenInfo: { authUser } }) {
       setFormData(newData);
     }
 
+    if (id === "root_pincode") {
+      const regex = /^\d{0,6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     if (id === "root_qualification") {
       if (schema?.properties?.qualification) {
         let valueIndex = "";
@@ -256,11 +261,6 @@ export default function App({ userTokenInfo: { authUser } }) {
             valueIndex = schema?.properties?.qualification?.enum[index];
           }
         });
-        if (valueIndex !== "" && data.qualification === valueIndex) {
-          setAlert(t("YOU_NOT_ELIGIBLE"));
-        } else {
-          setAlert();
-        }
       }
     }
 
@@ -295,11 +295,9 @@ export default function App({ userTokenInfo: { authUser } }) {
         ["last_name"]: newFormData?.last_name?.replaceAll(" ", ""),
       };
     }
-
     const newData = {
       ...formData,
       ...newFormData,
-      // ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
 
@@ -308,9 +306,27 @@ export default function App({ userTokenInfo: { authUser } }) {
       let success = false;
       if (id) {
         switch (page) {
-          case 1:
+          case "1":
+          case "2":
+          case "3":
+            const { data, success } = await formSubmitUpdate(newFormData);
+            if (!success) {
+              const newErrors = {
+                mobile: {
+                  __errors:
+                    data?.message?.constructor?.name === "String"
+                      ? [data?.message]
+                      : data?.error?.constructor?.name === "Array"
+                      ? data?.error
+                      : [t("SERVER_ERROR")],
+                },
+              };
+              setErrors(newErrors);
+            } else {
+              console.log(data);
+            }
             break;
-          case 4:
+          case "4":
             const resultCheck = await checkMobileExist(newFormData?.mobile);
             if (!resultCheck) {
               if (!schema?.properties?.otp) {
@@ -340,11 +356,6 @@ export default function App({ userTokenInfo: { authUser } }) {
                   setErrors(newErrors);
                 } else {
                   console.log(data);
-                  if (data?.username && data?.password) {
-                    await removeOnboardingURLData();
-                    await removeOnboardingMobile();
-                    setCredentials(data);
-                  }
                 }
               } else if (status === false) {
                 const newErrors = {
@@ -384,10 +395,9 @@ export default function App({ userTokenInfo: { authUser } }) {
     setLoading(false);
   };
 
-  const formSubmitUpdate = async () => {
-    console.log(formData);
-    // const result = await volunteerRegistryService.selfUpdate(formData);
-    // return result;
+  const formSubmitUpdate = async (users) => {
+    const result = await volunteerRegistryService.selfUpdate({ users });
+    return result;
   };
 
   const onClickSubmit = (backToProfile) => {
@@ -471,101 +481,6 @@ export default function App({ userTokenInfo: { authUser } }) {
           <NotFound goBack={(e) => navigate(-1)} />
         )}
       </Box>
-      <Modal
-        isOpen={credentials}
-        safeAreaTop={true}
-        size="xl"
-        _backdrop={{ opacity: "0.7" }}
-      >
-        <Modal.Content>
-          <Modal.Header p="5" borderBottomWidth="0">
-            <FrontEndTypo.H1 textAlign="center">
-              {t("STORE_YOUR_CREDENTIALS")}
-            </FrontEndTypo.H1>
-          </Modal.Header>
-          <Modal.Body p="5" pb="10">
-            <VStack space="5">
-              <VStack
-                space="2"
-                bg="gray.100"
-                p="1"
-                rounded="lg"
-                borderWidth={1}
-                borderColor="gray.300"
-                w="100%"
-              >
-                <HStack alignItems="center" space="1" flex="1">
-                  <FrontEndTypo.H3 flex="0.3">{t("USERNAME")}</FrontEndTypo.H3>
-                  <FrontEndTypo.H4
-                    py="1"
-                    px="2"
-                    flex="0.7"
-                    wordWrap="break-word"
-                    whiteSpace="break-spaces"
-                    overflow="hidden"
-                    bg="success.100"
-                    borderWidth="1"
-                    borderColor="success.500"
-                  >
-                    {credentials?.username}
-                  </FrontEndTypo.H4>
-                </HStack>
-                <HStack alignItems="center" space="1" flex="1">
-                  <FrontEndTypo.H3 flex="0.3">{t("PASSWORD")}</FrontEndTypo.H3>
-                  <FrontEndTypo.H4
-                    py="1"
-                    px="2"
-                    flex="0.7"
-                    wordWrap="break-word"
-                    whiteSpace="break-spaces"
-                    overflow="hidden"
-                    bg="success.100"
-                    borderWidth="1"
-                    borderColor="success.500"
-                  >
-                    {credentials?.password}
-                  </FrontEndTypo.H4>
-                </HStack>
-              </VStack>
-              <VStack alignItems="center">
-                <Clipboard
-                  text={`username: ${credentials?.username}, password: ${credentials?.password}`}
-                  onPress={(e) => {
-                    setCredentials({ ...credentials, copy: true });
-                    downloadImage();
-                  }}
-                >
-                  <HStack space="3">
-                    <IconByName
-                      name="FileCopyLineIcon"
-                      isDisabled
-                      rounded="full"
-                      color="blue.300"
-                    />
-                    <FrontEndTypo.H3 color="blue.300">
-                      {t("CLICK_HERE_TO_COPY_AND_LOGIN")}
-                    </FrontEndTypo.H3>
-                  </HStack>
-                </Clipboard>
-              </VStack>
-              <HStack space="5" pt="5">
-                <FrontEndTypo.Primarybutton
-                  flex={1}
-                  isDisabled={!credentials?.copy}
-                  onPress={async (e) => {
-                    const { copy, ...cData } = credentials;
-                    await login(cData);
-                    navigate("/");
-                    navigate(0);
-                  }}
-                >
-                  {t("LOGIN")}
-                </FrontEndTypo.Primarybutton>
-              </HStack>
-            </VStack>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
     </Layout>
   );
 }

@@ -1456,6 +1456,7 @@
   "SEND_INVITES": "आमंत्रण भेजें",
   "SEND_MESSAGE": "मेसेज भेजें",
   "SEND_OTP": "OTP भेजें",
+  "SERVER_ERROR": "500 सर्वर साइड त्रुटि",
   "SESSION": "सत्र",
   "SESSION_COMPLETED_MORE_WORK_NEEDED_TO_IMPLEMENT_THE_SESSION_WELL": "सत्र को अच्छे से लागू करने हेतु और काम करने की ज़रूरत ",
   "SESSION_COMPLETED_SESSION_SUCCESSFULLY_IMPLEMENTED": "सत्र सफलता पूर्वक लागू किया गया",

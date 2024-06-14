@@ -287,6 +287,18 @@ export default function App({ facilitator, ip, onClick }) {
       setFormData(newData);
     }
 
+    if (id === "root_pincode") {
+      const regex = /^[0-9]{6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     if (id === "root_qualification") {
       if (schema?.properties?.qualification) {
         let valueIndex = "";

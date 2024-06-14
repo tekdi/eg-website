@@ -53,7 +53,7 @@ export default function Profile({ userTokenInfo: { authUser } }) {
                   profile_photo_1={facilitator?.profile_photo_1}
                   profile_photo_2={facilitator?.profile_photo_2}
                   profile_photo_3={facilitator?.profile_photo_3}
-                  isProfileEdit={true}
+                  isProfileEdit={false}
                 />
               </VStack>
               <VStack>
@@ -87,16 +87,6 @@ export default function Profile({ userTokenInfo: { authUser } }) {
                   </FrontEndTypo.H3>
                 </HStack>
               </VStack>
-            </HStack>
-            <HStack>
-              <IconByName
-                name="PencilLineIcon"
-                color="iconColor.200"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/profile/edit/basic_details`);
-                }}
-              />
             </HStack>
           </HStack>
 
