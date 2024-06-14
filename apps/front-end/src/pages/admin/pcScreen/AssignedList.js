@@ -1,0 +1,490 @@
+import React, { memo, useCallback, useEffect, useState } from "react";
+import {
+  AdminTypo,
+  AdminLayout,
+  CardComponent,
+  IconByName,
+  organisationService,
+  Breadcrumb,
+  geolocationRegistryService,
+  getSelectedProgramId,
+  getSelectedAcademicYear,
+  enumRegistryService,
+  getOptions,
+  setQueryParameters,
+  tableCustomStyles,
+  cohortService,
+} from "@shiksha/common-lib";
+import {
+  Box,
+  Input,
+  HStack,
+  CheckIcon,
+  Stack,
+  VStack,
+  Menu,
+  Button,
+  Icon,
+  Pressable,
+} from "native-base";
+import Chip, { ChipStatus } from "component/Chip";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import DataTable from "react-data-table-component";
+import { debounce } from "lodash";
+import { MultiCheck } from "../../../component/BaseInput";
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
+
+const AssignedList = ({ setPcData, setassignPrerak }) => {
+  const { t } = useTranslation();
+  const [data, setData] = useState([]);
+  const { id } = useParams();
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({ page: 1, limit: 10 });
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [isSelectable, setIsSelectable] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [addPrerakCount, setAddPrerakCount] = useState(0);
+  const [removePrerakCount, setRemovePrerakCount] = useState(0);
+  const [isAddingPrerak, setIsAddingPrerak] = useState(true);
+  const [isDisable, setIsDisable] = useState(false);
+  const [isRemovePrerak, setIsRemovePrerak] = useState(true);
+  const [isCancelVisible, setIsCancelVisible] = useState(false);
+  const [schema, setSchema] = useState();
+  const [formData, setFormData] = useState({});
+
+  // useEffect(() => {
+  //   setData(assignedData);
+  // }, [assignedData]);
+
+  const columns = (t) => [
+    {
+      name: t("PRERAK_ID"),
+      sortable: true,
+      sortField: "id",
+      selector: (row) => row?.facilitator_id,
+      wrap: true,
+    },
+    {
+      name: t("NAME"),
+      sortable: true,
+      sortField: "first_name",
+      selector: (row) => (
+        <HStack alignItems={"center"} space="2">
+          <AdminTypo.H7 bold>
+            {row?.user?.first_name + " "}
+            {row?.user?.last_name ? row?.user?.last_name : ""}
+          </AdminTypo.H7>
+        </HStack>
+      ),
+      wrap: true,
+    },
+    {
+      name: t("DISTRICT"),
+      selector: (row) => row?.user?.district || "-",
+      wrap: true,
+    },
+    {
+      name: t("OKYC_IP_VERIFIED"),
+      selector: (row) => row?.user?.aadhar_verified || t("NO"),
+      wrap: true,
+    },
+    {
+      name: t("MOBILE_NO"),
+      selector: (row) => row?.user?.mobile || "-",
+      wrap: true,
+    },
+    {
+      name: t("STATUS"),
+      selector: (row) => <ChipStatus status={row?.status} />,
+      wrap: true,
+    },
+    {
+      name: t("GENDER"),
+      selector: (row) => row?.user?.gender || "-",
+      wrap: true,
+    },
+  ];
+
+  const pagination = [10, 15, 25, 50, 100];
+
+  const uiSchema = {
+    district: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+    block: {
+      "ui:widget": MultiCheck,
+      "ui:options": {},
+    },
+  };
+
+  const schemat = {
+    type: "object",
+    properties: {
+      district: {
+        type: "array",
+        title: "DISTRICT",
+        grid: 1,
+        _hstack: {
+          maxH: 135,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "5px",
+        },
+        items: {
+          type: "string",
+        },
+        uniqueItems: true,
+      },
+      block: {
+        type: "array",
+        title: "BLOCKS",
+        grid: 1,
+        _hstack: {
+          maxH: 130,
+          overflowY: "scroll",
+          borderBottomColor: "bgGreyColor.200",
+          borderBottomWidth: "5px",
+        },
+        items: {
+          type: "string",
+          enum: [],
+        },
+        uniqueItems: true,
+      },
+    },
+  };
+
+  const fetchUserList = async () => {
+    const Apidata = await cohortService.pcDetails({
+      id: id,
+      ...filter,
+    });
+
+    setPaginationTotalRows(
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+    );
+    setData(Apidata?.data?.facilitators);
+    setPcData(Apidata?.data?.users?.[0]);
+    setassignPrerak(Apidata?.data?.preraks_assigned);
+  };
+
+  const fetchPrerakList = async () => {
+    const Apidata = await cohortService.PcAvailableFacilitator({
+      id: id,
+      ...filter,
+    });
+    setPaginationTotalRows(
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+    );
+    setData(Apidata?.data?.program_facilitator_data);
+  };
+
+  useEffect(() => {
+    if (!isSelectable) {
+      fetchUserList();
+    } else if (isSelectable) {
+      fetchPrerakList();
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    getDistrict();
+  }, []);
+
+  const getDistrict = async () => {
+    const programResult = await getSelectedProgramId();
+    let name = programResult?.state_name;
+    const getDistricts = await geolocationRegistryService.getDistricts({
+      name,
+    });
+    let newSchema = getOptions(schemat, {
+      key: "district",
+      arr: getDistricts?.districts,
+      title: "district_name",
+      value: "district_name",
+    });
+    setSchema(newSchema);
+    setLoading(false);
+  };
+
+  const AddRemovePrerak = async (action) => {
+    const userIds = selectedRows.map(
+      (item) => item.user_id || item.facilitator_id
+    );
+    const Apidata = await cohortService.AddRemovePrerak({
+      id: id,
+      facilitator_id: userIds,
+      edit_action:
+        action === "add_facilitator" ? "add_facilitator" : "remove_facilitator",
+    });
+    if (Apidata?.data) {
+      navigate("/admin/pc");
+    }
+  };
+
+  const handleAddPrerak = async () => {
+    await fetchPrerakList();
+    setIsSelectable(true);
+    setIsRemovePrerak(false);
+    setIsDisable(true);
+    setIsCancelVisible(true);
+    if (selectedRows.length > 0) {
+      await AddRemovePrerak("add_facilitator");
+    }
+  };
+
+  const handleRemovePrerak = async () => {
+    await fetchUserList();
+    setIsSelectable(true);
+    setIsAddingPrerak(false);
+    setIsRemovePrerak(true);
+    setIsDisable(true);
+    setIsCancelVisible(true);
+    if (selectedRows.length > 0) {
+      await AddRemovePrerak("remove_facilitator");
+    }
+  };
+
+  const handleCancel = () => {
+    setIsSelectable(false);
+    setSelectedRows([]);
+    setAddPrerakCount(0);
+    setRemovePrerakCount(0);
+    setIsAddingPrerak(true);
+    setIsDisable(false);
+    setIsRemovePrerak(true);
+    setIsCancelVisible(false);
+    clearFilter();
+  };
+
+  const handleRowSelected = useCallback(
+    (state) => {
+      const selected = state?.selectedRows;
+      setSelectedRows(selected);
+
+      if (isAddingPrerak) {
+        setIsDisable(false);
+        setAddPrerakCount(selected?.length);
+      } else {
+        setRemovePrerakCount(selected?.length);
+        setIsDisable(false);
+      }
+      if (selected?.length === 0) {
+        setIsDisable(true);
+      }
+    },
+    [isAddingPrerak]
+  );
+
+  const handleSearch = (e) => {
+    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+  };
+
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
+
+  const setBlock = async ({ district }) => {
+    let newSchema = schema;
+    if (newSchema?.properties?.block && district.length > 0) {
+      const qData = await geolocationRegistryService.getMultipleBlocks({
+        districts: district,
+      });
+      if (newSchema?.["properties"]?.["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const onChange = async (e, id) => {
+    const data = e.formData;
+    const newData = { ...formData, ...data };
+    setFormData(data);
+    if (id === "root_district") {
+      setFilter({ ...filter, district: data?.district });
+      await setBlock({
+        district: data?.district,
+      });
+    }
+    if (id === "root_block") {
+      setFilter({ ...filter, block: data?.block });
+    }
+  };
+
+  const clearFilter = useCallback(() => {
+    setFilter({});
+    setFormData({});
+    getDistrict();
+  }, []);
+
+  return (
+    <Stack backgroundColor={"identifiedColor"} alignContent={"center"}>
+      <HStack alignItems={"center"} p={4} justifyContent={"space-between"}>
+        <AdminTypo.H6 bold color={"textGreyColor.500"}>
+          {isAddingPrerak ? t("PRERAK_LIST") : t("ASSIGNED_PRERAK_LIST")}
+        </AdminTypo.H6>
+        <HStack space={4} alignItems={"center"} justifyContent={"center"}>
+          <Input
+            size={"xs"}
+            minH="40px"
+            maxH="40px"
+            onScroll={false}
+            InputLeftElement={
+              <IconByName
+                color="coolGray.500"
+                name="SearchLineIcon"
+                isDisabled
+                pl="2"
+              />
+            }
+            value={filter.search || ""}
+            bg={"white"}
+            placeholder={t("SEARCH_BY_PRERAK_NAME")}
+            variant="outline"
+            onChange={handleSearch}
+          />
+
+          <Menu
+            w="190"
+            placement="bottom right"
+            trigger={(triggerProps) => {
+              return (
+                <Pressable
+                  accessibilityLabel="More options menu"
+                  {...triggerProps}
+                >
+                  <HStack
+                    rounded={"lg"}
+                    px={4}
+                    bg={"white"}
+                    alignItems="center"
+                    space={4}
+                  >
+                    <AdminTypo.H5>Filter</AdminTypo.H5>
+                    <IconByName
+                      pr="0"
+                      name="ArrowDownSLineIcon"
+                      isDisabled={true}
+                    />
+                  </HStack>
+                </Pressable>
+              );
+            }}
+          >
+            <VStack space={2}>
+              <Form
+                {...{
+                  //widgets,
+                  //templates,
+                  validator,
+                  schema: schema,
+                  uiSchema,
+                  formData,
+                  validator,
+                  onChange,
+                  //onSubmit,
+                  //transformErrors,
+                }}
+              >
+                <Button display={"none"} type="submit"></Button>
+              </Form>
+
+              {(filter?.district || filter?.block) && (
+                <Button variant="link" pt="3" onPress={clearFilter}>
+                  <AdminTypo.H6 color="blueText.400" underline bold>
+                    {t("CLEAR_FILTER")}
+                  </AdminTypo.H6>
+                </Button>
+              )}
+            </VStack>
+          </Menu>
+        </HStack>
+        <HStack space={4}>
+          {isCancelVisible && (
+            <AdminTypo.Secondarybutton onPress={handleCancel}>
+              {t("CANCEL")}
+            </AdminTypo.Secondarybutton>
+          )}
+          {isAddingPrerak && (
+            <AdminTypo.Secondarybutton
+              icon={
+                !addPrerakCount > 0 && (
+                  <IconByName
+                    name="AddCircleLineIcon"
+                    color="black"
+                    size="xs"
+                  />
+                )
+              }
+              isDisabled={isDisable}
+              onPress={handleAddPrerak}
+            >
+              {`${t("ADD_PRERAK")}${
+                addPrerakCount > 0 ? ` (${addPrerakCount})` : ""
+              }`}
+            </AdminTypo.Secondarybutton>
+          )}
+          {isRemovePrerak && (
+            <AdminTypo.Secondarybutton
+              icon={
+                <IconByName
+                  name="IndeterminateCircleLineIcon"
+                  color="black"
+                  size="xs"
+                />
+              }
+              isDisabled={isDisable}
+              onPress={handleRemovePrerak}
+            >
+              {`${t("REMOVE_PRERAK")} ${
+                removePrerakCount > 0 ? ` (${removePrerakCount})` : ""
+              }`}
+            </AdminTypo.Secondarybutton>
+          )}
+        </HStack>
+      </HStack>
+      <VStack pt={0} p={6}>
+        <DataTable
+          data={data}
+          columns={columns(t)}
+          customStyles={tableCustomStyles}
+          progressPending={loading}
+          pagination
+          paginationRowsPerPageOptions={pagination}
+          paginationServer
+          paginationTotalRows={paginationTotalRows}
+          selectableRows={isSelectable}
+          clearSelectedRows={isCancelVisible}
+          onSelectedRowsChange={handleRowSelected}
+          paginationDefaultPage={filter?.page || 1}
+          highlightOnHover
+          sortServer
+          onChangeRowsPerPage={useCallback(
+            (e) => {
+              setFilter({ ...filter, limit: e, page: 1 });
+            },
+            [setFilter, filter]
+          )}
+          onChangePage={useCallback(
+            (e) => {
+              setFilter({ ...filter, page: e });
+            },
+            [setFilter, filter]
+          )}
+        />
+      </VStack>
+    </Stack>
+  );
+};
+
+export default AssignedList;
