@@ -7,6 +7,7 @@ export default function App({ userTokenInfo: { authUser } }) {
   // add user info for drawer
   return (
     <Layout
+      userAccess
       facilitator={{
         ...authUser,
         program_faciltators: authUser?.use_role?.[0],
