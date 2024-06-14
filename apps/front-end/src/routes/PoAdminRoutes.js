@@ -40,6 +40,9 @@ const ExamSchedule = lazy(() =>
 
 const PoReports = lazy(() => import("pages/admin/PoAdmin/IP/Report/Report"));
 const AddressList = lazy(() => import("pages/admin/PoAdmin/Address/List"));
+const AddressDetail = lazy(() => import("pages/admin/PoAdmin/Address/View"));
+const AddressForm = lazy(() => import("pages/admin/PoAdmin/Address/Form"));
+
 export default [
   {
     path: "/poadmin/profile",
@@ -143,6 +146,12 @@ export default [
   {
     path: "/poadmin/do-ids/:id",
     component: DoidDetails,
+    path: "/poadmin/address/:id",
+    component: AddressDetail,
+  },
+  {
+    path: "/poadmin/address/create",
+    component: AddressForm,
   },
   { path: "/", component: Home },
   { path: "*", component: NotFound },
