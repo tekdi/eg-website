@@ -317,15 +317,12 @@ export default function List() {
                     name="AddLineIcon"
                   />
                 }
+                onPress={(e) => navigate("/poadmin/address/create")}
               >
                 {t("ADD_AN_ADDRESS")}
               </Button>
             )}
-          >
-            <Menu.Item onPress={(e) => navigate("/poadmin/address/create")}>
-              {t("ADD_NEW_ADDRESS")}
-            </Menu.Item>
-          </Menu>
+          ></Menu>
         </HStack>
         <DataTable
           customStyles={{
