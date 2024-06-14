@@ -256,6 +256,7 @@ export default function App({ facilitator, ip, onClick }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
+    // update setFormData onchange
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {

@@ -212,6 +212,7 @@ export default function App({ userTokenInfo: { authUser } }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
+    // update setFormData onchange
     const newData = { ...formData, ...data };
     setFormData(newData);
     if (id === "root_mobile") {
