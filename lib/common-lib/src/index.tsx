@@ -3,6 +3,7 @@ import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import Layout from './components/layout/Layout'
 import AdminLayout from './components/admin_layout/Layout'
+import PCusers_layout from './components/PCusers_layout/Layout'
 import SearchLayout from './components/SearchLayout'
 import IconByName from './components/IconByName'
 import Widget from './components/Widget'
@@ -64,6 +65,7 @@ export {
   Layout,
   AdminLayout,
   PoAdminLayout,
+  PCusers_layout,
   SearchLayout,
   IconByName,
   FilterButton,

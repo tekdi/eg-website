@@ -16,6 +16,7 @@ import { volunteerRoute } from "./routes/onest";
 import routes from "./routes/routes";
 import adminRoutes from "./routes/admin";
 import PoAdminRoutes from "./routes/PoAdminRoutes";
+import PcUsers from "./routes/PcUsers";
 import { getIndexedDBItem, getUserId } from "v2/utils/Helper/JSHelper";
 import ReactGA from "react-ga4";
 
@@ -56,12 +57,14 @@ function App() {
       }
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
-      if (hasura?.roles?.includes("facilitator")) {
+      if (hasura?.roles?.includes("program_coordinator")) {
         setAccessRoutes(routes);
       } else if (hasura?.roles?.includes("program_owner")) {
         setAccessRoutes(PoAdminRoutes);
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
+      } else if (hasura?.roles?.includes("facilitator")) {
+        setAccessRoutes(PcUsers);
       } else if (
         hasura?.roles?.filter((e) => {
           return ["volunteer", "beneficiary"].includes(e);
