@@ -2,12 +2,9 @@ import {
   AdminTypo,
   IconByName,
   PoAdminLayout,
-  cohortService,
-  getSelectedProgramId,
-  setSelectedProgramId,
   eventService,
 } from "@shiksha/common-lib";
-import { Button, HStack, Input, Select, VStack, Menu } from "native-base";
+import { Button, HStack, Input, VStack, Menu } from "native-base";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import DataTable from "react-data-table-component";
@@ -25,14 +22,14 @@ export const CustomStyles = {
       background: "#E0E0E0",
       color: "#616161",
       size: "16px",
-      justifyContent: "center",
+      justifyContent: "center", // override the alignment of columns
     },
   },
   cells: {
     style: {
       color: "#616161",
       size: "19px",
-      justifyContent: "center",
+      justifyContent: "center", // override the alignment of columns
     },
   },
 };
@@ -43,28 +40,158 @@ const columns = (t, navigate) => [
     selector: (row) => row?.id,
     sortable: true,
     sortField: "id",
+    width: "100px",
+    compact: true,
+  },
+  {
+    name: t("STATE_NAME"),
+    selector: (row) => row?.state_name || "-",
+    sortable: true,
+    sortField: "state_name",
     wrap: true,
     width: "100px",
     compact: true,
   },
   {
-    name: t("DO_ID"),
-    selector: (row) => row?.do_id,
-    // width: "150px",
+    name: t("STATE_CD"),
+    selector: (row) => row?.state_cd || "-",
+    sortable: true,
+    sortField: "state_cd",
+    width: "150px",
     wrap: true,
     left: true,
     compact: true,
   },
   {
-    name: t("EVENT_TYPE"),
-    selector: (row) => row?.event_type || "-",
+    name: t("DISTRICT_NAME"),
+    selector: (row) => row?.district_name || "-",
+    wrap: true,
+    left: true,
+    compact: true,
+    sortable: true,
+    sortField: "district_name",
+  },
+  {
+    name: t("DISTRICT_ID"),
+    selector: (row) => row?.district_cd || "-",
+    wrap: true,
+    left: true,
+    compact: true,
+    sortable: true,
+    sortField: "district_cd",
+  },
+
+  {
+    name: t("UDISE_BLOCK_CODE"),
+    selector: (row) => row?.udise_block_code || "-",
+    attr: "udise_block_code",
+    wrap: true,
+    compact: true,
+    sortable: true,
+    sortField: "udise_block_code",
+  },
+  {
+    name: t("BLOCK_NAME"),
+    selector: (row) => row?.block_name || "-",
+    sortable: true,
+    sortField: "block_name",
+    wrap: true,
+    width: "100px",
+    compact: true,
+  },
+  {
+    name: t("GRAMPANCHAYAT_CD"),
+    selector: (row) => row?.grampanchayat_cd || "-",
+    sortable: true,
+    sortField: "grampanchayat_cd",
+    wrap: true,
+    width: "100px",
+    compact: true,
+  },
+  {
+    name: t("GRAMPANCHAYAT_NAME"),
+    selector: (row) => row?.grampanchayat_name || "-",
+    sortable: true,
+    sortField: "grampanchayat_name",
+    wrap: true,
+    width: "100px",
+    compact: true,
+  },
+  {
+    name: t("VILLAGE_WARD_CD"),
+    selector: (row) => row?.vill_ward_cd || "-",
+    sortable: true,
+    sortField: "vill_ward_cd",
+    wrap: true,
+    width: "100px",
+    compact: true,
+  },
+  {
+    name: t("VILLAGE_WARD_NAME"),
+    selector: (row) => row?.village_ward_name || "-",
+    sortable: true,
+    sortField: "village_ward_name",
+    width: "150px",
     wrap: true,
     left: true,
     compact: true,
   },
   {
-    name: t("STATUS"),
-    selector: (row) => row?.status || "-",
+    name: t("SCHOOL_NAME"),
+    selector: (row) => row?.school_name || "-",
+    sortable: true,
+    sortField: "school_name",
+    width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("UDISE_SCH_CODE"),
+    selector: (row) => row?.udise_sch_code || "-",
+    sortable: true,
+    sortField: "udise_sch_code",
+    width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("SCH_CATEGORY_ID"),
+    selector: (row) => row?.sch_category_id || "-",
+    sortable: true,
+    sortField: "sch_category_id",
+    width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("SCH_MANAGEMENT_ID"),
+    selector: (row) => row?.nsch_mgmt_idame || "-",
+    sortable: true,
+    sortField: "sch_mgmt_id ",
+    width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("OPEN_SCHOOL_TYPE"),
+    selector: (row) => row?.open_school_type || "-",
+    sortable: true,
+    sortField: "open_school_type",
+    width: "150px",
+    wrap: true,
+    left: true,
+    compact: true,
+  },
+  {
+    name: t("NODAL_CODE"),
+    selector: (row) => row?.nodal_code || "-",
+    sortable: true,
+    sortField: "nodal_code",
+    width: "150px",
     wrap: true,
     left: true,
     compact: true,
@@ -76,7 +203,7 @@ export default function List() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = useState();
-  const [doIds, setDoIds] = useState();
+  const [address, setAddress] = useState();
   const [programList, setProgramList] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const navigate = useNavigate();
@@ -85,11 +212,11 @@ export default function List() {
   useEffect(
     (e) => {
       const fetch = async () => {
-        const data = await eventService.getEventDoIdList({
+        const data = await eventService.getAllAddressList({
           order_by: { id: "asc" },
           ...filter,
         });
-        setDoIds(data?.data);
+        setAddress(data.data);
         setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
@@ -98,37 +225,19 @@ export default function List() {
     [filter]
   );
 
-  useEffect(async () => {
-    const data = await cohortService.getProgramList();
-    setProgramList(data?.data);
-    const localData = await getSelectedProgramId();
-    if (localData === null) {
-      const obj = data?.data?.[0];
-      const defaultData = {
-        program_id: obj?.id,
-        name: obj?.name,
-        state_name: obj?.state?.state_name,
-      };
-      setSelectedProgramId(defaultData);
-      setFilter({ ...filter, program_id: obj?.id });
-    } else {
-      setFilter({ ...filter, program_id: localData?.program_id });
-    }
-  }, []);
-
   const handleSort = (column, sort) => {
     if (column?.sortField) {
       setFilter({
         ...filter,
-        order_by: { ...(filter?.order_by || {}), [column?.sortField]: sort },
+        order_by: { [column?.sortField]: sort },
       });
     }
   };
-
   const handleSearch = (e) => {
+    console.log("e", e);
     setFilter((item) => ({
       ...item,
-      filter: { event_type: e.nativeEvent.text },
+      filters: { state_name: e.nativeEvent.text },
       page: 1,
     }));
   };
@@ -137,20 +246,12 @@ export default function List() {
 
   const handleRowClick = useCallback(
     (row) => {
-      navigate(`/poadmin/do-ids/${row?.id}`);
+      navigate(`/poadmin/addressDetail/${row?.id}`, {
+        state: { eventData: row },
+      });
     },
     [navigate]
   );
-
-  const handleProgramChange = async (selectedItem) => {
-    const data = programList.find((e) => e.id == selectedItem);
-    await setSelectedProgramId({
-      program_id: data?.id,
-      program_name: data?.name,
-      state_name: data?.state?.state_name,
-    });
-    setFilter({ ...filter, program_id: selectedItem });
-  };
 
   return (
     <PoAdminLayout {...{ loading }}>
@@ -173,7 +274,7 @@ export default function List() {
               space="2"
             >
               <IconByName name="GroupLineIcon" size="md" />
-              <AdminTypo.H4 bold> {t("ALL_DO_IDS")}</AdminTypo.H4>
+              <AdminTypo.H4 bold> {t("ALL_ADDRESSES")}</AdminTypo.H4>
             </HStack>
           </HStack>
           <Input
@@ -189,11 +290,11 @@ export default function List() {
                 pl="2"
               />
             }
-            placeholder={t("SEARCH_BY_EVENT_TYPE")}
+            placeholder={t("SEARCH")}
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          <Menu
+          {/* <Menu
             w="160"
             trigger={(triggerProps) => (
               <Button
@@ -216,44 +317,26 @@ export default function List() {
                     name="AddLineIcon"
                   />
                 }
-                onPress={(e) => navigate("/poadmin/do-ids/create")}
+                onPress={(e) => navigate("/poadmin/address/create")}
               >
-                {t("ADD")}
+                {t("ADD_AN_ADDRESS")}
               </Button>
             )}
-          />
-          <Select
-            minH="40px"
-            maxH="40px"
-            selectedValue={`${filter?.program_id}`}
-            minWidth="200"
-            accessibilityLabel="Choose Service"
-            placeholder={t("SELECT")}
-            mt={1}
-            onValueChange={handleProgramChange}
-          >
-            {programList?.map((item) => (
-              <Select.Item
-                key={item?.id}
-                label={item?.state?.state_name}
-                value={`${item?.id}`}
-              />
-            ))}
-          </Select>
+          ></Menu> */}
         </HStack>
         <DataTable
           customStyles={{
             ...CustomStyles,
             rows: {
               style: {
-                minHeight: "50px",
+                minHeight: "50px", // override the row height
                 cursor: "pointer",
               },
             },
             pagination: { style: { margin: "5px 0 5px 0" } },
           }}
           columns={columnsMemoized}
-          data={doIds || []}
+          data={address || []}
           progressPending={loading}
           pagination
           paginationRowsPerPageOptions={pagination}
