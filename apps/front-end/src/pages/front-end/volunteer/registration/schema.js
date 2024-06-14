@@ -92,7 +92,7 @@ export default {
         pincode: {
           title: "PINCODE",
           type: "string",
-          readOnly: "",
+          regex: /^\d{0,6}$/,
         },
       },
     },

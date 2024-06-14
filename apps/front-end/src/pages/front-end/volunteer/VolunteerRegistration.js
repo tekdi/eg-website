@@ -73,6 +73,7 @@ export default function App({ facilitator, ip, onClick }) {
         yearsRange: yearsRange,
         hideNowButton: true,
         hideClearButton: true,
+        format: "DMY",
       },
     },
   };
@@ -281,6 +282,20 @@ export default function App({ facilitator, ip, onClick }) {
         const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
+      }
+      const newData = { ...formData, ...data };
+      setFormData(newData);
+    }
+
+    if (id === "root_pincode") {
+      const regex = /^[0-9]{6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
       }
     }
 
