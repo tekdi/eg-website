@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PCusers_layout as Layout, FrontEndTypo } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { HStack, Image, VStack } from "native-base";
 import DashboardCard from "component/common_components/DashboardCard";
-import { useEffect } from "react";
 
 const PcDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -49,7 +48,7 @@ const PcDashboard = () => {
                 "YOU_CAN_ACCESS_YOUR_PROFILE_DETAILS_AND_EDIT_THEM_FROM_HERE"
               }
               primaryBtn={"VIEW_MY_PROFILE"}
-              navigation={"/table"}
+              navigation={"/profile"}
             />
 
             {/* Temp Comment */}
@@ -57,7 +56,7 @@ const PcDashboard = () => {
               title={"MY_DAILY_ACTIVITIES"}
               titleDetail={"MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS"}
               primaryBtn={"MARK_DAILY_ACTIVITIES"}
-              navigation={"/examattendancereport"}
+              navigation={"/pcuser/dailyactivities/list"}
             />
             <DashboardCard
               title={"PRAGATI_SABHA"}
