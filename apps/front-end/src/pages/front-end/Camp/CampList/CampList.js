@@ -8,9 +8,9 @@ import {
   campService,
   enumRegistryService,
   benificiaryRegistoryService,
-  CustomAlert,
-  TitleCard,
   ObservationService,
+  TitleCard,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import {
   Alert,
@@ -217,6 +217,7 @@ export default function List({ userTokenInfo, footerLinks }) {
             borderWidth="1px"
             padding="4"
             shadow="AlertShadow"
+            // background={"bgYellowColor.400"}
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
               ipStatus
@@ -287,16 +288,21 @@ export default function List({ userTokenInfo, footerLinks }) {
                     {campList?.pcr_camp?.map((item, i) => {
                       const index = i + 1;
                       return (
-                        <HStack space={2}>
-                          <TitleCard
-                            onPress={() => {
-                              setCampSelected(item);
-                            }}
-                            title={
-                              <FrontEndTypo.H1 bold color={"white"}>
-                                {`C${String(index).padStart(2)}`}
-                              </FrontEndTypo.H1>
-                            }
+                        <TitleCard
+                          _icon=""
+                          icon={
+                            <IconByName
+                              _icon={{ color: "white" }}
+                              name="Book2LineIcon"
+                            />
+                          }
+                          onPress={() => {
+                            setCampSelected(item);
+                          }}
+                        >
+                          <HStack
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
                           >
                             <HStack
                               // direction={["column", "row", "row"]}
@@ -350,25 +356,24 @@ export default function List({ userTokenInfo, footerLinks }) {
                                 />
                               </HStack>
                             </HStack>
-                          </TitleCard>
-                        </HStack>
+                          </HStack>
+                        </TitleCard>
                       );
                     })}
-                    {campList?.pcr_camp?.length < 2 ||
-                      (campList?.camps?.length > 1 && (
-                        <FrontEndTypo.Secondarybutton
-                          onPress={() => {
-                            navigate(`/camps/new/learners`, { state: "camp" });
-                          }}
-                        >
-                          <FrontEndTypo.H3 color="textMaroonColor.400">
-                            {campCount == 0
-                              ? t("START_FIRST_CAMP_REGISTER")
-                              : t("START_SECOND_CAMP_REGISTER")}
-                          </FrontEndTypo.H3>
-                        </FrontEndTypo.Secondarybutton>
-                      ))}
-                    <CustomAlert status={"warning"} title={t("CAMP_WARNING")} />
+                    {campCount >= 0 && campCount < 2 && (
+                      <FrontEndTypo.Secondarybutton
+                        onPress={() => {
+                          navigate(`/camps/new/learners`, { state: "camp" });
+                        }}
+                      >
+                        <FrontEndTypo.H3 color="textMaroonColor.400">
+                          {campCount == 0
+                            ? t("START_FIRST_CAMP_REGISTER")
+                            : t("START_SECOND_CAMP_REGISTER")}
+                        </FrontEndTypo.H3>
+                      </FrontEndTypo.Secondarybutton>
+                    )}
+                    <CustomAlert title={t("CAMP_WARNING")} status={"info"} />
                   </VStack>
                 ) : (
                   <CustomAlert
