@@ -24,6 +24,7 @@ import {
   CheckIcon,
   CloseIcon,
   HStack,
+  Image,
   Modal,
   Select,
   Stack,
@@ -45,6 +46,7 @@ import {
   getIndexedDBItem,
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
+import DashboardCard from "component/common_components/DashboardCard";
 
 const styles = {
   inforBox: {
@@ -609,8 +611,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 size={"30px"}
                 resizeMode="contain"
               /> */}
-              <FrontEndTypo.H1 color="textGreyColor.900" pl="1">
-                {t("HELLO_HOME")}, {facilitator?.first_name}!
+              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
+                {t("HELLO")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
             {events?.length ? (
@@ -975,12 +977,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
               </FrontEndTypo.Primarybutton>
 
-            <FrontEndTypo.Secondarybutton
+             <FrontEndTypo.Secondarybutton
               width="100%"
               onPress={(e) => navigate("/examschedule")}
             >
               {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton> 
+            </FrontEndTypo.Secondarybutton>
+            </VStack>
           </Stack> */}
 
           {/* <DashboardCard
@@ -988,9 +991,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             titleDetail={"LEARNER_EXAMINATION_DETAILS"}
             primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
             navigation={"/examresult"}
-          />  */}
+          /> */}
 
-          {/* Temp Comment  End*/}
+          {/* Temp Comment  End */}
         </VStack>
       </VStack>
       <Modal
