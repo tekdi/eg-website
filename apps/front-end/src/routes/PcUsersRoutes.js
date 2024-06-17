@@ -16,11 +16,11 @@ export default [
     component: PcDashboard,
   },
   {
-    path: "prerak/prerakList",
+    path: "/prerak/prerakList",
     component: PrerakList,
   },
   {
-    path: "prerak/prerakProfileView/:id",
+    path: "/prerak/prerakProfileView/:id",
     component: PrerakProfileView,
   },
   { path: "/", component: PcDashboard },
