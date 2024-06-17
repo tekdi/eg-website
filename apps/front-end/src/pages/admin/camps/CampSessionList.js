@@ -5,9 +5,18 @@ import {
   campService,
   Loading,
   enumRegistryService,
+  arrList,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Alert, HStack, Modal, ScrollView, Stack, VStack } from "native-base";
+import {
+  Alert,
+  HStack,
+  Modal,
+  Progress,
+  ScrollView,
+  Stack,
+  VStack,
+} from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -216,6 +225,10 @@ export default function CampSessionList({ footerLinks }) {
     return <Loading />;
   }
 
+  const calculateProgress = (completedSessions, totalSessions) => {
+    if (totalSessions === 0) return 0; // to avoid division by zero
+    return (completedSessions / totalSessions) * 100;
+  };
   return (
     <Layout
       _appBar={{

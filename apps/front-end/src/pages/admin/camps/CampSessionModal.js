@@ -348,7 +348,10 @@ export const SessionList = React.memo(
                     />
                   )}
 
-                  <FrontEndTypo.H2 alignItem="center">
+                  <FrontEndTypo.H2
+                    alignItem="center"
+                    color="floatingLabelColor.500"
+                  >
                     {t("SESSION") + " " + item?.ordering}
                   </FrontEndTypo.H2>
                 </HStack>
