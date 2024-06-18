@@ -21,7 +21,6 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
-    console.log({ boardList });
     setBoardList(boardList?.[0]);
     setLoading(false);
   }, []);
@@ -60,7 +59,6 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
     fetchData();
   }, [filter?.date]);
 
-  // console.log({ filter });
   return (
     <Layout
       // loading={loading}

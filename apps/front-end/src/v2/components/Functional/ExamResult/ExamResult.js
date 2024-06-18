@@ -111,7 +111,6 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     }
     setLoading(false);
   };
-  console.log({ filter });
   return (
     <Layout loading={loading} _footer={{ menues: footerLinks }}>
       <VStack p="5" minHeight={"500px"} space={4} style={{ zIndex: -1 }}>
