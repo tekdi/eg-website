@@ -211,7 +211,7 @@ export default {
         "diploma_details",
       ],
       type: "object",
-      title: "2_VOLUNTEER_AND_WORK_DETAILS",
+      title: "QUALIFICATION_DETAILS",
       properties: {
         qualification_master_id: {
           description: "YOUR_HIGHEST_QUALIFICATION",

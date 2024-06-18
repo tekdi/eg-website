@@ -40,33 +40,33 @@ export default {
           enumNames: ["Yes", "No"],
           enum: ["yes", "no"],
         },
-        reference_details: {
-          type: "object",
-          description: "REFERENCE_DETAILS",
-          required: ["name", "contact_number"],
-          properties: {
-            name: {
-              type: "string",
-              title: "NAME",
-              help: "NAME_OF_YOUR_EMPLOYER",
-              regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-            },
-            contact_number: {
-              type: ["number", "null"],
-              title: "CONTACT_NUMBER",
-              format: "MobileNumber",
-            },
-            type_of_document: {
-              type: ["string", "null"],
-              title: "TYPE_OF_DOCUMENT",
-            },
-            document_id: {
-              title: "UPLOAD_YOUR_DOCUMENT",
-              type: ["string", "number", "null"],
-              format: "OfflineFileUpload",
-            },
-          },
-        },
+        // reference_details: {
+        //   type: "object",
+        //   description: "REFERENCE_DETAILS",
+        //   required: ["name", "contact_number"],
+        //   properties: {
+        //     name: {
+        //       type: "string",
+        //       title: "NAME",
+        //       help: "NAME_OF_YOUR_EMPLOYER",
+        //       regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+        //     },
+        //     contact_number: {
+        //       type: ["number", "null"],
+        //       title: "CONTACT_NUMBER",
+        //       format: "MobileNumber",
+        //     },
+        //     type_of_document: {
+        //       type: ["string", "null"],
+        //       title: "TYPE_OF_DOCUMENT",
+        //     },
+        //     document_id: {
+        //       title: "UPLOAD_YOUR_DOCUMENT",
+        //       type: ["string", "number", "null"],
+        //       format: "OfflineFileUpload",
+        //     },
+        //   },
+        // },
       },
     },
   },
