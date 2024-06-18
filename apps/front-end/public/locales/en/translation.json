@@ -1762,7 +1762,7 @@
   "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
   "PRACTICALS": "Practicals Exam",
   "THEORY": "Theory Exam",
-  "MARK_LEARNER_EXAM_ATTENDANCE": "Mark Learner Exam Attendance",
+  "MARK_LEARNER_EXAM_ATTENDANCE": "Learner Exam Attendance",
   "EXAM_WARNING": "No Learners for the exam",
   "LEARNER_STATUS_COUNT": "Learner Status Count",
   "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "Access all information of your learner's status",
@@ -1889,7 +1889,7 @@
   "RESULT": "Result",
   "NO_OF_LEARNERS": "No. of Learners",
   "RESULT_UPLOAD_PENDING": "Result Upload Pending",
-  "UPDATE_LEARNER_EXAM_RESULTS": "Update Learner Exam Results",
+  "UPDATE_LEARNER_EXAM_RESULTS": "Learner Exam Results",
   "RESULT_UPLOAD_WARNING": "Upload the pdf file downloaded from the RSOS site. Do not upload image files of the result.",
   "STUDENT_LIST": "Student List",
   "ENR_NO": "ENR no: ",
@@ -1940,5 +1940,6 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC Learner - SYC Exam Already Done",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "pregnancy/the baby is very small",
   "ADMIT_CARD_NOT_FOUND": "Admit card not found",
-  "OTHERS": "Others"
+  "OTHERS": "Others",
+  "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students"
 }

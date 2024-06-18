@@ -6,6 +6,7 @@ import {
   organisationService,
   uploadRegistryService,
   ImageView,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -110,19 +111,11 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     }
     setLoading(false);
   };
-
+  console.log({ filter });
   return (
     <Layout loading={loading} _footer={{ menues: footerLinks }}>
-      <VStack
-        bg="primary.50"
-        p="5"
-        minHeight={"500px"}
-        space={4}
-        style={{ zIndex: -1 }}
-      >
-        <FrontEndTypo.H2 color="textMaroonColor.400">
-          {t("UPDATE_LEARNER_EXAM_RESULTS")}
-        </FrontEndTypo.H2>
+      <VStack p="5" minHeight={"500px"} space={4} style={{ zIndex: -1 }}>
+        <FrontEndTypo.H1>{t("UPDATE_LEARNER_EXAM_RESULTS")}</FrontEndTypo.H1>
         <VStack space={4}>
           <FrontEndTypo.H3 bold color="textGreyColor.500">
             {t("SELECT_BOARD")}
@@ -141,10 +134,18 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
               </Radio.Group>
             ))}
           </HStack>
-          <Alert status="info" p={4} flexDirection="row" gap="2">
-            <Alert.Icon size="3" />
-            <FrontEndTypo.H4>{t("RESULT_UPLOAD_WARNING")}</FrontEndTypo.H4>
-          </Alert>
+          {filter?.selectedId && (
+            <VStack>
+              <FrontEndTypo.H4>{`${t("TOTAL_NUMBER_OF_STUDENTS")} : ${
+                data?.length
+              }`}</FrontEndTypo.H4>
+            </VStack>
+          )}
+          <CustomAlert
+            _hstack={{ mb: "0", mt: "0" }}
+            title={t("RESULT_UPLOAD_WARNING")}
+            status={"info"}
+          />
 
           {data.length > 0 && (
             <>
@@ -160,16 +161,17 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                     pb={"10px"}
                     borderColor={"grayColor"}
                   >
-                    <VStack>
-                      <FrontEndTypo.H4>
-                        {t("ENR_NO")} {item?.enrollment_number}
-                      </FrontEndTypo.H4>
-                      <FrontEndTypo.H4>
-                        {t("NAME")}:{" "}
+                    <VStack space={2}>
+                      <FrontEndTypo.H3>
+                        {t("ENR_NO")}
+                        {item?.enrollment_number}
+                      </FrontEndTypo.H3>
+                      <FrontEndTypo.H3>
+                        {/* {t("NAME")}:{" "} */}
                         {`${item?.beneficiary_user?.first_name} ${
                           item?.beneficiary_user?.middle_name || ""
                         } ${item?.beneficiary_user?.last_name || ""}`}
-                      </FrontEndTypo.H4>
+                      </FrontEndTypo.H3>
                     </VStack>
                     {item?.result_upload_status === "uploaded" ||
                     item?.result_upload_status === "assign_to_ip" ? (
@@ -198,7 +200,12 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                           openFileUploadDialog(item);
                         }}
                       >
-                        <FrontEndTypo.H3 color={"blueText.800"}>
+                        <FrontEndTypo.H3
+                          style={{
+                            textDecoration: "underline",
+                            color: "#0500FF",
+                          }}
+                        >
                           {t("UPLOAD")}
                         </FrontEndTypo.H3>
                       </Pressable>
