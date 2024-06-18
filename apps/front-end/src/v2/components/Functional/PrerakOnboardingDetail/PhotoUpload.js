@@ -77,9 +77,14 @@ export default function PhotoUpload({
 
   return (
     <VStack py={6} px={4} mb={5} space="6">
-      <FrontEndTypo.H2 color="textGreyColor.750">
-        {t("ADD_ID_PHOTOS")}
-      </FrontEndTypo.H2>
+      <VStack space={2}>
+        <FrontEndTypo.H1 color="textGreyColor.750">
+          {t("ADD_ID_PHOTOS")}
+        </FrontEndTypo.H1>
+        <FrontEndTypo.H3 color="#4F4F4F">
+          {t("PHOTO_DESCRIPTION")}
+        </FrontEndTypo.H3>
+      </VStack>
       <VStack space={2}>
         <OfflineFileUpload
           schema={{

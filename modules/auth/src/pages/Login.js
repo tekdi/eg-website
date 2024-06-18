@@ -22,6 +22,7 @@ import {
   getOnboardingURLData,
   removeOnboardingURLData,
   removeOnboardingMobile,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -178,23 +179,11 @@ export default function Login() {
           size={200}
         />
         <VStack space={5} p="5">
-          <Alert status="warning" colorScheme="warning">
-            <VStack space={2} flexShrink={1}>
-              <HStack
-                flexShrink={1}
-                space={2}
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <HStack flexShrink={1} space={2} alignItems="center">
-                  <Alert.Icon />
-                  <FrontEndTypo.H4>
-                    {t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
-                  </FrontEndTypo.H4>
-                </HStack>
-              </HStack>
-            </VStack>
-          </Alert>
+          <CustomAlert
+            title={t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
+            status={"info"}
+          />
+
           {"alert" in errors && (
             <Alert w="100%" status={"error"}>
               <VStack space={2} flexShrink={1} w="100%">

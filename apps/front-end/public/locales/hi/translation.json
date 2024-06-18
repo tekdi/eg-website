@@ -104,7 +104,7 @@
   "ALL_PRERAK": "सभी प्रेरक",
   "ALL_PRERAKS": "सभी प्रेरक",
   "ALL_VOLUNTEERS": "सभी स्वयंसेवक",
-  "ALREADY_APPLIED_CHECK_STATUS": "पहले से ही लागू? स्थिति जाँचिए",
+  "ALREADY_APPLIED_CHECK_STATUS": "पहले से ही अप्लाई किया है? यहां लॉगिन करें",
   "ALREADY_APPLIED_SCHOLARSHIP": "पहले से ही स्कालर्शिप अप्लाई है",
   "ALREADY_CAMP_REGISTER": "प्रेरक एक कैंप मालिक है, कृपया उसके शिविर को किसी अन्य प्रेरक को पुनः सौंपें और फिर उसे अस्वीकृत/ड्रॉपआउट/रस्टिकेट के रूप में चिह्नित करें।",
   "ALREADY_ENROLLED_IN_OPEN_SCHOOL": "पहले से ही ओपन स्कूल में दाखिला",
@@ -1241,7 +1241,7 @@
   "PRACTICAL_EXAM": "प्रैक्टिकल परीक्षा",
   "PRAGATI_MOBILIZER": "प्रगति मोबिलाइजर",
   "PRAGATI_SYC": "प्रगति SYC",
-  "PREFERED_LANGUAGE": "पसंदीदा भाषा चुनें",
+  "PREFERED_LANGUAGE": "कृपया अपनी आवेदन के लिए पसंदीदा भाषा चुनें",
   "PREFERRED_CAMP_TIME": "पसंदीदा शिविर का समय",
   "PREFERRED_TIME": "पसंदीदा समय",
   "PREPARATION_FOR_EXAM": "परीक्षा की तैयारी",
@@ -1479,7 +1479,7 @@
   "SIGN_UP_IN_TWO_STEPS": "दो सरल चरणों में साइन अप करें!",
   "SKIP": "छोडे एवं आगे बढे",
   "SKIP_SUBMIT": "जमा करें पर जाएँ",
-  "SKIP_TO_APPLY": "लागू करें पर जाएँ",
+  "SKIP_TO_APPLY": "अभी अप्लाई करें",
   "SKIP_TO_DASHBOARD": "डैशबोर्ड पर जाएं",
   "SKIP_TO_LOGIN": "लॉगिन स्क्रीन पर जाएं",
   "SMARTPHONE": "स्मार्टफोन",
@@ -1905,5 +1905,7 @@
   "UPLOAD_FROM_PHONE": "फ़ोन से अपलोड करें",
   "PCR_LEARNING_ACTIVITIES": "नीव सीखने की गतिविधियाँ",
   "CAMP_EXECUTION": "शिविर संचालन",
-  "EPCP_REPORT": "EPCP"
+  "EPCP_REPORT": "EPCP",
+  "PHOTO_DESCRIPTION": "सुनिश्चित करें कि इस छवि में आपके चेहरे का एक स्पष्ट प्रोफ़ाइल दृश्य है। अनुचित छवि के परिणामस्वरूप आवेदन की अयोग्यता हो सकती है",
+  "4_QUALIFICATION_DETAILS": "4. योग्यता विवरण"
 }

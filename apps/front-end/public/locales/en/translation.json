@@ -104,7 +104,7 @@
   "ALL_PRERAK": "All Preraks",
   "ALL_PRERAKS": "All Preraks",
   "ALL_VOLUNTEERS": "All Volunteers",
-  "ALREADY_APPLIED_CHECK_STATUS": "Already Applied? Check Status",
+  "ALREADY_APPLIED_CHECK_STATUS": "Already Applied? Login Here",
   "ALREADY_APPLIED_SCHOLARSHIP": "Already applied scholarship",
   "ALREADY_CAMP_REGISTER": "Prerak is a camp owner.  Please reassign his/her camp to another prerak and then mark he/she as a reject/dropout/rusticate.",
   "ALREADY_ENROLLED_IN_OPEN_SCHOOL": "Already Enrolled In Open School",
@@ -1450,7 +1450,7 @@
   "SIGN_UP_IN_TWO_STEPS": "Sign Up in two easy steps !",
   "SKIP": "Skip",
   "SKIP_SUBMIT": "Skip and submit",
-  "SKIP_TO_APPLY": "Skip to apply",
+  "SKIP_TO_APPLY": "Apply Now",
   "SKIP_TO_DASHBOARD": "Skip to dashboard",
   "SKIP_TO_LOGIN": "Skip to Login",
   "SMARTPHONE": "Smartphone",
@@ -1669,7 +1669,7 @@
   "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE": "What are learner's career aspirations?",
   "WILL_THE_CAMP_BE_CONDUCTED_TODAY": "Will the camp be conducted today?",
   "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES": "Will your parents/family members support your studies?",
-  "WORK_DETAILS": "Job Details",
+  "WORK_DETAILS": "3.Job Details And Work Details",
   "WORK_EXPERIENCE": "Job Experience",
   "WORK_EXPERIENCE_PROOF": "Job Experience Proof",
   "WORK_EXPERIENCES": "Work Experience",
@@ -1923,5 +1923,7 @@
   "LEARNING_EXPERIENCES": "Skill Development &  Learning",
   "PCR_LEARNING_ACTIVITIES": "Neev Learning Activities",
   "CAMP_EXECUTION": "Camp Execution",
-  "EPCP_REPORT": "EPCP"
+  "EPCP_REPORT": "EPCP",
+  "PHOTO_DESCRIPTION": "Make sure this image has a clear profile view of your face. Inappropriate image may result in disqualification of the application.",
+  "4_QUALIFICATION_DETAILS": "4. Qualification Details"
 }

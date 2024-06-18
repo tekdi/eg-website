@@ -161,7 +161,7 @@ export default {
       },
     },
     reference_details: {
-      title: "3_REFERENCE_DETAILS",
+      title: "1_BASIC_DETAILS",
       description: "ADD_A_REFERENCE",
       step_name: "REFERENCE_DETAILS",
       type: "object",
@@ -185,9 +185,9 @@ export default {
       },
     },
     work_availability_details: {
-      step_name: "OTHER_DETAILS",
-      title: "4_OTHER_DETAILS",
+      title: "1_BASIC_DETAILS",
       type: "object",
+      step_name: "OTHER_DETAILS",
       required: ["availability"],
       properties: {
         availability: {
@@ -211,7 +211,7 @@ export default {
         "diploma_details",
       ],
       type: "object",
-      title: "2_VOLUNTEER_AND_WORK_DETAILS",
+      title: "4_QUALIFICATION_DETAILS",
       properties: {
         qualification_master_id: {
           description: "YOUR_HIGHEST_QUALIFICATION",
