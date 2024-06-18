@@ -54,35 +54,35 @@ export default function ChooseLanguage({ t, languageChanged }) {
           <TitleCard
             _hstack={{ bg: code === "hi" ? "bgRed.500" : undefined }}
             onPress={() => {
-              setCode("hi");
+              setCode("en");
               setLangChanged(true);
             }}
             _title={{ bg: code === "hi" ? "white" : "grayTitleCard" }}
             title={
               <FrontEndTypo.H3 color={code === "hi" ? "bgRed.500" : "white"}>
-                {t("HIN")}
+                {t("En")}
               </FrontEndTypo.H3>
             }
           >
             <FrontEndTypo.H3 color={code === "hi" ? "white" : null}>
-              {t("HINDI")}
+              {t("ENGLISH")}
             </FrontEndTypo.H3>
           </TitleCard>
           <TitleCard
             _hstack={{ bg: code === "en" ? "red.500" : undefined }}
             onPress={async () => {
-              setCode("en");
+              setCode("hi");
               setLangChanged(true);
             }}
             _title={{ bg: code === "en" ? "white" : "grayTitleCard" }}
             title={
               <FrontEndTypo.H3 color={code === "en" ? "red.500" : "white"}>
-                {t("En")}
+                {t("HIN")}
               </FrontEndTypo.H3>
             }
           >
             <FrontEndTypo.H3 color={code === "en" ? "white" : null}>
-              {t("ENGLISH")}
+              {t("HINDI")}
             </FrontEndTypo.H3>
           </TitleCard>
         </HStack>
