@@ -110,122 +110,130 @@ export default function LearnerList() {
   const [isDisable, setIsDisable] = useState(true);
 
   useEffect(async () => {
-    const data = await benificiaryRegistoryService.getStatusList();
-    if (data.length > 0) {
-      setSelectStatus(data);
+    try {
+      const data = await benificiaryRegistoryService.getStatusList();
+      if (data.length > 0) {
+        setSelectStatus(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch status list:", error);
     }
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoadingList(true);
-      const fetchedData = [
-        {
-          id: "1",
-          first_name: "John",
-          middle_name: null,
-          last_name: "Doe",
-          mobile: "1234567890",
-          program_beneficiaries: {
-            status: "enrolled",
-            enrollment_first_name: "John",
-            enrollment_middle_name: null,
-            enrollment_last_name: "Doe",
+      try {
+        const fetchedData = [
+          {
+            id: "1",
+            first_name: "John",
+            middle_name: null,
+            last_name: "Doe",
+            mobile: "1234567890",
+            program_beneficiaries: {
+              status: "enrolled",
+              enrollment_first_name: "John",
+              enrollment_middle_name: null,
+              enrollment_last_name: "Doe",
+            },
+            is_duplicate: false,
+            is_deactivated: false,
+            cohorts: [
+              {
+                name: "Cohort 2022-2023",
+                users: [
+                  {
+                    userId: 1,
+                    firstName: "Yogini",
+                    lastName: "Tayade",
+                    mobile: "8778909890",
+                  },
+                ],
+              },
+              {
+                name: "Cohort 2021-2022",
+                users: [
+                  {
+                    userId: 1,
+                    firstName: "Sonali",
+                    lastName: "Garud",
+                    mobile: "8909879098",
+                  },
+                  {
+                    userId: 2,
+                    firstName: "Reshma",
+                    lastName: "Mahadik",
+                    mobile: "9876543509",
+                  },
+                ],
+              },
+            ],
           },
-          is_duplicate: false,
-          is_deactivated: false,
-          cohorts: [
-            {
-              name: "Cohort 2022-2023",
-              users: [
-                {
-                  userId: 1,
-                  firstName: "Yogini",
-                  lastName: "Tayade",
-                  mobile: "8778909890",
-                },
-              ],
+          {
+            id: "2",
+            first_name: "Jane",
+            middle_name: "David",
+            last_name: "Smith",
+            mobile: "0987654321",
+            program_beneficiaries: {
+              status: "identified",
+              enrollment_first_name: "Jane",
+              enrollment_middle_name: "David",
+              enrollment_last_name: "Smith",
             },
-            {
-              name: "Cohort 2021-2022",
-              users: [
-                {
-                  userId: 1,
-                  firstName: "Sonali",
-                  lastName: "Garud",
-                  mobile: "8909879098",
-                },
-                {
-                  userId: 2,
-                  firstName: "Reshma",
-                  lastName: "Mahadik",
-                  mobile: "9876543509",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: "2",
-          first_name: "Jane",
-          middle_name: "David",
-          last_name: "Smith",
-          mobile: "0987654321",
-          program_beneficiaries: {
-            status: "identified",
-            enrollment_first_name: "Jane",
-            enrollment_middle_name: "David",
-            enrollment_last_name: "Smith",
+            is_duplicate: false,
+            is_deactivated: false,
+            cohorts: [
+              {
+                name: "Cohort 2023-2024",
+                users: [
+                  {
+                    userId: 1,
+                    firstName: "Snehal",
+                    lastName: "Sabade",
+                    mobile: "98768909990",
+                  },
+                ],
+              },
+            ],
           },
-          is_duplicate: false,
-          is_deactivated: false,
-          cohorts: [
-            {
-              name: "Cohort 2023-2024",
-              users: [
-                {
-                  userId: 1,
-                  firstName: "Snehal",
-                  lastName: "Sabade",
-                  mobile: "98768909990",
-                },
-              ],
+          {
+            id: "3",
+            first_name: "David",
+            middle_name: "Robin",
+            last_name: "Dane",
+            mobile: "9012345678",
+            program_beneficiaries: {
+              status: "enrolled",
+              enrollment_first_name: "David",
+              enrollment_middle_name: "Robin",
+              enrollment_last_name: "Dane",
             },
-          ],
-        },
-        {
-          id: "3",
-          first_name: "David",
-          middle_name: "Robin",
-          last_name: "Dane",
-          mobile: "9012345678",
-          program_beneficiaries: {
-            status: "enrolled",
-            enrollment_first_name: "David",
-            enrollment_middle_name: "Robin",
-            enrollment_last_name: "Dane",
+            is_duplicate: false,
+            is_deactivated: false,
+            cohorts: [
+              {
+                name: "Cohort 2024-2025",
+                users: [
+                  {
+                    userId: 1,
+                    firstName: "Dhanashree",
+                    lastName: "Patil",
+                    mobile: "98098909890",
+                  },
+                ],
+              },
+            ],
           },
-          is_duplicate: false,
-          is_deactivated: false,
-          cohorts: [
-            {
-              name: "Cohort 2024-2025",
-              users: [
-                {
-                  userId: 1,
-                  firstName: "Dhanashree",
-                  lastName: "Patil",
-                  mobile: "98098909890",
-                },
-              ],
-            },
-          ],
-        },
-      ];
-      setPrerakData(fetchedData);
-      setLoadingList(false);
+        ];
+        setPrerakData(fetchedData);
+        setLoadingList(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoadingList(false);
+      }
     };
-
     fetchData();
   }, []);
 
@@ -472,8 +480,9 @@ export default function LearnerList() {
                 {item?.first_name} {item?.last_name}
               </span>
               {item?.cohorts &&
-                item.cohorts.map((cohart, i) => (
+                item?.cohorts?.map((cohart, i) => (
                   <Box
+                    key={i}
                     bg="gray.100"
                     borderColor="gray.300"
                     borderRadius="10px"
