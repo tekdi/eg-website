@@ -1904,7 +1904,6 @@
   "YOU_CAN_ACCESS_YOUR_PROFILE_DETAILS_AND_EDIT_THEM_FROM_HERE": "You can access your profile details and edit them from here.",
   "MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS": "Mark your daily activities and tasks.",
   "USE_THIS_SPACE_TO_ORGANISE_YOUR_PRAGATI_SABHA": "Use this space to organise your Pragati Sabha.",
-  "PRAGATI_SABHA": "Pragati Sabha",
   "MY_DAILY_ACTIVITIES": "My Daily Activities",
   "MY_PROFILE": "My Profile",
   "VIEW_MY_PROFILE": "View My Profile",
@@ -1915,5 +1914,17 @@
   "DELETE": "Delete",
   "HOURS": "Hours",
   "DAILY_ACTIVITIES": "Daily Activities",
-  "MARK_AND_DONE": "Mark And Done"
+  "MARK_AND_DONE": "Mark And Done",
+  "ATTENDED_TRAINING": "Attended training",
+  "PRAGATI_SABHA": "Pragati sabha",
+  "PROVIDE_TRAINING": "Provide training",
+  "LEARNER_WORKSHOP": "Learner's workshop",
+  "LEARNER_IDENTIFICATION_SUPPORT": "Learner identification support",
+  "LEARNER_DOCUMENTATION_SUPPORT": "Learner documentation support",
+  "LEARNER_OS_ENR_SUPPORT": "Learner os enr support",
+  "ATTEND_NODAL_MEETING": "Attend nodal meeting",
+  "CONDUCT_PRI_MEETING": "Conduct pri meeting",
+  "CAMP_EXECUTION_SUPPORT": "Camp execution support",
+  "CAMP_VISIT_FOR_MONITORING_AND_HH_SUPPORT": "Camp visit for monitoring and hh support",
+  "COLLECT_CASE_STUDY_FROM_FIELD": "Collect case study from field"
 }

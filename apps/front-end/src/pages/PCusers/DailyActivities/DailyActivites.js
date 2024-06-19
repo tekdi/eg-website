@@ -5,13 +5,13 @@ import {
   FrontEndTypo,
   getOptions,
   geolocationRegistryService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { Box, HStack, Pressable, VStack } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import Form from "@rjsf/core";
 
-import { schema1 } from "./ActivitiesSchema";
 import {
   templates,
   widgets,
@@ -19,6 +19,7 @@ import {
   transformErrors,
   onError,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
+import { schema1 } from "./ActivitiesSchema";
 const DailyActivities = () => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -51,42 +52,46 @@ const DailyActivities = () => {
     },
   };
 
-  useEffect(async () => {
-    let newSchema = getOptions(schema1, {
-      key: "hours",
-      arr: hours,
-      title: "title",
-      value: "title",
-    });
-    // if (schema?.properties?.village) {
-    //   const qData = await geolocationRegistryService.getVillages({
-    //     name: block,
-    //     state: state,
-    //     district: district,
-    //     gramp: gramp || "null",
-    //   });
-    //   if (schema?.["properties"]?.["village"]) {
-    //     newSchema = getOptions(newSchema, {
-    //       key: "village",
-    //       arr: qData?.villages,
-    //       title: "village_ward_name",
-    //       value: "village_ward_name",
-    //     });
-    //   }
-    //   setSchema(newSchema);
-    // }
-    newSchema = getOptions(
-      newSchema,
-
-      {
-        key: "minutes",
-        arr: minutes,
+  useEffect(() => {
+    const fetchData = async () => {
+      const qData = await geolocationRegistryService.getVillages({
+        name: "ARTHUNA",
+        state: "RAJASTHAN",
+        district: "BANSWARA",
+        gramp: "null",
+      });
+      console.log({ qData });
+      let newSchema = getOptions(schema1, {
+        key: "hours",
+        arr: hours,
         title: "title",
         value: "title",
-      }
-    );
-    setSchema(newSchema);
-    setLoading(false);
+      });
+
+      newSchema = getOptions(
+        newSchema,
+
+        {
+          key: "village",
+          arr: qData.villages,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        }
+      );
+      newSchema = getOptions(
+        newSchema,
+
+        {
+          key: "minutes",
+          arr: minutes,
+          title: "title",
+          value: "title",
+        }
+      );
+      setSchema(newSchema);
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
   const validateTime = (input) => {
@@ -136,7 +141,9 @@ const DailyActivities = () => {
     let newFormData = data.formData;
     if (_.isEmpty(errors)) {
       console.log({ newFormData });
-      navigate(`/dailyactivities/${activity}/view`);
+      const data = await PcuserService.MarkActivity(newFormData);
+      console.log({ data });
+      //navigate(`/dailyactivities/${activity}/view`);
     }
   };
 

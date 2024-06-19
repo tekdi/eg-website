@@ -1905,7 +1905,6 @@
   "YOU_CAN_ACCESS_YOUR_PROFILE_DETAILS_AND_EDIT_THEM_FROM_HERE.": "आप अपने प्रोफ़ाइल विवरण तक पहुँच सकते हैं और उन्हें यहाँ से संपादित कर सकते हैं",
   "MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS.": "अपनी दैनिक गतिविधियों और कार्यों को चिह्नित करें",
   "USE_THIS_SPACE_TO_ORGANISE_YOUR_PRAGATI_SABHA.": "अपनी प्रगति सभा आयोजित करने के लिए इस स्थान का उपयोग करें",
-  "PRAGATI_SABHA": "प्रगति सभा",
   "MY_DAILY_ACTIVITIES": "मेरी दैनिक गतिविधियाँ",
   "MY_PROFILE": "मेरा प्रोफाइल",
   "VIEW_MY_PROFILE": "मेरा प्रोफाइल देखें",
@@ -1916,5 +1915,17 @@
   "DELETE": "हटाएं",
   "HOURS": "घंटे",
   "DAILY_ACTIVITIES": "दैनिक गतिविधियाँ",
-  "MARK_AND_DONE": "मार्क एंड डन"
+  "MARK_AND_DONE": "मार्क एंड डन",
+  "ATTENDED_TRAINING": "उपस्थित प्रशिक्षण",
+  "PRAGATI_SABHA": "प्रगति सभा",
+  "PROVIDE_TRAINING": "प्रशिक्षण प्रदान करें",
+  "LEARNER_WORKSHOP": "शिक्षार्थी कार्यशाला",
+  "LEARNER_IDENTIFICATION_SUPPORT": "शिक्षार्थी पहचान समर्थन",
+  "LEARNER_DOCUMENTATION _SUPPORT": "शिक्षार्थी प्रलेखन समर्थन",
+  "LEARNER_OS_ENR_SUPPORT": "शिक्षार्थी ओएस एनआर समर्थन",
+  "ATTEND_NODAL_MEETING": "नोडल बैठक में भाग लें",
+  "CONDUCT_PRI_MEETING": "प्राथमिक बैठक आयोजित करें",
+  "CAMP_EXECUTION_SUPPORT": "शिविर निष्पादन समर्थन",
+  "CAMP_VISIT_FOR_MONITORING_AND_HH_SUPPORT": "निगरानी और एचएच समर्थन के लिए शिविर का दौरा करें",
+  "COLLECT_CASE_STUDY_FROM_FIELD": "क्षेत्र से मामले का अध्ययन एकत्र करें"
 }

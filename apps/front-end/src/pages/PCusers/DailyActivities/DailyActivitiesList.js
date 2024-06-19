@@ -7,6 +7,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { HStack, Pressable, VStack } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
+import { activities } from "./ActivitiesSchema";
 
 const DailyActivitiesList = () => {
   const [loading, setLoading] = useState(true);
@@ -15,12 +16,7 @@ const DailyActivitiesList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setList([
-      "Attended Training",
-      "Pragati Sabha",
-      "Provide Training",
-      "Learner Identification Support",
-    ]);
+    setList(activities);
     setLoading(false);
   }, []);
 

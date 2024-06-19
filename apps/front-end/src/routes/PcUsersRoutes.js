@@ -4,9 +4,11 @@ import React, { lazy } from "react";
 
 const PcDashboard = lazy(() => import("pages/PCusers/PcDashboard"));
 const DailyActivitiesList = lazy(() =>
-  import("pages/PCusers/DailyActivitiesList")
+  import("pages/PCusers/DailyActivities/DailyActivitiesList")
 );
-const DailyActivities = lazy(() => import("pages/PCusers/DailyActivites"));
+const DailyActivities = lazy(() =>
+  import("pages/PCusers/DailyActivities/DailyActivites")
+);
 const DailyActivitiesView = lazy(() =>
   import("pages/PCusers/camps/DailyActivitiesView")
 );
