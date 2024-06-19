@@ -4,9 +4,9 @@ import {
   FrontEndTypo,
   IconByName,
   AdminLayout as Layout,
-  cohortService,
   geolocationRegistryService,
   getOptions,
+  PcuserService,
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -175,7 +175,7 @@ const PcAdd = ({ footerLinks }) => {
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     const payload = getPayload(newFormData);
-    const result = await cohortService.registerPC(payload);
+    const result = await PcuserService.registerPC(payload);
     if (result?.success) {
       navigate("/admin/pc");
     } else {

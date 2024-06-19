@@ -16,10 +16,8 @@ import {
   ScrollView,
   Button,
   Input,
-  Modal,
   Stack,
   Pressable,
-  Menu,
 } from "native-base";
 import {
   getSelectedAcademicYear,
@@ -28,23 +26,19 @@ import {
   useWindowSize,
   AdminTypo,
   geolocationRegistryService,
-  facilitatorRegistryService,
   enumRegistryService,
   setQueryParameters,
   urlData,
   getOptions,
   getSelectedProgramId,
   tableCustomStyles,
-  cohortService,
+  PcuserService,
 } from "@shiksha/common-lib";
-// import Table from "./Table";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
-import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
-import { ChipStatus } from "component/Chip";
 
 const uiSchema = {
   district: {
@@ -179,7 +173,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     const fetchFilteredData = async () => {
       if (urlFilterApply) {
         setTableLoading(true);
-        const result = await cohortService.Pclist({
+        const result = await PcuserService.Pclist({
           ...filter,
           limit: filter?.limit || 10,
         });
@@ -517,7 +511,6 @@ function Table({
   height,
 }) {
   const { t } = useTranslation();
-  const [selectedData, setSelectedData] = useState();
   const navigate = useNavigate();
 
   const handleRowClick = useCallback(
