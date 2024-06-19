@@ -1738,7 +1738,7 @@
   "UPDATE_LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी की परीक्षा उपस्थिति अंकित करें",
   "PRACTICALS": "प्रैक्टिकल परीक्षा",
   "THEORY": "लिखित परीक्षा",
-  "MARK_LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी की परीक्षा उपस्थिति अंकित करें",
+  "MARK_LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी की परीक्षा उपस्थिति ",
   "EXAM_WARNING": "परीक्षा के लिए कोई शिक्षार्थी नहीं",
   "LEARNER_STATUS_COUNT": "शिक्षार्थी स्थिति गणना",
   "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "अपने शिक्षार्थियों की स्थिति की सभी जानकारी तक पहुँचें",
@@ -1867,7 +1867,7 @@
   "RESULT": "परिणाम",
   "NO_OF_LEARNERS": "शिक्षार्थियों की संख्या",
   "RESULT_UPLOAD_PENDING": "परिणाम अपलोड करना बाकी है",
-  "UPDATE_LEARNER_EXAM_RESULTS": "लर्नर परीक्षा परिणाम अद्यतन करें",
+  "UPDATE_LEARNER_EXAM_RESULTS": "लर्नर परीक्षा परिणाम",
   "RESULT_UPLOAD_WARNING": "RSOS साइट से डाउनलोड की गई पीडीएफ फाइल अपलोड करें। परिणाम की छवि फाइल अपलोड न करें।",
   "STUDENT_LIST": "छात्र सूची",
   "ENR_NO": "ईएनआर नं: ",
@@ -1912,5 +1912,6 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC शिक्षार्थी - SYC परीक्षा पहले ही हो चुकी",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "प्रेगनेंसी का समय है / बच्चा बहुत छोटा है",
   "ADMIT_CARD_NOT_FOUND": "एडमिट कार्ड नहीं मिला",
-  "OTHERS": "अन्य"
+  "OTHERS": "अन्य",
+  "TOTAL_NUMBER_OF_STUDENTS": "शिक्षार्थी की कुल संख्या"
 }

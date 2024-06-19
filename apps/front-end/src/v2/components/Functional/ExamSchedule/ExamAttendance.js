@@ -4,12 +4,12 @@ import {
   FrontEndTypo,
   enumRegistryService,
   organisationService,
+  IconByName,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio } from "native-base";
+import { HStack, VStack, Radio, Stack, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
-import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
-import { setIndexedDBItem } from "v2/utils/Helper/JSHelper";
+import { useNavigate } from "react-router-dom";
 
 const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -17,6 +17,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState();
   const [subjects, setSubjects] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
@@ -37,21 +38,21 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
         const subject = !Array.isArray(subjectData?.data)
           ? []
           : subjectData?.data;
-        const newData = subject?.flatMap((subject) => {
-          return subject.events.map((event) => ({
-            subject_name: subject.name,
-            subject_id: subject.id,
-            event_id: event.id,
-            start_date: event?.start_date,
-            end_date: event?.end_date,
-            type: event.type.charAt(0).toUpperCase() + event.type.slice(1), // Capitalize the type
-          }));
-        });
-        const LearnerList = await organisationService.getattendanceLearnerList(
-          newData
-        );
+        // const newData = subject?.flatMap((subject) => {
+        //   return subject.events.map((event) => ({
+        //     subject_name: subject.name,
+        //     subject_id: subject.id,
+        //     event_id: event.id,
+        //     start_date: event?.start_date,
+        //     end_date: event?.end_date,
+        //     type: event.type.charAt(0).toUpperCase() + event.type.slice(1), // Capitalize the type
+        //   }));
+        // });
+        // const LearnerList = await organisationService.getattendanceLearnerList(
+        //   newData
+        // );
 
-        setSubjects(!Array.isArray(LearnerList?.data) ? [] : LearnerList?.data);
+        setSubjects(!Array.isArray(subject) ? [] : subject);
       }
     };
 
@@ -59,7 +60,10 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   }, [filter?.date]);
 
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
+    <Layout
+      // loading={loading}
+      _footer={{ menues: footerLinks }}
+    >
       <VStack
         bg="primary.50"
         p="5"
@@ -90,15 +94,61 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
           {filter?.selectedId && (
             <DatePicker setFilter={setFilter} filter={filter} />
           )}
-          {filter?.date != "" && (
-            <CustomAccordion
-              data={subjects}
-              maxDate={boardList?.addedMaxDate}
-              setFilter={setFilter}
-              setBoardList={setBoardList}
-              date={filter?.date}
-              board={filter?.selectedId}
-            />
+          {filter?.date != "" && filter?.selectedId && (
+            <Stack space={2}>
+              <FrontEndTypo.H2 color="textGreyColor.750">
+                {t("SUBJECTS")}
+              </FrontEndTypo.H2>
+
+              {/* <CustomAccordion
+                  data={subjects}
+                  setFilter={setFilter}
+                  setBoardList={setBoardList}
+                  date={filter?.date}
+                  board={filter?.selectedId}
+                /> */}
+
+              <VStack space={4}>
+                {subjects?.map((subject, index) => (
+                  <VStack key={subject.id}>
+                    <Pressable
+                      p={2}
+                      bg="boxBackgroundColour.100"
+                      // shadow="AlertShadow"
+                      borderBottomColor={"garyTitleCardBorder"}
+                      borderBottomStyle={"solid"}
+                      borderBottomWidth={"2px"}
+                      onPress={() => {
+                        navigate(`/learner/examattendance`, {
+                          state: { subject, filter, boardList },
+                        });
+                      }}
+                    >
+                      <HStack w={"100%"} justifyContent={"space-between"}>
+                        <HStack space={2} alignItems={"center"}>
+                          <FrontEndTypo.H2 color={"blueText.700"}>
+                            {subject?.name}
+                            {subject?.events?.[0]?.type == "practical" &&
+                              ` - ${t("PRACTICALS")}`}
+                          </FrontEndTypo.H2>
+                        </HStack>
+                        {
+                          <IconByName
+                            isDisabled
+                            name="ArrowRightSLineIcon"
+                            _icon={{ size: "30px" }}
+                            color="blueText.700"
+                          />
+                        }
+                      </HStack>
+                    </Pressable>
+                  </VStack>
+                ))}
+                {filter?.date && subjects?.length < 1 && (
+                  <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
+                )}
+              </VStack>
+            </Stack>
           )}
         </VStack>
       </VStack>
