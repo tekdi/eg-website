@@ -1909,5 +1909,11 @@
   "MY_PROFILE": "My Profile",
   "VIEW_MY_PROFILE": "View My Profile",
   "MARK_DAILY_ACTIVITIES": "Mark Daily Activities",
-  "ORGANIS_EVENT": "Organise Event"
+  "ORGANIS_EVENT": "Organise Event",
+  "ADD_ACTIVITY_FOR_ANOTHER_VILLAGE": "+ Add activity for another village",
+  "TIME_SPENT_IN_HOURS": "Time Spent (In Hour)",
+  "DELETE": "Delete",
+  "HOURS": "Hours",
+  "DAILY_ACTIVITIES": "Daily Activities",
+  "MARK_AND_DONE": "Mark And Done"
 }

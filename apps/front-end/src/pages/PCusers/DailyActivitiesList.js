@@ -43,7 +43,7 @@ const DailyActivitiesList = () => {
               <Pressable
                 flex={1}
                 onPress={async () => {
-                  navigate(`/pcuser/dailyactivities/${item}`);
+                  navigate(`/dailyactivities/${item}/form`);
                 }}
               >
                 <HStack justifyContent="space-between" space={1}>

@@ -50,7 +50,7 @@ export default function CampList() {
           <FrontEndTypo.H2 pb={"20px"}>`Prerak Name`</FrontEndTypo.H2>
           <Pressable
             onPress={() => {
-              navigate("/pcuser/camps/12234");
+              navigate("/camps/12234");
             }}
             bg="boxBackgroundColour.100"
             shadow="AlertShadow"

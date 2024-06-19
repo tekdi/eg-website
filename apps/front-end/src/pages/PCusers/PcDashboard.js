@@ -15,8 +15,13 @@ const PcDashboard = () => {
   return (
     <Layout
       loading={loading}
-      //facilitator={facilitator}
-      // _footer={{ menues }}
+      _appBar={{
+        profile_url: "facilitator?.profile_photo_1?.name",
+        name: ["facilitator?.first_name", "facilitator?.last_name"].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
+      }}
+      // facilitator={facilitator}
+      // _footer={{ menues: footerLinks }}
       analyticsPageTitle={"HOME"}
       pageTitle={t("HOME")}
     >
@@ -56,7 +61,7 @@ const PcDashboard = () => {
               title={"MY_DAILY_ACTIVITIES"}
               titleDetail={"MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS"}
               primaryBtn={"MARK_DAILY_ACTIVITIES"}
-              navigation={"/pcuser/dailyactivities/list"}
+              navigation={"/dailyactivities/list"}
             />
             <DashboardCard
               title={"PRAGATI_SABHA"}

@@ -2,6 +2,11 @@ export const schema1 = {
   type: "object",
   required: ["description", "hours", "minutes"],
   properties: {
+    village: {
+      label: "VILLAGE_WARD",
+      type: "string",
+      format: "select",
+    },
     description: {
       label: "DESCRIPTION",
       type: ["string", "number"],

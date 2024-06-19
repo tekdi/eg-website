@@ -4,6 +4,7 @@ import {
   CardComponent,
   FrontEndTypo,
   getOptions,
+  geolocationRegistryService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { Box, HStack, Pressable, VStack } from "native-base";
@@ -28,6 +29,9 @@ const DailyActivities = () => {
   const [errors, setErrors] = useState({});
   const [isDisable, setIsDisable] = useState(false);
   const { activity } = useParams();
+  const { step } = useParams();
+
+  console.log({ step });
 
   const hours = [
     { title: 1 },
@@ -47,13 +51,30 @@ const DailyActivities = () => {
     },
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     let newSchema = getOptions(schema1, {
       key: "hours",
       arr: hours,
       title: "title",
       value: "title",
     });
+    // if (schema?.properties?.village) {
+    //   const qData = await geolocationRegistryService.getVillages({
+    //     name: block,
+    //     state: state,
+    //     district: district,
+    //     gramp: gramp || "null",
+    //   });
+    //   if (schema?.["properties"]?.["village"]) {
+    //     newSchema = getOptions(newSchema, {
+    //       key: "village",
+    //       arr: qData?.villages,
+    //       title: "village_ward_name",
+    //       value: "village_ward_name",
+    //     });
+    //   }
+    //   setSchema(newSchema);
+    // }
     newSchema = getOptions(
       newSchema,
 
@@ -115,6 +136,7 @@ const DailyActivities = () => {
     let newFormData = data.formData;
     if (_.isEmpty(errors)) {
       console.log({ newFormData });
+      navigate(`/dailyactivities/${activity}/view`);
     }
   };
 
@@ -125,7 +147,7 @@ const DailyActivities = () => {
       analyticsPageTitle={"HOME"}
       pageTitle={t("HOME")}
     >
-      <VStack space="4" px="4" pb="50px" alignContent="center">
+      <VStack space="4" px="4" pb="90px" alignContent="center">
         <FrontEndTypo.H1 pt="10px">{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>
         <FrontEndTypo.H3>{t(activity)}</FrontEndTypo.H3>
 
