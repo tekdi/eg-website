@@ -951,7 +951,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
 
           {/* Temp Comment */}
-          {/* <Stack
+          <Stack
             space="10"
             p={4}
             mx={"2"}
@@ -975,13 +975,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
               </FrontEndTypo.Primarybutton>
 
-            <FrontEndTypo.Secondarybutton
-              width="100%"
-              onPress={(e) => navigate("/examschedule")}
-            >
-              {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton> 
-          </Stack> */}
+              <FrontEndTypo.Secondarybutton
+                width="100%"
+                onPress={(e) => navigate("/examschedule")}
+              >
+                {t("VIEW_EXAM_SCHEDULE")}
+              </FrontEndTypo.Secondarybutton>
+            </VStack>
+          </Stack>
 
           {/* <DashboardCard
             title={"LEARNER_EXAM_RESULTS"}
