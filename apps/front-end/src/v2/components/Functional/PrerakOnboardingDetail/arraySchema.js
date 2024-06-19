@@ -25,7 +25,7 @@ export default {
           type: ["string", "null"],
         },
         experience_in_years: {
-          description: "EXPERIENCE_IN_YEARS",
+          label: "EXPERIENCE_IN_YEARS",
           type: "string",
           format: "CustomR",
           grid: 6,
@@ -33,7 +33,7 @@ export default {
           enum: ["0", "1", "2", "3", "4", "5"],
         },
         related_to_teaching: {
-          description: "IS_THE_JOB_RELATED_TO_TEACHING",
+          label: "IS_THE_JOB_RELATED_TO_TEACHING",
           type: "string",
           _stack: { direction: "row", justifyContent: "space-between" },
           format: "RadioBtn",

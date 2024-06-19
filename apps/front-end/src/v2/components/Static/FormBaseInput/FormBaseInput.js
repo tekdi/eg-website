@@ -325,14 +325,14 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <FrontEndTypo.H1
+                  <FrontEndTypo.H3
                     color="textGreyColor.900"
                     fontWeight="600"
                     lineHeight="30px"
                   >
                     {t(schema?.label ? schema?.label : label)}
-                  </FrontEndTypo.H1>
-                  <H3 color="textGreyColor.750">{required ? "*" : null}</H3>
+                  </FrontEndTypo.H3>
+                  {required && <H3 color="red.700">*</H3>}
                 </HStack>
               </label>
             )}

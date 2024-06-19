@@ -24,7 +24,7 @@ export default {
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         dob: {
-          description: "DATE_OF_BIRTH",
+          label: "DATE_OF_BIRTH",
           type: "string",
           format: "date",
         },
@@ -43,7 +43,7 @@ export default {
           format: "MobileNumber",
         },
         device_ownership: {
-          description: "DO_YOU_OWN_A_MOBILE_PHONE",
+          label: "DO_YOU_OWN_A_MOBILE_PHONE",
           type: "string",
           format: "RadioBtn",
           enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
@@ -51,7 +51,7 @@ export default {
           readOnly: "",
         },
         device_type: {
-          description: "TYPE_OF_MOBILE_PHONE",
+          label: "TYPE_OF_MOBILE_PHONE",
           type: "string",
           format: "CustomR",
           grid: 2,
@@ -125,7 +125,7 @@ export default {
       required: ["gender", "marital_status", "social_category"],
       properties: {
         gender: {
-          description: "GENDER",
+          label: "GENDER",
           type: "string",
           format: "CustomR",
           grid: 3,
@@ -147,13 +147,13 @@ export default {
           enum: ["female", "male", "other"],
         },
         marital_status: {
-          description: "MARITAL_STATUS",
+          label: "MARITAL_STATUS",
           type: "string",
           format: "RadioBtn",
           grid: 2,
         },
         social_category: {
-          description: "SOCIAL_CATEGORY",
+          label: "SOCIAL_CATEGORY",
           type: "string",
           format: "RadioBtn",
           grid: 2,
@@ -191,7 +191,7 @@ export default {
       required: ["availability"],
       properties: {
         availability: {
-          description: "YOUR_WORK_AVAILABILITY_WILL_BE",
+          label: "YOUR_WORK_AVAILABILITY_WILL_BE",
           type: "string",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
@@ -214,7 +214,7 @@ export default {
       title: "4_QUALIFICATION_DETAILS",
       properties: {
         qualification_master_id: {
-          description: "YOUR_HIGHEST_QUALIFICATION",
+          label: "YOUR_HIGHEST_QUALIFICATION",
           type: ["string", "number"],
           format: "RadioBtn",
           grid: 2,
@@ -224,15 +224,14 @@ export default {
         //   title: "TYPE_OF_DOCUMENT",
         // },
         qualification_reference_document_id: {
-          description: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
+          label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
           document_type: "highest_qualification_document",
           type: ["string", "number"],
           format: "OfflineFileUpload",
           uploadTitle: "UPLOAD_FROM_PHONE",
         },
         qualification_ids: {
-          type: "array",
-          description: "TEACHING_RALATED_DEGREE",
+          label: "TEACHING_RALATED_DEGREE",
           format: "MultiCheck",
           grid: 1,
           items: {
@@ -241,7 +240,7 @@ export default {
           uniqueItems: true,
         },
         has_diploma: {
-          description: "HAVE_YOU_DONE_YOUR_DIPLOMA",
+          label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
           type: "boolean",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
