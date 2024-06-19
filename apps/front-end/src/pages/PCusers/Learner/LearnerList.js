@@ -110,6 +110,7 @@ export default function LearnerList() {
   const [isDisable, setIsDisable] = useState(true);
 
   useEffect(async () => {
+    setLoadingList(true);
     try {
       const data = await benificiaryRegistoryService.getStatusList();
       if (data.length > 0) {
@@ -118,6 +119,7 @@ export default function LearnerList() {
     } catch (error) {
       console.error("Failed to fetch status list:", error);
     }
+    setLoadingList(false);
   }, []);
 
   useEffect(() => {
