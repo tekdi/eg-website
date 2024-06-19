@@ -972,13 +972,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             >
               {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
             </FrontEndTypo.Primarybutton>
-
-            <FrontEndTypo.Secondarybutton
-              width="100%"
-              onPress={(e) => navigate("/examschedule")}
-            >
-              {t("VIEW_EXAM_SCHEDULE")}
-            </FrontEndTypo.Secondarybutton> 
           </Stack>
 
           {/* <DashboardCard
