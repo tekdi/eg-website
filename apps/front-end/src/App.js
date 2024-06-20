@@ -57,7 +57,7 @@ function App() {
       }
       setUserTokenInfo({ ...tokenData, authUser: user });
       setLocalUser(user);
-      if (hasura?.roles?.includes("facilitator")) {
+      if (hasura?.roles?.includes("program_coordinator")) {
         setAccessRoutes(routes);
       } else if (hasura?.roles?.includes("program_owner")) {
         setAccessRoutes(PoAdminRoutes);
