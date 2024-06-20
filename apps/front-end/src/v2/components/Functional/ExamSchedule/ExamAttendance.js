@@ -17,15 +17,17 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState();
   const [subjects, setSubjects] = useState([]);
+  const [maxDate, setMaxDate] = useState();
+  const [selectedBoardId, setSelectedBoardId] = useState("");
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
-    setBoardList(boardList?.[0]);
+    setBoardList(boardList);
     setLoading(false);
   }, []);
 
   const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId, date: "" });
+    setFilter({ ...filter, selectedId: optionId?.board?.id, date: "" });
   };
 
   useEffect(() => {
@@ -75,17 +77,20 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             {t("SELECT_BOARD")}
           </FrontEndTypo.H3>
           <HStack space={6}>
-            {boardList?.boardData?.map((board) => (
-              <Radio.Group
-                key={board.id}
-                onChange={(nextValue) => handleSelect(nextValue)}
-                value={filter?.selectedId}
-              >
-                <Radio colorScheme="red" value={board.id}>
-                  {board.name}
+            <Radio.Group
+              onChange={(nextValue) => {
+                handleSelect(nextValue);
+                setMaxDate(nextValue?.addedMaxDate);
+                setSelectedBoardId(nextValue);
+              }}
+              value={selectedBoardId}
+            >
+              {boardList?.map((board) => (
+                <Radio key={board?.board?.id} colorScheme="red" value={board}>
+                  {board?.board?.name}
                 </Radio>
-              </Radio.Group>
-            ))}
+              ))}
+            </Radio.Group>
           </HStack>
           {filter?.selectedId && (
             <DatePicker setFilter={setFilter} filter={filter} />
@@ -93,7 +98,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
           {filter?.date != "" && (
             <CustomAccordion
               data={subjects}
-              maxDate={boardList?.addedMaxDate}
+              maxDate={maxDate}
               setFilter={setFilter}
               setBoardList={setBoardList}
               date={filter?.date}
