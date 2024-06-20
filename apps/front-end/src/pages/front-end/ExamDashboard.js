@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 const ExamDashboard = ({ footerLinks }) => {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-
+  const state_name =
+    JSON.parse(localStorage.getItem("program"))?.state_name || "";
   return (
     <Layout
       loading={loading}
@@ -26,18 +27,22 @@ const ExamDashboard = ({ footerLinks }) => {
         />
 
         {/* Temp Comment */}
-        <DashboardCard
-          title={"LEARNER_EXAM_ATTENDANCE"}
-          titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
-          primaryBtn={"LEARNER_EXAM_ATTENDANCE_OVERVIEW"}
-          navigation={"/examattendancereport"}
-        />
-        {/* <DashboardCard
-          title={"LEARNER_EXAM_RESULTS"}
-          titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
-          primaryBtn={"LEARNER_EXAM_RESULTS_OVERVIEW"}
-          navigation={"/examresultreport"}
-        />
+        {state_name === "RAJASTHAN" && (
+          <>
+            <DashboardCard
+              title={"LEARNER_EXAM_ATTENDANCE"}
+              titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
+              primaryBtn={"LEARNER_EXAM_ATTENDANCE_OVERVIEW"}
+              navigation={"/examattendancereport"}
+            />
+            {/* <DashboardCard
+              title={"LEARNER_EXAM_RESULTS"}
+              titleDetail={"LEARNER_EXAM_ATTENDANCE_DETAILS"}
+              primaryBtn={"LEARNER_EXAM_RESULTS_OVERVIEW"}
+              navigation={"/examresultreport"}
+            /> */}
+          </>
+        )}
         {/* Temp Comment  End*/}
       </VStack>
     </Layout>
