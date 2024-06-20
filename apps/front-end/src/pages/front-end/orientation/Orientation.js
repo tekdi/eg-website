@@ -400,11 +400,11 @@ export default function Orientation({ footerLinks }) {
       icon: "FileTextLineIcon",
       route: "/admin/exams/examschedule",
     },
-    {
-      title: "LEARNER_EXAM_RESULTS",
-      icon: "FileTextLineIcon",
-      route: "/admin/exams/list",
-    },
+    // {
+    //   title: "LEARNER_EXAM_RESULTS",
+    //   icon: "FileTextLineIcon",
+    //   route: "/admin/exams/list",
+    // },
     // temp comment end
   ];
 
