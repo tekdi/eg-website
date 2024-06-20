@@ -560,7 +560,8 @@
       "NETWORK_PROBLEM_AT_HOME_VILLAGE": "Network problem at home/village",
       "SMARTPHONE_NOT_AVAILABLE/DONT_KNOW_HOW_TO_USE_MOBILE": "Smartphone is not available/Don't know how to use mobile",
       "LEARNER_DEATH": "Learner's Death",
-      "LEARNER_ESCAPED": "Learner migration",
+      "LEARNER_ESCAPED": "Learner's migration",
+      "LEARNER_MIGRATION": "Learner's migration",
       "OTHER": "Other",
       "TITLE": "Choose the reason"
     },
@@ -699,7 +700,8 @@
       "TITLE": "Choose the reason ",
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
       "LEARNER_DEATH": "Learner's Death",
-      "LEARNER_ESCAPED": "Learner migration",
+      "LEARNER_ESCAPED": "Learner's migration",
+      "LEARNER_MIGRATION": "Learner's migration",
       "OTHER": "Other"
     }
   },
