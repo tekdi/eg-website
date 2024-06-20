@@ -101,6 +101,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     let program = await getSelectedProgramId();
     let acadamic = await getSelectedAcademicYear();
     let org_id = await getIpUserInfo(authUser?.id);
+
     const formDataNew = {
       ...formData,
       role_fields: {
