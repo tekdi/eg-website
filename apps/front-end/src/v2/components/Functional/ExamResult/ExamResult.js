@@ -46,6 +46,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
   };
 
   const learnerList = async (id) => {
+    setData([]);
     const data = await organisationService.examResultLearnerList({
       ...filter,
       limit: "",
