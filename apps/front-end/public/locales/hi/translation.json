@@ -1894,5 +1894,21 @@
   "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
   "PCR_LEARNING_ACTIVITIES": "नीव सीखने की गतिविधियाँ",
   "CAMP_EXECUTION": "शिविर संचालन",
-  "EPCP_REPORT": "EPCP"
+  "EPCP_REPORT": "EPCP",
+  "COORDINATORS_NAME": "संयोजक का नाम",
+  "ASSIGN_PRERAKS": "प्रेरक नियुक्त करें",
+  "CREATE_A_PRAGATI_COORDINATOR": "प्रगति समन्वयक बनाएँ",
+  "ADD_PC": "पीसी जोड़ें",
+  "PC_LIST": "पीसी सूची",
+  "LEARNER_DEATH": "शिक्षार्थी की मृत्यु",
+  "LEARNER_MIGRATION": "शिक्षार्थी का पलायन",
+  "SUDDEN_INCIDENT": "आकस्मिक घटना",
+  "FORM_REJECTED": "फॉर्म रिजैक्ट हो गया",
+  "LEARNER_IS_SICK": "शिक्षार्थी बीमार है",
+  "TRAVEL_RELATED_PROBLEM_NO_MEANS_OR_FARE": "यात्रा संबन्धित समस्या,साधन या किराया नही",
+  "FEAR_OF_EXAMS": "परीक्षा का डर",
+  "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC शिक्षार्थी - SYC परीक्षा पहले ही हो चुकी",
+  "PREGNANCY_THE_BABY_IS_VERY_SMALL": "प्रेगनेंसी का समय है / बच्चा बहुत छोटा है",
+  "ADMIT_CARD_NOT_FOUND": "एडमिट कार्ड नहीं मिला",
+  "OTHERS": "अन्य"
 }
