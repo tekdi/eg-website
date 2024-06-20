@@ -5,7 +5,7 @@ import {
   enumRegistryService,
   organisationService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio } from "native-base";
+import { HStack, VStack, Radio, Stack } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
@@ -85,11 +85,23 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
               }}
               value={selectedBoardId}
             >
-              {boardList?.map((board) => (
-                <Radio key={board?.board?.id} colorScheme="red" value={board}>
-                  {board?.board?.name}
-                </Radio>
-              ))}
+              <Stack
+                direction={{
+                  base: "row",
+                  md: "column",
+                }}
+                alignItems={{
+                  base: "flex-start",
+                  md: "center",
+                }}
+                space={4}
+              >
+                {boardList?.map((board) => (
+                  <Radio key={board?.board?.id} colorScheme="red" value={board}>
+                    {board?.board?.name}
+                  </Radio>
+                ))}
+              </Stack>
             </Radio.Group>
           </HStack>
           {filter?.selectedId && (
