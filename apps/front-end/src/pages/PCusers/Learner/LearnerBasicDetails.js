@@ -1,0 +1,140 @@
+import React from "react";
+import { HStack, VStack } from "native-base";
+import {
+  FrontEndTypo,
+  IconByName,
+  benificiaryRegistoryService,
+  t,
+  PCusers_layout as Layout,
+  enumRegistryService,
+  GetEnumValue,
+  CardComponent,
+} from "@shiksha/common-lib";
+import { useParams, useNavigate } from "react-router-dom";
+import moment from "moment";
+// import ProfilePhoto from "../../Functional/ProfilePhoto/ProfilePhoto";
+import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto";
+
+export default function LearnerBasicDetails() {
+  const { id } = useParams();
+  const [benificiary, setBenificiary] = React.useState();
+  const [enumOptions, setEnumOptions] = React.useState({});
+  const [requestData, setRequestData] = React.useState([]);
+  const navigate = useNavigate();
+
+  const onPressBackButton = async () => {
+    navigate(`/learner/LearnerListView/${userId}`);
+  };
+
+  React.useEffect(async () => {
+    const result = await benificiaryRegistoryService.getOne(id);
+    setBenificiary(result?.result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    const resultData = await benificiaryRegistoryService.getEditRequest(obj);
+    if (resultData?.data?.length > 0) {
+      const fieldData = JSON.parse(resultData?.data?.[0]?.fields);
+      setRequestData(fieldData);
+    }
+  }, []);
+
+  return (
+    <Layout
+      _appBar={{ name: t("BASIC_DETAILS"), onPressBackButton }}
+      analyticsPageTitle={"BENEFICIARY_BASIC_DETAILS"}
+      pageTitle={t("BENEFICIARY")}
+      stepTitle={t("BASIC_DETAILS")}
+    >
+      <VStack paddingBottom="64px" bg="bgGreyColor.200">
+        <VStack px="16px" space="24px">
+          <ProfilePhoto
+            profile_photo_1={benificiary?.profile_photo_1}
+            profile_photo_2={benificiary?.profile_photo_2}
+            profile_photo_3={benificiary?.profile_photo_3}
+          />
+          <VStack>
+            <HStack justifyContent="space-between" alignItems="Center">
+              <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">
+                {benificiary?.first_name ? benificiary?.first_name : "-"}
+                &nbsp;
+                {benificiary?.middle_name?.trim() === "null"
+                  ? ""
+                  : benificiary?.middle_name}
+                &nbsp;
+                {benificiary?.last_name == "null" ? "" : benificiary?.last_name}
+              </FrontEndTypo.H1>
+            </HStack>
+            <HStack alignItems="Center">
+              <IconByName name="Cake2LineIcon" color="iconColor.300" />
+              <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
+                {moment(benificiary?.dob).format("DD/MM/YYYY")
+                  ? moment(benificiary?.dob).format("DD/MM/YYYY")
+                  : "-"}
+              </FrontEndTypo.H3>
+            </HStack>
+          </VStack>
+
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("CONTACT_DETAILS")}
+            label={["SELF", "ALTERNATIVE_NUMBER", "EMAIL"]}
+            item={benificiary}
+            arr={["mobile", "alternative_mobile_number", "email_id"]}
+          />
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("FAMILY_DETAILS")}
+            label={["FATHER", "MOTHER"]}
+            item={benificiary?.core_beneficiaries}
+            arr={["father_first_name", "mother_first_name"]}
+          />
+
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("PERSONAL_DETAILS")}
+            label={["SOCIAL", "MARITAL"]}
+            item={{
+              ...benificiary?.extended_users,
+              marital_status: benificiary?.extended_users?.marital_status ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"MARITAL_STATUS"}
+                  enumOptionValue={benificiary?.extended_users?.marital_status}
+                  enumApiData={enumOptions}
+                />
+              ) : (
+                "-"
+              ),
+              social_category: benificiary?.extended_users?.social_category ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"BENEFICIARY_SOCIAL_STATUS"}
+                  enumOptionValue={benificiary?.extended_users?.social_category}
+                  enumApiData={enumOptions}
+                />
+              ) : (
+                "-"
+              ),
+            }}
+            arr={["social_category", "marital_status"]}
+          />
+          <CardComponent
+            _vstack={{ space: 0 }}
+            _hstack={{ borderBottomWidth: 0 }}
+            title={t("REFERENCE_DETAILS")}
+            label={["NAME", "RELATION", "CONTACT"]}
+            item={benificiary?.references[0]}
+            arr={["first_name", "relation", "contact_number"]}
+          />
+        </VStack>
+      </VStack>
+    </Layout>
+  );
+}
