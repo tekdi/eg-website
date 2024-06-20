@@ -1892,5 +1892,8 @@
   "LEARNING_EXPERIENCES": "कौशल विकास एवं सीखना",
   "PCR_LEARNING_ACTIVITIES": "नीव सीखने की गतिविधियाँ",
   "CAMP_EXECUTION": "शिविर संचालन",
-  "EPCP_REPORT": "EPCP"
+  "EPCP_REPORT": "EPCP",
+  "NO_JOBS_FROM_PROVIDER": "फिलहाल नौकरियों के लिए कोई ऑफर नहीं है। बहुत जल्द यहां प्रकाशित किया जाएगा।",
+  "NO_SCHOLARSHIPS_FROM_PROVIDER": "वर्तमान में छात्रवृत्ति के लिए कोई प्रस्ताव नहीं हैं। बहुत जल्द यहां प्रकाशित किया जाएगा।",
+  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "वर्तमान में सीखने के लिए कोई सामग्री नहीं है। बहुत जल्द यहां प्रकाशित किया जाएगा।"
 }

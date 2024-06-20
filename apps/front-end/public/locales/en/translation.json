@@ -1888,5 +1888,8 @@
   "LEARNING_EXPERIENCES": "Skill Development &  Learning",
   "PCR_LEARNING_ACTIVITIES": "Neev Learning Activities",
   "CAMP_EXECUTION": "Camp Execution",
-  "EPCP_REPORT": "EPCP"
+  "EPCP_REPORT": "EPCP",
+  "NO_JOBS_FROM_PROVIDER": "Currently there is no offer for jobs. Will be published here very soon.",
+  "NO_SCHOLARSHIPS_FROM_PROVIDER": "There are currently no offers for scholarships. Will be published here very soon.",
+  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "There is currently no material to learn. Will be published here very soon."
 }
