@@ -10,7 +10,7 @@ const DailyActivities = lazy(() =>
   import("pages/PCusers/DailyActivities/DailyActivites")
 );
 const DailyActivitiesView = lazy(() =>
-  import("pages/PCusers/camps/DailyActivitiesView")
+  import("pages/PCusers/DailyActivities/DailyActivitiesView")
 );
 const CampList = lazy(() => import("pages/PCusers/camps/CampList"));
 const CampProfileView = lazy(() =>
@@ -24,6 +24,18 @@ const PcProfileDetails = lazy(() =>
   import("pages/PCusers/Profile/PcProfileDetails")
 );
 const EditProfile = lazy(() => import("pages/PCusers/Profile/EditProfile"));
+const PrerakList = lazy(() => import("pages/PCusers/Prerak/PrerakList"));
+const LearnerList = lazy(() => import("pages/PCusers/Learner/LearnerList"));
+
+const LearnerProfileView = lazy(() =>
+  import("pages/PCusers/Learner/LearnerProfileView")
+);
+const LearnerListView = lazy(() =>
+  import("pages/PCusers/Learner/LearnerListView")
+);
+const PrerakProfileView = lazy(() =>
+  import("pages/PCusers/Prerak/PrerakProfileView")
+);
 
 // PC users Routes
 
@@ -70,4 +82,30 @@ export default [
     path: "/profile/edit",
     component: EditProfile,
   },
+  {
+    path: "/pcUserDashboard",
+    component: PcDashboard,
+  },
+  {
+    path: "/prerak/prerakList",
+    component: PrerakList,
+  },
+  {
+    path: "/learner/learnerList",
+    component: LearnerList,
+  },
+  {
+    path: "/learner/learnerListView",
+    component: LearnerListView,
+  },
+  {
+    path: "/learner/learnerProfileView",
+    component: LearnerProfileView,
+  },
+  {
+    path: "/prerak/prerakProfileView/:id",
+    component: PrerakProfileView,
+  },
+  { path: "/", component: PcDashboard },
+  { path: "*", component: PcDashboard },
 ];

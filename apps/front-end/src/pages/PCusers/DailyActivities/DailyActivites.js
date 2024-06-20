@@ -9,7 +9,7 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { Box, HStack, Pressable, VStack } from "native-base";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Form from "@rjsf/core";
 
 import {
@@ -20,6 +20,7 @@ import {
   onError,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./ActivitiesSchema";
+import moment from "moment";
 const DailyActivities = () => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -31,10 +32,10 @@ const DailyActivities = () => {
   const [isDisable, setIsDisable] = useState(false);
   const { activity } = useParams();
   const { step } = useParams();
-
-  console.log({ step });
+  const location = useLocation();
 
   const hours = [
+    { title: 0 },
     { title: 1 },
     { title: 2 },
     { title: 3 },
@@ -52,15 +53,39 @@ const DailyActivities = () => {
     },
   };
 
+  const getActivityDetail = async () => {
+    const payload = {
+      page: "1",
+      limit: "10",
+      type: activity,
+      date: moment().format("YYYY-MM-DD"),
+    };
+    const data = await PcuserService.activitiesDetails(payload);
+    const id = location?.state?.id;
+    const activities = data?.data?.activities;
+    const selectedActivity = activities.find((item) => {
+      return item.id === id;
+    });
+    setFormData({
+      ...formData,
+      village: selectedActivity?.village,
+      description: selectedActivity?.description,
+      hours: selectedActivity?.hours?.toString(),
+      minutes: selectedActivity?.minutes?.toString(),
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
+      if (step === "edit") {
+        await getActivityDetail();
+      }
       const qData = await geolocationRegistryService.getVillages({
         name: "ARTHUNA",
         state: "RAJASTHAN",
         district: "BANSWARA",
         gramp: "null",
       });
-      console.log({ qData });
       let newSchema = getOptions(schema1, {
         key: "hours",
         arr: hours,
@@ -95,16 +120,12 @@ const DailyActivities = () => {
   }, []);
 
   const validateTime = (input) => {
-    console.log({ input });
     const MAX_HOURS = 8;
-    const prev_hours = 3 + parseInt(input.hours);
-    const prev_min = 15 + parseInt(input.minutes);
+    const prev_hours = 0 + parseInt(input.hours);
+    const prev_min = 0 + parseInt(input.minutes);
     const hours = parseInt(prev_hours, 10);
     const minutes = parseInt(prev_min, 10);
-    console.log({ hours, minutes });
-    // Convert the total time into hours
     const totalHours = hours + minutes / 60;
-    console.log({ totalHours });
     if (totalHours > MAX_HOURS) {
       setErrors({
         ...errors,
@@ -140,10 +161,22 @@ const DailyActivities = () => {
   const onSubmit = async (data) => {
     let newFormData = data.formData;
     if (_.isEmpty(errors)) {
-      console.log({ newFormData });
-      const data = await PcuserService.MarkActivity(newFormData);
-      console.log({ data });
-      //navigate(`/dailyactivities/${activity}/view`);
+      const id = location?.state?.id;
+
+      const payload = {
+        ...newFormData,
+        type: activity,
+        date: moment().format("YYYY-MM-DD"),
+        hours: parseInt(newFormData.hours),
+        minutes: parseInt(newFormData.minutes),
+        id: id,
+      };
+      if (step === "edit") {
+        await PcuserService.editActivity(payload);
+      } else {
+        await PcuserService.MarkActivity(payload);
+      }
+      navigate(`/dailyactivities/${activity}/view`);
     }
   };
 

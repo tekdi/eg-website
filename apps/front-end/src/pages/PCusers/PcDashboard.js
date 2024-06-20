@@ -21,7 +21,7 @@ const PcDashboard = () => {
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       // facilitator={facilitator}
-      // _footer={{ menues: footerLinks }}
+      _footer={{ menues: true }}
       analyticsPageTitle={"HOME"}
       pageTitle={t("HOME")}
     >

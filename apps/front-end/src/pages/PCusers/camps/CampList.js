@@ -33,14 +33,7 @@ export default function CampList() {
   return (
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
-      _appBar={{
-        onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
-        isEnableSearchBtn: "true",
-        setSearch: (value) => {
-          setFilter({ ...filter, search: value, page: 1 });
-        },
-        _box: { bg: "white", shadow: "appBarShadow" },
-      }}
+      _footer={{ menues: true }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       analyticsPageTitle={"CAMP_LIST"}
       pageTitle={t("CAMP_LIST")}
