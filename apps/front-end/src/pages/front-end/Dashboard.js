@@ -615,7 +615,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 resizeMode="contain"
               />
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                {t("WELCOME")} {facilitator?.first_name},.
+                {t("WELCOME")} {facilitator?.first_name},
               </FrontEndTypo.H1>
             </HStack>
             {events?.length ? (
@@ -974,12 +974,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             </FrontEndTypo.Primarybutton>
           </Stack>
 
-          {/* <DashboardCard
+          <DashboardCard
             title={"LEARNER_EXAM_RESULTS"}
             titleDetail={"LEARNER_EXAMINATION_DETAILS"}
             primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
             navigation={"/examresult"}
-          /> */}
+          />
 
           {/* Temp Comment  End*/}
         </VStack>
