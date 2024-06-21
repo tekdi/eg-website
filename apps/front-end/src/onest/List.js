@@ -149,14 +149,13 @@ const List = () => {
   };
 
   const getWarningMessage = () => {
-    const dataAvailable = cardData?.length > 0;
-    const warningKey = dataAvailable
-      ? "NO_data_available"
-      : {
+    const warningKey = cardData?.length
+      ? {
           scholarship: "NO_SCHOLARSHIPS_FROM_PROVIDER",
           jobs: "NO_JOBS_FROM_PROVIDER",
           learning: "NO_LEARNING_EXPERIENCES_FROM_PROVIDER",
-        }[type] || "NO_data_available";
+        }[type] || "NO_data_available"
+      : "NO_data_available";
 
     return t(warningKey);
   };
