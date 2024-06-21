@@ -32,7 +32,7 @@ export default function BenificiaryJourney() {
   }, [id]);
 
   const onPressBackButton = async () => {
-    navigate(`/learner/LearnerListView/${userId}`);
+    navigate(`/learner/learnerListView/${userId}`);
   };
 
   const agDetails = async () => {

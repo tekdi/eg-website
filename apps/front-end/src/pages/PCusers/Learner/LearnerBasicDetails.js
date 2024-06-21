@@ -23,7 +23,7 @@ export default function LearnerBasicDetails() {
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
-    navigate(`/learner/LearnerListView/${userId}`);
+    navigate(`/learner/learnerListView/${userId}`);
   };
 
   React.useEffect(async () => {

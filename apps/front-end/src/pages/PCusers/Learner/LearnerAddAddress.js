@@ -33,7 +33,7 @@ export default function BenificiaryAddress() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learner/LearnerListView/${userId}`);
+    navigate(`/learner/learnerListView/${userId}`);
   };
 
   return (

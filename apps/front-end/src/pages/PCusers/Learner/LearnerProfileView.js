@@ -303,7 +303,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                       name="ArrowRightSLineIcon"
                       onPress={() => {
                         navigate(
-                          `/learner/learnerListView/${id}/LearnerPCRDetails`
+                          `/learner/learnerListView/${id}/learnerPCRDetails`
                         );
                       }}
                       color="maroon.400"
@@ -323,7 +323,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                       name="ArrowRightSLineIcon"
                       onPress={() => {
                         navigate(
-                          `/learner/learnerListView/${id}/LearnerJourneyDetails`
+                          `/learner/learnerListView/${id}/learnerJourneyDetails`
                         );
                       }}
                       color="maroon.400"

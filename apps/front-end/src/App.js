@@ -91,7 +91,7 @@ function App() {
         },
         {
           title: "LEARNERS",
-          route: "/LearnerList",
+          route: "/beneficiary/list",
           icon: "GraduationCap",
         },
         {

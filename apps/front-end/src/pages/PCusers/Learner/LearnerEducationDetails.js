@@ -90,7 +90,7 @@ export default function BenificiaryEducation() {
         name: t("EDUCATION_DETAILS"),
         onlyIconsShow: ["langBtn", "backBtn"],
         onPressBackButton: (e) => {
-          navigate(`/learner/LearnerListView/${userId}`);
+          navigate(`/learner/learnerListView/${userId}`);
         },
       }}
       analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
