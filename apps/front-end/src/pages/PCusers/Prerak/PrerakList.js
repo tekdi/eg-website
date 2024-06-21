@@ -149,21 +149,6 @@ export default function PrerakList() {
           is_duplicate: false,
           is_deactivated: false,
         },
-        {
-          id: "3",
-          first_name: "David",
-          middle_name: "Robin",
-          last_name: "Dane",
-          mobile: "9012345678",
-          program_beneficiaries: {
-            status: "enrolled",
-            enrollment_first_name: "David",
-            enrollment_middle_name: "Robin",
-            enrollment_last_name: "Dane",
-          },
-          is_duplicate: false,
-          is_deactivated: false,
-        },
       ];
       setData(fetchedData);
       setLoadingList(false);

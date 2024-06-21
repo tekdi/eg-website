@@ -42,7 +42,9 @@ const List = ({ data }) => {
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
             <Pressable
-              onPress={() => navigate(`/prerak/PrerakProfileView/${item?.id}`)}
+              onPress={() =>
+                navigate(`/learner/learverProfileView/${item?.id}`)
+              }
             >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="center" flex={[1, 2, 4]}>
@@ -96,7 +98,7 @@ export default function LearnerList() {
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingList, setLoadingList] = useState(true);
+  const [loadingList, setLoadingList] = useState(false);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPrerak, setSelectedPrerak] = useState([]);
@@ -108,8 +110,6 @@ export default function LearnerList() {
   const [filteredData, setFilteredData] = useState([]);
   const [prerakData, setPrerakData] = React.useState();
   const [isDisable, setIsDisable] = useState(true);
-
-  console.log({ loadingList });
 
   useEffect(async () => {
     setLoadingList(true);
@@ -206,34 +206,6 @@ export default function LearnerList() {
             id: "3",
             first_name: "David",
             middle_name: "Robin",
-            last_name: "Dane",
-            mobile: "9012345678",
-            program_beneficiaries: {
-              status: "enrolled",
-              enrollment_first_name: "David",
-              enrollment_middle_name: "Robin",
-              enrollment_last_name: "Dane",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2024-2025",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Dhanashree",
-                    lastName: "Patil",
-                    mobile: "98098909890",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: "4",
-            first_name: "tatya",
-            middle_name: "",
             last_name: "Dane",
             mobile: "9012345678",
             program_beneficiaries: {
@@ -420,10 +392,9 @@ export default function LearnerList() {
           )}
         </Box>
       </VStack>
-      {console.log(filter)}
       {!loadingList ? (
         <InfiniteScroll
-          dataLength={filteredData?.length}
+          dataLength={data?.length}
           next={() =>
             setFilter({
               ...filter,
@@ -434,66 +405,12 @@ export default function LearnerList() {
           height={loadingHeight}
           endMessage={
             <FrontEndTypo.H3 bold display="inherit" textAlign="center">
-              {filteredData?.length > 0
+              {data?.length > 0
                 ? t("COMMON_NO_MORE_RECORDS")
                 : t("DATA_NOT_FOUND")}
             </FrontEndTypo.H3>
           }
-        >
-          <Box p={4} flex={1}>
-            {filteredData &&
-              filteredData.length > 0 &&
-              filteredData.map((item, index) => (
-                <Box key={item.id}>
-                  <span>
-                    {item?.first_name} {item?.last_name}
-                  </span>
-                  {item?.cohorts &&
-                    item?.cohorts?.map((cohart, i) => (
-                      <Box space={4} py={4}>
-                        <Pressable
-                          onPress={() => {
-                            navigate("/camps/12234");
-                          }}
-                          bg="boxBackgroundColour.100"
-                          shadow="AlertShadow"
-                          borderRadius="10px"
-                          py={3}
-                          px={5}
-                        >
-                          <HStack
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                          >
-                            <VStack flex={"0.9"}>
-                              <FrontEndTypo.H3 color="textMaroonColor.400">
-                                {t("COHORT 2023-2024")}
-                              </FrontEndTypo.H3>
-                            </VStack>
-                            <HStack alignItems={"center"}>
-                              <IconByName
-                                isDisabled
-                                name={
-                                  ["camp_ip_verified"].includes()
-                                    ? "CheckLineIcon"
-                                    : "ErrorWarningLineIcon"
-                                }
-                                color={
-                                  ["camp_ip_verified"].includes()
-                                    ? "textGreen.700"
-                                    : "textMaroonColor.400"
-                                }
-                                _icon={{ size: "20px" }}
-                              />
-                            </HStack>
-                          </HStack>
-                        </Pressable>
-                      </Box>
-                    ))}
-                </Box>
-              ))}
-          </Box>
-        </InfiniteScroll>
+        ></InfiniteScroll>
       ) : (
         // Loading component here if needed
         <></>
@@ -561,6 +478,57 @@ export default function LearnerList() {
           </Modal.Body>
         </Modal.Content>
       </Modal>
+      <Box p={4} flex={1}>
+        {filteredData &&
+          filteredData.length > 0 &&
+          filteredData.map((item, index) => (
+            <Box key={item.id}>
+              <span>
+                {item?.first_name} {item?.last_name}
+              </span>
+              {item?.cohorts &&
+                item?.cohorts?.map((cohart, i) => (
+                  <Box
+                    key={i}
+                    bg="gray.100"
+                    borderColor="gray.300"
+                    borderRadius="10px"
+                    borderWidth="1px"
+                    pb="6"
+                  >
+                    <VStack
+                      paddingLeft="16px"
+                      paddingRight="16px"
+                      paddingTop="16px"
+                    >
+                      <VStack space="2" paddingTop="5">
+                        <HStack
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          <HStack space="md" alignItems="center">
+                            {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
+                            <FrontEndTypo.H3>
+                              {t("COHORT 2023-2024")}
+                            </FrontEndTypo.H3>
+                          </HStack>
+
+                          <IconByName
+                            name="ArrowRightSLineIcon"
+                            onPress={() => {
+                              navigate(`/learner/LearnerListView`);
+                            }}
+                            color="maroon.400"
+                          />
+                        </HStack>
+                        <Divider orientation="horizontal" />
+                      </VStack>
+                    </VStack>
+                  </Box>
+                ))}
+            </Box>
+          ))}
+      </Box>
     </Layout>
   );
 }
