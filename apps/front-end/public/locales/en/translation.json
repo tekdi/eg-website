@@ -1908,5 +1908,6 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC Learner - SYC Exam Already Done",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "pregnancy/the baby is very small",
   "ADMIT_CARD_NOT_FOUND": "Admit card not found",
-  "OTHERS": "Others"
+  "OTHERS": "Others",
+  "SELECT_ABSENT_REASON": "Select Absent Reason"
 }
