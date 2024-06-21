@@ -112,24 +112,8 @@ export default [
     component: PrerakList,
   },
   {
-    path: "/learner/learnerList",
-    component: LearnerList,
-  },
-  {
-    path: "/learner/learnerListView",
-    component: LearnerListView,
-  },
-  {
-    path: "/learner/learnerProfileView",
-    component: LearnerProfileView,
-  },
-  {
     path: "/prerak/prerakProfileView/:id",
     component: PrerakProfileView,
-  },
-  {
-    path: "/pcUserDashboard",
-    component: PcDashboard,
   },
   {
     path: "/learner/learnerList",
