@@ -42,7 +42,9 @@ const List = ({ data }) => {
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
             <Pressable
-              onPress={() => navigate(`/prerak/PrerakProfileView/${item?.id}`)}
+              onPress={() =>
+                navigate(`/learner/learverProfileView/${item?.id}`)
+              }
             >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="center" flex={[1, 2, 4]}>

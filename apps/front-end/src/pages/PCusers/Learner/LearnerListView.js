@@ -28,7 +28,9 @@ const List = ({ data }) => {
             _body={{ px: "3", py: "3" }}
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
-            <Pressable onPress={() => navigate(`/learner/learnerProfileView`)}>
+            <Pressable
+              onPress={() => navigate(`/learner/learnerListView/${item?.id}`)}
+            >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="center" flex={[1, 2, 4]}>
                   <VStack alignItems="center" p="1">
