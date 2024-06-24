@@ -88,13 +88,13 @@ export default {
       required: ["marital_status", "social_category"],
       properties: {
         marital_status: {
-          description: "MARITAL_STATUS",
+          label: "MARITAL_STATUS",
           type: "string",
           format: "RadioBtn",
           grid: 2,
         },
         social_category: {
-          description: "SOCIAL_CATEGORY",
+          label: "SOCIAL_CATEGORY",
           type: "string",
           format: "RadioBtn",
           grid: 2,
