@@ -546,10 +546,14 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     _icon={{ size: "64px" }}
                   />
                 )}
-
                 <VStack>
-                  {benificiary?.program_beneficiaries?.status !==
-                  "enrolled_ip_verified" ? (
+                  {![
+                    "enrolled_ip_verified",
+                    "registered_in_camp",
+                    "ineligible_for_pragati_camp",
+                    "10th_passed",
+                    "pragati_syc",
+                  ].includes(benificiary?.program_beneficiaries?.status) ? (
                     <FrontEndTypo.H3
                       fontWeight={"600"}
                       color="textGreyColor.750"

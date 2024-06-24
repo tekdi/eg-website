@@ -95,6 +95,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const [env_name] = useState(process.env.NODE_ENV);
 
+  const state_name =
+    JSON.parse(localStorage.getItem("program"))?.state_name || "";
+
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
@@ -951,46 +954,34 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
 
           {/* Temp Comment */}
-          {/* <Stack
-            space="10"
-            p={4}
-            mx={"2"}
-            borderBottomRadius={"10px"}
-            borderBottomColor={"dashboardCardBorder"}
-            borderBottomWidth={"1px"}
-            borderBottomStyle={"solid"}
-          >
-            <FrontEndTypo.H3 fontWeight="600" color="textGreyColor.750">
-              {t("LEARNER_EXAMINATION")}
-            </FrontEndTypo.H3>
-            <FrontEndTypo.H4 fontWeight="600" color="textGreyColor.750">
-              {t("LEARNER_EXAMINATION_DETAILS")}
-            </FrontEndTypo.H4>
 
-            <VStack space={"4"}>
-              <FrontEndTypo.Primarybutton
-                width="100%"
-                onPress={(e) => navigate("/examattendance")}
-              >
-                {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
-              </FrontEndTypo.Primarybutton>
+          {
+            state_name === "RAJASTHAN" && (
+              <Stack bg="bgYellowColor.400" space="6" p={4}>
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {t("LEARNER_EXAMINATION")}
+                </FrontEndTypo.H2>
+                <FrontEndTypo.H3>
+                  {t("LEARNER_EXAMINATION_DETAILS")}
+                </FrontEndTypo.H3>
 
-              <FrontEndTypo.Secondarybutton
-                width="100%"
-                onPress={(e) => navigate("/examschedule")}
-              >
-                {t("VIEW_EXAM_SCHEDULE")}
-              </FrontEndTypo.Secondarybutton>
-            </VStack>
-          </Stack>
-
+                <FrontEndTypo.Primarybutton
+                  width="100%"
+                  // onPress={(e) => navigate("/examattendance")}
+                  onPress={(e) => navigate("/examschedule")}
+                >
+                  {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+                </FrontEndTypo.Primarybutton>
+              </Stack>
+            )
+            /* 
           <DashboardCard
             title={"LEARNER_EXAM_RESULTS"}
             titleDetail={"LEARNER_EXAMINATION_DETAILS"}
             primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
             navigation={"/examresult"}
-          />  */}
-
+          /> */
+          }
           {/* Temp Comment  End*/}
         </VStack>
       </VStack>
