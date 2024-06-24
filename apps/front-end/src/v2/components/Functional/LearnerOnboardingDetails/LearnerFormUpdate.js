@@ -35,6 +35,7 @@ import { useTranslation } from "react-i18next";
 // App
 
 export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
+  console.log("hello ben");
   const { authUser } = userTokenInfo;
   const { t } = useTranslation();
   const [page, setPage] = React.useState();

@@ -23,7 +23,7 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
 const limit = 6;
-const List = () => {
+const List = ({ userTokenInfo: { authUser } }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
   const [filterData, setfilterData] = useState();
@@ -154,6 +154,10 @@ const List = () => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
         onPressBackButton: handleBack,
