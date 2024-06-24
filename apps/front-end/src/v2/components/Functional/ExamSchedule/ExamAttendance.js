@@ -6,7 +6,7 @@ import {
   organisationService,
   IconByName,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio, Stack, Pressable } from "native-base";
+import { HStack, VStack, Radio, Stack } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import { useNavigate } from "react-router-dom";
@@ -17,16 +17,17 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState();
   const [subjects, setSubjects] = useState([]);
-  const navigate = useNavigate();
+  const [maxDate, setMaxDate] = useState();
+  const [selectedBoardId, setSelectedBoardId] = useState("");
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
-    setBoardList(boardList?.[0]);
+    setBoardList(boardList);
     setLoading(false);
   }, []);
 
   const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId, date: "" });
+    setFilter({ ...filter, selectedId: optionId?.board?.id, date: "" });
   };
 
   useEffect(() => {
@@ -79,76 +80,45 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             {t("SELECT_BOARD")}
           </FrontEndTypo.H3>
           <HStack space={6}>
-            {boardList?.boardData?.map((board) => (
-              <Radio.Group
-                key={board.id}
-                onChange={(nextValue) => handleSelect(nextValue)}
-                value={filter?.selectedId}
+            <Radio.Group
+              onChange={(nextValue) => {
+                handleSelect(nextValue);
+                setMaxDate(nextValue?.addedMaxDate);
+                setSelectedBoardId(nextValue);
+              }}
+              value={selectedBoardId}
+            >
+              <Stack
+                direction={{
+                  base: "row",
+                  md: "column",
+                }}
+                alignItems={{
+                  base: "flex-start",
+                  md: "center",
+                }}
+                space={4}
               >
-                <Radio colorScheme="red" value={board.id}>
-                  {board.name}
-                </Radio>
-              </Radio.Group>
-            ))}
+                {boardList?.map((board) => (
+                  <Radio key={board?.board?.id} colorScheme="red" value={board}>
+                    {board?.board?.name}
+                  </Radio>
+                ))}
+              </Stack>
+            </Radio.Group>
           </HStack>
           {filter?.selectedId && (
             <DatePicker setFilter={setFilter} filter={filter} />
           )}
-          {filter?.date != "" && filter?.selectedId && (
-            <Stack space={2}>
-              <FrontEndTypo.H2 color="textGreyColor.750">
-                {t("SUBJECTS")}
-              </FrontEndTypo.H2>
-
-              {/* <CustomAccordion
-                  data={subjects}
-                  setFilter={setFilter}
-                  setBoardList={setBoardList}
-                  date={filter?.date}
-                  board={filter?.selectedId}
-                /> */}
-
-              <VStack space={4}>
-                {subjects?.map((subject, index) => (
-                  <VStack key={subject.id}>
-                    <Pressable
-                      p={2}
-                      bg="boxBackgroundColour.100"
-                      // shadow="AlertShadow"
-                      borderBottomColor={"garyTitleCardBorder"}
-                      borderBottomStyle={"solid"}
-                      borderBottomWidth={"2px"}
-                      onPress={() => {
-                        navigate(`/learner/examattendance`, {
-                          state: { subject, filter, boardList },
-                        });
-                      }}
-                    >
-                      <HStack w={"100%"} justifyContent={"space-between"}>
-                        <HStack space={2} alignItems={"center"}>
-                          <FrontEndTypo.H2 color={"blueText.700"}>
-                            {subject?.name}
-                            {subject?.events?.[0]?.type == "practical" &&
-                              ` - ${t("PRACTICALS")}`}
-                          </FrontEndTypo.H2>
-                        </HStack>
-                        {
-                          <IconByName
-                            isDisabled
-                            name="ArrowRightSLineIcon"
-                            _icon={{ size: "30px" }}
-                            color="blueText.700"
-                          />
-                        }
-                      </HStack>
-                    </Pressable>
-                  </VStack>
-                ))}
-                {filter?.date && subjects?.length < 1 && (
-                  <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
-                )}
-              </VStack>
-            </Stack>
+          {filter?.date != "" && (
+            <CustomAccordion
+              data={subjects}
+              maxDate={maxDate}
+              setFilter={setFilter}
+              setBoardList={setBoardList}
+              date={filter?.date}
+              board={filter?.selectedId}
+            />
           )}
         </VStack>
       </VStack>
