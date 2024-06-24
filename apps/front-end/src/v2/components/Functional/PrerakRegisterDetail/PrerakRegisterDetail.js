@@ -700,8 +700,7 @@ export default function PrerakRegisterDetail({
       : "";
 
     let lang = localStorage.getItem("lang");
-
-    let state = registerFormData?.state;
+    let state = programData?.state_name;
     let district = registerFormData?.district;
     let block = registerFormData?.block;
     let village = registerFormData?.village;

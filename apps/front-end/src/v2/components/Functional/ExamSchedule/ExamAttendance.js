@@ -5,7 +5,7 @@ import {
   enumRegistryService,
   organisationService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio } from "native-base";
+import { HStack, VStack, Radio, Stack } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
@@ -17,15 +17,17 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState();
   const [subjects, setSubjects] = useState([]);
+  const [maxDate, setMaxDate] = useState();
+  const [selectedBoardId, setSelectedBoardId] = useState("");
 
   useEffect(async () => {
-    const boardList = await enumRegistryService.boardList();
+    const boardList = await enumRegistryService.ExamboardList();
     setBoardList(boardList);
     setLoading(false);
   }, []);
 
   const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId, date: "" });
+    setFilter({ ...filter, selectedId: optionId?.board?.id, date: "" });
   };
 
   useEffect(() => {
@@ -42,6 +44,8 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             subject_name: subject.name,
             subject_id: subject.id,
             event_id: event.id,
+            start_date: event?.start_date,
+            end_date: event?.end_date,
             type: event.type.charAt(0).toUpperCase() + event.type.slice(1), // Capitalize the type
           }));
         });
@@ -73,17 +77,32 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             {t("SELECT_BOARD")}
           </FrontEndTypo.H3>
           <HStack space={6}>
-            {boardList?.boards?.map((board) => (
-              <Radio.Group
-                key={board.id}
-                onChange={(nextValue) => handleSelect(nextValue)}
-                value={filter?.selectedId}
+            <Radio.Group
+              onChange={(nextValue) => {
+                handleSelect(nextValue);
+                setMaxDate(nextValue?.addedMaxDate);
+                setSelectedBoardId(nextValue);
+              }}
+              value={selectedBoardId}
+            >
+              <Stack
+                direction={{
+                  base: "row",
+                  md: "column",
+                }}
+                alignItems={{
+                  base: "flex-start",
+                  md: "center",
+                }}
+                space={4}
               >
-                <Radio colorScheme="red" value={board.id}>
-                  {board.name}
-                </Radio>
-              </Radio.Group>
-            ))}
+                {boardList?.map((board) => (
+                  <Radio key={board?.board?.id} colorScheme="red" value={board}>
+                    {board?.board?.name}
+                  </Radio>
+                ))}
+              </Stack>
+            </Radio.Group>
           </HStack>
           {filter?.selectedId && (
             <DatePicker setFilter={setFilter} filter={filter} />
@@ -91,6 +110,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
           {filter?.date != "" && (
             <CustomAccordion
               data={subjects}
+              maxDate={maxDate}
               setFilter={setFilter}
               setBoardList={setBoardList}
               date={filter?.date}
