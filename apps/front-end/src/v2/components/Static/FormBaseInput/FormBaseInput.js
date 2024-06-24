@@ -80,7 +80,7 @@ export function EnrollmentLabelMobileWidget() {
   const { t } = useTranslation();
   return (
     <>
-      <FrontEndTypo.H3 color="textGreyColor.750">
+      <FrontEndTypo.H3 color="textGreyColor.750" fontWeight="600">
         {t("ENROLLMENT_MOBILE_NO")}
       </FrontEndTypo.H3>
       <Text color="textGreyColor.750" mb={1}>
@@ -325,14 +325,26 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <FrontEndTypo.H1
-                    color="textGreyColor.900"
-                    fontWeight="600"
-                    lineHeight="30px"
-                  >
-                    {t(schema?.label ? schema?.label : label)}
-                  </FrontEndTypo.H1>
-                  <H3 color="textGreyColor.750">{required ? "*" : null}</H3>
+                  {schema?.label ? (
+                    <FrontEndTypo.H3
+                      color="textGreyColor.900"
+                      fontWeight="600"
+                      lineHeight="30px"
+                    >
+                      {t(schema?.label ? schema?.label : label)}
+                    </FrontEndTypo.H3>
+                  ) : (
+                    label && (
+                      <FrontEndTypo.H1
+                        color="textGreyColor.900"
+                        fontWeight="600"
+                        lineHeight="30px"
+                      >
+                        {t(schema?.label ? schema?.label : label)}
+                      </FrontEndTypo.H1>
+                    )
+                  )}
+                  <H3 color="textRed.400">{required ? "*" : null}</H3>
                 </HStack>
               </label>
             )}
