@@ -1971,5 +1971,8 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC Learner - SYC Exam Already Done",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "pregnancy/the baby is very small",
   "ADMIT_CARD_NOT_FOUND": "Admit card not found",
-  "OTHERS": "Others"
+  "OTHERS": "Others",
+  "NO_JOBS_FROM_PROVIDER": "Currently there is no offer for jobs. Will be published here very soon.",
+  "NO_SCHOLARSHIPS_FROM_PROVIDER": "There are currently no offers for scholarships. Will be published here very soon.",
+  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "There is currently no material to learn. Will be published here very soon."
 }
