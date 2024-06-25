@@ -11,6 +11,7 @@ const UserDetailsForm = lazy(() => import("onest/content/UserDetailsForm"));
 const AutomatedForm = lazy(() => import("onest/AutomatedForm"));
 const List = lazy(() => import("onest/List"));
 const View = lazy(() => import("onest/View"));
+const MyConsumptions = lazy(() => import("onest/MyConsumptions"));
 export const notAccessRoute = [
   { path: "/profile", component: Profile },
   { path: "/profile/:page/edit", component: Update },
@@ -21,6 +22,7 @@ const route = [
   { path: "/onest", component: LandingPage },
   { path: "/onest/:type", component: List },
   { path: "/onest/:type/:jobId", component: View },
+  { path: "/onest/my-consumptions", component: MyConsumptions },
   {
     path: "/onest/:type/automatedForm/:jobId/:transactionId",
     component: AutomatedForm,

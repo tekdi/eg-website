@@ -1978,5 +1978,11 @@
   "OTHERS": "Others",
   "NO_JOBS_FROM_PROVIDER": "Currently there is no offer for jobs. Will be published here very soon.",
   "NO_SCHOLARSHIPS_FROM_PROVIDER": "There are currently no offers for scholarships. Will be published here very soon.",
-  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "There is currently no material to learn. Will be published here very soon."
+  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "There is currently no material to learn. Will be published here very soon.",
+  "JOB_APPLICATIONS": "Job Applications",
+  "SCHOLARSHIP_APPLICATONS": "Scholarship Applications",
+  "MY_CONSUMPTIONS": "My Consumptions",
+  "NO_JOBS_APPLIED": "You have not applied for any job.",
+  "NO_SCHOLARSHIPS_APPLIED": "You have not applied for any scholarship.",
+  "NO_LEARNINGS_SUBSCRIBED": "You have not subscribed for any learning content."
 }
