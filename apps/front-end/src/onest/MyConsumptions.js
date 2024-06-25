@@ -23,7 +23,7 @@ import {
 
 const consumptionTypes = [
   { label: "JOB_APPLICATIONS", value: "jobs" },
-  { label: "SCHOLARSHIP_APPLICATONS", value: "scholarship" },
+  { label: "SCHOLARSHIP_APPLICATIONS", value: "scholarship" },
   { label: "LEARNING_EXPERIENCES", value: "learning" },
 ];
 
@@ -184,30 +184,23 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
   );
 }
 
-const replaceUrlParam = (url, object) => {
-  const param = url.match(/:(\w+)/)[1]; // Extract the parameter name
-  return url.replace(`:${param}`, object[param]);
-};
-
-const Chip = ({ label }) => {
-  return (
-    <Box
-      px={4}
-      py={2}
-      rounded="full"
-      bg={"primary.700"}
-      alignSelf={"flex-start"}
-      _text={{
-        color: "white",
-        fontWeight: "bold",
-      }}
-    >
-      <HStack space={2} alignItems="center">
-        <Text color="white">{label}</Text>
-      </HStack>
-    </Box>
-  );
-};
+const StyledChip = ({ label }) => (
+  <Box
+    px={2}
+    py={1}
+    rounded="md"
+    bg="primary.700"
+    alignSelf="flex-start"
+    _text={{
+      color: "white",
+      fontWeight: "bold",
+    }}
+  >
+    <HStack spacing={2} alignItems="center">
+      <Text>{label}</Text>
+    </HStack>
+  </Box>
+);
 
 const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
@@ -238,7 +231,7 @@ const RenderCards = ({ obj, config }) => {
           <Text fontSize={"16px"} fontWeight={600}>
             {obj?.item_name}
           </Text>
-          <Chip label={obj?.status} />
+          <StyledChip label={obj?.status} />
           <HStack alignItems={"center"} space={4}>
             <IconByName color="gray.700" name="" />
             <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
