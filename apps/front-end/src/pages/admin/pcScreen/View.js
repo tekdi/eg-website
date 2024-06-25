@@ -19,188 +19,23 @@ function View() {
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
   const [assignPrerak, setassignPrerak] = useState();
+  const [assignPrerakCount, setassignPrerakCount] = useState();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await cohortService.pcDetails({
-  //       id: id,
-  //       limit: 10,
-  //       page: 1,
-  //     });
-  //     setData([
-  //       {
-  //         user_id: 1126,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "selected_prerak",
-  //         user: {
-  //           id: 1126,
-  //           first_name: "Rahul",
-  //           middle_name: "Vijay ",
-  //           last_name: "Garud",
-  //           state: "RAJASTHAN",
-  //           district: "BARAN",
-  //           gender: "other",
-  //           aadhar_verified: "pending",
-  //           mobile: 9877297629,
-  //         },
-  //       },
-  //       {
-  //         user_id: 96,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 96,
-  //           first_name: "Dheeraj",
-  //           middle_name: null,
-  //           last_name: null,
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 9323232323,
-  //         },
-  //       },
-  //       {
-  //         user_id: 97,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 97,
-  //           first_name: "kumar",
-  //           middle_name: null,
-  //           last_name: null,
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 9123841385,
-  //         },
-  //       },
-  //       {
-  //         user_id: 98,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 98,
-  //           first_name: "Akash",
-  //           middle_name: null,
-  //           last_name: "Da",
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 7898183117,
-  //         },
-  //       },
-  //       {
-  //         user_id: 32,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 32,
-  //           first_name: "sagar",
-  //           middle_name: null,
-  //           last_name: "koshti",
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 9552488667,
-  //         },
-  //       },
-  //       {
-  //         user_id: 34,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 34,
-  //           first_name: "sagar",
-  //           middle_name: null,
-  //           last_name: "koshti",
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 9876543222,
-  //         },
-  //       },
-  //       {
-  //         user_id: 35,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 35,
-  //           first_name: "sagar",
-  //           middle_name: null,
-  //           last_name: "koshti",
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 9876543223,
-  //         },
-  //       },
-  //       {
-  //         user_id: 36,
-  //         pc_id: null,
-  //         parent_ip: "1",
-  //         academic_year_id: 1,
-  //         program_id: 1,
-  //         status: "applied",
-  //         user: {
-  //           id: 36,
-  //           first_name: "sagar",
-  //           middle_name: null,
-  //           last_name: "koshti",
-  //           state: null,
-  //           district: null,
-  //           gender: null,
-  //           aadhar_verified: null,
-  //           mobile: 9876543224,
-  //         },
-  //       },
-  //     ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await cohortService.pcDetails({
+        id: id,
+        limit: 10,
+        page: 1,
+      });
+      setData(result);
+      setassignPrerakCount(result?.data);
+    };
 
-  //     setPcData({
-  //       user_id: 1984,
-  //       first_name: "swapnil",
-  //       middle_name: null,
-  //       last_name: "joshi",
-  //       address: null,
-  //       state: "Maharashtra",
-  //       district: "pune",
-  //       village: "katraj",
-  //       block: "katraj",
-  //       grampanchayat: null,
-  //       mobile: 989987865,
-  //     });
-  //   };
-
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   return (
     <AdminLayout>
@@ -224,9 +59,10 @@ function View() {
             <Chip
               textAlign="center"
               lineHeight="15px"
-              label={`${pcData?.first_name} ${pcData?.middle_name || ""}  ${
-                pcData?.last_name || ""
-              }`}
+              // label={`${pcData?.first_name} ${pcData?.middle_name || ""}  ${
+              //   pcData?.last_name || ""
+              // }`}
+              label={`${pcData?.user_id}`}
             />,
           ]}
         />
@@ -274,7 +110,7 @@ function View() {
                   .join(",")}
               </AdminTypo.H6>
             </HStack>
-            <HStack space={4}>
+            {/* <HStack space={4}>
               <AdminTypo.Secondarybutton
                 onPress={() => navigate("/admin/addpcuser")}
                 rightIcon={
@@ -301,7 +137,7 @@ function View() {
               >
                 {t("ADD_PC")}
               </AdminTypo.Secondarybutton>
-            </HStack>
+            </HStack> */}
           </VStack>
           <HStack flex="0.5" justifyContent="center">
             {pcData?.profile_photo_1?.name ? (
@@ -329,7 +165,7 @@ function View() {
             _vstack={{ space: 0, flex: 1, bg: "light.100" }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={{
-              ...pcData,
+              ...data,
               name: `${pcData?.first_name} ${pcData?.middle_name || ""}  ${
                 pcData?.last_name || ""
               }`,
@@ -338,7 +174,10 @@ function View() {
               }, ${pcData?.village ?? ""}${
                 pcData?.address ? `, ${pcData?.address}` : ""
               }`,
-              prerak_assigned: assignPrerak,
+              prerak_assigned: `${assignPrerakCount?.total_count}`,
+              user_id: `${pcData?.user_id || ""}`,
+              mobile: `${pcData?.mobile || ""}`,
+              email_id: `${pcData?.email_id || ""}`,
             }}
             title={t("BASIC_DETAILS")}
             label={[

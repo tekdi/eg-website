@@ -72,7 +72,7 @@ const PcAdd = ({ footerLinks }) => {
     arr.forEach((key) => {
       const isValid = validate(data, key);
       if (isValid?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValid[key]))
+        if (!errors?.[key]?.__errors?.includes(isValid[key]))
           err?.[key]?.addError(isValid[key]);
       }
     });
