@@ -1,10 +1,12 @@
 import {
   CardComponent,
+  GetEnumValue,
   Layout,
   benificiaryRegistoryService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { Box } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -12,10 +14,13 @@ export default function PcrView() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
-  const [data, setData] = React.useState({});
+  const [data, setData] = useState({});
+  const [enumOptions, setEnumOptions] = useState({});
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
+    const enumData = await enumRegistryService.listOfEnum();
+    setEnumOptions(enumData?.data ? enumData?.data : {});
     const userData = Array.isArray(result?.data)
       ? result.data.filter((item) => item.user_id == id)
       : [];
@@ -47,9 +52,28 @@ export default function PcrView() {
           title={t("PCR_EDUCATION_LEVEL")}
           item={{
             ...data,
-            baseline_learning_level:
-              data?.baseline_learning_level?.toUpperCase(),
-            endline_learning_level: data?.endline_learning_level?.toUpperCase(),
+            baseline_learning_level: data?.baseline_learning_level ? (
+              <GetEnumValue
+                t={t}
+                enumType={"PCR_SCORES_BASELINE_AND_ENDLINE"}
+                enumOptionValue={data?.baseline_learning_level}
+                enumApiData={enumOptions}
+              />
+            ) : (
+              "-"
+            ),
+            // endline_learning_level: data?.endline_learning_level?.toUpperCase(),
+            rapid_assessment_first_learning_level:
+              data?.rapid_assessment_first_learning_level ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"PCR_SCORES_RAPID_QUESTION"}
+                  enumOptionValue={data?.rapid_assessment_first_learning_level}
+                  enumApiData={enumOptions}
+                />
+              ) : (
+                "-"
+              ),
           }}
           label={[
             "PRIAMRY_LEVEL_EDUCATION",
