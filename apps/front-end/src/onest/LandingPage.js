@@ -11,7 +11,7 @@ import slide2 from "./assets/images/slide-2.png";
 import slide3 from "./assets/images/slide-3.png";
 import slide4 from "./assets/images/slide-4.png";
 import slide5 from "./assets/images/slide-5.png";
-
+import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
@@ -202,6 +202,12 @@ const LandingPage = ({ userTokenInfo }) => {
       </VStack>
     </Layout>
   );
+};
+
+LandingPage.PropTypes = {
+  title: PropTypes.string,
+  onClick: PropTypes.func,
+  imageUrl: PropTypes.any,
 };
 
 export default LandingPage;

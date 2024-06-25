@@ -13,6 +13,7 @@ import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { ChipStatus } from "component/BeneficiaryStatus";
+import PropTypes from "prop-types";
 
 const Name = (row) => {
   return (
@@ -412,3 +413,7 @@ export default function PoDuplicateView({ footerLinks }) {
     </Layout>
   );
 }
+
+PoDuplicateView.PropTypes = {
+  footerLinks: PropTypes.any,
+};

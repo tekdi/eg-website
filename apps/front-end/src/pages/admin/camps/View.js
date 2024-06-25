@@ -26,7 +26,6 @@ import {
   Pressable,
   Stack,
   ScrollView,
-  useToast,
   Menu,
 } from "native-base";
 import { useTranslation } from "react-i18next";
@@ -35,7 +34,7 @@ import { StarRating } from "component/BaseInput";
 import DataTable from "react-data-table-component";
 import PropTypes from "prop-types";
 
-const ConsentForm = ({ consentData, row, t }) => {
+const ConsentForm = ({ consentData, row }) => {
   let learnerConsentData = Array.isArray(consentData)
     ? consentData.find((e) => e.user_id === row?.id)
     : {};
@@ -71,16 +70,6 @@ const mapDirection = ({ row, data }) => {
         rounded="full"
       />
     </a>
-  );
-};
-
-const dropDown = (triggerProps, t) => {
-  return (
-    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <HStack>
-        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
-      </HStack>
-    </Pressable>
   );
 };
 
@@ -714,4 +703,5 @@ View.PropTypes = {
   footerLinks: PropTypes.any,
   row: PropTypes.any,
   t: PropTypes.any,
+  consentData: PropTypes.any,
 };

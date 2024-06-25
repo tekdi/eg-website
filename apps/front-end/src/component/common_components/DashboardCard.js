@@ -3,6 +3,7 @@ import { Stack } from "native-base";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const DashboardCard = ({ title, titleDetail, primaryBtn, navigation }) => {
   const navigate = useNavigate();
@@ -21,6 +22,13 @@ const DashboardCard = ({ title, titleDetail, primaryBtn, navigation }) => {
       </FrontEndTypo.Secondarybutton>
     </Stack>
   );
+};
+
+DashboardCard.PropTypes = {
+  title: PropTypes.string,
+  titleDetail: PropTypes.string,
+  primaryBtn: PropTypes.string,
+  navigation: PropTypes.any,
 };
 
 export default DashboardCard;

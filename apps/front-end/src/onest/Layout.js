@@ -1,5 +1,6 @@
 import { Layout } from "@shiksha/common-lib";
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function App({ children, _appBar, ...props }) {
   return (
@@ -15,3 +16,7 @@ export default function App({ children, _appBar, ...props }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  children: PropTypes.node,
+};

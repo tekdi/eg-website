@@ -4,11 +4,12 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
-import { HStack, VStack, Pressable, Button, Menu } from "native-base";
+import { HStack, VStack, Pressable } from "native-base";
 import React, { memo, useCallback, useState, useMemo, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const pagination = [10, 15, 25, 50, 100];
 
@@ -221,4 +222,12 @@ function Table({
   );
 }
 
+Table.PropTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.func,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+  height: PropTypes.any,
+};
 export default memo(Table);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, HStack, ScrollView } from "native-base";
 import {
   PoAdminLayout as Layout,
@@ -6,18 +6,17 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import Table from "./Table";
+import PropTypes from "prop-types";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const [duplicateData, setduplicateData] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({ limit: 10 });
+  const [refAppBar, setRefAppBar] = useState();
+  const [duplicateData, setduplicateData] = useState();
+  const [loading, setLoading] = useState(true);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({ limit: 10 });
 
-  // facilitator pagination
-
-  React.useEffect(async () => {
+  useEffect(async () => {
     const dupliData =
       await benificiaryRegistoryService.getDuplicateBeneficiariesList(filter);
     setPaginationTotalRows(dupliData?.count || 0);
@@ -51,3 +50,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+AdminHome.PropTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

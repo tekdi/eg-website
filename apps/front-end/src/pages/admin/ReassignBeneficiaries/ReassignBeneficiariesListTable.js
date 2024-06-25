@@ -1,12 +1,12 @@
 import { AdminTypo } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import { ChipStatus as BeneficiaryStatus } from "component/BeneficiaryStatus";
-
 import { HStack, VStack, ScrollView, Text } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const PrerakName = (row) => {
   return (
@@ -79,14 +79,7 @@ const action = (row, t, navigate) => {
 };
 
 // Table component
-function Table({
-  facilitator,
-  paginationTotalRows,
-  loading,
-  data,
-  setFilter,
-  filter,
-}) {
+function Table({ paginationTotalRows, loading, data, setFilter, filter }) {
   const { t } = useTranslation();
 
   const beneficiaryStatus = [
@@ -183,4 +176,11 @@ function Table({
   );
 }
 
+Table.PropTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.func,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+};
 export default Table;

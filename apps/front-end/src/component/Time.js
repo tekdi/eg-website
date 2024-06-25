@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 export default function Time({ value, onChange }) {
   const handleTimeChange = (event) => {
@@ -23,3 +24,8 @@ export default function Time({ value, onChange }) {
     />
   );
 }
+
+Time.PropTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+};
