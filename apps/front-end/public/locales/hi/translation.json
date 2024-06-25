@@ -621,8 +621,8 @@
   "EPCP_INFO": "कृपया शिक्षार्थी की e-PCP परीक्षा से जुड़ी जानकारी दर्ज करें ।",
   "EPCP_WARNING": "शिविर में कोई शिक्षार्थी नहीं , पहले शिक्षार्थियों को जोड़ें ।",
   "ERROR_MESSAGE_MOBILE_NUMBER_CANNT_USE": "आप स्वयं के मोबाइल नंबर का उपयोग नहीं कर सकते",
-  "EVALUATION_1": "रैपिड अससेसमेंट - I",
-  "EVALUATION_2": "रैपिड अससेसमेंट - II",
+  "EVALUATION_1": "फोर्मेटिव अससेसमेंट - I",
+  "EVALUATION_2": "फोर्मेटिव अससेसमेंट - II",
   "EVENT": "इवेंट",
   "EVENT_ASSESSMENT_NOT_AVAILABLE_MESSAGE": "इस घटना के लिए कोई मूल्यांकन उपलब्ध नहीं है",
   "EVENT_ID": "इवेंट आईडी",
@@ -1181,10 +1181,10 @@
   "PCR_CLOSE_MESSAGE": "आप नीव शिविर को बंद करना चाहते हैं !!!",
   "PCR_DETAILS": "नीव विवरण",
   "PCR_EDUCATION_LEVEL": "नीव शिक्षण स्तर मूल्यांकन",
-  "PCR_EVALUATION_1": "रैपिड अससेसमेंट I (नीव सत्र 5 वां पूर्ण होने के बाद करें)",
-  "PCR_EVALUATION_2": "रैपिड अससेसमेंट II (नीव सत्र 11 वां पूर्ण होने के बाद करें)",
+  "PCR_EVALUATION_1": "फोर्मेटिव अससेसमेंट I",
+  "PCR_EVALUATION_2": "फोर्मेटिव अससेसमेंट II",
   "PCR_FINAL_EVALUATON": "अंतिम शिक्षण स्तर (नीव के सभी सत्र पूर्ण होने के बाद)",
-  "PCR_INITIAL_LEVEL": "बेसलाइन (नीव सत्र शुरू होने से पहले करें)",
+  "PCR_INITIAL_LEVEL": "बेसलाइन ",
   "PCR_SCORES_BASELINE_AND_ENDLINE_A": "A",
   "PCR_SCORES_BASELINE_AND_ENDLINE_A+": "A+",
   "PCR_SCORES_BASELINE_AND_ENDLINE_B": "B",
@@ -1934,5 +1934,6 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC शिक्षार्थी - SYC परीक्षा पहले ही हो चुकी",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "प्रेगनेंसी का समय है / बच्चा बहुत छोटा है",
   "ADMIT_CARD_NOT_FOUND": "एडमिट कार्ड नहीं मिला",
-  "OTHERS": "अन्य"
+  "OTHERS": "अन्य",
+  "PCR_SCORES_RAPID_QUESTION_ABSENT": "अनुपस्थित"
 }
