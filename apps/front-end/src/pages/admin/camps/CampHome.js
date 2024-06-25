@@ -165,9 +165,12 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   };
 
   useEffect(() => {
-    const urlFilter = getFilterLocalStorage(filterName);
-    setFilter({ ...filter, ...urlFilter });
-    setUrlFilterApply(true);
+    const init = () => {
+      const urlFilter = getFilterLocalStorage(filterName);
+      setFilter({ ...filter, ...urlFilter });
+      setUrlFilterApply(true);
+    };
+    init();
   }, []);
 
   useEffect(() => {
@@ -284,7 +287,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
             <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
         </HStack>
-        {filter?.type === "pcr" && (
+        {filter?.pcr_type === "ready_to_close" && (
           <AdminTypo.Secondarybutton
             onPress={(e) => {
               if (selectedRows?.length > 0) {
@@ -393,13 +396,17 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                       cursor={"pointer"}
                       mx={3}
                       onPress={() => {
-                        setFilter({ ...filter, status: item?.status, page: 1 });
+                        const { pcr_type, ...newFilter } = filter;
+                        setFilter({
+                          ...newFilter,
+                          status: item?.status,
+                          page: 1,
+                        });
                       }}
+                      alignItems="center"
                     >
                       {item.status === "all" ? (
-                        <AdminTypo.H5 bold color={"textMaroonColor.600"}>
-                          {`${t("ALL")}(${paginationTotalRows})`}
-                        </AdminTypo.H5>
+                        `${t("ALL")}`
                       ) : (
                         <GetEnumValue
                           t={t}
@@ -408,14 +415,37 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                           enumApiData={enumOptions}
                         />
                       )}
-
-                      {filter?.status != "all" &&
+                      {(!filter.pcr_type &&
+                        !filter?.status &&
+                        item?.status == "all") ||
                       filter?.status == t(item?.status)
-                        ? `(${paginationTotalRows})` + " "
+                        ? ` (${paginationTotalRows})`
                         : " "}
                     </AdminTypo.H6>
                   );
                 })}
+
+              <AdminTypo.H6
+                {...(filter.pcr_type === "ready_to_close" &&
+                (!filter.status || filter.status == "")
+                  ? { bold: true, color: "textMaroonColor.600" }
+                  : {})}
+                onPress={() => {
+                  const { status, ...newFilter } = filter;
+                  setFilter({
+                    ...newFilter,
+                    pcr_type: "ready_to_close",
+                    page: 1,
+                  });
+                }}
+              >
+                {`${t("CAMPS_READY_TO_CLOSE")}${
+                  filter.pcr_type === "ready_to_close" &&
+                  (!filter.status || filter.status == "")
+                    ? ` (${paginationTotalRows})`
+                    : ""
+                }`}
+              </AdminTypo.H6>
             </HStack>
             <Box roundedBottom={"2xl"}>
               <DataTable
@@ -447,7 +477,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   },
                   [setFilter, filter]
                 )}
-                selectableRows={filter?.type === "pcr" && true}
+                selectableRows={filter?.pcr_type === "ready_to_close" && true}
                 onSelectedRowsChange={handleRowCheck}
                 onRowClicked={handleRowClick}
                 dense
