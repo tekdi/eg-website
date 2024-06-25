@@ -164,14 +164,15 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     setIsDrawerOpen((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    const init = () => {
-      const urlFilter = getFilterLocalStorage(filterName);
-      setFilter({ ...filter, ...urlFilter });
-      setUrlFilterApply(true);
-    };
-    init();
+  const init = useCallback(() => {
+    const urlFilter = getFilterLocalStorage(filterName);
+    setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
+    setUrlFilterApply(true);
   }, []);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   useEffect(() => {
     async function fetchData() {
@@ -183,7 +184,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
     fetchData();
   }, []);
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     let newFilter = filter;
     if (urlFilterApply) {
       if (filter?.status === "all") {
@@ -194,11 +195,11 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
       setData(qData?.camps);
       setPaginationTotalRows(qData?.totalCount ? qData?.totalCount : 0);
     }
-  };
+  }, [filter, urlFilterApply]);
 
   useEffect(() => {
     getData();
-  }, [filter]);
+  }, [getData]);
 
   const handleRowClick = (row) => {
     navigate(`/admin/camps/${row.id}`);
@@ -409,11 +410,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                       cursor={"pointer"}
                       mx={3}
                       onPress={() => {
-                        const { pcr_type, ...newFilter } = filter;
-                        setFilter({
-                          ...newFilter,
-                          status: item?.status,
-                          page: 1,
+                        setFilter((prevFilter) => {
+                          const { pcr_type, ...newFilter } = prevFilter;
+                          return {
+                            ...newFilter,
+                            status: item?.status,
+                            page: 1,
+                          };
                         });
                       }}
                       alignItems="center"
@@ -444,11 +447,13 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   ? { bold: true, color: "textMaroonColor.600" }
                   : {})}
                 onPress={() => {
-                  const { status, ...newFilter } = filter;
-                  setFilter({
-                    ...newFilter,
-                    pcr_type: "ready_to_close",
-                    page: 1,
+                  setFilter((prevFilter) => {
+                    const { status, ...newFilter } = prevFilter;
+                    return {
+                      ...newFilter,
+                      pcr_type: "ready_to_close",
+                      page: 1,
+                    };
                   });
                 }}
               >
