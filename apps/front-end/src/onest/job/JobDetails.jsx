@@ -45,7 +45,7 @@ function JobDetails() {
 
   const closeModal = () => {
     setOpenModal(false);
-    navigate("/");
+    navigate(-1);
   };
 
   const getApplicationStatus = async (order_id) => {

@@ -49,7 +49,6 @@ export default function App({ userTokenInfo: { authUser } }) {
 
   const nextPreviewStep = async (pageStape = "n") => {
     const index = pages.indexOf(page);
-    const properties = schema1.properties;
     if (index !== undefined) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
@@ -59,14 +58,16 @@ export default function App({ userTokenInfo: { authUser } }) {
       }
       if (nextIndex !== undefined) {
         navigate(`/profile/${nextIndex}/edit`);
+      } else if (pageStape.toLowerCase() === "p") {
+        navigate(-1);
       } else if (pageStape.toLowerCase() === "n") {
-        // await formSubmitUpdate({ ...formData, form_step_number: "10" });
-        // setPage("upload");
+        navigate(`/profile/photo`);
       } else {
         return true;
       }
     }
   };
+
   const setStep = async (pageNumber = "") => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
