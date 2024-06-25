@@ -451,19 +451,11 @@ export default function BenificiaryEducation(userTokenInfo) {
                   "-"
                 ),
 
-                last_year_of_education: benificiary?.core_beneficiaries
-                  ?.last_year_of_education ? (
-                  <GetEnumValue
-                    t={t}
-                    enumType={"LAST_YEAR_OF_EDUCATION"}
-                    enumOptionValue={
-                      benificiary.core_beneficiaries.last_year_of_education
-                    }
-                    enumApiData={enumOptions}
-                  />
-                ) : (
-                  "-"
-                ),
+                last_standard_of_education_year: benificiary?.core_beneficiaries
+                  ?.last_standard_of_education_year
+                  ? benificiary?.core_beneficiaries
+                      ?.last_standard_of_education_year
+                  : "-",
 
                 previous_school_type: benificiary?.core_beneficiaries
                   ?.previous_school_type ? (
@@ -481,15 +473,24 @@ export default function BenificiaryEducation(userTokenInfo) {
 
                 education_10th_date:
                   benificiary?.core_beneficiaries?.type_of_learner ===
-                  "already_open_school_syc"
-                    ? benificiary?.core_beneficiaries?.education_10th_date ||
-                      "-"
-                    : undefined,
+                  "already_open_school_syc" ? (
+                    <GetEnumValue
+                      t={t}
+                      enumType={"REASON_OF_LEAVING_EDUCATION"}
+                      enumOptionValue={
+                        benificiary?.core_beneficiaries
+                          ?.reason_of_leaving_education
+                      }
+                      enumApiData={enumOptions}
+                    />
+                  ) : (
+                    "-"
+                  ),
                 education_10th_exam_year:
                   benificiary?.core_beneficiaries?.type_of_learner ===
                   "already_open_school_syc"
-                    ? benificiary?.core_beneficiaries
-                        ?.education_10th_exam_year || "-"
+                    ? benificiary?.core_beneficiaries?.education_10th_date ||
+                      "-"
                     : undefined,
               }),
           }}
