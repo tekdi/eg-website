@@ -59,10 +59,9 @@ function View() {
             <Chip
               textAlign="center"
               lineHeight="15px"
-              // label={`${pcData?.first_name} ${pcData?.middle_name || ""}  ${
-              //   pcData?.last_name || ""
-              // }`}
-              label={`${pcData?.user_id}`}
+              label={`${pcData?.first_name} ${pcData?.middle_name || ""}  ${
+                pcData?.last_name || ""
+              }`}
             />,
           ]}
         />

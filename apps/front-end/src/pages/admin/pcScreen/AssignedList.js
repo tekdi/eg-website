@@ -222,7 +222,15 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
         action === "add_facilitator" ? "add_facilitator" : "remove_facilitator",
     });
     if (Apidata?.data) {
-      navigate("/admin/pc");
+      setIsSelectable(false);
+      setSelectedRows([]);
+      setAddPrerakCount(0);
+      setRemovePrerakCount(0);
+      setIsAddingPrerak(true);
+      setIsDisable(false);
+      setIsRemovePrerak(true);
+      setIsCancelVisible(false);
+      clearFilter();
     }
   };
 
