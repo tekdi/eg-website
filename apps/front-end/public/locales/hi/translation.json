@@ -60,6 +60,7 @@
   "ADD_FRONT_VIEW_2": "सामने से दुसरा फोटो लेकर जोडे",
   "ADD_FRONT_VIEW_3": "सामने से तीसरा फोटो लेकर जोडे",
   "ADD_ID_PHOTOS": "पासपोर्ट साइज फोटो की तरह चेहरे की 3 स्पष्ट फोटो क्लीक करे *",
+  "VOLUNTEER_ADD_ID_PHOTOS": "पासपोर्ट साइज फोटो की तरह चेहरे की 1 स्पष्ट फोटो क्लीक करे *",
   "ADD_IN_SOME_ADDITIONAL_DETAILS": "कुछ अतिरिक्त विवरण जोड़ें",
   "ADD_IP_USER": "IP उपयोगकर्ता जोड़ें",
   "ADD_LEARNER": "शिक्षार्थी जोड़ें",
@@ -1692,6 +1693,7 @@
   "VILLAGE_WARD": "गाँव",
   "VOLUNTEERS": "स्वयंसेवक",
   "VOLUNTEER": "स्वयंसेवक",
+  "VOLUNTEER_HOME": "स्वयंसेवक होम",
   "VILLAGE_WARD_CD": "ग्राम वार्ड सी.डी",
   "VILLAGE_WARD_NAME": "ग्राम वार्ड का नाम",
   "VOLUNTEER_EXPERIENCE": "स्वयंसेवक अनुभव",
@@ -1749,6 +1751,7 @@
   "YOUR_HIGHEST_QUALIFICATION": "आपका सबसे उच्च शिक्षण",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "आपका IP जल्द ही विवरण साझा करेगा",
   "YOUR_PROFILE": "आपका प्रोफ़ाइल",
+  "MY_PROFILE": "मेरी प्रोफाइल",
   "YOUR_WELCOME_READY_TO_FLY": "आपका स्वागत है ! क्या आप सपनो की उड़ान भरने के लिए तैयार है?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "आपके काम की क्या उपलब्धता रहेगी ?",
   "IT_WILL_NOT_BE_DETERMINED": "अभी निश्चित नहीं",
@@ -1778,6 +1781,8 @@
   "EXAM_WARNING": "परीक्षा के लिए कोई शिक्षार्थी नहीं",
   "LEARNER_STATUS_COUNT": "शिक्षार्थी स्थिति गणना",
   "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "अपने शिक्षार्थियों की स्थिति की सभी जानकारी तक पहुँचें",
+  "VOUNTEER_ACCESS_PROFILE": "अपनी प्रोफ़ाइल तक पहुँचें और आवश्यक कोई भी परिवर्तन करें।",
+  "VOUNTEER_UPDATE_MY_PROFILE": "अपडेट मेरी प्रोफाइल",
   "LEARNER_STATUS_OVERVIEW": "शिक्षार्थी स्थिति",
   "LEARNER_EXAM_ATTENDANCE": "शिक्षार्थी परीक्षा उपस्थिति",
   "LEARNER_EXAM_ATTENDANCE_DETAILS": "अपने शिक्षार्थियों की परीक्षा उपस्थिति से संबंधित सभी जानकारी यहां से प्राप्त करें",
@@ -1952,5 +1957,8 @@
   "ADMIT_CARD_NOT_FOUND": "एडमिट कार्ड नहीं मिला",
   "OTHERS": "अन्य",
   "REASON_OF_LEAVING_EDUCATION": "शिक्षा छोड़ने का कारण",
-  "2_VOLUNTEER_AND_WORK_DETAILS": "2. स्वयंसेवक और कार्य विवरण"
+  "2_VOLUNTEER_AND_WORK_DETAILS": "2. स्वयंसेवक और कार्य विवरण",
+  "NO_JOBS_FROM_PROVIDER": "फिलहाल नौकरियों के लिए कोई ऑफर नहीं है। बहुत जल्द यहां प्रकाशित किया जाएगा।",
+  "NO_SCHOLARSHIPS_FROM_PROVIDER": "वर्तमान में छात्रवृत्ति के लिए कोई प्रस्ताव नहीं हैं। बहुत जल्द यहां प्रकाशित किया जाएगा।",
+  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "वर्तमान में सीखने के लिए कोई सामग्री नहीं है। बहुत जल्द यहां प्रकाशित किया जाएगा।"
 }

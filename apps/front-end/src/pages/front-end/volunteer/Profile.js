@@ -1,23 +1,26 @@
-import { CardComponent, FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import {
+  CardComponent,
+  FrontEndTypo,
+  IconByName,
+  ImageView,
+} from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import Layout from "onest/Layout";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import schema from "./registration/schema";
-import ProfilePhoto from "v2/components/Functional/ProfilePhoto/ProfilePhoto";
 import moment from "moment";
 
 export default function Profile({ userTokenInfo: { authUser } }) {
-  const [facilitator, setFacilitator] = React.useState();
+  const [volunteer, setVolunteer] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const init = async () => {
-      setFacilitator(authUser);
+      setVolunteer(authUser);
       setLoading(false);
     };
     init();
@@ -30,12 +33,11 @@ export default function Profile({ userTokenInfo: { authUser } }) {
         onPressBackButton: (e) => navigate("/"),
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
-        profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        profile_url: volunteer?.profile_photo_1?.name,
+        name: [volunteer?.first_name, volunteer?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
-      facilitator={facilitator}
-      // _footer={{ menues: footerLinks }}
+      volunteer={volunteer}
       analyticsPageTitle={"VOLUNTEER_PROFILE"}
       pageTitle={t("VOLUNTEER")}
       stepTitle={t("PROFILE")}
@@ -47,52 +49,72 @@ export default function Profile({ userTokenInfo: { authUser } }) {
             justifyContent={"space-between"}
             space={4}
           >
-            <HStack space={4} alignItems={"center"}>
-              <VStack>
-                <ProfilePhoto
-                  profile_photo_1={facilitator?.profile_photo_1}
-                  profile_photo_2={facilitator?.profile_photo_2}
-                  profile_photo_3={facilitator?.profile_photo_3}
-                  isProfileEdit={false}
-                />
-              </VStack>
-              <VStack>
+            <HStack space={6} alignItems={"center"}>
+              <HStack position="relative" p={2}>
+                {volunteer?.profile_photo_1?.id ? (
+                  <ImageView
+                    source={{ document_id: volunteer?.profile_photo_1?.id }}
+                    width={"64px"}
+                    height={"64px"}
+                  />
+                ) : (
+                  <IconByName
+                    name="AccountCircleLineIcon"
+                    color="textGreyColor.300"
+                    _icon={{ size: "64px" }}
+                  />
+                )}
+
+                {volunteer?.user_roles?.[0]?.status !== "approved" && (
+                  <IconByName
+                    p="0"
+                    position="absolute"
+                    top="-5"
+                    right="-10"
+                    name="PencilLineIcon"
+                    color="iconColor.200"
+                    _icon={{ size: "20" }}
+                    onPress={(e) => navigate(`/profile/photo`)}
+                  />
+                )}
+              </HStack>
+              <VStack position="relative" p="2">
                 <HStack justifyContent="space-between" alignItems="Center">
                   <FrontEndTypo.H3 color="textGreyColor.200" fontWeight="700">
-                    {`${
-                      facilitator?.first_name ? facilitator?.first_name : ""
-                    } ${
-                      facilitator?.middle_name ? facilitator?.middle_name : ""
-                    } ${facilitator?.last_name ? facilitator?.last_name : ""}`}
+                    {`${volunteer?.first_name ? volunteer?.first_name : ""} ${
+                      volunteer?.middle_name ? volunteer?.middle_name : ""
+                    } ${volunteer?.last_name ? volunteer?.last_name : ""}`}
                   </FrontEndTypo.H3>
-
-                  {/* {isNameEdit() && (
-                      <IconByName
-                        name="PencilLineIcon"
-                        color="iconColor.200"
-                        _icon={{ size: "20" }}
-                        onPress={(e) => {
-                          navigate(`/profile/edit/basic_details`);
-                        }}
-                      />
-                    )} */}
                 </HStack>
                 <HStack alignItems="Center">
                   {/* <IconByName name="Cake2LineIcon" color="iconColor.300" /> */}
                   <FrontEndTypo.H3 color="textGreyColor.450" fontWeight="500">
-                    {facilitator?.dob &&
-                    moment(facilitator?.dob, "YYYY-MM-DD", true).isValid()
-                      ? moment(facilitator?.dob).format("DD/MM/YYYY")
+                    {volunteer?.dob &&
+                    moment(volunteer?.dob, "YYYY-MM-DD", true).isValid()
+                      ? moment(volunteer?.dob).format("DD/MM/YYYY")
                       : "-"}
                   </FrontEndTypo.H3>
                 </HStack>
+                {volunteer?.user_roles?.[0]?.status !== "approved" && (
+                  <IconByName
+                    p="0"
+                    position="absolute"
+                    top="-5"
+                    right="-15"
+                    name="PencilLineIcon"
+                    color="iconColor.200"
+                    _icon={{ size: "20" }}
+                    onPress={(e) => {
+                      navigate(`/profile/1/edit`);
+                    }}
+                  />
+                )}
               </VStack>
             </HStack>
           </HStack>
 
           {Object.keys(schema?.properties || {})?.map((item) => (
             <CardComponent
-              grid={2}
               key={item}
               title={
                 item == 1
@@ -105,12 +127,13 @@ export default function Profile({ userTokenInfo: { authUser } }) {
                   ? t("CONTACT_DETAILS")
                   : ""
               }
-              onEdit={(e) => navigate(`/profile/${item}/edit`)}
+              {...(volunteer?.user_roles?.[0]?.status !== "approved"
+                ? { onEdit: (e) => navigate(`/profile/${item}/edit`) }
+                : {})}
               item={{
-                ...facilitator,
+                ...volunteer,
                 qualification:
-                  facilitator?.qualifications?.qualification_master?.name ||
-                  "-",
+                  volunteer?.qualifications?.qualification_master?.name || "-",
               }}
               label={Object.values(schema?.properties?.[item].properties || {})}
               arr={Object.keys(schema?.properties?.[item].properties || {})}

@@ -58,6 +58,7 @@
   "ADD_FRONT_VIEW_2": "Take the second photo from the front side.",
   "ADD_FRONT_VIEW_3": "Take the third photo from the front side.",
   "ADD_ID_PHOTOS": "Click and add three clear Photos *",
+  "VOLUNTEER_ADD_ID_PHOTOS": "Click and add one clear Photos *",
   "ADD_IN_SOME_ADDITIONAL_DETAILS": "Add in some additional details",
   "ADD_IP_USER": "Add Ip User",
   "ADD_LEARNER": "Add Learner",
@@ -104,7 +105,6 @@
   "ALL_ADDRESSES": "All addresses",
   "All_AG_LEARNERS": "All learners",
   "ALL_CAMPS": "All Camps",
-  "ADD": "Add",
   "ALL_IPS": "All IPS (Organisations)",
   "ALL_PRERAK": "All Preraks",
   "ALL_PRERAKS": "All Preraks",
@@ -1664,6 +1664,7 @@
   "VILLAGE_WARD": "Village/Ward",
   "VOLUNTEERS": "Volunteers",
   "VOLUNTEER": "Volunteer",
+  "VOLUNTEER_HOME": "Volunteer Home",
   "VILLAGE_WARD_CD": "Village ward cd",
   "VILLAGE_WARD_NAME": "Village ward name",
   "VOLUNTEER_EXPERIENCE": "Volunteer Experience",
@@ -1722,6 +1723,7 @@
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
+  "MY_PROFILE": "My Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
   "EXAM_PREPARATION": {
@@ -1795,6 +1797,8 @@
   "EXAM_WARNING": "No Learners for the exam",
   "LEARNER_STATUS_COUNT": "Learner Status Count",
   "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "Access all information of your learner's status",
+  "VOUNTEER_ACCESS_PROFILE": "Access your profile and make any changes required.",
+  "VOUNTEER_UPDATE_MY_PROFILE": "Update my profile",
   "LEARNER_STATUS_OVERVIEW": "Learner Status Overview",
   "LEARNER_EXAM_ATTENDANCE": "Learner Exam Attendance",
   "LEARNER_EXAM_ATTENDANCE_DETAILS": "Access all information related to your learners' examination attendance from here",
@@ -1972,5 +1976,8 @@
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "pregnancy/the baby is very small",
   "ADMIT_CARD_NOT_FOUND": "Admit card not found",
   "OTHERS": "Others",
-  "REASON_OF_LEAVING_EDUCATION": "Reason of leaving education"
+  "REASON_OF_LEAVING_EDUCATION": "Reason of leaving education",
+  "NO_JOBS_FROM_PROVIDER": "Currently there is no offer for jobs. Will be published here very soon.",
+  "NO_SCHOLARSHIPS_FROM_PROVIDER": "There are currently no offers for scholarships. Will be published here very soon.",
+  "NO_LEARNING_EXPERIENCES_FROM_PROVIDER": "There is currently no material to learn. Will be published here very soon."
 }
