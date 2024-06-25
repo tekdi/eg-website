@@ -388,11 +388,19 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                     <AdminTypo.H6
                       key={"table"}
                       color={
+                        (!filter.pcr_type &&
+                          !filter?.status &&
+                          item?.status == "all") ||
                         filter?.status == t(item?.status)
                           ? "textMaroonColor.600"
                           : ""
                       }
-                      bold={filter?.status == t(item?.status)}
+                      bold={
+                        (!filter.pcr_type &&
+                          !filter?.status &&
+                          item?.status == "all") ||
+                        filter?.status == t(item?.status)
+                      }
                       cursor={"pointer"}
                       mx={3}
                       onPress={() => {
