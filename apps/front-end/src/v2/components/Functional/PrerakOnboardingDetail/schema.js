@@ -233,6 +233,7 @@ export default {
         qualification_ids: {
           label: "TEACHING_RALATED_DEGREE",
           format: "MultiCheck",
+          type: "array",
           grid: 1,
           items: {
             type: ["string", "number"],
