@@ -57,7 +57,7 @@ export default function PrerakOnboardingArrayForm({
     type === "reference_details"
       ? "REFERENCE_DETAILS"
       : type === "experience"
-      ? "2_VOLUNTEER_AND_WORK_DETAILS"
+      ? "WORK_DETAILS"
       : "ADD_VOLUNTEER_EXPERIENCE";
   const stepLabelList =
     type === "reference_details"
