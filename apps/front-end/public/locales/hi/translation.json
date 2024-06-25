@@ -1950,5 +1950,7 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC शिक्षार्थी - SYC परीक्षा पहले ही हो चुकी",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "प्रेगनेंसी का समय है / बच्चा बहुत छोटा है",
   "ADMIT_CARD_NOT_FOUND": "एडमिट कार्ड नहीं मिला",
-  "OTHERS": "अन्य"
+  "OTHERS": "अन्य",
+  "REASON_OF_LEAVING_EDUCATION": "शिक्षा छोड़ने का कारण",
+  "2_VOLUNTEER_AND_WORK_DETAILS": "2. स्वयंसेवक और कार्य विवरण"
 }

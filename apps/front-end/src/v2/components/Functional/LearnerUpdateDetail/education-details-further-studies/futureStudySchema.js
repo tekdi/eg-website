@@ -5,12 +5,12 @@ export default {
     1: {
       title: "LEARNER_ASPIRATIONS",
       type: "object",
-      required: ["aspiration_mapping"],
+      required: ["career_aspiration", "aspiration_mapping", "parent_support"],
       properties: {
         career_aspiration: {
           minItems: 1,
           type: "string",
-          description: "CAREER_ASPIRATION",
+          label: "CAREER_ASPIRATION",
           grid: 1,
           format: "RadioBtn",
         },
@@ -21,7 +21,7 @@ export default {
         },
 
         parent_support: {
-          description: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+          label: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
           type: "string",
           grid: 1,
           format: "RadioBtn",
@@ -34,7 +34,7 @@ export default {
             learning_motivation: {
               minItems: 1,
               maxItems: 3,
-              description: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
+              label: "WHY_DOES_THE_LEARNER_WANT_TO_COMPLETE_10TH_GRADE",
               type: "array",
               grid: 1,
               format: "MultiCheck",
@@ -44,7 +44,7 @@ export default {
             type_of_support_needed: {
               minItems: 1,
               maxItems: 3,
-              description: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
+              label: "WHAT_SUPPORT_IS_THE_LEARNER_SEEKING_FROM_PRAGATI",
               grid: 1,
               type: "array",
               format: "MultiCheck",

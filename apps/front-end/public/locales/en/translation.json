@@ -524,7 +524,7 @@
   "ENROLLMENT_DETAILS_VERIFICATION_BIHAR": "Enrollment Details Verification Checklist(Cross verify the information on Payment Receipt,Application Form and Application Login ID Screenshot)",
   "ENROLLMENT_INCOMPLETE_MESSAGE": "Review the entered information and make sure all information is accurate and Complete any remaining section",
   "ENROLLMENT_ID": "Enrollment Id",
-  "ENROLLMENT_MOBILE_NO": "Mobile Number *",
+  "ENROLLMENT_MOBILE_NO": "Mobile Number",
   "ENROLLMENT_MOBILE_NUMBER": "Enrollment Mobile Number *",
   "ENROLLMENT_NO": "Enrollment Number",
   "ENROLLMENT_NUMBER": "Enrollment Number",
@@ -1971,5 +1971,6 @@
   "SYC_LEARNER_SYC_EXAM_ALREADY_DONE": "SYC Learner - SYC Exam Already Done",
   "PREGNANCY_THE_BABY_IS_VERY_SMALL": "pregnancy/the baby is very small",
   "ADMIT_CARD_NOT_FOUND": "Admit card not found",
-  "OTHERS": "Others"
+  "OTHERS": "Others",
+  "REASON_OF_LEAVING_EDUCATION": "Reason of leaving education"
 }

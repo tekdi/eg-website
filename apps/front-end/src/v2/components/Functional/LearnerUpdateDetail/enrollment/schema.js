@@ -28,7 +28,7 @@ export default {
         enrolled_for_board: {
           type: "string",
           _stack: { direction: "row", justifyContent: "space-between" },
-          description: "BOARD_OF_ENROLLMENT",
+          label: "BOARD_OF_ENROLLMENT",
           format: "RadioBtn",
         },
         enrollment_number: {
@@ -55,7 +55,7 @@ export default {
 
         enrollment_date: {
           type: "string",
-          description:
+          label:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_DATE"
               : "FEES_PAID_DATE",
@@ -65,7 +65,7 @@ export default {
           minItems: 1,
           maxItems: 7,
           type: "array",
-          description: "SUBJECTS",
+          label: "SUBJECTS",
           grid: 1,
           items: {
             type: ["string", "number"],
@@ -74,7 +74,7 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          description:
+          label:
             state?.state_name === "RAJASTHAN"
               ? [
                   "ENROLLMENT_RECIEPT_AND_UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
