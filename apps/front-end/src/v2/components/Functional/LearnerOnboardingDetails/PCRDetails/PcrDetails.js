@@ -184,8 +184,7 @@ const PcrDetails = () => {
                   attr: "rapid_assessment_first_learning_level",
                 })}
                 selectedValue={
-                  data?.rapid_assessment_first_learning_level?.toUpperCase() ||
-                  ""
+                  data?.rapid_assessment_first_learning_level || ""
                 }
                 accessibilityLabel="Select"
                 placeholder={
