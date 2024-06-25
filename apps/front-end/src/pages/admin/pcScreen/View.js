@@ -52,7 +52,7 @@ function View() {
                   </AdminTypo.H4>
                 </HStack>
               ),
-              link: "/poadmin/ips",
+              link: "/admin/pc",
               icon: "GroupLineIcon",
             },
 
