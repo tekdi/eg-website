@@ -1,18 +1,4 @@
 import {
-  Box,
-  CheckIcon,
-  HStack,
-  Input,
-  Select,
-  Text,
-  VStack,
-} from "native-base";
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import Layout from "./Layout";
-import { dataConfig } from "./card";
-import {
   FrontEndTypo,
   H2,
   IconByName,
@@ -20,6 +6,12 @@ import {
   OnestService,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
+import { Box, CheckIcon, HStack, Input, Select, VStack } from "native-base";
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import Layout from "./Layout";
+import { dataConfig } from "./card";
 
 const consumptionTypes = [
   { label: "JOB_APPLICATIONS", value: "jobs" },
@@ -27,7 +19,7 @@ const consumptionTypes = [
   { label: "LEARNING_EXPERIENCES", value: "learning" },
 ];
 
-const limit = 10;
+const limit = 6;
 
 export default function MyConsumptions({ userTokenInfo: { authUser } }) {
   const [type, setType] = useState("jobs");
@@ -156,10 +148,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
           />
         </HStack>
       </VStack>
-
-      <Text p={4} fontSize={"16px"} fontWeight={"500"}>
-        {t(dataConfig[type].title)}
-      </Text>
+      <FrontEndTypo.H1 p={4}>{t(dataConfig[type].title)}</FrontEndTypo.H1>
       <VStack flexWrap="wrap" space={4}>
         <VStack space="4" alignContent="center" p="4">
           {listData?.length ? (
@@ -187,6 +176,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
 
 const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <Box
       width={"100%"}
@@ -199,29 +189,45 @@ const RenderCards = ({ obj, config }) => {
     >
       {config.title === "LEARNING_EXPERIENCES" ? (
         <VStack space={4}>
-          <Text fontSize={"16px"} fontWeight={600}>
-            {obj?.item_name}
-          </Text>
+          <FrontEndTypo.H1>{obj?.item_name}</FrontEndTypo.H1>
           <HStack alignItems={"center"} space={4}>
-            <IconByName color="gray.700" name="" />
-            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+            <IconByName color="gray.700" name="BuildingFillIcon" />
+            <FrontEndTypo.H2 color="gray.700" fontWeight="400">
               {obj?.provider_name}
-            </Text>
+            </FrontEndTypo.H2>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <FrontEndTypo.H2 color="gray.700">{t("ITEM")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2 fontWeight="400" color="gray.700">
+              {obj?.context_item_id}
+            </FrontEndTypo.H2>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <FrontEndTypo.H2 color="gray.700">{t("ORDER")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2 color="gray.700">{obj?.order_id}</FrontEndTypo.H2>
           </HStack>
         </VStack>
       ) : (
         <VStack space={4}>
-          <Text fontSize={"16px"} fontWeight={600}>
-            {obj?.item_name}
-          </Text>
+          <FrontEndTypo.H1>{obj?.item_name}</FrontEndTypo.H1>
           <HStack>
             <Chip label={obj?.status} py="2" px="4" />
           </HStack>
           <HStack alignItems={"center"} space={4}>
-            <IconByName color="gray.700" name="" />
-            <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
+            <IconByName color="gray.700" name="BuildingFillIcon" />
+            <FrontEndTypo.H2 color="gray.700" fontWeight="400">
               {obj?.provider_name}
-            </Text>
+            </FrontEndTypo.H2>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <FrontEndTypo.H2 color="gray.700">{t("ITEM")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2 fontWeight="400" color="gray.700">
+              {obj?.context_item_id}
+            </FrontEndTypo.H2>
+          </HStack>
+          <HStack alignItems={"center"} space={4}>
+            <FrontEndTypo.H2 color="gray.700">{t("ORDER")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2 color="gray.700">{obj?.order_id}</FrontEndTypo.H2>
           </HStack>
           <FrontEndTypo.Primarybutton
             onPress={() => {
