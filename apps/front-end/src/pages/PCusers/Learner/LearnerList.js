@@ -6,7 +6,7 @@ import {
   SelectStyle,
   CardComponent,
   AdminTypo,
-  benificiaryRegistoryService,
+  eventService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -106,10 +106,11 @@ export default function LearnerList() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setloading] = React.useState(false);
-  const [beneficiary, setBeneficiary] = React.useState({});
+  const [prerakList, setPrerakList] = React.useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [prerakData, setPrerakData] = React.useState();
   const [isDisable, setIsDisable] = useState(true);
+  const [beneficiary, setBeneficiary] = useState(true);
 
   useEffect(async () => {
     setLoadingList(true);
@@ -124,122 +125,22 @@ export default function LearnerList() {
     setLoadingList(false);
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoadingList(true);
-      try {
-        const fetchedData = [
-          {
-            id: "1",
-            first_name: "John",
-            middle_name: null,
-            last_name: "Doe",
-            mobile: "1234567890",
-            program_beneficiaries: {
-              status: "enrolled",
-              enrollment_first_name: "John",
-              enrollment_middle_name: null,
-              enrollment_last_name: "Doe",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2022-2023",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Yogini",
-                    lastName: "Tayade",
-                    mobile: "8778909890",
-                  },
-                ],
-              },
-              {
-                name: "Cohort 2021-2022",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Sonali",
-                    lastName: "Garud",
-                    mobile: "8909879098",
-                  },
-                  {
-                    userId: 2,
-                    firstName: "Reshma",
-                    lastName: "Mahadik",
-                    mobile: "9876543509",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: "2",
-            first_name: "Jane",
-            middle_name: "David",
-            last_name: "Smith",
-            mobile: "0987654321",
-            program_beneficiaries: {
-              status: "identified",
-              enrollment_first_name: "Jane",
-              enrollment_middle_name: "David",
-              enrollment_last_name: "Smith",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2023-2024",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Snehal",
-                    lastName: "Sabade",
-                    mobile: "98768909990",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: "3",
-            first_name: "David",
-            middle_name: "Robin",
-            last_name: "Dane",
-            mobile: "9012345678",
-            program_beneficiaries: {
-              status: "enrolled",
-              enrollment_first_name: "David",
-              enrollment_middle_name: "Robin",
-              enrollment_last_name: "Dane",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2024-2025",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Dhanashree",
-                    lastName: "Patil",
-                    mobile: "98098909890",
-                  },
-                ],
-              },
-            ],
-          },
-        ];
-        setPrerakData(fetchedData);
-        setLoadingList(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoadingList(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const getPrerakList = async () => {
+    setLoadingList(true);
+    try {
+      const result = await eventService.getPrerakList();
+      setPrerakList(result?.data?.facilitator_data);
+      setPrerakData(fetchedData);
+      setLoadingList(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoadingList(false);
+    }
+  };
+  const onHandleChange = () => {
+    setIsModalOpen(true);
+    getPrerakList();
+  };
 
   const handlePrerakChange = (values) => {
     setIsDisable(values.length === 0);
@@ -274,7 +175,7 @@ export default function LearnerList() {
         >
           <Box
             flex="2"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => onHandleChange()}
             placeholderTextColor="textBlack.500"
             borderColor="textMaroonColor.500"
             borderBottomColor="black"
@@ -348,7 +249,7 @@ export default function LearnerList() {
           </Box>
         </HStack>
         <Box
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => onHandleChange()}
           mb="2"
           mt="4"
           style={{ cursor: "pointer" }}
