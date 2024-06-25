@@ -148,6 +148,17 @@ const List = ({ userTokenInfo: { authUser } }) => {
     navigate(`/onest`);
   };
 
+  const getWarningMessage = () => {
+    const warningKey = cardData?.length
+      ? "NO_data_available"
+      : {
+          scholarship: "NO_SCHOLARSHIPS_FROM_PROVIDER",
+          jobs: "NO_JOBS_FROM_PROVIDER",
+          learning: "NO_LEARNING_EXPERIENCES_FROM_PROVIDER",
+        }[type] || "NO_data_available";
+    return t(warningKey);
+  };
+
   if (loading) {
     return <Loading message={loading} />;
   }
@@ -278,7 +289,7 @@ const List = ({ userTokenInfo: { authUser } }) => {
               <RenderCards key={e} obj={e} config={config} />
             ))
           ) : (
-            <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2>{getWarningMessage()}</FrontEndTypo.H2>
           )}
           {/* </InfiniteScroll> */}
           {hasMore && filterCardData?.length > 0 && (
