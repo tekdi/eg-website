@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import { dataConfig } from "./card";
-
 import {
   FrontEndTypo,
   H2,
@@ -20,6 +19,7 @@ import {
   Loading,
   OnestService,
 } from "@shiksha/common-lib";
+import Chip from "component/Chip";
 
 const consumptionTypes = [
   { label: "JOB_APPLICATIONS", value: "jobs" },
@@ -27,7 +27,7 @@ const consumptionTypes = [
   { label: "LEARNING_EXPERIENCES", value: "learning" },
 ];
 
-const limit = 6;
+const limit = 10;
 
 export default function MyConsumptions({ userTokenInfo: { authUser } }) {
   const [type, setType] = useState("jobs");
@@ -35,6 +35,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
   const [config, setConfig] = useState();
   const [filter, setFilter] = useState();
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const ref = useRef(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -51,12 +52,15 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
         const data = {
           context: type,
           user_id: userData.user_id,
+        };
+        let result = await OnestService.getList({
+          filters: data,
           limit,
           page,
-        };
-        let result = await OnestService.getList({ filters: data });
+        });
         if (result?.data) {
           setListData(result?.data);
+          setTotalPages(result?.totalPages ? parseInt(result?.totalPages) : 1);
         } else {
           console.error("Failed to fetch data");
         }
@@ -67,7 +71,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
       }
     };
     fetchListData();
-  }, [type, filter]);
+  }, [type, filter, page]);
 
   const handleFilter = (key, value) => {
     setFilter((e) => ({
@@ -165,39 +169,21 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
           ) : (
             <FrontEndTypo.H2>{getWarningMessage()}</FrontEndTypo.H2>
           )}
-          {/* {listData?.length > 0 && (
-            <FrontEndTypo.Primarybutton onPress={(e) => fetchData(1)}>
+          {totalPages > page && (
+            <FrontEndTypo.Primarybutton onPress={() => setPage(page + 1)}>
               {t("NEXT")}
             </FrontEndTypo.Primarybutton>
           )}
-          {page > 1 && listData?.length > 0 && (
-            <FrontEndTypo.Primarybutton onPress={(e) => fetchData(-1)}>
+          {page > 1 && page <= totalPages && (
+            <FrontEndTypo.Primarybutton onPress={() => setPage(page - 1)}>
               {t("BACK")}
             </FrontEndTypo.Primarybutton>
-          )} */}
+          )}
         </VStack>
       </VStack>
     </Layout>
   );
 }
-
-const StyledChip = ({ label }) => (
-  <Box
-    px={2}
-    py={1}
-    rounded="md"
-    bg="primary.700"
-    alignSelf="flex-start"
-    _text={{
-      color: "white",
-      fontWeight: "bold",
-    }}
-  >
-    <HStack spacing={2} alignItems="center">
-      <Text>{label}</Text>
-    </HStack>
-  </Box>
-);
 
 const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
@@ -228,7 +214,9 @@ const RenderCards = ({ obj, config }) => {
           <Text fontSize={"16px"} fontWeight={600}>
             {obj?.item_name}
           </Text>
-          <StyledChip label={obj?.status} />
+          <HStack>
+            <Chip label={obj?.status} py="2" px="4" />
+          </HStack>
           <HStack alignItems={"center"} space={4}>
             <IconByName color="gray.700" name="" />
             <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
