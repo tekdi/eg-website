@@ -313,6 +313,7 @@
   "CLEAR_PROFILE_MESSAGE": "Make sure this image has a clear profile view of your Face. Improper Image might result in disqualification of the Application.",
   "CLICK_HERE_TO_COPY_AND_LOGIN": "Click here to copy and login",
   "CLICK_HERE_TO_COPY_THE_LINK": "Click here to copy the link",
+  "CLOSE": "Close",
   "CLOSE_PCR": "Close Neev Camp",
   "COLLABORATION": "Collaboration with each other",
   "COMING_SOON": "Coming soon",
@@ -427,6 +428,7 @@
   "DISCLAIMER_MESSAGE": "I understand that my Aadhaar details shall not be used or stored for any other purpose.",
   "DISTANCE": "Distance",
   "DISTRICT": "District",
+  "DETAILS": "Details",
   "DO": "DO's",
   "DO_YOU_HAVE_ANY_JOB_EXPERIENCE": "Do you have any Job Experience ?",
   "DO_YOU_HAVE_ANY_TEACHING_DEGREE": "Do you have any teaching degree?",
@@ -467,6 +469,7 @@
   "DUPLICATE": "Duplicate",
   "DUPLICATE_CAMP_BENEFICIARY_ASSIGNMENT": "Duplicate Camp Beneficiary Assignment",
   "DUPLICATE_LIST": "Duplicate List",
+  "DURATION": "Duration",
   "E_AADHAAR_CARD_VERIFICATION": "E-Aadhaar card verification",
   "ECONOMIC_DIFFICULTIES": "Economic Difficulties",
   "EDIT": "Edit",
@@ -1157,6 +1160,7 @@
   "PASSWORD_REQUIREMENTS_NOTMATCH": "Password must have minimum 8 characters, at least 1 uppercase,lowercase letter, and 1 number.",
   "PAYMENT_RECEIPT": "Enrollment Receipt",
   "PAYMENT_RECEIPTS": "Payment Receipt",
+  "PC_ACTIVITIES": "PC Activities",
   "PCR_ACTIVITIES": "Neev Miscellaneous Activities",
   "PCR_CAMP": "Neev Camp",
   "PCR_CAMP_EXECUTION": "Neev Camp Execution",
@@ -1922,5 +1926,8 @@
   "MY_PROFILE": "My Profile",
   "VIEW_MY_PROFILE": "View My Profile",
   "MARK_DAILY_ACTIVITIES": "Mark Daily Activities",
-  "ORGANIS_EVENT": "Organise Event"
+  "ORGANIS_EVENT": "Organise Event",
+
+  "VIEW_DAILY_ACTIVITIES": "View daily activities",
+  "RESET_PASSWORD": "Reset Password"
 }

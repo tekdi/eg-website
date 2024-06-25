@@ -8,11 +8,23 @@ import {
   Breadcrumb,
   cohortService,
 } from "@shiksha/common-lib";
-import { HStack, VStack } from "native-base";
+import {
+  HStack,
+  VStack,
+  Box,
+  Select,
+  Pressable,
+  Modal,
+  Checkbox,
+  IconButton,
+  Button,
+  Divider,
+} from "native-base";
 import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import AssignedList from "./AssignedList";
+import DailyActivityList from "./DailyActivityList";
 
 function View() {
   const { t } = useTranslation();
@@ -21,6 +33,7 @@ function View() {
   const [assignPrerak, setassignPrerak] = useState();
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -202,6 +215,14 @@ function View() {
   //   fetchData();
   // }, []);
 
+  const handleContinueBtn = () => {
+    // const filteredUsers = prerakData.filter((item) =>
+    //   selectedPrerak.includes(item.id)
+    // );
+    // setFilteredData(filteredUsers);
+    // setIsModalOpen(false);
+  };
+
   return (
     <AdminLayout>
       <VStack flex={1} mt="5" space={4} p="4">
@@ -276,7 +297,8 @@ function View() {
             </HStack>
             <HStack space={4}>
               <AdminTypo.Secondarybutton
-                onPress={() => navigate("/admin/addpcuser")}
+                // onPress={() => navigate("/admin/addpcuser")}
+                onPress={() => setIsModalOpen(true)}
                 rightIcon={
                   <IconByName
                     color="#084B82"
@@ -286,7 +308,7 @@ function View() {
                   />
                 }
               >
-                {t("ADD_PC")}
+                {t("VIEW_DAILY_ACTIVITIES")}
               </AdminTypo.Secondarybutton>
               <AdminTypo.Secondarybutton
                 onPress={() => navigate("/admin/addpcuser")}
@@ -299,7 +321,7 @@ function View() {
                   />
                 }
               >
-                {t("ADD_PC")}
+                {t("RESET_PASSWORD")}
               </AdminTypo.Secondarybutton>
             </HStack>
           </VStack>
@@ -360,6 +382,46 @@ function View() {
           />
         </HStack>
 
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          safeAreaTop={true}
+          size="xl"
+        >
+          <Modal.Content>
+            <Modal.Header p="5" borderBottomWidth="0">
+              <AdminTypo.H3 textAlign="center" color="black">
+                {t("PC_ACTIVITIES")}
+              </AdminTypo.H3>
+
+              <HStack justifyContent="space-between">
+                <Button
+                  colorScheme="red"
+                  onPress={(e) => setIsModalOpen(false)}
+                >
+                  {t("CLOSE")}
+                </Button>
+
+                <Button
+                  colorScheme="red"
+                  onPress={handleContinueBtn}
+                  // isDisabled={isDisable}
+                >
+                  {t("COMMENT")}
+                </Button>
+              </HStack>
+            </Modal.Header>
+
+            <Modal.Body p="5" pb="10">
+              <VStack space="5">
+                <DailyActivityList
+                  setPcData={setPcData}
+                  setassignPrerak={setassignPrerak}
+                />
+              </VStack>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
         <AssignedList setPcData={setPcData} setassignPrerak={setassignPrerak} />
       </VStack>
     </AdminLayout>
