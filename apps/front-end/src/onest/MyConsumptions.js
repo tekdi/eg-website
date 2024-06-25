@@ -55,7 +55,6 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
           page,
         };
         let result = await OnestService.getList({ filters: data });
-        console.log({ result });
         if (result?.data) {
           setListData(result?.data);
         } else {
@@ -84,8 +83,6 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
   if (loading) {
     return <Loading message={loading} />;
   }
-
-  console.log({ type, listData });
 
   const getWarningMessage = () => {
     const warningKey = {
