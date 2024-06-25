@@ -9,6 +9,7 @@ import {
 import { HStack, Select } from "native-base";
 import React, { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 function SelectProgramOrganisation({ _hstack, getValue }) {
   const { t } = useTranslation();
@@ -113,5 +114,10 @@ function SelectProgramOrganisation({ _hstack, getValue }) {
     </HStack>
   );
 }
+
+SelectProgramOrganisation.PropTypes = {
+  _hstack: PropTypes.any,
+  getValue: PropTypes.any,
+};
 
 export default memo(SelectProgramOrganisation);

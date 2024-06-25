@@ -7,8 +7,8 @@ import {
   organisationService,
   Breadcrumb,
 } from "@shiksha/common-lib";
-import { Box, Button, HStack, Menu, Stack, VStack } from "native-base";
-import Chip, { ChipStatus } from "component/Chip";
+import { Button, HStack, Menu, Stack, VStack } from "native-base";
+import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -113,6 +113,7 @@ function View() {
             },
 
             <Chip
+              key={organisation?.id}
               textAlign="center"
               lineHeight="15px"
               label={organisation?.id}
@@ -188,7 +189,6 @@ function View() {
   );
 }
 
-View.propTypes = {};
 const pagination = [10, 15, 25, 50, 100];
 
 const DataList = memo(() => {

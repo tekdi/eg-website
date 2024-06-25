@@ -1,6 +1,5 @@
-import { HStack, Heading, Image, VStack, Stack, Text } from "native-base";
-import { ImageBackground, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import { HStack, Heading, Image, VStack } from "native-base";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { dataConfig } from "./card";
 import Layout from "./Layout";

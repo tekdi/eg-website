@@ -29,6 +29,7 @@ export default function AdminReports({ footerLinks }) {
   const reportName = `${name?.name}-report-${localProgramData?.program_id}-${localAcademicData?.academic_year_id}`;
   const data = ipId1Data?.[reportName];
 
+  console.log({ data });
   return (
     <Layout
       w={Width}

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   AdminTypo,
   Breadcrumb,
@@ -9,7 +8,7 @@ import {
   organisationService,
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -18,7 +17,6 @@ function View(props) {
   const [user, setUser] = useState();
   const [organisation, setOrganisation] = useState();
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   useEffect(async () => {
     const result = await organisationService.userDetails({
@@ -120,7 +118,5 @@ function View(props) {
     </PoAdminLayout>
   );
 }
-
-View.propTypes = {};
 
 export default View;

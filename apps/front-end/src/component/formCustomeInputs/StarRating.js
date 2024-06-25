@@ -1,8 +1,9 @@
 import { H2, IconByName } from "@shiksha/common-lib";
-import { FormControl, HStack, Pressable, Text, VStack } from "native-base";
+import { FormControl, HStack, Pressable, Text } from "native-base";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+
 const StarRating = ({ value, onChange, required, schema }) => {
   const { ratingLabels, totalStars, readOnly, _hstack, _icon } = schema || {};
   const [rating, setRating] = useState(value);

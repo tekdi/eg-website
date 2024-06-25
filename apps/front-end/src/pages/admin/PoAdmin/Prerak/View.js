@@ -7,7 +7,6 @@ import {
   t,
   ImageView,
   AdminTypo,
-  benificiaryRegistoryService,
   CardComponent,
   FrontEndTypo,
   PoAdminLayout,

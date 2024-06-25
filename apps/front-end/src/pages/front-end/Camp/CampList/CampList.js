@@ -1,10 +1,8 @@
 import {
-  AdminTypo,
   BodyMedium,
   FrontEndTypo,
   GetEnumValue,
   IconByName,
-  Layout,
   campService,
   enumRegistryService,
   benificiaryRegistoryService,
@@ -23,7 +21,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import Chip from "component/BeneficiaryStatus";
 
 const campSettingData = (item) => {
   return (
@@ -435,4 +432,6 @@ export default function List({ userTokenInfo }) {
   );
 }
 
-List.propTypes = {};
+List.propTypes = {
+  userTokenInfo: PropTypes.any,
+};
