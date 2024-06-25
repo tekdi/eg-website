@@ -14,8 +14,6 @@ import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { debounce } from "lodash";
 import { MultiCheck } from "../../../component/BaseInput";
-import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
 
 const DailyActivityList = ({ setPcData, setassignPrerak }) => {
   const { t } = useTranslation();

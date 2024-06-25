@@ -15,16 +15,15 @@ import {
   Select,
   Pressable,
   Modal,
-  Checkbox,
-  IconButton,
   Button,
-  Divider,
 } from "native-base";
 import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import AssignedList from "./AssignedList";
 import DailyActivityList from "./DailyActivityList";
+
+import DatePicker from "../../../v2/components/Static/FormBaseInput/DatePicker";
 
 function View() {
   const { t } = useTranslation();
@@ -390,26 +389,35 @@ function View() {
         >
           <Modal.Content>
             <Modal.Header p="5" borderBottomWidth="0">
-              <AdminTypo.H3 textAlign="center" color="black">
-                {t("PC_ACTIVITIES")}
-              </AdminTypo.H3>
-
-              <HStack justifyContent="space-between">
-                <Button
-                  colorScheme="red"
-                  onPress={(e) => setIsModalOpen(false)}
-                >
-                  {t("CLOSE")}
-                </Button>
-
-                <Button
-                  colorScheme="red"
-                  onPress={handleContinueBtn}
-                  // isDisabled={isDisable}
-                >
-                  {t("COMMENT")}
-                </Button>
-              </HStack>
+              <Box
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <AdminTypo.H3 color="black">{t("PC_ACTIVITIES")}</AdminTypo.H3>
+                <Box style={{ flexDirection: "row" }}>
+                  <Button
+                    colorScheme="red"
+                    onPress={(e) => setIsModalOpen(false)}
+                  >
+                    {t("CLOSE")}
+                  </Button>
+                  <Button
+                    ml={2}
+                    colorScheme="red"
+                    onPress={handleContinueBtn}
+                    // isDisabled={isDisable}
+                  >
+                    {t("COMMENT")}
+                  </Button>
+                </Box>
+              </Box>
+              <Box width={"40%"}>
+                <DatePicker />
+              </Box>
             </Modal.Header>
 
             <Modal.Body p="5" pb="10">
