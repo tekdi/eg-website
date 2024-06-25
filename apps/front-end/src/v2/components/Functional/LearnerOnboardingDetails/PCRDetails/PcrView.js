@@ -53,13 +53,13 @@ export default function PcrView() {
           }}
           label={[
             "PRIAMRY_LEVEL_EDUCATION",
-            // "EVALUATION_1",
+            "EVALUATION_1",
             // "EVALUATION_2",
             // "FINAL_LEVEL_EDUCATION",
           ]}
           arr={[
             "baseline_learning_level",
-            // "rapid_assessment_first_learning_level",
+            "rapid_assessment_first_learning_level",
             // "rapid_assessment_second_learning_level",
             // "endline_learning_level",
           ]}
