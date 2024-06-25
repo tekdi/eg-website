@@ -355,7 +355,11 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
           rounded={"xs"}
           height={"50px"}
           bg={
-            filter?.district || filter?.state || filter?.block || filter?.status
+            filter?.district ||
+            filter?.state ||
+            filter?.block ||
+            filter?.status ||
+            filter?.pcr_type
               ? "textRed.400"
               : "#E0E0E0"
           }
@@ -368,7 +372,8 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
               filter?.state ||
               filter?.district ||
               filter?.block ||
-              filter?.status
+              filter?.status ||
+              filter?.pcr_type
                 ? "white"
                 : "black"
             }
