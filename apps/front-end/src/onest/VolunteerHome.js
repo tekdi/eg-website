@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 
-export default function VolunteerHome({ userTokenInfo: { authUser } }) {
+export default function VolunteerHome({
+  userTokenInfo: { authUser },
+  footerLinks,
+}) {
   // add user info for drawer
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -16,6 +19,7 @@ export default function VolunteerHome({ userTokenInfo: { authUser } }) {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
       _appBar={{ _backBtn: { style: { visibility: "hidden" } } }}
       userAccess
       facilitator={{

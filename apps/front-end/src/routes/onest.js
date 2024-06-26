@@ -22,7 +22,7 @@ const route = [
   { path: "/onest", component: LandingPage },
   { path: "/onest/:type", component: List },
   { path: "/onest/:type/:jobId", component: View },
-  { path: "/onest/my-consumptions", component: MyConsumptions },
+  { path: "/onest/my-consumptions/:type", component: MyConsumptions },
   {
     path: "/onest/:type/automatedForm/:jobId/:transactionId",
     component: AutomatedForm,
