@@ -320,6 +320,7 @@ export default function CampSessionList({ footerLinks }) {
 const SessionErrorMessage = ({ t, message, data, navigate }) => (
   <VStack>
     {t("CAMP_SESSION_INCOMPLETE_UNTIL_ALL_ASSESSMENTS_COMPLETED")}
+    <FrontEndTypo.H3>{t(message)}</FrontEndTypo.H3>
     {data && (
       <HStack flexWrap={"wrap"}>
         {data?.map((e) => (
