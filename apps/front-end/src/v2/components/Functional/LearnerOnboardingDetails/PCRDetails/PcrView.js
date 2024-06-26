@@ -62,7 +62,7 @@ export default function PcrView() {
             ) : (
               "-"
             ),
-            // endline_learning_level: data?.endline_learning_level?.toUpperCase(),
+            // endline_learning_level: data?.endline_learning_level?.toUpperCase(), comment
             rapid_assessment_first_learning_level:
               data?.rapid_assessment_first_learning_level ? (
                 <GetEnumValue
@@ -74,18 +74,39 @@ export default function PcrView() {
               ) : (
                 "-"
               ),
+            rapid_assessment_second_learning_level:
+              data?.rapid_assessment_second_learning_level ? (
+                <GetEnumValue
+                  t={t}
+                  enumType={"PCR_SCORES_RAPID_QUESTION"}
+                  enumOptionValue={data?.rapid_assessment_second_learning_level}
+                  enumApiData={enumOptions}
+                />
+              ) : (
+                "-"
+              ),
+            endline_learning_level: data?.endline_learning_level ? (
+              <GetEnumValue
+                t={t}
+                enumType={"PCR_SCORES_BASELINE_AND_ENDLINE"}
+                enumOptionValue={data?.endline_learning_level}
+                enumApiData={enumOptions}
+              />
+            ) : (
+              "-"
+            ),
           }}
           label={[
             "PRIAMRY_LEVEL_EDUCATION",
             "EVALUATION_1",
-            // "EVALUATION_2",
-            // "FINAL_LEVEL_EDUCATION",
+            "EVALUATION_2",
+            "FINAL_LEVEL_EDUCATION",
           ]}
           arr={[
             "baseline_learning_level",
             "rapid_assessment_first_learning_level",
-            // "rapid_assessment_second_learning_level",
-            // "endline_learning_level",
+            "rapid_assessment_second_learning_level",
+            "endline_learning_level",
           ]}
         />
       </Box>
