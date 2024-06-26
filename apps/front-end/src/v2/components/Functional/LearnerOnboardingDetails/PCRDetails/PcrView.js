@@ -1,5 +1,6 @@
 import {
   CardComponent,
+  FrontEndTypo,
   GetEnumValue,
   Layout,
   benificiaryRegistoryService,
@@ -43,7 +44,10 @@ export default function PcrView() {
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("PCR_DETAILS")}
     >
-      <Box p="10">
+      <Box p="5">
+        <FrontEndTypo.H1 fontWeight="600" mb="3">
+          {t("PCR_DETAILS")}
+        </FrontEndTypo.H1>
         <CardComponent
           // {...(!data?.endline_learning_level
           //   ? { onEdit: (e) => navigate(`/beneficiary/${id}/pcrdetails`) }

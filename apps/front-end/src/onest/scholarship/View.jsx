@@ -5,7 +5,7 @@ import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { registerTelementry } from "../api/Apicall";
+// import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "../card";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
@@ -34,7 +34,7 @@ function ScholarshipView() {
 
   const closeModal = () => {
     setOpenModal(false);
-    navigate("/");
+    navigate(-1);
   };
 
   const getApplicationStatus = async (order_id) => {
@@ -238,7 +238,7 @@ function ScholarshipView() {
       registerTelementry(siteUrl, transactionId);
     }*/
 
-    registerTelementry(siteUrl, transactionId);
+    // registerTelementry(siteUrl, transactionId);
 
     // ReactGA.pageview(window.location.pathname + window.location.search);
     var requestOptions = {

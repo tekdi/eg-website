@@ -1,6 +1,5 @@
-import { IconByName, ImageView } from "@shiksha/common-lib";
+import { IconByName } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import FilePreview from "v2/components/Static/FilePreview/FilePreview";
 
@@ -14,14 +13,17 @@ export default function ProfilePhoto({
   const navigate = useNavigate();
   return (
     <VStack alignItems="center">
-      <VStack position="relative" p="4">
+      <HStack
+        flexDirection={"row-reverse"}
+        space="4"
+        position="relative"
+        py={4}
+      >
         {isProfileEdit && (
           <IconByName
-            right="-20"
-            top="0"
-            p="2"
-            position="absolute"
             name="PencilLineIcon"
+            color="iconColor.200"
+            _icon={{ size: "20" }}
             onPress={(e) => navigate(editLink || `/profile/edit/upload/1`)}
           />
         )}
@@ -29,8 +31,8 @@ export default function ProfilePhoto({
         {profile_photo_1?.base64 ? (
           <FilePreview
             base64={profile_photo_1?.base64}
-            width={"190px"}
-            height={"190px"}
+            width={"64px"}
+            height={"64px"}
             borderRadius="50%"
           />
         ) : (
@@ -38,13 +40,13 @@ export default function ProfilePhoto({
             isDisabled
             name="AccountCircleLineIcon"
             color="iconColor.350"
-            _icon={{ size: "120" }}
+            _icon={{ size: "64" }}
             justifySelf="Center"
           />
         )}
-      </VStack>
+      </HStack>
 
-      <HStack alignItems="center" space="6">
+      {/* <HStack alignItems="center" space="6">
         {[profile_photo_1, profile_photo_2, profile_photo_3].map(
           (photo) =>
             photo?.base64 && (
@@ -57,7 +59,7 @@ export default function ProfilePhoto({
               />
             )
         )}
-      </HStack>
+      </HStack> */}
     </VStack>
   );
 }

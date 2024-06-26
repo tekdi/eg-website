@@ -196,7 +196,7 @@ const AutomatedForm = () => {
       order_id: appId,
       name: formData["person"]["name"],
       gender: formData["person"]["gender"],
-      phone: formData["contact"]["phone"],
+      phone: `${formData["contact"]["phone"]}`,
       email: formData["contact"]["email"],
     };
 
