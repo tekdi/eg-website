@@ -158,7 +158,11 @@ export default function PrerakList() {
   }, []);
 
   return (
-    <Layout analyticsPageTitle={"PRERAK_LIST"} pageTitle={t("PRERAK_LIST")}>
+    <Layout
+      analyticsPageTitle={"PRERAK_LIST"}
+      _footer={{ menues: true }}
+      pageTitle={t("PRERAK_LIST")}
+    >
       <VStack ref={ref}>
         <HStack
           justifyContent="space-between"
