@@ -26,6 +26,7 @@ import * as ObservationService from './services/ObservationService'
 import * as campService from './services/campService'
 import * as organisationService from './services/organisationService'
 import * as cohortService from './services/cohortService'
+import * as PcuserService from './services/PcuserService'
 import * as attendanceService from './services/attendanceService'
 import * as ConsentService from './services/ConsentService'
 import * as AgRegistryService from './services/AgRegistryService'
@@ -93,6 +94,7 @@ export {
   ObservationService,
   campService,
   cohortService,
+  PcuserService,
   organisationService,
   attendanceService,
   ConsentService,
