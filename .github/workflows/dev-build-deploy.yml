@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - feat-volunteer
+      - release-2.2.2
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
