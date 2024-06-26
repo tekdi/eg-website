@@ -6,7 +6,7 @@ import {
   SelectStyle,
   CardComponent,
   AdminTypo,
-  eventService,
+  PcUserService,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import {
@@ -129,7 +129,7 @@ export default function LearnerList() {
   const getPrerakList = async () => {
     setLoadingList(true);
     try {
-      const result = await eventService.getPrerakList();
+      const result = await PcUserService.getPrerakList();
       setPrerakList(result?.facilitator_data);
       setLoadingList(false);
     } catch (error) {
