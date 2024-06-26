@@ -32,7 +32,7 @@ import {
   getSelectedProgramId,
 } from "@shiksha/common-lib";
 import DataTable from "react-data-table-component";
-import { CampChipStatus } from "component/Chip";
+import Chip, { CampChipStatus } from "component/Chip";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
@@ -141,6 +141,44 @@ const closePcrColuman = (t) => [
   },
 ];
 
+const errorPcrColuman = (t) => [
+  {
+    name: t("CAMP_ID"),
+    selector: (row) => row?.camp_id,
+    sortable: false,
+    width: "100px",
+  },
+  {
+    name: t("CAMP_INCOMPLETED_SESSIONS"),
+    selector: (row) =>
+      row?.session?.length > 0 ? (
+        <HStack flexWrap={"wrap"}>
+          {/* {row?.session?.map((item) => ( */}
+          <Chip label={row?.session?.[0]?.ordering} />
+          {/* ))} */}
+        </HStack>
+      ) : (
+        t("COMPLETED")
+      ),
+    sortable: false,
+    width: "120px",
+  },
+  {
+    name: t("CAMP_INCOMPLETED_NEEW_ASSESSMENT"),
+    selector: (row) =>
+      row?.users?.length > 0 ? (
+        <HStack flexWrap={"wrap"}>
+          {row?.users?.map((item) => (
+            <Chip label={item?.id} />
+          ))}
+        </HStack>
+      ) : (
+        t("COMPLETED")
+      ),
+    sortable: false,
+  },
+];
+
 export default function CampHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState({ limit: 10 });
@@ -159,6 +197,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
   const toast = useToast();
   const [debounced, setDebounced] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [errors, setErrors] = useState();
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -248,17 +287,21 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
         ),
       });
     } else {
-      setModalVisible(false);
-      showToast({
-        render: () => (
-          <Alert status="warning" alignItems="start" mb="3" mt="4">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon size={"lg"} />
-              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
-            </HStack>
-          </Alert>
-        ),
-      });
+      if (result?.data?.length > 0) {
+        setErrors(result?.data);
+      } else {
+        setModalVisible(false);
+        showToast({
+          render: () => (
+            <Alert status="warning" alignItems="start" mb="3" mt="4">
+              <HStack alignItems="center" space="2" color>
+                <Alert.Icon size={"lg"} />
+                <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+              </HStack>
+            </Alert>
+          ),
+        });
+      }
     }
     setIsButtonLoading(false);
   };
@@ -521,6 +564,22 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   <AdminTypo.H6 bold>{t("PCR_CLOSE_MESSAGE")}</AdminTypo.H6>
                 </HStack>
               </Alert>
+              {errors && errors?.length > 0 && (
+                <VStack>
+                  <AdminTypo.H2></AdminTypo.H2>
+                  <DataTable
+                    customStyles={{
+                      rows: {
+                        style: {
+                          background: "lightpink",
+                        },
+                      },
+                    }}
+                    columns={[...errorPcrColuman(t)]}
+                    data={errors}
+                  />
+                </VStack>
+              )}
               <DataTable
                 columns={[...closePcrColuman(t)]}
                 defaultSortAsc
