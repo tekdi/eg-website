@@ -68,7 +68,7 @@ export default {
         state: {
           title: "STATE",
           type: "string",
-          // format: "select",
+          format: "select",
         },
         // district: {
         //   title: "DISTRICT",
@@ -102,8 +102,9 @@ export default {
       required: ["qualification"],
       properties: {
         qualification: {
-          title: "YOUR_HIGHEST_QUALIFICATION",
-          type: ["string"],
+          label: "SELECT_HIGHEST_QUALIFICATION",
+          title: "SELECT_HIGHEST_QUALIFICATION",
+          type: "string",
           format: "RadioBtn",
           grid: 2,
         },
