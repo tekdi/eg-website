@@ -6,7 +6,7 @@ import Details from "./content/Detials";
 import Layout from "./Layout";
 import { dataConfig } from "./card";
 
-function View() {
+function View({ userTokenInfo: { authUser } }) {
   const { type } = useParams();
   const envConfig = dataConfig[type];
   // navigate
@@ -19,6 +19,10 @@ function View() {
   if (type == "jobs") {
     return (
       <Layout
+        facilitator={{
+          ...authUser,
+          program_faciltators: authUser?.user_roles?.[0],
+        }}
         _appBar={{
           onPressBackButton: handleBack,
         }}
@@ -29,6 +33,10 @@ function View() {
   } else if (type == "scholarship") {
     return (
       <Layout
+        facilitator={{
+          ...authUser,
+          program_faciltators: authUser?.user_roles?.[0],
+        }}
         _appBar={{
           onPressBackButton: handleBack,
         }}
@@ -39,6 +47,10 @@ function View() {
   } else if (type == "learning") {
     return (
       <Layout
+        facilitator={{
+          ...authUser,
+          program_faciltators: authUser?.user_roles?.[0],
+        }}
         _appBar={{
           onPressBackButton: handleBack,
         }}
