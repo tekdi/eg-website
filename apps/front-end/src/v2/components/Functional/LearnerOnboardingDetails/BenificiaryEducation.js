@@ -378,9 +378,15 @@ export default function BenificiaryEducation(userTokenInfo) {
             "TYPE_OF_LEARNER",
             "REASON_FOR_LEAVING",
             benificiary?.core_beneficiaries?.type_of_learner &&
+              ["stream_2_mainstream_syc"].includes(
+                benificiary?.core_beneficiaries?.type_of_learner
+              ) &&
+              "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+
+            benificiary?.core_beneficiaries?.type_of_learner &&
               [
                 "school_dropout",
-                "already_open_school_syc",
+                // "already_open_school_syc",
                 "already_enrolled_in_open_school",
               ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
               "LAST_STANDARD_OF_EDUCATION",
@@ -430,6 +436,12 @@ export default function BenificiaryEducation(userTokenInfo) {
             ) : (
               "-"
             ),
+
+            education_year_of_10th_exam:
+              benificiary?.core_beneficiaries?.type_of_learner ===
+              "stream_2_mainstream_syc"
+                ? benificiary?.core_beneficiaries?.education_10th_exam_year
+                : "-",
 
             ...(benificiary?.core_beneficiaries?.type_of_learner &&
               [
@@ -502,11 +514,9 @@ export default function BenificiaryEducation(userTokenInfo) {
             ) {
               arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
               if (
-                [
-                  "school_dropout",
-                  "already_open_school_syc",
-                  "already_enrolled_in_open_school",
-                ].includes(benificiary?.core_beneficiaries?.type_of_learner)
+                ["school_dropout", "already_enrolled_in_open_school"].includes(
+                  benificiary?.core_beneficiaries?.type_of_learner
+                )
               ) {
                 arr = [
                   ...arr,
@@ -521,9 +531,21 @@ export default function BenificiaryEducation(userTokenInfo) {
               ) {
                 arr = [
                   ...arr,
-                  "education_10th_date",
+                  // "education_10th_date",
                   "education_10th_exam_year",
                 ];
+              }
+              if (
+                benificiary?.core_beneficiaries?.type_of_learner ===
+                "stream_2_mainstream_syc"
+              ) {
+                arr = [...arr, "education_year_of_10th_exam"];
+              }
+              if (
+                benificiary?.core_beneficiaries?.type_of_learner ===
+                "already_open_school_syc"
+              ) {
+                arr = [...arr, "previous_school_type"];
               }
             }
             return arr;
