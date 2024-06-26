@@ -10,7 +10,7 @@ const OrderSuccessModal = ({ isOpen, onClose, orderId, applied = false }) => {
       <Modal.Content textAlign={"center"} padding={10}>
         <Text fontSize={22} fontFamily={"fantasy"}>
           {applied
-            ? t("YOU_HAVE_ALREADY_APPLIED_FOR_THIS_APPLICATION")
+            ? t("YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP")
             : t("Thank_you_for_applying_application_number_is")}
           :
         </Text>

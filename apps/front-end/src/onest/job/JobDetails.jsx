@@ -1,24 +1,16 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  HStack,
-  Text,
-  useToast,
-} from "native-base";
-import React, { useEffect, useState } from "react";
+import { Alert, Box, Divider, HStack, Text, useToast } from "native-base";
+import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 // import { registerTelementry } from "../api/Apicall";
-import Loader from "./Loader";
-import "./Shared.css";
-import { dataConfig } from "../card";
 import { FrontEndTypo, Loading, OnestService } from "@shiksha/common-lib";
-import OrderSuccessModal from "./OrderSuccessModal";
 import axios from "axios";
+import { dataConfig } from "../card";
+import Loader from "./Loader";
+import OrderSuccessModal from "./OrderSuccessModal";
+import "./Shared.css";
 
 function JobDetails() {
   const { jobId, type } = useParams();
@@ -48,7 +40,7 @@ function JobDetails() {
     navigate(-1);
   };
 
-  const getApplicationStatus = async (order_id) => {
+  const getApplicationStatus = async (order_id, id) => {
     const apiUrl = `${baseUrl}/user/searchOrder/${order_id}`;
     setLoading(t("FETCHING_THE_DETAILS"));
     try {
@@ -74,11 +66,23 @@ function JobDetails() {
               },
             };
             const statusTrack = await OnestService.jobStatusTrack(payload);
-            if (statusTrack?.responses[0]?.message) {
+            if (
+              statusTrack?.responses[0]?.message?.order?.fulfillments?.[0]
+                ?.state?.descriptor?.name
+            ) {
               setStatus(
                 statusTrack?.responses[0]?.message?.order?.fulfillments[0]
                   ?.state?.descriptor?.name
               );
+              const newPayload = {
+                status:
+                  statusTrack?.responses[0]?.message?.order?.fulfillments[0]
+                    ?.state?.descriptor?.name || status,
+                id,
+              };
+
+              console.log(newPayload);
+              await OnestService.updateApplicationStatus(newPayload);
             }
           } catch (e) {
             console.error(
@@ -110,7 +114,7 @@ function JobDetails() {
       let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
         setListData(result?.data);
-        getApplicationStatus(result?.data[0].order_id);
+        getApplicationStatus(result?.data[0].order_id, result?.data[0]?.id);
       }
     };
     fetchData();

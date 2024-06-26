@@ -1986,5 +1986,7 @@
   "NO_JOBS_APPLIED": "You have not applied for any job.",
   "NO_SCHOLARSHIPS_APPLIED": "You have not applied for any scholarship.",
   "NO_LEARNINGS_SUBSCRIBED": "You have not subscribed for any learning content.",
-  "ORDER": "Order"
+  "ORDER": "Order",
+  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
+  "SYNC_APPLICATION_STATUS": "Sync Application Status"
 }
