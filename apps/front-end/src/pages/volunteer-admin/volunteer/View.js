@@ -124,7 +124,7 @@ export default function FacilitatorView({ footerLinks }) {
                 </AdminTypo.H6>
               </HStack>
               <ApproveButton {...{ data, id, setData }} />
-              {/* <ResetPassword data={data} /> */}
+              <ResetPassword {...{ data, id }} />
             </VStack>
             <HStack flex="0.5" justifyContent="center">
               {data?.profile_photo_1?.name ? (
@@ -294,7 +294,7 @@ const ApproveButton = memo(({ id, data, setData }) => {
   );
 });
 
-const ResetPassword = memo(({ data }) => {
+const ResetPassword = memo(({ data, id }) => {
   const toast = useToast();
   const { t } = useTranslation();
 
@@ -355,9 +355,9 @@ const ResetPassword = memo(({ data }) => {
           id: id.toString(),
           password: password,
         };
-        const resetPassword = await authRegistryService.resetPasswordAdmin(
-          bodyData
-        );
+        const resetPassword =
+          await authRegistryService.resetPasswordVolunteerAdmin(bodyData);
+
         if (resetPassword.success === true) {
           setCredentials();
           setModalVisible(false);
@@ -369,10 +369,16 @@ const ResetPassword = memo(({ data }) => {
           setModalVisible(false);
           setIsButtonLoading(false);
           return { status: true };
-        } else if (resetPassword.success === false) {
+        } else if (
+          resetPassword.success === false ||
+          resetPassword.status == "403"
+        ) {
+          setErrors((arr) => ({
+            ...(arr || {}),
+            password: resetPassword.message || resetPassword.error,
+          }));
           setIsButtonLoading(false);
           setCredentials();
-          setModalVisible(false);
           return { status: false };
         }
       } else if (password !== confirm_password) {
@@ -386,6 +392,7 @@ const ResetPassword = memo(({ data }) => {
       setCredentials();
     }
   };
+
   return (
     <HStack space="9">
       <VStack space={4}>
