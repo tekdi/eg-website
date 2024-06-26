@@ -41,7 +41,7 @@ export default function CampAttendancePage({ activityId, campType }) {
   const refBtn = useRef(null);
   const [progress, setProgress] = useState(0);
   const [learnerTotalCount, setLearnerTotalCount] = useState(0);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(async () => {
     async function fetchData() {
@@ -326,6 +326,7 @@ export default function CampAttendancePage({ activityId, campType }) {
       loading={loading}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
+        onPressBackButton: (e) => navigate(`/camps/${id}/campexecution`),
         name: t("ATTENDANCE"),
         _box: { bg: "white" },
         isEnableSearchBtn: "true",

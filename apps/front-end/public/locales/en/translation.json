@@ -1728,6 +1728,7 @@
   "YOUR_APPLICATION_IS_UNDER_REVIEW": "Your Application is Under Review",
   "YOUR_CALENDAR": "Your Calender",
   "YOUR_HIGHEST_QUALIFICATION": "Your Highest Qualification:",
+  "SELECT_HIGHEST_QUALIFICATION": "Select your highest qualification",
   "YOUR_IP_WILL_SHARE_DETAILS_SOON": "Your IP will share details soon",
   "YOUR_PROFILE": "Your Profile",
   "MY_PROFILE": "My Profile",
@@ -1995,5 +1996,7 @@
   "NO_JOBS_APPLIED": "You have not applied for any job.",
   "NO_SCHOLARSHIPS_APPLIED": "You have not applied for any scholarship.",
   "NO_LEARNINGS_SUBSCRIBED": "You have not subscribed for any learning content.",
-  "ORDER": "Order"
+  "ORDER": "Order",
+  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
+  "SYNC_APPLICATION_STATUS": "Sync Application Status"
 }

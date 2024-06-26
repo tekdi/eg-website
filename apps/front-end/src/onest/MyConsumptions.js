@@ -6,8 +6,9 @@ import {
   OnestService,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
-import { Box, CheckIcon, HStack, Input, Select, VStack } from "native-base";
-import { useEffect, useRef, useState } from "react";
+import { debounce } from "lodash";
+import { Box, HStack, Input, VStack } from "native-base";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "./Layout";
@@ -29,7 +30,7 @@ export default function MyConsumptions({
   const [type, setType] = useState("");
   const [listData, setListData] = useState([]);
   const [config, setConfig] = useState();
-  const [filter, setFilter] = useState();
+  const [filter, setFilter] = useState({});
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const ref = useRef(null);
@@ -44,43 +45,47 @@ export default function MyConsumptions({
   }, [params.type]);
 
   useEffect(() => {
-    const fetchListData = async () => {
-      setLoading(t("FETCHING_THE_DETAILS"));
-      try {
-        const configData = dataConfig[type] || {};
-        setConfig(configData);
-        const userDataDetails = localStorage.getItem("userData");
-        const userData = JSON.parse(userDataDetails);
-        const data = {
-          context: type,
-          user_id: userData.user_id,
-        };
-        let result = await OnestService.getList({
-          filters: data,
-          limit,
-          page,
-        });
-        if (result?.data) {
-          setListData(result?.data);
-          setTotalPages(result?.totalPages ? parseInt(result?.totalPages) : 1);
-        } else {
-          console.error("Failed to fetch data");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchListData();
   }, [type, filter, page]);
 
-  const handleFilter = (key, value) => {
-    setFilter((e) => ({
-      ...e,
-      [key]: value,
-    }));
+  const fetchListData = async () => {
+    setLoading(t("FETCHING_THE_DETAILS"));
+    try {
+      const configData = dataConfig[type] || {};
+      setConfig(configData);
+      const userDataDetails = localStorage.getItem("userData");
+      const userData = JSON.parse(userDataDetails);
+      const data = {
+        context: type,
+        user_id: userData.user_id,
+      };
+      let result = await OnestService.getList({
+        filters: { ...data, ...filter },
+        limit,
+        page,
+      });
+      if (result?.data) {
+        setListData(result?.data);
+        setTotalPages(result?.totalPages ? parseInt(result?.totalPages) : 1);
+      } else {
+        console.error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const debouncedHandleFilter = useCallback(
+    debounce((field, value) => {
+      setFilter((e) => ({
+        ...e,
+        [field]: { _ilike: `%${value}%` },
+      }));
+    }, 2000),
+    []
+  );
 
   const onPressBackButton = () => {
     navigate(-1);
@@ -91,6 +96,9 @@ export default function MyConsumptions({
   }
 
   const getWarningMessage = () => {
+    if (filter == undefined || {}) {
+      return t("NO_data_available");
+    }
     const warningKey = {
       scholarship: "NO_SCHOLARSHIPS_APPLIED",
       jobs: "NO_JOBS_APPLIED",
@@ -113,8 +121,8 @@ export default function MyConsumptions({
       }}
       _page={{ _scollView: { bg: "white" } }}
       analyticsPageTitle={"VOUNTEER_PROFILE"}
-      //   pageTitle={t("VOUNTEER")}
-      //   stepTitle={t("PHOTOS")}
+      pageTitle={t("VOUNTEER")}
+      stepTitle={t("MY_CONSUMPTIONS")}
     >
       <VStack p="4" flexWrap="wrap" space={4}>
         <H2 color="textMaroonColor.400">{t("MY_CONSUMPTIONS")}</H2>
@@ -141,14 +149,12 @@ export default function MyConsumptions({
           </Select>
         </Box> */}
 
-        <HStack justify="space-between" align="center" ref={ref}>
+        <HStack justify="space-between" align="center" ref={ref} space={2}>
           <Input
             flex={11}
             type="text"
             placeholder="Search by name..."
-            onChange={(e) =>
-              handleFilter(config?.searchByKey || "title", e.target.value)
-            }
+            onChange={(e) => debouncedHandleFilter("item_name", e.target.value)}
             InputRightElement={
               <IconByName
                 color="grey.100"
@@ -157,14 +163,20 @@ export default function MyConsumptions({
               />
             }
           />
+          {filter == {} ? null : (
+            <FrontEndTypo.Primarybutton size="sm" onPress={() => setFilter({})}>
+              {t("CLEAR_FILTER")}
+            </FrontEndTypo.Primarybutton>
+          )}
         </HStack>
       </VStack>
+
       <FrontEndTypo.H1 p={4}>{t(dataConfig[type].title)}</FrontEndTypo.H1>
       <VStack flexWrap="wrap" space={4}>
         <VStack space="4" alignContent="center" p="4">
           {listData?.length ? (
             listData?.map((e) => (
-              <RenderCards key={e} obj={e} config={config} />
+              <RenderCards key={e.context_item_id} obj={e} config={config} />
             ))
           ) : (
             <FrontEndTypo.H2>{getWarningMessage()}</FrontEndTypo.H2>
@@ -245,7 +257,7 @@ const RenderCards = ({ obj, config }) => {
               navigate(`/${config?.listLink}/${obj?.context_item_id}`);
             }}
           >
-            Sync Aplication Status
+            {t("SYNC_APPLICATION_STATUS")}
           </FrontEndTypo.Primarybutton>
         </VStack>
       )}
