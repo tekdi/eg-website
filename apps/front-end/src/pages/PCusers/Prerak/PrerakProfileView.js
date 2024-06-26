@@ -65,7 +65,7 @@ export default function PrerakProfileView() {
       ) : (
         <VStack paddingBottom="64px" bg="gray.200">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-            <HStack justifyContent={"space-between"} flexWrap="wrap">
+            <Box justifyContent={"space-between"} flexWrap="wrap">
               <HStack flex="0.5" justifyContent="center" m="4">
                 {prerakProfile?.profile_photo_1?.name ? (
                   <ImageView
@@ -146,7 +146,7 @@ export default function PrerakProfileView() {
                   </AdminTypo.H6>
                 </HStack>
               </VStack>
-            </HStack>
+            </Box>
 
             <Box
               bg="gray.100"

@@ -9,13 +9,14 @@ import {
   PcuserService,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable, Input } from "native-base";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import { debounce } from "lodash";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
@@ -144,12 +145,42 @@ export default function PrerakList() {
     setSelectedPrerak(values);
   };
 
+  const handleSearch = useCallback(
+    (e) => {
+      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
+    },
+    [filter]
+  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
+
   return (
     <Layout
       analyticsPageTitle={"PRERAK_LIST"}
       _footer={{ menues: true }}
       pageTitle={t("PRERAK_LIST")}
     >
+      <HStack justifyContent="start" alignItems="center" mt="2">
+        <Input
+          width={"97%"}
+          size={"s"}
+          minH="40px"
+          maxH="40px"
+          onScroll={false}
+          InputLeftElement={
+            <IconByName
+              color="coolGray.500"
+              name="SearchLineIcon"
+              isDisabled
+              pl="2"
+            />
+          }
+          placeholder={t("SEARCH_BY_PRERAK_NAME")}
+          variant="outline"
+          onChange={debouncedHandleSearch}
+          mx="auto"
+        />
+      </HStack>
+
       <VStack ref={ref}>
         <HStack
           justifyContent="space-between"
