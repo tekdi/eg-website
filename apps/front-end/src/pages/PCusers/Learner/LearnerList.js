@@ -261,6 +261,7 @@ export default function LearnerList() {
           navigate("/learner/learnerProfileView");
         },
       }}
+      _footer={{ menues: true }}
       loading={loading}
       analyticsPageTitle={"LEARNER_PROFILE"}
       pageTitle={t("LEARNER_PROFILE")}
@@ -284,7 +285,10 @@ export default function LearnerList() {
             minH="30px"
             rounded={"full"}
           >
-            {t("SELECT_PRERAK")}
+            <HStack alignItems={"center"} justifyContent={"space-between"}>
+              <FrontEndTypo.H4>{t("SELECT_PRERAK")}</FrontEndTypo.H4>
+              <IconByName name="ArrowDownSLineIcon" />
+            </HStack>
           </Box>
         </HStack>
         <HStack>
@@ -411,7 +415,6 @@ export default function LearnerList() {
         // Loading component here if needed
         <></>
       )}
-
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

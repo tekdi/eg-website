@@ -1,33 +1,24 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   AdminTypo,
-  AdminLayout,
-  CardComponent,
   IconByName,
-  organisationService,
-  Breadcrumb,
   geolocationRegistryService,
   getSelectedProgramId,
-  getSelectedAcademicYear,
-  enumRegistryService,
   getOptions,
-  setQueryParameters,
   tableCustomStyles,
   cohortService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import {
-  Box,
   Input,
   HStack,
-  CheckIcon,
   Stack,
   VStack,
   Menu,
   Button,
-  Icon,
   Pressable,
 } from "native-base";
-import Chip, { ChipStatus } from "component/Chip";
+import { ChipStatus } from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -54,10 +45,6 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
   const [isCancelVisible, setIsCancelVisible] = useState(false);
   const [schema, setSchema] = useState();
   const [formData, setFormData] = useState({});
-
-  // useEffect(() => {
-  //   setData(assignedData);
-  // }, [assignedData]);
 
   const columns = (t) => [
     {
@@ -159,7 +146,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
   };
 
   const fetchUserList = async () => {
-    const Apidata = await cohortService.pcDetails({
+    const Apidata = await PcuserService.pcDetails({
       id: id,
       ...filter,
     });
@@ -173,7 +160,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
   };
 
   const fetchPrerakList = async () => {
-    const Apidata = await cohortService.PcAvailableFacilitator({
+    const Apidata = await PcuserService.PcAvailableFacilitator({
       id: id,
       ...filter,
     });
@@ -215,7 +202,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
     const userIds = selectedRows.map(
       (item) => item.user_id || item.facilitator_id
     );
-    const Apidata = await cohortService.AddRemovePrerak({
+    const Apidata = await PcuserService.AddRemovePrerak({
       id: id,
       facilitator_id: userIds,
       edit_action:
