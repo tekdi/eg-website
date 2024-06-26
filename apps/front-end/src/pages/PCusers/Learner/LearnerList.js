@@ -7,6 +7,7 @@ import {
   CardComponent,
   AdminTypo,
   eventService,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -106,7 +107,7 @@ export default function LearnerList() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setloading] = React.useState(false);
-  const [prerakList, setPrerakList] = React.useState({});
+  const [prerakList, setPrerakList] = React.useState();
   const [filteredData, setFilteredData] = useState([]);
   const [prerakData, setPrerakData] = React.useState();
   const [isDisable, setIsDisable] = useState(true);
@@ -129,8 +130,7 @@ export default function LearnerList() {
     setLoadingList(true);
     try {
       const result = await eventService.getPrerakList();
-      setPrerakList(result?.data?.facilitator_data);
-      setPrerakData(fetchedData);
+      setPrerakList(result?.facilitator_data);
       setLoadingList(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -147,8 +147,8 @@ export default function LearnerList() {
     setSelectedPrerak(values);
   };
   const handleContinueBtn = () => {
-    const filteredUsers = prerakData.filter((item) =>
-      selectedPrerak.includes(item.id)
+    const filteredUsers = prerakList?.filter((item) =>
+      selectedPrerak?.includes(item.user_id)
     );
     setFilteredData(filteredUsers);
     setIsModalOpen(false);
@@ -349,11 +349,13 @@ export default function LearnerList() {
                   defaultValue={selectedPrerak}
                   onChange={handlePrerakChange}
                 >
-                  {prerakData?.map((item) => (
-                    <Checkbox key={item.id} value={item.id} my={2}>
-                      {item?.first_name} {item?.middle_name} {item?.last_name}
-                    </Checkbox>
-                  ))}
+                  {prerakList &&
+                    prerakList?.map((item) => (
+                      <Checkbox key={item.user_id} value={item.user_id} my={2}>
+                        {item?.user.first_name} {item?.user.middle_name}{" "}
+                        {item?.user.last_name}
+                      </Checkbox>
+                    ))}
                 </Checkbox.Group>
               </HStack>
 
@@ -380,50 +382,44 @@ export default function LearnerList() {
         {filteredData &&
           filteredData.length > 0 &&
           filteredData.map((item, index) => (
-            <Box key={item.id}>
+            <Box key={item.user_id}>
               <span>
-                {item?.first_name} {item?.last_name}
+                {item?.user.first_name} {item?.user.middle_name}{" "}
+                {item?.user.last_name}
               </span>
-              {item?.cohorts &&
-                item?.cohorts?.map((cohart, i) => (
-                  <Box
-                    key={i}
-                    bg="gray.100"
-                    borderColor="gray.300"
-                    borderRadius="10px"
-                    borderWidth="1px"
-                    pb="6"
-                  >
-                    <VStack
-                      paddingLeft="16px"
-                      paddingRight="16px"
-                      paddingTop="16px"
-                    >
-                      <VStack space="2" paddingTop="5">
-                        <HStack
-                          alignItems="center"
-                          justifyContent="space-between"
-                        >
-                          <HStack space="md" alignItems="center">
-                            {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
-                            <FrontEndTypo.H3>
-                              {t("COHORT 2023-2024")}
-                            </FrontEndTypo.H3>
-                          </HStack>
+              <Box
+                key={item.user_id}
+                bg="gray.100"
+                borderColor="gray.300"
+                borderRadius="10px"
+                borderWidth="1px"
+                pb="6"
+              >
+                <VStack
+                  paddingLeft="16px"
+                  paddingRight="16px"
+                  paddingTop="16px"
+                >
+                  <VStack space="2" paddingTop="5">
+                    <HStack alignItems="center" justifyContent="space-between">
+                      <HStack space="md" alignItems="center">
+                        <FrontEndTypo.H3>
+                          {item?.academic_year?.name}
+                        </FrontEndTypo.H3>
+                      </HStack>
 
-                          <IconByName
-                            name="ArrowRightSLineIcon"
-                            onPress={() => {
-                              navigate(`/learner/LearnerListView`);
-                            }}
-                            color="maroon.400"
-                          />
-                        </HStack>
-                        <Divider orientation="horizontal" />
-                      </VStack>
-                    </VStack>
-                  </Box>
-                ))}
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(`/learner/LearnerListView`);
+                        }}
+                        color="maroon.400"
+                      />
+                    </HStack>
+                    <Divider orientation="horizontal" />
+                  </VStack>
+                </VStack>
+              </Box>
             </Box>
           ))}
       </Box>
