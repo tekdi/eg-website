@@ -22,6 +22,21 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
   const { t } = useTranslation();
   const state_name =
     JSON.parse(localStorage.getItem("program"))?.state_name || "";
+  const fa_id = localStorage.getItem("id");
+  const [facilitator, setFacilitator] = useState();
+
+  useEffect(async () => {
+    if (userTokenInfo) {
+      const IpUserInfo = await getIpUserInfo(fa_id);
+      let ipUserData = IpUserInfo;
+      if (!IpUserInfo) {
+        ipUserData = await setIpUserInfo(fa_id);
+      }
+
+      setFacilitator(ipUserData);
+    }
+  }, []);
+
   return (
     <Layout
       loading={loading}
