@@ -37,7 +37,7 @@ function ScholarshipView() {
     navigate(-1);
   };
 
-  const getApplicationStatus = async (order_id) => {
+  const getApplicationStatus = async (order_id, id) => {
     const apiUrl = `${baseUrl}/content/searchOrder/${order_id}`;
 
     try {
@@ -64,11 +64,21 @@ function ScholarshipView() {
               },
             };
             const statusTrack = await OnestService.statusTrack(payload);
-            if (statusTrack?.responses[0]?.message) {
+            if (
+              statusTrack?.responses[0]?.message?.order?.fulfillments?.[0]
+                ?.state?.descriptor?.name
+            ) {
               setStatus(
                 statusTrack?.responses[0]?.message?.order?.fulfillments[0]
                   ?.state?.descriptor?.name
               );
+              const newPayload = {
+                status:
+                  statusTrack?.responses[0]?.message?.order?.fulfillments[0]
+                    ?.state?.descriptor?.name || status,
+                id,
+              };
+              await OnestService.updateApplicationStatus(newPayload);
             }
           } catch (e) {
             console.error(
@@ -100,7 +110,7 @@ function ScholarshipView() {
       let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
         setListData(result?.data);
-        getApplicationStatus(result?.data[0].order_id);
+        getApplicationStatus(result?.data[0].order_id, result?.data[0]?.id);
       }
     };
     fetchData();
