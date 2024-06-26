@@ -2,65 +2,45 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ScholarshipView from "./scholarship/View";
 import JobDetails from "./job/JobDetails";
-import Details from "./content/Detials";
+import Details from "./content/Details";
 import Layout from "./Layout";
 import { dataConfig } from "./card";
 
-function View({ userTokenInfo: { authUser } }) {
+const componentMap = {
+  jobs: JobDetails,
+  scholarship: ScholarshipView,
+  learning: Details,
+};
+
+function View({ userTokenInfo: { authUser }, footerLinks }) {
   const { type } = useParams();
   const envConfig = dataConfig[type];
-  // navigate
   const navigate = useNavigate();
 
   const handleBack = () => {
     navigate(`/${envConfig?.listLink}`);
   };
 
-  if (type == "jobs") {
-    return (
-      <Layout
-        facilitator={{
-          ...authUser,
-          program_faciltators: authUser?.user_roles?.[0],
-        }}
-        _appBar={{
-          onPressBackButton: handleBack,
-        }}
-      >
-        <JobDetails />
-      </Layout>
-    );
-  } else if (type == "scholarship") {
-    return (
-      <Layout
-        facilitator={{
-          ...authUser,
-          program_faciltators: authUser?.user_roles?.[0],
-        }}
-        _appBar={{
-          onPressBackButton: handleBack,
-        }}
-      >
-        <ScholarshipView />
-      </Layout>
-    );
-  } else if (type == "learning") {
-    return (
-      <Layout
-        facilitator={{
-          ...authUser,
-          program_faciltators: authUser?.user_roles?.[0],
-        }}
-        _appBar={{
-          onPressBackButton: handleBack,
-        }}
-      >
-        <Details />
-      </Layout>
-    );
+  const SelectedComponent = componentMap[type];
+
+  if (!SelectedComponent) {
+    return <div>Not Found</div>;
   }
 
-  return <div>Not Found</div>;
+  return (
+    <Layout
+      _footer={{ menues: footerLinks }}
+      facilitator={{
+        ...authUser,
+        program_facilitators: authUser?.user_roles?.[0],
+      }}
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+    >
+      <SelectedComponent />
+    </Layout>
+  );
 }
 
 export default View;

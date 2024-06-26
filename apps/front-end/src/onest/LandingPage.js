@@ -51,7 +51,7 @@ const responsive = {
   },
 };
 
-const LandingPage = ({ userTokenInfo }) => {
+const LandingPage = ({ userTokenInfo, footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -109,6 +109,7 @@ const LandingPage = ({ userTokenInfo }) => {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
       _appBar={{
         onPressBackButton: handleBack,
       }}

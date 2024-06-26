@@ -9,7 +9,7 @@ import Chip from "component/Chip";
 import { Box, CheckIcon, HStack, Input, Select, VStack } from "native-base";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Layout from "./Layout";
 import { dataConfig } from "./card";
 
@@ -21,8 +21,12 @@ const consumptionTypes = [
 
 const limit = 6;
 
-export default function MyConsumptions({ userTokenInfo: { authUser } }) {
-  const [type, setType] = useState("jobs");
+export default function MyConsumptions({
+  userTokenInfo: { authUser },
+  footerLinks,
+}) {
+  const params = useParams();
+  const [type, setType] = useState("");
   const [listData, setListData] = useState([]);
   const [config, setConfig] = useState();
   const [filter, setFilter] = useState();
@@ -32,6 +36,12 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (params.type) {
+      setType(params.type);
+    }
+  }, [params.type]);
 
   useEffect(() => {
     const fetchListData = async () => {
@@ -91,6 +101,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
       facilitator={{
         ...authUser,
         program_faciltators: authUser?.user_roles?.[0],
@@ -107,7 +118,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
     >
       <VStack p="4" flexWrap="wrap" space={4}>
         <H2 color="textMaroonColor.400">{t("MY_CONSUMPTIONS")}</H2>
-        <Box w="100%">
+        {/* <Box w="100%">
           <Select
             selectedValue={type}
             minWidth="200"
@@ -128,7 +139,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
               />
             ))}
           </Select>
-        </Box>
+        </Box> */}
 
         <HStack justify="space-between" align="center" ref={ref}>
           <Input

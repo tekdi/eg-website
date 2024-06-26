@@ -23,7 +23,7 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
 const limit = 6;
-const List = ({ userTokenInfo: { authUser } }) => {
+const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
   const [filterData, setfilterData] = useState();
@@ -165,6 +165,7 @@ const List = ({ userTokenInfo: { authUser } }) => {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
       facilitator={{
         ...authUser,
         program_faciltators: authUser?.user_roles?.[0],

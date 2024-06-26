@@ -1,5 +1,6 @@
-import { HStack, Heading, Image, VStack } from "native-base";
-import React, { useEffect } from "react";
+import { HStack, Heading, Image, VStack, Stack, Text } from "native-base";
+import { ImageBackground, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { dataConfig } from "./card";
 import Layout from "./Layout";
@@ -50,7 +51,8 @@ const responsive = {
   },
 };
 
-const VolunteerLandingPage = ({ userTokenInfo: { authUser } }) => {
+const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
+  console.log(footerLinks, "footerLinks");
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -142,6 +144,7 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser } }) => {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
       userAccess
       _appBar={{
         onPressBackButton: handleBack,
