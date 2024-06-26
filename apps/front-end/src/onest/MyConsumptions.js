@@ -160,7 +160,7 @@ export default function MyConsumptions({ userTokenInfo: { authUser } }) {
           />
           {filter == {} ? null : (
             <FrontEndTypo.Primarybutton size="sm" onPress={() => setFilter({})}>
-              Clear Filters
+              {t("CLEAR_FILTER")}
             </FrontEndTypo.Primarybutton>
           )}
         </HStack>
@@ -252,7 +252,7 @@ const RenderCards = ({ obj, config }) => {
               navigate(`/${config?.listLink}/${obj?.context_item_id}`);
             }}
           >
-            Sync Application Status
+            {t("SYNC_APPLICATION_STATUS")}
           </FrontEndTypo.Primarybutton>
         </VStack>
       )}

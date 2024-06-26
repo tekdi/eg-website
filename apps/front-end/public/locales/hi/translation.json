@@ -1967,5 +1967,6 @@
   "NO_SCHOLARSHIPS_APPLIED": "आपने किसी छात्रवृत्ति के लिए आवेदन नहीं किया है।",
   "NO_LEARNINGS_SUBSCRIBED": "आपने किसी भी शिक्षण सामग्री के लिए सदस्यता नहीं ली है।",
   "ORDER": "ऑर्डर",
-  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "आप इस छात्रवृत्ति के लिए पहले ही आवेदन कर चुके हैं। इसकी वर्तमान स्थिति यह है"
+  "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "आप इस छात्रवृत्ति के लिए पहले ही आवेदन कर चुके हैं। इसकी वर्तमान स्थिति यह है",
+  "SYNC_APPLICATION_STATUS": "एप्लिकेशन स्थिति सिंक करें"
 }
