@@ -132,6 +132,21 @@ export default function App({ facilitator, ip, onClick }) {
         setSchema(newSchema);
         setLoading(false);
       }
+
+      if (schema?.properties?.state) {
+        setLoading(true);
+        const { data } = await volunteerRegistryService.getStatesData();
+        let newSchema = schema;
+        if (schema["properties"]["state"]) {
+          newSchema = getOptions(newSchema, {
+            key: "state",
+            arr: data,
+          });
+        }
+        console.log(newSchema, data);
+        setSchema(newSchema);
+        setLoading(false);
+      }
     };
     init();
   }, [page]);
