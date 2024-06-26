@@ -52,7 +52,6 @@ const responsive = {
 };
 
 const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
-  console.log(footerLinks, "footerLinks");
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
