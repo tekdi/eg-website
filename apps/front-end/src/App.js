@@ -67,12 +67,12 @@ const volunteerFooterLinks = [
   {
     title: "JOBS",
     route: "/onest/my-consumptions/jobs",
-    icon: "TeamLineIcon",
+    icon: "SuitcaseFillIcon",
   },
   {
     title: "LEARNING_EXPERIENCES",
     route: "/onest/my-consumptions/learning",
-    icon: "TeamLineIcon",
+    icon: "BookOpenLineIcon",
   },
 ];
 
