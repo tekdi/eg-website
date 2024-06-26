@@ -10,6 +10,7 @@ import {
   facilitatorRegistryService,
   getEnrollmentIds,
   getOnboardingMobile,
+  getOnboardingURLData,
   getSelectedProgramId,
   objProps,
   setSelectedAcademicYear,
@@ -312,7 +313,7 @@ export default function BenificiaryEnrollment(userTokenInfo) {
     setStateName(state_name);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
-  }, []);
+  }, [id, facilitator]);
 
   const onEditFunc = () => {
     return !!(
@@ -320,6 +321,7 @@ export default function BenificiaryEnrollment(userTokenInfo) {
       benificiary?.program_beneficiaries?.status !== "registered_in_camp"
     );
   };
+
   return (
     <Layout
       loading={loading}
@@ -368,7 +370,7 @@ export default function BenificiaryEnrollment(userTokenInfo) {
               label={[
                 "ENROLLMENT_STATUS",
                 "BOARD_OF_ENROLLMENT",
-                "ENROLLMENT_NO",
+                stateName != "RAJASTHAN" ? "APPLICATION_ID" : "ENROLLMENT_NO",
                 "MOBILE_NUMBER",
                 "ENROLLMENT_DATE",
                 "ENROLLMENT_RECIEPT",

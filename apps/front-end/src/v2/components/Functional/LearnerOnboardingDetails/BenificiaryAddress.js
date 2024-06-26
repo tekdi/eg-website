@@ -355,7 +355,15 @@ export default function BenificiaryAddress(userTokenInfo) {
             "PINCODE",
           ]}
           item={benificiary}
-          arr={["address", "state", "district", "block", "village", "pincode"]}
+          arr={[
+            "address",
+            "state",
+            "district",
+            "block",
+            "village",
+            "grampanchayat",
+            "pincode",
+          ]}
           onEdit={(e) => {
             navigate(`/beneficiary/edit/${userId}/address`);
           }}
