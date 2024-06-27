@@ -30,9 +30,24 @@ function View() {
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
   const [assignPrerak, setassignPrerak] = useState();
+  const [assignPrerakCount, setassignPrerakCount] = useState();
   const { id } = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await cohortService.pcDetails({
+        id: id,
+        limit: 10,
+        page: 1,
+      });
+      setData(result);
+      setassignPrerakCount(result?.data);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <AdminLayout>
@@ -49,7 +64,7 @@ function View() {
                   </AdminTypo.H4>
                 </HStack>
               ),
-              link: "/poadmin/ips",
+              link: "/admin/pc",
               icon: "GroupLineIcon",
             },
 
@@ -106,7 +121,7 @@ function View() {
                   .join(",")}
               </AdminTypo.H6>
             </HStack>
-            <HStack space={4}>
+            {/* <HStack space={4}>
               <AdminTypo.Secondarybutton
                 // onPress={() => navigate("/admin/addpcuser")}
                 onPress={() => setIsModalOpen(true)}
@@ -134,7 +149,7 @@ function View() {
               >
                 {t("RESET_PASSWORD")}
               </AdminTypo.Secondarybutton>
-            </HStack>
+            </HStack> */}
           </VStack>
           <HStack flex="0.5" justifyContent="center">
             {pcData?.profile_photo_1?.name ? (
@@ -162,7 +177,7 @@ function View() {
             _vstack={{ space: 0, flex: 1, bg: "light.100" }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={{
-              ...pcData,
+              ...data,
               name: `${pcData?.first_name} ${pcData?.middle_name || ""}  ${
                 pcData?.last_name || ""
               }`,
@@ -171,7 +186,10 @@ function View() {
               }, ${pcData?.village ?? ""}${
                 pcData?.address ? `, ${pcData?.address}` : ""
               }`,
-              prerak_assigned: assignPrerak,
+              prerak_assigned: `${assignPrerakCount?.total_count}`,
+              user_id: `${pcData?.user_id || ""}`,
+              mobile: `${pcData?.mobile || ""}`,
+              email_id: `${pcData?.email_id || ""}`,
             }}
             title={t("BASIC_DETAILS")}
             label={[
