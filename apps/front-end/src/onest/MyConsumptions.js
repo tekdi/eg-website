@@ -45,7 +45,9 @@ export default function MyConsumptions({
   }, [params.type]);
 
   useEffect(() => {
-    fetchListData();
+    if (type) {
+      fetchListData();
+    }
   }, [type, filter, page]);
 
   const fetchListData = async () => {
@@ -107,6 +109,12 @@ export default function MyConsumptions({
     return t(warningKey);
   };
 
+  const cleatFilters = () => {
+    setFilter({});
+    setPage(1);
+    setType(params?.type);
+  };
+
   return (
     <Layout
       _footer={{ menues: footerLinks }}
@@ -164,7 +172,7 @@ export default function MyConsumptions({
             }
           />
           {filter == {} ? null : (
-            <FrontEndTypo.Primarybutton size="sm" onPress={() => setFilter({})}>
+            <FrontEndTypo.Primarybutton size="sm" onPress={cleatFilters}>
               {t("CLEAR_FILTER")}
             </FrontEndTypo.Primarybutton>
           )}

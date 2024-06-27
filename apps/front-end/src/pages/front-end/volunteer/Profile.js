@@ -28,6 +28,7 @@ export default function Profile({ userTokenInfo: { authUser } }) {
 
   return (
     <Layout
+      userAccess
       loading={loading}
       _appBar={{
         onPressBackButton: (e) => navigate("/"),
