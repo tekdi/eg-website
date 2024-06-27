@@ -289,7 +289,13 @@ export default function App({ userTokenInfo: { authUser } }) {
           case "1":
           case "2":
           case "3":
-            const { data, success } = await formSubmitUpdate(newFormData);
+            let filterNewData = filterObject(
+              newFormData,
+              Object.keys(schema?.properties),
+              {},
+              ""
+            );
+            const { data, success } = await formSubmitUpdate(filterNewData);
             if (!success) {
               const newErrors = {
                 mobile: {
@@ -389,6 +395,7 @@ export default function App({ userTokenInfo: { authUser } }) {
 
   return (
     <Layout
+      userAccess
       _appBar={{
         onPressBackButton,
         lang,
