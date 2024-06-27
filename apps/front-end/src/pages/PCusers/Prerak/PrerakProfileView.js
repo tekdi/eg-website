@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { HStack, VStack, Box, Progress, Divider, Alert } from "native-base";
 import {
@@ -7,6 +7,9 @@ import {
   PCusers_layout as Layout,
   t,
   ImageView,
+  enumRegistryService,
+  PcuserService,
+  AdminTypo,
 } from "@shiksha/common-lib";
 
 export default function PrerakProfileView() {
@@ -14,6 +17,32 @@ export default function PrerakProfileView() {
   const [loading, setLoading] = React.useState(false);
   const { id } = useParams();
   const [beneficiary, setBeneficiary] = React.useState({});
+  const [enumOptions, setEnumOptions] = useState({});
+  const [prerakProfile, setPrerakProfile] = React.useState();
+  const [loadingList, setLoadingList] = useState(false);
+
+  const getPrerakProfile = async () => {
+    setLoadingList(true);
+    try {
+      const payload = {
+        id: id,
+      };
+      const result = await PcuserService.getPrerakProfile(payload);
+
+      setPrerakProfile(result?.data);
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+      setLoadingList(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+
+      setLoadingList(false);
+    }
+  };
+
+  useEffect(() => {
+    getPrerakProfile();
+  }, []);
 
   return (
     <Layout
@@ -36,23 +65,88 @@ export default function PrerakProfileView() {
       ) : (
         <VStack paddingBottom="64px" bg="gray.200">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-            <VStack alignItems="center" pt="20px">
-              {beneficiary?.profile_photo_1?.id ? (
-                <ImageView
-                  source={{
-                    document_id: beneficiary?.profile_photo_1?.id,
-                  }}
-                  width="190px"
-                  height="190px"
-                />
-              ) : (
-                <IconByName
-                  name="AccountCircleLineIcon"
-                  color="gray.300"
-                  _icon={{ size: "190px" }}
-                />
-              )}
-            </VStack>
+            <Box justifyContent={"space-between"} flexWrap="wrap">
+              <HStack flex="0.5" justifyContent="center" m="4">
+                {prerakProfile?.profile_photo_1?.name ? (
+                  <ImageView
+                    source={{
+                      uri: prerakProfile?.profile_photo_1?.name,
+                    }}
+                    alt="profile photo"
+                    width={"180px"}
+                    height={"180px"}
+                  />
+                ) : (
+                  <IconByName
+                    isDisabled
+                    name="AccountCircleLineIcon"
+                    color="textGreyColor.300"
+                    _icon={{ size: "190px" }}
+                  />
+                )}
+              </HStack>
+              <VStack space="4" flexWrap="wrap">
+                <AdminTypo.H4
+                  color="textGreyColor.800"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  m="4"
+                >
+                  {["enrolled_ip_verified", "registered_in_camp"].includes(
+                    prerakProfile?.program_beneficiaries?.status
+                  )
+                    ? `${prerakProfile?.first_name ?? "-"} ${
+                        prerakProfile?.last_name ?? "-"
+                      }`
+                    : `${prerakProfile?.first_name ?? "-"} ${
+                        prerakProfile?.last_name ?? "-"
+                      }`}
+                </AdminTypo.H4>
+                <HStack
+                  bg="textMaroonColor.600"
+                  rounded={"md"}
+                  alignItems="center"
+                  p="2"
+                >
+                  <IconByName
+                    isDisabled
+                    _icon={{ size: "20px" }}
+                    name="CellphoneLineIcon"
+                    color="white"
+                  />
+
+                  <AdminTypo.H6 color="white" bold>
+                    {prerakProfile?.mobile}
+                  </AdminTypo.H6>
+                </HStack>
+                <HStack
+                  bg="textMaroonColor.600"
+                  rounded={"md"}
+                  p="2"
+                  alignItems="center"
+                  space="2"
+                >
+                  <IconByName
+                    isDisabled
+                    _icon={{ size: "20px" }}
+                    name="MapPinLineIcon"
+                    color="white"
+                  />
+                  <AdminTypo.H6 color="white" bold>
+                    {[
+                      prerakProfile?.state,
+                      prerakProfile?.district,
+                      prerakProfile?.block,
+                      prerakProfile?.village,
+                      prerakProfile?.grampanchayat,
+                    ]
+                      .filter((e) => e)
+                      .join(",")}
+                  </AdminTypo.H6>
+                </HStack>
+              </VStack>
+            </Box>
 
             <Box
               bg="gray.100"
