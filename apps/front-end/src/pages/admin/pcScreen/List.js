@@ -300,6 +300,21 @@ export default function List({ footerLinks, userTokenInfo }) {
             {t("ADD_PC")}
           </AdminTypo.Secondarybutton>
         </HStack>
+        {/*  <HStack height={"5vh"} space={2}>
+          <AdminTypo.Secondarybutton
+            onPress={() => navigate("/admin/addpcuser")}
+            rightIcon={
+              <IconByName
+                color="#084B82"
+                _icon={{}}
+                size="15px"
+                name="ShareLineIcon"
+              />
+            }
+          >
+            {t("PASSWORD_RESET")}
+          </AdminTypo.Secondarybutton>
+        </HStack> */}
       </HStack>
       <HStack ml="-1">
         <Stack style={{ position: "relative", overflowX: "hidden" }}>
