@@ -226,14 +226,11 @@ const ApproveButton = memo(({ id, data, setData }) => {
     });
 
     if (!error) {
-      setData((pre) => {
-        if (pre.user_roles[0]) {
-          pre.user_roles[0] = { ...(pre.user_roles[0] || {}), status };
-          return pre;
-        } else {
-          return pre;
-        }
-      });
+      let pre = data?.user_roles?.[0] || {};
+      if (pre) {
+        pre = { ...(pre || {}), status };
+      }
+      setData({ ...data, user_roles: [pre] });
       toast.show({
         render: () => <AlertMessage message={message} status="success" />,
       });

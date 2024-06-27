@@ -3,6 +3,7 @@ import {
   FrontEndTypo,
   IconByName,
   ImageView,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import Layout from "onest/Layout";
@@ -20,7 +21,8 @@ export default function Profile({ userTokenInfo: { authUser } }) {
 
   React.useEffect(() => {
     const init = async () => {
-      setVolunteer(authUser);
+      const user = await facilitatorRegistryService.getInfo();
+      setVolunteer(user);
       setLoading(false);
     };
     init();
@@ -28,6 +30,7 @@ export default function Profile({ userTokenInfo: { authUser } }) {
 
   return (
     <Layout
+      userAccess
       loading={loading}
       _appBar={{
         onPressBackButton: (e) => navigate("/"),
