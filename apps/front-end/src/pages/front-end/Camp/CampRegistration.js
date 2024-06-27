@@ -187,11 +187,13 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       analyticsPageTitle={"CAMP_REGISTRATION"}
       pageTitle={t("CAMP")}
       stepTitle={`${
-        campDetails?.type === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")
+        campDetails?.type === "main" ? t("MAIN_CAMPS") : t("PCR_CAMPS")
       }/${t("PROFILE")}`}
     >
       <VStack p="4" space={4}>
-        <FrontEndTypo.H1>{t("CAMP_PROFILE")}</FrontEndTypo.H1>
+        <FrontEndTypo.H1>{`${
+          campDetails?.type === "main" ? t("MAIN_CAMPS") : t("PCR_CAMPS")
+        } ${t("PROFILE")}`}</FrontEndTypo.H1>
         <VStack>
           <FrontEndTypo.H3 bold color={"textGreyColor.750"}>{`${t("CAMP_ID")}:${
             campDetails?.id

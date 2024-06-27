@@ -94,7 +94,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     navigate(`/camps`);
   }, [todaysActivity?.id, navigate]);
 
-  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.png", []);
   return (
     <Layout
       _appBar={{
@@ -124,7 +124,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             source={{
               uri: airplaneImageUri,
             }}
-            alt="airoplane.gif"
+            alt="airoplane.png"
             position="absolute"
             top={0}
             left={0}
@@ -133,18 +133,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             zIndex={-1}
           />
 
-          <VStack alignItems="center" justifyContent="center">
+          <VStack pr={"80px"} pb={"120px"}>
             <ImageView
               width="80px"
               height="80px"
               source={{ document_id: facilitator?.profile_photo_1?.id }}
             />
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ bg: "light.100", space: 1, flex: 1, paddingTop: 4 }}
-            >
-              {t("LETS_START_TODAYS_CAMP")}
-            </CardComponent>
           </VStack>
         </Box>
         <CustomAlert status={""} title={t("DONT_CLOSE_SCREEN")} />

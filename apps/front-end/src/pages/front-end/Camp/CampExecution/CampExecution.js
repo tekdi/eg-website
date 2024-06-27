@@ -188,7 +188,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     getAccess();
   }, [getAccess]);
 
-  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.png", []);
 
   if (start && data?.lat && data?.long && !loading) {
     return (
@@ -327,7 +327,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
                         source={{
                           uri: `${item?.img}`,
                         }}
-                        alt="airoplane.gif"
+                        alt="airoplane.png"
                       />
                       <FrontEndTypo.H5
                         bold
@@ -424,7 +424,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
               source={{
                 uri: airplaneImageUri,
               }}
-              alt="airoplane.gif"
+              alt="airoplane.png"
               position="absolute"
               top={0}
               left={0}
@@ -433,13 +433,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
               zIndex={-1}
             />
 
-            <VStack alignItems="center" justifyContent="center">
+            <VStack pr={"80px"} pb={"120px"}>
               <ImageView
                 width="80px"
                 height="80px"
                 source={{ document_id: facilitator?.profile_photo_1?.id }}
               />
-              <CardComponent
+              {/* <CardComponent
                 _header={{ bg: "light.100" }}
                 _vstack={{
                   bg: "light.100",
@@ -450,7 +450,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
                 }}
               >
                 {t("YOUR_WELCOME_READY_TO_FLY")}
-              </CardComponent>
+              </CardComponent> */}
             </VStack>
           </Box>
           <VStack space="4">
