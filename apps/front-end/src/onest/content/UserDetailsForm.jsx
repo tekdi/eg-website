@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Input,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-} from "native-base";
+import { Box, Input, Button, Flex, FormControl, FormLabel } from "native-base";
 import { useNavigate, useLocation } from "react-router-dom";
 import Layout from "../Layout";
 
@@ -51,7 +44,7 @@ const UserDetailsForm = () => {
   };
 
   return (
-    <Layout>
+    <Layout checkUserAccess>
       {isLoading ? (
         <div
           style={{

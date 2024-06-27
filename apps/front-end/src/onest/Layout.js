@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 // add userAccess
 export default function App({
   children,
-  userAccess,
+  checkUserAccess,
   _appBar,
   _drawer,
   ...props
@@ -16,7 +16,7 @@ export default function App({
   const navigate = useNavigate();
   const { t } = useTranslation();
   const userDetails = JSON.parse(localStorage.getItem("userData"));
-  if (userDetails?.user_id || userAccess) {
+  if (userDetails?.user_id || !checkUserAccess) {
     return (
       <Layout
         allowRoles={["facilitator", "volunteer", "beneficiary"]}
