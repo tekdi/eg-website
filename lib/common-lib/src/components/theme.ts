@@ -802,6 +802,8 @@ const DEFAULT_THEME = {
     yellowColor: '#FEFFB8',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
+    absentColor:'#D53546',
+    presentColor:"#038400",
 
     secondaryBlue: {
       50: '#e7f3fe',
