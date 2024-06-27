@@ -8,7 +8,6 @@ import {
 import React, { useState } from "react";
 import {
   VStack,
-  Select,
   CheckIcon,
   Box,
   ScrollView,
@@ -18,9 +17,9 @@ import {
 } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { select as Select } from "component/BaseInput";
 
-const isDisabledSelect = ({ pcrCreated, attr }) => {
-  const data = pcrCreated;
+const isDisabledSelect = ({ data, attr }) => {
   let result = false;
   switch (attr) {
     case "rapid_assessment_first_learning_level":
@@ -47,8 +46,7 @@ const isDisabledSelect = ({ pcrCreated, attr }) => {
   return result;
 };
 
-const isHideSelect = ({ pcrCreated, attr }) => {
-  const data = pcrCreated;
+const isHideSelect = ({ data, attr }) => {
   let result = false;
   switch (attr) {
     case "rapid_assessment_first_learning_level":
@@ -76,6 +74,7 @@ const isHideSelect = ({ pcrCreated, attr }) => {
         result = true;
       break;
     default:
+      result = true;
       break;
   }
   return result;
@@ -151,506 +150,114 @@ const PcrDetails = () => {
           >
             {t("PCR_DETAILS")}
           </Heading>
+          <FrontEndTypo.H3
+            color="textGreyColor.750"
+            lineHeight="21px"
+            fontWeight="600"
+          >
+            {t("PCR_EDUCATION_LEVEL")}
+          </FrontEndTypo.H3>
+          {/* first select */}
+          <CustomSelect
+            {...{
+              data: pcrCreated,
+              options: {
+                enumOptions: selectBaselineData?.map((e) => ({
+                  ...(e || {}),
+                  label: e?.title,
+                })),
+              },
+              value: data?.baseline_learning_level || "",
+              schema: {
+                title: "PCR_INITIAL_LEVEL",
+                description: "EVALUATE_ON_THE_FIRST_DAY_OF_CAMP",
+                label: "LEARNER_LEVEL",
+              },
+              onChange: (itemValue) => {
+                setData({
+                  ...data,
+                  baseline_learning_level: itemValue,
+                });
+              },
+            }}
+          />
+          {/* second select */}
+          <CustomSelect
+            {...{
+              data: pcrCreated,
+              attr: "rapid_assessment_first_learning_level",
+              options: {
+                enumOptions: selectRapidData?.map((e) => ({
+                  ...(e || {}),
+                  label: e?.title,
+                })),
+              },
+              value: data?.rapid_assessment_first_learning_level || "",
+              schema: {
+                title: "PCR_EVALUATION_1",
+                description: "EVALUATE_THE_FIRST_DAY_OF_THE_CAMP",
+                label: "EVALUATION_ONE",
+              },
+              onChange: (itemValue) => {
+                setData({
+                  ...data,
+                  rapid_assessment_first_learning_level: itemValue,
+                });
+              },
+            }}
+          />
 
-          <VStack mt={6} alignItems={"start"}>
-            <FrontEndTypo.H3
-              color="textGreyColor.750"
-              lineHeight="21px"
-              fontWeight="600"
-            >
-              {t("PCR_EDUCATION_LEVEL")}
-            </FrontEndTypo.H3>
-            <FrontEndTypo.H3 mt="6" fontWeight="600" color="textGreyColor.750">
-              {t("PCR_INITIAL_LEVEL")}
-            </FrontEndTypo.H3>
+          {/* third select */}
+          <CustomSelect
+            {...{
+              data: pcrCreated,
+              attr: "rapid_assessment_second_learning_level",
+              options: {
+                enumOptions: selectRapidData?.map((e) => ({
+                  ...(e || {}),
+                  label: e?.title,
+                })),
+              },
+              value: data?.rapid_assessment_second_learning_level || "",
+              schema: {
+                title: "PCR_EVALUATION_2",
+                description: "EVALUATE_THE_FIRST_DAY_OF_THE_CAMP",
+                label: "EVALUATION_TWO",
+              },
+              onChange: (itemValue) => {
+                setData({
+                  ...data,
+                  rapid_assessment_second_learning_level: itemValue,
+                });
+              },
+            }}
+          />
 
-            <FrontEndTypo.H4 my="6" fontWeight="600" color="textGreyColor.750">
-              {t("EVALUATE_ON_THE_FIRST_DAY_OF_CAMP")}
-            </FrontEndTypo.H4>
-          </VStack>
-          <VStack space="2" alignItems={"center"}>
-            <FormControl gap="4">
-              <FormControl.Label
-                rounded="sm"
-                position="absolute"
-                left="1rem"
-                bg="white"
-                px="1"
-                m="0"
-                height={"1px"}
-                alignItems="center"
-                style={{
-                  top: "3px",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Text
-                  bg={"white"}
-                  zIndex={99999999}
-                  color={"floatingLabelColor.500"}
-                  fontSize="12"
-                  fontWeight="400"
-                >
-                  {t("LEARNER_LEVEL")}
-                </Text>
-              </FormControl.Label>
-              <Select
-                isDisabled={isDisabledSelect({ pcrCreated })}
-                minH={"56px"}
-                selectedValue={data?.baseline_learning_level || "Select"}
-                accessibilityLabel="SELECT"
-                placeholder={
-                  data?.baseline_learning_level?.toUpperCase() || "Select"
-                }
-                dropdownIcon={
-                  <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
-                }
-                borderColor={
-                  data?.baseline_learning_level
-                    ? "floatingLabelColor.500"
-                    : "inputBorderColor.500"
-                }
-                bg="#FFFFFF"
-                borderWidth={data?.baseline_learning_level ? "2px" : "1px"}
-                borderRadius={"4px"}
-                fontSize={"16px"}
-                letterSpacing={"0.5px"}
-                fontWeight={400}
-                lineHeight={"24px"}
-                mt={1}
-                onValueChange={(itemValue) =>
-                  setData({ ...data, baseline_learning_level: itemValue })
-                }
-              >
-                {selectBaselineData?.map((item, i) => {
-                  return (
-                    <Select.Item
-                      key={item?.title}
-                      label={t(item?.title)}
-                      value={item?.value}
-                    />
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </VStack>
-          {isHideSelect({
-            pcrCreated,
-            attr: "rapid_assessment_first_learning_level",
-          }) && (
-            <VStack>
-              <VStack mt={6} alignItems={"start"}>
-                <FrontEndTypo.H3 fontWeight="600" color="textGreyColor.750">
-                  {t("PCR_EVALUATION_1")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4
-                  fontWeight="600"
-                  my="6"
-                  color="textGreyColor.750"
-                >
-                  {t("EVALUATE_THE_FIRST_DAY_OF_THE_CAMP")}
-                </FrontEndTypo.H4>
-              </VStack>
-              <VStack space="2" alignItems={"center"}>
-                <FormControl gap="4">
-                  <FormControl.Label
-                    rounded="sm"
-                    position="absolute"
-                    left="1rem"
-                    bg="white"
-                    px="1"
-                    m="0"
-                    height={"1px"}
-                    alignItems="center"
-                    style={{
-                      top: "3px",
-                      opacity: 1,
-                      zIndex: 5,
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <Text
-                      bg={"white"}
-                      zIndex={99999999}
-                      color={"floatingLabelColor.500"}
-                      fontSize="12"
-                      fontWeight="400"
-                    >
-                      {t("EVALUATION_ONE")}
-                    </Text>
-                  </FormControl.Label>
-                  <Select
-                    isFocused={{ borderColor: "inputBorderColor.500" }}
-                    isDisabled={isDisabledSelect({ pcrCreated })}
-                    selectedValue={data?.baseline_learning_level || "Select"}
-                    accessibilityLabel="SELECT"
-                    placeholder={
-                      data?.baseline_learning_level?.toUpperCase() || "Select"
-                    }
-                    mt={1}
-                    onValueChange={(itemValue) =>
-                      setData({ ...data, baseline_learning_level: itemValue })
-                    }
-                    minH={"56px"}
-                    // key={data?.baseline_learning_level + items}
-                    dropdownIcon={
-                      <IconByName
-                        color="grayTitleCard"
-                        name="ArrowDownSFillIcon"
-                      />
-                    }
-                    borderColor={
-                      data?.baseline_learning_level
-                        ? "floatingLabelColor.500"
-                        : "inputBorderColor.500"
-                    }
-                    bg="#FFFFFF"
-                    borderWidth={data?.baseline_learning_level ? "2px" : "1px"}
-                    borderRadius={"4px"}
-                    fontSize={"16px"}
-                    letterSpacing={"0.5px"}
-                    fontWeight={400}
-                    lineHeight={"24px"}
-                    _selectedItem={{
-                      bg: "teal.600",
-                      endIcon: <CheckIcon size="5" />,
-                    }}
-                  >
-                    {selectBaselineData?.map((item, i) => {
-                      return (
-                        <Select.Item
-                          key={item?.title}
-                          label={t(item?.title)}
-                          value={item?.value}
-                        />
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </VStack>
-            </VStack>
-          )}
-          {isHideSelect({
-            pcrCreated,
-            attr: "rapid_assessment_first_learning_level",
-          }) && (
-            <VStack>
-              <VStack mt={6} alignItems={"start"}>
-                <FrontEndTypo.H3 fontWeight="600" color="textGreyColor.750">
-                  {t("PCR_EVALUATION_1")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4
-                  fontWeight="600"
-                  my="6"
-                  color="textGreyColor.750"
-                >
-                  {t("EVALUATE_THE_FIRST_DAY_OF_THE_CAMP")}
-                </FrontEndTypo.H4>
-              </VStack>
-              <VStack space="2" alignItems={"center"}>
-                <FormControl gap="4">
-                  <FormControl.Label
-                    rounded="sm"
-                    position="absolute"
-                    left="1rem"
-                    bg="white"
-                    px="1"
-                    m="0"
-                    height={"1px"}
-                    alignItems="center"
-                    style={{
-                      top: "3px",
-                      opacity: 1,
-                      zIndex: 5,
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <Text
-                      bg={"white"}
-                      zIndex={99999999}
-                      color={"floatingLabelColor.500"}
-                      fontSize="12"
-                      fontWeight="400"
-                    >
-                      {t("EVALUATION_ONE")}
-                    </Text>
-                  </FormControl.Label>
-
-                  <Select
-                    isDisabled={isDisabledSelect({
-                      pcrCreated,
-                      attr: "rapid_assessment_first_learning_level",
-                    })}
-                    selectedValue={
-                      data?.rapid_assessment_first_learning_level?.toUpperCase() ||
-                      ""
-                    }
-                    accessibilityLabel="SELECT"
-                    placeholder={
-                      data?.rapid_assessment_first_learning_level || "Select"
-                    }
-                    mt={1}
-                    onValueChange={(itemValue) =>
-                      setData({
-                        ...data,
-                        rapid_assessment_first_learning_level: itemValue,
-                      })
-                    }
-                    minH={"56px"}
-                    // key={
-                    //   data?.rapid_assessment_first_learning_level?.toUpperCase() +
-                    //   items
-                    // }
-                    dropdownIcon={
-                      <IconByName
-                        color="grayTitleCard"
-                        name="ArrowDownSFillIcon"
-                      />
-                    }
-                    borderColor={
-                      data?.rapid_assessment_first_learning_level?.toUpperCase()
-                        ? "floatingLabelColor.500"
-                        : "inputBorderColor.500"
-                    }
-                    bg="#FFFFFF"
-                    borderWidth={
-                      data?.rapid_assessment_first_learning_level?.toUpperCase()
-                        ? "2px"
-                        : "1px"
-                    }
-                    borderRadius={"4px"}
-                    fontSize={"16px"}
-                    letterSpacing={"0.5px"}
-                    fontWeight={400}
-                    lineHeight={"24px"}
-                    _selectedItem={{
-                      bg: "teal.600",
-                      endIcon: <CheckIcon size="5" />,
-                    }}
-                  >
-                    {selectRapidData?.map((item, i) => {
-                      return (
-                        <Select.Item
-                          key={item?.title}
-                          label={t(item?.title)}
-                          value={item?.value}
-                        />
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </VStack>
-            </VStack>
-          )}
-
-          {isHideSelect({
-            pcrCreated,
-            attr: "rapid_assessment_second_learning_level",
-          }) && (
-            <VStack>
-              <VStack mt={6} alignItems={"start"}>
-                <FrontEndTypo.H3 fontWeight="600" color="textGreyColor.750">
-                  {t("PCR_EVALUATION_2")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4
-                  fontWeight="600"
-                  my="6"
-                  color="textGreyColor.750"
-                >
-                  {t("EVALUATE_THE_FIRST_DAY_OF_THE_CAMP")}
-                </FrontEndTypo.H4>
-              </VStack>
-              <VStack space="2" alignItems={"center"}>
-                <FormControl gap="4">
-                  <FormControl.Label
-                    rounded="sm"
-                    position="absolute"
-                    left="1rem"
-                    bg="white"
-                    px="1"
-                    m="0"
-                    height={"1px"}
-                    alignItems="center"
-                    style={{
-                      top: "3px",
-                      opacity: 1,
-                      zIndex: 5,
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <Text
-                      bg={"white"}
-                      zIndex={99999999}
-                      color={"floatingLabelColor.500"}
-                      fontSize="12"
-                      fontWeight="400"
-                    >
-                      {t("EVALUATION_TWO")}
-                    </Text>
-                  </FormControl.Label>
-
-                  <Select
-                    isDisabled={isDisabledSelect({
-                      pcrCreated,
-                      attr: "rapid_assessment_second_learning_level",
-                    })}
-                    selectedValue={
-                      data?.rapid_assessment_second_learning_level || ""
-                    }
-                    accessibilityLabel="Select"
-                    placeholder={
-                      data?.rapid_assessment_second_learning_level || "Select"
-                    }
-                    mt={1}
-                    onValueChange={(itemValue) => {
-                      setData({
-                        ...data,
-                        rapid_assessment_second_learning_level: itemValue,
-                      });
-                    }}
-                    minH={"56px"}
-                    // key={data?.rapid_assessment_second_learning_level + items}
-                    dropdownIcon={
-                      <IconByName
-                        color="grayTitleCard"
-                        name="ArrowDownSFillIcon"
-                      />
-                    }
-                    borderColor={
-                      data?.rapid_assessment_second_learning_level
-                        ? "floatingLabelColor.500"
-                        : "inputBorderColor.500"
-                    }
-                    bg="#FFFFFF"
-                    borderWidth={
-                      data?.rapid_assessment_second_learning_level
-                        ? "2px"
-                        : "1px"
-                    }
-                    borderRadius={"4px"}
-                    fontSize={"16px"}
-                    letterSpacing={"0.5px"}
-                    fontWeight={400}
-                    lineHeight={"24px"}
-                    _selectedItem={{
-                      bg: "teal.600",
-                      endIcon: <CheckIcon size="5" />,
-                    }}
-                  >
-                    {selectRapidData?.map((item, i) => {
-                      return (
-                        <Select.Item
-                          key={item?.title}
-                          label={t(item?.title)}
-                          value={item?.value}
-                        />
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </VStack>
-            </VStack>
-          )}
-
-          {isHideSelect({
-            pcrCreated,
-            attr: "endline_learning_level",
-          }) && (
-            <VStack>
-              <VStack mt={6} alignItems={"start"}>
-                <FrontEndTypo.H3 fontWeight="600" color="textGreyColor.750">
-                  {t("PCR_FINAL_EVALUATON")}
-                </FrontEndTypo.H3>
-                <FrontEndTypo.H4
-                  fontWeight="600"
-                  my="6"
-                  color="textGreyColor.750"
-                >
-                  {t("EVALUATE_THE_FIRST_DAY_OF_THE_CAMP")}
-                </FrontEndTypo.H4>
-              </VStack>
-              <VStack space="2" alignItems={"center"}>
-                <FormControl gap="4">
-                  <FormControl.Label
-                    rounded="sm"
-                    position="absolute"
-                    left="1rem"
-                    bg="white"
-                    px="1"
-                    m="0"
-                    height={"1px"}
-                    alignItems="center"
-                    style={{
-                      top: "3px",
-                      opacity: 1,
-                      zIndex: 5,
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <Text
-                      bg={"white"}
-                      zIndex={99999999}
-                      color={"floatingLabelColor.500"}
-                      fontSize="12"
-                      fontWeight="400"
-                    >
-                      {t("FINAL_LEARNING_LEVEL")}
-                    </Text>
-                  </FormControl.Label>
-
-                  <Select
-                    isDisabled={isDisabledSelect({
-                      pcrCreated,
-                      attr: "endline_learning_level",
-                    })}
-                    selectedValue={data?.endline_learning_level || ""}
-                    accessibilityLabel="Select"
-                    placeholder={data?.endline_learning_level || "Select"}
-                    mt={1}
-                    onValueChange={(itemValue) =>
-                      setData({ ...data, endline_learning_level: itemValue })
-                    }
-                    minH={"56px"}
-                    // key={data?.endline_learning_level + items}
-                    dropdownIcon={
-                      <IconByName
-                        color="grayTitleCard"
-                        name="ArrowDownSFillIcon"
-                      />
-                    }
-                    borderColor={
-                      data?.endline_learning_level
-                        ? "floatingLabelColor.500"
-                        : "inputBorderColor.500"
-                    }
-                    bg="#FFFFFF"
-                    borderWidth={data?.endline_learning_level ? "2px" : "1px"}
-                    borderRadius={"4px"}
-                    fontSize={"16px"}
-                    letterSpacing={"0.5px"}
-                    fontWeight={400}
-                    lineHeight={"24px"}
-                    _selectedItem={{
-                      bg: "teal.600",
-                      endIcon: <CheckIcon size="5" />,
-                    }}
-                  >
-                    {selectBaselineData?.map((item, i) => {
-                      return (
-                        <Select.Item
-                          key={item?.title}
-                          label={t(item?.title)}
-                          value={item?.value}
-                        />
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </VStack>
-            </VStack>
-          )}
+          {/* fourth select */}
+          <CustomSelect
+            {...{
+              data: pcrCreated,
+              attr: "endline_learning_level",
+              options: {
+                enumOptions: selectBaselineData?.map((e) => ({
+                  ...(e || {}),
+                  label: e?.title,
+                })),
+              },
+              value: data?.endline_learning_level || "",
+              schema: {
+                title: "PCR_FINAL_EVALUATON",
+                description: "EVALUATE_THE_FIRST_DAY_OF_THE_CAMP",
+                label: "FINAL_LEARNING_LEVEL",
+              },
+              onChange: (itemValue) => {
+                setData({
+                  ...data,
+                  endline_learning_level: itemValue,
+                });
+              },
+            }}
+          />
 
           <Box pt="4" display={"flex"} alignItems={"center"}>
             <FrontEndTypo.Primarybutton
@@ -668,3 +275,62 @@ const PcrDetails = () => {
 };
 
 export default PcrDetails;
+
+const CustomSelect = ({ data, attr, ...props }) => {
+  const { t } = useTranslation();
+  if (
+    isHideSelect({
+      data,
+      attr,
+    })
+  ) {
+    return (
+      <VStack space="2">
+        <VStack mt={6} alignItems={"start"}>
+          <FrontEndTypo.H3 mt="6" fontWeight="600" color="textGreyColor.750">
+            {t(props?.schema?.title)}
+          </FrontEndTypo.H3>
+
+          <FrontEndTypo.H4 my="6" fontWeight="600" color="textGreyColor.750">
+            {t(props?.schema?.description)}
+          </FrontEndTypo.H4>
+        </VStack>
+        <FormControl gap="4">
+          <FormControl.Label
+            rounded="sm"
+            position="absolute"
+            left="1rem"
+            bg="white"
+            px="1"
+            m="0"
+            height={"1px"}
+            alignItems="center"
+            style={{
+              top: "3px",
+              opacity: 1,
+              zIndex: 5,
+              transition: "all 0.3s ease",
+            }}
+          >
+            <Text
+              bg={"white"}
+              zIndex={99999999}
+              color={"floatingLabelColor.500"}
+              fontSize="12"
+              fontWeight="400"
+            >
+              {t(props?.schema?.label)}
+            </Text>
+          </FormControl.Label>
+          <Select
+            isDisabled={isDisabledSelect({ data, attr })}
+            accessibilityLabel="SELECT"
+            placeholder={"Select"}
+            {...props}
+          />
+        </FormControl>
+      </VStack>
+    );
+  }
+  return <React.Fragment />;
+};

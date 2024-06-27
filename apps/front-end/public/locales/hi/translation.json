@@ -835,6 +835,8 @@
   "FILE_SIZE": "फोटो दस MB से कम की होना चाहिए",
   "FILTERS": "फिल्टर",
   "FINAL_LEVEL_EDUCATION": "अंतिम शिक्षण स्तर",
+  "EVALUATE_ON_THE_FIRST_DAY_OF_CAMP": "(शिविर के पहले दिन मूल्यांकन करें)",
+  "EVALUATE_THE_FIRST_DAY_OF_THE_CAMP": "(शिविर के पहले दिन मूल्यांकन करें)",
   "FINISH": "समाप्त",
   "FIRST_NAME": "पहला नाम",
   "FIRST_NAME_AS_PER_ENROLLMENT": "पहला नाम (नामांकन के अनुसार)",
