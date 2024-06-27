@@ -87,13 +87,19 @@ export default function App({ userTokenInfo: { authUser } }) {
         const properties = schema1.properties;
         const newSteps = Object.keys(properties);
         setPages(newSteps);
-        if (["1", "2", "4"].includes(page)) {
+        if (["1", "4"].includes(page)) {
           setSchema(properties[page]);
           const userObj = filterObject(
             authUser,
             Object.keys(properties?.[page]?.properties || {})
           );
           setFormData(userObj);
+        } else if (page == 2) {
+          setFormData({
+            state: authUser?.state,
+            pincode: authUser?.pincode,
+          });
+          await setStatesData(properties[page]);
         } else if (page == 3) {
           setFormData({
             qualification: authUser?.qualifications?.qualification_master?.name,
@@ -104,6 +110,21 @@ export default function App({ userTokenInfo: { authUser } }) {
     };
     setFormInfo();
   }, [page]);
+
+  const setStatesData = async (newSchema) => {
+    if (newSchema?.properties?.state) {
+      setLoading(true);
+      const { data } = await volunteerRegistryService.getStatesData();
+      if (newSchema["properties"]["state"]) {
+        newSchema = getOptions(newSchema, {
+          key: "state",
+          arr: data,
+        });
+        setSchema(newSchema);
+        setLoading(false);
+      }
+    }
+  };
 
   const setQualificationsData = async (newSchema) => {
     if (newSchema?.properties?.qualification) {

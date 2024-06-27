@@ -803,7 +803,7 @@ const AutomatedForm = () => {
   }
 
   return (
-    <Layout>
+    <Layout checkUserAccess>
       <Box marginTop={100}>
         <Box margin={4}>
           <div id="formContainer"></div>

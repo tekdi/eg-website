@@ -674,6 +674,7 @@ const MediaPage = () => {
 
   return (
     <Layout
+      checkUserAccess
       _appBar={{
         onPressBackButton: handleBack,
       }}

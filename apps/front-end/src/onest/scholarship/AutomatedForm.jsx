@@ -734,7 +734,7 @@ const AutomatedForm = () => {
 
   if (openModal) {
     return (
-      <Layout>
+      <Layout checkUserAccess>
         <Modal isOpen={openModal} size="lg">
           <Modal.Content>
             <Modal.Header>
@@ -765,7 +765,7 @@ const AutomatedForm = () => {
   }
 
   return (
-    <Layout loading={loading}>
+    <Layout loading={loading} checkUserAccess>
       <Box margin={4}>
         <div id="formContainer"></div>
       </Box>

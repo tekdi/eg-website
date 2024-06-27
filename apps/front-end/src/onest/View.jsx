@@ -29,6 +29,7 @@ function View({ userTokenInfo: { authUser }, footerLinks }) {
 
   return (
     <Layout
+      checkUserAccess
       _footer={{ menues: footerLinks }}
       facilitator={{
         ...authUser,
