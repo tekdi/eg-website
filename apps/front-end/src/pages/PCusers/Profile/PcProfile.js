@@ -116,7 +116,7 @@ export default function PcProfile({ userTokenInfo }) {
                   name="ArrowRightSLineIcon"
                   color="textMaroonColor.400"
                   onPress={(e) => {
-                    navigate(`/facilitatorbasicdetail`);
+                    navigate(`/profile/basicdetails`);
                   }}
                 />
               </HStack>
