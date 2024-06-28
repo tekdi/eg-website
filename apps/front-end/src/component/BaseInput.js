@@ -414,7 +414,14 @@ export const Aadhaar = (props) => {
 };
 
 // rjsf custom select field
-export const select = ({ options, value, onChange, required, schema }) => {
+export const select = ({
+  options,
+  isDisabled,
+  value,
+  onChange,
+  required,
+  schema,
+}) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label, title, readOnly, isHideFloatingLabel } = schema || {};
   const { t } = useTranslation();
@@ -461,7 +468,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
       )}
       <Select
         key={value + items}
-        isDisabled={readOnly}
+        isDisabled={readOnly || isDisabled}
         selectedValue={value}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
