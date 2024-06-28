@@ -20,10 +20,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const navigate = useNavigate();
   const [fields, setFields] = React.useState([]);
 
-  //   React.useEffect(() => {
-  //     facilitatorDetails();
-  //     getEditRequestFields();
-  //   }, []);
+  const edit = `/profile/123/upload/1`;
 
   return (
     <Layout
@@ -41,6 +38,8 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
             profile_photo_1={facilitator?.profile_photo_1}
             profile_photo_2={facilitator?.profile_photo_2}
             profile_photo_3={facilitator?.profile_photo_3}
+            isProfileEdit={true}
+            editLink={edit}
           />
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">

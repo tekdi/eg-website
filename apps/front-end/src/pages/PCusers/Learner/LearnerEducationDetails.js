@@ -10,12 +10,13 @@ import {
   GetEnumValue,
   getUniqueArray,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 
 const GetOptions = ({ array, enumType, enumApiData }) => {
   const { t } = useTranslation();
+
   return (
     <VStack>
       {getUniqueArray(array)?.map((item, index) => (
@@ -39,58 +40,29 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
 };
 
 export default function BenificiaryEducation() {
-  const params = useParams();
-  const [benificiary, setbenificiary] = React.useState();
-  const [userId, setUserId] = React.useState(params?.id);
+  const { id } = useParams();
+  const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [requestData, setRequestData] = React.useState([]);
+  const location = useLocation();
 
   React.useEffect(() => {
-    benificiaryDetails();
+    setBenificiary(location?.state);
   }, []);
-
-  const benificiaryDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(userId);
-
-    setbenificiary(result?.result);
-  };
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: userId,
-    };
-    const result = await benificiaryRegistoryService.getEditRequest(obj);
-    if (result?.data?.length > 0) {
-      const fieldData = JSON.parse(result?.data[0]?.fields);
-      setRequestData(fieldData);
-    }
   }, [benificiary]);
 
-  const isEducationalDetailsEdit = () => {
-    return !!(
-      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" ||
-      (benificiary?.program_beneficiaries?.status === "enrolled_ip_verified" &&
-        requestData.includes("educational_details")) ||
-      requestData.includes("type_of_learner") ||
-      requestData.includes("last_standard_of_education") ||
-      requestData.includes("last_standard_of_education_year") ||
-      requestData.includes("previous_school_type") ||
-      requestData.includes("reason_of_leaving_education") ||
-      requestData.includes("learning_level")
-    );
-  };
   return (
     <Layout
       _appBar={{
         name: t("EDUCATION_DETAILS"),
         onlyIconsShow: ["langBtn", "backBtn"],
         onPressBackButton: (e) => {
-          navigate(`/learner/learnerListView/${userId}`);
+          navigate(`/learner/learnerListView/${id}`);
         },
       }}
       analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
