@@ -33,11 +33,14 @@ const List = ({ data }) => {
         whiteSpace="nowrap"
         overflow="hidden"
         textOverflow="ellipsis"
-        m="4"
+        ml="4"
       >
         {t("CAMP")}&nbsp;
         {id}
       </AdminTypo.H3>
+      <HStack space="md" alignItems="Center">
+        <FrontEndTypo.H3>{t("LEARNERS_DETAILS")}</FrontEndTypo.H3>
+      </HStack>
       {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
         data &&
         data?.constructor?.name === "Array" &&
