@@ -93,6 +93,12 @@ const ExamResultView = React.lazy(() =>
   import("pages/admin/examschedule/ExamResult/ExamResultView")
 );
 
+// PC-User
+
+const PcAdd = React.lazy(() => import("pages/admin/pcScreen/PcAdd"));
+const PcList = React.lazy(() => import("pages/admin/pcScreen/List"));
+const PcView = React.lazy(() => import("pages/admin/pcScreen/View"));
+
 export default [
   { path: "/admin/facilitator/:id", component: FacilitatorView },
   { path: "/admin/Certification/:id", component: Certification },
@@ -172,6 +178,11 @@ export default [
   { path: "/admin/event/create", component: EventForm },
   { path: "/admin/event/:id/:step", component: EventForm },
 
+  // pc screens
+
+  { path: "/admin/pc", component: PcList },
+  { path: "/admin/pc/:id", component: PcView },
+
   { path: "*", component: NotFound },
 
   // Exam Schedule Routes
@@ -179,4 +190,6 @@ export default [
   { path: "/admin/exams/list", component: ExamResultList },
   { path: "/admin/exams/list/:id", component: ManualExamResult },
   { path: "/admin/exams/list/result/:id", component: ExamResultView },
+  // Pc-users
+  { path: "/admin/addpcuser", component: PcAdd },
 ];

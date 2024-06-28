@@ -74,6 +74,16 @@ export function LabelMobileWidget() {
     </>
   );
 }
+export function LabelTimeWidget() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Heading size="sm" mb={1} color="textMaroonColor.400">
+        {t("TIME_SPENT_IN_HOURS")}
+      </Heading>
+    </>
+  );
+}
 export function EnrollmentLabelMobileWidget() {
   let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
@@ -861,6 +871,7 @@ const widgets = {
   selectSubjectWidget,
   LabelMobileWidget,
   EnrollmentLabelMobileWidget,
+  LabelTimeWidget,
   AlreadyOpenLabelWidget,
   LabelAddressWidget,
   LabelVerifyNameWidget,
