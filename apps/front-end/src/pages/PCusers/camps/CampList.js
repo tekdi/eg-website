@@ -272,7 +272,7 @@ export default function CampList() {
                           });
                         }}
                       >
-                        {t("CAMP")}
+                        {t("CAMP")}&nbsp;
                         {item?.camp_id}
                       </FrontEndTypo.H3>
                     </FrontEndTypo.H3>

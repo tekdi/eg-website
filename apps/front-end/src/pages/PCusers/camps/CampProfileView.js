@@ -52,19 +52,6 @@ export default function CampProfileView({ userTokenInfo }) {
     getPrerakCampProfile();
   }, []);
 
-  React.useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setBenificiaryDropoutReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
-    );
-    setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
-    setBenificiaryRejectReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
-    );
-  }, []);
-
-  const res = objProps(benificiary);
-
   return (
     <Layout
       _appBar={{
@@ -87,6 +74,16 @@ export default function CampProfileView({ userTokenInfo }) {
         <VStack paddingBottom="64px" bg="gray.200">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
             <Box justifyContent={"space-between"} flexWrap="wrap">
+              <AdminTypo.H3
+                color="textGreyColor.800"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                m="4"
+              >
+                {t("CAMP")}&nbsp;
+                {id}
+              </AdminTypo.H3>
               <HStack flex="0.5" justifyContent="center" m="4">
                 {prerakProfile?.profile_photo_1?.name ? (
                   <ImageView
@@ -248,6 +245,20 @@ export default function CampProfileView({ userTokenInfo }) {
                           {t("LEARNERS_DETAILS")}
                         </FrontEndTypo.H3>
                       </HStack>
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(`/camps/CampLearnerList/${id}`, {
+                            state: {
+                              academic_year_id:
+                                location.state?.academic_year_id,
+                              program_id: location.state?.program_id,
+                              user_id: location.state?.user_id,
+                            },
+                          });
+                        }}
+                        color="maroon.400"
+                      />
                     </HStack>
                     <Divider
                       orientation="horizontal"

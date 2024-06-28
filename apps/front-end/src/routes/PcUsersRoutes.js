@@ -88,7 +88,7 @@ export default [
     component: CampProfileView,
   },
   {
-    path: "/camps/:id/learnerlist",
+    path: "/camps/CampLearnerList/:id",
     component: CampLearnerList,
   },
   {
