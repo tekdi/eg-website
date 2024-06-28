@@ -682,9 +682,14 @@ export const MultiCheck = ({
       )}
       <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
-          <Box gap={"2"} key={subItem} flexDirection="row" flexWrap="wrap">
+          <Box
+            gap={"2"}
+            key={subItem + subKey}
+            flexDirection="row"
+            flexWrap="wrap"
+          >
             {subItem?.map((item, key) => (
-              <label key={item}>
+              <label key={item + key}>
                 <HStack alignItems="center" space="3" flex="1">
                   {icons?.[key] && icons?.[key].name && (
                     <IconByName
@@ -737,8 +742,8 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { t } = useTranslation();
 
   const checkboxIcons = [
-    { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
-    { name: "CloseCircleLineIcon", activeColor: "red.500" },
+    { name: "CheckboxCircleLineIcon" },
+    { name: "CloseCircleLineIcon" },
   ];
   return (
     <HStack space={2}>

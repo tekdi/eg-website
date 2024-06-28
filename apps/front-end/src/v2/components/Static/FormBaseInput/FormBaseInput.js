@@ -805,8 +805,8 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { t } = useTranslation();
 
   const checkboxIcons = [
-    { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
-    { name: "CloseCircleLineIcon", activeColor: "red.500" },
+    { name: "CheckboxCircleLineIcon" },
+    { name: "CloseCircleLineIcon" },
   ];
   return (
     <HStack space={2}>

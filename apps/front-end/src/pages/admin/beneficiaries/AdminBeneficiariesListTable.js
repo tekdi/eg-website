@@ -13,6 +13,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import { useMemo } from "react";
 
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
