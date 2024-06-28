@@ -30,7 +30,7 @@ const uiSchema = {
 };
 
 // App
-export default function App({ userTokenInfo: { authUser } }) {
+export default function App() {
   const [pages, setPages] = useState();
   const [schema, setSchema] = useState({});
   const formRef = useRef();
@@ -42,6 +42,7 @@ export default function App({ userTokenInfo: { authUser } }) {
   const { t } = useTranslation();
   const { page } = useParams();
   const [mobileConditon, setMobileConditon] = useState(false);
+  const [volunteer, setVolunteer] = useState();
 
   const onPressBackButton = async () => {
     await nextPreviewStep("p");
@@ -84,25 +85,28 @@ export default function App({ userTokenInfo: { authUser } }) {
   useEffect(() => {
     const setFormInfo = async () => {
       if (schema1.type === "step") {
+        const user = await facilitatorRegistryService.getInfo();
+        setVolunteer(user);
+        setLoading(false);
         const properties = schema1.properties;
         const newSteps = Object.keys(properties);
         setPages(newSteps);
         if (["1", "4"].includes(page)) {
           setSchema(properties[page]);
           const userObj = filterObject(
-            authUser,
+            user,
             Object.keys(properties?.[page]?.properties || {})
           );
           setFormData(userObj);
         } else if (page == 2) {
           setFormData({
-            state: authUser?.state,
-            pincode: authUser?.pincode,
+            state: user?.state,
+            pincode: user?.pincode,
           });
           await setStatesData(properties[page]);
         } else if (page == 3) {
           setFormData({
-            qualification: authUser?.qualifications?.qualification_master?.name,
+            qualification: user?.qualifications?.qualification_master?.name,
           });
           await setQualificationsData(properties[page]);
         }
@@ -303,7 +307,7 @@ export default function App({ userTokenInfo: { authUser } }) {
     setFormData(newData);
 
     if (_.isEmpty(errors) || errors?.otp) {
-      const { id } = authUser;
+      const { id } = volunteer;
       let success = false;
       if (id) {
         switch (page) {
@@ -316,6 +320,18 @@ export default function App({ userTokenInfo: { authUser } }) {
               {},
               ""
             );
+            if (page === "3") {
+              filterNewData = {
+                qualification: {
+                  id: volunteer?.qualifications?.id,
+                  qualification_name: filterNewData?.qualification,
+                },
+              };
+            } else {
+              filterNewData = {
+                users: filterNewData,
+              };
+            }
             const { data, success } = await formSubmitUpdate(filterNewData);
             if (!success) {
               const newErrors = {
@@ -403,7 +419,7 @@ export default function App({ userTokenInfo: { authUser } }) {
   };
 
   const formSubmitUpdate = async (users) => {
-    const result = await volunteerRegistryService.selfUpdate({ users });
+    const result = await volunteerRegistryService.selfUpdate(users);
     return result;
   };
 
