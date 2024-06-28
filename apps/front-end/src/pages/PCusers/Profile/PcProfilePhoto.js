@@ -5,6 +5,7 @@ import {
   H2,
   FrontEndTypo,
   benificiaryRegistoryService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -22,9 +23,12 @@ export default function PcProfilePhoto() {
     navigate(`/profile`);
   };
 
-  useEffect(async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(result?.result);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await PcuserService.getPcProfile();
+      setBenificiary(data?.data);
+    };
+    fetchData();
   }, [id, photoNo]);
 
   return (
