@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { PCusers_layout as Layout, FrontEndTypo } from "@shiksha/common-lib";
+import {
+  PCusers_layout as Layout,
+  FrontEndTypo,
+  PcuserService,
+} from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { HStack, Image, VStack } from "native-base";
 import DashboardCard from "component/common_components/DashboardCard";
@@ -7,9 +11,16 @@ import DashboardCard from "component/common_components/DashboardCard";
 const PcDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-
+  const headerName = localStorage.getItem("fullName")
+    ? localStorage.getItem("fullName")
+    : "";
   useEffect(() => {
-    setLoading(false);
+    const fetchData = async () => {
+      const data = await PcuserService.getPcProfile();
+      console.log({ data });
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
   return (
@@ -17,7 +28,7 @@ const PcDashboard = () => {
       loading={loading}
       _appBar={{
         profile_url: "facilitator?.profile_photo_1?.name",
-        name: ["facilitator?.first_name", "facilitator?.last_name"].join(" "),
+        name: headerName,
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       // facilitator={facilitator}
@@ -37,7 +48,7 @@ const PcDashboard = () => {
               resizeMode="contain"
             />
             <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-              {t("WELCOME")} `facilitator?.first_name`,
+              {t("WELCOME")} {headerName},
             </FrontEndTypo.H1>
           </HStack>
           <VStack

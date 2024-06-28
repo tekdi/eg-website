@@ -10,6 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { activities } from "./ActivitiesSchema";
 
 const DailyActivitiesList = () => {
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
   const { t } = useTranslation();
@@ -26,6 +28,14 @@ const DailyActivitiesList = () => {
       //facilitator={facilitator}
       analyticsPageTitle={"HOME"}
       pageTitle={t("HOME")}
+      _appBar={{
+        lang,
+        setLang,
+        onPressBackButton: (e) => {
+          navigate(`/`);
+        },
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
+      }}
     >
       <VStack space="4" p="4" alignContent="center">
         <FrontEndTypo.H1>{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>

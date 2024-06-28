@@ -1,42 +1,47 @@
 import {
-  t,
   IconByName,
   PCusers_layout as Layout,
   FrontEndTypo,
   SelectStyle,
   CardComponent,
+  PcuserService,
+  benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Box, Select, Pressable } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-const List = ({ data }) => {
+const List = ({ data, location }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
     <VStack space="4" p="4" alignContent="center">
-      {Array.isArray(data) && data.length > 0 ? (
-        data.map((item) => (
+      {Array.isArray(data) && data?.length > 0 ? (
+        data?.map((item) => (
           <CardComponent
             key={item?.id}
             _body={{ px: "3", py: "3" }}
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
             <Pressable
-              onPress={() => navigate(`/learner/learnerListView/${item?.id}`)}
+              onPress={() =>
+                navigate(`/learner/learnerListView/${item?.user_id}`, {
+                  state: location,
+                })
+              }
             >
               <HStack justifyContent="space-between" space={1}>
                 <HStack alignItems="center" flex={[1, 2, 4]}>
                   <VStack alignItems="center" p="1">
                     <Chip>
                       <Clipboard text={item?.id}>
-                        <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
+                        <FrontEndTypo.H2 bold>{item?.user_id}</FrontEndTypo.H2>
                       </Clipboard>
                     </Chip>
                   </VStack>
@@ -58,16 +63,14 @@ const List = ({ data }) => {
                         ` ${item.last_name}`}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
-                      {item?.mobile}
+                      {item?.enrollment_number}
                     </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
                 <VStack alignItems="end" flex={[1]}>
                   <ChipStatus
                     w="fit-content"
-                    status={item?.program_beneficiaries?.status}
-                    is_duplicate={item?.is_duplicate}
-                    is_deactivated={item?.is_deactivated}
+                    status={item?.status}
                     rounded={"sm"}
                   />
                 </VStack>
@@ -88,75 +91,77 @@ const select2 = [
 ];
 
 export default function LearnerListView() {
-  const [filter, setFilter] = useState({ limit: 6 });
+  const [filter, setFilter] = useState();
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingList, setLoadingList] = useState(false);
+  const [loadingList, setLoadingList] = useState(true);
   const [loadingHeight, setLoadingHeight] = useState(0);
+  const [bodyHeight, setBodyHeight] = useState(0);
   const ref = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const handleBack = () => {
+    navigate(`/learner/learnerList`);
+  };
+
+  useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoadingList(true);
-      const fetchedData = [
-        {
-          id: "1",
-          first_name: "John",
-          middle_name: null,
-          last_name: "Doe",
-          mobile: "1234567890",
-          program_beneficiaries: {
-            status: "enrolled",
-            enrollment_first_name: "John",
-            enrollment_middle_name: null,
-            enrollment_last_name: "Doe",
+      const filters = location?.state;
+      const filterData = {
+        limit: 6,
+        facilitator_list: [
+          {
+            user_id: filters?.prerak_id,
+            academic_year_id: filters?.academic?.academic_year_id,
+            program_id: filters?.program_id,
           },
-          is_duplicate: false,
-          is_deactivated: false,
-        },
-        {
-          id: "2",
-          first_name: "Jane",
-          middle_name: "A.",
-          last_name: "Smith",
-          mobile: "0987654321",
-          program_beneficiaries: {
-            status: "identified",
-            enrollment_first_name: "Jane",
-            enrollment_middle_name: "A.",
-            enrollment_last_name: "Smith",
-          },
-          is_duplicate: false,
-          is_deactivated: false,
-        },
-        {
-          id: "3",
-          first_name: "David",
-          middle_name: "Robin",
-          last_name: "Dane",
-          mobile: "9012345678",
-          program_beneficiaries: {
-            status: "enrolled",
-            enrollment_first_name: "David",
-            enrollment_middle_name: "Robin",
-            enrollment_last_name: "Dane",
-          },
-          is_duplicate: false,
-          is_deactivated: false,
-        },
-      ];
-      setData(fetchedData);
+        ],
+      };
+      setFilter(filterData);
+
+      const status = await benificiaryRegistoryService.getStatusList();
+      setSelectStatus(status);
       setLoadingList(false);
     };
 
     fetchData();
   }, []);
 
+  const getLearner = async (filters) => {
+    if (filters) {
+      const data = await PcuserService.getLearnerList(filters);
+      setData(data);
+    }
+  };
+
+  useEffect(() => {
+    getLearner(filter);
+  }, [filter]);
+
+  console.log({ filter, data });
+
   return (
-    <Layout analyticsPageTitle={"PRERAK_LIST"} pageTitle={t("PRERAK_LIST")}>
+    <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
+      analyticsPageTitle={"LEARNER_LIST"}
+      pageTitle={t("LEARNER_LIST")}
+      _appBar={{
+        onPressBackButton: handleBack,
+      }}
+      loading={loadingList}
+    >
       <VStack ref={ref}>
         <HStack
           justifyContent="space-between"
@@ -178,7 +183,7 @@ export default function LearnerListView() {
               }}
               accessibilityLabel="Select a position for Menu"
             >
-              <Select.Item key={0} label={t("PRERAK_ALL")} value={""} />
+              <Select.Item key={0} label={t("ALL")} value={""} />
               {Array.isArray(selectStatus) &&
                 selectStatus.map((option, index) => (
                   <Select.Item
@@ -217,12 +222,12 @@ export default function LearnerListView() {
       {!loadingList ? (
         <InfiniteScroll
           dataLength={data?.length}
-          next={() =>
-            setFilter({
-              ...filter,
-              page: (filter?.page ? filter?.page : 1) + 1,
-            })
-          }
+          // next={() =>
+          //   setFilter({
+          //     ...filter,
+          //     page: (filter?.page ? filter?.page : 1) + 1,
+          //   })
+          // }
           hasMore={hasMore}
           height={loadingHeight}
           endMessage={
@@ -233,7 +238,7 @@ export default function LearnerListView() {
             </FrontEndTypo.H3>
           }
         >
-          <List data={data} />
+          <List data={data} location={location} />
         </InfiniteScroll>
       ) : (
         // Loading component here if needed
@@ -242,8 +247,3 @@ export default function LearnerListView() {
     </Layout>
   );
 }
-
-LearnerListView.propTypes = {
-  userTokenInfo: PropTypes.any,
-  footerLinks: PropTypes.any,
-};

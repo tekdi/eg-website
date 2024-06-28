@@ -1914,7 +1914,6 @@
   "CREATE_A_PRAGATI_COORDINATOR": "Create a Pragati Coordinator",
   "ADD_PC": "Add Pc",
   "PC_LIST": "PC list",
-  "VIEW_DAILY_ACTVITIES": "View Daily Actvities",
   "ADD_PRERAK": "Add Prerak",
   "REMOVE_PRERAK": "Remove Prerak",
   "PRERAK_ASSIGNED": "Prerak Assigned",
@@ -1945,5 +1944,6 @@
   "CONDUCT_PRI_MEETING": "Conduct pri meeting",
   "CAMP_EXECUTION_SUPPORT": "Camp execution support",
   "CAMP_VISIT_FOR_MONITORING_AND_HH_SUPPORT": "Camp visit for monitoring and hh support",
-  "COLLECT_CASE_STUDY_FROM_FIELD": "Collect case study from field"
+  "COLLECT_CASE_STUDY_FROM_FIELD": "Collect case study from field",
+  "ORGANISE_EVENT": "Organise Event"
 }

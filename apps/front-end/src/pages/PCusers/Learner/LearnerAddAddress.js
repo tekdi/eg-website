@@ -1,35 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HStack, VStack, Box, Progress, Text } from "native-base";
 import {
   arrList,
-  IconByName,
   FrontEndTypo,
-  benificiaryRegistoryService,
   PCusers_layout as Layout,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function BenificiaryAddress() {
   const params = useParams();
-  const [benificiary, setbenificiary] = React.useState();
-  const [userId] = React.useState(params?.id);
+  const [benificiary, setBenificiary] = useState();
+  const [userId] = useState(params?.id);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [requestData, setRequestData] = React.useState([]);
+  const location = useLocation();
 
-  React.useEffect(async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: userId,
-    };
-    const result = await benificiaryRegistoryService.getEditRequest(obj);
-    if (result?.data?.length > 0) {
-      const fieldData = JSON.parse(result?.data?.[0]?.fields);
-      setRequestData(fieldData);
-    }
-    const data = await benificiaryRegistoryService.getOne(userId);
-    setbenificiary(data?.result);
+  useEffect(() => {
+    setBenificiary(location?.state);
   }, []);
 
   const onPressBackButton = async () => {
@@ -195,7 +183,12 @@ export default function BenificiaryAddress() {
                   )}
                 </FrontEndTypo.H3>
               </HStack>
-              <HStack space={2} alignItems="Center">
+              <HStack
+                space={2}
+                alignItems="Center"
+                borderBottomWidth="1px"
+                borderBottomColor="appliedColor"
+              >
                 <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
                   {t("GRAMPANCHAYAT")}
                 </FrontEndTypo.H3>
@@ -212,12 +205,7 @@ export default function BenificiaryAddress() {
                   )}
                 </FrontEndTypo.H3>
               </HStack>
-              <HStack
-                space={2}
-                alignItems="Center"
-                borderBottomWidth="1px"
-                borderBottomColor="appliedColor"
-              >
+              <HStack space={2} alignItems="Center">
                 <FrontEndTypo.H3
                   color="textGreyColor.50"
                   fontWeight="400"

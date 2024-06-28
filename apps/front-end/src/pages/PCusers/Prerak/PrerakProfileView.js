@@ -11,6 +11,7 @@ import {
   PcuserService,
   AdminTypo,
 } from "@shiksha/common-lib";
+import { ChipStatus } from "component/Chip";
 
 export default function PrerakProfileView() {
   const navigate = useNavigate();
@@ -85,66 +86,17 @@ export default function PrerakProfileView() {
                   />
                 )}
               </HStack>
-              <VStack space="4" flexWrap="wrap">
-                <AdminTypo.H4
-                  color="textGreyColor.800"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  m="4"
-                >
-                  {["enrolled_ip_verified", "registered_in_camp"].includes(
-                    prerakProfile?.program_beneficiaries?.status
-                  )
-                    ? `${prerakProfile?.first_name ?? "-"} ${
-                        prerakProfile?.last_name ?? "-"
-                      }`
-                    : `${prerakProfile?.first_name ?? "-"} ${
-                        prerakProfile?.last_name ?? "-"
-                      }`}
-                </AdminTypo.H4>
-                <HStack
-                  bg="textMaroonColor.600"
-                  rounded={"md"}
-                  alignItems="center"
-                  p="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="CellphoneLineIcon"
-                    color="white"
-                  />
+              {console.log({ prerakProfile })}
+              <VStack space="4" alignItems={"Center"}>
+                <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  {prerakProfile?.first_name} {" " + prerakProfile?.last_name}
+                </FrontEndTypo.H2>
 
-                  <AdminTypo.H6 color="white" bold>
-                    {prerakProfile?.mobile}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack
-                  bg="textMaroonColor.600"
-                  rounded={"md"}
-                  p="2"
-                  alignItems="center"
-                  space="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="MapPinLineIcon"
-                    color="white"
-                  />
-                  <AdminTypo.H6 color="white" bold>
-                    {[
-                      prerakProfile?.state,
-                      prerakProfile?.district,
-                      prerakProfile?.block,
-                      prerakProfile?.village,
-                      prerakProfile?.grampanchayat,
-                    ]
-                      .filter((e) => e)
-                      .join(",")}
-                  </AdminTypo.H6>
-                </HStack>
+                <FrontEndTypo.H3>{prerakProfile?.mobile}</FrontEndTypo.H3>
+                <ChipStatus
+                  status={prerakProfile?.program_faciltators?.status}
+                  rounded={"l"}
+                />
               </VStack>
             </Box>
 
