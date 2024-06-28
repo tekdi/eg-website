@@ -6,7 +6,10 @@ import {
   SelectStyle,
   CardComponent,
   AdminTypo,
+  PcUserService,
   benificiaryRegistoryService,
+  PcuserService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -19,10 +22,12 @@ import {
   IconButton,
   Button,
   Divider,
+  Stack,
+  Input,
 } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Chip from "component/BeneficiaryStatus";
+import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
@@ -94,7 +99,7 @@ const select2 = [
 ];
 
 export default function LearnerList() {
-  const [filter, setFilter] = useState({ limit: 6 });
+  const [filter, setFilter] = useState({});
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -105,153 +110,90 @@ export default function LearnerList() {
   const ref = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setloading] = React.useState(false);
-  const [beneficiary, setBeneficiary] = React.useState({});
+  const [loading, setloading] = useState(false);
+  const [prerakList, setPrerakList] = useState();
   const [filteredData, setFilteredData] = useState([]);
-  const [prerakData, setPrerakData] = React.useState();
   const [isDisable, setIsDisable] = useState(true);
+  const [beneficiary, setBeneficiary] = useState(true);
 
   useEffect(async () => {
     setLoadingList(true);
     try {
-      const data = await benificiaryRegistoryService.getStatusList();
-      if (data.length > 0) {
-        setSelectStatus(data);
-      }
+      const status = await benificiaryRegistoryService.getStatusList();
+      setSelectStatus(status);
+      getPrerakList();
     } catch (error) {
       console.error("Failed to fetch status list:", error);
     }
     setLoadingList(false);
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoadingList(true);
-      try {
-        const fetchedData = [
-          {
-            id: "1",
-            first_name: "John",
-            middle_name: null,
-            last_name: "Doe",
-            mobile: "1234567890",
-            program_beneficiaries: {
-              status: "enrolled",
-              enrollment_first_name: "John",
-              enrollment_middle_name: null,
-              enrollment_last_name: "Doe",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2022-2023",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Yogini",
-                    lastName: "Tayade",
-                    mobile: "8778909890",
-                  },
-                ],
-              },
-              {
-                name: "Cohort 2021-2022",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Sonali",
-                    lastName: "Garud",
-                    mobile: "8909879098",
-                  },
-                  {
-                    userId: 2,
-                    firstName: "Reshma",
-                    lastName: "Mahadik",
-                    mobile: "9876543509",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: "2",
-            first_name: "Jane",
-            middle_name: "David",
-            last_name: "Smith",
-            mobile: "0987654321",
-            program_beneficiaries: {
-              status: "identified",
-              enrollment_first_name: "Jane",
-              enrollment_middle_name: "David",
-              enrollment_last_name: "Smith",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2023-2024",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Snehal",
-                    lastName: "Sabade",
-                    mobile: "98768909990",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: "3",
-            first_name: "David",
-            middle_name: "Robin",
-            last_name: "Dane",
-            mobile: "9012345678",
-            program_beneficiaries: {
-              status: "enrolled",
-              enrollment_first_name: "David",
-              enrollment_middle_name: "Robin",
-              enrollment_last_name: "Dane",
-            },
-            is_duplicate: false,
-            is_deactivated: false,
-            cohorts: [
-              {
-                name: "Cohort 2024-2025",
-                users: [
-                  {
-                    userId: 1,
-                    firstName: "Dhanashree",
-                    lastName: "Patil",
-                    mobile: "98098909890",
-                  },
-                ],
-              },
-            ],
-          },
-        ];
-        setPrerakData(fetchedData);
-        setLoadingList(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoadingList(false);
+  const transformData = (data) => {
+    const userMap = {};
+
+    data.forEach((item) => {
+      const userId = item.user_id;
+
+      if (!userMap[userId]) {
+        userMap[userId] = {
+          user_id: userId,
+          academic_year: [],
+          program_id: item.program_id,
+          program: item.program,
+          user: item.user,
+        };
       }
-    };
-    fetchData();
-  }, []);
+
+      userMap[userId].academic_year.push({
+        name: item.academic_year.name,
+        academic_year_id: item.academic_year_id,
+        status: item.status,
+      });
+    });
+
+    return Object.values(userMap);
+  };
+
+  const getPrerakList = async () => {
+    setLoadingList(true);
+    try {
+      const result = await PcuserService.getPrerakList(filter);
+      const apiData = transformData(result?.facilitator_data);
+      setPrerakList(apiData);
+      setLoadingList(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoadingList(false);
+    }
+  };
+
+  const onHandleChange = () => {
+    getPrerakList();
+    setIsModalOpen(true);
+    setFilter({});
+  };
 
   const handlePrerakChange = (values) => {
     setIsDisable(values.length === 0);
     setSelectedPrerak(values);
   };
+
   const handleContinueBtn = () => {
-    const filteredUsers = prerakData.filter((item) =>
-      selectedPrerak.includes(item.id)
+    const filteredUsers = prerakList?.filter((item) =>
+      selectedPrerak?.includes(item.user_id)
     );
     setFilteredData(filteredUsers);
     setIsModalOpen(false);
   };
+
+  const getLearner = async (filters) => {
+    const data = await PcuserService.getLearnerList(filters);
+    setBeneficiary(data);
+  };
+
+  useEffect(() => {
+    getLearner(filter);
+  }, [filter]);
 
   return (
     <Layout
@@ -259,6 +201,19 @@ export default function LearnerList() {
         name: t("LEARNER_PROFILE"),
         onPressBackButton: () => {
           navigate("/learner/learnerProfileView");
+        },
+        isEnableSearchBtn: "true",
+        setSearch: (value) => {
+          setFilter({
+            ...filter,
+            search: value,
+            status: " ",
+            sortType: " ",
+            page: 1,
+          });
+          setFilteredData([]);
+          setSelectedPrerak([]);
+          setIsDisable(true);
         },
       }}
       _footer={{ menues: true }}
@@ -275,7 +230,7 @@ export default function LearnerList() {
         >
           <Box
             flex="2"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => onHandleChange()}
             placeholderTextColor="textBlack.500"
             borderColor="textMaroonColor.500"
             borderBottomColor="black"
@@ -305,10 +260,18 @@ export default function LearnerList() {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
-              selectedValue={filter?.status}
+              selectedValue={filter?.status || ""}
               placeholder={t("STATUS_ALL")}
               onValueChange={(nextValue) => {
-                setFilter({ ...filter, status: nextValue, page: 1 });
+                setFilter({
+                  ...filter,
+                  status: nextValue,
+                  search: undefined,
+                  page: 1,
+                });
+                setFilteredData([]);
+                setSelectedPrerak([]);
+                setIsDisable(true);
               }}
               _selectedItem={{
                 bg: "cyan.600",
@@ -333,7 +296,15 @@ export default function LearnerList() {
               selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}
               onValueChange={(nextValue) => {
-                setFilter({ ...filter, sortType: nextValue, page: 1 });
+                setFilter({
+                  ...filter,
+                  sortType: nextValue,
+                  search: undefined,
+                  page: 1,
+                });
+                setFilteredData([]);
+                setSelectedPrerak([]);
+                setIsDisable(true);
               }}
               _selectedItem={{
                 bg: "secondary.700",
@@ -352,69 +323,165 @@ export default function LearnerList() {
           </Box>
         </HStack>
         <Box
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => onHandleChange()}
           mb="2"
           mt="4"
           style={{ cursor: "pointer" }}
           width={"100%"}
           alignItems={"center"}
-        >
-          {filteredData.length > 0 ? (
-            <></>
-          ) : (
-            <VStack paddingBottom="64px">
-              <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-                <VStack alignItems="center" pt="20px">
-                  {beneficiary?.profile_photo_1?.id ? (
-                    <ImageView
-                      source={{
-                        document_id: beneficiary?.profile_photo_1?.id,
-                      }}
-                      width="190px"
-                      height="190px"
-                    />
-                  ) : (
-                    <IconByName
-                      name="AccountCircleLineIcon"
-                      color="gray.300"
-                      _icon={{ size: "190px" }}
-                    />
-                  )}
-                </VStack>
-              </VStack>
-              <AdminTypo.H4 textAlign="center" color="black">
-                {t("SELECT_A_PRERAK")}
-              </AdminTypo.H4>
-              <AdminTypo.H6 textAlign="center" color="black">
-                {t("SELECT_AT_LEAST_ONE_PRERAK")}
-              </AdminTypo.H6>
-            </VStack>
-          )}
-        </Box>
+        ></Box>
       </VStack>
-      {!loadingList ? (
-        <InfiniteScroll
-          dataLength={data?.length}
-          next={() =>
-            setFilter({
-              ...filter,
-              page: (filter?.page ? filter?.page : 1) + 1,
-            })
-          }
-          hasMore={hasMore}
-          height={loadingHeight}
-          endMessage={
-            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
-              {data?.length > 0
-                ? t("COMMON_NO_MORE_RECORDS")
-                : t("DATA_NOT_FOUND")}
-            </FrontEndTypo.H3>
-          }
-        ></InfiniteScroll>
-      ) : (
-        // Loading component here if needed
-        <></>
-      )}
+      <Box p={4} flex={1}>
+        {filteredData.length <= 0 &&
+        beneficiary.length > 0 &&
+        (filter?.search || filter?.status || filter?.sortType) ? (
+          beneficiary?.map((item) => {
+            return (
+              <CardComponent
+                key={item?.id}
+                _body={{ px: "3", py: "3" }}
+                _vstack={{ p: 0, space: 2, flex: 1, m: 4 }}
+              >
+                <Pressable
+                  onPress={() =>
+                    navigate(`/learner/learnerListView/${item?.user_id}`, {
+                      state: {
+                        location: {
+                          academic: {
+                            academic_year_id: item?.academic_year_id,
+                          },
+                          prerak_id: item?.user_id,
+                          program_id: item?.program_id,
+                        },
+                      },
+                    })
+                  }
+                >
+                  <HStack justifyContent="space-between" space={1}>
+                    <HStack alignItems="center" flex={[1, 2, 4]}>
+                      <VStack alignItems="center" p="1">
+                        <Chip>
+                          <Clipboard text={item?.id}>
+                            <FrontEndTypo.H2 bold>
+                              {item?.user_id}
+                            </FrontEndTypo.H2>
+                          </Clipboard>
+                        </Chip>
+                      </VStack>
+                      <VStack
+                        pl="2"
+                        flex="1"
+                        wordWrap="break-word"
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                      >
+                        <FrontEndTypo.H3 bold color="textGreyColor.800">
+                          {item?.first_name}
+                          {item?.middle_name &&
+                            item?.middle_name !== "null" &&
+                            ` ${item.middle_name}`}
+                          {item?.last_name &&
+                            item?.last_name !== "null" &&
+                            ` ${item.last_name}`}
+                        </FrontEndTypo.H3>
+                        <FrontEndTypo.H5 color="textGreyColor.800">
+                          {item?.enrollment_number}
+                        </FrontEndTypo.H5>
+                      </VStack>
+                    </HStack>
+                    <VStack alignItems="end" flex={[1]}>
+                      <ChipStatus
+                        w="fit-content"
+                        status={item?.status}
+                        rounded={"sm"}
+                      />
+                    </VStack>
+                  </HStack>
+                </Pressable>
+              </CardComponent>
+            );
+          })
+        ) : filteredData.length > 0 &&
+          !filter?.search &&
+          !filter?.status &&
+          !filter?.sortType ? (
+          filteredData.map((item, index) => (
+            <Box key={item.user_id}>
+              <FrontEndTypo.H3 my={"15px"}>
+                {item?.user.first_name} {item?.user.middle_name}{" "}
+                {item?.user.last_name}
+              </FrontEndTypo.H3>
+              {item?.academic_year?.map((academic) => {
+                return (
+                  <HStack
+                    key={academic.user_id}
+                    bg="gray.100"
+                    borderColor="gray.300"
+                    borderRadius="10px"
+                    borderWidth="1px"
+                    my={2}
+                    px={4}
+                  >
+                    <HStack
+                      width={"100%"}
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Stack space="md" alignItems="center">
+                        {academic?.name}
+                      </Stack>
+                      <Stack>
+                        <IconByName
+                          name="ArrowRightSLineIcon"
+                          onPress={() => {
+                            navigate(`/learner/LearnerListView`, {
+                              state: {
+                                academic: academic,
+                                prerak_id: item?.user_id,
+                                program_id: item?.program_id,
+                              },
+                            });
+                          }}
+                          color="maroon.400"
+                        />
+                      </Stack>
+                    </HStack>
+                  </HStack>
+                );
+              })}
+            </Box>
+          ))
+        ) : (
+          <VStack paddingBottom="64px">
+            <VStack paddingLeft="16px" paddingRight="16px" space="24px">
+              <VStack alignItems="center" pt="20px">
+                {beneficiary?.profile_photo_1?.id ? (
+                  <ImageView
+                    source={{
+                      document_id: beneficiary?.profile_photo_1?.id,
+                    }}
+                    width="190px"
+                    height="190px"
+                  />
+                ) : (
+                  <IconByName
+                    name="AccountCircleLineIcon"
+                    color="gray.300"
+                    _icon={{ size: "190px" }}
+                  />
+                )}
+              </VStack>
+            </VStack>
+            <AdminTypo.H4 textAlign="center" color="black">
+              {t("SELECT_A_PRERAK")}
+            </AdminTypo.H4>
+            <AdminTypo.H6 textAlign="center" color="black">
+              {t("SELECT_AT_LEAST_ONE_PRERAK")}
+            </AdminTypo.H6>
+          </VStack>
+        )}
+      </Box>
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -448,14 +515,18 @@ export default function LearnerList() {
               >
                 <Checkbox.Group
                   colorScheme="gray"
-                  defaultValue={selectedPrerak}
+                  value={selectedPrerak}
                   onChange={handlePrerakChange}
                 >
-                  {prerakData?.map((item) => (
-                    <Checkbox key={item.id} value={item.id} my={2}>
-                      {item?.first_name} {item?.middle_name} {item?.last_name}
-                    </Checkbox>
-                  ))}
+                  {prerakList &&
+                    prerakList?.map((item) => (
+                      <Checkbox key={item.user_id} value={item.user_id} my={2}>
+                        {item?.user.first_name}
+                        {item?.user.middle_name
+                          ? `${item?.user.middle_name} ${item?.user.last_name}`
+                          : item?.user.last_name}
+                      </Checkbox>
+                    ))}
                 </Checkbox.Group>
               </HStack>
 
@@ -478,57 +549,6 @@ export default function LearnerList() {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-      <Box p={4} flex={1}>
-        {filteredData &&
-          filteredData.length > 0 &&
-          filteredData.map((item, index) => (
-            <Box key={item.id}>
-              <span>
-                {item?.first_name} {item?.last_name}
-              </span>
-              {item?.cohorts &&
-                item?.cohorts?.map((cohart, i) => (
-                  <Box
-                    key={i}
-                    bg="gray.100"
-                    borderColor="gray.300"
-                    borderRadius="10px"
-                    borderWidth="1px"
-                    pb="6"
-                  >
-                    <VStack
-                      paddingLeft="16px"
-                      paddingRight="16px"
-                      paddingTop="16px"
-                    >
-                      <VStack space="2" paddingTop="5">
-                        <HStack
-                          alignItems="center"
-                          justifyContent="space-between"
-                        >
-                          <HStack space="md" alignItems="center">
-                            {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
-                            <FrontEndTypo.H3>
-                              {t("COHORT 2023-2024")}
-                            </FrontEndTypo.H3>
-                          </HStack>
-
-                          <IconByName
-                            name="ArrowRightSLineIcon"
-                            onPress={() => {
-                              navigate(`/learner/LearnerListView`);
-                            }}
-                            color="maroon.400"
-                          />
-                        </HStack>
-                        <Divider orientation="horizontal" />
-                      </VStack>
-                    </VStack>
-                  </Box>
-                ))}
-            </Box>
-          ))}
-      </Box>
     </Layout>
   );
 }

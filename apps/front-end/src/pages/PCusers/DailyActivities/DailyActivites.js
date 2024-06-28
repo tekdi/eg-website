@@ -22,6 +22,7 @@ import {
 import { schema1 } from "./ActivitiesSchema";
 import moment from "moment";
 const DailyActivities = () => {
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -183,9 +184,14 @@ const DailyActivities = () => {
   return (
     <Layout
       loading={loading}
-      //facilitator={facilitator}
-      analyticsPageTitle={"HOME"}
-      pageTitle={t("HOME")}
+      _appBar={{
+        lang,
+        setLang,
+        onPressBackButton: (e) => {
+          navigate(`/dailyactivities/${activity}/view`);
+        },
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
+      }}
     >
       <VStack space="4" px="4" pb="90px" alignContent="center">
         <FrontEndTypo.H1 pt="10px">{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>

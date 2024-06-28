@@ -1,45 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HStack, VStack } from "native-base";
 import {
   FrontEndTypo,
   IconByName,
-  benificiaryRegistoryService,
   t,
   PCusers_layout as Layout,
-  enumRegistryService,
   GetEnumValue,
   CardComponent,
+  enumRegistryService,
+  ImageView,
 } from "@shiksha/common-lib";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
-// import ProfilePhoto from "../../Functional/ProfilePhoto/ProfilePhoto";
 import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto";
 
 export default function LearnerBasicDetails() {
   const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState();
+  const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [requestData, setRequestData] = React.useState([]);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  const location = useLocation();
   const onPressBackButton = async () => {
-    navigate(`/learner/learnerListView/${userId}`);
+    navigate(`/learner/learnerListView/${id}`);
   };
 
-  React.useEffect(async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(result?.result);
+  useEffect(async () => {
+    setBenificiary(location?.state);
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
-    const resultData = await benificiaryRegistoryService.getEditRequest(obj);
-    if (resultData?.data?.length > 0) {
-      const fieldData = JSON.parse(resultData?.data?.[0]?.fields);
-      setRequestData(fieldData);
-    }
   }, []);
 
   return (
@@ -51,11 +40,24 @@ export default function LearnerBasicDetails() {
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
-          <ProfilePhoto
-            profile_photo_1={benificiary?.profile_photo_1}
-            profile_photo_2={benificiary?.profile_photo_2}
-            profile_photo_3={benificiary?.profile_photo_3}
-          />
+          <VStack alignItems={"center"}>
+            {benificiary?.profile_photo_1?.id ? (
+              <ImageView
+                source={{
+                  document_id: benificiary?.profile_photo_1?.id,
+                }}
+                width="190px"
+                height="190px"
+              />
+            ) : (
+              <IconByName
+                isDisabled
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "190px" }}
+              />
+            )}
+          </VStack>
           <VStack>
             <HStack justifyContent="space-between" alignItems="Center">
               <FrontEndTypo.H1 color="textMaroonColor.400" bold pl="2">

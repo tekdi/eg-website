@@ -158,8 +158,18 @@ export default function PrerakList() {
       analyticsPageTitle={"PRERAK_LIST"}
       _footer={{ menues: true }}
       pageTitle={t("PRERAK_LIST")}
+      _appBar={{
+        isEnableSearchBtn: "true",
+        setSearch: (value) => {
+          setFilter({
+            ...filter,
+            search: value,
+            page: 1,
+          });
+        },
+      }}
     >
-      <HStack justifyContent="start" alignItems="center" mt="2">
+      {/* <HStack justifyContent="start" alignItems="center" mt="2">
         <Input
           width={"97%"}
           size={"s"}
@@ -179,7 +189,7 @@ export default function PrerakList() {
           onChange={debouncedHandleSearch}
           mx="auto"
         />
-      </HStack>
+      </HStack> */}
 
       <VStack ref={ref}>
         <HStack

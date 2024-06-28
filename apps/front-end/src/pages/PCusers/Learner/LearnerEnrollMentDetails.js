@@ -9,7 +9,7 @@ import {
   getEnrollmentIds,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 // import schema1 from "../LearnerUpdateDetail/enrollment/schema";
 import schema1 from "../../../../../front-end/src/v2/components/Functional/LearnerUpdateDetail/enrollment/schema";
@@ -18,7 +18,7 @@ import EnrollmentMessage from "component/EnrollmentMessage";
 
 export default function BenificiaryEnrollment() {
   const { id } = useParams();
-  const [benificiary, setbenificiary] = useState();
+  const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [boardName, setBoardName] = useState({});
   const [stateName, setStateName] = useState({});
@@ -26,53 +26,33 @@ export default function BenificiaryEnrollment() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const location = useLocation();
+
+  React.useEffect(() => {
     agDetails();
-  }, [id]);
+  }, []);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${id}`);
   };
 
   const agDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    const value = result?.result?.program_beneficiaries?.enrolled_for_board;
+    const value = location?.state?.program_beneficiaries?.enrolled_for_board;
+    console.log({ value });
     if (value) {
       const boardName = await enumRegistryService.boardName(value);
+      console.log(boardName);
       setBoardName(boardName?.name);
     }
-    setbenificiary(result?.result);
+    const data = await enumRegistryService.listOfEnum();
+    setEnumOptions(data?.data ? data?.data : {});
+    setBenificiary(location?.state);
+    setStateName(location?.state?.state);
     setLoading(false);
   };
-  //   useEffect(async () => {
-  //     let { state_name } = await getSelectedProgramId();
-  //     setStateName(state_name);
-  //     const data = await enumRegistryService.listOfEnum();
-  //     setEnumOptions(data?.data ? data?.data : {});
-  //   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let { state_name } = await getSelectedProgramId();
-        setStateName(state_name || ""); // Set a default value if state_name is undefined
-        const data = await enumRegistryService.listOfEnum();
-        setEnumOptions(data?.data ? data.data : {});
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        // Optionally handle the error state here
-      }
-    };
+  console.log({ enumOptions, stateName, benificiary });
 
-    fetchData();
-  }, []);
-
-  const onEditFunc = () => {
-    return !!(
-      benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" &&
-      benificiary?.program_beneficiaries?.status !== "registered_in_camp"
-    );
-  };
   return (
     <Layout
       loading={loading}
@@ -176,11 +156,6 @@ export default function BenificiaryEnrollment() {
                       : []),
                   ],
                 })}
-            onEdit={
-              onEditFunc()
-                ? (e) => navigate(`/beneficiary/edit/${id}/enrollment-details`)
-                : false
-            }
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}

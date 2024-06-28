@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   PCusers_layout as Layout,
-  CardComponent,
   FrontEndTypo,
-  getOptions,
   PcuserService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, ScrollView, VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 
 function DailyActivitiesView(props) {
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { t } = useTranslation();
   const { activity } = useParams();
   const navigate = useNavigate();
@@ -43,7 +41,17 @@ function DailyActivitiesView(props) {
   };
 
   return (
-    <Layout loading={loading}>
+    <Layout
+      _appBar={{
+        lang,
+        setLang,
+        onPressBackButton: (e) => {
+          navigate(`/dailyactivities/list`);
+        },
+        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
+      }}
+      loading={loading}
+    >
       <VStack space="2" p={4}>
         <VStack space={4}>
           <FrontEndTypo.H1>{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>

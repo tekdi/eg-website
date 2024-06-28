@@ -9,7 +9,7 @@ import {
   enumRegistryService,
   GetEnumValue,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +24,7 @@ export default function BenificiaryJourney() {
   const [auditYear, setauditYear] = React.useState([]);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
@@ -32,13 +33,12 @@ export default function BenificiaryJourney() {
   }, [id]);
 
   const onPressBackButton = async () => {
-    navigate(`/learner/learnerListView/${userId}`);
+    navigate(`/learner/learnerListView/${id}`);
   };
 
   const agDetails = async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setbenificiary(result?.result);
-    setcontextId(result?.result?.program_beneficiaries?.id);
+    setbenificiary(location?.state);
+    setcontextId(location?.state?.program_beneficiaries?.id);
   };
 
   const getAuditData = async () => {

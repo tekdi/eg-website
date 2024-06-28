@@ -6,7 +6,7 @@ import {
   IconByName,
   organisationService,
   Breadcrumb,
-  cohortService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -31,13 +31,15 @@ function View() {
   const [pcData, setPcData] = useState();
   const [assignPrerak, setassignPrerak] = useState();
   const [assignPrerakCount, setassignPrerakCount] = useState();
+  const [dailyActivities, setDailyActivities] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filter, setFilter] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await cohortService.pcDetails({
+      const result = await PcuserService.pcDetails({
         id: id,
         limit: 10,
         page: 1,
@@ -48,6 +50,20 @@ function View() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (filter?.date) {
+        const payload = {
+          ...filter,
+          user_id: id,
+        };
+        const data = await PcuserService.activitiesDetails(payload);
+        setDailyActivities(data?.data?.activities);
+      }
+    };
+    fetchData();
+  }, [filter]);
 
   return (
     <AdminLayout>
@@ -121,7 +137,7 @@ function View() {
                   .join(",")}
               </AdminTypo.H6>
             </HStack>
-            {/* <HStack space={4}>
+            <HStack space={4}>
               <AdminTypo.Secondarybutton
                 // onPress={() => navigate("/admin/addpcuser")}
                 onPress={() => setIsModalOpen(true)}
@@ -136,7 +152,7 @@ function View() {
               >
                 {t("VIEW_DAILY_ACTIVITIES")}
               </AdminTypo.Secondarybutton>
-              <AdminTypo.Secondarybutton
+              {/* <AdminTypo.Secondarybutton
                 onPress={() => navigate("/admin/addpcuser")}
                 rightIcon={
                   <IconByName
@@ -148,8 +164,8 @@ function View() {
                 }
               >
                 {t("RESET_PASSWORD")}
-              </AdminTypo.Secondarybutton>
-            </HStack> */}
+              </AdminTypo.Secondarybutton> */}
+            </HStack>
           </VStack>
           <HStack flex="0.5" justifyContent="center">
             {pcData?.profile_photo_1?.name ? (
@@ -235,27 +251,45 @@ function View() {
                   >
                     {t("CLOSE")}
                   </Button>
-                  <Button
+                  {/* <Button
                     ml={2}
                     colorScheme="red"
                     onPress={handleContinueBtn}
                     // isDisabled={isDisable}
                   >
                     {t("COMMENT")}
-                  </Button>
+                  </Button> */}
                 </Box>
               </Box>
               <Box width={"40%"}>
-                <DatePicker />
+                <DatePicker setFilter={setFilter} filter={filter} />
               </Box>
             </Modal.Header>
 
             <Modal.Body p="5" pb="10">
-              <VStack space="5">
-                <DailyActivityList
-                  setPcData={setPcData}
-                  setassignPrerak={setassignPrerak}
-                />
+              <VStack space="5" minHeight={"100px"}>
+                {filter?.date && (
+                  <table cellSpacing={"5px"} cellPadding={"5px"}>
+                    <tr>
+                      <th>{t("TITLE")}</th>
+                      <th>{t("Description")}</th>
+                      <th>{t("STATUS")}</th>
+                      <th>{t("DURATION")}</th>
+                    </tr>
+                    {dailyActivities?.map((item, index) => {
+                      return (
+                        <tr style={{ textAlign: "center", margin: "10px 0 " }}>
+                          <td>{t(item?.type)}</td>
+                          <td>{item?.description}</td>
+                          <td>{t("COMPLETED")}</td>
+                          <td>
+                            {item?.hours}:{item?.minutes}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </table>
+                )}
               </VStack>
             </Modal.Body>
           </Modal.Content>

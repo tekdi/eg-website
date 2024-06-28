@@ -1927,7 +1927,6 @@
   "PRERAK_ASSIGNED": "प्रेरक को नियुक्त किया गया",
   "VIEW_DAILY_ACTIVITIES": "दैनिक गतिविधियाँ देखें",
   "RESET_PASSWORD": "  पासवर्ड रीसेट",
-  "VIEW_DAILY_ACTVITIES": "दैनिक गतिविधियाँ देखें",
   "YOU_CAN_ACCESS_YOUR_PROFILE_DETAILS_AND_EDIT_THEM_FROM_HERE.": "आप अपने प्रोफ़ाइल विवरण तक पहुँच सकते हैं और उन्हें यहाँ से संपादित कर सकते हैं",
   "MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS.": "अपनी दैनिक गतिविधियों और कार्यों को चिह्नित करें",
   "USE_THIS_SPACE_TO_ORGANISE_YOUR_PRAGATI_SABHA.": "अपनी प्रगति सभा आयोजित करने के लिए इस स्थान का उपयोग करें",
@@ -1953,5 +1952,8 @@
   "CONDUCT_PRI_MEETING": "प्राथमिक बैठक आयोजित करें",
   "CAMP_EXECUTION_SUPPORT": "शिविर निष्पादन समर्थन",
   "CAMP_VISIT_FOR_MONITORING_AND_HH_SUPPORT": "निगरानी और एचएच समर्थन के लिए शिविर का दौरा करें",
-  "COLLECT_CASE_STUDY_FROM_FIELD": "क्षेत्र से मामले का अध्ययन एकत्र करें"
+  "COLLECT_CASE_STUDY_FROM_FIELD": "क्षेत्र से मामले का अध्ययन एकत्र करें",
+  "YOU_CAN_ACCESS_YOUR_PROFILE_DETAILS_AND_EDIT_THEM_FROM_HERE": "आप अपने प्रोफ़ाइल विवरण तक पहुँच सकते हैं और उन्हें यहाँ से संपादित कर सकते हैं।",
+  "MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS": "अपनी दैनिक गतिविधियों और कार्यों को चिह्नित करें।",
+  "USE_THIS_SPACE_TO_ORGANISE_YOUR_PRAGATI_SABHA": "अपनी प्रगति सभा आयोजित करने के लिए इस स्थान का उपयोग करें।"
 }

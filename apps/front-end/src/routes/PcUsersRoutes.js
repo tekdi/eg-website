@@ -57,6 +57,9 @@ const LearnerPCRDetails = lazy(() =>
 const LearnerJourneyDetails = lazy(() =>
   import("pages/PCusers/Learner/LearnerJourneyDetails")
 );
+const PcProfilePhoto = lazy(() =>
+  import("pages/PCusers/Profile/PcProfilePhoto")
+);
 
 // PC users Routes
 
@@ -155,6 +158,11 @@ export default [
     path: "/learner/learnerListView/:id/learnerJourneyDetails",
     component: LearnerJourneyDetails,
   },
+  {
+    path: "/profile/:id/upload/1",
+    component: PcProfilePhoto,
+  },
+
   { path: "/", component: PcDashboard },
   { path: "*", component: PcDashboard },
 ];

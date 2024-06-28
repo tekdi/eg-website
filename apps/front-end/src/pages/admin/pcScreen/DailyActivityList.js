@@ -6,6 +6,7 @@ import {
   getOptions,
   tableCustomStyles,
   cohortService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import { HStack, Stack, VStack, Input, Box } from "native-base";
 import Chip, { ChipStatus } from "component/Chip";
@@ -116,7 +117,7 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
   };
 
   const fetchUserList = async () => {
-    const Apidata = await cohortService.pcDetails({
+    const Apidata = await PcuserService.pcDetails({
       id: 21540,
       ...filter,
     });
