@@ -141,7 +141,7 @@ export default function CampList() {
           width={"100%"}
           alignItems={"center"}
         >
-          {filteredData.length > 0 ? (
+          {selectedPrerak.length > 0 ? (
             <></>
           ) : (
             <VStack paddingBottom="64px">
