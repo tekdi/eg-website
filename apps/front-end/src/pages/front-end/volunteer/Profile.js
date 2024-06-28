@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import schema from "./registration/schema";
 import moment from "moment";
 
-export default function Profile({ userTokenInfo: { authUser } }) {
+export default function Profile() {
   const [volunteer, setVolunteer] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();

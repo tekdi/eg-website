@@ -49,7 +49,7 @@ export default function List({ footerLinks, userTokenInfo }) {
           limit: filter?.limit || 10,
         });
         setData(result.data);
-        setPaginationTotalRows(result?.data?.totalCount || 0);
+        setPaginationTotalRows(result?.totalCount || 0);
 
         setTableLoading(false);
       }
