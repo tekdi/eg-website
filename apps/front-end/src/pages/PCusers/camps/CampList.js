@@ -45,9 +45,9 @@ export default function CampList() {
   const fa_id = localStorage.getItem("id");
   const prerak_status = localStorage.getItem("status");
   const [loading, setloading] = React.useState(false);
-  const [prerakList, setPrerakList] = React.useState();
-  const [filteredData, setFilteredData] = useState([]);
-  const [prerakData, setPrerakData] = React.useState();
+  const [prerakList, setPrerakList] = React.useState([]);
+  const [filteredPrerakIds, setFilteredPrerakIds] = useState([]);
+  const [campPrerak, setCampPrerak] = React.useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [beneficiary, setBeneficiary] = useState(true);
   const [selectedPrerak, setSelectedPrerak] = useState([]);
@@ -58,7 +58,7 @@ export default function CampList() {
       setLoadingList(true);
       try {
         const result = await campService.getPrerakCampList();
-        setPrerakList(result);
+        setPrerakList(result?.facilitator_data);
         setLoadingList(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -68,18 +68,81 @@ export default function CampList() {
     getPrerakCampList();
   }, []);
 
+  useEffect(() => {
+    const getPrerakCampList = async () => {
+      setLoadingList(true);
+      try {
+        const result = await campService.getPrerakCampList(filter);
+        setPrerakList(result?.facilitator_data);
+        setLoadingList(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoadingList(false);
+      }
+    };
+    getPrerakCampList();
+  }, [filter]);
+
   const handlePrerakChange = (values) => {
-    setIsDisable(values.length === 0);
-    setSelectedPrerak(values);
+    setIsDisable(values?.length === 0);
+    setFilteredPrerakIds(values);
   };
 
-  const handleContinueBtn = () => {
-    const filteredUsers = prerakList?.filter((item) =>
-      selectedPrerak?.includes(item?.camp_id)
+  const handleContinueBtn = async () => {
+    let filteredUsers = prerakList?.filter((item) =>
+      filteredPrerakIds?.includes(item?.user_id)
     );
-    setFilteredData(filteredUsers);
-    console.log("filteredUsers", filteredUsers);
+    // setSelectedPrerak(filteredUsers);
+
     setIsModalOpen(false);
+    const req = {
+      facilitator_list: filteredUsers?.map((e) => ({
+        user_id: e.user_id,
+        academic_year_id: e?.academic_year_id,
+        program_id: e?.program_id,
+      })),
+    };
+    setLoadingList(true);
+    try {
+      const result = await campService.getCampPrerak(req);
+      setCampPrerak(result);
+      if (result.length > 0) {
+        result?.forEach((element) => {
+          filteredUsers = filteredUsers?.map((e) => {
+            if (
+              e.user_id == element.facilitator_id &&
+              e?.academic_year_id == element.academic_year_id &&
+              e?.program_id == element.program_id
+            ) {
+              return {
+                ...e,
+                camp_id: element.camp_id,
+                facilitator_id: element.facilitator_id,
+                isCampAvailable: true,
+              };
+            } else {
+              return {
+                ...e,
+                isCampAvailable: false,
+              };
+            }
+          });
+        });
+      } else {
+        filteredUsers = filteredUsers?.map((e) => {
+          return {
+            ...e,
+            isCampAvailable: false,
+          };
+        });
+      }
+
+      setSelectedPrerak(filteredUsers);
+      setLoadingList(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoadingList(false);
+    }
   };
 
   const onHandleChange = () => {
@@ -102,6 +165,17 @@ export default function CampList() {
       _page={{ _scollView: { bg: "formBg.500" } }}
       analyticsPageTitle={"CAMP_LIST"}
       pageTitle={t("CAMP_LIST")}
+      _appBar={{
+        isEnableSearchBtn: "true",
+        setSearch: (value) => {
+          setFilter({
+            ...filter,
+            search: value,
+            page: 1,
+          });
+        },
+      }}
+      // onPress={() => navigate(`/camps/CampLearnerList`)}
     >
       <VStack ref={ref}>
         <HStack
@@ -141,7 +215,7 @@ export default function CampList() {
           width={"100%"}
           alignItems={"center"}
         >
-          {selectedPrerak.length > 0 ? (
+          {selectedPrerak?.length > 0 ? (
             <></>
           ) : (
             <VStack paddingBottom="64px">
@@ -200,24 +274,29 @@ export default function CampList() {
               <VStack space="5">
                 <HStack
                   space="5"
-                  // borderBottomWidth={1}
-                  // borderBottomColor="gray.300"
                   pb="5"
                   alignItems={"center"}
                   justifyContent={"space-between"}
                 >
                   <Checkbox.Group
                     colorScheme="gray"
-                    defaultValue={selectedPrerak}
+                    defaultValue={filteredPrerakIds}
                     onChange={handlePrerakChange}
                   >
-                    {prerakList &&
-                      prerakList?.map((item) => (
-                        <Checkbox key={item.camp_id} value={item} my={2}>
-                          {item?.first_name} {item?.middle_name}{" "}
-                          {item?.last_name}
+                    {Array.isArray(prerakList) && prerakList.length > 0 ? (
+                      prerakList.map((item) => (
+                        <Checkbox
+                          key={item?.user_id}
+                          value={item?.user_id}
+                          my={2}
+                        >
+                          {item?.user?.first_name} {item?.user?.middle_name}{" "}
+                          {item?.user?.last_name}
                         </Checkbox>
-                      ))}
+                      ))
+                    ) : (
+                      <></>
+                    )}
                   </Checkbox.Group>
                 </HStack>
 
@@ -255,26 +334,43 @@ export default function CampList() {
                 px={5}
                 mb="4"
               >
+                <HStack>
+                  <FrontEndTypo.H3 key={item.camp_id} value={item} my={2}>
+                    {item?.user?.first_name} {item?.user?.middle_name}{" "}
+                    {item?.user?.last_name}
+                  </FrontEndTypo.H3>
+                </HStack>
                 <HStack alignItems={"center"} justifyContent={"space-between"}>
                   <VStack flex={"0.9"}>
                     <FrontEndTypo.H3 color="textMaroonColor.400">
-                      <FrontEndTypo.H3
-                        key={item}
-                        value={item}
-                        my={2}
-                        onPress={() => {
-                          navigate(`/camps/CampProfileView/${item?.camp_id}`, {
-                            state: {
-                              academic_year_id: item?.academic_year_id,
-                              program_id: item?.program_id,
-                              user_id: item?.facilitator_id,
-                            },
-                          });
-                        }}
-                      >
-                        {t("CAMP")}&nbsp;
-                        {item?.camp_id}
-                      </FrontEndTypo.H3>
+                      {!item?.isCampAvailable && (
+                        <FrontEndTypo.H3 key={item} value={item} my={2}>
+                          {t("CAMP")}&nbsp;
+                          {"Not Available"}
+                        </FrontEndTypo.H3>
+                      )}
+                      {item?.isCampAvailable && (
+                        <FrontEndTypo.H3
+                          key={item}
+                          value={item}
+                          my={2}
+                          onPress={() => {
+                            navigate(
+                              `/camps/CampProfileView/${item?.camp_id}`,
+                              {
+                                state: {
+                                  academic_year_id: item?.academic_year_id,
+                                  program_id: item?.program_id,
+                                  user_id: item?.facilitator_id,
+                                },
+                              }
+                            );
+                          }}
+                        >
+                          {t("CAMP")}&nbsp;
+                          {item?.camp_id}
+                        </FrontEndTypo.H3>
+                      )}
                     </FrontEndTypo.H3>
                   </VStack>
                   <HStack alignItems={"center"}>
@@ -298,6 +394,31 @@ export default function CampList() {
             ))}
         </Box>
       </VStack>
+      {!loadingList ? (
+        <InfiniteScroll
+          dataLength={data?.length}
+          next={() =>
+            setFilter({
+              ...filter,
+              page: (filter?.page ? filter?.page : 1) + 1,
+            })
+          }
+          hasMore={hasMore}
+          height={loadingHeight}
+          endMessage={
+            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
+              {filteredPrerakIds?.length > 0
+                ? t("COMMON_NO_MORE_RECORDS")
+                : t("DATA_NOT_FOUND")}
+            </FrontEndTypo.H3>
+          }
+        >
+          {/* <List data={prerakList} /> */}
+        </InfiniteScroll>
+      ) : (
+        // Loading component here if needed
+        <></>
+      )}
     </Layout>
   );
 }

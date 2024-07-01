@@ -32,7 +32,7 @@ export default function PrerakProfileView() {
 
       setPrerakProfile(result?.data);
       const data = await enumRegistryService.listOfEnum();
-      setEnumOptions(data?.data ? data?.data : {});
+      setEnumOptions(data?.data ? data?.data?.FACILITATOR_STATUS : {});
       setLoadingList(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -94,8 +94,11 @@ export default function PrerakProfileView() {
 
                 <FrontEndTypo.H3>{prerakProfile?.mobile}</FrontEndTypo.H3>
                 <ChipStatus
+                  w="fit-content"
                   status={prerakProfile?.program_faciltators?.status}
-                  rounded={"l"}
+                  is_duplicate={prerakProfile?.is_duplicate}
+                  is_deactivated={prerakProfile?.is_deactivated}
+                  rounded={"sm"}
                 />
               </VStack>
             </Box>

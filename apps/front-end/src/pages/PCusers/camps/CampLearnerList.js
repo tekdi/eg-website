@@ -51,9 +51,9 @@ const List = ({ data }) => {
             _vstack={{ p: 0, space: 0, flex: 1 }}
           >
             <Pressable
-              onPress={async () => {
-                // navigate(`/beneficiary/${item?.id}`);
-              }}
+              // onPress={async () => {
+              //   navigate(`/beneficiary/${item?.id}`);
+              // }}
               flex={1}
             >
               <HStack justifyContent="space-between" space={1}>
@@ -221,6 +221,7 @@ export default function CampLearnerList({ userTokenInfo, footerLinks }) {
   const location = useLocation();
   const [campLearners, setCampLearners] = React.useState();
   const { id } = useParams();
+  const [loading, setLoading] = React.useState(false);
 
   const getPrerakCampProfile = async () => {
     setLoadingList(true);
@@ -245,13 +246,6 @@ export default function CampLearnerList({ userTokenInfo, footerLinks }) {
     getPrerakCampProfile();
   }, []);
 
-  // useEffect(async () => {
-  //   const data = await benificiaryRegistoryService.getStatusList();
-  //   if (data.length > 0) {
-  //     setSelectStatus(data);
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
       setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
@@ -260,44 +254,17 @@ export default function CampLearnerList({ userTokenInfo, footerLinks }) {
     }
   }, [bodyHeight, ref]);
 
-  // useEffect(async () => {
-  //   const { currentPage, totalPages, error, ...result } =
-  //     await benificiaryRegistoryService.getBeneficiariesList(filter);
-  //   if (!error) {
-  //     setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
-  //     if (filter?.page > 1) {
-  //       setData([...data, ...(result.data || [])]);
-  //     } else {
-  //       setData(result.data || []);
-  //     }
-  //   } else {
-  //     setData([]);
-  //   }
-  //   setLoadingList(false);
-  // }, [filter]);
-
-  // useEffect(async () => {
-  //   if (userTokenInfo) {
-  //     const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
-  //     setFacilitator(fa_data);
-  //   }
-  // }, []);
-
   return (
     <Layout
-      getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
-        onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
-        isEnableSearchBtn: "true",
-        setSearch: (value) => {
-          setFilter({ ...filter, search: value, page: 1 });
+        name: t("PRERAK_PROFILE"),
+        onPressBackButton: () => {
+          navigate("/camps/CampProfileView/:id");
         },
-        _box: { bg: "white", shadow: "appBarShadow" },
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
-      _footer={{ menues: footerLinks }}
-      analyticsPageTitle={"BENEFICIARY_LIST"}
-      pageTitle={t("BENEFICIARY_LIST")}
+      loading={loading}
+      analyticsPageTitle={"PRERAK_PROFILE"}
+      pageTitle={t("PRERAK_PROFILE")}
     >
       {!loadingList ? (
         <InfiniteScroll
