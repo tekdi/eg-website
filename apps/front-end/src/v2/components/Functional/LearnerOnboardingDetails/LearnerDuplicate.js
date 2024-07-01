@@ -36,10 +36,7 @@ const LearnerDuplicate = () => {
   const [verify_id, setverify_id] = useState("xxxx xxxx 8880");
 
   const navToScreen = () => {
-    console.log("reached ");
-
     if (alreadyreg) {
-      console.log("reached here");
       setModalVisible(!modalVisible);
     } else {
       setModalVisible(false);

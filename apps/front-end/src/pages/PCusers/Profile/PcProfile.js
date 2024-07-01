@@ -14,47 +14,10 @@ import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 export default function PcProfile({ userTokenInfo }) {
   const { id } = userTokenInfo?.authUser;
-  const [facilitator, setFacilitator] = React.useState();
+  const full_name = localStorage.getItem("fullName");
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [progress, setProgress] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const percentage =
-      arrList(res, [
-        "device_ownership",
-        "mobile",
-        "device_type",
-        "gender",
-        "marital_status",
-        "social_category",
-        "name",
-        "contact_number",
-        "availability",
-      ]) +
-      arrList(
-        {
-          ...res,
-          qua_name: facilitator?.qualifications?.qualification_master?.name,
-        },
-        ["qualification_ids", "qua_name"]
-      ) +
-      arrList(res, [
-        "aadhar_no",
-        "aadhaar_verification_mode",
-        "aadhar_verified",
-      ]);
-    setProgress(percentage);
-    setLoading(false);
-  }, [facilitator]);
-
-  React.useEffect(async () => {
-    const result = await getOnboardingData(id);
-    setFacilitator(result);
-  }, []);
-
-  const res = objProps(facilitator);
+  const [loading, setLoading] = React.useState(false);
 
   return (
     <Layout
@@ -64,23 +27,16 @@ export default function PcProfile({ userTokenInfo }) {
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}
-      analyticsPageTitle={"FACILITATOR_PROFILE"}
-      pageTitle={t("FACILITATOR")}
+      analyticsPageTitle={"PC_PROFILE"}
+      pageTitle={t("PC_PROFILE")}
       stepTitle={t("PROFILE")}
     >
       <VStack bg="bgGreyColor.200" pb="10">
         <VStack paddingLeft="16px" paddingRight="16px" space="24px">
           <FrontEndTypo.H1 color="textMaroonColor.400" pt="5" bold>
-            {t("WELCOME")} {facilitator?.first_name}
+            {t("WELCOME")} {full_name}
           </FrontEndTypo.H1>
 
-          <Box paddingBottom="20px">
-            <FrontEndTypo.H2 color="textGreyColor.900">
-              {progress !== 300
-                ? t("COMPLETE_YOUR_PROFILE")
-                : t("PROFILE_COMPLETED")}
-            </FrontEndTypo.H2>
-          </Box>
           <Box
             bg="boxBackgroundColour.100"
             borderColor="btnGray.100"

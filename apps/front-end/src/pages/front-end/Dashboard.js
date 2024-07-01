@@ -559,12 +559,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const handleAcademicYear = async (item) => {
-    console.log("hiiii");
     if (item !== "__NativebasePlaceholder__") {
       setAcademicYear(item);
       setDisable(false);
     } else {
-      console.log({ item });
       setAcademicYear(item);
       setDisable(true);
     }

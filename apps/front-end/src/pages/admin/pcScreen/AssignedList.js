@@ -51,7 +51,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
       name: t("PRERAK_ID"),
       sortable: true,
       sortField: "id",
-      selector: (row) => row?.facilitator_id,
+      selector: (row) => row?.facilitator_id || row?.user_id,
       wrap: true,
     },
     {
