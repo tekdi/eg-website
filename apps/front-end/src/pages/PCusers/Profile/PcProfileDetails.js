@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { HStack, VStack, Alert } from "native-base";
+import { HStack, VStack } from "native-base";
 import {
   FrontEndTypo,
   IconByName,
-  facilitatorRegistryService,
   t,
   PCusers_layout as Layout,
-  BodyMedium,
   CardComponent,
   PcuserService,
+  ImageView,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
-import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
-import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 
-export default function FacilitatorBasicDetails({ userTokenInfo }) {
+export default function FacilitatorBasicDetails() {
   const [pcDetails, setPcDetails] = useState();
   const navigate = useNavigate();
-
-  const edit = `/profile/123/upload/1`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,9 +30,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
         name: t("BASIC_DETAILS"),
         onPressBackButton: (e) => navigate(`/profile`),
       }}
-      analyticsPageTitle={"FACILITATOR_BASIC_DETAILS"}
-      pageTitle={t("FACILITATOR")}
-      stepTitle={t("BASIC_DETAILS")}
+      analyticsPageTitle={"PC_BASIC_DETAILS"}
+      pageTitle={t("PC_BASIC_DETAILS")}
+      stepTitle={t("PC_BASIC_DETAILS")}
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
@@ -48,11 +42,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
             alignItems={"flex-start"}
             m="4"
           >
-            {pcDetails?.profile_photo_1?.name ? (
+            {pcDetails?.profile_photo_1?.fileUrl ? (
               <ImageView
-                source={{
-                  uri: pcDetails?.profile_photo_1?.name,
-                }}
+                urlObject={{ fileUrl: pcDetails?.profile_photo_1?.fileUrl }}
                 alt="profile photo"
                 width={"180px"}
                 height={"180px"}
@@ -87,7 +79,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 color="iconColor.200"
                 _icon={{ size: "20" }}
                 onPress={(e) => {
-                  navigate(`/profile/edit/basic_details`);
+                  navigate(`/profile/${pcDetails?.user_id}/edit/basic_details`);
                 }}
               />
             </HStack>
@@ -105,14 +97,14 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
             _vstack={{ space: 0 }}
             _hstack={{ borderBottomWidth: 0 }}
             title={t("CONTACT_DETAILS")}
-            label={["SELF", "EMAIL"]}
+            label={["SELF", "EMAIL", "GENDER"]}
             icon={[
               { name: "CellphoneLineIcon", color: "iconColor.100" },
               { name: "SmartphoneLineIcon", color: "iconColor.100" },
               { name: "MailLineIcon", color: "iconColor.100" },
             ]}
             item={pcDetails}
-            arr={["mobile", "email_id"]}
+            arr={["mobile", "email_id", "gender"]}
           />
           <CardComponent
             isHideProgressBar={true}

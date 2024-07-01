@@ -29,6 +29,7 @@ const PrerakList = lazy(() => import("pages/PCusers/Prerak/PrerakList"));
 const PrerakProfileView = lazy(() =>
   import("pages/PCusers/Prerak/PrerakProfileView")
 );
+const PrerakProfile = lazy(() => import("pages/PCusers/Prerak/PrerakProfile"));
 const LearnerList = lazy(() => import("pages/PCusers/Learner/LearnerList"));
 const LearnerProfileView = lazy(() =>
   import("pages/PCusers/Learner/LearnerProfileView")
@@ -103,7 +104,7 @@ export default [
     component: PcProfileDetails,
   },
   {
-    path: "/profile/edit",
+    path: "/profile/:id/edit/:type",
     component: EditProfile,
   },
   {
@@ -117,6 +118,10 @@ export default [
   {
     path: "/prerak/prerakProfileView/:id",
     component: PrerakProfileView,
+  },
+  {
+    path: "/prerak/prerakProfileView/:id/:type",
+    component: PrerakProfile,
   },
   {
     path: "/learner/learnerList",
