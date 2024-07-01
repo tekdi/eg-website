@@ -27,6 +27,7 @@ export default function PcProfilePhoto() {
     const fetchData = async () => {
       const data = await PcuserService.getPcProfile();
       setBenificiary(data?.data);
+      setFile(data?.data?.document_id);
     };
     fetchData();
   }, [id, photoNo]);
@@ -49,14 +50,14 @@ export default function PcProfilePhoto() {
               dimensionsValidation: { width: 1024, height: 768 },
               label: `ADD_PHOTOS`,
               document_type: "profile_photo",
-              document_sub_type: `profile_photo`,
+              document_sub_type: `profile_photo_1`,
               userId: id,
               iconComponent: (
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),
             }}
             key={page}
-            value={file?.id}
+            value={file}
             onChange={(e) => console.log(e)}
           />
           {/* <FrontEndTypo.Primarybutton

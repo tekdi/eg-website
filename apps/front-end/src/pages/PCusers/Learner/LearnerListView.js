@@ -150,8 +150,6 @@ export default function LearnerListView() {
     getLearner(filter);
   }, [filter]);
 
-  console.log({ filter, data });
-
   return (
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}

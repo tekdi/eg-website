@@ -81,12 +81,13 @@ const DailyActivities = () => {
       if (step === "edit") {
         await getActivityDetail();
       }
-      const qData = await geolocationRegistryService.getVillages({
-        name: "ARTHUNA",
-        state: "RAJASTHAN",
-        district: "BANSWARA",
-        gramp: "null",
-      });
+      const result = await PcuserService.getPrerakList();
+      const village = result.facilitator_data
+        ?.filter((item) => item?.user?.village !== null) // Filter out items where block is null
+        .map((item) => {
+          return { name: item?.user?.village };
+        });
+
       let newSchema = getOptions(schema1, {
         key: "hours",
         arr: hours,
@@ -99,9 +100,9 @@ const DailyActivities = () => {
 
         {
           key: "village",
-          arr: qData.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
+          arr: village,
+          title: "name",
+          value: "name",
         }
       );
       newSchema = getOptions(
