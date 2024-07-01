@@ -100,6 +100,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
         name: t("CAMP_EXECUTION"),
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
       }}
+      facilitator={facilitator}
       loading={loading}
       analyticsPageTitle={"CAMP_EXECUTION"}
       pageTitle={t("CAMP_EXECUTION")}
