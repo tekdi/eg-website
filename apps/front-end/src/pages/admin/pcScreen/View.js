@@ -47,7 +47,6 @@ function View() {
   const [errors, setErrors] = useState({});
   const [confirmPassword, setConfirmPassword] = useState(false);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   }, []);
@@ -413,9 +412,7 @@ function View() {
                     Username
                   </AdminTypo.H6>
                 </HStack>
-                <ChipStatus status={data?.status} flex={1}>
-                  <AdminTypo.H6 bold>{data?.username}</AdminTypo.H6>
-                </ChipStatus>
+                <AdminTypo.H3 bold>{pcData?.username}</AdminTypo.H3>
               </HStack>
               <FormControl isRequired isInvalid mt="4" auto>
                 <VStack space={3}>
