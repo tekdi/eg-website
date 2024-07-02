@@ -34,7 +34,9 @@ import { debounce } from "lodash";
 export default function CampList() {
   const [facilitator, setFacilitator] = useState({});
   const navigate = useNavigate();
-  const [filter, setFilter] = useState({ limit: 6 });
+  const [filter, setFilter] = useState({
+    search: "",
+  });
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
   const [loadingList, setLoadingList] = useState(true);
@@ -57,23 +59,54 @@ export default function CampList() {
     const getPrerakCampList = async () => {
       setLoadingList(true);
       try {
-        const result = await campService.getPrerakCampList();
-        setPrerakList(result?.facilitator_data);
-        setLoadingList(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoadingList(false);
-      }
-    };
-    getPrerakCampList();
-  }, []);
-
-  useEffect(() => {
-    const getPrerakCampList = async () => {
-      setLoadingList(true);
-      try {
         const result = await campService.getPrerakCampList(filter);
         setPrerakList(result?.facilitator_data);
+        if (filter?.search) {
+          if (result?.facilitator_data) {
+            const req = {
+              facilitator_list: result?.facilitator_data?.map((e) => ({
+                user_id: e.user_id,
+                academic_year_id: e?.academic_year_id,
+                program_id: e?.program_id,
+              })),
+            };
+            const camp = await campService.getCampPrerak(req);
+            setCampPrerak(camp);
+            let filteredUsers;
+            if (camp.length > 0) {
+              camp?.forEach((element) => {
+                filteredUsers = result?.facilitator_data?.map((e) => {
+                  if (
+                    e.user_id == element.facilitator_id &&
+                    e?.academic_year_id == element.academic_year_id &&
+                    e?.program_id == element.program_id
+                  ) {
+                    return {
+                      ...e,
+                      camp_id: element.camp_id,
+                      facilitator_id: element.facilitator_id,
+                      isCampAvailable: true,
+                    };
+                  } else {
+                    return {
+                      ...e,
+                      isCampAvailable: false,
+                    };
+                  }
+                });
+              });
+            } else {
+              filteredUsers = result?.facilitator_data?.map((e) => {
+                return {
+                  ...e,
+                  isCampAvailable: false,
+                };
+              });
+            }
+
+            setSelectedPrerak(filteredUsers);
+          }
+        }
         setLoadingList(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -147,16 +180,12 @@ export default function CampList() {
 
   const onHandleChange = () => {
     setIsModalOpen(true);
+    setFilter({
+      ...filter,
+      search: "",
+    });
     // getPrerakCampList();
   };
-
-  const handleSearch = useCallback(
-    (e) => {
-      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-    },
-    [filter]
-  );
-  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout
@@ -166,16 +195,30 @@ export default function CampList() {
       analyticsPageTitle={"CAMP_LIST"}
       pageTitle={t("CAMP_LIST")}
       _appBar={{
+        onPressBackButton: () => {
+          navigate("/camps");
+        },
         isEnableSearchBtn: "true",
         setSearch: (value) => {
-          setFilter({
-            ...filter,
-            search: value,
-            page: 1,
-          });
+          if (value?.search) {
+            setFilter((prevFilter) => ({
+              ...prevFilter,
+              search: value,
+            }));
+            setPrerakList([]);
+            setSelectedPrerak([]);
+            setIsDisable(true);
+          } else {
+            setFilter((prevFilter) => ({
+              ...prevFilter,
+              search: "",
+            }));
+            setPrerakList([]);
+            setSelectedPrerak([]);
+            setIsModalOpen(false);
+          }
         },
       }}
-      // onPress={() => navigate(`/camps/CampLearnerList`)}
     >
       <VStack ref={ref}>
         <HStack
@@ -202,51 +245,60 @@ export default function CampList() {
             </HStack>
           </Box>
         </HStack>
-        <HStack>
-          <Box
-            marginLeft={"25px"}
-          >{`Selected Prerak: ${selectedPrerak?.length}`}</Box>
-        </HStack>
-        <Box
-          onClick={() => onHandleChange()}
-          mb="2"
-          mt="4"
-          style={{ cursor: "pointer" }}
-          width={"100%"}
-          alignItems={"center"}
-        >
-          {selectedPrerak?.length > 0 ? (
-            <></>
-          ) : (
-            <VStack paddingBottom="64px">
-              <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-                <VStack alignItems="center" pt="20px">
-                  {beneficiary?.profile_photo_1?.id ? (
-                    <ImageView
-                      source={{
-                        document_id: beneficiary?.profile_photo_1?.id,
-                      }}
-                      width="190px"
-                      height="190px"
-                    />
-                  ) : (
-                    <IconByName
-                      name="AccountCircleLineIcon"
-                      color="gray.300"
-                      _icon={{ size: "190px" }}
-                    />
-                  )}
+        {filter?.search && selectedPrerak?.length === 0 && (
+          <HStack>
+            <Box marginLeft={"25px"}>{"No data available"}</Box>
+          </HStack>
+        )}
+        {!filter?.search && selectedPrerak?.length === 0 && (
+          <Box>
+            <HStack>
+              <Box
+                marginLeft={"25px"}
+              >{`Selected Prerak: ${selectedPrerak?.length}`}</Box>
+            </HStack>
+            <Box
+              onClick={() => onHandleChange()}
+              mb="2"
+              mt="4"
+              style={{ cursor: "pointer" }}
+              width={"100%"}
+              alignItems={"center"}
+            >
+              {selectedPrerak?.length > 0 ? (
+                <></>
+              ) : (
+                <VStack paddingBottom="64px">
+                  <VStack paddingLeft="16px" paddingRight="16px" space="24px">
+                    <VStack alignItems="center" pt="20px">
+                      {beneficiary?.profile_photo_1?.id ? (
+                        <ImageView
+                          source={{
+                            document_id: beneficiary?.profile_photo_1?.id,
+                          }}
+                          width="190px"
+                          height="190px"
+                        />
+                      ) : (
+                        <IconByName
+                          name="AccountCircleLineIcon"
+                          color="gray.300"
+                          _icon={{ size: "190px" }}
+                        />
+                      )}
+                    </VStack>
+                  </VStack>
+                  <AdminTypo.H4 textAlign="center" color="black">
+                    {t("SELECT_A_PRERAK")}
+                  </AdminTypo.H4>
+                  <AdminTypo.H6 textAlign="center" color="black">
+                    {t("SELECT_AT_LEAST_ONE_PRERAK_TO_VIEW_A_LIST_OF_CAMPS")}
+                  </AdminTypo.H6>
                 </VStack>
-              </VStack>
-              <AdminTypo.H4 textAlign="center" color="black">
-                {t("SELECT_A_PRERAK")}
-              </AdminTypo.H4>
-              <AdminTypo.H6 textAlign="center" color="black">
-                {t("SELECT_AT_LEAST_ONE_PRERAK_TO_VIEW_A_LIST_OF_CAMPS")}
-              </AdminTypo.H6>
-            </VStack>
-          )}
-        </Box>
+              )}
+            </Box>
+          </Box>
+        )}
       </VStack>
       <VStack space={4} p={4}>
         <Modal
@@ -323,76 +375,88 @@ export default function CampList() {
             </Modal.Body>
           </Modal.Content>
         </Modal>
-        <Box space={4} py={4}>
+
+        <VStack space={4} py={4} ml="2">
           {selectedPrerak &&
             selectedPrerak?.map((item) => (
-              <Pressable
-                bg="boxBackgroundColour.100"
-                shadow="AlertShadow"
-                borderRadius="10px"
-                py={3}
-                px={5}
-                mb="4"
-              >
+              <Box>
                 <HStack>
-                  <FrontEndTypo.H3 key={item.camp_id} value={item} my={2}>
+                  <FrontEndTypo.H3
+                    key={item.facilitator_id}
+                    value={item}
+                    my={2}
+                  >
                     {item?.user?.first_name} {item?.user?.middle_name}{" "}
                     {item?.user?.last_name}
                   </FrontEndTypo.H3>
                 </HStack>
-                <HStack alignItems={"center"} justifyContent={"space-between"}>
-                  <VStack flex={"0.9"}>
-                    <FrontEndTypo.H3 color="textMaroonColor.400">
-                      {!item?.isCampAvailable && (
-                        <FrontEndTypo.H3 key={item} value={item} my={2}>
-                          {t("CAMP")}&nbsp;
-                          {"Not Available"}
+                <Pressable
+                  bg="boxBackgroundColour.100"
+                  shadow="AlertShadow"
+                  borderRadius="10px"
+                  py={3}
+                  px={5}
+                  mb="4"
+                >
+                  <Box>
+                    <HStack
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <VStack flex={"0.9"}>
+                        <FrontEndTypo.H3 color="textMaroonColor.400">
+                          {!item?.isCampAvailable && (
+                            <FrontEndTypo.H3 my={2}>
+                              {t("CAMP")}&nbsp;
+                              {t("NOT_AVAILABLE")}
+                            </FrontEndTypo.H3>
+                          )}
+                          {item?.isCampAvailable && (
+                            <FrontEndTypo.H3
+                              key={item?.camp_id}
+                              value={item}
+                              my={2}
+                              onPress={() => {
+                                navigate(
+                                  `/camps/CampProfileView/${item?.camp_id}`,
+                                  {
+                                    state: {
+                                      academic_year_id: item?.academic_year_id,
+                                      program_id: item?.program_id,
+                                      user_id: item?.facilitator_id,
+                                    },
+                                  }
+                                );
+                              }}
+                            >
+                              {t("CAMP")}&nbsp;
+                              {item?.camp_id}
+                            </FrontEndTypo.H3>
+                          )}
                         </FrontEndTypo.H3>
-                      )}
-                      {item?.isCampAvailable && (
-                        <FrontEndTypo.H3
-                          key={item}
-                          value={item}
-                          my={2}
-                          onPress={() => {
-                            navigate(
-                              `/camps/CampProfileView/${item?.camp_id}`,
-                              {
-                                state: {
-                                  academic_year_id: item?.academic_year_id,
-                                  program_id: item?.program_id,
-                                  user_id: item?.facilitator_id,
-                                },
-                              }
-                            );
-                          }}
-                        >
-                          {t("CAMP")}&nbsp;
-                          {item?.camp_id}
-                        </FrontEndTypo.H3>
-                      )}
-                    </FrontEndTypo.H3>
-                  </VStack>
-                  <HStack alignItems={"center"}>
-                    <IconByName
-                      isDisabled
-                      name={
-                        ["camp_ip_verified"].includes()
-                          ? "CheckLineIcon"
-                          : "ErrorWarningLineIcon"
-                      }
-                      color={
-                        ["camp_ip_verified"].includes()
-                          ? "textGreen.700"
-                          : "textMaroonColor.400"
-                      }
-                      _icon={{ size: "20px" }}
-                    />
-                  </HStack>
-                </HStack>
-              </Pressable>
+                      </VStack>
+                      <HStack alignItems={"center"}>
+                        <IconByName
+                          isDisabled
+                          name={
+                            ["camp_ip_verified"].includes()
+                              ? "CheckLineIcon"
+                              : "ErrorWarningLineIcon"
+                          }
+                          color={
+                            ["camp_ip_verified"].includes()
+                              ? "textGreen.700"
+                              : "textMaroonColor.400"
+                          }
+                          _icon={{ size: "20px" }}
+                        />
+                      </HStack>
+                    </HStack>
+                  </Box>
+                </Pressable>
+              </Box>
             ))}
-        </Box>
+        </VStack>
       </VStack>
       {!loadingList ? (
         <InfiniteScroll
@@ -400,14 +464,13 @@ export default function CampList() {
           next={() =>
             setFilter({
               ...filter,
-              page: (filter?.page ? filter?.page : 1) + 1,
             })
           }
           hasMore={hasMore}
           height={loadingHeight}
           endMessage={
             <FrontEndTypo.H3 bold display="inherit" textAlign="center">
-              {filteredPrerakIds?.length > 0
+              {prerakList?.length > 0
                 ? t("COMMON_NO_MORE_RECORDS")
                 : t("DATA_NOT_FOUND")}
             </FrontEndTypo.H3>

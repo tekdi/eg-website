@@ -1,9 +1,7 @@
 import {
-  facilitatorRegistryService,
   t,
   IconByName,
   PCusers_layout as Layout,
-  benificiaryRegistoryService,
   FrontEndTypo,
   SelectStyle,
   Loading,
@@ -259,7 +257,7 @@ export default function CampLearnerList({ userTokenInfo, footerLinks }) {
       _appBar={{
         name: t("PRERAK_PROFILE"),
         onPressBackButton: () => {
-          navigate("/camps/CampProfileView/:id");
+          navigate(`/camps/CampProfileView/${id}`);
         },
       }}
       loading={loading}

@@ -19,6 +19,8 @@ const CampProfileView = lazy(() =>
 const CampLearnerList = lazy(() =>
   import("pages/PCusers/camps/CampLearnerList")
 );
+const CampFacility = lazy(() => import("pages/PCusers/camps/CampFacility"));
+const CampKitDetails = lazy(() => import("pages/PCusers/camps/CampKitDetails"));
 const PcProfile = lazy(() => import("pages/PCusers/Profile/PcProfile"));
 const PcProfileDetails = lazy(() =>
   import("pages/PCusers/Profile/PcProfileDetails")
@@ -93,6 +95,14 @@ export default [
   {
     path: "/camps/CampLearnerList/:id",
     component: CampLearnerList,
+  },
+  {
+    path: "/camps/CampFacility/:id",
+    component: CampFacility,
+  },
+  {
+    path: "/camps/CampKitDetails/:id",
+    component: CampKitDetails,
   },
   {
     path: "/profile",

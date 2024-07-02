@@ -196,13 +196,17 @@ export default function CampProfileView({ userTokenInfo }) {
                       thickness="1"
                     />
                     <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack alignItems="Center" space="md">
+                      <HStack space="md" alignItems="Center">
                         <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                        <FrontEndTypo.H3 color="textGreyColor.800">
-                          {t("KIT_DETAILS")}
-                        </FrontEndTypo.H3>
+                        <FrontEndTypo.H3>{t("KIT_DETAILS")}</FrontEndTypo.H3>
                       </HStack>
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(`/camps/CampKitDetails/${id}`);
+                        }}
+                        color="maroon.400"
+                      />
                     </HStack>
 
                     <Divider
@@ -211,13 +215,19 @@ export default function CampProfileView({ userTokenInfo }) {
                       thickness="1"
                     />
                     <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack alignItems="Center" space="md">
+                      <HStack space="md" alignItems="Center">
                         <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                        <FrontEndTypo.H3 color="textGreyColor.800">
+                        <FrontEndTypo.H3>
                           {t("CAMP_FACILITIES")}
                         </FrontEndTypo.H3>
                       </HStack>
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(`/camps/CampFacility/${id}`);
+                        }}
+                        color="maroon.400"
+                      />
                     </HStack>
                   </VStack>
                 </VStack>
