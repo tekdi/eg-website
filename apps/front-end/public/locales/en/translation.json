@@ -674,11 +674,55 @@
   "EXAM": "Exam",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
+  "EXAM_PREPARATION": {
+    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
+      "NO": "no",
+      "TITLE": "Did the learner receive the  admit card?",
+      "YES": "Yes",
+      "YET_TO_BE_PROCEED": "Yet to be proceed"
+    },
+    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
+      "NO": "No",
+      "NOT_APPLICABLE": "Not Applicable",
+      "TITLE": "Has the learner prepared the practical file?",
+      "YES": "Yes"
+    },
+    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
+      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
+      "NO_MEANS_TO_TRAVEL": "No mean to travel",
+      "TITLE": "Does the learner have the travel arrangements to the exam center?",
+      "YES": "Yes"
+    },
+    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
+      "NO": "No",
+      "TITLE": "Did the learner receive the Exam Time Table?",
+      "YES": "Yes"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM": {
+      "NO": "no",
+      "TITLE1": "Will",
+      "TITLE2": "appear for the exam?",
+      "YES": "yes"
+    },
+    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
+      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received",
+      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
+      "EXAM_FEAR": "Exam Fear",
+      "FAMILY_RESTRICTIONS": "Family restrictions",
+      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
+      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
+      "ILLNESS": "Illness",
+      "TITLE": "Choose the reason ",
+      "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
+      "LEARNER_DEATH": "Learner's Death",
+      "LEARNER_ESCAPED": "Learner's migration",
+      "LEARNER_MIGRATION": "Learner's migration",
+      "OTHER": "Other"
+    }
+  },
   "EXAM_SUBMITTED_SUCCESSFULLY": "Test has been submitted successfully",
   "EXIST_LOGIN": "You already have an account for {{state}} {{year}}, proceed to log in instead.",
-  "EXISTING_IP": "Existing IP",
   "EXISTING_IP_USER": "Existing IP User",
-  "EXISTING_USER": "Existing User",
   "EXPERIENCE": "Experience",
   "EXPERIENCE_IN_YEARS": "Experience in years",
   "EXPIRY_CONTENT": {
@@ -953,7 +997,6 @@
   "LEARNERS_INFO": "Learner Info",
   "LEARNERS_LIST": "Learner's List",
   "LEARNERS_NAME": "Learner's Name",
-  "LEARNERS_PER_TARGET": "Average learners per camp",
   "LEARNERS_SUBJECT_CSV": "Learner's subject CSV",
   "LEARNERS_TARGET": "Learner's Target",
   "LEARNERS_WHATSAPP_NUMBER": "(WhatsApp phone number that is readily available to the learner)",
@@ -1736,49 +1779,9 @@
   "MY_PROFILE": "My Profile",
   "YOUR_WELCOME_READY_TO_FLY": "You're welcome! Are you ready for your dream to come true?",
   "YOUR_WORK_AVAILABILITY_WILL_BE": "Your work availability will be ?",
-  "EXAM_PREPARATION": {
-    "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "TITLE": "Will the learner appear for the exam?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS": {
-      "TITLE": "Choose the reason ",
-      "DISTANCE_OF_EXAM_CENTER": "Distance of Exam Center",
-      "FAMILY_RESTRICTIONS": "Family restrictions",
-      "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
-      "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
-      "ILLNESS": "Illness",
-      "TRAVEL_ISSUES": "Travel Issues",
-      "EXAM_FEAR": "Exam Fear",
-      "ADMIT_CARD_NOT_RECEIVED": "Admit Card not received"
-    },
-    "DID_LEARNER_RECEIVE_ADMIT_CARD": {
-      "TITLE": "Did the learner receive the  admit card?",
-      "YES": "yes",
-      "NO": "no"
-    },
-    "HAS_LEARNER_PREPARED_PRACTICAL_FILE": {
-      "TITLE": "Has the learner prepared the practical file?",
-      "YES": "yes",
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable"
-    },
-    "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "TITLE": "Does the learner have the travel arrangements to the exam center?",
-      "YES": "yes",
-      "NO": "no",
-      "NOT_APPLICABLE": "Not Applicable"
-    },
-    "LEARNER_RECEIVED_EXAM_TIME_TABLE": {
-      "TITLE": "Did the learner receive the Exam Time Table?",
-      "YES": "yes",
-      "NO": "no"
-    }
-  },
   "CHANGE_LANGUGAE": "Change Language",
-  "PCR_CAMPS": "PCR Camps",
-  "MAIN_CAMPS": "Main Camps",
+  "PCR_CAMPS": "Neev Camps",
+  "MAIN_CAMPS": "Prayas Camps",
   "PCR_CAMP_ALERT_MESSAGE": "These camps will convert to Main Camps after the PCR activities are Complete",
   "IT_WILL_NOT_BE_DETERMINED": "it will not be determined",
   "WILL_BE_DETERMINED": "will be determined",
@@ -1805,9 +1808,8 @@
   "LEARNER_EXAMINATION_DETAILS": "Access all information and activities related to your learners' examination from here",
   "PRACTICALS": "Practicals Exam",
   "THEORY": "Theory Exam",
-  "MARK_LEARNER_EXAM_ATTENDANCE": "Mark Learner Exam Attendance",
+  "MARK_LEARNER_EXAM_ATTENDANCE": "Learner Exam Attendance",
   "EXAM_WARNING": "No Learners for the exam",
-  "LEARNER_STATUS_COUNT": "Learner Status Count",
   "ACCESS_ALL_INFORMATION_OF_YOUR_LEARNERS_STATUS": "Access all information of your learner's status",
   "VOUNTEER_ACCESS_PROFILE": "Access your profile and make any changes required.",
   "VOUNTEER_UPDATE_MY_PROFILE": "Update my profile",
@@ -1934,7 +1936,7 @@
   "RESULT": "Result",
   "NO_OF_LEARNERS": "No. of Learners",
   "RESULT_UPLOAD_PENDING": "Result Upload Pending",
-  "UPDATE_LEARNER_EXAM_RESULTS": "Update Learner Exam Results",
+  "UPDATE_LEARNER_EXAM_RESULTS": "Learner Exam Results",
   "RESULT_UPLOAD_WARNING": "Upload the pdf file downloaded from the RSOS site. Do not upload image files of the result.",
   "STUDENT_LIST": "Student List",
   "ENR_NO": "ENR no: ",
@@ -2000,5 +2002,6 @@
   "NO_LEARNINGS_SUBSCRIBED": "You have not subscribed for any learning content.",
   "ORDER": "Order",
   "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
-  "SYNC_APPLICATION_STATUS": "Sync Application Status"
+  "SYNC_APPLICATION_STATUS": "Sync Application Status",
+  "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students"
 }

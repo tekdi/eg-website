@@ -395,10 +395,10 @@ export const transformAttendanceResponse = async (response, date) => {
 };
 
 export const CheckUserIdInPayload = (user, learnerAttendance, event_id) => {
-  const key = `${event_id}_${user.user_id}`;
+  const key = `${event_id}_${user?.user_id}`;
   // Find the item in learnerAttendance array with matching user_id
-  const matchingItem = learnerAttendance.find((item) => {
-    const keyUserId = Object.keys(item)[0];
+  const matchingItem = learnerAttendance?.find((item) => {
+    const keyUserId = Object.keys(item)?.[0];
     return keyUserId === key;
   });
   // If a matching item is found, return its value, otherwise return null

@@ -22,12 +22,14 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
+import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 export default function CampTodayActivities({
   footerLinks,
   setAlert,
   activityId,
   campType,
+  userTokenInfo,
 }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -39,6 +41,8 @@ export default function CampTodayActivities({
   const [activitiesValue, setActivitiesValue] = useState(false);
   const [isSaving] = useState(false);
   const [sessionList, setSessionList] = useState(false);
+  const fa_id = localStorage.getItem("id");
+  const [facilitator, setFacilitator] = useState();
 
   useEffect(async () => {
     getActivity();
@@ -78,6 +82,15 @@ export default function CampTodayActivities({
   };
 
   useEffect(async () => {
+    if (userTokenInfo) {
+      const IpUserInfo = await getIpUserInfo(fa_id);
+      let ipUserData = IpUserInfo;
+      if (!IpUserInfo) {
+        ipUserData = await setIpUserInfo(fa_id);
+      }
+
+      setFacilitator(ipUserData);
+    }
     const qData = await enumRegistryService.listOfEnum();
     const LearningActivitydata = qData?.data;
     setEnumOptions(LearningActivitydata);
@@ -114,8 +127,9 @@ export default function CampTodayActivities({
   return (
     <Layout
       _appBar={t("ADD_TODAYS_ACTIVITIES")}
-      _footer={{ menues: footerLinks }}
+      // _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_ACTIVITIES"}
+      facilitator={facilitator}
       pageTitle={t("TODAYS_ACTIVITIES")}
       stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
         "TODAYS_ACTIVITIES"
