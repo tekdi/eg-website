@@ -48,9 +48,9 @@ const EpcpForm = ({ footerLinks }) => {
     type: "object",
     properties: {
       WILL_LEARNER_APPEAR_FOR_EXAM: {
-        label: `${t("EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1")} ${
-          learnerData?.first_name
-        } ${
+        description: `${t(
+          "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1"
+        )} ${learnerData?.first_name} ${
           learnerData?.last_name
             ? `${learnerData?.middle_name || ""} ${learnerData?.last_name}`
             : ""
@@ -75,7 +75,7 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             HAS_LEARNER_PREPARED_PRACTICAL_FILE: {
-              label:
+              description:
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.TITLE",
               type: ["string", "null"],
               direction: "row",
@@ -87,7 +87,7 @@ const EpcpForm = ({ footerLinks }) => {
               default: null,
             },
             LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: {
-              label:
+              description:
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.TITLE",
               type: ["string", "null"],
               direction: "column",
@@ -99,7 +99,8 @@ const EpcpForm = ({ footerLinks }) => {
               default: null,
             },
             DID_LEARNER_RECEIVE_ADMIT_CARD: {
-              label: "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
+              description:
+                "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
@@ -132,7 +133,7 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: {
-              label:
+              description:
                 "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",

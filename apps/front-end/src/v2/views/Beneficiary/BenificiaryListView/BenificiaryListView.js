@@ -126,10 +126,7 @@ const List = ({ data }) => {
                       "10th_passed",
                       "pragati_syc",
                     ].includes(item?.program_beneficiaries?.status) ? (
-                      <FrontEndTypo.H3
-                        fontWeight={"600"}
-                        color="textGreyColor.800"
-                      >
+                      <FrontEndTypo.H3 bold color="textGreyColor.800">
                         {item?.program_beneficiaries?.enrollment_first_name}
                         {item?.program_beneficiaries?.enrollment_middle_name &&
                           item?.program_beneficiaries
