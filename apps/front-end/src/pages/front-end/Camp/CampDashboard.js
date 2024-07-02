@@ -43,7 +43,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       facilitator={facilitator}
       // stepTitle={t("ATTENDANCE")}
     >
-      <List userTokenInfo={userTokenInfo} />
+      <List userTokenInfo={userTokenInfo} stateName={stateName} />
       <VStack p="4" space="5">
         {stateName === "RAJASTHAN" && (
           <>
