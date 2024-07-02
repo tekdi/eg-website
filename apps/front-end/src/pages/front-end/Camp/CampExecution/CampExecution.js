@@ -10,6 +10,7 @@ import {
   useLocationData,
   CardComponent,
   enumRegistryService,
+  CustomAlert,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import moment from "moment";
@@ -60,14 +61,16 @@ export default function CampExecution({
   const [activeChip, setActiveChip] = useState(null);
   const [page, setPage] = useState("");
   const [progress, setProgress] = useState(0);
+  const [campDetail, setCampDetail] = useState({});
   const [campType, setCampType] = useState("");
 
   const campDetails = useCallback(async () => {
     if (!["attendance"].includes(step)) {
       const result = await campService.getCampDetails({ id });
-      setCampType(result?.data);
+      setCampDetail(result?.data);
       setFacilitator(result?.data?.faciltator?.[0] || {});
       setLearnerCount(result?.data?.group_users?.length);
+      setCampType(result?.data);
     }
     const obj = {
       id: id,
@@ -89,12 +92,12 @@ export default function CampExecution({
       const listOfEnum = await enumRegistryService.listOfEnum();
       const newMoodList = listOfEnum?.data?.FACILITATOR_MOOD_LIST;
       const images = [
-        "/smiley_1.png",
-        "/smiley_2.png",
-        "/smiley_3.png",
-        "/smiley_4.png",
-        "/smiley_5.png",
-        "/smiley_6.png",
+        "/./smiley_1.png",
+        "/./smiley_2.png",
+        "/./smiley_3.png",
+        "/./smiley_4.png",
+        "/./smiley_5.png",
+        "/./smiley_6.png",
       ];
       const moodListWithImages = newMoodList?.map((mood, index) => ({
         ...mood,
@@ -189,73 +192,83 @@ export default function CampExecution({
     getAccess();
   }, [getAccess]);
 
-  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.png", []);
 
   if (start && data?.lat && data?.long && !loading) {
     return (
       <Suspense fallback={<Loading />}>
-        <Camera
-          messageComponent={
-            <VStack>
-              <FrontEndTypo.H3 color="white" textAlign="center">
-                {t("ATTENDANCE_PHOTO_MSG")}
-              </FrontEndTypo.H3>
-            </VStack>
-          }
-          loading={
-            progress && (
-              <VStack space={4} justifyContent="center" p="4">
-                <Spinner
-                  color={"primary.500"}
-                  accessibilityLabel="Loading posts"
-                  size="lg"
-                />
-                <Progress value={progress} colorScheme="red" />
-                <FrontEndTypo.H3 textAlign="center" color="white">
-                  {progress}%
-                </FrontEndTypo.H3>
-              </VStack>
-            )
-          }
-          {...{
-            onFinish: (e) => closeCamera(),
-            cameraModal: start,
-            setCameraModal: (e) => {
-              setCameraUrl();
-              setStart(e);
-            },
-            cameraUrl,
-            filePreFix: `camp_prerak_attendace_user_id_${facilitator?.id}_`,
-            setCameraUrl: async (url, file) => {
-              setProgress(0);
-              if (file) {
-                setError("");
-                let formData = new FormData();
-                formData.append("user_id", facilitator?.id);
-                formData.append("document_type", "camp_attendance");
-                formData.append("file", file);
-                const uploadDoc = await uploadRegistryService.uploadFile(
-                  formData,
-                  {},
-                  (progressEvent) => {
-                    const { loaded, total } = progressEvent;
-                    let percent = Math.floor((loaded * 100) / total);
-                    setProgress(percent);
-                  }
-                );
-                if (uploadDoc?.data?.insert_documents?.returning?.[0]?.name) {
-                  setCameraFile(
-                    uploadDoc?.data?.insert_documents?.returning?.[0]?.name
-                  );
-                }
-                setCameraUrl({ url, file });
-              } else {
-                setCameraUrl();
+        <Layout _footer={{ menues: footerLinks }}>
+          <VStack p={4} space={3}>
+            <FrontEndTypo.H1>{t("MARK_ATTENDANCE")}</FrontEndTypo.H1>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
+              "CAMP_ID"
+            )} : ${campDetail?.id}`}</FrontEndTypo.H4>
+            <Camera
+              messageComponent={
+                <VStack>
+                  <FrontEndTypo.H3 color="white" textAlign="center">
+                    {t("ATTENDANCE_PHOTO_MSG")}
+                  </FrontEndTypo.H3>
+                </VStack>
               }
-            },
-            cameraSide: true,
-          }}
-        />
+              loading={
+                progress && (
+                  <VStack space={4} justifyContent="center" p="4">
+                    <Spinner
+                      color={"primary.500"}
+                      accessibilityLabel="Loading posts"
+                      size="lg"
+                    />
+                    <Progress value={progress} colorScheme="red" />
+                    <FrontEndTypo.H3 textAlign="center" color="white">
+                      {progress}%
+                    </FrontEndTypo.H3>
+                  </VStack>
+                )
+              }
+              {...{
+                onFinish: (e) => closeCamera(),
+                cameraModal: start,
+                setCameraModal: (e) => {
+                  setCameraUrl();
+                  setStart(e);
+                },
+                cameraUrl,
+                filePreFix: `camp_prerak_attendace_user_id_${facilitator?.id}_`,
+                setCameraUrl: async (url, file) => {
+                  setProgress(0);
+                  if (file) {
+                    setError("");
+                    let formData = new FormData();
+                    formData.append("user_id", facilitator?.id);
+                    formData.append("document_type", "camp_attendance");
+                    formData.append("file", file);
+                    const uploadDoc = await uploadRegistryService.uploadFile(
+                      formData,
+                      {},
+                      (progressEvent) => {
+                        const { loaded, total } = progressEvent;
+                        let percent = Math.floor((loaded * 100) / total);
+                        setProgress(percent);
+                      }
+                    );
+                    if (
+                      uploadDoc?.data?.insert_documents?.returning?.[0]?.name
+                    ) {
+                      setCameraFile(
+                        uploadDoc?.data?.insert_documents?.returning?.[0]?.name
+                      );
+                    }
+                    setCameraUrl({ url, file });
+                  } else {
+                    setCameraUrl();
+                  }
+                },
+                cameraSide: true,
+              }}
+            />
+          </VStack>
+        </Layout>
       </Suspense>
     );
   }
@@ -274,9 +287,10 @@ export default function CampExecution({
           }/${t("CAMP_EXECUTION")}`}
         >
           <VStack py={6} px={4} mb={5} space="6">
-            <FrontEndTypo.H2 color={"textMaroonColor.400"}>
-              {t("LEARNER_ENVIRONMENT")}
-            </FrontEndTypo.H2>
+            <FrontEndTypo.H2>{t("MARK_ATTENDANCE")}</FrontEndTypo.H2>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
+              "CAMP_ID"
+            )} : ${campDetail?.id}`}</FrontEndTypo.H4>
             <HStack justifyContent={"center"} flexWrap={"wrap"}>
               <ImageView
                 urlObject={{ fileUrl: cameraUrl?.url }}
@@ -287,6 +301,9 @@ export default function CampExecution({
                 _image={{ borderRadius: 0 }}
               />
             </HStack>
+            <FrontEndTypo.H4 bold color="textGreyColor.750">
+              {t("LEARNER_ENVIRONMENT")}
+            </FrontEndTypo.H4>
             <HStack justifyContent={"center"} flexWrap={"wrap"}>
               {moodList?.map((item) => {
                 return (
@@ -296,40 +313,45 @@ export default function CampExecution({
                     mx={3}
                     alignItems={"center"}
                     key={item}
-                    width={"40%"}
+                    width={"42%"}
+                    borderColor="btnGray.100"
+                    borderRadius="10px"
+                    borderWidth="1px"
+                    shadow="AlertShadow"
+                    bg={activeChip === item?.value && "#E0E0FF"}
                   >
-                    <Pressable onPress={() => handleChipClick(item?.value)}>
+                    <Pressable
+                      isActive={activeChip === item?.value}
+                      onPress={() => handleChipClick(item?.value)}
+                    >
                       <Image
-                        w={"150"}
-                        h={"150"}
+                        w={"120"}
+                        h={"120"}
                         borderRadius="0"
                         source={{
                           uri: `${item?.img}`,
                         }}
-                        alt="airoplane.gif"
+                        alt="airoplane.png"
                       />
-                      <Chip width="150px" isActive={activeChip === item?.value}>
-                        <FrontEndTypo.H4
-                          color={activeChip === item?.value ? "white" : "black"}
-                          textAlign={"center"}
-                          fontSize={"12px"}
-                        >
-                          {t(item?.title)}
-                        </FrontEndTypo.H4>
-                      </Chip>
+                      <FrontEndTypo.H5
+                        bold
+                        color={"textGreyColor.750"}
+                        textAlign={"center"}
+                        fontSize={"12px"}
+                      >
+                        {t(item?.title)}
+                      </FrontEndTypo.H5>
                     </Pressable>
                   </VStack>
                 );
               })}
             </HStack>
             {error && (
-              <Alert status="warning">
-                <HStack space={2}>
-                  <Alert.Icon />
-                  <FrontEndTypo.H3>{t("SELECT_MESSAGE")}</FrontEndTypo.H3>
-                </HStack>
-              </Alert>
+              <CustomAlert status={"warning"} title={t("SELECT_MESSAGE")} />
             )}
+            <FrontEndTypo.Primarybutton onPress={startCamp}>
+              {t("START_CAMP")}
+            </FrontEndTypo.Primarybutton>
             <FrontEndTypo.Secondarybutton
               onPress={(e) => {
                 setCameraFile();
@@ -340,9 +362,6 @@ export default function CampExecution({
             >
               {t("TAKE_ANOTHER_PHOTO")}
             </FrontEndTypo.Secondarybutton>
-            <FrontEndTypo.Primarybutton onPress={startCamp}>
-              {t("START_CAMP")}
-            </FrontEndTypo.Primarybutton>
           </VStack>
         </Layout>
       </Suspense>
@@ -381,6 +400,7 @@ export default function CampExecution({
     );
   }
 
+  const currectDate = moment().format("D MMMM, YYYY");
   return (
     <Layout
       _appBar={{ name: t("CAMP_EXECUTION") }}
@@ -395,21 +415,12 @@ export default function CampExecution({
     >
       {!todaysActivity?.id ? (
         <VStack space="5" p="5">
-          <Box alignContent="center">
-            <HStack justifyContent={"space-between"}>
-              <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-                {t("WELCOME")}{" "}
-                {[
-                  facilitator?.first_name,
-                  facilitator?.middle_name,
-                  facilitator?.last_name,
-                ]
-                  .filter((e) => e)
-                  .join(" ")}
-                ,
-              </FrontEndTypo.H1>
-            </HStack>
-          </Box>
+          <FrontEndTypo.H2>{t("CAMP_EXECUTION")}</FrontEndTypo.H2>
+          <HStack justifyContent={"space-between"}>
+            <FrontEndTypo.H3 bold color="textGreyColor.750">
+              {`${t("CAMP_ID")}: ${campDetail?.id}`}
+            </FrontEndTypo.H3>
+          </HStack>
           <Box
             margin={"auto"}
             height={"200px"}
@@ -425,7 +436,7 @@ export default function CampExecution({
               source={{
                 uri: airplaneImageUri,
               }}
-              alt="airoplane.gif"
+              alt="airoplane.png"
               position="absolute"
               top={0}
               left={0}
@@ -434,13 +445,13 @@ export default function CampExecution({
               zIndex={-1}
             />
 
-            <VStack alignItems="center" justifyContent="center">
+            <VStack pr={"80px"} pb={"120px"}>
               <ImageView
                 width="80px"
                 height="80px"
                 source={{ document_id: facilitator?.profile_photo_1?.id }}
               />
-              <CardComponent
+              {/* <CardComponent
                 _header={{ bg: "light.100" }}
                 _vstack={{
                   bg: "light.100",
@@ -451,14 +462,9 @@ export default function CampExecution({
                 }}
               >
                 {t("YOUR_WELCOME_READY_TO_FLY")}
-              </CardComponent>
+              </CardComponent> */}
             </VStack>
           </Box>
-          <VStack alignItems="center" space="5">
-            <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
-              {t("STARTS_YOUR_DAY")}
-            </FrontEndTypo.H1>
-          </VStack>
           <VStack space="4">
             <TAlert
               alert={error}
@@ -471,11 +477,23 @@ export default function CampExecution({
               }}
               type="warning"
             />
-            <VStack space="4">
+            <VStack
+              space="4"
+              borderColor="btnGray.100"
+              borderRadius="10px"
+              borderWidth="1px"
+              padding="4"
+              shadow="AlertShadow"
+            >
               <Stack space={4}>
-                <FrontEndTypo.H3>
-                  {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
-                </FrontEndTypo.H3>
+                <VStack>
+                  <FrontEndTypo.H3>
+                    {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
+                  </FrontEndTypo.H3>
+                  <FrontEndTypo.H4 color="grayTitleCard">{`${t(
+                    "DATE"
+                  )} : ${currectDate}`}</FrontEndTypo.H4>
+                </VStack>
                 <FrontEndTypo.Primarybutton onPress={campBegin}>
                   {t("YES_ABSOLUTELY")}
                 </FrontEndTypo.Primarybutton>
@@ -490,18 +508,14 @@ export default function CampExecution({
         </VStack>
       ) : (
         <Stack space="3" p="5">
-          <Alert status="warning" alignItems={"center"}>
-            <HStack alignItems="center" space="2">
-              <Alert.Icon />
-              <FrontEndTypo.H3>
-                {t(
-                  todaysActivity?.camp_day_happening === "no"
-                    ? "CAMP_LEAVE"
-                    : "TODAYS_CAMP_HAS_BEEN_COMPLETED"
-                )}
-              </FrontEndTypo.H3>
-            </HStack>
-          </Alert>
+          <CustomAlert
+            status={"warning"}
+            title={t(
+              todaysActivity?.camp_day_happening === "no"
+                ? "CAMP_LEAVE"
+                : "TODAYS_CAMP_HAS_BEEN_COMPLETED"
+            )}
+          />
           <FrontEndTypo.Primarybutton onPress={(e) => navigate(`/camps`)}>
             {t("GO_TO_PROFILE")}
           </FrontEndTypo.Primarybutton>

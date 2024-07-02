@@ -5,9 +5,18 @@ import {
   campService,
   Loading,
   enumRegistryService,
+  arrList,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Alert, HStack, Modal, ScrollView, Stack, VStack } from "native-base";
+import {
+  Alert,
+  HStack,
+  Modal,
+  Progress,
+  ScrollView,
+  Stack,
+  VStack,
+} from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,7 +41,6 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const [modalVisible, setModalVisible] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [sessionDetails, setSessionDetails] = useState();
-  const [previousSessionDetails, setPreviousSessionDetails] = useState();
   const [isDisable, setIsDisable] = useState(false);
   const [submitStatus, setSubmitStatus] = useState();
   const [error, setError] = useState();
@@ -41,6 +49,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const [campDetails, setCampDetails] = useState();
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
+  // const [campType, setCampType] = useState();
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -48,18 +57,12 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
         id: modalVisible,
         camp_id: id,
       });
-      if (result?.data?.ordering > 1) {
-        const data = sessionList?.find(
-          (e) => e?.ordering === result?.data?.ordering - 1
-        );
-        setPreviousSessionDetails(data);
-      }
       setSessionDetails(result?.data);
     }
   }, [modalVisible]);
 
   useEffect(() => {
-    const completeItem = sessionList?.filter(
+    const completeItem = sessionList.filter(
       (item) => item?.session_tracks?.[0]?.status === "complete"
     );
     const lastCompleteItem = completeItem.pop();
@@ -82,6 +85,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
   const getCampSessionsList = async () => {
     const campDetails = await campService.getCampDetails({ id });
+    // setCampType(campDetails?.data?.type);
     setCampDetails(campDetails?.data);
     const result = await campService.getCampSessionsList({
       id: id,
@@ -228,6 +232,10 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
     return <Loading />;
   }
 
+  const calculateProgress = (completedSessions, totalSessions) => {
+    if (totalSessions === 0) return 0; // to avoid division by zero
+    return (completedSessions / totalSessions) * 100;
+  };
   return (
     <Layout
       _appBar={{
@@ -239,20 +247,39 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       // _footer={{ menues: footerLinks }}
       getBodyHeight={(e) => setBodyHeight(e)}
-      analyticsPageTitle={"CAMP_SESSION_LIST"}
-      pageTitle={t("CAMP")}
-      stepTitle={`${
-        campDetails?.type === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")
-      }/${t("SESSION_LIST")}`}
     >
+      {/* {campType === "pcr" ? (
+        <Alert status="warning" alignItems="start" mb="3" mt="4">
+          <HStack alignItems="center" space="2">
+            <Alert.Icon />
+            <FrontEndTypo.H3>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H3>
+          </HStack>
+        </Alert>
+      ) : ( */}
       <Stack>
         <VStack flex={1} space="5" p="5">
-          <HStack space="2">
-            <IconByName name="BookOpenLineIcon" />
-            <FrontEndTypo.H2 color="textMaroonColor.400">
-              {t("SESSION")}
-            </FrontEndTypo.H2>
-          </HStack>
+          <FrontEndTypo.H2>{t("SESSION")}</FrontEndTypo.H2>
+          <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
+            "CAMP_ID"
+          )} : ${id}`}</FrontEndTypo.H4>
+          <VStack>
+            <HStack space={4} alignItems={"center"}>
+              <FrontEndTypo.H3 bold color="textGreyColor.750">
+                {t("COMPLETED_SESSIONS")} :
+              </FrontEndTypo.H3>
+              <FrontEndTypo.H2 bold color="textGreyColor.750">
+                {sessionActive?.countSession}/{sessionList?.length}
+              </FrontEndTypo.H2>
+            </HStack>
+            <Progress
+              value={calculateProgress(
+                sessionActive?.countSession,
+                sessionList?.length
+              )}
+              size="sm"
+              colorScheme="warning"
+            />
+          </VStack>
           <ScrollView maxH={bodyHeight - 150} p="4">
             <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
           </ScrollView>
@@ -302,6 +329,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
           </Modal.Content>
         </Modal>
       </Stack>
+      {/* )} */}
     </Layout>
   );
 }
