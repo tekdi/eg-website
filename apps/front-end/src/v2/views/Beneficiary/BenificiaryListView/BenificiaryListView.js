@@ -18,12 +18,13 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
-import { Box, HStack, Pressable, Select, VStack } from "native-base";
+import { Box, HStack, Input, Pressable, Select, VStack } from "native-base";
 import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import { debounce } from "lodash";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = useState({});
@@ -263,6 +264,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [hasMore, setHasMore] = useState(true);
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
+  const [search, setSearch] = useState("");
   const ref = useRef(null);
   const refButton = useRef(null);
 
@@ -354,7 +356,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
-              data?.attendances.filter(
+              data?.attendances?.filter(
                 (attendance) =>
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
@@ -548,6 +550,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   }, [bodyHeight, ref]);
 
   useEffect(async () => {
+    const { search } = filter;
+    setSearch(search);
+    setLoadingList(true);
     const { currentPage, totalPages, error, ...result } =
       await benificiaryRegistoryService.getBeneficiariesList(filter);
     if (!error) {
@@ -569,6 +574,13 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       setFacilitator(fa_data);
     }
   }, []);
+
+  const handleSearch = (value) => {
+    setSearch(value);
+    setFilter({ ...filter, search: value, page: 1 });
+  };
+
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 500), []);
 
   return (
     <Layout
@@ -593,6 +605,19 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
         <FrontEndTypo.H1 fontWeight="600" mx="4" my="6" mb="0">
           {t("LEARNER_LIST")}
         </FrontEndTypo.H1>
+        <HStack space={2} padding={4}>
+          <Input
+            value={search}
+            width={"100%"}
+            borderColor={"gray.300"}
+            placeholder={t("SEARCH_BY_NAME")}
+            onChangeText={debouncedHandleSearch}
+            InputRightElement={
+              <IconByName color="grayTitleCard" name="SearchLineIcon" mr="2" />
+            }
+          />
+        </HStack>
+
         <HStack
           justifyContent="space-between"
           space="2"
