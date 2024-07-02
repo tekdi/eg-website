@@ -88,11 +88,11 @@ export default [
     component: CampList,
   },
   {
-    path: "/camps/:id",
+    path: "/camps/CampProfileView/:id",
     component: CampProfileView,
   },
   {
-    path: "/camps/:id/learnerlist",
+    path: "/camps/CampLearnerList/:id",
     component: CampLearnerList,
   },
   {
