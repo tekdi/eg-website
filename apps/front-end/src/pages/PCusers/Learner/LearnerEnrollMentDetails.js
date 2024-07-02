@@ -38,10 +38,8 @@ export default function BenificiaryEnrollment() {
 
   const agDetails = async () => {
     const value = location?.state?.program_beneficiaries?.enrolled_for_board;
-    console.log({ value });
     if (value) {
       const boardName = await enumRegistryService.boardName(value);
-      console.log(boardName);
       setBoardName(boardName?.name);
     }
     const data = await enumRegistryService.listOfEnum();
@@ -50,8 +48,6 @@ export default function BenificiaryEnrollment() {
     setStateName(location?.state?.state);
     setLoading(false);
   };
-
-  console.log({ enumOptions, stateName, benificiary });
 
   return (
     <Layout

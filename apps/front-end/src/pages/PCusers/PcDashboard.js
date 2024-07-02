@@ -17,7 +17,6 @@ const PcDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await PcuserService.getPcProfile();
-      console.log({ data });
       setLoading(false);
     };
     fetchData();
@@ -74,12 +73,12 @@ const PcDashboard = () => {
               primaryBtn={"MARK_DAILY_ACTIVITIES"}
               navigation={"/dailyactivities/list"}
             />
-            <DashboardCard
+            {/* <DashboardCard
               title={"PRAGATI_SABHA"}
               titleDetail={"USE_THIS_SPACE_TO_ORGANISE_YOUR_PRAGATI_SABHA"}
               primaryBtn={"ORGANISE_EVENT"}
               navigation={"/examresultreport"}
-            />
+            /> */}
             {/* Temp Comment  End*/}
           </VStack>
         </VStack>

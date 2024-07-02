@@ -5,6 +5,7 @@ import {
   H2,
   FrontEndTypo,
   benificiaryRegistoryService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -22,9 +23,13 @@ export default function PcProfilePhoto() {
     navigate(`/profile`);
   };
 
-  useEffect(async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(result?.result);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await PcuserService.getPcProfile();
+      setBenificiary(data?.data);
+      setFile(data?.data?.document_id);
+    };
+    fetchData();
   }, [id, photoNo]);
 
   return (
@@ -45,14 +50,14 @@ export default function PcProfilePhoto() {
               dimensionsValidation: { width: 1024, height: 768 },
               label: `ADD_PHOTOS`,
               document_type: "profile_photo",
-              document_sub_type: `profile_photo`,
+              document_sub_type: `profile_photo_1`,
               userId: id,
               iconComponent: (
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),
             }}
             key={page}
-            value={file?.id}
+            value={file}
             onChange={(e) => console.log(e)}
           />
           {/* <FrontEndTypo.Primarybutton

@@ -86,7 +86,6 @@ export default function PrerakProfileView() {
                   />
                 )}
               </HStack>
-              {console.log({ prerakProfile })}
               <VStack space="4" alignItems={"Center"}>
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
                   {prerakProfile?.first_name} {" " + prerakProfile?.last_name}
@@ -127,7 +126,9 @@ export default function PrerakProfileView() {
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={() => {
-                        // navigate(`/beneficiary/${id}/basicdetails`);
+                        navigate(
+                          `/prerak/PrerakProfileView/${id}/basicdetails`
+                        );
                       }}
                       color="maroon.400"
                     />
@@ -146,14 +147,16 @@ export default function PrerakProfileView() {
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={() => {
-                        // navigate(`/beneficiary/${id}/basicdetails`);
+                        navigate(
+                          `/prerak/PrerakProfileView/${id}/educationdetails`
+                        );
                       }}
                       color="maroon.400"
                     />
                   </HStack>
                   <Divider orientation="horizontal" />
                 </VStack>
-                <VStack space="2" paddingTop="5">
+                {/* <VStack space="2" paddingTop="5">
                   <HStack alignItems="center" justifyContent="space-between">
                     <HStack space="md" alignItems="center">
                       <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
@@ -163,16 +166,16 @@ export default function PrerakProfileView() {
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={() => {
-                        // navigate(`/beneficiary/${id}/basicdetails`);
+                        navigate(`/beneficiary/${id}/basicdetails`);
                       }}
                       color="maroon.400"
                     />
                   </HStack>
                   <Divider orientation="horizontal" />
-                </VStack>
+                </VStack> */}
               </VStack>
             </Box>
-            <Box
+            {/* <Box
               bg="gray.100"
               borderColor="gray.300"
               borderRadius="10px"
@@ -204,7 +207,7 @@ export default function PrerakProfileView() {
                   <Divider orientation="horizontal" />
                 </VStack>
               </VStack>
-            </Box>
+            </Box> */}
           </VStack>
         </VStack>
       )}

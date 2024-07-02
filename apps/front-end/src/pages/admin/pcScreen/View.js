@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   AdminTypo,
   AdminLayout,
@@ -7,6 +7,7 @@ import {
   organisationService,
   Breadcrumb,
   PcuserService,
+  authRegistryService,
 } from "@shiksha/common-lib";
 import {
   HStack,
@@ -16,8 +17,11 @@ import {
   Pressable,
   Modal,
   Button,
+  FormControl,
+  Input,
+  useToast,
 } from "native-base";
-import Chip from "component/Chip";
+import Chip, { ChipStatus } from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import AssignedList from "./AssignedList";
@@ -27,6 +31,7 @@ import DatePicker from "../../../v2/components/Static/FormBaseInput/DatePicker";
 
 function View() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
   const [assignPrerak, setassignPrerak] = useState();
@@ -35,7 +40,94 @@ function View() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [passwordModal, setPasswordModal] = useState(false);
   const [filter, setFilter] = useState();
+  const [showPassword, setShowPassword] = useState(false);
+  const [credentials, setCredentials] = useState();
+  const [errors, setErrors] = useState({});
+  const [confirmPassword, setConfirmPassword] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  }, []);
+
+  const toggleConfirmPasswordVisibility = useCallback(() => {
+    setConfirmPassword((prevConfirmPassword) => !prevConfirmPassword);
+  }, []);
+
+  const validate = useCallback(() => {
+    let arr = {};
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (
+      typeof credentials?.password === "undefined" ||
+      credentials?.password === ""
+    ) {
+      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
+    } else if (!regex.test(credentials?.password)) {
+      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
+    }
+
+    if (
+      typeof credentials?.confirmPassword === "undefined" ||
+      credentials?.confirmPassword === ""
+    ) {
+      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
+    } else if (!regex.test(credentials?.confirmPassword)) {
+      arr = {
+        ...arr,
+        confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
+      };
+    } else if (credentials?.confirmPassword !== credentials?.password) {
+      arr = {
+        ...arr,
+        confirmPassword: t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"),
+      };
+    }
+
+    setErrors(arr);
+    return !(arr.password || arr.confirmPassword);
+  }, [credentials, t]);
+
+  const handleResetPassword = async (password, confirm_password) => {
+    setIsButtonLoading(true);
+    if (validate()) {
+      if (password === confirm_password) {
+        const bodyData = {
+          id: id.toString(),
+          password: password,
+        };
+        const resetPassword = await authRegistryService.resetPasswordAdmin(
+          bodyData
+        );
+        if (resetPassword.success === true) {
+          setCredentials();
+          setPasswordModal(false);
+          toast.show({
+            title: "Success",
+            variant: "solid",
+            description: resetPassword?.message,
+          });
+          setPasswordModal(false);
+          setIsButtonLoading(false);
+          return { status: true };
+        } else if (resetPassword.success === false) {
+          setIsButtonLoading(false);
+          setCredentials();
+          setPasswordModal(false);
+          return { status: false };
+        }
+      } else if (password !== confirm_password) {
+        setIsButtonLoading(false);
+        setCredentials();
+        setPasswordModal(false);
+        return { status: false };
+      }
+    } else {
+      setIsButtonLoading(false);
+      setCredentials();
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -152,8 +244,8 @@ function View() {
               >
                 {t("VIEW_DAILY_ACTIVITIES")}
               </AdminTypo.Secondarybutton>
-              {/* <AdminTypo.Secondarybutton
-                onPress={() => navigate("/admin/addpcuser")}
+              <AdminTypo.Secondarybutton
+                onPress={() => setPasswordModal(true)}
                 rightIcon={
                   <IconByName
                     color="#084B82"
@@ -164,7 +256,7 @@ function View() {
                 }
               >
                 {t("RESET_PASSWORD")}
-              </AdminTypo.Secondarybutton> */}
+              </AdminTypo.Secondarybutton>
             </HStack>
           </VStack>
           <HStack flex="0.5" justifyContent="center">
@@ -292,6 +384,147 @@ function View() {
                 )}
               </VStack>
             </Modal.Body>
+          </Modal.Content>
+        </Modal>
+        <Modal
+          isOpen={passwordModal}
+          onClose={() => setPasswordModal(false)}
+          avoidKeyboard
+          size="xl"
+        >
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header textAlign={"Center"}>
+              <AdminTypo.H1 color="textGreyColor.500">
+                {t("USER_RESET_PASSWORD")}
+              </AdminTypo.H1>
+            </Modal.Header>
+            <Modal.Body>
+              <HStack justifyContent="space-between">
+                <HStack flex={1}>
+                  <IconByName
+                    isDisabled
+                    name="UserLineIcon"
+                    color="textGreyColor.100"
+                    size="xs"
+                  />
+                  <AdminTypo.H6 color="textGreyColor.100">
+                    Username
+                  </AdminTypo.H6>
+                </HStack>
+                <AdminTypo.H3 bold>{pcData?.username}</AdminTypo.H3>
+              </HStack>
+              <FormControl isRequired isInvalid mt="4" auto>
+                <VStack space={3}>
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    InputRightElement={
+                      <IconByName
+                        name={showPassword ? "EyeLineIcon" : "EyeOffLineIcon"}
+                        _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                        onPress={() => {
+                          togglePasswordVisibility();
+                        }}
+                      />
+                    }
+                    name="new-password"
+                    placeholder={
+                      t("ENTER") + " " + t("NEW") + " " + t("PASSWORD")
+                    }
+                    autoComplete="new-password"
+                    value={credentials?.password || ""}
+                    onChange={(e) =>
+                      setCredentials({
+                        ...credentials,
+                        password: e?.target?.value?.trim(),
+                      })
+                    }
+                  />
+                  <AdminTypo.H6>
+                    8 characters, 1 Capital, 1 Small, 1 Number
+                  </AdminTypo.H6>
+                  {"password" in errors && (
+                    <FormControl.ErrorMessage
+                      _text={{
+                        fontSize: "xs",
+                        color: "error.500",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {!credentials?.password && errors.password}
+                    </FormControl.ErrorMessage>
+                  )}
+
+                  <Input
+                    id="confirmPassword"
+                    type={confirmPassword ? "text" : "password"}
+                    InputRightElement={
+                      <IconByName
+                        name={
+                          confirmPassword ? "EyeLineIcon" : "EyeOffLineIcon"
+                        }
+                        _icon={{ size: "16px", color: "Defaultcolor.400" }}
+                        onPress={() => {
+                          toggleConfirmPasswordVisibility();
+                        }}
+                      />
+                    }
+                    placeholder={
+                      t("CONFIRM") + " " + t("NEW") + " " + t("PASSWORD")
+                    }
+                    value={
+                      credentials?.confirmPassword
+                        ? credentials?.confirmPassword
+                        : ""
+                    }
+                    onChange={(e) =>
+                      setCredentials({
+                        ...credentials,
+                        confirmPassword: e?.target?.value?.trim(),
+                      })
+                    }
+                  />
+                  <AdminTypo.H6>
+                    8 characters, 1 Capital, 1 Small, 1 Number
+                  </AdminTypo.H6>
+                  {"confirmPassword" in errors && (
+                    <FormControl.ErrorMessage
+                      _text={{
+                        fontSize: "xs",
+                        color: "error.500",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {!credentials?.confirmPassword && errors.confirmPassword}
+                    </FormControl.ErrorMessage>
+                  )}
+                </VStack>
+              </FormControl>
+            </Modal.Body>
+            <Modal.Footer>
+              <HStack justifyContent="space-between" width="100%">
+                <AdminTypo.Secondarybutton
+                  onPress={() => {
+                    setPasswordModal(false);
+                    setCredentials();
+                  }}
+                >
+                  {t("CANCEL")}
+                </AdminTypo.Secondarybutton>
+                <AdminTypo.PrimaryButton
+                  isLoading={isButtonLoading}
+                  onPress={() => {
+                    handleResetPassword(
+                      credentials?.password,
+                      credentials?.confirmPassword
+                    );
+                  }}
+                >
+                  {t("USER_SET_NEW_PASSWORD")}
+                </AdminTypo.PrimaryButton>
+              </HStack>
+            </Modal.Footer>
           </Modal.Content>
         </Modal>
         <AssignedList setPcData={setPcData} setassignPrerak={setassignPrerak} />

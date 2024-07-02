@@ -11,12 +11,13 @@ import {
 import { HStack, VStack, Box, Select, Pressable, Input } from "native-base";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Chip, { ChipStatus } from "component/BeneficiaryStatus";
+import Chip from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
+import { ChipStatus } from "component/Chip";
 
 const List = ({ data }) => {
   const navigate = useNavigate();

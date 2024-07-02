@@ -19,12 +19,10 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
   useEffect(() => {
     setLoading(true);
     setBenificiary(
-      jsonParse(location?.state?.program_beneficiaries?.documents_status)
+      jsonParse(location?.state?.program_beneficiaries?.documents_status || {})
     );
     setLoading(false);
   }, []);
-
-  console.log(benificiary);
 
   return (
     <Layout
@@ -43,24 +41,28 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("DOCUMENTS_CHECKLIST")}
     >
-      <VStack width={"90%"} margin={"auto"} mt={3}>
-        {Object.entries(benificiary)?.map(([key, value]) => {
-          return (
-            <HStack
-              space={4}
-              alignItems={"center"}
-              justifyContent={"space-between"}
-              mx={4}
-              my={4}
-            >
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {t(key.toUpperCase())}:
-              </FrontEndTypo.H2>
-              <FrontEndTypo.H3>{value}</FrontEndTypo.H3>
-            </HStack>
-          );
-        })}
-      </VStack>
+      {Object.keys(benificiary)?.length > 0 ? (
+        <VStack width={"90%"} margin={"auto"} mt={3}>
+          {Object.entries(benificiary)?.map(([key, value]) => {
+            return (
+              <HStack
+                space={4}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                mx={4}
+                my={4}
+              >
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {t(key.toUpperCase())}:
+                </FrontEndTypo.H2>
+                <FrontEndTypo.H3>{value}</FrontEndTypo.H3>
+              </HStack>
+            );
+          })}
+        </VStack>
+      ) : (
+        <FrontEndTypo.H3 p={"20px"}>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
+      )}
     </Layout>
   );
 };

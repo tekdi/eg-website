@@ -35,7 +35,6 @@ function DailyActivitiesView(props) {
   }, []);
 
   const deleteActivity = async (id) => {
-    console.log({ id });
     await PcuserService.deleteActivity({ id });
     getActivityDetail();
   };
@@ -125,7 +124,9 @@ function DailyActivitiesView(props) {
             color="#0500FF"
             onPress={() => navigate(`/dailyactivities/${activity}/form`)}
           >
-            {t("ADD_ACTIVITY_FOR_ANOTHER_VILLAGE")}
+            {activities.length > 0
+              ? t("ADD_ACTIVITY_FOR_ANOTHER_VILLAGE")
+              : t("ADD_ACTIVITY")}
           </FrontEndTypo.H4>
         </VStack>
       </VStack>
