@@ -37,7 +37,11 @@ import CampExecutionEnd from "./CampExecutionEnd";
 import CampAttendance from "./CampAttendance";
 import CampTodayActivities from "./CampTodayActivities";
 
-export default function CampExecution({ footerLinks, setAlert }) {
+export default function CampExecution({
+  footerLinks,
+  userTokenInfo,
+  setAlert,
+}) {
   const { t } = useTranslation();
   const { id, step } = useParams();
   const [error, setError] = useState();
@@ -255,14 +259,14 @@ export default function CampExecution({ footerLinks, setAlert }) {
       </Suspense>
     );
   }
-
   if (cameraFile) {
     return (
       <Suspense fallback={<Loading />}>
         <Layout
           _appBar={{ name: t("CAMP_EXECUTION") }}
+          facilitator={facilitator}
           loading={loading}
-          _footer={{ menues: footerLinks }}
+          // _footer={{ menues: footerLinks }}
           analyticsPageTitle={"CAMP_EXECUTION"}
           pageTitle={t("CAMP_EXECUTION")}
           stepTitle={`${
@@ -347,7 +351,13 @@ export default function CampExecution({ footerLinks, setAlert }) {
     return (
       <Suspense fallback={<Loading />}>
         <CampExecutionEnd
-          {...{ learnerCount, todaysActivity, campType, facilitator }}
+          {...{
+            learnerCount,
+            todaysActivity,
+            userTokenInfo,
+            campType,
+            facilitator,
+          }}
         />
       </Suspense>
     );
@@ -361,6 +371,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
     return (
       <Suspense fallback={<Loading />}>
         <CampTodayActivities
+          userTokenInfo={userTokenInfo}
           campType={campType}
           footerLinks={footerLinks}
           setAlert={setAlert}
@@ -375,6 +386,7 @@ export default function CampExecution({ footerLinks, setAlert }) {
       _appBar={{ name: t("CAMP_EXECUTION") }}
       loading={loading}
       _footer={{ menues: footerLinks }}
+      facilitator={facilitator}
       analyticsPageTitle={"CAMP"}
       pageTitle={t("CAMP_EXECUTION")}
       stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(

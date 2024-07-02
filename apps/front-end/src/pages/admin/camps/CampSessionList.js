@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import SessionActions, { SessionList } from "./CampSessionModal";
+import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 const checkNext = (status, updated_at) => {
   return (
@@ -22,7 +23,7 @@ const checkNext = (status, updated_at) => {
   );
 };
 
-export default function CampSessionList({ footerLinks }) {
+export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [sessionList, setSessionList] = useState([]);
@@ -38,6 +39,8 @@ export default function CampSessionList({ footerLinks }) {
   const navigate = useNavigate();
   const [bodyHeight, setBodyHeight] = useState();
   const [campDetails, setCampDetails] = useState();
+  const fa_id = localStorage.getItem("id");
+  const [facilitator, setFacilitator] = useState();
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -90,6 +93,15 @@ export default function CampSessionList({ footerLinks }) {
 
   useEffect(async () => {
     await getCampSessionsList();
+    if (userTokenInfo) {
+      const IpUserInfo = await getIpUserInfo(fa_id);
+      let ipUserData = IpUserInfo;
+      if (!IpUserInfo) {
+        ipUserData = await setIpUserInfo(fa_id);
+      }
+
+      setFacilitator(ipUserData);
+    }
     const enumData = await enumRegistryService.listOfEnum();
     setEnumOptions(enumData?.data ? enumData?.data : {});
     setLoading(false);
@@ -223,8 +235,9 @@ export default function CampSessionList({ footerLinks }) {
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
+      facilitator={facilitator}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
-      _footer={{ menues: footerLinks }}
+      // _footer={{ menues: footerLinks }}
       getBodyHeight={(e) => setBodyHeight(e)}
       analyticsPageTitle={"CAMP_SESSION_LIST"}
       pageTitle={t("CAMP")}
