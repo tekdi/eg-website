@@ -1,10 +1,8 @@
 import {
-  AdminTypo,
   BodyMedium,
   FrontEndTypo,
   GetEnumValue,
   IconByName,
-  Layout,
   campService,
   enumRegistryService,
   benificiaryRegistoryService,
@@ -23,7 +21,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import Chip from "component/BeneficiaryStatus";
 
 const campSettingData = (item) => {
   return (
@@ -44,6 +41,8 @@ export default function List({ userTokenInfo }) {
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
   const [campCount, setCampCount] = useState();
+  const [learnerWithoutBaselineCount, setLearnerWithoutBaselineCount] =
+    useState();
 
   useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -57,6 +56,9 @@ export default function List({ userTokenInfo }) {
     } else {
       setCommunityLength(2);
     }
+    const getaBselineCount =
+      await benificiaryRegistoryService.getWithoutBaseline();
+    setLearnerWithoutBaselineCount(getaBselineCount?.data?.count || 0);
     const prerak_status = localStorage.getItem("status");
     setIpStatus(prerak_status);
     setEnumOptions(enums?.data || {});
@@ -95,10 +97,18 @@ export default function List({ userTokenInfo }) {
                         <FrontEndTypo.H2 color="textMaroonColor.400">
                           {t("PCR_CAMP")}
                         </FrontEndTypo.H2>
-                        <FrontEndTypo.H3 color="textMaroonColor.400">
-                          {`${nonRegisteredUser?.length} `}
-                          {t("UNMAPPED_LEARNERS")}
-                        </FrontEndTypo.H3>
+                        <VStack>
+                          {learnerWithoutBaselineCount && (
+                            <FrontEndTypo.H3 color="textMaroonColor.400">
+                              {`${learnerWithoutBaselineCount} `}
+                              {t("UNMAPPED_LEARNER_BUT_BASELINE_NOT_SUBMITTED")}
+                            </FrontEndTypo.H3>
+                          )}
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
+                            {`${nonRegisteredUser?.length} `}
+                            {t("UNMAPPED_LEARNERS")}
+                          </FrontEndTypo.H3>
+                        </VStack>
                       </VStack>
                       <Center>
                         {nonRegisteredUser.length > 0 && (
@@ -435,4 +445,6 @@ export default function List({ userTokenInfo }) {
   );
 }
 
-List.propTypes = {};
+List.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

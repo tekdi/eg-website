@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { HStack, ScrollView, Stack } from "native-base";
+import { ScrollView, Stack } from "native-base";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { FrontEndTypo, IconByName } from "@shiksha/common-lib";

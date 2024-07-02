@@ -7,11 +7,20 @@ import {
   enumRegistryService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { Alert, HStack, Modal, ScrollView, Stack, VStack } from "native-base";
+import {
+  Alert,
+  HStack,
+  Modal,
+  Pressable,
+  ScrollView,
+  Stack,
+  VStack,
+} from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import SessionActions, { SessionList } from "./CampSessionModal";
+import Chip from "component/BeneficiaryStatus";
 
 const checkNext = (status, updated_at) => {
   return (
@@ -113,7 +122,7 @@ export default function CampSessionList({ footerLinks }) {
     setIsDisable(true);
     if (submitStatus?.reason) {
       if (sessionDetails?.session_tracks?.[0]?.id) {
-        await campService.updateCampSession({
+        const result = await campService.updateCampSession({
           id: sessionDetails?.session_tracks?.[0]?.id,
           edit_session_type:
             submitStatus?.status === "complete"
@@ -121,6 +130,15 @@ export default function CampSessionList({ footerLinks }) {
               : "edit_incomplete_session",
           session_feedback: submitStatus?.reason,
         });
+        if (!result?.success) {
+          setError(
+            <SessionErrorMessage {...result} navigate={navigate} t={t} />
+          );
+        } else {
+          await getCampSessionsList();
+          setSubmitStatus();
+          setModalVisible();
+        }
       } else {
         let newData = { status: submitStatus?.status };
         if (submitStatus?.status === "incomplete") {
@@ -134,15 +152,21 @@ export default function CampSessionList({ footerLinks }) {
             lesson_plan_complete_feedback: submitStatus?.reason,
           };
         }
-        await campService.creatCampSession({
+        const result = await campService.creatCampSession({
           ...newData,
           learning_lesson_plan_id: modalVisible,
           camp_id: id,
         });
+        if (!result?.success) {
+          setError(
+            <SessionErrorMessage {...result} navigate={navigate} t={t} />
+          );
+        } else {
+          await getCampSessionsList();
+          setSubmitStatus();
+          setModalVisible();
+        }
       }
-      await getCampSessionsList();
-      setSubmitStatus();
-      setModalVisible();
     } else {
       setError("PLEASE_SELECT");
     }
@@ -268,7 +292,7 @@ export default function CampSessionList({ footerLinks }) {
               <Modal.CloseButton
                 onPress={() => {
                   setModalVisible();
-                  setSubmitStatus();
+                  handleCancel();
                 }}
               />
             </Modal.Header>
@@ -292,3 +316,19 @@ export default function CampSessionList({ footerLinks }) {
     </Layout>
   );
 }
+
+const SessionErrorMessage = ({ t, message, data, navigate }) => (
+  <VStack>
+    {t("CAMP_SESSION_INCOMPLETE_UNTIL_ALL_ASSESSMENTS_COMPLETED")}
+    <FrontEndTypo.H3>{t(message)}</FrontEndTypo.H3>
+    {data && (
+      <HStack flexWrap={"wrap"}>
+        {data?.map((e) => (
+          <Pressable onPress={() => navigate(`/beneficiary/${e?.id}/pcrview`)}>
+            <Chip children={e?.id} />
+          </Pressable>
+        ))}
+      </HStack>
+    )}
+  </VStack>
+);

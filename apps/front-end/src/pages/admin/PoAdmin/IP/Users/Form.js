@@ -16,7 +16,6 @@ import { Alert, Button, HStack, VStack } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { widgets, templates, transformErrors } from "component/BaseInput";
-import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import Chip from "component/Chip";
 
@@ -269,7 +268,5 @@ function UserForm() {
     </PoAdminLayout>
   );
 }
-
-UserForm.propTypes = {};
 
 export default UserForm;

@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - release-2.1.5
+      - release-2.2.2
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
@@ -18,11 +18,26 @@ jobs:
           node-version: 18.0.0
 
       - name: Generate React Build
-        run: |
-          yarn install
-          yarn workspace @shiksha/common-lib build
-          yarn install
-          yarn build
+        run:  yarn install --legacy-peer-deps
+
+      - name: Install caniuse-lite
+        run: npm install caniuse-lite --legacy-peer-deps
+
+      - name: Update Browserslist DB
+        run: npx update-browserslist-db@latest --legacy-peer-deps
+
+      - name: Build common-lib
+        run: yarn workspace @shiksha/common-lib build
+
+      - name: Install dependencies again
+        run: yarn install --legacy-peer-deps
+
+
+      - name: Set CI environment variable to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
+      - name: Build front-end
+        run: yarn build
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}

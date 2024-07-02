@@ -12,6 +12,7 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // Table component
 function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
@@ -240,5 +241,13 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
     </VStack>
   );
 }
+
+Table.PropTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+};
 
 export default React.memo(Table);

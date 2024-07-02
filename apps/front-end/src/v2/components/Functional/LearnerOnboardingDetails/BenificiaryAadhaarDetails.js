@@ -52,7 +52,7 @@ export default function BenificiaryAadhaarDetails() {
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("AADHAAR_DETAILS")}
     >
-      <VStack bg="bgGreyColor.200">
+      <VStack>
         <VStack px="5" pt="3">
           <VStack
             px="5"

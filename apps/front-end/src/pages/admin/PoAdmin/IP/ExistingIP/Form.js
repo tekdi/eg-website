@@ -8,7 +8,7 @@ import {
   cohortService,
   Breadcrumb,
 } from "@shiksha/common-lib";
-import { VStack, HStack, Button } from "native-base";
+import { VStack, HStack } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,9 +20,6 @@ const Schema = {
   required: [
     "state",
     "organisation_id",
-    // "doc_per_cohort_id",
-    // "doc_quarterly_id",
-    // "doc_per_monthly_id",
     "learner_target",
     "learner_per_camp",
     "camp_target",
@@ -37,7 +34,6 @@ const Schema = {
       type: "string",
       title: "NAME",
       format: "select",
-      // regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
     learner_target: {
       title: "LEARNER_TARGET",
@@ -53,27 +49,6 @@ const Schema = {
       title: "TARGET_CAMP",
       readOnly: true,
     },
-    // doc_per_cohort_id: {
-    //   label: "DUE_DILIGENCE_SIGNED_PROPOSAL",
-    //   uploadTitle: "DUE_DILIGENCE_SIGNED_PROPOSAL",
-    //   type: ["string", "number", "null"],
-    //   document_type: "existing_ip",
-    //   format: "FileUpload",
-    // },
-    // doc_quarterly_id: {
-    //   label: "QUARTELY_CA_CERTIFIED",
-    //   uploadTitle: "QUARTELY_CA_CERTIFIED",
-    //   type: ["string", "number", "null"],
-    //   document_type: "existing_ip",
-    //   format: "FileUpload",
-    // },
-    // doc_per_monthly_id: {
-    //   label: "MONTHLY_UTILIZATION",
-    //   uploadTitle: "MONTHLY_UTILIZATION",
-    //   type: ["string", "number", "null"],
-    //   document_type: "existing_ip",
-    //   format: "FileUpload",
-    // },
   },
 };
 

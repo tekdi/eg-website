@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -26,10 +26,11 @@ import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 const checkboxIcons = [
-  { name: "CloseCircleLineIcon", activeColor: "red.500" },
-  { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
+  { name: "CloseCircleLineIcon" },
+  { name: "CheckboxCircleLineIcon" },
 ];
 
 export default function EnrollmentReceiptView({ footerLinks }) {
@@ -38,15 +39,15 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const location = useLocation();
   const filter = jsonToQueryString(location?.state);
   const { id } = useParams();
-  const [data, setData] = React.useState();
-  const [subjects, setSubjects] = React.useState();
-  const [reason, setReason] = React.useState({});
-  const [error, setError] = React.useState({});
-  const [receiptUrl, setReceiptUrl] = React.useState();
-  const [fileType, setFileType] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [data, setData] = useState();
+  const [subjects, setSubjects] = useState();
+  const [reason, setReason] = useState({});
+  const [error, setError] = useState({});
+  const [receiptUrl, setReceiptUrl] = useState();
+  const [fileType, setFileType] = useState();
+  const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [boardName, setBoardName] = useState({});
   const [localData, setLocalData] = useState({});
   const [paymentDocId, setPaymentDocId] = useState([]);
@@ -60,7 +61,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     setFileType(newResult?.key?.split(".").pop());
     setIsButtonLoading(false);
   };
-  const profileDetails = React.useCallback(async () => {
+  const profileDetails = useCallback(async () => {
     const { state_name } = await getSelectedProgramId();
     setLocalData(state_name);
     const { result } = await benificiaryRegistoryService.getOne(id);
@@ -84,11 +85,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     await handleSetReceiptUrl(doc_id);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     profileDetails();
   }, [profileDetails]);
 
-  const checkValidation = React.useCallback(() => {
+  const checkValidation = useCallback(() => {
     let data = {};
     ["learner_enrollment_details", "enrollment_details"]
       .filter((e) => !reason[e])
@@ -97,7 +98,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     return !Object.keys(data).length;
   }, [reason, t]);
 
-  const submit = React.useCallback(
+  const submit = useCallback(
     async (status) => {
       if (checkValidation()) {
         const data = await benificiaryRegistoryService.verifyEnrollment({
@@ -299,7 +300,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         _hstack: { space: "6" },
                         _subHstack: {
                           justifyContent: "space-between",
-                          width: "120px",
                         },
                         _pressable: {
                           p: 0,
@@ -364,7 +364,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         _hstack: { space: "4" },
                         _subHstack: {
                           justifyContent: "space-between",
-                          width: "120px",
                         },
                         _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
                       }}
@@ -642,7 +641,7 @@ const ValidationBox = ({ children, error }) => (
 const Message = ({ status, reason }) => {
   const { t } = useTranslation();
   if (status === "pending") {
-    return <React.Fragment />;
+    return <Fragment />;
   } else if (
     reason?.learner_enrollment_details === "no" &&
     reason?.enrollment_details === "no"
@@ -665,7 +664,7 @@ const Message = ({ status, reason }) => {
       </AdminTypo.H4>
     );
   }
-  return <React.Fragment />;
+  return <Fragment />;
 };
 
 const LearnerInfo = ({ item, reason, status }) => {
@@ -751,4 +750,8 @@ const ActiveButton = ({ isActive, children, ...props }) => {
   return (
     <AdminTypo.Secondarybutton {...props}>{children}</AdminTypo.Secondarybutton>
   );
+};
+
+EnrollmentReceiptView.PropTypes = {
+  footerLinks: PropTypes.any,
 };

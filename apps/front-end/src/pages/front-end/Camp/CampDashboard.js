@@ -6,15 +6,27 @@ import List from "./CampList/CampList";
 import EpcpCard from "./CampList/EpcpCard";
 import ExamPreparationCard from "./CampList/ExamPreparationCard";
 import { useEffect, useState } from "react";
+import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 export default function CampDashboard({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const [stateName, setStateName] = useState();
+  const fa_id = localStorage.getItem("id");
+  const [facilitator, setFacilitator] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
       const { state_name } = (await getSelectedProgramId()) || {};
       setStateName(state_name);
+      if (userTokenInfo) {
+        const IpUserInfo = await getIpUserInfo(fa_id);
+        let ipUserData = IpUserInfo;
+        if (!IpUserInfo) {
+          ipUserData = await setIpUserInfo(fa_id);
+        }
+
+        setFacilitator(ipUserData);
+      }
     };
     fetchData();
   }, []);
@@ -28,6 +40,7 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_DASHBOARD"}
       pageTitle={t("CAMP_DASHBOARD")}
+      facilitator={facilitator}
       // stepTitle={t("ATTENDANCE")}
     >
       <List userTokenInfo={userTokenInfo} />

@@ -8,7 +8,6 @@ import React, {
 import PropTypes from "prop-types";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { useNavigate } from "react-router-dom";
 import {
   PoAdminLayout,
   IconByName,
@@ -32,14 +31,13 @@ import {
   Text,
 } from "native-base";
 import { useTranslation } from "react-i18next";
-import { debounce, uniq, uniqBy } from "lodash";
+import { debounce } from "lodash";
 import Table from "./Table";
 import { MultiCheck } from "../../../../component/BaseInput";
 import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
 
 function LearnerList({ userTokenInfo }) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [Width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
