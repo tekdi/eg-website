@@ -89,7 +89,11 @@ export default function List() {
           order_by: { id: "asc" },
           ...filter,
         });
-        setDoIds(data?.data);
+        const updated = data?.data?.map((e) => ({
+          ...e,
+          event_type: t(e.event_type),
+        }));
+        setDoIds(updated);
         setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
@@ -189,7 +193,7 @@ export default function List() {
                 pl="2"
               />
             }
-            placeholder={t("SEARCH_BY_EVENT_TYPE")}
+            placeholder={t("SEARCH")}
             variant="outline"
             onChange={debouncedHandleSearch}
           />
