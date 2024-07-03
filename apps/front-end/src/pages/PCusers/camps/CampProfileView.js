@@ -12,6 +12,7 @@ import {
   campService,
   AdminTypo,
 } from "@shiksha/common-lib";
+import { ChipStatus } from "component/Chip";
 
 export default function CampProfileView({ userTokenInfo }) {
   const [loading, setloading] = React.useState(false);
@@ -28,6 +29,7 @@ export default function CampProfileView({ userTokenInfo }) {
   const [loadingList, setLoadingList] = useState(false);
   const location = useLocation();
   const [beneficiary, setBeneficiary] = React.useState({});
+  const [enumOptions, setEnumOptions] = useState({});
 
   const getPrerakCampProfile = async () => {
     setLoadingList(true);
@@ -38,8 +40,9 @@ export default function CampProfileView({ userTokenInfo }) {
         user_id: location.state?.user_id,
       };
       const result = await campService.getPrerakCampProfile(id, payload);
-      console.log("result", result);
       setPrerakProfile(result?.faciltator[0]);
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data?.FACILITATOR_STATUS : {});
       setLoadingList(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -104,65 +107,47 @@ export default function CampProfileView({ userTokenInfo }) {
                 )}
               </HStack>
               <VStack space="4" flexWrap="wrap">
-                <AdminTypo.H3
-                  color="textGreyColor.800"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  m="4"
-                >
-                  {["enrolled_ip_verified", "registered_in_camp"].includes(
-                    prerakProfile?.status
-                  )
-                    ? `${prerakProfile?.first_name ?? "-"} ${
-                        prerakProfile?.last_name ?? "-"
-                      }`
-                    : `${prerakProfile?.first_name ?? "-"} ${
-                        prerakProfile?.last_name ?? "-"
-                      }`}
-                </AdminTypo.H3>
-                <HStack
-                  bg="textMaroonColor.600"
-                  rounded={"md"}
-                  alignItems="center"
-                  p="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="CellphoneLineIcon"
-                    color="white"
-                  />
+                <VStack space="4" alignItems={"Center"}>
+                  <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                    {prerakProfile?.first_name} {" " + prerakProfile?.last_name}
+                  </FrontEndTypo.H2>
 
-                  <AdminTypo.H6 color="white" bold>
+                  <FrontEndTypo.H3 color="textMaroonColor.400">
+                    <IconByName
+                      isDisabled
+                      _icon={{ size: "20px" }}
+                      name="CellphoneLineIcon"
+                      color="textMaroonColor.400"
+                    />
                     {prerakProfile?.mobile}
-                  </AdminTypo.H6>
-                </HStack>
-                <HStack
-                  bg="textMaroonColor.600"
-                  rounded={"md"}
-                  p="2"
-                  alignItems="center"
-                  space="2"
-                >
-                  <IconByName
-                    isDisabled
-                    _icon={{ size: "20px" }}
-                    name="MapPinLineIcon"
-                    color="white"
+                  </FrontEndTypo.H3>
+                  <ChipStatus
+                    w="fit-content"
+                    status={prerakProfile?.program_faciltators?.status}
+                    is_duplicate={prerakProfile?.is_duplicate}
+                    is_deactivated={prerakProfile?.is_deactivated}
+                    rounded={"sm"}
                   />
-                  <AdminTypo.H6 color="white" bold>
-                    {[
-                      prerakProfile?.state,
-                      prerakProfile?.district,
-                      prerakProfile?.block,
-                      prerakProfile?.village,
-                      prerakProfile?.grampanchayat,
-                    ]
-                      .filter((e) => e)
-                      .join(",")}
-                  </AdminTypo.H6>
-                </HStack>
+                  <HStack rounded={"md"} p="2" alignItems="center" space="2">
+                    <IconByName
+                      isDisabled
+                      _icon={{ size: "20px" }}
+                      name="MapPinLineIcon"
+                      color="textMaroonColor.400"
+                    />
+                    <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                      {[
+                        prerakProfile?.state,
+                        prerakProfile?.district,
+                        prerakProfile?.block,
+                        prerakProfile?.village,
+                        prerakProfile?.grampanchayat,
+                      ]
+                        .filter((e) => e)
+                        .join(",")}
+                    </FrontEndTypo.H2>
+                  </HStack>
+                </VStack>
               </VStack>
             </Box>
 
@@ -203,7 +188,17 @@ export default function CampProfileView({ userTokenInfo }) {
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={() => {
-                          navigate(`/camps/CampKitDetails/${id}`);
+                          navigate(
+                            `/camps/CampProfileView/${id}/edit_kit_details`,
+                            {
+                              state: {
+                                academic_year_id:
+                                  location.state?.academic_year_id,
+                                program_id: location.state?.program_id,
+                                user_id: location.state?.user_id,
+                              },
+                            }
+                          );
                         }}
                         color="maroon.400"
                       />
@@ -224,7 +219,17 @@ export default function CampProfileView({ userTokenInfo }) {
                       <IconByName
                         name="ArrowRightSLineIcon"
                         onPress={() => {
-                          navigate(`/camps/CampFacility/${id}`);
+                          navigate(
+                            `/camps/CampProfileView/${id}/edit_property_facilities`,
+                            {
+                              state: {
+                                academic_year_id:
+                                  location.state?.academic_year_id,
+                                program_id: location.state?.program_id,
+                                user_id: location.state?.user_id,
+                              },
+                            }
+                          );
                         }}
                         color="maroon.400"
                       />
