@@ -20,7 +20,11 @@ const PRESENT = "present";
 const ABSENT = "absent";
 
 // App
-export default function CampAttendancePage({ activityId, campType }) {
+export default function CampAttendancePage({
+  activityId,
+  campType,
+  facilitator,
+}) {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -335,6 +339,7 @@ export default function CampAttendancePage({ activityId, campType }) {
     <Layout
       getBodyHeight={(e) => setBodyHeight(e)}
       loading={loading}
+      facilitator={facilitator}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
       _appBar={{
         onPressBackButton: (e) => navigate(`/camps/${id}/campexecution`),

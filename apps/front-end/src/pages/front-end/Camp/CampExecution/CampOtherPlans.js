@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { RadioBtn } from "component/BaseInput";
 
-const CampOtherPlans = React.memo(({ footerLinks }) => {
+const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState(false);
   const { id } = useParams();
@@ -50,7 +50,11 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
 
   return (
     <Layout
-      _appBar={{ name: t("CAMP_OTHER_PLANS") }}
+      _appBar={{
+        name: t("CAMP_OTHER_PLANS"),
+        onPressBackButton: () => navigate(`/camps/${id}/campexecution`),
+      }}
+      facilitator={userTokenInfo?.authUser || {}}
       loading={loading}
       _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_OTHERPLANS"}

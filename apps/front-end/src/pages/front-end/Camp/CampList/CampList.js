@@ -1,32 +1,22 @@
 import {
-  BodyMedium,
+  CustomAlert,
   FrontEndTypo,
   GetEnumValue,
   IconByName,
-  campService,
-  enumRegistryService,
-  benificiaryRegistoryService,
   ObservationService,
   TitleCard,
-  CustomAlert,
+  benificiaryRegistoryService,
+  campService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
-import {
-  Alert,
-  Avatar,
-  Center,
-  HStack,
-  Modal,
-  Stack,
-  VStack,
-} from "native-base";
+import { Avatar, Center, HStack, Modal, Stack, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { Chart } from "react-google-charts";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
-import Chip from "component/BeneficiaryStatus";
-import { Chart } from "react-google-charts";
-import { useEffect, useState } from "react";
 
-export default function List({ userTokenInfo, footerLinks }) {
+export default function List({ userTokenInfo, stateName }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -78,7 +68,7 @@ export default function List({ userTokenInfo, footerLinks }) {
 
   const flattenList = (list) => {
     let flattenedArray = [];
-    list.forEach((item) => {
+    list?.forEach((item) => {
       item.group.group_users.forEach((userObj) => {
         const { user_id, first_name, middle_name, last_name } = userObj.user;
         flattenedArray.push({
@@ -101,7 +91,7 @@ export default function List({ userTokenInfo, footerLinks }) {
       let observation = "EPCP";
       const listData = await ObservationService.getCampLearnerList();
       const flattenedList = flattenList(listData?.data);
-      const userIds = listData?.data.flatMap((group) =>
+      const userIds = listData?.data?.flatMap((group) =>
         group.group.group_users.map((user) => user.user.user_id)
       );
       const data = await ObservationService.getSubmissionData(
@@ -212,7 +202,7 @@ export default function List({ userTokenInfo, footerLinks }) {
           {`${t("HELLO")}, ${userTokenInfo?.authUser?.first_name}!`}
         </FrontEndTypo.H3>
 
-        {campList?.pcr_camp?.length < 2 && (
+        {campList?.pcr_camp?.length > 0 && campList?.pcr_camp?.length < 2 && (
           <VStack
             // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
@@ -291,76 +281,9 @@ export default function List({ userTokenInfo, footerLinks }) {
                     {campList?.pcr_camp?.map((item, i) => {
                       const index = i + 1;
                       return (
-                        <TitleCard
-                          _icon=""
-                          icon={
-                            <IconByName
-                              _icon={{ color: "white" }}
-                              name="Book2LineIcon"
-                            />
-                          }
-                          onPress={() => {
-                            setCampSelected(item);
-                          }}
-                        >
-                          <HStack
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                          >
-                            <HStack
-                              // direction={["column", "row", "row"]}
-                              alignItems={"center"}
-                              justifyContent={"space-between"}
-                            >
-                              <VStack>
-                                <FrontEndTypo.H3>{`${t(
-                                  "CAMP_ID"
-                                )} `}</FrontEndTypo.H3>
-                                {item?.group?.description && (
-                                  <FrontEndTypo.H6>
-                                    {item?.group?.description}
-                                  </FrontEndTypo.H6>
-                                )}
-                                <FrontEndTypo.H3>{item?.id}</FrontEndTypo.H3>
-                              </VStack>
-
-                              <HStack>
-                                <IconByName
-                                  isDisabled
-                                  name={
-                                    ["camp_ip_verified"].includes(
-                                      item?.group?.status
-                                    )
-                                      ? "CheckLineIcon"
-                                      : "ErrorWarningLineIcon"
-                                  }
-                                  color={
-                                    ["camp_ip_verified"].includes(
-                                      item?.group?.status
-                                    )
-                                      ? "textGreen.700"
-                                      : "textMaroonColor.400"
-                                  }
-                                  _icon={{ size: "20px" }}
-                                />
-                                <GetEnumValue
-                                  t={t}
-                                  enumType={"GROUPS_STATUS"}
-                                  enumOptionValue={item?.group?.status}
-                                  enumApiData={enumOptions}
-                                  color={
-                                    ["camp_ip_verified"].includes(
-                                      item?.group?.status
-                                    )
-                                      ? "textGreen.700"
-                                      : "textMaroonColor.400"
-                                  }
-                                  ml={2}
-                                />
-                              </HStack>
-                            </HStack>
-                          </HStack>
-                        </TitleCard>
+                        <CampCard
+                          {...{ index, item, enumOptions, setCampSelected }}
+                        />
                       );
                     })}
                     {campCount >= 0 && campCount < 2 && (
@@ -412,63 +335,9 @@ export default function List({ userTokenInfo, footerLinks }) {
                 {campList?.camps?.map((item, i) => {
                   const index = i + 1;
                   return (
-                    <TitleCard
-                      onPress={() => {
-                        setCampSelected(item);
-                      }}
-                      title={
-                        <FrontEndTypo.H1 bold color={"white"}>
-                          {`C${String(index).padStart(2)}`}
-                        </FrontEndTypo.H1>
-                      }
-                    >
-                      <HStack
-                        // direction={["column", "row", "row"]}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        <VStack>
-                          <FrontEndTypo.H3>{`${t(
-                            "CAMP_ID"
-                          )} `}</FrontEndTypo.H3>
-                          {item?.group?.description && (
-                            <FrontEndTypo.H6>
-                              {item?.group?.description}
-                            </FrontEndTypo.H6>
-                          )}
-                          <FrontEndTypo.H3>{item?.id}</FrontEndTypo.H3>
-                        </VStack>
-
-                        <HStack>
-                          <IconByName
-                            isDisabled
-                            name={
-                              ["camp_ip_verified"].includes(item?.group?.status)
-                                ? "CheckLineIcon"
-                                : "ErrorWarningLineIcon"
-                            }
-                            color={
-                              ["camp_ip_verified"].includes(item?.group?.status)
-                                ? "textGreen.700"
-                                : "textMaroonColor.400"
-                            }
-                            _icon={{ size: "20px" }}
-                          />
-                          <GetEnumValue
-                            t={t}
-                            enumType={"GROUPS_STATUS"}
-                            enumOptionValue={item?.group?.status}
-                            enumApiData={enumOptions}
-                            color={
-                              ["camp_ip_verified"].includes(item?.group?.status)
-                                ? "textGreen.700"
-                                : "textMaroonColor.400"
-                            }
-                            ml={2}
-                          />
-                        </HStack>
-                      </HStack>
-                    </TitleCard>
+                    <CampCard
+                      {...{ index, item, enumOptions, setCampSelected }}
+                    />
                   );
                 })}
               </VStack>
@@ -476,7 +345,9 @@ export default function List({ userTokenInfo, footerLinks }) {
           </VStack>
         )}
       </VStack>
-      <Chart chartType="PieChart" data={statusArray} options={options} />
+      {stateName === "RAJASTHAN" && (
+        <Chart chartType="PieChart" data={statusArray} options={options} />
+      )}
       <Modal
         isOpen={campSelected}
         onClose={() => setCampSelected()}
@@ -544,4 +415,66 @@ export default function List({ userTokenInfo, footerLinks }) {
 List.PropTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
+};
+
+const CampCard = ({ index, item, enumOptions, setCampSelected }) => {
+  const { t } = useTranslation();
+  return (
+    <TitleCard
+      onPress={() => {
+        setCampSelected(item);
+      }}
+      _title={{
+        flex: 12,
+        px: 2.5,
+        py: 5,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      _body={{ px: 2.5, py: 5 }}
+      title={
+        <FrontEndTypo.H1 bold color={"white"}>
+          {`C${String(index).padStart(2)}`}
+        </FrontEndTypo.H1>
+      }
+    >
+      <HStack alignItems={"center"} justifyContent={"space-between"}>
+        <VStack flex={50}>
+          <FrontEndTypo.H3>{`${t("CAMP_ID")} `}</FrontEndTypo.H3>
+          {item?.group?.description && (
+            <FrontEndTypo.H6>{item?.group?.description}</FrontEndTypo.H6>
+          )}
+          <FrontEndTypo.H3>{item?.id}</FrontEndTypo.H3>
+        </VStack>
+
+        <HStack space={2} flex="50" justifyContent={"end"}>
+          <IconByName
+            isDisabled
+            name={
+              ["camp_ip_verified"].includes(item?.group?.status)
+                ? "CheckLineIcon"
+                : "ErrorWarningLineIcon"
+            }
+            color={
+              ["camp_ip_verified"].includes(item?.group?.status)
+                ? "textGreen.700"
+                : "textMaroonColor.400"
+            }
+            _icon={{ size: "20px" }}
+          />
+          <GetEnumValue
+            t={t}
+            enumType={"GROUPS_STATUS"}
+            enumOptionValue={item?.group?.status}
+            enumApiData={enumOptions}
+            color={
+              ["camp_ip_verified"].includes(item?.group?.status)
+                ? "textGreen.700"
+                : "textMaroonColor.400"
+            }
+          />
+        </HStack>
+      </HStack>
+    </TitleCard>
+  );
 };

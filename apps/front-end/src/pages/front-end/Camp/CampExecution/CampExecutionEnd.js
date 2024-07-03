@@ -1,18 +1,17 @@
 import {
-  campService,
-  FrontEndTypo,
-  Layout,
-  ImageView,
-  CardComponent,
-  IconByName,
   CustomAlert,
+  FrontEndTypo,
+  ImageView,
+  Layout,
+  campService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React, { useEffect, useCallback, useState, useMemo } from "react";
+import { Box, HStack, Image, Modal, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
+import TimelineItem from "./TimeLine";
 
 function CampExecutionEnd({ facilitator, learnerCount, campType }) {
   const { t } = useTranslation();
@@ -100,6 +99,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
       _appBar={{
         name: t("CAMP_EXECUTION"),
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
+        onPressBackButton: () => navigate("/camps"),
       }}
       facilitator={facilitator}
       loading={loading}
@@ -110,6 +110,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
       }/${step}`}
     >
       <VStack py={6} px={4} mb={5} space="6">
+        <FrontEndTypo.H2>{t("CAMP_EXECUTION")}</FrontEndTypo.H2>
+        <HStack justifyContent={"space-between"}>
+          <FrontEndTypo.H3 bold color="textGreyColor.750">
+            {`${t("CAMP_ID")}: ${id}`}
+          </FrontEndTypo.H3>
+        </HStack>
         <Box
           margin={"auto"}
           height={"200px"}
@@ -134,46 +140,36 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             zIndex={-1}
           />
 
-          <VStack pr={"80px"} pb={"120px"}>
+          <VStack pr={"55px"} pb={"130px"}>
             <ImageView
-              width="80px"
-              height="80px"
+              style={{ boxShadow: "0px 4px 4px 0px #ffffff" }}
+              width="71px"
+              height="71px"
               source={{ document_id: facilitator?.profile_photo_1?.id }}
             />
           </VStack>
         </Box>
-        <CustomAlert status={""} title={t("DONT_CLOSE_SCREEN")} />
-        <FrontEndTypo.Secondarybutton
-          onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
-        >
-          <HStack alignItems={"center"} space={3}>
-            <FrontEndTypo.H1 color={"textMaroonColor.400"}>
-              {t("LEARNER_ATTENDANCE")}
-            </FrontEndTypo.H1>
-            {learnerAttendanceCount && (
-              <IconByName name="CheckboxCircleFillIcon" color="successColor" />
-            )}
-          </HStack>
-        </FrontEndTypo.Secondarybutton>
-        <FrontEndTypo.Secondarybutton
-          isDisabled={disableTodayAct}
-          onPress={() => navigate(`/camps/${id}/campexecution/activities`)}
-        >
-          <HStack alignItems={"center"} space={3}>
-            <FrontEndTypo.H1 color={"textMaroonColor.400"}>
-              {t("TODAYS_TASKS")}
-            </FrontEndTypo.H1>
-            {(todaysActivity?.misc_activities || sessionList) && (
-              <IconByName name="CheckboxCircleFillIcon" color="successColor" />
-            )}
-          </HStack>
-        </FrontEndTypo.Secondarybutton>
-        <FrontEndTypo.Primarybutton
-          isDisabled={disable}
-          onPress={() => setOpenModal(true)}
-        >
-          {t("END_CAMP")}
-        </FrontEndTypo.Primarybutton>
+        <CustomAlert title={t("DONT_CLOSE_SCREEN")} />
+        <TimelineItem
+          _vstack={{ space: "9" }}
+          data={[
+            {
+              title: t("LEARNER_ATTENDANCE"),
+              isDone: true,
+              onPress: () => navigate(`/camps/${id}/campexecution/attendance`),
+            },
+            {
+              title: t("TODAYS_TASKS"),
+              isDone: !disableTodayAct,
+              onPress: () => navigate(`/camps/${id}/campexecution/activities`),
+            },
+            {
+              title: t("END_CAMP"),
+              isDone: !disable,
+              onPress: () => setOpenModal(true),
+            },
+          ]}
+        />
       </VStack>
       <Modal isOpen={openModal} size="xs">
         <Modal.Content>

@@ -68,7 +68,7 @@ export default function CampExecution({
     if (!["attendance"].includes(step)) {
       const result = await campService.getCampDetails({ id });
       setCampDetail(result?.data);
-      setFacilitator(result?.data?.faciltator?.[0] || {});
+      setFacilitator(userTokenInfo?.authUser || {});
       setLearnerCount(result?.data?.group_users?.length);
       setCampType(result?.data);
     }
@@ -276,7 +276,10 @@ export default function CampExecution({
     return (
       <Suspense fallback={<Loading />}>
         <Layout
-          _appBar={{ name: t("CAMP_EXECUTION") }}
+          _appBar={{
+            name: t("CAMP_EXECUTION"),
+            onPressBackButton: () => navigate("/camps"),
+          }}
           facilitator={facilitator}
           loading={loading}
           // _footer={{ menues: footerLinks }}
@@ -383,7 +386,11 @@ export default function CampExecution({
   } else if (page === "attendance") {
     return (
       <Suspense fallback={<Loading />}>
-        <CampAttendance activityId={activityId} campType={campType} />
+        <CampAttendance
+          activityId={activityId}
+          campType={campType}
+          facilitator={facilitator}
+        />
       </Suspense>
     );
   } else if (page === "activities") {
@@ -403,7 +410,10 @@ export default function CampExecution({
   const currectDate = moment().format("D MMMM, YYYY");
   return (
     <Layout
-      _appBar={{ name: t("CAMP_EXECUTION") }}
+      _appBar={{
+        name: t("CAMP_EXECUTION"),
+        onPressBackButton: () => navigate("/camps"),
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
       facilitator={facilitator}
@@ -445,10 +455,11 @@ export default function CampExecution({
               zIndex={-1}
             />
 
-            <VStack pr={"80px"} pb={"120px"}>
+            <VStack pr={"55px"} pb={"130px"}>
               <ImageView
-                width="80px"
-                height="80px"
+                style={{ boxShadow: "0px 4px 4px 0px #ffffff" }}
+                width="71px"
+                height="71px"
                 source={{ document_id: facilitator?.profile_photo_1?.id }}
               />
               {/* <CardComponent

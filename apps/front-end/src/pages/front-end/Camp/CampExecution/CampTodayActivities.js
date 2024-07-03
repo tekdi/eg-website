@@ -126,7 +126,10 @@ export default function CampTodayActivities({
 
   return (
     <Layout
-      _appBar={t("ADD_TODAYS_ACTIVITIES")}
+      _appBar={{
+        name: t("ADD_TODAYS_ACTIVITIES"),
+        onPressBackButton: () => navigate(`/camps/${id}/campexecution`),
+      }}
       // _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_ACTIVITIES"}
       facilitator={facilitator}
