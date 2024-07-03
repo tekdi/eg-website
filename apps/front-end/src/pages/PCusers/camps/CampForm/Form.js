@@ -2,12 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
-// import PropTypes from "prop-types";
 import {
-  geolocationRegistryService,
   PCusers_layout as Layout,
-  BodyMedium,
-  filterObject,
   FrontEndTypo,
   enumRegistryService,
   getOptions,
@@ -26,7 +22,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 // App
-export default function App({ footerLinks }) {
+export default function App() {
   const { step } = useParams();
   const { id } = useParams();
   const [page, setPage] = useState();
@@ -53,7 +49,7 @@ export default function App({ footerLinks }) {
         academic_year_id: location.state?.academic_year_id,
         program_id: location.state?.program_id,
         user_id: location.state?.user_id,
-        camp_id: id,
+        camp_id: parseInt(id),
       };
       const result = await campService.getCampKitDetails(payload);
       console.log("result", result);
@@ -119,11 +115,14 @@ export default function App({ footerLinks }) {
       } else {
         nextIndex = pages[index - 1];
       }
+      console.log({ location });
       if (pageStape === "p") {
-        navigate(`/camps`);
+        const campId = parseInt(id);
+        navigate(`/camps/CampProfileView/${campId}`, {
+          state: location?.state,
+        });
       } else if (nextIndex !== undefined) {
         if (step === "edit_kit_details") {
-          // navigate(`/camps/${id}/edit_family_consent`);
         } else {
           // navigate(`/camps/${id}/${nextIndex}`);
         }
@@ -280,7 +279,15 @@ export default function App({ footerLinks }) {
                 onError,
                 transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
-            ></Form>
+            >
+              <FrontEndTypo.Primarybutton
+                mt="3"
+                type="submit"
+                style={{ display: "none" }}
+              >
+                {t("SAVE")}
+              </FrontEndTypo.Primarybutton>
+            </Form>
           )}
         </Box>
       )}

@@ -323,7 +323,7 @@ export default function CampList() {
             </Modal.Header>
 
             <Modal.Body p="5" pb="10">
-              <VStack space="5">
+              <VStack>
                 <HStack
                   space="5"
                   pb="5"
@@ -342,8 +342,11 @@ export default function CampList() {
                           value={item?.user_id}
                           my={2}
                         >
-                          {item?.user?.first_name} {item?.user?.middle_name}{" "}
-                          {item?.user?.last_name}
+                          {`${item?.user?.first_name || ""} ${
+                            item?.user?.middle_name || ""
+                              ? item.user.middle_name + " "
+                              : ""
+                          }${item?.user?.last_name || ""}`}
                         </Checkbox>
                       ))
                     ) : (
