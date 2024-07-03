@@ -454,19 +454,23 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
               _vstack={{ space: 0 }}
               _hstack={{ borderBottomWidth: 0 }}
               title={t("ADDRESS_DETAILS")}
-              label={["HOME"]}
-              item={{
-                home: [
-                  facilitator?.state,
-                  facilitator?.district,
-                  facilitator?.block,
-                  facilitator?.village,
-                  facilitator?.grampanchayat,
-                ]
-                  .filter((e) => e)
-                  .join(", "),
-              }}
-              arr={["home"]}
+              label={[
+                "STATE",
+                "DISTRICT",
+                "BLOCKS",
+                "VILLAGE_WARD",
+                "GRAMPANCHAYAT",
+                "PINCODE",
+              ]}
+              item={facilitator}
+              arr={[
+                "state",
+                "district",
+                "block",
+                "village",
+                "grampanchayat",
+                "pincode",
+              ]}
               onEdit={
                 isAddressEdit()
                   ? (e) => navigate(`/profile/edit/address_details`)
