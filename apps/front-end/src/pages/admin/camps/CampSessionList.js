@@ -253,12 +253,15 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
     if (totalSessions === 0) return 0; // to avoid division by zero
     return (completedSessions / totalSessions) * 100;
   };
+
   return (
     <Layout
       _appBar={{
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },
+        onPressBackButton: () =>
+          navigate(`/camps/${id}/campexecution/activities`),
       }}
       facilitator={facilitator}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}

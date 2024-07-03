@@ -453,7 +453,7 @@ const DEFAULT_THEME = {
       900: '#1e3a8a'
     },
     footer: {
-      boxBorder: '#FF0000'
+      boxBorder: '#D53546'
     },
     formBg: {
       500: '#FFFFFF'
@@ -732,7 +732,7 @@ const DEFAULT_THEME = {
       300: '#FF8080',
       350: '#FFE0E1',
       400: '#790000',
-      500: '#A93505',
+      500: '#D53546',
       600: '#FF0000',
       700: '#7c2704',
       800: '#4a1702',
@@ -802,8 +802,8 @@ const DEFAULT_THEME = {
     yellowColor: '#FEFFB8',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
-    absentColor:'#D53546',
-    presentColor:"#038400",
+    absentColor: '#D53546',
+    presentColor: '#038400',
 
     secondaryBlue: {
       50: '#e7f3fe',
