@@ -24,10 +24,14 @@ export default function CampSubjectsList({ footerLinks, userTokenInfo }) {
 
   const getSubjectsData = async () => {
     if (programDetails?.program_id) {
-      const result = await campService.getSubjectsList({
-        program_id: programDetails?.program_id,
-      });
-      setSubjectsList(result?.data);
+      try {
+        const result = await campService.getSubjectsList({
+          program_id: programDetails?.program_id,
+        });
+        setSubjectsList(result?.data);
+      } catch (error) {
+        console.error("Error fetching subjects list:", error);
+      }
     }
   };
 
@@ -69,13 +73,14 @@ export default function CampSubjectsList({ footerLinks, userTokenInfo }) {
         <FrontEndTypo.H2 color="textMaroonColor.400">
           {`${assessmentTitle} ${t("SUBJECTS")}`}
         </FrontEndTypo.H2>
-        {subjectsList?.map((item) => (
+        {subjectsList?.map((item, i) => (
           <CardComponent
             _vstack={{
               flex: 1,
               borderColor: "greenIconColor",
             }}
             _body={{ pt: 4 }}
+            key={i}
           >
             <Pressable
               onPress={() =>

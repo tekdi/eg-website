@@ -11,51 +11,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
-const students = [
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "9",
-    user_id: 1234,
-  },
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "7",
-    user_id: 2345,
-  },
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "2",
-    user_id: 3456,
-  },
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "1",
-    user_id: 4567,
-  },
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "Absent",
-    user_id: 5678,
-  },
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "1",
-    user_id: 4567,
-  },
-  {
-    enrollment_first_name: "Mahru ",
-    enrollment_last_name: "Banu",
-    score: "Absent",
-    user_id: 5678,
-  },
-];
-
 const scores = [
   "0",
   "1",
@@ -84,13 +39,17 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
 
   const getStudentData = async () => {
     if (programDetails?.program_id) {
-      const result = await campService.getStudentsList({
-        program_id: programDetails?.program_id,
-        type: params?.type,
-        subject_name: params?.subject,
-        camp_id: params?.id,
-      });
-      setStudentsData(result?.data);
+      try {
+        const result = await campService.getStudentsList({
+          program_id: programDetails?.program_id,
+          type: params?.type,
+          subject_name: params?.subject,
+          camp_id: params?.id,
+        });
+        setStudentsData(result?.data);
+      } catch (error) {
+        console.log("Error fetching students list:", error);
+      }
     }
   };
 
@@ -158,6 +117,7 @@ const StudentCard = ({ student }) => {
   const [data, setData] = useState(student);
   return (
     <UserCard
+      key={data?.user_id}
       _hstack={{
         p: 2,
         space: 1,
