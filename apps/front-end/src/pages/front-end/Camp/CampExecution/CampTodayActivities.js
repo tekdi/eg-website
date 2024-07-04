@@ -148,7 +148,7 @@ export default function CampTodayActivities({
       const updatedAtDate = moment(lastUpdatedAt);
       const daysDiff = updatedAtDate.diff(currentDate, "days");
 
-      if (lastSession > 6 && daysDiff <= 2) {
+      if (lastSession >= 6 && daysDiff <= 2) {
         return (
           <CardComponent
             _vstack={{
