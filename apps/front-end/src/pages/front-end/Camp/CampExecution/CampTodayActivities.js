@@ -7,6 +7,7 @@ import {
   Layout,
   enumRegistryService,
   campService,
+  Loading,
 } from "@shiksha/common-lib";
 import {
   Actionsheet,
@@ -44,6 +45,7 @@ export default function CampTodayActivities({
   const [completeSessions, setCompleteSessions] = useState([]);
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(async () => {
     getActivity();
@@ -92,29 +94,39 @@ export default function CampTodayActivities({
 
       setFacilitator(ipUserData);
     }
-    const qData = await enumRegistryService.listOfEnum();
-    const LearningActivitydata = qData?.data;
-    setEnumOptions(LearningActivitydata);
-    const result = await campService.getCampSessionsList({ id: id });
-    const data = result?.data?.learning_lesson_plans_master || [];
-    const filteredData = data.filter(
-      (item) =>
-        item.session_tracks.length > 0 &&
-        item.session_tracks.some((track) => track.status === "complete")
-    );
-    setCompleteSessions(filteredData);
-    data.forEach((element) => {
-      const currentDate = new Date();
-      const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
-      const updatedDate = new Date(element?.session_tracks?.[0]?.updated_at);
-      if (
-        currentDate.toDateString() === createdAtDate.toDateString() ||
-        (currentDate.toDateString() === updatedDate.toDateString() &&
-          element?.session_tracks?.[0]?.status === "complete")
-      ) {
-        setSessionList(true);
-      }
-    });
+
+    try {
+      setLoading(true);
+      const qData = await enumRegistryService.listOfEnum();
+      const LearningActivitydata = qData?.data;
+      setEnumOptions(LearningActivitydata);
+      const result = await campService.getCampSessionsList({ id: id });
+      const data = result?.data?.learning_lesson_plans_master || [];
+      const filteredData = data.filter(
+        (item) =>
+          item.session_tracks.length > 0 &&
+          item.session_tracks.some((track) => track.status === "complete")
+      );
+      setCompleteSessions(filteredData);
+      data.forEach((element) => {
+        const currentDate = new Date();
+        const createdAtDate = new Date(
+          element?.session_tracks?.[0]?.created_at
+        );
+        const updatedDate = new Date(element?.session_tracks?.[0]?.updated_at);
+        if (
+          currentDate.toDateString() === createdAtDate.toDateString() ||
+          (currentDate.toDateString() === updatedDate.toDateString() &&
+            element?.session_tracks?.[0]?.status === "complete")
+        ) {
+          setSessionList(true);
+        }
+      });
+    } catch (error) {
+      console.log("Error in getCampSessionsList:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleActivities = async (item) => {
@@ -285,6 +297,10 @@ export default function CampTodayActivities({
       );
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Layout
