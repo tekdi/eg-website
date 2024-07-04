@@ -39,6 +39,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const { id } = useParams();
   const [sessionList, setSessionList] = useState([]);
   const [sessionActive, setSessionActive] = useState();
+  const [totalSessionsCompleted, setTotalSessionsCompleted] = useState(0);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState();
   const [enumOptions, setEnumOptions] = useState({});
@@ -94,7 +95,12 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
     });
     const data = result?.data?.learning_lesson_plans_master || [];
     setSessionList(data);
-    setSessionActive(getSessionCount(data));
+    const sessionResult = getSessionCount(data);
+    setSessionActive(sessionResult);
+    setTotalSessionsCompleted(
+      sessionResult?.lastSession?.ordering -
+        (sessionResult?.lastSession?.status === "incomplete" ? 0.5 : 0)
+    );
   };
 
   useEffect(async () => {
@@ -189,35 +195,43 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
   const getSessionCount = (data) => {
     let count = 0;
+
+    const format = "YYYY-MM-DD";
+    const today = moment().format(format);
+
     const result = data
       .filter((e) => e.session_tracks?.[0]?.id)
       .map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
+
     let sessionData = result?.[result?.length - 1] || { ordering: 1 };
-    const c1 = result.filter((e) => {
-      const format = "YYYY-MM-DD";
-      return (
-        e.status === "complete" &&
-        moment(e.created_at).format(format) !== moment().format(format) &&
-        moment(e.updated_at).format(format) === moment().format(format)
-      );
-    });
 
-    const c2 = result.filter((e) => {
-      const format = "YYYY-MM-DD";
-      return (
+    const c1 = [];
+    const c2 = [];
+    const c3 = [];
+
+    result.forEach((e) => {
+      const createdAt = moment(e.created_at).format(format);
+      const updatedAt = moment(e.updated_at).format(format);
+
+      if (
+        e.status === "complete" &&
+        createdAt !== today &&
+        updatedAt === today
+      ) {
+        c1.push(e);
+      } else if (
         e.status === "incomplete" &&
-        moment(e.created_at).format(format) === moment().format(format) &&
-        moment(e.updated_at).format(format) === moment().format(format)
-      );
-    });
-
-    const c3 = result.filter((e) => {
-      const format = "YYYY-MM-DD";
-      return (
+        createdAt === today &&
+        updatedAt === today
+      ) {
+        c2.push(e);
+      } else if (
         e.status === "complete" &&
-        moment(e.created_at).format(format) === moment().format(format) &&
-        moment(e.updated_at).format(format) === moment().format(format)
-      );
+        createdAt === today &&
+        updatedAt === today
+      ) {
+        c3.push(e);
+      }
     });
 
     if (c1?.length > 0) {
@@ -236,13 +250,20 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
     }
 
     if (sessionData?.status === "complete" && count < 1.5) {
-      sessionData = data.find((e) => sessionData?.ordering + 1 === e?.ordering);
+      sessionData =
+        data.find((e) => sessionData?.ordering + 1 === e?.ordering) ||
+        sessionData;
     }
+
     if (count >= 1.5) {
       sessionData = {};
     }
 
-    return { ...sessionData, countSession: count };
+    return {
+      ...sessionData,
+      countSession: count,
+      lastSession: result?.[result?.length - 1],
+    };
   };
 
   if (loading) {
@@ -288,12 +309,12 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
                 {t("COMPLETED_SESSIONS")} :
               </FrontEndTypo.H3>
               <FrontEndTypo.H2 bold color="textGreyColor.750">
-                {sessionActive?.countSession}/{sessionList?.length}
+                {totalSessionsCompleted}/{sessionList?.length}
               </FrontEndTypo.H2>
             </HStack>
             <Progress
               value={calculateProgress(
-                sessionActive?.countSession,
+                totalSessionsCompleted,
                 sessionList?.length
               )}
               size="sm"
