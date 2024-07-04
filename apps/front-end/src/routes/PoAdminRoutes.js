@@ -146,6 +146,8 @@ export default [
   {
     path: "/poadmin/do-ids/:id",
     component: DoidDetails,
+  },
+  {
     path: "/poadmin/address/:id",
     component: AddressDetail,
   },

@@ -56,6 +56,7 @@ export default function AddEditForm() {
       };
       setFormData({
         ...data?.data,
+        event_type: t(e.event_type),
       });
     }
 
