@@ -41,6 +41,7 @@ export default function CampTodayActivities({
   const [activitiesValue, setActivitiesValue] = useState(false);
   const [isSaving] = useState(false);
   const [sessionList, setSessionList] = useState(false);
+  const [completeSessions, setCompleteSessions] = useState([]);
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
 
@@ -96,6 +97,12 @@ export default function CampTodayActivities({
     setEnumOptions(LearningActivitydata);
     const result = await campService.getCampSessionsList({ id: id });
     const data = result?.data?.learning_lesson_plans_master || [];
+    const filteredData = data.filter(
+      (item) =>
+        item.session_tracks.length > 0 &&
+        item.session_tracks.some((track) => track.status === "complete")
+    );
+    setCompleteSessions(filteredData);
     data.forEach((element) => {
       const currentDate = new Date();
       const createdAtDate = new Date(element?.session_tracks?.[0]?.created_at);
@@ -124,21 +131,124 @@ export default function CampTodayActivities({
     setEnums();
   };
 
-  return (
-    <Layout
-      _appBar={{
-        name: t("ADD_TODAYS_ACTIVITIES"),
-        onPressBackButton: () => navigate(`/camps/${id}/campexecution`),
-      }}
-      // _footer={{ menues: footerLinks }}
-      analyticsPageTitle={"CAMP_ACTIVITIES"}
-      facilitator={facilitator}
-      pageTitle={t("TODAYS_ACTIVITIES")}
-      stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
-        "TODAYS_ACTIVITIES"
-      )}`}
-    >
-      <VStack p="4" space={4}>
+  const getSessionPlan = () => {
+    if (completeSessions?.length) {
+      const lastSession =
+        completeSessions.length > 0
+          ? completeSessions[completeSessions.length - 1].ordering
+          : 0;
+
+      const lastUpdatedAt =
+        completeSessions.length > 0
+          ? completeSessions[completeSessions.length - 1].session_tracks[0]
+              .updated_at
+          : null;
+
+      const currentDate = moment();
+      const updatedAtDate = moment(lastUpdatedAt);
+      const daysDiff = updatedAtDate.diff(currentDate, "days");
+
+      if (lastSession > 6 && daysDiff <= 2) {
+        return (
+          <CardComponent
+            _vstack={{
+              flex: 1,
+              borderColor: sessionList === true && "greenIconColor",
+            }}
+            _body={{ pt: 4 }}
+          >
+            <Pressable
+              onPress={() =>
+                navigate(`/camps/${id}/formative-assessment-1/subjectslist`)
+              }
+            >
+              <HStack alignItems="center" justifyContent="center" space={3}>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  w="75px"
+                  h="60px"
+                />
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {t("PCR_EVALUATION_1")}
+                </FrontEndTypo.H2>
+              </HStack>
+            </Pressable>
+          </CardComponent>
+        );
+      } else if (lastSession > 13 && daysDiff <= 2) {
+        return (
+          <CardComponent
+            _vstack={{
+              flex: 1,
+              borderColor: sessionList === true && "greenIconColor",
+            }}
+            _body={{ pt: 4 }}
+          >
+            <Pressable
+              onPress={() =>
+                navigate(`/camps/${id}/formative-assessment-2/subjectslist`)
+              }
+            >
+              <HStack alignItems="center" justifyContent="center" space={3}>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  w="75px"
+                  h="60px"
+                />
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {t("PCR_EVALUATION_2")}
+                </FrontEndTypo.H2>
+              </HStack>
+            </Pressable>
+          </CardComponent>
+        );
+      } else {
+        return (
+          <CardComponent
+            _vstack={{
+              flex: 1,
+              borderColor: sessionList === true && "greenIconColor",
+            }}
+            _body={{ pt: 4 }}
+          >
+            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
+              <HStack alignItems="center" justifyContent="center" space={3}>
+                <Image
+                  source={{
+                    uri: "/images/activities/learning-activity.png",
+                  }}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                  w="75px"
+                  h="60px"
+                />
+                <FrontEndTypo.H2 color="textMaroonColor.400">
+                  {campType?.type === "main"
+                    ? t("LEARNING_ACTIVITIES")
+                    : t("PCR_LEARNING_ACTIVITIES")}
+                </FrontEndTypo.H2>
+                {sessionList === true && (
+                  <IconByName
+                    name="CheckboxCircleFillIcon"
+                    _icon={{ size: "36" }}
+                    color="successColor"
+                  />
+                )}
+              </HStack>
+            </Pressable>
+          </CardComponent>
+        );
+      }
+    } else {
+      return (
         <CardComponent
           _vstack={{
             flex: 1,
@@ -172,7 +282,23 @@ export default function CampTodayActivities({
             </HStack>
           </Pressable>
         </CardComponent>
+      );
+    }
+  };
 
+  return (
+    <Layout
+      _appBar={t("ADD_TODAYS_ACTIVITIES")}
+      // _footer={{ menues: footerLinks }}
+      analyticsPageTitle={"CAMP_ACTIVITIES"}
+      facilitator={facilitator}
+      pageTitle={t("TODAYS_ACTIVITIES")}
+      stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
+        "TODAYS_ACTIVITIES"
+      )}`}
+    >
+      <VStack p="4" space={4}>
+        {getSessionPlan()}
         <CardComponent
           _vstack={{
             flex: 1,
