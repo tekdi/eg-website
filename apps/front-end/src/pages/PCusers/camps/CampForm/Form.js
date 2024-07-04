@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
+import PropTypes from "prop-types";
 import {
+  geolocationRegistryService,
   PCusers_layout as Layout,
   FrontEndTypo,
   enumRegistryService,
@@ -66,9 +68,39 @@ export default function App() {
     getCampKitDetails();
   }, []);
 
+  const getLocation = async () => {
+    setLoading(true);
+    const { lat, long } = campDetails?.properties || {};
+    setFormData({
+      ...formData,
+      location: { lat, long },
+      property_type: campDetails?.properties?.property_type || undefined,
+      state: campDetails?.properties?.state || undefined,
+      district: campDetails?.properties?.district || undefined,
+      block: campDetails?.properties?.block || undefined,
+      village: campDetails?.properties?.village || undefined,
+      grampanchayat: campDetails?.properties?.grampanchayat || undefined,
+      street: campDetails?.properties?.street || undefined,
+    });
+    setLoading(false);
+  };
+
   useEffect(async () => {
     setLoading(true);
-    if (step === "edit_kit_details") {
+    if (step === "edit_camp_location") {
+      getLocation();
+    } else if (step === "edit_photo_details") {
+      const camp_venue_photos = campDetails?.properties;
+      setFormData({
+        ...formData,
+        property_photo_building:
+          camp_venue_photos?.property_photo_building || undefined,
+        property_photo_classroom:
+          camp_venue_photos?.property_photo_classroom || undefined,
+        property_photo_other:
+          camp_venue_photos?.property_photo_other || undefined,
+      });
+    } else if (step === "edit_kit_details") {
       const kit = campDetails;
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -294,3 +326,6 @@ export default function App() {
     </Layout>
   );
 }
+Form.PropTypes = {
+  footerLinks: PropTypes.any,
+};

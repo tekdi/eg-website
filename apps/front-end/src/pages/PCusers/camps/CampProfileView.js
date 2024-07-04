@@ -174,6 +174,81 @@ export default function CampProfileView({ userTokenInfo }) {
                         <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
                         <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                       </HStack>
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(
+                            `/camps/CampProfileView/${id}/edit_camp_location`,
+                            {
+                              state: {
+                                academic_year_id:
+                                  location.state?.academic_year_id,
+                                program_id: location.state?.program_id,
+                                user_id: location.state?.user_id,
+                              },
+                            }
+                          );
+                        }}
+                        color="maroon.400"
+                      />
+                    </HStack>
+                    <Divider
+                      orientation="horizontal"
+                      bg="btnGray.100"
+                      thickness="1"
+                    />
+                    <HStack alignItems="Center" justifyContent="space-between">
+                      <HStack space="md" alignItems="Center">
+                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
+                        <FrontEndTypo.H3>{t("CAMP_LOCATION")}</FrontEndTypo.H3>
+                      </HStack>
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(
+                            `/camps/CampProfileView/${id}/edit_camp_location`,
+                            {
+                              state: {
+                                academic_year_id:
+                                  location.state?.academic_year_id,
+                                program_id: location.state?.program_id,
+                                user_id: location.state?.user_id,
+                              },
+                            }
+                          );
+                        }}
+                        color="maroon.400"
+                      />
+                    </HStack>
+                    <Divider
+                      orientation="horizontal"
+                      bg="btnGray.100"
+                      thickness="1"
+                    />
+                    <HStack alignItems="Center" justifyContent="space-between">
+                      <HStack space="md" alignItems="Center">
+                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
+                        <FrontEndTypo.H3>
+                          {t("CAMP_VENUE_PHOTOS")}
+                        </FrontEndTypo.H3>
+                      </HStack>
+                      <IconByName
+                        name="ArrowRightSLineIcon"
+                        onPress={() => {
+                          navigate(
+                            `/camps/CampProfileView/${id}/edit_photo_details`,
+                            {
+                              state: {
+                                academic_year_id:
+                                  location.state?.academic_year_id,
+                                program_id: location.state?.program_id,
+                                user_id: location.state?.user_id,
+                              },
+                            }
+                          );
+                        }}
+                        color="maroon.400"
+                      />
                     </HStack>
                     <Divider
                       orientation="horizontal"
