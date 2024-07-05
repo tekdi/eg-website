@@ -54,8 +54,13 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
   };
 
   const onScoreUpdate = async (data) => {
-    await campService.updateAssessmentScore(data);
-    getStudentData();
+    try {
+      await campService.updateAssessmentScore(data);
+    } catch (error) {
+      console.log("Error updating score:", error);
+    } finally {
+      getStudentData();
+    }
   };
 
   useEffect(async () => {
@@ -107,6 +112,7 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
         {studentsData?.length ? (
           studentsData?.map((student) => (
             <StudentCard
+              key={student?.user_id}
               student={student}
               updateScore={onScoreUpdate}
               subject={params?.subject}
