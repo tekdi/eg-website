@@ -39,7 +39,7 @@ export default function AddEditForm() {
     let newSchema = { ...Schema };
 
     if (id) {
-      const data = await eventService.getOneDoIdDetails({ id });
+      const data = await eventService.getOneDoIdDetails(id);
       setDoId(data?.data);
       newSchema = {
         ...newSchema,
