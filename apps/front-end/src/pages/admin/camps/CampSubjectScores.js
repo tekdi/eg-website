@@ -190,7 +190,6 @@ const StudentCard = ({ student, updateScore, subject, program_id }) => {
         </Select>
       }
       title={[
-        data?.name,
         data?.enrollment_first_name,
         data?.enrollment_middle_name,
         data?.enrollment_last_name,
