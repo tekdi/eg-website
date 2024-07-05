@@ -226,15 +226,19 @@ export default function List({ userTokenInfo, stateName }) {
                         <FrontEndTypo.H2 bold color={"textGreyColor.750"}>
                           {t("PCR_CAMPS")}
                         </FrontEndTypo.H2>
-                        <HStack justifyContent={"space-between"}>
-                          <FrontEndTypo.H3
-                            mt="4"
-                            bold
-                            color="textGreyColor.750"
-                          >
+                        <VStack>
+                          {learnerWithoutBaselineCount && (
+                            <FrontEndTypo.H3 color="textMaroonColor.400">
+                              {`${learnerWithoutBaselineCount} `}
+                              {t("UNMAPPED_LEARNER_BUT_BASELINE_NOT_SUBMITTED")}
+                            </FrontEndTypo.H3>
+                          )}
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
                             {`${nonRegisteredUser?.length} `}
                             {t("UNMAPPED_LEARNERS")}
                           </FrontEndTypo.H3>
+                        </VStack>
+                        <HStack justifyContent={"space-between"}>
                           <Center>
                             {nonRegisteredUser.length > 0 && (
                               <Avatar.Group

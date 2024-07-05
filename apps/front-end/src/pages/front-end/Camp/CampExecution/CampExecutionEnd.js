@@ -170,6 +170,21 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             },
           ]}
         />
+        <FrontEndTypo.Primarybutton
+          onPress={() => {
+            !disable
+              ? setOpenModal(true)
+              : !disableTodayAct
+              ? navigate(`/camps/${id}/campexecution/activities`)
+              : navigate(`/camps/${id}/campexecution/attendance`);
+          }}
+        >
+          {!disable
+            ? t("END_CAMP")
+            : !disableTodayAct
+            ? t("TODAYS_TASKS")
+            : t("LEARNER_ATTENDANCE")}
+        </FrontEndTypo.Primarybutton>
       </VStack>
       <Modal isOpen={openModal} size="xs">
         <Modal.Content>
