@@ -206,7 +206,7 @@ function View() {
   const { id } = useParams();
 
   useEffect(async () => {
-    const data = await eventService.getOneAddressDetails({ id });
+    const data = await eventService.getOneAddressDetails(id);
     setAddress(data?.data);
   }, []);
 
