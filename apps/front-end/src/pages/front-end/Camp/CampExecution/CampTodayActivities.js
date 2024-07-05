@@ -144,159 +144,72 @@ export default function CampTodayActivities({
   };
 
   const getSessionPlan = () => {
-    if (completeSessions?.length) {
-      const lastSession =
-        completeSessions.length > 0
-          ? completeSessions[completeSessions.length - 1].ordering
-          : 0;
+    const { ordering, session_tracks } =
+      completeSessions?.length && completeSessions[completeSessions.length - 1];
+    const { updated_at } = session_tracks?.[0];
+    const currentDate = moment();
+    const updatedAtDate = moment(updated_at);
+    const daysDiff = updatedAtDate.diff(currentDate, "days");
 
-      const lastUpdatedAt =
-        completeSessions.length > 0
-          ? completeSessions[completeSessions.length - 1].session_tracks[0]
-              .updated_at
-          : null;
-
-      const currentDate = moment();
-      const updatedAtDate = moment(lastUpdatedAt);
-      const daysDiff = updatedAtDate.diff(currentDate, "days");
-
-      if (lastSession >= 6 && daysDiff <= 2) {
-        return (
-          <CardComponent
-            _vstack={{
-              flex: 1,
-              borderColor: sessionList === true && "greenIconColor",
-            }}
-            _body={{ pt: 4 }}
-          >
-            <Pressable
-              onPress={() =>
-                navigate(`/camps/${id}/formative-assessment-1/subjectslist`)
-              }
-            >
-              <HStack alignItems="center" justifyContent="center" space={3}>
-                <Image
-                  source={{
-                    uri: "/images/activities/learning-activity.png",
-                  }}
-                  resizeMode="contain"
-                  alignSelf={"center"}
-                  w="75px"
-                  h="60px"
-                />
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("PCR_EVALUATION_1")}
-                </FrontEndTypo.H2>
-              </HStack>
-            </Pressable>
-          </CardComponent>
-        );
-      } else if (lastSession > 13 && daysDiff <= 2) {
-        return (
-          <CardComponent
-            _vstack={{
-              flex: 1,
-              borderColor: sessionList === true && "greenIconColor",
-            }}
-            _body={{ pt: 4 }}
-          >
-            <Pressable
-              onPress={() =>
-                navigate(`/camps/${id}/formative-assessment-2/subjectslist`)
-              }
-            >
-              <HStack alignItems="center" justifyContent="center" space={3}>
-                <Image
-                  source={{
-                    uri: "/images/activities/learning-activity.png",
-                  }}
-                  resizeMode="contain"
-                  alignSelf={"center"}
-                  w="75px"
-                  h="60px"
-                />
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("PCR_EVALUATION_2")}
-                </FrontEndTypo.H2>
-              </HStack>
-            </Pressable>
-          </CardComponent>
-        );
-      } else {
-        return (
-          <CardComponent
-            _vstack={{
-              flex: 1,
-              borderColor: sessionList === true && "greenIconColor",
-            }}
-            _body={{ pt: 4 }}
-          >
-            <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-              <HStack alignItems="center" justifyContent="center" space={3}>
-                <Image
-                  source={{
-                    uri: "/images/activities/learning-activity.png",
-                  }}
-                  resizeMode="contain"
-                  alignSelf={"center"}
-                  w="75px"
-                  h="60px"
-                />
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {campType?.type === "main"
-                    ? t("LEARNING_ACTIVITIES")
-                    : t("PCR_LEARNING_ACTIVITIES")}
-                </FrontEndTypo.H2>
-                {sessionList === true && (
-                  <IconByName
-                    name="CheckboxCircleFillIcon"
-                    _icon={{ size: "36" }}
-                    color="successColor"
-                  />
-                )}
-              </HStack>
-            </Pressable>
-          </CardComponent>
-        );
-      }
+    if (ordering === 6 && daysDiff <= 2) {
+      return (
+        <SessionCard
+          type="PCR_EVALUATION_1"
+          navigatePath={`/camps/${id}/formative-assessment-1/subjectslist`}
+        />
+      );
+    } else if (ordering === 13 && daysDiff <= 2) {
+      return (
+        <SessionCard
+          type="PCR_EVALUATION_2"
+          navigatePath={`/camps/${id}/formative-assessment-2/subjectslist`}
+        />
+      );
     } else {
       return (
-        <CardComponent
-          _vstack={{
-            flex: 1,
-            borderColor: sessionList === true && "greenIconColor",
-          }}
-          _body={{ pt: 4 }}
-        >
-          <Pressable onPress={() => navigate(`/camps/${id}/sessionslist`)}>
-            <HStack alignItems="center" justifyContent="center" space={3}>
-              <Image
-                source={{
-                  uri: "/images/activities/learning-activity.png",
-                }}
-                resizeMode="contain"
-                alignSelf={"center"}
-                w="75px"
-                h="60px"
-              />
-              <FrontEndTypo.H2 color="textMaroonColor.400">
-                {campType?.type === "main"
-                  ? t("LEARNING_ACTIVITIES")
-                  : t("PCR_LEARNING_ACTIVITIES")}
-              </FrontEndTypo.H2>
-              {sessionList === true && (
-                <IconByName
-                  name="CheckboxCircleFillIcon"
-                  _icon={{ size: "36" }}
-                  color="successColor"
-                />
-              )}
-            </HStack>
-          </Pressable>
-        </CardComponent>
+        <SessionCard
+          type={
+            campType?.type === "main"
+              ? "LEARNING_ACTIVITIES"
+              : "PCR_LEARNING_ACTIVITIES"
+          }
+          navigatePath={`/camps/${id}/sessionslist`}
+        />
       );
     }
   };
+
+  const SessionCard = ({ type, navigatePath }) => (
+    <CardComponent
+      _vstack={{
+        flex: 1,
+        borderColor: sessionList === true && "greenIconColor",
+      }}
+      _body={{ pt: 4 }}
+    >
+      <Pressable onPress={() => navigate(navigatePath)}>
+        <HStack alignItems="center" justifyContent="center" space={3}>
+          <Image
+            source={{ uri: "/images/activities/learning-activity.png" }}
+            resizeMode="contain"
+            alignSelf="center"
+            w="75px"
+            h="60px"
+          />
+          <FrontEndTypo.H2 color="textMaroonColor.400">
+            {t(type)}
+          </FrontEndTypo.H2>
+          {sessionList === true && (
+            <IconByName
+              name="CheckboxCircleFillIcon"
+              _icon={{ size: "36" }}
+              color="successColor"
+            />
+          )}
+        </HStack>
+      </Pressable>
+    </CardComponent>
+  );
 
   if (loading) {
     return <Loading />;

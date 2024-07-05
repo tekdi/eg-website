@@ -53,9 +53,13 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
     }
   };
 
+  const onScoreUpdate = async (data) => {
+    await campService.updateAssessmentScore(data);
+    getStudentData();
+  };
+
   useEffect(async () => {
     await getStudentData();
-    //setStudentsData(students);
     if (userTokenInfo) {
       const IpUserInfo = await getIpUserInfo(fa_id);
       let ipUserData = IpUserInfo;
@@ -101,20 +105,45 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
           </FrontEndTypo.H4>
         </HStack>{" "}
         {studentsData?.length ? (
-          studentsData?.map((student) => <StudentCard student={student} />)
+          studentsData?.map((student) => (
+            <StudentCard
+              student={student}
+              updateScore={onScoreUpdate}
+              subject={params?.subject}
+              program_id={programDetails?.program_id}
+            />
+          ))
         ) : (
           <FrontEndTypo.H2>{t("NO_LEARNERS_FOR_THIS_SUBJECT")}</FrontEndTypo.H2>
         )}
         <HStack justifyContent={"center"}>
-          <FrontEndTypo.Primarybutton>{t("SUBMIT")}</FrontEndTypo.Primarybutton>
+          <FrontEndTypo.Primarybutton onPress={() => navigate(-1)}>
+            {t("SUBMIT")}
+          </FrontEndTypo.Primarybutton>
         </HStack>
       </VStack>
     </Layout>
   );
 }
 
-const StudentCard = ({ student }) => {
+const StudentCard = ({ student, updateScore, subject, program_id }) => {
   const [data, setData] = useState(student);
+  const params = useParams();
+
+  const updateValue = (key, value) => {
+    setData({
+      ...data,
+      [key]: value,
+    });
+    const newData = {
+      subject,
+      program_id,
+      user_id: data.user_id,
+      [key]: value,
+    };
+    updateScore(newData);
+  };
+
   return (
     <UserCard
       key={data?.user_id}
@@ -128,7 +157,11 @@ const StudentCard = ({ student }) => {
       _image={{ size: 45, color: "gray" }}
       rightElement={
         <Select
-          selectedValue={data.score}
+          selectedValue={
+            params.type === "formative-assessment-1"
+              ? data.formative_assessment_first_learning_level
+              : data.formative_assessment_second_learning_level
+          }
           accessibilityLabel="Choose Score"
           placeholder="Choose Score"
           width={100}
@@ -136,7 +169,14 @@ const StudentCard = ({ student }) => {
             bg: "teal.600",
             endIcon: <CheckIcon size="2" />,
           }}
-          onValueChange={(itemValue) => setData({ ...data, score: itemValue })}
+          onValueChange={(itemValue) =>
+            updateValue(
+              params.type === "formative-assessment-1"
+                ? "formative_assessment_first_learning_level"
+                : "formative_assessment_second_learning_level",
+              itemValue
+            )
+          }
         >
           {scores.map((score, index) => (
             <Select.Item key={index} label={score} value={score} />
