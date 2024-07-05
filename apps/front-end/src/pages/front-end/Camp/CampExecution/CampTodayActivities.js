@@ -103,9 +103,7 @@ export default function CampTodayActivities({
       const result = await campService.getCampSessionsList({ id: id });
       const data = result?.data?.learning_lesson_plans_master || [];
       const filteredData = data.filter(
-        (item) =>
-          item.session_tracks.length > 0 &&
-          item.session_tracks.some((track) => track.status === "complete")
+        (item) => item.session_tracks.length > 0
       );
       setCompleteSessions(filteredData);
       data.forEach((element) => {
