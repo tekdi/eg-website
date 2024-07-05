@@ -244,14 +244,13 @@ export default function List() {
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
-  const handleRowClick = useCallback(
-    (row) => {
-      navigate(`/poadmin/addressDetail/${row?.id}`, {
-        state: { eventData: row },
-      });
-    },
-    [navigate]
-  );
+  const handleRowClick = useCallback();
+  (row) => {
+    navigate(`/poadmin/addressDetail/${row?.id}`, {
+      state: { eventData: row },
+    });
+  },
+    [navigate];
 
   return (
     <PoAdminLayout {...{ loading }}>
@@ -294,7 +293,7 @@ export default function List() {
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          {/* <Menu
+          <Menu
             w="160"
             trigger={(triggerProps) => (
               <Button
@@ -322,7 +321,7 @@ export default function List() {
                 {t("ADD_AN_ADDRESS")}
               </Button>
             )}
-          ></Menu> */}
+          ></Menu>
         </HStack>
         <DataTable
           customStyles={{
