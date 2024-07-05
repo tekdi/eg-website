@@ -40,7 +40,7 @@ export default function AddEditForm() {
 
     if (id) {
       const data = await eventService.getOneDoIdDetails({ id });
-      setDoId(data?.data);
+      setDoId({ ...data?.data });
       newSchema = {
         ...newSchema,
         required: [...newSchema.required, "id"],
@@ -56,7 +56,6 @@ export default function AddEditForm() {
       };
       setFormData({
         ...data?.data,
-        event_type: t(e.event_type),
       });
     }
 
@@ -64,7 +63,7 @@ export default function AddEditForm() {
       key: "event_type",
       arr: result?.data?.FACILITATOR_EVENT_TYPE?.map((e) => ({
         ...e,
-        title: t(e.title),
+        title: t(e?.title),
       })),
       title: "title",
       value: "value",
@@ -73,7 +72,7 @@ export default function AddEditForm() {
   }, []);
 
   const onChange = async (e, id) => {
-    const newData = e.formData;
+    const newData = e?.formData;
     if (newData?.state) {
       setSelectedProgramId({
         program_id: newData?.state,
