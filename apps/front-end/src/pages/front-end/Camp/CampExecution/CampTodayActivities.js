@@ -149,16 +149,16 @@ export default function CampTodayActivities({
     const { updated_at } = session_tracks?.[0];
     const currentDate = moment();
     const updatedAtDate = moment(updated_at);
-    const daysDiff = updatedAtDate.diff(currentDate, "days");
-
-    if (ordering === 6 && daysDiff <= 2) {
+    const daysDiff = currentDate.diff(updatedAtDate, "days");
+    console.log({ daysDiff, ordering });
+    if (ordering === 6 && daysDiff <= 2 && campType.type === "pcr") {
       return (
         <SessionCard
           type="PCR_EVALUATION_1"
           navigatePath={`/camps/${id}/formative-assessment-1/subjectslist`}
         />
       );
-    } else if (ordering === 13 && daysDiff <= 2) {
+    } else if (ordering === 13 && daysDiff <= 2 && campType.type === "pcr") {
       return (
         <SessionCard
           type="PCR_EVALUATION_2"
