@@ -24,7 +24,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 // App
-export default function App() {
+export default function App({ footerLinks }) {
   const { step } = useParams();
   const { id } = useParams();
   const [page, setPage] = useState();
@@ -52,6 +52,7 @@ export default function App() {
         program_id: location.state?.program_id,
         user_id: location.state?.user_id,
         camp_id: parseInt(id),
+        selectedPrerak: location?.state?.selectedPrerak,
       };
       const result = await campService.getCampKitDetails(payload);
       console.log("result", result);
@@ -223,7 +224,7 @@ export default function App() {
     if (schema?.properties?.district) {
       await setDistric({
         schemaData: newSchema,
-        state: programSelected?.state_name,
+        state: formData?.state,
         district: formData?.district,
         block: formData?.block,
         gramp: formData?.grampanchayat,
@@ -262,6 +263,244 @@ export default function App() {
     }
   }, [step, formData]);
 
+  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.district && state) {
+      const qData = await geolocationRegistryService.getDistricts({
+        name: state,
+      });
+      if (schema?.["properties"]?.["district"]) {
+        newSchema = getOptions(newSchema, {
+          key: "district",
+          arr: qData?.districts,
+          title: "district_name",
+          value: "district_name",
+        });
+      }
+      if (schema?.["properties"]?.["block"]) {
+        newSchema = await setBlock({
+          gramp,
+          state,
+          district,
+          block,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "district", arr: [] });
+      if (schema?.["properties"]?.["block"]) {
+        newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      }
+      if (schema?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.block && district) {
+      const qData = await geolocationRegistryService.getBlocks({
+        name: district,
+        state: state,
+      });
+
+      if (schema?.["properties"]?.["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData?.blocks,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+      if (
+        schema?.["properties"]?.["grampanchayat"] &&
+        ["BIHAR"].includes(state)
+      ) {
+        newSchema = await setGramp({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      } else {
+        newSchema = await setVilage({
+          state,
+          district,
+          block,
+          gramp: "null",
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      if (schema?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+
+  const setGramp = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schema?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getGrampanchyat({
+        block: block,
+        state: state,
+        district: district,
+      });
+      if (schema?.["properties"]?.["grampanchayat"]) {
+        newSchema = getOptions(newSchema, {
+          key: "grampanchayat",
+          arr: qData?.gramPanchayat,
+          title: "grampanchayat_name",
+          value: "grampanchayat_name",
+          format: "select",
+        });
+      }
+      setSchema(newSchema);
+
+      if (schema?.["properties"]?.["village"] && gramp) {
+        newSchema = await setVilage({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+      }
+    } else {
+      newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
+    let newSchema = schemaData;
+    if (schema?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
+      });
+      if (schema?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, {
+          key: "village",
+          arr: qData?.villages,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        });
+      }
+      setSchema(newSchema);
+    } else {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      setSchema(newSchema);
+    }
+    return newSchema;
+  };
+  const onChange = async (e, id) => {
+    const data = e.formData;
+    setErrors();
+    const newData = { ...formData, ...data };
+    setFormData(newData);
+    if (id === "root_district") {
+      await setBlock({
+        district: data?.district,
+        block: data?.block,
+        schemaData: schema,
+      });
+    }
+
+    if (id === "root_block") {
+      await setVilage({ block: data?.block, schemaData: schema });
+    }
+
+    if (id === "root_kit_received") {
+      if (data?.kit_received === "yes") {
+        const properties = schema1.properties;
+        const newSteps = Object.keys(properties);
+        const newStep = step || newSteps[0];
+        let schemaData = properties[newStep];
+        setSchema(schemaData);
+        console.log("schemaData", schemaData);
+      } else if (data?.kit_received === "no") {
+        setFormData({
+          ...formData,
+          kit_ratings: undefined,
+          kit_received: data?.kit_received,
+          kit_was_sufficient: undefined,
+          kit_feedback: undefined,
+        });
+        const properties = schema1.properties;
+        const newSteps = Object.keys(properties);
+        const newStep = step || newSteps[0];
+        let schemaData = properties[newStep];
+        const { kit_received } = schemaData.properties;
+        const required = schemaData?.required.filter((item) =>
+          ["kit_received"].includes(item)
+        );
+        const newSchema = {
+          ...schemaData,
+          properties: { kit_received },
+          required: required,
+        };
+        setSchema(newSchema);
+      }
+    }
+
+    if (id === "root_kit_feedback") {
+      if (data?.kit_feedback === "") {
+        setFormData({ ...formData, kit_feedback: undefined });
+      }
+    }
+  };
+
+  const onSubmit = async (data) => {
+    let newFormData = data.formData;
+
+    if (_.isEmpty(errors)) {
+      let newdata = filterObject(
+        newFormData,
+        Object.keys(schema?.properties),
+        {},
+        step === "edit_photo_details" ? null : ""
+      );
+      await formSubmitUpdate(newdata);
+      if (localStorage.getItem("backToProfile") === "false") {
+        nextPreviewStep();
+      } else {
+        navigate(`/camps/${id}`);
+      }
+    }
+  };
+
+  const onClickSubmit = (backToProfile) => {
+    if (formRef.current.validateForm()) {
+      formRef?.current?.submit();
+    }
+    localStorage.setItem("backToProfile", backToProfile);
+  };
+
+  if (page === "edit_family_consent") {
+    return <ConsentForm />;
+  } else if (page === "edit_camp_selected_learners") {
+    return <CampSelectedLearners isEdit={isEdit} />;
+  }
+  if (page === "edit_kit_material_details") {
+    return <CampKitMaterialDetails schema={schema} />;
+  }
+
   return (
     <Layout
       _appBar={{
@@ -273,59 +512,47 @@ export default function App() {
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      _footer={{ menues: footerLinks }}
       loading={loading || !campDetails?.group?.status}
       analyticsPageTitle={"CAMP"}
       pageTitle={t("CAMP_FORM")}
       stepTitle={step}
     >
-      {["camp_ip_verified", "inactive"].includes(campDetails?.group?.status) ? (
-        <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-          <HStack alignItems="center" space="2" color>
-            <Alert.Icon />
-            <FrontEndTypo.H3>{t("PAGE_NOT_ACCESSABLE")}</FrontEndTypo.H3>
-          </HStack>
-        </Alert>
-      ) : (
-        <Box py={6} px={4} mb={5}>
-          {alert && (
-            <Alert status="warning" alignItems={"start"} mb="3">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <FrontEndTypo.H2>{alert}</FrontEndTypo.H2>
-              </HStack>
-            </Alert>
-          )}
-          {page && page !== "" && (
-            <Form
-              key={schema}
-              ref={formRef}
-              extraErrors={errors}
-              showErrorList={false}
-              noHtml5Validate={true}
-              {...{
-                widgets,
-                templates,
-                validator,
-                schema: schema || {},
-                formData,
-                onError,
-                transformErrors: (errors) => transformErrors(errors, schema, t),
-              }}
-            >
-              <FrontEndTypo.Primarybutton
-                mt="3"
-                type="submit"
-                style={{ display: "none" }}
-              >
-                {t("SAVE")}
-              </FrontEndTypo.Primarybutton>
-            </Form>
-          )}
-        </Box>
-      )}
+      <Box py={6} px={4} mb={5}>
+        {alert && (
+          <Alert status="warning" alignItems={"start"} mb="3">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon />
+              <FrontEndTypo.H2>{alert}</FrontEndTypo.H2>
+            </HStack>
+          </Alert>
+        )}
+        {page && page !== "" && (
+          <Form
+            key={schema}
+            ref={formRef}
+            extraErrors={errors}
+            showErrorList={false}
+            noHtml5Validate={true}
+            {...{
+              widgets,
+              templates,
+              validator,
+              schema: schema || {},
+              formData,
+              // customValidate,
+              onChange,
+              onSubmit,
+              onError,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
+            }}
+          >
+            <FrontEndTypo.Primarybutton style={{ display: "none" }}>
+              {t("SUBMIT")}
+            </FrontEndTypo.Primarybutton>
+          </Form>
+        )}
+      </Box>
     </Layout>
   );
 }
-Form.PropTypes = {
-  footerLinks: PropTypes.any,
-};

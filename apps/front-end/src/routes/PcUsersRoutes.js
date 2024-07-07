@@ -129,6 +129,10 @@ export default [
     component: PrerakProfile,
   },
   {
+    path: "/learner/learnerProfileView/:id",
+    component: LearnerProfileView,
+  },
+  {
     path: "/learner/learnerList",
     component: LearnerList,
   },

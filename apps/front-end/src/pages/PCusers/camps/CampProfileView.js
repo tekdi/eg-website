@@ -60,7 +60,9 @@ export default function CampProfileView({ userTokenInfo }) {
       _appBar={{
         name: t("PRERAK_PROFILE"),
         onPressBackButton: () => {
-          navigate("/camps");
+          navigate("/camps", {
+            state: { selectedPrerak: location.state?.selectedPrerak },
+          });
         },
       }}
       loading={loading}
@@ -169,34 +171,6 @@ export default function CampProfileView({ userTokenInfo }) {
                   paddingTop="16px"
                 >
                   <VStack space="2" paddingTop="5">
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack space="md" alignItems="Center">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-                        <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
-                      </HStack>
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={() => {
-                          navigate(
-                            `/camps/CampProfileView/${id}/edit_camp_location`,
-                            {
-                              state: {
-                                academic_year_id:
-                                  location.state?.academic_year_id,
-                                program_id: location.state?.program_id,
-                                user_id: location.state?.user_id,
-                              },
-                            }
-                          );
-                        }}
-                        color="maroon.400"
-                      />
-                    </HStack>
-                    <Divider
-                      orientation="horizontal"
-                      bg="btnGray.100"
-                      thickness="1"
-                    />
                     <HStack alignItems="Center" justifyContent="space-between">
                       <HStack space="md" alignItems="Center">
                         <IconByName name="AddLineIcon" _icon={{ size: "20" }} />

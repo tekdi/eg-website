@@ -33,7 +33,7 @@ export default function BenificiaryEnrollment() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/profile/${id}`);
+    navigate(`/learner/learnerListView/${id}`);
   };
 
   const agDetails = async () => {
@@ -181,6 +181,8 @@ export default function BenificiaryEnrollment() {
                   t={t}
                 />
               ),
+              enrollment_mobile_no:
+                benificiary?.program_beneficiaries?.enrollment_mobile_no || "-",
             }}
           />
         )}

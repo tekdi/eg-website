@@ -25,7 +25,7 @@ import {
   Divider,
 } from "native-base";
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
@@ -54,6 +54,13 @@ export default function CampList() {
   const [beneficiary, setBeneficiary] = useState(true);
   const [selectedPrerak, setSelectedPrerak] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location?.state?.selectedPrerak) {
+      setSelectedPrerak(location?.state?.selectedPrerak);
+    }
+  });
 
   useEffect(() => {
     const getPrerakCampList = async () => {
@@ -407,53 +414,43 @@ export default function CampList() {
                       justifyContent={"space-between"}
                     >
                       <VStack flex={"0.9"}>
-                        <FrontEndTypo.H3 color="textMaroonColor.400">
-                          {!item?.isCampAvailable && (
+                        {!item?.isCampAvailable && (
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
                             <FrontEndTypo.H3 my={2}>
                               {t("CAMP")}&nbsp;
                               {t("NOT_AVAILABLE")}
                             </FrontEndTypo.H3>
-                          )}
-                          {item?.isCampAvailable && (
+                          </FrontEndTypo.H3>
+                        )}
+                        {item?.isCampAvailable && (
+                          <FrontEndTypo.H3
+                            color="textMaroonColor.400"
+                            onPress={() => {
+                              navigate(
+                                `/camps/CampProfileView/${item?.camp_id}`,
+                                {
+                                  state: {
+                                    academic_year_id: item?.academic_year_id,
+                                    program_id: item?.program_id,
+                                    user_id: item?.facilitator_id,
+                                    selectedPrerak: selectedPrerak,
+                                  },
+                                }
+                              );
+                            }}
+                          >
                             <FrontEndTypo.H3
                               key={item?.camp_id}
                               value={item}
                               my={2}
-                              onPress={() => {
-                                navigate(
-                                  `/camps/CampProfileView/${item?.camp_id}`,
-                                  {
-                                    state: {
-                                      academic_year_id: item?.academic_year_id,
-                                      program_id: item?.program_id,
-                                      user_id: item?.facilitator_id,
-                                    },
-                                  }
-                                );
-                              }}
                             >
                               {t("CAMP")}&nbsp;
                               {item?.camp_id}
                             </FrontEndTypo.H3>
-                          )}
-                        </FrontEndTypo.H3>
+                            {/* )} */}
+                          </FrontEndTypo.H3>
+                        )}
                       </VStack>
-                      <HStack alignItems={"center"}>
-                        <IconByName
-                          isDisabled
-                          name={
-                            ["camp_ip_verified"].includes()
-                              ? "CheckLineIcon"
-                              : "ErrorWarningLineIcon"
-                          }
-                          color={
-                            ["camp_ip_verified"].includes()
-                              ? "textGreen.700"
-                              : "textMaroonColor.400"
-                          }
-                          _icon={{ size: "20px" }}
-                        />
-                      </HStack>
                     </HStack>
                   </Box>
                 </Pressable>

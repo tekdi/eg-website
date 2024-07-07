@@ -48,7 +48,7 @@ const List = ({ data }) => {
           >
             <Pressable
               onPress={() =>
-                navigate(`/learner/learverProfileView/${item?.id}`)
+                navigate(`/learner/learnerProfileView/${item?.id}`)
               }
             >
               <HStack justifyContent="space-between" space={1}>

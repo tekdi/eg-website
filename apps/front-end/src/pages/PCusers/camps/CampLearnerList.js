@@ -257,7 +257,10 @@ export default function CampLearnerList({ userTokenInfo, footerLinks }) {
       _appBar={{
         name: t("PRERAK_PROFILE"),
         onPressBackButton: () => {
-          navigate(`/camps/CampProfileView/${id}`);
+          const campId = parseInt(id);
+          navigate(`/camps/CampProfileView/${campId}`, {
+            state: location?.state,
+          });
         },
       }}
       loading={loading}
