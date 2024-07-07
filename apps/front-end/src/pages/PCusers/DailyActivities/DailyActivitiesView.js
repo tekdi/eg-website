@@ -113,13 +113,11 @@ function DailyActivitiesView(props) {
             );
           })
         ) : (
-          <HStack justifyContent={"center"} alignItems="center">
-            {t("DATA_NOT_FOUND")}
-          </HStack>
+          <></>
         )}
 
         <VStack alignSelf={"center"}>
-          <FrontEndTypo.H4
+          <FrontEndTypo.Primarybutton
             underline
             color="#0500FF"
             onPress={() => navigate(`/dailyactivities/${activity}/form`)}
@@ -127,7 +125,7 @@ function DailyActivitiesView(props) {
             {activities.length > 0
               ? t("ADD_ACTIVITY_FOR_ANOTHER_VILLAGE")
               : t("ADD_ACTIVITY")}
-          </FrontEndTypo.H4>
+          </FrontEndTypo.Primarybutton>
         </VStack>
       </VStack>
     </Layout>

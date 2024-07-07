@@ -228,7 +228,7 @@ const DailyActivities = () => {
                 }
               }}
             >
-              {t("MARK_AND_DONE")}
+              {t("ADD_ACTIVITY")}
             </FrontEndTypo.Primarybutton>
           </HStack>
         </Form>
