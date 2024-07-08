@@ -71,7 +71,7 @@ export default function PcProfilePhoto() {
           <FrontEndTypo.Secondarybutton
             p="4"
             mt="4"
-            onPress={() => navigate(`/beneficiary/${id}/basicdetails`)}
+            onPress={() => navigate(`/profile`)}
           >
             {t("SAVE_AND_PROFILE")}
           </FrontEndTypo.Secondarybutton>
