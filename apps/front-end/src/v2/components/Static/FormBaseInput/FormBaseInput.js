@@ -451,7 +451,7 @@ export const RadioBtn = ({
                 }
           ),
           // _box: { gap: "0", width: "auto" },
-          // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+          // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} }
         }}
         value={value}
         onChange={(e) => {
