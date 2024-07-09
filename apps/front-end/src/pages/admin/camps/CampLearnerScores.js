@@ -1,20 +1,12 @@
 import {
-  CardComponent,
   FrontEndTypo,
   Layout,
   Loading,
   UserCard,
-  campService,
   benificiaryRegistoryService,
+  campService,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  Pressable,
-  Select,
-  VStack,
-  CheckIcon,
-  Modal,
-} from "native-base";
+import { CheckIcon, HStack, Modal, Select, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -40,7 +32,7 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
         camp_id: params?.id,
         assessment_type: params?.type,
       });
-      setStudentsData(result?.data);
+      setStudentsData(result?.data?.learners);
     } catch (error) {
       console.error("Error fetching students data:", error);
     }
@@ -77,15 +69,17 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
         ? "baseline_learning_level"
         : "endline_learning_level";
 
-    const canSubmit = studentsData?.learners?.every((item) => {
-      return scores.includes(item?.pcr_scores?.[0][key]);
+    const canSubmit = studentsData?.every((item) => {
+      return scores.includes(item?.pcr_scores?.[0]?.[key]);
     });
 
-    if (canSubmit) {
-      navigate(-1);
-    } else {
-      setShowModal(true);
-    }
+    navigate(-1);
+
+    // if (canSubmit) {
+    //   navigate(-1);
+    // } else {
+    //   setShowModal(true);
+    // }
   };
 
   if (loading) {
@@ -107,7 +101,7 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
         <FrontEndTypo.H2 color="textMaroonColor.400">
           {getPageTitle()}
         </FrontEndTypo.H2>
-        {studentsData?.learners?.map((student) => (
+        {studentsData?.map((student) => (
           <StudentCard
             key={student?.user_id}
             student={student}
@@ -183,7 +177,7 @@ const StudentCard = ({ student, program_id }) => {
         <Select
           accessibilityLabel="Choose Score"
           selectedValue={
-            data?.pcr_scores[0][
+            data?.pcr_scores?.[0]?.[
               params.type === "base-line"
                 ? "baseline_learning_level"
                 : "endline_learning_level"

@@ -44,7 +44,7 @@ export default function CampTodayActivities({
   const [activitiesValue, setActivitiesValue] = useState(false);
   const [isSaving] = useState(false);
   const [sessionList, setSessionList] = useState(false);
-  const [buttonName, setButtonName] = useState();
+  const [buttonName, setButtonName] = useState("");
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
   const [loading, setLoading] = useState(true);
@@ -124,7 +124,7 @@ export default function CampTodayActivities({
         ) {
           assessment_type = "end-line";
         }
-        if (assessment_type != "") {
+        if (assessment_type != "" && campType.type !== "main") {
           const resultScore = await campService.getCampLearnerScores({
             camp_id: id,
             assessment_type,
@@ -196,7 +196,12 @@ export default function CampTodayActivities({
       )}`}
     >
       <VStack p="4" space={4}>
-        <CampSessionPlan button_name={buttonName} id={id} />
+        <CampSessionPlan
+          button_name={buttonName}
+          id={id}
+          campType={campType}
+          sessionList={sessionList}
+        />
         <CardComponent
           _vstack={{
             flex: 1,
