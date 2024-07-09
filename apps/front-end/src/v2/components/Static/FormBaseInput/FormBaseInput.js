@@ -458,42 +458,6 @@ export const RadioBtn = ({
           onChange(e);
         }}
       />
-      {/* <Radio.Group
-        colorScheme="eg-blue"
-        key={items}
-        pb="4"
-        value={value}
-        accessibilityLabel="Pick your favorite number"
-        onChange={(value) => onChange(value)}
-      >
-        <Stack
-          direction={{
-            base: "column",
-            sm: directionColumn || "row",
-          }}
-          alignItems={{
-            base: "flex-start",
-            md: directionColumn ? "flex-start" : "center",
-          }}
-          space={4}
-          w="75%"
-          gap="4"
-          {..._stack}
-        >
-          {items?.map((item) => (
-            <Radio
-              key={item?.value}
-              value={item?.value}
-              size="sm"
-              colorScheme="eg-blue"
-              _text={{ fontSize: 12, fontWeight: 500 }}
-              isDisabled={readOnly}
-            >
-              {t(item?.label)}
-            </Radio>
-          ))}
-        </Stack>
-      </Radio.Group> */}
     </FormControl>
   );
 };
