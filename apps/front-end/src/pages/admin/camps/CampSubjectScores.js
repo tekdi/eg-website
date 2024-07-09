@@ -5,7 +5,7 @@ import {
   UserCard,
   campService,
 } from "@shiksha/common-lib";
-import { CheckIcon, HStack, Select, VStack } from "native-base";
+import { CheckIcon, HStack, Modal, Select, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -34,6 +34,7 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
+  const [showModal, setShowModal] = useState(false);
 
   const programDetails = JSON.parse(localStorage.getItem("program"));
 
@@ -53,9 +54,18 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
     }
   };
 
+  const onScoreUpdate = async (data) => {
+    try {
+      await campService.updateAssessmentScore(data);
+    } catch (error) {
+      console.log("Error updating score:", error);
+    } finally {
+      getStudentData();
+    }
+  };
+
   useEffect(async () => {
     await getStudentData();
-    //setStudentsData(students);
     if (userTokenInfo) {
       const IpUserInfo = await getIpUserInfo(fa_id);
       let ipUserData = IpUserInfo;
@@ -72,6 +82,22 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
     params.type === "formative-assessment-1"
       ? t("PCR_EVALUATION_1")
       : t("PCR_EVALUATION_2");
+
+  const checkSubmissionStatus = () => {
+    const assessmentTypes = {
+      "formative-assessment-1": "formative_assessment_first_learning_level",
+      "formative-assessment-2": "formative_assessment_second_learning_level",
+    };
+    const key = assessmentTypes[params.type];
+    const canSubmit = studentsData?.every((item) => {
+      return scores.includes(item[key]);
+    });
+    if (canSubmit) {
+      navigate(-1);
+    } else {
+      setShowModal(true);
+    }
+  };
 
   if (loading) {
     return <Loading />;
@@ -101,20 +127,70 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
           </FrontEndTypo.H4>
         </HStack>{" "}
         {studentsData?.length ? (
-          studentsData?.map((student) => <StudentCard student={student} />)
+          studentsData?.map((student) => (
+            <StudentCard
+              key={student?.user_id}
+              student={student}
+              updateScore={onScoreUpdate}
+              subject={params?.subject}
+              program_id={programDetails?.program_id}
+            />
+          ))
         ) : (
           <FrontEndTypo.H2>{t("NO_LEARNERS_FOR_THIS_SUBJECT")}</FrontEndTypo.H2>
         )}
-        <HStack justifyContent={"center"}>
-          <FrontEndTypo.Primarybutton>{t("SUBMIT")}</FrontEndTypo.Primarybutton>
-        </HStack>
+        {studentsData?.length && (
+          <HStack justifyContent={"center"}>
+            <FrontEndTypo.Primarybutton onPress={checkSubmissionStatus}>
+              {t("SUBMIT")}
+            </FrontEndTypo.Primarybutton>
+          </HStack>
+        )}
       </VStack>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header textAlign={"center"}>{t("WARNING")}</Modal.Header>
+          <Modal.Body>
+            <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-evenly"}>
+            <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+              {t("CANCEL")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton
+              onPress={() => {
+                setShowModal(false);
+                navigate(-1);
+              }}
+            >
+              {t("CONTINUE")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
 
-const StudentCard = ({ student }) => {
+const StudentCard = ({ student, updateScore, subject, program_id }) => {
   const [data, setData] = useState(student);
+  const params = useParams();
+
+  const updateValue = (key, value) => {
+    setData({
+      ...data,
+      [key]: value,
+    });
+    const newData = {
+      subject,
+      program_id,
+      user_id: data.user_id,
+      [key]: value,
+    };
+    updateScore(newData);
+  };
+
   return (
     <UserCard
       key={data?.user_id}
@@ -128,7 +204,11 @@ const StudentCard = ({ student }) => {
       _image={{ size: 45, color: "gray" }}
       rightElement={
         <Select
-          selectedValue={data.score}
+          selectedValue={
+            params.type === "formative-assessment-1"
+              ? data.formative_assessment_first_learning_level
+              : data.formative_assessment_second_learning_level
+          }
           accessibilityLabel="Choose Score"
           placeholder="Choose Score"
           width={100}
@@ -136,7 +216,14 @@ const StudentCard = ({ student }) => {
             bg: "teal.600",
             endIcon: <CheckIcon size="2" />,
           }}
-          onValueChange={(itemValue) => setData({ ...data, score: itemValue })}
+          onValueChange={(itemValue) =>
+            updateValue(
+              params.type === "formative-assessment-1"
+                ? "formative_assessment_first_learning_level"
+                : "formative_assessment_second_learning_level",
+              itemValue
+            )
+          }
         >
           {scores.map((score, index) => (
             <Select.Item key={index} label={score} value={score} />
@@ -144,7 +231,6 @@ const StudentCard = ({ student }) => {
         </Select>
       }
       title={[
-        data?.name,
         data?.enrollment_first_name,
         data?.enrollment_middle_name,
         data?.enrollment_last_name,

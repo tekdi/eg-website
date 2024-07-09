@@ -146,6 +146,10 @@ const CampSubjectsList = React.lazy(() =>
 const CampSubjectScores = React.lazy(() =>
   import("pages/admin/camps/CampSubjectScores")
 );
+
+const CampLearnerScores = React.lazy(() =>
+  import("pages/admin/camps/CampLearnerScores")
+);
 const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
 const Assessment = React.lazy(() => import("component/Assessment"));
@@ -233,6 +237,10 @@ export default [
   {
     path: "/camps/:id/:type/:subject",
     component: CampSubjectScores,
+  },
+  {
+    path: "/camps/:id/:type/scores",
+    component: CampLearnerScores,
   },
   // { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
   {

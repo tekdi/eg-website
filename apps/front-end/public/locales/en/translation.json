@@ -2005,5 +2005,6 @@
   "ORDER": "Order",
   "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
   "SYNC_APPLICATION_STATUS": "Sync Application Status",
-  "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students"
+  "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students",
+  "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?"
 }

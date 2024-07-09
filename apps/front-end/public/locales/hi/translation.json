@@ -1984,5 +1984,6 @@
   "ORDER": "ऑर्डर",
   "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "आप इस छात्रवृत्ति के लिए पहले ही आवेदन कर चुके हैं। इसकी वर्तमान स्थिति यह है",
   "SYNC_APPLICATION_STATUS": "एप्लिकेशन स्थिति सिंक करें",
-  "TOTAL_NUMBER_OF_STUDENTS": "शिक्षार्थी की कुल संख्या"
+  "TOTAL_NUMBER_OF_STUDENTS": "शिक्षार्थी की कुल संख्या",
+  "SCORES_SUBMIT_WARNING": "आपने सभी विद्यार्थियों के लिए अंक नहीं डाले हैं। क्या आप जारी रखना चाहते हैं?"
 }
