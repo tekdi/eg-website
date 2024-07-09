@@ -33,7 +33,7 @@ export default function BenificiaryEnrollment() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/profile/${id}`);
+    navigate(`/learner/learnerListView/${id}`);
   };
 
   const agDetails = async () => {
