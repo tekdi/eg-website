@@ -465,7 +465,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       case "ready_to_enroll":
       case "enrolled":
       case "approved_ip":
-      case "registered_in_camp":
+      // case "registered_in_camp":
       // case "pragati_syc":
       case "activate":
       case "enrolled_ip_verified":
@@ -505,7 +505,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       case "ready_to_enroll":
       case "enrolled":
       case "approved_ip":
-      case "registered_in_camp":
+      // case "registered_in_camp":
       // case "pragati_syc":
       case "activate":
       case "enrolled_ip_verified":
