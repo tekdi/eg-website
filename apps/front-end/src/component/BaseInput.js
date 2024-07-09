@@ -707,7 +707,7 @@ MultiCheck.propTypes = {
 
 // select between 2 values radio button (yes or no)
 const CheckUncheck = ({ required, schema, value, onChange }) => {
-  const { label } = schema || {};
+  const { label, readOnly } = schema || {};
   const { t } = useTranslation();
 
   const checkboxIcons = [
@@ -727,9 +727,7 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
           _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
         }}
         value={value}
-        onChange={(e) => {
-          onChange(e);
-        }}
+        onChange={(e) => (!readOnly ? onChange(e) : {})}
       />
       <Text flex="4">{label ? t(label) : ""}</Text>
     </HStack>

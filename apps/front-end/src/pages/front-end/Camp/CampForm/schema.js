@@ -106,6 +106,7 @@ export default {
           format: "RadioBtn",
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
+          readOnly: true,
         },
         kit_was_sufficient: {
           label: "DID_YOU_THINK_THE_KIT_WAS_SUFFICIENT",

@@ -60,7 +60,7 @@ const List = ({ data }) => {
                         item?.user?.middle_name !== "null" &&
                         ` ${item.user?.middle_name}`}
                       {item?.user?.last_name &&
-                        item?.last_name !== "null" &&
+                        item?.user?.last_name !== "null" &&
                         ` ${item.user?.last_name}`}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
@@ -170,28 +170,6 @@ export default function PrerakList() {
         },
       }}
     >
-      {/* <HStack justifyContent="start" alignItems="center" mt="2">
-        <Input
-          width={"97%"}
-          size={"s"}
-          minH="40px"
-          maxH="40px"
-          onScroll={false}
-          InputLeftElement={
-            <IconByName
-              color="coolGray.500"
-              name="SearchLineIcon"
-              isDisabled
-              pl="2"
-            />
-          }
-          placeholder={t("SEARCH_BY_PRERAK_NAME")}
-          variant="outline"
-          onChange={debouncedHandleSearch}
-          mx="auto"
-        />
-      </HStack> */}
-
       <VStack ref={ref}>
         <HStack
           justifyContent="space-between"
