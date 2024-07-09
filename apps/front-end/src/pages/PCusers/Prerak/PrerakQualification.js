@@ -95,14 +95,6 @@ export default function PrerakQualification() {
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("QUALIFICATION")}
               </FrontEndTypo.H3>
-              <IconByName
-                name="EditBoxLineIcon"
-                color="iconColor.100"
-                _icon={{ size: "20" }}
-                onPress={(e) => {
-                  navigate(`/profile/edit/qualification_details`);
-                }}
-              />
             </HStack>
             <Box paddingTop="2">
               <Progress
