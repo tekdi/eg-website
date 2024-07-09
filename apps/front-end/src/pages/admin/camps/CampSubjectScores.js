@@ -5,7 +5,7 @@ import {
   UserCard,
   campService,
 } from "@shiksha/common-lib";
-import { CheckIcon, HStack, Select, VStack } from "native-base";
+import { CheckIcon, HStack, Modal, Select, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -34,6 +34,7 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
   const navigate = useNavigate();
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
+  const [showModal, setShowModal] = useState(false);
 
   const programDetails = JSON.parse(localStorage.getItem("program"));
 
@@ -82,6 +83,22 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
       ? t("PCR_EVALUATION_1")
       : t("PCR_EVALUATION_2");
 
+  const checkSubmissionStatus = () => {
+    const assessmentTypes = {
+      "formative-assessment-1": "formative_assessment_first_learning_level",
+      "formative-assessment-2": "formative_assessment_second_learning_level",
+    };
+    const key = assessmentTypes[params.type];
+    const canSubmit = studentsData?.every((item) => {
+      return scores.includes(item[key]);
+    });
+    if (canSubmit) {
+      navigate(-1);
+    } else {
+      setShowModal(true);
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -122,12 +139,36 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
         ) : (
           <FrontEndTypo.H2>{t("NO_LEARNERS_FOR_THIS_SUBJECT")}</FrontEndTypo.H2>
         )}
-        <HStack justifyContent={"center"}>
-          <FrontEndTypo.Primarybutton onPress={() => navigate(-1)}>
-            {t("SUBMIT")}
-          </FrontEndTypo.Primarybutton>
-        </HStack>
+        {studentsData?.length && (
+          <HStack justifyContent={"center"}>
+            <FrontEndTypo.Primarybutton onPress={checkSubmissionStatus}>
+              {t("SUBMIT")}
+            </FrontEndTypo.Primarybutton>
+          </HStack>
+        )}
       </VStack>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header textAlign={"center"}>{t("WARNING")}</Modal.Header>
+          <Modal.Body>
+            <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-evenly"}>
+            <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+              {t("CANCEL")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton
+              onPress={() => {
+                setShowModal(false);
+                navigate(-1);
+              }}
+            >
+              {t("CONTINUE")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
