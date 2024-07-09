@@ -444,7 +444,7 @@
   "DISTANCE": "दूरी",
   "DISTRICT": "ज़िला",
   "DISTRICT_NAME": "जिला नाम",
-  "DISTRICT_ID": "जिला सी.डी",
+  "DISTRICT_CD": "जिला सी.डी",
   "DO": "करने योग्य",
   "DO_ID": "आईडी",
   "DO_YOU_HAVE_ANY_JOB_EXPERIENCE": "क्या आपके पास नौकरी करने का कुछ अनुभव है?",
