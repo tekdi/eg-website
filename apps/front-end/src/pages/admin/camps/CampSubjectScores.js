@@ -26,7 +26,7 @@ const scores = [
   "Absent",
 ];
 
-export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
+export default function CampSubjectScores({ userTokenInfo }) {
   const { t } = useTranslation();
   const params = useParams();
   const [studentsData, setStudentsData] = useState([]);
@@ -109,6 +109,9 @@ export default function CampSubjectScores({ footerLinks, userTokenInfo }) {
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },
+        name: t(params?.subject),
+        onPressBackButton: () =>
+          navigate(`/camps/${params?.id}/${params?.type}/subjectslist`),
       }}
       facilitator={facilitator}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}

@@ -89,6 +89,12 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
   return (
     <Layout
       _appBar={{
+        name:
+          params.type === "base-line"
+            ? t("PCR_INITIAL_LEVEL")
+            : t("PCR_FINAL_EVALUATON"),
+        onPressBackButton: () =>
+          navigate(`/camps/${params?.id}/campexecution/activities`),
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },

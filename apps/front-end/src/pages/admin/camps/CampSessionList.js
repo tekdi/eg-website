@@ -88,9 +88,9 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   }, [modalVisible]);
 
   const getCampSessionsList = async () => {
-    const campDetails = await campService.getCampDetails({ id });
+    const resultCamp = await campService.getCampDetails({ id });
     // setCampType(campDetails?.data?.type);
-    setCampDetails(campDetails?.data);
+    setCampDetails(resultCamp?.data);
     const result = await campService.getCampSessionsList({
       id: id,
     });
@@ -102,39 +102,41 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
       sessionResult?.lastSession?.ordering -
         (sessionResult?.lastSession?.status === "incomplete" ? 0.5 : 0) || 0
     );
-    //PCR Validations here
-    let filteredData = data.filter((item) => item.session_tracks.length > 0);
-    filteredData = filteredData?.[filteredData?.length - 1];
-    let assessment_type = "";
-    if (!filteredData?.ordering) {
-      assessment_type = "base-line";
-    } else if (
-      filteredData?.ordering == 6 &&
-      filteredData?.session_tracks?.[0]?.status == "complete"
-    ) {
-      assessment_type = "fa1";
-    } else if (
-      filteredData?.ordering == 13 &&
-      filteredData?.session_tracks?.[0]?.status == "complete"
-    ) {
-      assessment_type = "fa2";
-    } else if (
-      filteredData?.ordering == 19 &&
-      filteredData?.session_tracks?.[0]?.status == "complete"
-    ) {
-      assessment_type = "end-line";
-    }
-    if (assessment_type != "") {
-      const resultScore = await campService.getCampLearnerScores({
-        camp_id: id,
-        assessment_type,
-      });
-      const incompleteUser = getIncompletLeaner(
-        resultScore?.data,
-        assessment_type
-      );
-      if (incompleteUser?.length > 0) {
-        navigate(`/camps/${id}/campexecution/activities`);
+    if (resultCamp?.data?.type == "pcr") {
+      //PCR Validations here
+      let filteredData = data.filter((item) => item.session_tracks.length > 0);
+      filteredData = filteredData?.[filteredData?.length - 1];
+      let assessment_type = "";
+      if (!filteredData?.ordering) {
+        assessment_type = "base-line";
+      } else if (
+        filteredData?.ordering == 6 &&
+        filteredData?.session_tracks?.[0]?.status == "complete"
+      ) {
+        assessment_type = "fa1";
+      } else if (
+        filteredData?.ordering == 13 &&
+        filteredData?.session_tracks?.[0]?.status == "complete"
+      ) {
+        assessment_type = "fa2";
+      } else if (
+        filteredData?.ordering == 19 &&
+        filteredData?.session_tracks?.[0]?.status == "complete"
+      ) {
+        assessment_type = "end-line";
+      }
+      if (assessment_type != "") {
+        const resultScore = await campService.getCampLearnerScores({
+          camp_id: id,
+          assessment_type,
+        });
+        const incompleteUser = getIncompletLeaner(
+          resultScore?.data,
+          assessment_type
+        );
+        if (incompleteUser?.length > 0) {
+          navigate(`/camps/${id}/campexecution/activities`);
+        }
       }
     }
   };

@@ -1,34 +1,33 @@
-import React, { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import {
   CardComponent,
   FrontEndTypo,
   IconByName,
   Layout,
-  enumRegistryService,
-  campService,
   Loading,
+  campService,
+  enumRegistryService,
   jsonParse,
 } from "@shiksha/common-lib";
+import { MultiCheck } from "component/BaseInput";
+import moment from "moment";
 import {
   Actionsheet,
+  Alert,
   HStack,
+  Image,
   Pressable,
   ScrollView,
   Stack,
   VStack,
-  Image,
-  Alert,
 } from "native-base";
 import { useTranslation } from "react-i18next";
-import { MultiCheck } from "component/BaseInput";
 import { useNavigate, useParams } from "react-router-dom";
-import moment from "moment";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import { CampSessionPlan } from "./CampSessionPlan";
 
 export default function CampTodayActivities({
-  footerLinks,
   setAlert,
   activityId,
   campType,
@@ -44,7 +43,7 @@ export default function CampTodayActivities({
   const [activitiesValue, setActivitiesValue] = useState(false);
   const [isSaving] = useState(false);
   const [sessionList, setSessionList] = useState(false);
-  const [buttonName, setButtonName] = useState("");
+  const [buttonName, setButtonName] = useState();
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
   const [loading, setLoading] = useState(true);
@@ -101,40 +100,46 @@ export default function CampTodayActivities({
         setEnumOptions(LearningActivitydata);
         const result = await campService.getCampSessionsList({ id: id });
         const data = result?.data?.learning_lesson_plans_master || [];
-        let filteredData = data.filter(
-          (item) => item.session_tracks.length > 0
-        );
-        filteredData = filteredData?.[filteredData?.length - 1];
-        let assessment_type = "";
-        if (!filteredData?.ordering) {
-          assessment_type = "base-line";
-        } else if (
-          filteredData?.ordering == 6 &&
-          filteredData?.session_tracks?.[0]?.status == "complete"
-        ) {
-          assessment_type = "fa1";
-        } else if (
-          filteredData?.ordering == 13 &&
-          filteredData?.session_tracks?.[0]?.status == "complete"
-        ) {
-          assessment_type = "fa2";
-        } else if (
-          filteredData?.ordering == 19 &&
-          filteredData?.session_tracks?.[0]?.status == "complete"
-        ) {
-          assessment_type = "end-line";
-        }
-        if (assessment_type != "" && campType.type !== "main") {
+        if (campType.type === "main") {
+          setButtonName({ main: "main" });
+        } else {
+          let filteredData = data.filter(
+            (item) => item.session_tracks.length > 0
+          );
+          filteredData = filteredData?.[filteredData?.length - 1];
+          let assessment_type = "";
+          if (!filteredData?.ordering) {
+            assessment_type = "base-line";
+          } else if (
+            filteredData?.ordering == 6 &&
+            filteredData?.session_tracks?.[0]?.status == "complete"
+          ) {
+            assessment_type = "fa1";
+          } else if (
+            filteredData?.ordering == 13 &&
+            filteredData?.session_tracks?.[0]?.status == "complete"
+          ) {
+            assessment_type = "fa2";
+          } else if (
+            filteredData?.ordering == 19 &&
+            filteredData?.session_tracks?.[0]?.status == "complete"
+          ) {
+            assessment_type = "end-line";
+          }
           const resultScore = await campService.getCampLearnerScores({
             camp_id: id,
             assessment_type,
           });
-          const incompleteUser = getIncompletLeaner(
+          const incompleteUser = getIncompleteAssessments(
             resultScore?.data,
             assessment_type
           );
-          if (incompleteUser?.length > 0) {
-            setButtonName(assessment_type);
+          if (
+            incompleteUser?.learners?.data?.length > 0 &&
+            assessment_type != ""
+          ) {
+            const { learners, ...other } = incompleteUser || {};
+            setButtonName(other || {});
           } else {
             setButtonName();
           }
@@ -186,7 +191,10 @@ export default function CampTodayActivities({
 
   return (
     <Layout
-      _appBar={t("ADD_TODAYS_ACTIVITIES")}
+      _appBar={{
+        name: t("ADD_TODAYS_ACTIVITIES"),
+        onPressBackButton: () => navigate(`/camps/${id}/campexecution`),
+      }}
       // _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_ACTIVITIES"}
       facilitator={facilitator}
@@ -197,7 +205,7 @@ export default function CampTodayActivities({
     >
       <VStack p="4" space={4}>
         <CampSessionPlan
-          button_name={buttonName}
+          button_list={buttonName || {}}
           id={id}
           campType={campType}
           sessionList={sessionList}
@@ -313,67 +321,117 @@ export default function CampTodayActivities({
   );
 }
 
-const getIncompletLeaner = (data, type) => {
-  if (!data) return [];
+const getIncompleteAssessments = (data, assessmentType) => {
+  if (!data) return {};
 
   const { learners, subjects_name } = data;
-  let result = [];
+  let result = {
+    base_line: { data: [], total_count: 0 },
+    fa1: { data: [], total_count: 0 },
+    fa2: { data: [], total_count: 0 },
+    end_line: { data: [], total_count: 0 },
+    learners: { data: [], total_count: 0 },
+  };
 
   if (!learners || !subjects_name) return result;
 
-  result = learners.filter((learner) => {
+  learners.forEach((learner, index) => {
     const subjectIds = jsonParse(
       learner?.program_beneficiaries?.[0]?.subjects,
       []
     );
 
-    if (!subjectIds || subjectIds.length === 0) return false;
-
     const eligibleSubjects = subjects_name.filter((subject) =>
       subjectIds.includes(`${subject?.id}`)
     );
 
-    if (eligibleSubjects.length === 0) return false;
+    const eligibleSubjectIds = eligibleSubjects.map(
+      (subject) => `${subject.id}`
+    );
 
-    let validAssessment = false;
+    let learnerAssessment = {
+      id: learner.id,
+      assessment_type: [],
+    };
 
-    switch (type) {
-      case "base-line":
-        validAssessment = !learner.pcr_scores?.some(
-          (score) => score.baseline_learning_level
-        );
-        break;
-
-      case "fa1":
-        const fa1Assessments = learner.pcr_formative_assesments?.filter(
-          (assessment) =>
-            assessment.formative_assessment_first_learning_level &&
-            subjectIds.includes(`${assessment?.subject_id}`)
-        );
-        validAssessment = fa1Assessments?.length < eligibleSubjects.length;
-        break;
-
-      case "fa2":
-        const fa2Assessments = learner.pcr_formative_assesments?.filter(
-          (assessment) =>
-            assessment.formative_assessment_second_learning_level &&
-            subjectIds.includes(`${assessment?.subject_id}`)
-        );
-        validAssessment = fa2Assessments?.length < eligibleSubjects.length;
-        break;
-
-      case "end-line":
-        validAssessment = !learner.pcr_scores?.some(
-          (score) => score.endline_learning_level
-        );
-        break;
-
-      default:
-        return false;
+    if (
+      !assessmentType ||
+      ["base_line", "base-line", "fa1", "fa2", "end_line", "end-line"].includes(
+        assessmentType
+      )
+    ) {
+      // Check base_line
+      if (!learner.pcr_scores?.some((score) => score.baseline_learning_level)) {
+        result["base_line"].data.push(learner);
+        learnerAssessment.assessment_type.push("base_line");
+      }
+      result["base_line"].total_count++;
     }
 
-    return validAssessment;
+    if (
+      !assessmentType ||
+      ["fa1", "fa2", "end_line", "end-line"].includes(assessmentType)
+    ) {
+      // Check fa1
+      const fa1Assessments = learner.pcr_formative_assesments?.filter(
+        (assessment) =>
+          assessment.formative_assessment_first_learning_level &&
+          eligibleSubjectIds.includes(`${assessment?.subject_id}`)
+      );
+
+      if (!fa1Assessments || fa1Assessments?.length < eligibleSubjects.length) {
+        result["fa1"].data.push(learner);
+        learnerAssessment.assessment_type.push("fa1");
+      }
+
+      if (eligibleSubjects.length > 0) {
+        result["fa1"].total_count++;
+      }
+    }
+
+    if (
+      !assessmentType ||
+      ["fa2", "end_line", "end-line"].includes(assessmentType)
+    ) {
+      // Check fa2
+      const fa2Assessments = learner.pcr_formative_assesments?.filter(
+        (assessment) =>
+          assessment.formative_assessment_second_learning_level &&
+          eligibleSubjectIds.includes(`${assessment?.subject_id}`)
+      );
+      if (!fa2Assessments || fa2Assessments?.length < eligibleSubjects.length) {
+        result["fa2"].data.push(learner);
+        learnerAssessment.assessment_type.push("fa2");
+      }
+      if (eligibleSubjects.length > 0) {
+        result["fa2"].total_count++;
+      }
+    }
+
+    if (!assessmentType || ["end_line", "end-line"].includes(assessmentType)) {
+      // Check end_line
+      if (!learner.pcr_scores?.some((score) => score.endline_learning_level)) {
+        result["end_line"].data.push(learner);
+        learnerAssessment.assessment_type.push("end_line");
+      }
+      result["end_line"].total_count++;
+    }
+
+    if (learnerAssessment.assessment_type.length > 0) {
+      result["learners"].data.push(learnerAssessment);
+      result["learners"].total_count++;
+    }
   });
 
-  return result;
+  // Remove empty arrays from the result object except for total_count
+  const filteredResult = {};
+  for (const key in result) {
+    if (Array.isArray(result[key].data) && result[key].data.length === 0) {
+      continue;
+    } else {
+      filteredResult[key] = result[key];
+    }
+  }
+
+  return filteredResult;
 };
