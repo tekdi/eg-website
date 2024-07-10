@@ -72,7 +72,7 @@ const columns = (t, navigate) => [
     sortField: "district_name",
   },
   {
-    name: t("DISTRICT_ID"),
+    name: t("DISTRICT_CD"),
     selector: (row) => row?.district_cd || "-",
     wrap: true,
     left: true,
@@ -216,7 +216,7 @@ export default function List() {
           order_by: { id: "asc" },
           ...filter,
         });
-        setAddress(data.data);
+        setAddress(data?.data);
         setPaginationTotalRows(data?.totalCount ? data?.totalCount : 0);
         setLoading(false);
       };
@@ -246,9 +246,7 @@ export default function List() {
 
   const handleRowClick = useCallback(
     (row) => {
-      navigate(`/poadmin/addressDetail/${row?.id}`, {
-        state: { eventData: row },
-      });
+      navigate(`/poadmin/address/${row?.id}`);
     },
     [navigate]
   );

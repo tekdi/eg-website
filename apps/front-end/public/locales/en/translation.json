@@ -742,6 +742,10 @@
   "FACILITATOR_EVENT_TYPE_PRERAK_CAMP_EXECUTION_TRAINING": "Prerak Camp Execution Training",
   "FACILITATOR_EVENT_TYPE_PRERAK_FLN_TRAINING": "Prerak FLN Training",
   "FACILITATOR_EVENT_TYPE_PRERAK_ORIENTATION": "Prerak Orientation",
+  "pragati_orientation": "Pragati Orientation",
+  "main_camp_execution_training": "Prerak Camp Execution Training",
+  "drip_training": "Drip Training",
+  "pcr_training": "Neev Training",
   "FACILITATOR_FULL_TIME": "Full Time",
   "FACILITATOR_MARITAL_STATUS_DIVORCED": "Divorced",
   "FACILITATOR_MARITAL_STATUS_MARRIED": "Married",
@@ -1968,6 +1972,7 @@
   "LEARNING_EXPERIENCES": "Skill Development &  Learning",
   "UPLOAD_FROM_PHONE": "Upload from phone",
   "PCR_LEARNING_ACTIVITIES": "Neev Learning Activities",
+  "MAIN_LEARNING_ACTIVITIES": "Prayas Learning Activities",
   "CAMP_EXECUTION": "Camp Execution",
   "EPCP_REPORT": "EPCP",
   "PHOTO_DESCRIPTION": "Make sure this image has a clear profile view of your face. Inappropriate image may result in disqualification of the application.",
@@ -2005,5 +2010,6 @@
   "ORDER": "Order",
   "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
   "SYNC_APPLICATION_STATUS": "Sync Application Status",
-  "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students"
+  "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students",
+  "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?"
 }

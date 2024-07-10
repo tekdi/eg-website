@@ -45,7 +45,6 @@ function CustomFieldTemplate({ id, classNames, label, required, children }) {
               {label}
               {required ? "*" : null}
             </label>
-
             <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
           </HStack>
         )}
@@ -63,38 +62,47 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [loading, setLoading] = useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({});
-  const [data, setData] = useState();
-  const [getDistrictsAll, setgetDistrictsAll] = useState();
-  const [getBlocksAll, setGetBlocksAll] = useState();
+  const [data, setData] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [blocks, setBlocks] = useState([]);
 
   const navigate = useNavigate();
 
   // facilitator pagination
-
-  useEffect(async () => {
-    const learnerStatus =
-      await facilitatorRegistryService.learnerStatusDistribution(filter);
-    setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
-    setData(learnerStatus?.data?.data);
-    setLoading(false);
+  useEffect(() => {
+    const fetchLearnerStatus = async () => {
+      setLoading(true);
+      const learnerStatus =
+        await facilitatorRegistryService.learnerStatusDistribution(filter);
+      setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
+      setData(learnerStatus?.data?.data || []);
+      setLoading(false);
+    };
+    fetchLearnerStatus();
   }, [filter]);
 
-  useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setgetDistrictsAll(getDistricts?.districts);
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      const response = await geolocationRegistryService.getDistricts({
+        name: "RAJASTHAN",
+      });
+      setDistricts(response?.districts || []);
+    };
+    fetchDistricts();
   }, []);
 
-  useEffect(async () => {
-    let blockData = [];
-    if (filter?.district?.length > 0) {
-      blockData = await geolocationRegistryService.getMultipleBlocks({
-        districts: filter?.district,
-      });
-    }
-    setGetBlocksAll(blockData);
+  useEffect(() => {
+    const fetchBlocks = async () => {
+      if (filter.district?.length) {
+        const response = await geolocationRegistryService.getMultipleBlocks({
+          districts: filter.district,
+        });
+        setBlocks(response || []);
+      } else {
+        setBlocks([]);
+      }
+    };
+    fetchBlocks();
   }, [filter?.district]);
 
   const setFilterObject = (data) => {
@@ -115,12 +123,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         items: {
           type: "string",
-          enumNames: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
-          enum: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
+          enumNames: districts.map((item) => item?.district_name),
+          enum: districts.map((item) => item?.district_name),
         },
         uniqueItems: true,
       },
@@ -134,12 +138,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         items: {
           type: "string",
-          enumNames: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
-          enum: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
+          enumNames: blocks.map((item) => item?.block_name),
+          enum: blocks.map((item) => item?.block_name),
         },
         uniqueItems: true,
       },
@@ -157,12 +157,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     },
   };
 
-  const onChange = async (data) => {
+  const handleChange = (data) => {
     const { district, block } = data?.formData || {};
     setFilterObject({
       ...filter,
-      ...(district ? { district } : {}),
-      ...(block ? { block } : {}),
+      ...(district && { district }),
+      ...(block && { block }),
     });
   };
 
@@ -175,7 +175,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
-  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), [
+    filter,
+  ]);
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
@@ -243,12 +245,10 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                 <Form
                   schema={schema}
                   uiSchema={uiSchema}
-                  onChange={onChange}
+                  onChange={handleChange}
                   validator={validator}
                   formData={filter}
-                  templates={{
-                    FieldTemplate: CustomFieldTemplate,
-                  }}
+                  templates={{ FieldTemplate: CustomFieldTemplate }}
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>
