@@ -23,6 +23,7 @@ import {
   removeOnboardingURLData,
   removeOnboardingMobile,
   CustomAlert,
+  telemetryFactory,
 } from "@shiksha/common-lib";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -84,6 +85,25 @@ export default function Login() {
   const [language, setLanguage] = React.useState();
   useEffect(() => {
     setLanguage(localStorage.getItem("lang") || "en");
+
+    const telemetryImpression = {
+      actor: {
+        id: "Anonymous",
+        type: "user",
+      },
+      context: {
+        env: "log-in",
+        cdata: [],
+      },
+      edata: {
+        type: "edit",
+        pageid: "log-in",
+        userName: "Anonymous",
+      },
+      tags: [],
+    };
+
+    telemetryFactory.impression(telemetryImpression);
   }, []);
 
   const validate = () => {
@@ -126,6 +146,21 @@ export default function Login() {
       logout();
       setErrors({ alert: t("PLEASE_ENTER_VALID_CREDENTIALS") });
     }
+
+    const telemetryInteraction = {
+      context: {
+        env: "log-in",
+        cdata: [],
+      },
+      edata: {
+        type: "CLICK",
+        id: "BUTTON",
+        userName: credentials?.username,
+      },
+      tags: [],
+    };
+
+    telemetryFactory.interact(telemetryInteraction);
   };
 
   return (

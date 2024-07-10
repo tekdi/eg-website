@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import {
   initializeI18n,
@@ -10,7 +10,7 @@ import {
   getSelectedAcademicYear,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
-
+import { telemetryFactory } from "@shiksha/common-lib";
 import guestRoutes from "./routes/guestRoutes";
 import { volunteerRoute, notAccessRoute } from "./routes/onest";
 import routes from "./routes/routes";
@@ -81,6 +81,10 @@ function App() {
   const [footerLinks, setFooterLinks] = React.useState([]);
   const token = localStorage.getItem("token");
   const [userTokenInfo, setUserTokenInfo] = React.useState();
+
+  useEffect(() => {
+    telemetryFactory.init();
+  }, []);
 
   React.useEffect(async () => {
     if (token) {
