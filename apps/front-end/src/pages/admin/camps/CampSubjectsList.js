@@ -64,6 +64,12 @@ export default function CampSubjectsList({ footerLinks, userTokenInfo }) {
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },
+        name:
+          params.type === "formative-assessment-1"
+            ? t("PCR_EVALUATION_1")
+            : t("PCR_EVALUATION_2"),
+        onPressBackButton: () =>
+          navigate(`/camps/${params?.id}/campexecution/activities`),
       }}
       facilitator={facilitator}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
@@ -74,26 +80,26 @@ export default function CampSubjectsList({ footerLinks, userTokenInfo }) {
           {`${assessmentTitle} ${t("SUBJECTS")}`}
         </FrontEndTypo.H2>
         {subjectsList?.map((item, i) => (
-          <CardComponent
-            _vstack={{
-              flex: 1,
-              borderColor: "greenIconColor",
-            }}
-            _body={{ pt: 4 }}
+          <Pressable
+            onPress={() =>
+              navigate(`/camps/${params?.id}/${params?.type}/${item?.name}`)
+            }
             key={i}
           >
-            <Pressable
-              onPress={() =>
-                navigate(`/camps/${params?.id}/${params?.type}/${item?.name}`)
-              }
+            <CardComponent
+              _vstack={{
+                flex: 1,
+                borderColor: "greenIconColor",
+              }}
+              _body={{ pt: 4 }}
             >
               <HStack space={3}>
                 <FrontEndTypo.H2 color="textMaroonColor.400">
                   {item?.name}
                 </FrontEndTypo.H2>
               </HStack>
-            </Pressable>
-          </CardComponent>
+            </CardComponent>
+          </Pressable>
         ))}
       </VStack>
     </Layout>

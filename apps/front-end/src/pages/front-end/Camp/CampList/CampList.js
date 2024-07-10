@@ -27,8 +27,6 @@ export default function List({ userTokenInfo, stateName }) {
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
   const [campCount, setCampCount] = useState();
-  const [learnerWithoutBaselineCount, setLearnerWithoutBaselineCount] =
-    useState();
   const [chartData, SetChartData] = useState();
   const [leanerList, setLeanerList] = useState([]);
 
@@ -52,9 +50,6 @@ export default function List({ userTokenInfo, stateName }) {
     } else {
       setCommunityLength(2);
     }
-    const getaBselineCount =
-      await benificiaryRegistoryService.getWithoutBaseline();
-    setLearnerWithoutBaselineCount(getaBselineCount?.data?.count || 0);
     const prerak_status = localStorage.getItem("status");
     setIpStatus(prerak_status);
     setEnumOptions(enums?.data || {});
@@ -226,12 +221,14 @@ export default function List({ userTokenInfo, stateName }) {
                         <FrontEndTypo.H2 bold color={"textGreyColor.750"}>
                           {t("PCR_CAMPS")}
                         </FrontEndTypo.H2>
+                        {/* <VStack>
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
+                            {`${nonRegisteredUser?.length} `}
+                            {t("UNMAPPED_LEARNERS")}
+                          </FrontEndTypo.H3>
+                        </VStack> */}
                         <HStack justifyContent={"space-between"}>
-                          <FrontEndTypo.H3
-                            mt="4"
-                            bold
-                            color="textGreyColor.750"
-                          >
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
                             {`${nonRegisteredUser?.length} `}
                             {t("UNMAPPED_LEARNERS")}
                           </FrontEndTypo.H3>

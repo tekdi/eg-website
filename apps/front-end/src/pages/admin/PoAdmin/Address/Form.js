@@ -1,15 +1,14 @@
 import {
   AdminTypo,
   PoAdminLayout,
-  organisationService,
+  eventService,
   getOptions,
   IconByName,
   cohortService,
   setSelectedProgramId,
   Breadcrumb,
-  validation,
 } from "@shiksha/common-lib";
-import { HStack, VStack } from "native-base";
+import { Button, HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -25,59 +24,92 @@ import { useNavigate } from "react-router-dom";
 const Schema = {
   type: "object",
   required: [
-    "name",
-    "mobile",
-    "contact_person",
-    "address",
-    "learner_target",
-    "email_id",
-    "state",
-    "camp_target",
-    "learner_per_camp",
+    "state_name",
+    "state_cd",
+    "district_name",
+    "district_cd",
+    "udise_block_code",
+    "block_name",
+    "grampanchayat_cd",
+    "grampanchayat_name",
+    "vill_ward_cd",
+    "village_ward_name",
+    "school_name",
+    "udise_sch_code",
+    "sch_category_id",
+    // "sch_mgmt_id",
+    // "open_school_type",
+    // "nodal_code",
   ],
   properties: {
-    name: {
+    state_name: {
+      title: "STATE_NAME",
       type: "string",
-      title: "IP_NAME",
+    },
+    state_cd: {
+      type: "string",
+      title: "STATE_CD",
+    },
+    district_name: {
+      type: "string",
+      title: "DISTRICT_NAME",
       regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    contact_person: {
+    district_cd: {
       type: "string",
-      title: "CONTACT_PERSON",
+      title: "DISTRICT_CD",
+    },
+    udise_block_code: {
+      type: "string",
+      title: "UDISE_BLOCK_CODE",
+    },
+    block_name: {
+      type: "string",
+      title: "BLOCK_NAME",
       regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    mobile: {
+    grampanchayat_cd: {
       type: "string",
-      title: "CONTACT_PERSON_MOBILE",
-      format: "MobileNumber",
+      title: "GRAMPANCHAYAT_CD",
     },
-    email_id: {
+    grampanchayat_name: {
       type: "string",
-      format: "email",
-      title: "EMAIL_ID",
+      title: "GRAMPANCHAYAT_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    state: {
-      title: "STATE",
+    vill_ward_cd: {
       type: "string",
-      format: "select",
+      title: "VILLAGE_WARD_CD",
     },
-    address: {
-      title: "IP_ADDRESS",
+    village_ward_name: {
       type: "string",
+      title: "VILLAGE_WARD_NAME",
+      regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    learner_target: {
-      title: "LEARNER_TARGET",
+    school_name: {
       type: "string",
+      title: "SCHOOL_NAME",
     },
-    learner_per_camp: {
-      title: "LEARNERS_PER_TARGET",
-      format: "select",
-      enum: ["15", "16", "17", "18", "19", "20"],
+    udise_sch_code: {
+      type: "string",
+      title: "UDISE_SCH_CODE",
     },
-    camp_target: {
+    sch_category_id: {
       type: ["string", "number"],
-      title: "TARGET_CAMP",
-      readOnly: true,
+      title: "SCH_CATEGORY_ID",
+    },
+    sch_mgmt_id: {
+      type: "string",
+      title: "SCH_MANAGEMENT_ID",
+    },
+
+    open_school_type: {
+      type: ["string"],
+      title: "OPEN_SCHOOL_TYPE",
+    },
+    nodal_code: {
+      type: "string",
+      title: "NODAL_CODE",
     },
   },
 };
@@ -89,7 +121,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
-  const [schema, setSchema] = useState({});
+  const [schema, setSchema] = useState(Schema);
   const [formData, setFormData] = useState();
 
   useEffect(async () => {
@@ -120,37 +152,21 @@ export default function App() {
         program_id: newData?.state,
       });
     }
-
-    if (id === "root_learner_target" || id === "root_learner_per_camp") {
-      const avgCount = Math.ceil(
-        newData?.learner_target / newData?.learner_per_camp
-      );
-      const updatedFormData = { ...newData };
-      updatedFormData.camp_target = avgCount;
-      setFormData(updatedFormData);
-    }
-  };
-
-  const customValidate = (data, err) => {
-    if (data?.mobile) {
-      const isValid = validation({
-        data: data?.mobile,
-        key: "mobile",
-        type: "mobile",
-      });
-      if (isValid) {
-        err?.mobile?.addError([t("PLEASE_ENTER_VALID_NUMBER")]);
-      }
-    }
-    return err;
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const newData = data.formData;
-    const result = await organisationService.createOrg(newData);
+    const newData = Object.keys(data.formData).reduce((acc, key) => {
+      acc[key] =
+        typeof data.formData[key] === "string"
+          ? data.formData[key].toUpperCase()
+          : data.formData[key];
+      return acc;
+    }, {});
+    // const newData = data.formData;
+    const result = await eventService.createAddress(newData);
     if (!result.error) {
-      navigate("/poadmin/ips");
+      navigate("/poadmin/Address");
     } else {
       setFormData(newData);
       setErrors({
@@ -174,11 +190,11 @@ export default function App() {
                   <HStack>
                     <IconByName name="GroupLineIcon" size="md" />
                     <AdminTypo.H4 bold color="Activatedcolor.400">
-                      {t("ALL_IPS")}
+                      {t("ALL_ADDRESSES")}
                     </AdminTypo.H4>
                   </HStack>
                 ),
-                link: "/poadmin/ips",
+                link: "/poadmin/Address",
                 icon: "GroupLineIcon",
               },
               {
@@ -213,7 +229,6 @@ export default function App() {
               onError,
               onSubmit,
               onChange,
-              customValidate,
               transformErrors: (e) => transformErrors(e, schema, t),
             }}
           >
@@ -226,7 +241,7 @@ export default function App() {
                     name="DeleteBinLineIcon"
                   />
                 }
-                onPress={() => navigate("/poadmin/ips")}
+                onPress={() => navigate("/poadmin/Address")}
               >
                 {t("CANCEL")}
               </AdminTypo.Secondarybutton>
