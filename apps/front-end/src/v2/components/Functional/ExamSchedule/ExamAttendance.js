@@ -10,6 +10,7 @@ import { HStack, VStack, Radio, Stack } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import { useNavigate } from "react-router-dom";
+import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
 
 const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -19,44 +20,45 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [subjects, setSubjects] = useState([]);
   const [maxDate, setMaxDate] = useState();
   const [selectedBoardId, setSelectedBoardId] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
     setBoardList(boardList);
+    console.log("boardList", boardList);
     setLoading(false);
   }, []);
 
   const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId?.board?.id, date: "" });
+    setFilter({ ...filter, selectedId: optionId?.target?.value, date: "" });
   };
 
+  const fetchData = async () => {
+    if (filter?.date) {
+      const subjectData = await organisationService.getSubjectOnDate({
+        filter,
+      });
+      const subject = !Array.isArray(subjectData?.data)
+        ? []
+        : subjectData?.data;
+      // const newData = subject?.flatMap((subject) => {
+      //   return subject.events.map((event) => ({
+      //     subject_name: subject.name,
+      //     subject_id: subject.id,
+      //     event_id: event.id,
+      //     start_date: event?.start_date,
+      //     end_date: event?.end_date,
+      //     type: event.type.charAt(0).toUpperCase() + event.type.slice(1), // Capitalize the type
+      //   }));
+      // });
+      // const LearnerList = await organisationService.getattendanceLearnerList(
+      //   newData
+      // );
+
+      setSubjects(!Array.isArray(subject) ? [] : subject);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      if (filter?.date) {
-        const subjectData = await organisationService.getSubjectOnDate({
-          filter,
-        });
-        const subject = !Array.isArray(subjectData?.data)
-          ? []
-          : subjectData?.data;
-        // const newData = subject?.flatMap((subject) => {
-        //   return subject.events.map((event) => ({
-        //     subject_name: subject.name,
-        //     subject_id: subject.id,
-        //     event_id: event.id,
-        //     start_date: event?.start_date,
-        //     end_date: event?.end_date,
-        //     type: event.type.charAt(0).toUpperCase() + event.type.slice(1), // Capitalize the type
-        //   }));
-        // });
-        // const LearnerList = await organisationService.getattendanceLearnerList(
-        //   newData
-        // );
-
-        setSubjects(!Array.isArray(subject) ? [] : subject);
-      }
-    };
-
     fetchData();
   }, [filter?.date]);
 
@@ -80,32 +82,22 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
             {t("SELECT_BOARD")}
           </FrontEndTypo.H3>
           <HStack space={6}>
-            <Radio.Group
-              onChange={(nextValue) => {
-                handleSelect(nextValue);
-                setMaxDate(nextValue?.addedMaxDate);
-                setSelectedBoardId(nextValue);
-              }}
-              value={selectedBoardId}
-            >
-              <Stack
-                direction={{
-                  base: "row",
-                  md: "column",
-                }}
-                alignItems={{
-                  base: "flex-start",
-                  md: "center",
-                }}
-                space={4}
-              >
-                {boardList?.map((board) => (
-                  <Radio key={board?.board?.id} colorScheme="red" value={board}>
-                    {board?.board?.name}
-                  </Radio>
-                ))}
-              </Stack>
-            </Radio.Group>
+            {boardList?.map((board) => (
+              <label>
+                <input
+                  type="radio"
+                  name="board"
+                  value={board?.board?.id}
+                  key={board?.board?.id}
+                  onChange={(board) => {
+                    handleSelect(board);
+                    setMaxDate(board?.addedMaxDate);
+                    setSelectedBoardId(board);
+                  }}
+                />
+                {board?.board?.name}
+              </label>
+            ))}
           </HStack>
           {filter?.selectedId && (
             <DatePicker setFilter={setFilter} filter={filter} />
