@@ -4,27 +4,13 @@ import {
   Loading,
   UserCard,
   campService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { CheckIcon, HStack, Modal, Select, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
-
-const scores = [
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "Absent",
-];
 
 export default function CampSubjectScores({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -35,6 +21,7 @@ export default function CampSubjectScores({ userTokenInfo }) {
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
   const [showModal, setShowModal] = useState(false);
+  const [scoresArray, setScoresArray] = useState([]);
 
   const programDetails = JSON.parse(localStorage.getItem("program"));
 
@@ -47,7 +34,8 @@ export default function CampSubjectScores({ userTokenInfo }) {
           subject_name: params?.subject,
           camp_id: params?.id,
         });
-        setStudentsData(result?.data);
+        const groupedLearners = groupLearnersByBoard(result?.data);
+        setStudentsData(groupedLearners);
       } catch (error) {
         console.log("Error fetching students list:", error);
       }
@@ -75,6 +63,13 @@ export default function CampSubjectScores({ userTokenInfo }) {
 
       setFacilitator(ipUserData);
     }
+    const enumData = await enumRegistryService.listOfEnum();
+    if (enumData?.data) {
+      const scoresData = enumData?.data?.PCR_SCORES_RAPID_QUESTION?.map(
+        (item) => item.value
+      );
+      setScoresArray(scoresData || []);
+    }
     setLoading(false);
   }, []);
 
@@ -88,15 +83,34 @@ export default function CampSubjectScores({ userTokenInfo }) {
       "formative-assessment-1": "formative_assessment_first_learning_level",
       "formative-assessment-2": "formative_assessment_second_learning_level",
     };
-    const key = assessmentTypes[params.type];
-    const canSubmit = studentsData?.every((item) => {
-      return scores.includes(item[key]);
+    const canSubmit = studentsData.every((item) => {
+      const key = Object.keys(item)[0];
+      return item[key].every((user) =>
+        scoresArray.includes(user[assessmentTypes[params.type]])
+      );
     });
+
     if (canSubmit) {
-      navigate(-1);
+      navigate(`/camps/${params?.id}/${params?.type}/subjectslist`);
     } else {
       setShowModal(true);
     }
+  };
+
+  const groupLearnersByBoard = (data) => {
+    const groupedData = {};
+
+    data.forEach((item) => {
+      const boardName = item.name;
+      if (!groupedData[boardName]) {
+        groupedData[boardName] = [];
+      }
+      groupedData[boardName].push(item);
+    });
+
+    return Object.entries(groupedData).map(([key, value]) => ({
+      [key]: value,
+    }));
   };
 
   if (loading) {
@@ -110,8 +124,7 @@ export default function CampSubjectScores({ userTokenInfo }) {
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },
         name: t(params?.subject),
-        onPressBackButton: () =>
-          navigate(`/camps/${params?.id}/${params?.type}/subjectslist`),
+        onPressBackButton: checkSubmissionStatus,
       }}
       facilitator={facilitator}
       _page={{ _scollView: { bg: "bgGreyColor.200" } }}
@@ -130,15 +143,26 @@ export default function CampSubjectScores({ userTokenInfo }) {
           </FrontEndTypo.H4>
         </HStack>{" "}
         {studentsData?.length ? (
-          studentsData?.map((student) => (
-            <StudentCard
-              key={student?.user_id}
-              student={student}
-              updateScore={onScoreUpdate}
-              subject={params?.subject}
-              program_id={programDetails?.program_id}
-            />
-          ))
+          studentsData.map((item, index) => {
+            const key = Object.keys(item)[0];
+            const users = item[key];
+
+            return (
+              <VStack key={index} space={2}>
+                <FrontEndTypo.H2>{key}</FrontEndTypo.H2>
+                {users.map((student) => (
+                  <StudentCard
+                    key={student?.user_id}
+                    student={student}
+                    updateScore={onScoreUpdate}
+                    subject={params?.subject}
+                    program_id={programDetails?.program_id}
+                    scoresArray={scoresArray}
+                  />
+                ))}
+              </VStack>
+            );
+          })
         ) : (
           <FrontEndTypo.H2>{t("NO_LEARNERS_FOR_THIS_SUBJECT")}</FrontEndTypo.H2>
         )}
@@ -176,7 +200,13 @@ export default function CampSubjectScores({ userTokenInfo }) {
   );
 }
 
-const StudentCard = ({ student, updateScore, subject, program_id }) => {
+const StudentCard = ({
+  student,
+  updateScore,
+  subject,
+  program_id,
+  scoresArray,
+}) => {
   const [data, setData] = useState(student);
   const params = useParams();
 
@@ -193,7 +223,6 @@ const StudentCard = ({ student, updateScore, subject, program_id }) => {
     };
     updateScore(newData);
   };
-
   return (
     <UserCard
       key={data?.user_id}
@@ -201,7 +230,14 @@ const StudentCard = ({ student, updateScore, subject, program_id }) => {
         p: 2,
         space: 1,
         flex: 1,
-        bg: "green.100",
+        bg:
+          params.type === "formative-assessment-1" &&
+          data.formative_assessment_first_learning_level
+            ? "green.100"
+            : params.type === "formative-assessment-2" &&
+              data.formative_assessment_second_learning_level
+            ? "green.100"
+            : "grey.100",
       }}
       _vstack={{ py: 2 }}
       _image={{ size: 45, color: "gray" }}
@@ -228,7 +264,7 @@ const StudentCard = ({ student, updateScore, subject, program_id }) => {
             )
           }
         >
-          {scores.map((score, index) => (
+          {scoresArray.map((score, index) => (
             <Select.Item key={index} label={score} value={score} />
           ))}
         </Select>

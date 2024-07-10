@@ -799,7 +799,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               <TitleCard
                 _icon=""
                 icon={
-                  <IconByName _icon={{ color: "white" }} name="Book2LineIcon" />
+                  <IconByName
+                    _icon={{ color: "white" }}
+                    name="UserAddLineIcon"
+                  />
                 }
                 onPress={(e) => navigate("/beneficiary")}
               >
