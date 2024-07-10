@@ -25,7 +25,6 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
     setBoardList(boardList);
-    console.log("boardList", boardList);
     setLoading(false);
   }, []);
 
@@ -83,7 +82,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
           </FrontEndTypo.H3>
           <HStack space={6}>
             {boardList?.map((board) => (
-              <label>
+              <label key={board?.board?.id}>
                 <input
                   type="radio"
                   name="board"
