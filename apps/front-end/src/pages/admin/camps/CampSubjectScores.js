@@ -22,6 +22,7 @@ export default function CampSubjectScores({ userTokenInfo }) {
   const [facilitator, setFacilitator] = useState();
   const [showModal, setShowModal] = useState(false);
   const [scoresArray, setScoresArray] = useState([]);
+  const [totalLearners, setTotalLearners] = useState(0);
 
   const programDetails = JSON.parse(localStorage.getItem("program"));
 
@@ -36,6 +37,7 @@ export default function CampSubjectScores({ userTokenInfo }) {
         });
         const groupedLearners = groupLearnersByBoard(result?.data);
         setStudentsData(groupedLearners);
+        setTotalLearners(result?.data?.length);
       } catch (error) {
         console.log("Error fetching students list:", error);
       }
@@ -139,7 +141,7 @@ export default function CampSubjectScores({ userTokenInfo }) {
             {params?.subject}
           </FrontEndTypo.H4>
           <FrontEndTypo.H4 color="textMaroonColor.400">
-            {`${t("TOTAL_STUDENTS")} : ${studentsData?.length || 0}`}
+            {`${t("TOTAL_STUDENTS")} : ${totalLearners || 0}`}
           </FrontEndTypo.H4>
         </HStack>{" "}
         {studentsData?.length ? (
@@ -177,7 +179,9 @@ export default function CampSubjectScores({ userTokenInfo }) {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
-          <Modal.Header textAlign={"center"}>{t("WARNING")}</Modal.Header>
+          <Modal.Header textAlign={"center"}>
+            {t("EXPIRY_CONTENT.HEADING")}
+          </Modal.Header>
           <Modal.Body>
             <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
           </Modal.Body>
@@ -243,6 +247,8 @@ const StudentCard = ({
       _image={{ size: 45, color: "gray" }}
       rightElement={
         <Select
+          maxH={"30px"}
+          overflow="none"
           selectedValue={
             params.type === "formative-assessment-1"
               ? data.formative_assessment_first_learning_level

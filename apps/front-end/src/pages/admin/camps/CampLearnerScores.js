@@ -135,7 +135,9 @@ export default function CampLearnerScores({ userTokenInfo }) {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
-          <Modal.Header textAlign={"center"}>{t("WARNING")}</Modal.Header>
+          <Modal.Header textAlign={"center"}>
+            {t("EXPIRY_CONTENT.HEADING")}
+          </Modal.Header>
           <Modal.Body>
             <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
           </Modal.Body>
@@ -202,6 +204,8 @@ const StudentCard = ({ student, updateStudentScore, scoresArray }) => {
       _image={{ size: 45, color: "gray" }}
       rightElement={
         <Select
+          maxH={"30px"}
+          overflow="none"
           accessibilityLabel="Choose Score"
           selectedValue={
             data?.pcr_scores?.[0]?.[
