@@ -6,6 +6,7 @@ import {
   Loading,
   enumRegistryService,
   arrList,
+  jsonParse,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import {
@@ -87,9 +88,9 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   }, [modalVisible]);
 
   const getCampSessionsList = async () => {
-    const campDetails = await campService.getCampDetails({ id });
+    const resultCamp = await campService.getCampDetails({ id });
     // setCampType(campDetails?.data?.type);
-    setCampDetails(campDetails?.data);
+    setCampDetails(resultCamp?.data);
     const result = await campService.getCampSessionsList({
       id: id,
     });
@@ -99,8 +100,45 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
     setSessionActive(sessionResult);
     setTotalSessionsCompleted(
       sessionResult?.lastSession?.ordering -
-        (sessionResult?.lastSession?.status === "incomplete" ? 0.5 : 0)
+        (sessionResult?.lastSession?.status === "incomplete" ? 0.5 : 0) || 0
     );
+    if (resultCamp?.data?.type == "pcr") {
+      //PCR Validations here
+      let filteredData = data.filter((item) => item.session_tracks.length > 0);
+      filteredData = filteredData?.[filteredData?.length - 1];
+      let assessment_type = "";
+      if (!filteredData?.ordering) {
+        assessment_type = "base-line";
+      } else if (
+        filteredData?.ordering == 6 &&
+        filteredData?.session_tracks?.[0]?.status == "complete"
+      ) {
+        assessment_type = "fa1";
+      } else if (
+        filteredData?.ordering == 13 &&
+        filteredData?.session_tracks?.[0]?.status == "complete"
+      ) {
+        assessment_type = "fa2";
+      } else if (
+        filteredData?.ordering == 19 &&
+        filteredData?.session_tracks?.[0]?.status == "complete"
+      ) {
+        assessment_type = "end-line";
+      }
+      if (assessment_type != "") {
+        const resultScore = await campService.getCampLearnerScores({
+          camp_id: id,
+          assessment_type,
+        });
+        const incompleteUser = getIncompletLeaner(
+          resultScore?.data,
+          assessment_type
+        );
+        if (incompleteUser?.length > 0) {
+          navigate(`/camps/${id}/campexecution/activities`);
+        }
+      }
+    }
   };
 
   useEffect(async () => {
@@ -201,8 +239,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
     const result = data
       .filter((e) => e.session_tracks?.[0]?.id)
-      .map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
-
+      ?.map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
     let sessionData = result?.[result?.length - 1] || { ordering: 1 };
 
     const c1 = [];
@@ -390,3 +427,68 @@ const SessionErrorMessage = ({ t, message, data, navigate }) => (
     )}
   </VStack>
 );
+
+const getIncompletLeaner = (data, type) => {
+  if (!data) return [];
+
+  const { learners, subjects_name } = data;
+  let result = [];
+
+  if (!learners || !subjects_name) return result;
+
+  result = learners.filter((learner) => {
+    const subjectIds = jsonParse(
+      learner?.program_beneficiaries?.[0]?.subjects,
+      []
+    );
+
+    if (!subjectIds || subjectIds.length === 0) return false;
+
+    const eligibleSubjects = subjects_name.filter((subject) =>
+      subjectIds.includes(`${subject?.id}`)
+    );
+
+    if (eligibleSubjects.length === 0) return false;
+
+    let validAssessment = false;
+
+    switch (type) {
+      case "base-line":
+        validAssessment = !learner.pcr_scores?.some(
+          (score) => score.baseline_learning_level
+        );
+        break;
+
+      case "fa1":
+        const fa1Assessments = learner.pcr_formative_assesments?.filter(
+          (assessment) =>
+            assessment.formative_assessment_first_learning_level &&
+            subjectIds.includes(`${assessment?.subject_id}`)
+        );
+        validAssessment = fa1Assessments?.length < eligibleSubjects.length;
+        break;
+
+      case "fa2":
+        const fa2Assessments = learner.pcr_formative_assesments?.filter(
+          (assessment) =>
+            assessment.formative_assessment_second_learning_level &&
+            subjectIds.includes(`${assessment?.subject_id}`)
+        );
+        validAssessment = fa2Assessments?.length < eligibleSubjects.length;
+        break;
+
+      case "end-line":
+        validAssessment = !learner.pcr_scores?.some(
+          (score) => score.endline_learning_level
+        );
+        break;
+
+      default:
+        return false;
+    }
+
+    return validAssessment;
+  });
+
+  return result;
+};

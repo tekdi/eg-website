@@ -227,12 +227,12 @@ export default function List({ userTokenInfo, stateName }) {
                           {t("PCR_CAMPS")}
                         </FrontEndTypo.H2>
                         <VStack>
-                          {learnerWithoutBaselineCount && (
+                          {/* {learnerWithoutBaselineCount && (
                             <FrontEndTypo.H3 color="textMaroonColor.400">
                               {`${learnerWithoutBaselineCount} `}
                               {t("UNMAPPED_LEARNER_BUT_BASELINE_NOT_SUBMITTED")}
                             </FrontEndTypo.H3>
-                          )}
+                          )} */}
                           <FrontEndTypo.H3 color="textMaroonColor.400">
                             {`${nonRegisteredUser?.length} `}
                             {t("UNMAPPED_LEARNERS")}

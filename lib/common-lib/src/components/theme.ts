@@ -700,6 +700,14 @@ const DEFAULT_THEME = {
       200: '#10B981',
       300: '#A7F3D0'
     },
+    progressBarRed: {
+      400: '#790000',
+      500: '#A7F3D0',
+      600: '#790000',
+      700: '#A7F3D0',
+      800: '#790000',
+      900: '#A7F3D0'
+    },
     bgGreyColor: {
       200: '#F4F4F7'
     },
@@ -726,6 +734,7 @@ const DEFAULT_THEME = {
     chipGreyColor: {
       500: '#585858'
     },
+
     textMaroonColor: {
       50: '#FDCAB5',
       100: '#FFACAF',

@@ -1,60 +1,145 @@
-import { CardComponent, FrontEndTypo } from "@shiksha/common-lib";
-import { HStack, Image, Pressable } from "native-base";
+import { CardComponent, FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import { HStack, Image, Pressable, Progress, VStack } from "native-base";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export const CampSessionPlan = ({ button_name, id }) => {
+export const CampSessionPlan = ({ button_list, id, sessionList }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const [cards, setCards] = useState();
   const getNavigatePath = (base, assessment) =>
     `/camps/${id}/${base}${assessment ? `/${assessment}` : ""}`;
 
-  const sessionCardProps = {
-    navigatePath: "",
-    type: "",
-  };
-
-  if (button_name == "base-line") {
-    sessionCardProps.type = "PCR_INITIAL_LEVEL";
-    sessionCardProps.navigatePath = getNavigatePath("base-line", "scores");
-  } else if (button_name == "fa1") {
-    sessionCardProps.type = "PCR_EVALUATION_1";
-    sessionCardProps.navigatePath = getNavigatePath(
-      "formative-assessment-1",
-      "subjectslist"
-    );
-  } else if (button_name == "fa2") {
-    sessionCardProps.type = "PCR_EVALUATION_2";
-    sessionCardProps.navigatePath = getNavigatePath(
-      "formative-assessment-2",
-      "subjectslist"
-    );
-  } else if (button_name == "end-line") {
-    sessionCardProps.type = "PCR_FINAL_EVALUATON";
-    sessionCardProps.navigatePath = getNavigatePath("end-line", "scores");
-  } else {
-    sessionCardProps.type = "PCR_LEARNING_ACTIVITIES";
-    sessionCardProps.navigatePath = getNavigatePath("sessionslist");
-  }
+  useEffect(() => {
+    const init = () => {
+      let arr = [];
+      let button_name = Object.keys(button_list || {});
+      // console.log(button_name, button_list);
+      if (Array.isArray(button_name) && button_name?.includes("main")) {
+        arr = [
+          ...arr,
+          {
+            type: "MAIN_LEARNING_ACTIVITIES",
+            navigatePath: getNavigatePath("sessionslist"),
+          },
+        ];
+      } else {
+        if (Array.isArray(button_name) && button_name?.includes("base_line")) {
+          arr = [
+            ...arr,
+            {
+              type: "PCR_INITIAL_LEVEL",
+              navigatePath: getNavigatePath("base-line", "scores"),
+              ...(button_list?.base_line || {}),
+            },
+          ];
+        }
+        if (Array.isArray(button_name) && button_name?.includes("fa1")) {
+          arr = [
+            ...arr,
+            {
+              type: "PCR_EVALUATION_1",
+              navigatePath: getNavigatePath(
+                "formative-assessment-1",
+                "subjectslist"
+              ),
+              ...(button_list?.fa1 || {}),
+            },
+          ];
+        }
+        if (Array.isArray(button_name) && button_name?.includes("fa2")) {
+          arr = [
+            ...arr,
+            {
+              type: "PCR_EVALUATION_2",
+              navigatePath: getNavigatePath(
+                "formative-assessment-2",
+                "subjectslist"
+              ),
+              ...(button_list?.fa2 || {}),
+            },
+          ];
+        }
+        if (Array.isArray(button_name) && button_name?.includes("end_line")) {
+          arr = [
+            ...arr,
+            {
+              type: "PCR_FINAL_EVALUATON",
+              navigatePath: getNavigatePath("end-line", "scores"),
+              ...(button_list?.end_line || {}),
+            },
+          ];
+        }
+        if (Array.isArray(button_name) && button_name?.length === 0) {
+          arr = [
+            ...arr,
+            {
+              type: "PCR_LEARNING_ACTIVITIES",
+              navigatePath: getNavigatePath("sessionslist"),
+              showIcon: sessionList,
+            },
+          ];
+        }
+      }
+      setCards(arr);
+    };
+    init();
+  }, [button_list]);
 
   return (
-    <CardComponent _body={{ pt: 4 }}>
-      <Pressable onPress={() => navigate(sessionCardProps.navigatePath)}>
-        <HStack alignItems="center" justifyContent="center" space={3}>
-          <Image
-            source={{ uri: "/images/activities/learning-activity.png" }}
-            resizeMode="contain"
-            alignSelf="center"
-            w="75px"
-            h="60px"
-            alt="learning-activity"
-          />
-          <FrontEndTypo.H2 color="textMaroonColor.400">
-            {t(sessionCardProps.type)}
-          </FrontEndTypo.H2>
-        </HStack>
-      </Pressable>
-    </CardComponent>
+    <VStack space={4}>
+      {cards?.map((card) => (
+        <Pressable onPress={() => navigate(card.navigatePath)} key={card.type}>
+          <CardComponent _body={{ pt: 4, space: "4" }}>
+            {(card?.total_count >= 0 || card.data?.length >= 0) && (
+              <VStack>
+                <HStack space={4} alignItems={"center"}>
+                  <FrontEndTypo.H4 bold color="textGreyColor.750">
+                    {t("COMPLETED_SESSIONS")} :
+                  </FrontEndTypo.H4>
+                  <FrontEndTypo.H3 bold color="textGreyColor.750">
+                    {card?.total_count - card.data?.length}/{card?.total_count}
+                  </FrontEndTypo.H3>
+                </HStack>
+                <Progress
+                  value={calculateProgress(
+                    card?.total_count - card.data?.length,
+                    card?.total_count
+                  )}
+                  size="sm"
+                  colorScheme="progressBarRed"
+                />
+              </VStack>
+            )}
+            <HStack alignItems="center" justifyContent="center" space={3}>
+              <Image
+                source={{ uri: "/images/activities/learning-activity.png" }}
+                resizeMode="contain"
+                alignSelf="center"
+                w="75px"
+                h="60px"
+                alt="learning-activity"
+              />
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t(card.type)}
+              </FrontEndTypo.H2>
+              {card?.showIcon && (
+                <IconByName
+                  name="CheckboxCircleFillIcon"
+                  _icon={{ size: "36" }}
+                  color="successColor"
+                />
+              )}
+            </HStack>
+          </CardComponent>
+        </Pressable>
+      ))}
+    </VStack>
   );
+};
+
+const calculateProgress = (completedSessions, totalSessions) => {
+  if (totalSessions === 0) return 0; // to avoid division by zero
+  return (completedSessions / totalSessions) * 100;
 };
