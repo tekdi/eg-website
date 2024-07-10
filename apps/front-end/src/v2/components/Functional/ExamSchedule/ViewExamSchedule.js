@@ -6,8 +6,9 @@ import {
   organisationService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
-import { HStack, VStack, Radio } from "native-base";
+import { HStack, VStack, Radio, Input } from "native-base";
 import { useNavigate } from "react-router-dom";
+import { optionId } from "@rjsf/utils";
 
 const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,7 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
   const [practicalSubjects, setPracticalSubjects] = useState([]);
   const [theorySubjects, setTheorySubjects] = useState([]);
   const navigate = useNavigate();
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(async () => {
     const boardList = await enumRegistryService.boardList();
@@ -24,16 +26,15 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
     setLoading(false);
   }, []);
 
-  const handleSelect = (optionId) => {
-    setFilter({ ...filter, selectedId: optionId });
-    getSubjectList(optionId);
+  const handleSelect = (event) => {
+    setFilter({ ...filter });
+    setSelectedId(event.target.value);
+    getSubjectList(event.target.value);
   };
 
   const getSubjectList = async (id) => {
     setLoading(true);
-
     const subjectData = await organisationService.getSubjectList({ id });
-
     if (Array.isArray(subjectData?.data)) {
       const practical = [];
       const theory = [];
@@ -93,15 +94,16 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
           </FrontEndTypo.H3>
           <HStack space={6}>
             {boardList?.boards?.map((board) => (
-              <Radio.Group
-                key={board.id}
-                onChange={(nextValue) => handleSelect(nextValue)}
-                value={filter?.selectedId}
-              >
-                <Radio colorScheme="red" value={board.id}>
-                  {board.name}
-                </Radio>
-              </Radio.Group>
+              <label key={board.id}>
+                <input
+                  colorScheme="red"
+                  type="radio"
+                  value={board.id}
+                  checked={selectedId === board.id.toString()}
+                  onChange={handleSelect}
+                />
+                {board.name}
+              </label>
             ))}
           </HStack>
         </VStack>
