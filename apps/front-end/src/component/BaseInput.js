@@ -332,7 +332,42 @@ export const RadioBtn = ({
           {required && <H2 color="textMaroonColor.400">*</H2>}
         </FormControl.Label>
       )}
-      <Radio.Group
+      <CustomRadio
+        options={{
+          enumOptions: items,
+        }}
+        schema={{
+          // _pressable: { style: { backgroundColor: "#999" } },
+          _stackIcon: { flexDirection: "row" },
+          icons: items?.map((e) =>
+            e.value == value
+              ? {
+                  style: {},
+                  name: "RadioButtonLineIcon",
+                  py: 0,
+                  px: 0,
+                  mx: 2,
+                  borderWidth: 0,
+                  activeColor: "#1F1D76",
+                }
+              : {
+                  name: "CheckboxBlankCircleLineIcon",
+                  py: 0,
+                  px: 0,
+                  mx: 2,
+                  borderWidth: 0,
+                  color: "#333",
+                }
+          ),
+          // _box: { gap: "0", width: "auto" },
+          // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+        }}
+        value={value}
+        onChange={(e) => {
+          onChange(e);
+        }}
+      />
+      {/* <Radio.Group
         colorScheme="eg-blue"
         key={items}
         pb="4"
@@ -367,7 +402,7 @@ export const RadioBtn = ({
             </Radio>
           ))}
         </Stack>
-      </Radio.Group>
+      </Radio.Group> */}
     </FormControl>
   );
 };

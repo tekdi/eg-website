@@ -75,6 +75,14 @@ export function LabelMobileWidget() {
     </>
   );
 }
+export function labelMotherNameWidget() {
+  const { t } = useTranslation();
+  return (
+    <Heading size="xs" mb={1} color="textGreyColor.750">
+      {t("MOTHER_FULL_NAME")}
+    </Heading>
+  );
+}
 export function EnrollmentLabelMobileWidget() {
   let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
@@ -423,42 +431,41 @@ export const RadioBtn = ({
           {required && <H2 color="textMaroonColor.400">*</H2>}
         </FormControl.Label>
       )}
-      <Radio.Group
-        colorScheme="eg-blue"
-        key={items}
-        pb="4"
+      <CustomRadio
+        options={{
+          enumOptions: items,
+        }}
+        schema={{
+          // _pressable: { style: { backgroundColor: "#999" } },
+          _stackIcon: { flexDirection: "row", justifyContent: "flex-start" },
+          icons: items?.map((e) =>
+            e.value == value
+              ? {
+                  style: {},
+                  name: "RadioButtonLineIcon",
+                  py: 0,
+                  px: 0,
+                  mx: 2,
+                  borderWidth: 0,
+                  activeColor: "#1F1D76",
+                }
+              : {
+                  name: "CheckboxBlankCircleLineIcon",
+                  py: 0,
+                  px: 0,
+                  mx: 2,
+                  borderWidth: 0,
+                  color: "#333",
+                }
+          ),
+          // _box: { gap: "0", width: "auto" },
+          // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+        }}
         value={value}
-        accessibilityLabel="Pick your favorite number"
-        onChange={(value) => onChange(value)}
-      >
-        <Stack
-          direction={{
-            base: "column",
-            sm: directionColumn || "row",
-          }}
-          alignItems={{
-            base: "flex-start",
-            md: directionColumn ? "flex-start" : "center",
-          }}
-          space={4}
-          w="75%"
-          gap="4"
-          {..._stack}
-        >
-          {items?.map((item) => (
-            <Radio
-              key={item?.value}
-              value={item?.value}
-              size="sm"
-              colorScheme="eg-blue"
-              _text={{ fontSize: 12, fontWeight: 500 }}
-              isDisabled={readOnly}
-            >
-              {t(item?.label)}
-            </Radio>
-          ))}
-        </Stack>
-      </Radio.Group>
+        onChange={(e) => {
+          onChange(e);
+        }}
+      />
     </FormControl>
   );
 };
@@ -919,6 +926,7 @@ const widgets = {
   LabelNameWidget,
   selectSubjectWidget,
   LabelMobileWidget,
+  labelMotherNameWidget,
   EnrollmentLabelMobileWidget,
   AlreadyOpenLabelWidget,
   LabelAddressWidget,
