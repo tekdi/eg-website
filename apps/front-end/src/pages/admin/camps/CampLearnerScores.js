@@ -23,6 +23,7 @@ export default function CampLearnerScores({ userTokenInfo }) {
   const [facilitator, setFacilitator] = useState();
   const [showModal, setShowModal] = useState(false);
   const [scoresArray, setScoresArray] = useState([]);
+  const [submit, setSubmit] = useState(false);
 
   const getStudentsData = async () => {
     try {
@@ -78,7 +79,8 @@ export default function CampLearnerScores({ userTokenInfo }) {
     });
 
     if (canSubmit) {
-      navigate(`/camps/${params?.id}/campexecution/activities`);
+      setShowModal(true);
+      setSubmit(true);
     } else {
       setShowModal(true);
     }
@@ -139,16 +141,20 @@ export default function CampLearnerScores({ userTokenInfo }) {
             {t("EXPIRY_CONTENT.HEADING")}
           </Modal.Header>
           <Modal.Body>
-            <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2>
+              {submit ? t("SCORES_SUBMIT_SUCCESS") : t("SCORES_SUBMIT_WARNING")}
+            </FrontEndTypo.H2>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-evenly"}>
-            <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
-              {t("CANCEL")}
-            </FrontEndTypo.Secondarybutton>
+            {!submit && (
+              <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               onPress={() => {
                 setShowModal(false);
-                navigate(-1);
+                navigate(`/camps/${params?.id}/campexecution/activities`);
               }}
             >
               {t("CONTINUE")}
