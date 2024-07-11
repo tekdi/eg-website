@@ -15,6 +15,7 @@ import {
   setSelectedAcademicYear,
   setSelectedProgramId,
   t,
+  telemetryFactory,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
@@ -472,6 +473,24 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
     }
     fetchData();
   }, [facilitator]);
+
+  useEffect(() => {
+    const telemetryImpression = {
+      context: {
+        env: "learner-list",
+        cdata: [],
+      },
+      edata: {
+        type: "list",
+        pageid: "learner-list",
+        userName: localStorage.getItem("fullName"),
+        userId: localStorage.getItem("id"),
+      },
+      tags: [],
+    };
+
+    telemetryFactory.impression(telemetryImpression);
+  }, []);
 
   const showSelectCohort = async () => {
     let loadCohort = null;

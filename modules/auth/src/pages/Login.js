@@ -87,10 +87,6 @@ export default function Login() {
     setLanguage(localStorage.getItem("lang") || "en");
 
     const telemetryImpression = {
-      actor: {
-        id: "Anonymous",
-        type: "user",
-      },
       context: {
         env: "log-in",
         cdata: [],
@@ -154,7 +150,7 @@ export default function Login() {
       },
       edata: {
         type: "CLICK",
-        id: "BUTTON",
+        id: "login-button",
         userName: credentials?.username,
       },
       tags: [],
