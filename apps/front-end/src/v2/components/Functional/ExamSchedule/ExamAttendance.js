@@ -20,7 +20,6 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [subjects, setSubjects] = useState([]);
   const [maxDate, setMaxDate] = useState();
   const [selectedBoardId, setSelectedBoardId] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
