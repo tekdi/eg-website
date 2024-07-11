@@ -89,7 +89,6 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
       const maxDateDisable = moment(currentDateFormatted, "YYYY/MM/DD").isAfter(
         maxDate
       );
-      console.log({ maxDate });
       if (maxDateDisable) {
         SetAccessData(true);
       } else {
@@ -110,9 +109,9 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   const convertPayload = (payload) => {
     // Flatten the nested payload and extract event_id and user_id
     const flattenedData = payload.flatMap((item) =>
-      item.data.map((user) => ({
-        event_id: item.event_id,
-        user_id: user.user_id,
+      item?.data?.map((user) => ({
+        event_id: item?.event_id,
+        user_id: user?.user_id,
         status:
           user?.attendances?.[0]?.status === "present"
             ? "present"
@@ -124,7 +123,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
 
     // Construct the new format
     const formattedPayload = flattenedData.map((item) => ({
-      [`${item.event_id}_${item.user_id}`]: item.status,
+      [`${item?.event_id}_${item?.user_id}`]: item?.status,
     }));
     return formattedPayload;
   };

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
+  AdminTypo,
   Layout,
   FrontEndTypo,
   enumRegistryService,
   organisationService,
   IconByName,
+  CardComponent,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio, Stack } from "native-base";
+import { HStack, VStack, Radio, Stack, ScrollView } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +23,11 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   const [maxDate, setMaxDate] = useState();
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+  const navigate = useNavigate();
+
+  const onPressBackButton = () => {
+    navigate(-1);
+  };
 
   useEffect(async () => {
     const boardList = await enumRegistryService.ExamboardList();
@@ -64,6 +71,10 @@ const ExamAttendance = ({ userTokenInfo, footerLinks }) => {
   return (
     <Layout
       // loading={loading}
+      _appBar={{
+        onPressBackButton,
+        onlyIconsShow: ["backBtn", "langBtn"],
+      }}
       _footer={{ menues: footerLinks }}
     >
       <VStack
