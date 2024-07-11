@@ -1,4 +1,8 @@
-import { Layout, getSelectedProgramId } from "@shiksha/common-lib";
+import {
+  Layout,
+  getSelectedProgramId,
+  telemetryFactory,
+} from "@shiksha/common-lib";
 import { VStack } from "native-base";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
@@ -29,6 +33,24 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
       }
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const telemetryImpression = {
+      context: {
+        env: "camp-dashboard",
+        cdata: [],
+      },
+      edata: {
+        type: "list",
+        pageid: "camp-dashboard",
+        userName: localStorage.getItem("fullName"),
+        userId: localStorage.getItem("id"),
+      },
+      tags: [],
+    };
+
+    telemetryFactory.impression(telemetryImpression);
   }, []);
 
   return (

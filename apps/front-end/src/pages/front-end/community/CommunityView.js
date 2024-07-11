@@ -16,6 +16,7 @@ import {
   objProps,
   setSelectedAcademicYear,
   setSelectedProgramId,
+  telemetryFactory,
 } from "@shiksha/common-lib";
 import { templates, widgets } from "component/BaseInput";
 import { Box, VStack } from "native-base";
@@ -299,6 +300,24 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
     }
     fetchData();
   }, [facilitator]);
+
+  useEffect(() => {
+    const telemetryImpression = {
+      context: {
+        env: "comminity-details",
+        cdata: [],
+      },
+      edata: {
+        type: "list",
+        pageid: "comminity-details",
+        userName: localStorage.getItem("fullName"),
+        userId: localStorage.getItem("id"),
+      },
+      tags: [],
+    };
+
+    telemetryFactory.impression(telemetryImpression);
+  }, []);
 
   const showSelectCohort = async () => {
     let loadCohort = null;

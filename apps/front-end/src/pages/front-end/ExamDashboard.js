@@ -10,6 +10,7 @@ import {
   arrList,
   setSelectedAcademicYear,
   setSelectedProgramId,
+  telemetryFactory,
 } from "@shiksha/common-lib";
 import { VStack } from "native-base";
 import DashboardCard from "component/common_components/DashboardCard";
@@ -35,6 +36,24 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
 
       setFacilitator(ipUserData);
     }
+  }, []);
+
+  useEffect(() => {
+    const telemetryImpression = {
+      context: {
+        env: "dashboard-view",
+        cdata: [],
+      },
+      edata: {
+        type: "list",
+        pageid: "dashboard-view",
+        userName: localStorage.getItem("fullName"),
+        userId: localStorage.getItem("id"),
+      },
+      tags: [],
+    };
+
+    telemetryFactory.impression(telemetryImpression);
   }, []);
 
   return (

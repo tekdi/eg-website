@@ -18,6 +18,7 @@ import {
   removeOnboardingURLData,
   setSelectedAcademicYear,
   setSelectedProgramId,
+  telemetryFactory,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import {
@@ -362,6 +363,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       if (!facilitator?.notLoaded === true) {
         // ...async operations
         const res = objProps(facilitator);
+
+        console.log(facilitator);
+
         setProgress(
           arrList(
             {
@@ -429,6 +433,24 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     fetchData();
   }, [facilitator]);
+
+  useEffect(() => {
+    const telemetryImpression = {
+      context: {
+        env: "home-page",
+        cdata: [],
+      },
+      edata: {
+        type: "view",
+        pageid: "home-page",
+        userName: localStorage.getItem("fullName"),
+        userId: localStorage.getItem("id"),
+      },
+      tags: [],
+    };
+
+    telemetryFactory.impression(telemetryImpression);
+  }, []);
 
   const handleRandomise = async () => {
     const doIdArray = isEventActive?.params?.do_id;
