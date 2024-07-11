@@ -87,7 +87,7 @@ export default function CampLearnerScores({ userTokenInfo }) {
   const handleUpdateStudentScore = (userId, updatedScores) => {
     setStudentsData((prevStudentsData) =>
       prevStudentsData.map((student) =>
-        student.user_id === userId
+        student.id === userId
           ? { ...student, pcr_scores: updatedScores }
           : student
       )
@@ -165,26 +165,28 @@ const StudentCard = ({ student, updateStudentScore, scoresArray }) => {
   const params = useParams();
 
   const updateValue = async (key, value) => {
-    const newPcrScores = data.pcr_scores.map((score) => {
-      if (params.type === "base-line") {
-        return { ...score, baseline_learning_level: value };
-      } else {
-        return { ...score, endline_learning_level: value };
-      }
-    });
+    const scoreKey =
+      params.type === "base-line"
+        ? "baseline_learning_level"
+        : "endline_learning_level";
 
+    const newPcrScores =
+      data.pcr_scores && data.pcr_scores.length > 0
+        ? data.pcr_scores.map((score) => ({ ...score, [scoreKey]: value }))
+        : [{ [scoreKey]: value }];
     setData((prevData) => ({
       ...prevData,
       pcr_scores: newPcrScores,
     }));
 
-    updateStudentScore(data.user_id, newPcrScores);
+    updateStudentScore(data?.id, newPcrScores);
 
     await benificiaryRegistoryService.createPCRScores({
       user_id: data?.id,
       [key]: value,
     });
   };
+
   return (
     <UserCard
       key={data?.id}
