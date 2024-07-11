@@ -75,14 +75,6 @@ export function LabelMobileWidget() {
     </>
   );
 }
-export function labelMotherNameWidget() {
-  const { t } = useTranslation();
-  return (
-    <Heading size="xs" mb={1} color="textGreyColor.750">
-      {t("MOTHER_FULL_NAME")}
-    </Heading>
-  );
-}
 export function EnrollmentLabelMobileWidget() {
   let state = jsonParse(localStorage.getItem("program"));
   const { t } = useTranslation();
@@ -437,7 +429,7 @@ export const RadioBtn = ({
         }}
         schema={{
           // _pressable: { style: { backgroundColor: "#999" } },
-          _stackIcon: { flexDirection: "row", justifyContent: "flex-start" },
+          _stackIcon: { flexDirection: "row" },
           icons: items?.map((e) =>
             e.value == value
               ? {
@@ -926,7 +918,6 @@ const widgets = {
   LabelNameWidget,
   selectSubjectWidget,
   LabelMobileWidget,
-  labelMotherNameWidget,
   EnrollmentLabelMobileWidget,
   AlreadyOpenLabelWidget,
   LabelAddressWidget,
