@@ -54,25 +54,28 @@ export default function CampSubjectScores({ userTokenInfo }) {
     }
   };
 
-  useEffect(async () => {
-    await getStudentData();
-    if (userTokenInfo) {
-      const IpUserInfo = await getIpUserInfo(fa_id);
-      let ipUserData = IpUserInfo;
-      if (!IpUserInfo) {
-        ipUserData = await setIpUserInfo(fa_id);
-      }
+  useEffect(() => {
+    const init = async () => {
+      await getStudentData();
+      if (userTokenInfo) {
+        const IpUserInfo = await getIpUserInfo(fa_id);
+        let ipUserData = IpUserInfo;
+        if (!IpUserInfo) {
+          ipUserData = await setIpUserInfo(fa_id);
+        }
 
-      setFacilitator(ipUserData);
-    }
-    const enumData = await enumRegistryService.listOfEnum();
-    if (enumData?.data) {
-      const scoresData = enumData?.data?.PCR_SCORES_RAPID_QUESTION?.map(
-        (item) => item.value
-      );
-      setScoresArray(scoresData || []);
-    }
-    setLoading(false);
+        setFacilitator(ipUserData);
+      }
+      const enumData = await enumRegistryService.listOfEnum();
+      if (enumData?.data) {
+        const scoresData = enumData?.data?.PCR_SCORES_RAPID_QUESTION?.map(
+          (item) => item.value
+        );
+        setScoresArray(scoresData || []);
+      }
+      setLoading(false);
+    };
+    init();
   }, []);
 
   const assessmentTitle =
@@ -236,10 +239,12 @@ const StudentCard = ({
         flex: 1,
         bg:
           params.type === "formative-assessment-1" &&
-          data.formative_assessment_first_learning_level
+          scoresArray?.includes(data?.formative_assessment_first_learning_level)
             ? "green.100"
             : params.type === "formative-assessment-2" &&
-              data.formative_assessment_second_learning_level
+              scoresArray?.includes(
+                data?.formative_assessment_second_learning_level
+              )
             ? "green.100"
             : "grey.100",
       }}
