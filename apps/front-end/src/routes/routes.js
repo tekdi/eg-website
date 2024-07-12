@@ -232,7 +232,7 @@ export default [
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
   },
-  { path: "/camps/:id/sessionslist", component: CampSessionList },
+  { path: "/camps/:id/sessionslist/:activityId", component: CampSessionList },
   { path: "/camps/:id/:type/subjectslist", component: CampSubjectsList },
   {
     path: "/camps/:id/:type/:subject",

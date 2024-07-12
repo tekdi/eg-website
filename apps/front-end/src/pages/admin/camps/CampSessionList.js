@@ -37,7 +37,7 @@ const checkNext = (status, updated_at) => {
 
 export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { id, activityId } = useParams();
   const [sessionList, setSessionList] = useState([]);
   const [sessionActive, setSessionActive] = useState();
   const [totalSessionsCompleted, setTotalSessionsCompleted] = useState(0);
@@ -54,6 +54,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
   // const [campType, setCampType] = useState();
+  const [showModal, setShowModal] = useState(false);
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -205,26 +206,41 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
             lesson_plan_complete_feedback: submitStatus?.reason,
           };
         }
-        const result = await campService.creatCampSession({
-          ...newData,
-          learning_lesson_plan_id: modalVisible,
-          camp_id: id,
-        });
-        if (!result?.success) {
-          setError(
-            <SessionErrorMessage {...result} navigate={navigate} t={t} />
-          );
+        if (
+          sessionDetails?.ordering == 20 &&
+          submitStatus.status == "complete" &&
+          !showModal
+        ) {
+          setShowModal(true);
         } else {
-          await getCampSessionsList();
-          setSubmitStatus();
-          setModalVisible();
+          const result = await campService.creatCampSession({
+            ...newData,
+            learning_lesson_plan_id: modalVisible,
+            camp_id: id,
+          });
+          if (!result?.success) {
+            setError(
+              <SessionErrorMessage {...result} navigate={navigate} t={t} />
+            );
+          } else if (showModal) {
+            const obj = {
+              id: activityId,
+              edit_page_type: "edit_end_date",
+            };
+            await campService.addMoodActivity(obj);
+            navigate("/camps");
+          } else {
+            await getCampSessionsList();
+            setSubmitStatus();
+            setModalVisible();
+          }
         }
       }
     } else {
       setError("PLEASE_SELECT");
     }
     setIsDisable(false);
-  }, [submitStatus]);
+  }, [submitStatus, showModal]);
 
   const handleCancel = () => {
     setError();
@@ -404,6 +420,27 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
                 }}
               />
             </Modal.Body>
+          </Modal.Content>
+        </Modal>
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header textAlign={"center"}>
+              {t("EXPIRY_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body>
+              <FrontEndTypo.H2>{t("ALL_SESSIONS_COMPLETED")}</FrontEndTypo.H2>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => handlePartiallyDone(submitStatus?.id)}
+              >
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
+            </Modal.Footer>
           </Modal.Content>
         </Modal>
       </Stack>

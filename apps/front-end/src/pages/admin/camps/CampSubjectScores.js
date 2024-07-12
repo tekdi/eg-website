@@ -23,6 +23,7 @@ export default function CampSubjectScores({ userTokenInfo }) {
   const [showModal, setShowModal] = useState(false);
   const [scoresArray, setScoresArray] = useState([]);
   const [totalLearners, setTotalLearners] = useState(0);
+  const [submit, setSubmit] = useState(false);
 
   const programDetails = JSON.parse(localStorage.getItem("program"));
 
@@ -96,7 +97,8 @@ export default function CampSubjectScores({ userTokenInfo }) {
     });
 
     if (canSubmit) {
-      navigate(`/camps/${params?.id}/${params?.type}/subjectslist`);
+      setShowModal(true);
+      setSubmit(true);
     } else {
       setShowModal(true);
     }
@@ -186,16 +188,20 @@ export default function CampSubjectScores({ userTokenInfo }) {
             {t("EXPIRY_CONTENT.HEADING")}
           </Modal.Header>
           <Modal.Body>
-            <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2>
+              {submit ? t("SCORES_SUBMIT_SUCCESS") : t("SCORES_SUBMIT_WARNING")}
+            </FrontEndTypo.H2>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-evenly"}>
-            <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
-              {t("CANCEL")}
-            </FrontEndTypo.Secondarybutton>
+            {!submit && (
+              <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               onPress={() => {
                 setShowModal(false);
-                navigate(-1);
+                navigate(`/camps/${params?.id}/${params?.type}/subjectslist`);
               }}
             >
               {t("CONTINUE")}
