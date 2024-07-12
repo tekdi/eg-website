@@ -12,23 +12,34 @@ import { useTranslation } from "react-i18next";
 import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
+  const [selectedValue, setSelectedValue] = useState("1");
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+    onChange(event);
+  };
+
   return (
-    <Radio.Group
-      defaultValue="1"
-      accessibilityLabel="pick a size"
-      onChange={onChange}
-    >
+    <div role="radiogroup" aria-label="pick a size">
       <HStack alignItems="center" space={3} flexWrap="wrap">
         {items?.map((item, key) => (
-          <Radio key={item} value={item?.value} size="sm">
+          <label key={item?.value}>
+            <input
+              type="radio"
+              name="radioGroup"
+              value={item?.value}
+              checked={selectedValue === item.value}
+              onChange={handleChange}
+            />
             {t(item?.title)}
-          </Radio>
+          </label>
         ))}
       </HStack>
-    </Radio.Group>
+    </div>
   );
 };
 const styles = {

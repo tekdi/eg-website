@@ -44,6 +44,7 @@ function ScheduleExam() {
   const [loading, setLoading] = useState(false);
   const [hasDraftStatus, setHasDraftStatus] = useState(false);
   const [isPublishDisable, setIsPublishDisable] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(async () => {
     const data = await cohortService.getProgramList();
@@ -333,15 +334,20 @@ function ScheduleExam() {
             </AdminTypo.H5>
             <HStack space={6}>
               {boardList?.boards?.map((board) => (
-                <Radio.Group
-                  key={board.id}
-                  onChange={(nextValue) => handleSelect(nextValue, board)}
-                  value={filter?.board_id || null}
-                >
-                  <Radio colorScheme="red" value={board.id}>
-                    {board.name}
-                  </Radio>
-                </Radio.Group>
+                <label key={board?.board?.id} value={board.id}>
+                  <input
+                    type="radio"
+                    name="board"
+                    value={filter?.board_id || null}
+                    key={board?.board?.id}
+                    onChange={(board) => {
+                      handleSelect(board);
+                      setMaxDate(board?.addedMaxDate);
+                      setSelectedBoardId(board);
+                    }}
+                  />
+                  {board?.board?.name}
+                </label>
               ))}
             </HStack>
           </VStack>
