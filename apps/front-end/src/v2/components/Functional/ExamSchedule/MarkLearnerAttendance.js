@@ -8,7 +8,7 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, Modal, Pressable, Radio, Text, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   CheckUserIdInPayload,
   StoreAttendanceToIndexDB,
@@ -29,6 +29,14 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
   const [absentModal, setAbsentModal] = useState();
   const [selectedReason, setSelectedReason] = useState("");
   const [mainAttendance, setMainAttendance] = useState([]);
+
+  const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleChange = (event) => {
+    setSelectedReason(event.target.value);
+  };
+
   const absentReasonsList = [
     "LEARNER_DEATH",
     "LEARNER_MIGRATION",
@@ -247,9 +255,17 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
       }
     }
   };
+  const onPressBackButton = () => {
+    navigate(-1);
+  };
 
   return (
-    <Layout _footer={{ menues: footerLinks }}>
+    <Layout
+      _footer={{ menues: footerLinks }}
+      _appBar={{
+        onPressBackButton,
+      }}
+    >
       <VStack space={4} p={4}>
         <FrontEndTypo.H1>{t("MARK_LEARNER_EXAM_ATTENDANCE")}</FrontEndTypo.H1>
         <VStack space={2}>
