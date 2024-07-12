@@ -198,6 +198,7 @@ export default function CampTodayActivities({
           id={id}
           campType={campType}
           sessionList={sessionList}
+          activityId={activityId}
         />
         <CardComponent
           _vstack={{

@@ -2011,5 +2011,7 @@
   "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
   "SYNC_APPLICATION_STATUS": "Sync Application Status",
   "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students",
-  "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?"
+  "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?",
+  "SCORES_SUBMIT_SUCCESS": "You have successfully submitted the scores for all the learners. Please continue with the camp.",
+  "ALL_SESSIONS_COMPLETED": "If you complete the 20th session, your today's camp will also end. Do you want to complete the 20th session and end today's camp?"
 }
