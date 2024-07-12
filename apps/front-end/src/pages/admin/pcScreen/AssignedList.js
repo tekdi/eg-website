@@ -467,6 +467,8 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
           onChangeRowsPerPage={useCallback(
             (e) => {
               setFilter({ ...filter, limit: e, page: 1 });
+              setAddPrerakCount(0);
+              setRemovePrerakCount(0);
             },
             [setFilter, filter]
           )}
