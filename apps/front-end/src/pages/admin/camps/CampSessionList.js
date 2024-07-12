@@ -1,16 +1,14 @@
 import {
   FrontEndTypo,
-  IconByName,
   Layout,
-  campService,
   Loading,
+  campService,
   enumRegistryService,
-  arrList,
   jsonParse,
 } from "@shiksha/common-lib";
+import Chip from "component/BeneficiaryStatus";
 import moment from "moment";
 import {
-  Alert,
   HStack,
   Modal,
   Pressable,
@@ -19,21 +17,11 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import SessionActions, { SessionList } from "./CampSessionModal";
-import Chip from "component/BeneficiaryStatus";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
-
-const checkNext = (status, updated_at) => {
-  return (
-    status === "complete" &&
-    updated_at &&
-    moment.utc(updated_at).format("YYYY-MM-DD") ===
-      moment.utc().format("YYYY-MM-DD")
-  );
-};
+import SessionActions, { SessionList } from "./CampSessionModal";
 
 export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
@@ -50,10 +38,8 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const [error, setError] = useState();
   const navigate = useNavigate();
   const [bodyHeight, setBodyHeight] = useState();
-  const [campDetails, setCampDetails] = useState();
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
-  // const [campType, setCampType] = useState();
   const [showModal, setShowModal] = useState(false);
   const [assessmentWarning, setAssessmentWarning] = useState();
 
@@ -91,8 +77,6 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
   const getCampSessionsList = async () => {
     const resultCamp = await campService.getCampDetails({ id });
-    // setCampType(campDetails?.data?.type);
-    setCampDetails(resultCamp?.data);
     const result = await campService.getCampSessionsList({
       id: id,
     });
@@ -402,7 +386,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
               colorScheme="warning"
             />
           </VStack>
-          <ScrollView maxH={bodyHeight - 150} p="4">
+          <ScrollView maxH={bodyHeight - 190} p="4">
             <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
           </ScrollView>
         </VStack>
