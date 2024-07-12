@@ -209,7 +209,8 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
         if (
           sessionDetails?.ordering == 20 &&
           submitStatus.status == "complete" &&
-          !showModal
+          !showModal &&
+          campDetails.type !== "main"
         ) {
           setShowModal(true);
         } else {
