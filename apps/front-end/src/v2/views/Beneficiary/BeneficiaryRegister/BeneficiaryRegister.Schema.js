@@ -187,7 +187,9 @@ export default {
           description: "TYPE_OF_LEARNER",
           format: "select",
         },
-
+        alreadyOpenLabel: {
+          type: "string",
+        },
         last_standard_of_education: {
           type: "string",
           title: "LAST_STANDARD_OF_EDUCATION",
@@ -207,6 +209,17 @@ export default {
           type: "string",
           title: "REASON",
           format: "select",
+        },
+
+        education_10th_date: {
+          type: "string",
+          format: "date",
+          label: "REGISTERED_IN_TENTH_DATE",
+        },
+        education_10th_exam_year: {
+          type: "string",
+          format: "select",
+          title: "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
         },
 
         learning_level: {

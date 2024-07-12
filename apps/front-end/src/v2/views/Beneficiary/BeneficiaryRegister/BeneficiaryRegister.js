@@ -75,6 +75,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [fixedSchema, setfixedSchema] = useState();
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
@@ -112,6 +113,18 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     type_of_support_needed: {
       "ui:widget": "MultiCheck",
     },
+    alreadyOpenLabel: {
+      "ui:widget": "AlreadyOpenLabelWidget",
+    },
+    education_10th_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+        format: "DMY",
+      },
+    },
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -128,6 +141,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       if (nextIndex !== undefined) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
+        setfixedSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         setPage("upload");
       } else {
@@ -143,7 +157,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
 
     const mainPayload = await payload({ formData, org_id, acadamic, program });
     let url = await AgRegistryService.createBeneficiary(mainPayload);
-    console.log({ mainPayload });
     if (url?.data) {
       navigate(`/beneficiary/${url?.data?.user?.id}/upload/1`);
     }
@@ -220,6 +233,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           block: formData?.block,
           // gramp: formData?.grampanchayat,
         });
+        setSchema(newSchema);
       }
 
       if (schema?.properties?.marital_status) {
@@ -235,6 +249,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           title: "title",
           value: "value",
         });
+        setSchema(newSchema);
       }
       if (schema?.properties?.type_of_learner) {
         const lastYear = await benificiaryRegistoryService.lastYear();
@@ -253,6 +268,12 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         });
         newSchema = getOptions(newSchema, {
           key: "last_standard_of_education_year",
+          arr: lastYear,
+          title: "value",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "education_10th_exam_year",
           arr: lastYear,
           title: "value",
           value: "value",
@@ -277,6 +298,15 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           title: t("title"),
           value: "value",
         });
+        const {
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = newSchema?.properties || {};
+        setSchema({ ...newSchema, properties });
+
+        setfixedSchema(newSchema);
       }
 
       if (schema?.properties?.parent_support) {
@@ -299,9 +329,8 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           title: "title",
           value: "value",
         });
+        setSchema(newSchema);
       }
-
-      setSchema(newSchema);
     };
     fetchData();
   }, [page]);
@@ -640,6 +669,125 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           };
           setErrors(newErrors);
         }
+      }
+    }
+
+    if (newData?.type_of_learner === "school_dropout") {
+      const {
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = fixedSchema?.properties || {};
+      // Filter required fields for "school_dropout" to ensure form relevance
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "last_standard_of_education",
+          "last_standard_of_education_year",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchema({ ...fixedSchema, properties, required });
+    } else if (newData?.type_of_learner === "never_enrolled") {
+      const {
+        last_standard_of_education,
+        last_standard_of_education_year,
+        previous_school_type,
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = fixedSchema?.properties || {};
+      const required = fixedSchema?.required.filter((item) =>
+        [
+          "type_of_learner",
+          "learning_level",
+          "reason_of_leaving_education",
+        ].includes(item)
+      );
+
+      setSchema({ ...fixedSchema, properties, required });
+    } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
+      const { education_10th_date, education_10th_exam_year, ...properties } =
+        fixedSchema?.properties || {};
+      // Adjust required fields for learners already enrolled in open school
+
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "last_standard_of_education",
+          "last_standard_of_education_year",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchema({ ...fixedSchema, properties, required });
+    } else if (newData?.type_of_learner === "already_open_school_syc") {
+      const {
+        alreadyOpenLabel,
+        last_standard_of_education,
+        last_standard_of_education_year,
+        education_10th_exam_year,
+        ...properties
+      } = fixedSchema?.properties || {};
+      // Set required fields for "already_open_school_syc" to match specific needs
+
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "education_10th_date",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchema({ ...fixedSchema, properties, required });
+    } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
+      const {
+        last_standard_of_education,
+        last_standard_of_education_year,
+        previous_school_type,
+        alreadyOpenLabel,
+        education_10th_date,
+        ...properties
+      } = fixedSchema?.properties || {};
+      // Customize required fields for "stream_2_mainstream_syc" learners
+
+      const required = fixedSchema?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "reason_of_leaving_education",
+          "education_10th_exam_year",
+          "learning_level",
+        ].includes(item)
+      );
+      setSchema({ ...fixedSchema, properties, required });
+    } else {
+      const newErrors = {};
+      setErrors(newErrors);
+    }
+    if (id === "root_type_of_learner") {
+      if (
+        newData?.last_standard_of_education ||
+        newData?.last_standard_of_education_year ||
+        newData?.previous_school_type ||
+        newData?.reason_of_leaving_education ||
+        newData?.education_10th_exam_year ||
+        newData?.education_10th_date
+      ) {
+        setFormData({
+          ...newData,
+          last_standard_of_education: undefined,
+          last_standard_of_education_year: undefined,
+          previous_school_type: undefined,
+          reason_of_leaving_education: undefined,
+          education_10th_exam_year: undefined,
+          education_10th_date: undefined,
+        });
       }
     }
   };

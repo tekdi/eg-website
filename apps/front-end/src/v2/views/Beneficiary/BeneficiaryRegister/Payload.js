@@ -45,7 +45,6 @@ export const payload = async ({ formData, org_id, acadamic, program }) => {
 
     core_beneficiaries: {
       mark_as_whatsapp_number: formData?.mark_as_whatsapp_number,
-
       device_type: formData?.device_type,
       device_ownership: formData?.device_ownership,
       career_aspiration_details: formData?.career_aspiration_details || null,
@@ -63,6 +62,8 @@ export const payload = async ({ formData, org_id, acadamic, program }) => {
       father_middle_name: formData?.father_middle_name || null,
       mother_middle_name: formData?.mother_middle_name || null,
       parent_support: formData?.parent_support,
+      education_10th_date: formData?.education_10th_date || null,
+      education_10th_exam_year: formData?.education_10th_exam_year || null,
     },
 
     program_beneficiaries: {
