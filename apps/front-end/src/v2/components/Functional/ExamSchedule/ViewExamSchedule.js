@@ -20,6 +20,10 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(null);
 
+  const onPressBackButton = () => {
+    navigate(-1);
+  };
+
   useEffect(async () => {
     const boardList = await enumRegistryService.boardList();
     setBoardList(boardList);
@@ -77,7 +81,14 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
   }
 
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
+    <Layout
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+      _appBar={{
+        onPressBackButton,
+        onlyIconsShow: ["backBtn", "langBtn"],
+      }}
+    >
       <VStack
         bg="primary.50"
         p="5"

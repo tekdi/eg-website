@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
+  AdminTypo,
   Layout,
   FrontEndTypo,
   enumRegistryService,
   organisationService,
   IconByName,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { HStack, VStack, Radio, Stack, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
@@ -22,7 +24,6 @@ const ExamAttendance = ({ userTokenInfo, footerLinks, learners }) => {
   const [maxDate, setMaxDate] = useState();
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [isDisable, setIsDisable] = useState(true);
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -73,6 +74,7 @@ const ExamAttendance = ({ userTokenInfo, footerLinks, learners }) => {
       // loading={loading}
       _appBar={{
         onPressBackButton,
+        onlyIconsShow: ["backBtn", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}
     >

@@ -56,6 +56,7 @@ const EpcpForm = ({ footerLinks }) => {
     } ${t("EPCP.TITLE")}`,
     properties: {
       HAS_LOGGED_RSOS_APP: {
+        title: `${t("EPCP.HAS_LOGGED_RSOS_APP")}`,
         description: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
         type: "string",
         direction: "row",
@@ -77,6 +78,7 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             TOOK_EPCP_EXAM_ON_RSOS_APP: {
+              title: `${t("EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP")}`,
               description: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
               type: ["string", "null"],
               direction: "row",
@@ -99,6 +101,7 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             HAS_LOGGED_RSOS_APP_NO_REASONS: {
+              title: `${t("EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS")}`,
               description: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",
@@ -126,6 +129,7 @@ const EpcpForm = ({ footerLinks }) => {
           properties: {
             TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: {
               format: "RadioBtn",
+              title: `${t("EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS")}`,
               description: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               direction: "column",
