@@ -1452,6 +1452,7 @@
   "SEARCH_BY_NAME": "नाम द्वारा खोजें",
   "SEARCH_BY_PRERAK_NAME": "प्रेरक के नाम से खोजें",
   "SELECT": "चुनें",
+  "SELECT_ABSENT_REASON": " अनुपस्थित कारण का चयन करें",
   "SELECT_ACADEMIC_YEAR": "शैक्षणिक वर्ष चुनें",
   "SELECT_ALL": "सबका चयन करें",
   "SELECT_BOARD": "बोर्ड चुनें",
