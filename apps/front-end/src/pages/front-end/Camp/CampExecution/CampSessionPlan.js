@@ -4,7 +4,12 @@ import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export const CampSessionPlan = ({ button_list, id, sessionList }) => {
+export const CampSessionPlan = ({
+  button_list,
+  id,
+  sessionList,
+  activityId,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [cards, setCards] = useState();
@@ -21,7 +26,7 @@ export const CampSessionPlan = ({ button_list, id, sessionList }) => {
           ...arr,
           {
             type: "MAIN_LEARNING_ACTIVITIES",
-            navigatePath: getNavigatePath("sessionslist"),
+            navigatePath: getNavigatePath(`sessionslist/${activityId}`),
           },
         ];
       } else {
@@ -76,7 +81,7 @@ export const CampSessionPlan = ({ button_list, id, sessionList }) => {
             ...arr,
             {
               type: "PCR_LEARNING_ACTIVITIES",
-              navigatePath: getNavigatePath("sessionslist"),
+              navigatePath: getNavigatePath(`sessionslist/${activityId}`),
               showIcon: sessionList,
             },
           ];
