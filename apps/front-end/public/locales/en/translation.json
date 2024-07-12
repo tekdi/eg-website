@@ -2014,5 +2014,6 @@
   "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students",
   "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?",
   "SCORES_SUBMIT_SUCCESS": "You have successfully submitted the scores for all the learners. Please continue with the camp.",
-  "ALL_SESSIONS_COMPLETED": "If you complete the 20th session, your today's camp will also end. Do you want to complete the 20th session and end today's camp?"
+  "ALL_SESSIONS_COMPLETED": "If you complete the 20th session, your today's camp will also end. Do you want to complete the 20th session and end today's camp?",
+  "DO_YOU_WISH_TO_CONTINUE": "Do you wish to continue?"
 }
