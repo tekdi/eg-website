@@ -55,6 +55,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const [facilitator, setFacilitator] = useState();
   // const [campType, setCampType] = useState();
   const [showModal, setShowModal] = useState(false);
+  const [assessmentWarning, setAssessmentWarning] = useState();
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -183,15 +184,23 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
               ? "edit_complete_session"
               : "edit_incomplete_session",
           session_feedback: submitStatus?.reason,
+          ...(assessmentWarning && { warning: "accepted" }),
         });
         if (!result?.success) {
-          setError(
-            <SessionErrorMessage {...result} navigate={navigate} t={t} />
-          );
+          if (result?.data?.[0]?.assessment_type?.length > 0) {
+            setAssessmentWarning(
+              <SessionErrorMessage {...result} navigate={navigate} t={t} />
+            );
+          } else {
+            setError(
+              <SessionErrorMessage {...result} navigate={navigate} t={t} />
+            );
+          }
         } else {
           await getCampSessionsList();
           setSubmitStatus();
           setModalVisible();
+          setAssessmentWarning();
         }
       } else {
         let newData = { status: submitStatus?.status };
@@ -199,11 +208,13 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
           newData = {
             ...newData,
             lesson_plan_incomplete_feedback: submitStatus?.reason,
+            ...(assessmentWarning && { warning: "accepted" }),
           };
         } else if (submitStatus?.status === "complete") {
           newData = {
             ...newData,
             lesson_plan_complete_feedback: submitStatus?.reason,
+            ...(assessmentWarning && { warning: "accepted" }),
           };
         }
         if (
@@ -219,9 +230,15 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
             camp_id: id,
           });
           if (!result?.success) {
-            setError(
-              <SessionErrorMessage {...result} navigate={navigate} t={t} />
-            );
+            if (result?.data?.[0]?.assessment_type?.length > 0) {
+              setAssessmentWarning(
+                <SessionErrorMessage {...result} navigate={navigate} t={t} />
+              );
+            } else {
+              setError(
+                <SessionErrorMessage {...result} navigate={navigate} t={t} />
+              );
+            }
           } else if (showModal) {
             const obj = {
               id: activityId,
@@ -233,6 +250,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
             await getCampSessionsList();
             setSubmitStatus();
             setModalVisible();
+            setAssessmentWarning();
           }
         }
       }
@@ -240,7 +258,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
       setError("PLEASE_SELECT");
     }
     setIsDisable(false);
-  }, [submitStatus, showModal]);
+  }, [submitStatus, showModal, assessmentWarning]);
 
   const handleCancel = () => {
     setError();
@@ -438,6 +456,40 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
               <FrontEndTypo.Primarybutton
                 onPress={() => handlePartiallyDone(submitStatus?.id)}
               >
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+
+        <Modal
+          isOpen={assessmentWarning}
+          onClose={() => {
+            setAssessmentWarning();
+          }}
+        >
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header textAlign={"center"}>
+              {t("EXPIRY_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body>
+              <Alert status="warning" alignItems={"start"}>
+                {assessmentWarning}
+                <FrontEndTypo.H3>
+                  {t("DO_YOU_WISH_TO_CONTINUE")}
+                </FrontEndTypo.H3>
+              </Alert>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <FrontEndTypo.Secondarybutton
+                onPress={() => {
+                  setAssessmentWarning();
+                }}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton onPress={() => handlePartiallyDone()}>
                 {t("CONTINUE")}
               </FrontEndTypo.Primarybutton>
             </Modal.Footer>
