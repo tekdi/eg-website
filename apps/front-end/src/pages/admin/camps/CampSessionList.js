@@ -189,7 +189,12 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
         if (!result?.success) {
           if (result?.data?.[0]?.assessment_type?.length > 0) {
             setAssessmentWarning(
-              <SessionErrorMessage {...result} navigate={navigate} t={t} />
+              <SessionErrorMessage
+                {...result}
+                navigate={navigate}
+                t={t}
+                show={false}
+              />
             );
           } else {
             setError(
@@ -232,7 +237,12 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
           if (!result?.success) {
             if (result?.data?.[0]?.assessment_type?.length > 0) {
               setAssessmentWarning(
-                <SessionErrorMessage {...result} navigate={navigate} t={t} />
+                <SessionErrorMessage
+                  {...result}
+                  navigate={navigate}
+                  t={t}
+                  show={false}
+                />
               );
             } else {
               setError(
@@ -501,9 +511,9 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   );
 }
 
-const SessionErrorMessage = ({ t, message, data, navigate }) => (
+const SessionErrorMessage = ({ t, message, data, navigate, show = true }) => (
   <VStack>
-    {t("CAMP_SESSION_INCOMPLETE_UNTIL_ALL_ASSESSMENTS_COMPLETED")}
+    {show && t("CAMP_SESSION_INCOMPLETE_UNTIL_ALL_ASSESSMENTS_COMPLETED")}
     <FrontEndTypo.H3>{t(message)}</FrontEndTypo.H3>
     {data && (
       <HStack flexWrap={"wrap"}>
