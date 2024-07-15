@@ -26,7 +26,7 @@ import {
   Input,
 } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
@@ -115,6 +115,13 @@ export default function LearnerList() {
   const [filteredData, setFilteredData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [beneficiary, setBeneficiary] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location?.state?.filteredData) {
+      setFilteredData(location?.state?.filteredData);
+    }
+  });
 
   useEffect(async () => {
     setLoadingList(true);
@@ -440,6 +447,7 @@ export default function LearnerList() {
                                 academic: academic,
                                 prerak_id: item?.user_id,
                                 program_id: item?.program_id,
+                                filteredData: filteredData,
                               },
                             });
                           }}

@@ -124,7 +124,7 @@ function DailyActivitiesView(props) {
           >
             {activities.length > 0
               ? t("ADD_ACTIVITY_FOR_ANOTHER_VILLAGE")
-              : t("ADD_ACTIVITY")}
+              : t("ADD_ONE_ACTIVITY")}
           </FrontEndTypo.Primarybutton>
         </VStack>
       </VStack>

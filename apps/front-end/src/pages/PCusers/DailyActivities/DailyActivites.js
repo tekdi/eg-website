@@ -135,8 +135,15 @@ const DailyActivities = () => {
           __errors: ["CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY"],
         },
       });
+    } else if (hours === 0 && minutes === 0) {
+      setErrors({
+        ...errors,
+        minutes: {
+          __errors: ["TIME_CANNOT_BE_ZERO"],
+        },
+      });
     } else {
-      setErrors();
+      setErrors({});
     }
   };
 
@@ -162,6 +169,11 @@ const DailyActivities = () => {
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
+    const obj = {
+      hours: newFormData?.hours || 0,
+      minutes: newFormData?.minutes || 0,
+    };
+    validateTime(obj);
     if (_.isEmpty(errors)) {
       const id = location?.state?.id;
 
@@ -228,7 +240,7 @@ const DailyActivities = () => {
                 }
               }}
             >
-              {t("ADD_ACTIVITY")}
+              {t("ADD_ONE_ACTIVITY")}
             </FrontEndTypo.Primarybutton>
           </HStack>
         </Form>

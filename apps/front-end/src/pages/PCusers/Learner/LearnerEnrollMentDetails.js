@@ -33,7 +33,8 @@ export default function BenificiaryEnrollment() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learner/learnerListView/${id}`);
+    // navigate(`/learner/learnerListView/${id}`);
+    navigate(-1);
   };
 
   const agDetails = async () => {

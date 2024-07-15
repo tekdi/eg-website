@@ -21,7 +21,8 @@ export default function BenificiaryAddress() {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learner/learnerListView/${userId}`);
+    // navigate(`/learner/learnerListView/${userId}`);
+    navigate(-1);
   };
 
   return (

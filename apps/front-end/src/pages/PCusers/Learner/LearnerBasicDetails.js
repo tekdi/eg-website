@@ -22,7 +22,8 @@ export default function LearnerBasicDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const onPressBackButton = async () => {
-    navigate(`/learner/learnerListView/${id}`);
+    // navigate(`/learner/learnerListView/${id}`);
+    navigate(-1);
   };
 
   useEffect(async () => {

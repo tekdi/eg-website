@@ -32,7 +32,8 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
         lang,
         setLang,
         onPressBackButton: (e) => {
-          navigate(`/learner/learnerListView/${id}`);
+          // navigate(`/learner/learnerListView/${id}`);
+          navigate(-1);
         },
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
