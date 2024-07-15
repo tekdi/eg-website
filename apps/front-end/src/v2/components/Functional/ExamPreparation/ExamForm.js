@@ -19,7 +19,7 @@ import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const EpcpForm = ({ footerLinks }) => {
+const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [loading, setLoading] = useState(true);
@@ -67,9 +67,6 @@ const EpcpForm = ({ footerLinks }) => {
         // if  WILL_LEARNER_APPEAR_FOR_EXAM is "YES" view all the options
         if: {
           properties: {
-            title: `${t(
-              "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1"
-            )}`,
             WILL_LEARNER_APPEAR_FOR_EXAM: {
               const: "YES",
             },
@@ -78,9 +75,6 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             HAS_LEARNER_PREPARED_PRACTICAL_FILE: {
-              title: `${t(
-                "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE"
-              )}`,
               description:
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.TITLE",
               type: ["string", "null"],
@@ -88,14 +82,11 @@ const EpcpForm = ({ footerLinks }) => {
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.",
-                3
+                2
               ),
               default: null,
             },
             LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: {
-              title: `${t(
-                "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER"
-              )}`,
               description:
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.TITLE",
               type: ["string", "null"],
@@ -108,7 +99,6 @@ const EpcpForm = ({ footerLinks }) => {
               default: null,
             },
             DID_LEARNER_RECEIVE_ADMIT_CARD: {
-              title: `${t("EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD")}`,
               description:
                 "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
               type: ["string", "null"],
@@ -135,9 +125,6 @@ const EpcpForm = ({ footerLinks }) => {
       {
         if: {
           properties: {
-            title: `${t(
-              "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1"
-            )}`,
             WILL_LEARNER_APPEAR_FOR_EXAM: {
               const: "NO",
             },
@@ -145,9 +132,6 @@ const EpcpForm = ({ footerLinks }) => {
         },
         then: {
           properties: {
-            title: `${t(
-              "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS"
-            )}`,
             WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: {
               description:
                 "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.TITLE",
@@ -332,6 +316,10 @@ const EpcpForm = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _appBar={{
         onPressBackButton,

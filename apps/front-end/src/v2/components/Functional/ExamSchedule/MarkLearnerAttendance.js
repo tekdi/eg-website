@@ -16,7 +16,10 @@ import {
 } from "v2/utils/SyncHelper/SyncHelper";
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import moment from "moment";
-const MarkLearnerAttendance = ({ footerLinks }) => {
+const MarkLearnerAttendance = ({
+  footerLinks,
+  userTokenInfo: { authUser },
+}) => {
   const { t } = useTranslation();
   const { state } = useLocation();
   const selectedSubject = state?.subject;
@@ -261,6 +264,10 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       _footer={{ menues: footerLinks }}
       _appBar={{
         onPressBackButton,

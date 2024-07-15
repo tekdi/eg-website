@@ -10,7 +10,7 @@ import { HStack, VStack, Radio, Input } from "native-base";
 import { useNavigate } from "react-router-dom";
 import { optionId } from "@rjsf/utils";
 
-const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
+const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const [filter, setFilter] = useState();
@@ -82,6 +82,10 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
       _appBar={{

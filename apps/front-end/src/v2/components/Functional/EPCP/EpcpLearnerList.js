@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, Avatar, HStack, Pressable, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
 
-const EpcpLearnerList = ({ footerLinks }) => {
+const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
   const [leanerList, setLeanerList] = useState([]);
 
@@ -125,6 +125,10 @@ const EpcpLearnerList = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _appBar={{
         onPressBackButton,
