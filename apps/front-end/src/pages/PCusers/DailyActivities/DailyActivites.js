@@ -132,14 +132,14 @@ const DailyActivities = () => {
       setErrors({
         ...errors,
         minutes: {
-          __errors: ["CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY"],
+          __errors: [t("CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY")],
         },
       });
     } else if (hours === 0 && minutes === 0) {
       setErrors({
         ...errors,
         minutes: {
-          __errors: ["TIME_CANNOT_BE_ZERO"],
+          __errors: [t("TIME_CANNOT_BE_ZERO")],
         },
       });
     } else {
