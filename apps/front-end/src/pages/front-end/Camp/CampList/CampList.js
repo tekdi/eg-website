@@ -197,7 +197,7 @@ export default function List({ userTokenInfo, stateName }) {
           {`${t("HELLO")}, ${userTokenInfo?.authUser?.first_name}!`}
         </FrontEndTypo.H3>
 
-        {campList?.pcr_camp?.length > 0 && campList?.pcr_camp?.length < 2 && (
+        {campList?.pcr_camp?.length > 0 && campList?.pcr_camp?.length <= 2 && (
           <VStack
             // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
