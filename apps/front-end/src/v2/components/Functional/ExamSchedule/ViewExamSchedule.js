@@ -21,7 +21,7 @@ const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [selectedId, setSelectedId] = useState(null);
 
   const onPressBackButton = () => {
-    navigate(-1);
+    navigate("/");
   };
 
   useEffect(async () => {

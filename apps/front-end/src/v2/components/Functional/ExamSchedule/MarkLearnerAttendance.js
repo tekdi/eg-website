@@ -391,6 +391,7 @@ const MarkLearnerAttendance = ({
                 px="20px"
                 onPress={() => {
                   cancelAttendance(learners?.event_id);
+                  navigate(`/examattendance`);
                 }}
               >
                 {t("CANCEL")}
@@ -400,6 +401,7 @@ const MarkLearnerAttendance = ({
                 isDisabled={isDisable}
                 onPress={() => {
                   SaveAttendance(learners?.event_id);
+                  navigate(`/examattendance`);
                 }}
               >
                 {t("SAVE")}
