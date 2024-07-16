@@ -238,6 +238,7 @@ export default {
         father_first_name: {
           type: "string",
           title: "FIRST_NAME",
+          label: "FATHER_FULL_NAME",
           regex: /^[a-zA-Z]+$/,
         },
         father_middle_name: {
@@ -250,12 +251,10 @@ export default {
           title: "LAST_NAME",
           regex: /^[a-zA-Z]+$/,
         },
-        labelMotherName: {
-          type: "string",
-        },
         mother_first_name: {
           type: "string",
           title: "FIRST_NAME",
+          label: "MOTHER_FULL_NAME",
           regex: /^[a-zA-Z]+$/,
         },
         mother_middle_name: {
