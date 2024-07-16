@@ -52,36 +52,36 @@ export default function ChooseLanguage({ t, languageChanged }) {
 
         <HStack space={4} mt={42}>
           <TitleCard
-            _hstack={{ bg: code === "hi" ? "bgRed.500" : undefined }}
+            _hstack={{ bg: code === "en" ? "bgRed.500" : undefined }}
             onPress={() => {
               setCode("en");
               setLangChanged(true);
             }}
-            _title={{ bg: code === "hi" ? "white" : "grayTitleCard" }}
+            _title={{ bg: code === "en" ? "white" : "grayTitleCard" }}
             title={
-              <FrontEndTypo.H3 color={code === "hi" ? "bgRed.500" : "white"}>
+              <FrontEndTypo.H3 color={code === "en" ? "bgRed.500" : "white"}>
                 {t("En")}
               </FrontEndTypo.H3>
             }
           >
-            <FrontEndTypo.H3 color={code === "hi" ? "white" : null}>
+            <FrontEndTypo.H3 color={code === "en" ? "white" : null}>
               {t("ENGLISH")}
             </FrontEndTypo.H3>
           </TitleCard>
           <TitleCard
-            _hstack={{ bg: code === "en" ? "red.500" : undefined }}
+            _hstack={{ bg: code === "hi" ? "red.500" : undefined }}
             onPress={async () => {
               setCode("hi");
               setLangChanged(true);
             }}
-            _title={{ bg: code === "en" ? "white" : "grayTitleCard" }}
+            _title={{ bg: code === "hi" ? "white" : "grayTitleCard" }}
             title={
-              <FrontEndTypo.H3 color={code === "en" ? "red.500" : "white"}>
+              <FrontEndTypo.H3 color={code === "hi" ? "red.500" : "white"}>
                 {t("HIN")}
               </FrontEndTypo.H3>
             }
           >
-            <FrontEndTypo.H3 color={code === "en" ? "white" : null}>
+            <FrontEndTypo.H3 color={code === "hi" ? "white" : null}>
               {t("HINDI")}
             </FrontEndTypo.H3>
           </TitleCard>

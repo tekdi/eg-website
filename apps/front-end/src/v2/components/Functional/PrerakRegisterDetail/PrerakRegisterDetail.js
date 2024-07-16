@@ -1,13 +1,4 @@
-import {
-  VStack,
-  HStack,
-  Box,
-  Modal,
-  Alert,
-  Checkbox,
-  Button,
-  Text,
-} from "native-base";
+import { VStack, HStack, Box, Modal, Alert, Text } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,7 +11,6 @@ import {
   removeOnboardingURLData,
   removeOnboardingMobile,
   login,
-  useWindowSize,
   CustomAlert,
   Loading,
   geolocationRegistryService,
@@ -41,6 +31,7 @@ import {
 import {
   widgets,
   templates,
+  transformErrors,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
@@ -109,7 +100,6 @@ export default function PrerakRegisterDetail({
   const [isLoginShow, setIsLoginShow] = useState(false);
   const [isUserExistModalText, setIsUserExistModalText] = useState("");
   const [isUserExistStatus, setIsUserExistStatus] = useState("");
-  const [width, height] = useWindowSize();
   const [yearsRange, setYearsRange] = useState([1980, 2030]);
 
   // Consent modals
@@ -119,11 +109,9 @@ export default function PrerakRegisterDetail({
   const [noChecked, setNoChecked] = useState(false);
 
   //form variable
-  const [lang, setLang] = useState(getLanguage());
+  const [lang] = useState(getLanguage());
   const formRef = useRef();
   const [errors, setErrors] = useState({});
-  const [page, setPage] = useState();
-  const [pages, setPages] = useState();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
@@ -131,7 +119,6 @@ export default function PrerakRegisterDetail({
   // Toggle consent state based on user agreement
 
   useEffect(() => {
-    setErrors({});
     if (currentForm == 0) {
       setSchema(basicRegister);
       setFormData(registerFormData);
@@ -215,6 +202,7 @@ export default function PrerakRegisterDetail({
       setFormData({ verify_mobile: registerFormData?.mobile });
     }
   }, [currentForm]);
+
   const uiSchema = {
     labelName: {
       "ui:widget": "LabelNameWidget",
@@ -440,6 +428,14 @@ export default function PrerakRegisterDetail({
   };
 
   const onSubmit = async (data) => {
+    if (
+      Object.keys(errors || {}).length > 0 &&
+      Object.keys(errors || {}).filter((e) =>
+        Object.keys(schema.properties).includes(e)
+      ).length > 0
+    ) {
+      return false;
+    }
     let newFormData = data.formData;
     if (currentForm == 0) {
       setIsLoading(true);
@@ -484,6 +480,13 @@ export default function PrerakRegisterDetail({
               },
             };
             setErrors(newErrors);
+          } else if (createData?.validate_result?.status === false) {
+            const newErrors = {
+              verify_mobile: {
+                __errors: [createData?.validate_result?.message],
+              },
+            };
+            setErrors(newErrors);
           } else {
             let createDataNew = createData?.data;
             if (createDataNew?.username && createDataNew?.password) {
@@ -504,27 +507,12 @@ export default function PrerakRegisterDetail({
       setIsLoading(false);
     }
   };
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (currentForm == 0 || currentForm == 1) {
+    if (currentForm < 3) {
       setRegisterFormData(newData);
     }
     if (id === "root_mobile") {
@@ -667,7 +655,7 @@ export default function PrerakRegisterDetail({
           }
         }
 
-        if (response_isUserExist?.program_users.length > 0) {
+        if (response_isUserExist?.program_users?.length > 0) {
           for (
             let i = 0;
             i < response_isUserExist?.program_users.length.length;
@@ -758,9 +746,9 @@ export default function PrerakRegisterDetail({
   const sendAndVerifyOtp = async (schema, { mobile, otp, hash }) => {
     if (otp) {
       const bodyData = {
-        mobile: mobile.toString(),
+        mobile: mobile?.toString(),
         reason: "verify_mobile",
-        otp: otp.toString(),
+        otp: otp?.toString(),
         hash: hash,
       };
       const verifyotp = await authRegistryService.verifyOtp(bodyData);
@@ -792,6 +780,7 @@ export default function PrerakRegisterDetail({
     // console.log(otpData)
     return otpData;
   };
+
   const formSubmitCreate = async () => {
     let first_name = registerFormData?.first_name
       ? typeof registerFormData.first_name === "string"
@@ -830,7 +819,7 @@ export default function PrerakRegisterDetail({
         first_name: first_name,
         middle_name: middle_name,
         last_name: last_name,
-        mobile: registerFormData?.mobile.toString(),
+        mobile: registerFormData?.mobile?.toString(),
         lang: lang,
         state: state,
         district: district,
@@ -845,7 +834,7 @@ export default function PrerakRegisterDetail({
         marital_status: marital_status,
         social_category: social_category,
       },
-      ip?.id.toString(),
+      ip?.id?.toString(),
       programData?.program_id,
       cohortData?.academic_year_id
     );
@@ -919,9 +908,8 @@ export default function PrerakRegisterDetail({
               extraErrors={errors}
               showErrorList={false}
               noHtml5Validate={true}
-              widgets={widgets}
               {...{
-                //widgets,
+                widgets,
                 templates,
                 validator,
                 schema: schema,
@@ -929,9 +917,9 @@ export default function PrerakRegisterDetail({
                 formData,
                 customValidate,
                 onChange,
-                //onError,
+                // onError,
                 onSubmit,
-                transformErrors,
+                transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
             >
               {currentForm === 3 ? (
