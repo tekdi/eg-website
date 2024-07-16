@@ -15,7 +15,11 @@ import { useNavigate } from "react-router-dom";
 import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
 import MarkLearnerAttendance from "./MarkLearnerAttendance";
 
-const ExamAttendance = ({ userTokenInfo, footerLinks, learners }) => {
+const ExamAttendance = ({
+  userTokenInfo: { authUser },
+  footerLinks,
+  learners,
+}) => {
   const { t } = useTranslation();
   const [boardList, setBoardList] = useState();
   const [loading, setLoading] = useState(true);
@@ -71,6 +75,10 @@ const ExamAttendance = ({ userTokenInfo, footerLinks, learners }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       // loading={loading}
       _appBar={{
         onPressBackButton,
