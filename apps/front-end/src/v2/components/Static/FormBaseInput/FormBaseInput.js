@@ -437,7 +437,11 @@ export const RadioBtn = ({
         }}
         schema={{
           // _pressable: { style: { backgroundColor: "#999" } },
-          _stackIcon: { flexDirection: "row", justifyContent: "flex-start" },
+          _text: { textAlign: "" },
+          _stackIcon: {
+            flexDirection: "row",
+            alignItems: "flex-start",
+          },
           icons: items?.map((e) =>
             e.value == value
               ? {
@@ -460,6 +464,7 @@ export const RadioBtn = ({
           ),
           // _box: { gap: "0", width: "auto" },
           // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+          ...(schema || {}),
         }}
         value={value}
         onChange={(e) => {

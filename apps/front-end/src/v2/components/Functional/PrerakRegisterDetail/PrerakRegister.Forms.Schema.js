@@ -34,14 +34,17 @@ export const basicRegister = {
       icons: [
         {
           name: "Female",
+          px: "8",
           _icon: { size: "30", color: "white" },
         },
         {
           name: "Male",
+          px: "8",
           _icon: { size: "30" },
         },
         {
           name: "Other",
+          px: "8",
           _icon: { size: "30" },
         },
       ],
@@ -75,7 +78,6 @@ export const contact_details = {
       format: "RadioBtn",
       enumNames: ["YES", "NO_I_USE_A_FAMILY_MEMBERS"],
       enum: ["self", "family"],
-      readOnly: "",
     },
     device_type: {
       label: "TYPE_OF_MOBILE_PHONE",
@@ -83,7 +85,6 @@ export const contact_details = {
       format: "CustomR",
       grid: 2,
       icons: [{ name: "AndroidLineIcon" }, { name: "AppleLineIcon" }],
-      readOnly: "",
     },
     marital_status: {
       label: "MARITAL_STATUS",
