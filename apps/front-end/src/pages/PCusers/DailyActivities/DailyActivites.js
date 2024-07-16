@@ -147,6 +147,35 @@ const DailyActivities = () => {
     }
   };
 
+  const validateTimeOnSubmit = (input) => {
+    const MAX_HOURS = 8;
+    const prev_hours = 0 + parseInt(input.hours);
+    const prev_min = 0 + parseInt(input.minutes);
+    const hours = parseInt(prev_hours, 10);
+    const minutes = parseInt(prev_min, 10);
+    const totalHours = hours + minutes / 60;
+    if (totalHours > MAX_HOURS) {
+      setErrors({
+        ...errors,
+        minutes: {
+          __errors: [t("CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY")],
+        },
+      });
+      return false;
+    } else if (hours === 0 && minutes === 0) {
+      setErrors({
+        ...errors,
+        minutes: {
+          __errors: [t("TIME_CANNOT_BE_ZERO")],
+        },
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -173,8 +202,7 @@ const DailyActivities = () => {
       hours: newFormData?.hours || 0,
       minutes: newFormData?.minutes || 0,
     };
-    validateTime(obj);
-    if (_.isEmpty(errors)) {
+    if (_.isEmpty(errors) && validateTimeOnSubmit(obj)) {
       const id = location?.state?.id;
 
       const payload = {
