@@ -94,7 +94,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.",
-                4
+                1
               ),
               default: null,
             },
@@ -139,7 +139,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.",
-                1
+                4
               ),
             },
           },
