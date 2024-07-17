@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Alert,
   Box,
@@ -30,9 +30,8 @@ export default function CampSelectedLearners() {
   const camp_id = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
   const [selectedIds, setSelectedIds] = React.useState([]);
-  const [registeredId, setRegisteredId] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [canSelectUsers, setCanSelectUsers] = React.useState([]);
@@ -44,7 +43,6 @@ export default function CampSelectedLearners() {
   };
 
   const handleCheckboxChange = (id) => {
-    setRegisteredId(id);
     setSelectedIds((prevSelectedIds) => {
       if (prevSelectedIds.includes(id)) {
         return prevSelectedIds.filter((selectedId) => selectedId !== id);
@@ -59,13 +57,13 @@ export default function CampSelectedLearners() {
     if (!e) {
       setSelectedIds([]);
     } else {
-      const newSelectedIds = nonRegisteredUser
+      const newSelectedIds = users
         ?.filter((item) => !canSelectUsers.some((user) => user.id === item.id))
         .map((item) => item.id);
       setSelectedIds(newSelectedIds);
     }
   };
-
+  console.log(selectedIds);
   const updateLearner = async () => {
     setIsDisable(true);
     if (selectedIds?.length !== 0) {
@@ -98,22 +96,21 @@ export default function CampSelectedLearners() {
       users = campdetails?.data?.group_users || [];
       setCanSelectUsers(users);
     }
-    const campNotRegisterUsers = result?.data?.user || [];
-    const nonRegister = result?.data?.user || [];
-    setNonRegister(nonRegister);
-    const mergedData =
-      campdetails?.data?.group_users?.concat(campNotRegisterUsers);
-    setNonRegisteredUser(mergedData);
+    const resultNonR = result?.data?.user || [];
+    setNonRegister(resultNonR);
+    const mergedData = campdetails?.data?.group_users?.concat(resultNonR);
+    setUsers(mergedData);
     const ids = campdetails?.data?.group_users?.map((item) => item.id);
     setSelectedIds(ids);
     setLoading(false);
-    const selectAllChecked =
-      selectedIds?.length ===
-      nonRegisteredUser?.filter(
-        (item) => !registeredUsers.some((user) => user.id === item.id)
-      ).length;
-    setSelectAllChecked(selectAllChecked);
   }, []);
+
+  useEffect(() => {
+    const init = () => {
+      setSelectAllChecked(selectedIds?.length === users.length);
+    };
+    init();
+  }, [selectedIds, users]);
 
   return (
     <Layout
@@ -161,7 +158,7 @@ export default function CampSelectedLearners() {
           </HStack>
         )}
 
-        {nonRegisteredUser?.map((item) => {
+        {users?.map((item) => {
           return (
             <CardComponent
               _header={{ bg: "white" }}
