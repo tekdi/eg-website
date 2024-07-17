@@ -16,7 +16,11 @@ import {
 } from "v2/utils/SyncHelper/SyncHelper";
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import moment from "moment";
-const MarkLearnerAttendance = ({ footerLinks }) => {
+const MarkLearnerAttendance = ({
+  footerLinks,
+  userTokenInfo: { authUser },
+  subjects,
+}) => {
   const { t } = useTranslation();
   const { state } = useLocation();
   const selectedSubject = state?.subject;
@@ -25,6 +29,7 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
   const [accessData, SetAccessData] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = useState([]);
   const [learners, setLearners] = useState([]);
+  const [learnersData, setLearnersData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [absentModal, setAbsentModal] = useState();
   const [selectedReason, setSelectedReason] = useState("");
@@ -114,6 +119,8 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
         newData
       );
       setLearners(LearnerList.data?.[0]);
+      setLearnersData(LearnerList.data?.data);
+      console.log("learnersData", learnersData);
     };
     fetchData();
   }, []);
@@ -271,6 +278,10 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       _footer={{ menues: footerLinks }}
       _appBar={{
         onPressBackButton,
@@ -285,6 +296,9 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
           <FrontEndTypo.H3>{`${t("TOTAL_NUMBER_OF_STUDENTS")} : ${
             learners?.data?.length
           }`}</FrontEndTypo.H3>
+          {/* {learnersData?.length == 0 && (
+            <FrontEndTypo.H2>{t("WARNING")}</FrontEndTypo.H2>
+          )} */}
         </VStack>
         <>
           <table
@@ -394,6 +408,7 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
                 px="20px"
                 onPress={() => {
                   cancelAttendance(learners?.event_id);
+                  navigate(`/examattendance`);
                 }}
               >
                 {t("CANCEL")}
@@ -403,6 +418,7 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
                 isDisabled={isDisable}
                 onPress={() => {
                   SaveAttendance(learners?.event_id);
+                  navigate(`/examattendance`);
                 }}
               >
                 {t("SAVE")}

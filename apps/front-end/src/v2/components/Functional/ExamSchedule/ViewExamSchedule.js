@@ -10,7 +10,7 @@ import { HStack, VStack, Radio, Input } from "native-base";
 import { useNavigate } from "react-router-dom";
 import { optionId } from "@rjsf/utils";
 
-const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
+const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const [filter, setFilter] = useState();
@@ -21,7 +21,7 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
   const [selectedId, setSelectedId] = useState(null);
 
   const onPressBackButton = () => {
-    navigate(-1);
+    navigate("/");
   };
 
   useEffect(async () => {
@@ -82,6 +82,10 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _footer={{ menues: footerLinks }}
       _appBar={{
@@ -90,7 +94,7 @@ const ViewExamSchedule = ({ userTokenInfo, footerLinks }) => {
       }}
     >
       <VStack
-        bg="primary.50"
+        //bg="primary.50"
         p="5"
         minHeight={"500px"}
         space={4}
