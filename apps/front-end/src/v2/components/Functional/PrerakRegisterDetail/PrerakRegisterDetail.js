@@ -556,10 +556,10 @@ export default function PrerakRegisterDetail({
         setIsUserExistModal(true);
         isExist = true;
         setIsUserExistResponse(response_isUserExist);
-        if (response_isUserExist?.program_faciltators.length > 0) {
+        if (response_isUserExist?.program_faciltators?.length > 0) {
           for (
             let i = 0;
-            i < response_isUserExist?.program_faciltators.length;
+            i < response_isUserExist?.program_faciltators?.length;
             i++
           ) {
             let facilator_data = response_isUserExist?.program_faciltators[i];

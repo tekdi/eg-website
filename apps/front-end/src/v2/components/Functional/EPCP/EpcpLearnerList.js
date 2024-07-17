@@ -85,13 +85,23 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
   };
 
   const getStatus = (responses) => {
-    const response1 = responses.find((response) => response.field_id === 1);
-    const response2 = responses.find((response) => response.field_id === 2);
-    const response3 = responses.find((response) => response.field_id === 7);
-    const response5 = responses.find((response) => response.field_id === 8);
-    const response7 = responses.find((response) => response.field_id === 16);
-    const subjects = JSON.parse(response7?.response_value || "[]");
-    const allSelectedYes = subjects.every(
+    const response1 = responses?.find((response) => response.field_id === 17);
+    const response2 = responses?.find((response) => response.field_id === 31);
+    const response3 = responses?.find((response) => response.field_id === 22);
+    const response5 = responses?.find((response) => response.field_id === 23);
+    const response7 = responses?.find((response) => response.field_id === 31);
+    // const subjects = JSON.parse(response7?.response_value || "[]");
+    // Safely parse response7's JSON value
+    // let subjects = [];
+    // if (response7?.response_value) {
+    //   try {
+    //     subjects = JSON.parse(response7?.response_value);
+    //   } catch (error) {
+    //     console.error("Error parsing JSON:", error);
+    //   }
+    // }
+
+    const allSelectedYes = responses?.every(
       (subject) => subject.selected === "yes"
     );
     if (!response1 || !response2 || !response3 || !response5 || !response7) {

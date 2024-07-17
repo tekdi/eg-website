@@ -86,19 +86,19 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
 
   const getStatus = (responses) => {
     const WILL_LEARNER_APPEAR_FOR_EXAM = responses?.find(
-      (response) => response.field_id === 10
+      (response) => response.field_id === 25
     );
     const WILL_LEARNER_APPEAR_FOR_EXAM_REASONS = responses?.find(
-      (response) => response.field_id === 11
+      (response) => response.field_id === 26
     );
     const DID_LEARNER_RECEIVE_ADMIT_CARD = responses?.find(
-      (response) => response.field_id === 12
+      (response) => response.field_id === 27
     );
     const HAS_LEARNER_PREPARED_PRACTICAL_FILE = responses?.find(
-      (response) => response.field_id === 13
+      (response) => response.field_id === 28
     );
     const LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER = responses?.find(
-      (response) => response.field_id === 14
+      (response) => response.field_id === 29
     );
     // const response6 = responses.find((response) => response.field_id === 15);
     if (

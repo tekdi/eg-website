@@ -19,6 +19,7 @@ import moment from "moment";
 const MarkLearnerAttendance = ({
   footerLinks,
   userTokenInfo: { authUser },
+  subjects,
 }) => {
   const { t } = useTranslation();
   const { state } = useLocation();
@@ -28,6 +29,7 @@ const MarkLearnerAttendance = ({
   const [accessData, SetAccessData] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = useState([]);
   const [learners, setLearners] = useState([]);
+  const [learnersData, setLearnersData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [absentModal, setAbsentModal] = useState();
   const [selectedReason, setSelectedReason] = useState("");
@@ -117,6 +119,8 @@ const MarkLearnerAttendance = ({
         newData
       );
       setLearners(LearnerList.data?.[0]);
+      setLearnersData(LearnerList.data?.data);
+      console.log("learnersData", learnersData);
     };
     fetchData();
   }, []);
@@ -282,6 +286,9 @@ const MarkLearnerAttendance = ({
           <FrontEndTypo.H3>{`${t("TOTAL_NUMBER_OF_STUDENTS")} : ${
             learners?.data?.length
           }`}</FrontEndTypo.H3>
+          {/* {learnersData?.length == 0 && (
+            <FrontEndTypo.H2>{t("WARNING")}</FrontEndTypo.H2>
+          )} */}
         </VStack>
         <>
           <table
