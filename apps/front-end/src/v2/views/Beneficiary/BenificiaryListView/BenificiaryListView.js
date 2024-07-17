@@ -560,7 +560,6 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   useEffect(async () => {
     const { search } = filter;
     setSearch(search);
-    console.log(filter?.page);
     if (filter?.page < 2) {
       setLoadingList(true);
     }
@@ -732,7 +731,6 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           color="bgRed.500"
           size="lg"
         />
-        // <Loading height={loadingHeight} />
       )}
 
       <HStack
