@@ -538,23 +538,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     return errors;
   };
 
-  // const transformErrors = (errors, uiSchema) => {
-  //   return errors.map((error) => {
-  //     if (error.name === "required") {
-  //       if (schema?.properties?.[error?.property]?.title) {
-  //         error.message = `${t("REQUIRED_MESSAGE")} "${t(
-  //           schema?.properties?.[error?.property]?.title
-  //         )}"`;
-  //       } else {
-  //         error.message = `${t("REQUIRED_MESSAGE")}`;
-  //       }
-  //     } else if (error.name === "enum") {
-  //       error.message = `${t("SELECT_MESSAGE")}`;
-  //     }
-  //     return error;
-  //   });
-  // };
-
   function cleanData(data) {
     const newData = { ...data };
 
