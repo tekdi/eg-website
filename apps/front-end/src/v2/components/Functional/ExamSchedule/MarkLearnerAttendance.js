@@ -100,14 +100,14 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
     const fetchData = async () => {
       const newData = [
         {
-          subject_name: selectedSubject.name,
-          subject_id: selectedSubject.id,
-          event_id: selectedSubject.events?.[0]?.id,
-          start_date: selectedSubject.events?.[0]?.start_date,
-          end_date: selectedSubject.events?.[0]?.end_date,
+          subject_name: selectedSubject?.name,
+          subject_id: selectedSubject?.id,
+          event_id: selectedSubject?.events?.[0]?.id,
+          start_date: selectedSubject?.events?.[0]?.start_date,
+          end_date: selectedSubject?.events?.[0]?.end_date,
           type:
-            selectedSubject.events?.[0]?.type.charAt(0).toUpperCase() +
-            selectedSubject.events?.[0]?.type.slice(1), // Capitalize the type
+            selectedSubject?.events?.[0]?.type.charAt(0).toUpperCase() +
+            selectedSubject?.events?.[0]?.type.slice(1), // Capitalize the type
         },
       ];
       const LearnerList = await organisationService.getattendanceLearnerList(
@@ -139,13 +139,14 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
       setMainAttendance(IndexDatapayload || []);
       const isDate = compareDates(filter?.date, getexamSyncDate);
       const isBoard = compareBoards(filter?.selectedId, getexamSyncBoard);
+
       if (filter?.date) {
         if (isDate) {
           if (getIndexData?.length > 0 && isBoard) {
             setLearnerAttendance(getIndexData);
           } else {
             setLearnerAttendance(IndexDatapayload);
-            if (IndexDatapayload.length > 0) {
+            if (IndexDatapayload?.length > 0) {
               setIndexedDBItem("exam_attendance", IndexDatapayload);
             } else {
               setIndexedDBItem("exam_attendance", []);
@@ -243,9 +244,9 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
       matchedPayload,
       filter?.date
     );
-
-    const hasBlankStatus = finalPayload.some((item) => item.status === "");
-
+    const hasBlankStatus = finalPayload.some((item) => {
+      return item.status === "";
+    });
     if (hasBlankStatus) {
       setOpenModal(finalPayload);
     } else {
@@ -253,6 +254,15 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
       if (result?.success) {
         setIsDisable(true);
       }
+    }
+  };
+
+  const SaveModalAttendance = async (finalPayload) => {
+    const newData = finalPayload?.filter((item) => item?.status?.trim() !== "");
+    const result = await organisationService.markExamAttendance(newData);
+    if (result?.success) {
+      setIsDisable(true);
+      setOpenModal(false);
     }
   };
   const onPressBackButton = () => {
@@ -455,6 +465,42 @@ const MarkLearnerAttendance = ({ footerLinks }) => {
               >
                 {t("SAVE")}
               </FrontEndTypo.Primarybutton>
+            </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal isOpen={openModal} size="lg">
+        <Modal.Content>
+          <Modal.Header alignItems={"center"}>{t("ARE_YOU_SURE")}</Modal.Header>
+          <Modal.Body p="5">
+            <VStack space="4">
+              <FrontEndTypo.H3>{t("ATTENDANCE_ALERT_MESSAGE")}</FrontEndTypo.H3>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <HStack
+              space={4}
+              width={"100%"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <FrontEndTypo.Primarybutton
+                px="20px"
+                isDisabled={isDisable}
+                onPress={() => {
+                  SaveModalAttendance(openModal);
+                }}
+              >
+                {t("YES")}
+              </FrontEndTypo.Primarybutton>
+              <FrontEndTypo.Secondarybutton
+                px="20px"
+                onPress={() => {
+                  setOpenModal(false);
+                }}
+              >
+                {t("NO")}
+              </FrontEndTypo.Secondarybutton>
             </HStack>
           </Modal.Footer>
         </Modal.Content>
