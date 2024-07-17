@@ -22,6 +22,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 import ProfilePhoto from "../../Functional/ProfilePhoto/ProfilePhoto";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import FilePreview from "v2/components/Static/FilePreview/FilePreview";
 
 export default function BenificiaryBasicDetails(userTokenInfo) {
   const { id } = useParams();
@@ -361,33 +362,41 @@ export default function BenificiaryBasicDetails(userTokenInfo) {
             space={4}
           >
             <HStack space={4} alignItems={"center"}>
-              <VStack>
+              {/* <VStack>
+                <ProfilePhoto
+                  isProfileEdit={true}
+                  editLink={edit}
+                  profile_photo_1={benificiary?.profile_photo_1}
+                  profile_photo_2={benificiary?.profile_photo_2}
+                  profile_photo_3={benificiary?.profile_photo_3}
+                />
+              </VStack> */}
+              <HStack alignContent={"center"} alignItems={"center"} space={2}>
                 {benificiary?.profile_photo_1?.id ? (
                   <ImageView
                     source={{
                       document_id: benificiary?.profile_photo_1?.id,
                     }}
-                    // alt="Alternate Text"
-                    width={"100px"}
-                    height={"100px"}
+                    width={"64px"}
+                    height={"64px"}
+                    borderRadius="50%"
                   />
                 ) : (
                   <IconByName
                     isDisabled
                     name="AccountCircleLineIcon"
                     color="gray.300"
-                    _icon={{ size: "190px" }}
+                    _icon={{ size: "120px" }}
                   />
                 )}
-              </VStack>
-              <IconByName
-                name="PencilLineIcon"
-                color="iconColor.200"
-                _icon={{ size: "20" }}
-                onPress={(e) =>
-                  navigate(`/beneficiary/${benificiary?.id}/upload/1`)
-                }
-              />
+
+                <IconByName
+                  name="PencilLineIcon"
+                  color="iconColor.200"
+                  _icon={{ size: "20" }}
+                  onPress={() => navigate(`/beneficiary/${id}/upload/1`)}
+                />
+              </HStack>
               <VStack>
                 <HStack justifyContent="space-between" alignItems="Center">
                   <FrontEndTypo.H3 color="textGreyColor.750" bold>
@@ -436,7 +445,38 @@ export default function BenificiaryBasicDetails(userTokenInfo) {
               />
             </HStack>
           </HStack>
-
+          {benificiary?.profile_photo_1?.id && (
+            <HStack justifyContent="space-between">
+              <HStack alignItems="center" space="6">
+                {[
+                  benificiary?.profile_photo_1,
+                  benificiary?.profile_photo_2,
+                  benificiary?.profile_photo_3,
+                ].map(
+                  (photo) =>
+                    photo?.id && (
+                      <ImageView
+                        key={photo?.id}
+                        source={{
+                          document_id: photo?.id,
+                        }}
+                        width={"36px"}
+                        height={"36px"}
+                        borderRadius="50%"
+                      />
+                    )
+                )}
+              </HStack>
+              <HStack>
+                <IconByName
+                  name="PencilLineIcon"
+                  color="iconColor.200"
+                  _icon={{ size: "20" }}
+                  onPress={() => navigate(`/beneficiary/${id}/upload/1`)}
+                />
+              </HStack>
+            </HStack>
+          )}
           <CardComponent
             _vstack={{ space: 0 }}
             _hstack={{ borderBottomWidth: 0 }}
