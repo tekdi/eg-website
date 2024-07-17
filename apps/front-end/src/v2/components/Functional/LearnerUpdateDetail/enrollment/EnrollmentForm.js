@@ -796,7 +796,7 @@ export default function EnrollmentForm() {
       } else if (success && formData.enrollment_status === "enrolled") {
         nextPreviewStep();
       } else {
-        navigate(`/beneficiary/${userId}`);
+        navigate(`/beneficiary/${userId}/enrollmentdetails`);
       }
     }
     setBtnLoading(false);
