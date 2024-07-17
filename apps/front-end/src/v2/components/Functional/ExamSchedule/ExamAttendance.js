@@ -97,7 +97,7 @@ const ExamAttendance = ({
       _footer={{ menues: footerLinks }}
     >
       <VStack
-        bg="primary.50"
+        // bg="primary.50"
         p="5"
         minHeight={"500px"}
         space={4}
