@@ -709,7 +709,8 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           <List data={data} />
         </InfiniteScroll>
       ) : (
-        <Loading height={loadingHeight} />
+        <></>
+        // <Loading height={loadingHeight} />
       )}
       <HStack
         ref={refButton}
