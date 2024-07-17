@@ -29,6 +29,7 @@ import { useNavigate } from "react-router-dom";
 import {
   widgets,
   templates,
+  transformErrors,
 } from "../../../components/Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import {
@@ -535,23 +536,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     });
 
     return errors;
-  };
-
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
   };
 
   function cleanData(data) {
@@ -1205,7 +1189,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                 onChange,
                 onError,
                 onSubmit,
-                transformErrors,
+                transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
             >
               <FrontEndTypo.Primarybutton
