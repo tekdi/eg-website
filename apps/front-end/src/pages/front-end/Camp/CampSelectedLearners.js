@@ -63,7 +63,6 @@ export default function CampSelectedLearners() {
       setSelectedIds(newSelectedIds);
     }
   };
-  console.log(selectedIds);
   const updateLearner = async () => {
     setIsDisable(true);
     if (selectedIds?.length !== 0) {
