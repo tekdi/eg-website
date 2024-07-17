@@ -16,6 +16,7 @@ import {
   geolocationRegistryService,
   getOptions,
   enumRegistryService,
+  validation,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
@@ -37,6 +38,7 @@ import { getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
 import Loader from "v2/components/Static/Loader/Loader.js";
 import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
+import moment from "moment";
 
 export default function PrerakRegisterDetail({
   t,
@@ -122,6 +124,9 @@ export default function PrerakRegisterDetail({
     if (currentForm == 0) {
       setSchema(basicRegister);
       setFormData(registerFormData);
+      let minYear = moment().subtract("years", 50);
+      let maxYear = moment().subtract("years", 18);
+      setYearsRange([minYear.year(), maxYear.year()]);
     } else if (currentForm === 1) {
       let newSchema = contact_details;
       try {
@@ -260,6 +265,15 @@ export default function PrerakRegisterDetail({
           err?.[key]?.addError(isValid[key]);
       }
     });
+    if (data?.dob) {
+      validation({
+        data: data?.dob,
+        key: "dob",
+        errors: err,
+        message: `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
+        type: "age-18",
+      });
+    }
     return err;
   };
 
