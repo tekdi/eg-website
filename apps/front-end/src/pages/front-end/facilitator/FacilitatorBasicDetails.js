@@ -22,6 +22,7 @@ import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
 import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
+import FilePreview from "v2/components/Static/FilePreview/FilePreview.js";
 
 export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const navigate = useNavigate();
@@ -381,7 +382,6 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                     profile_photo_1={facilitator?.profile_photo_1}
                     profile_photo_2={facilitator?.profile_photo_2}
                     profile_photo_3={facilitator?.profile_photo_3}
-                    isProfileEdit={isProfileEdit()}
                   />
                 </VStack>
                 <VStack>
@@ -431,6 +431,38 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 )}
               </HStack>
             </HStack>
+            {facilitator?.profile_photo_1?.base64 && (
+              <HStack justifyContent="space-between">
+                <HStack alignItems="center" space="6">
+                  {[
+                    facilitator?.profile_photo_1,
+                    facilitator?.profile_photo_2,
+                    facilitator?.profile_photo_3,
+                  ].map(
+                    (photo) =>
+                      photo?.base64 && (
+                        <FilePreview
+                          key={photo?.id}
+                          base64={photo?.base64}
+                          width={"36px"}
+                          height={"36px"}
+                          borderRadius="50%"
+                        />
+                      )
+                  )}
+                </HStack>
+                <HStack>
+                  {isProfileEdit && (
+                    <IconByName
+                      name="PencilLineIcon"
+                      color="iconColor.200"
+                      _icon={{ size: "20" }}
+                      onPress={() => navigate(`/profile/edit/upload/1`)}
+                    />
+                  )}
+                </HStack>
+              </HStack>
+            )}
             <CardComponent
               _vstack={{ space: 0 }}
               _hstack={{ borderBottomWidth: 0 }}
