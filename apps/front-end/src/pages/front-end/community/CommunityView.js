@@ -24,7 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import schema1 from "./schema";
-
+import { useNavigate } from "react-router-dom";
 export default function CommunityView({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -35,6 +35,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
   const [data, setData] = useState({});
   const [enumOptions, setEnumOptions] = useState({});
   const formRef = useRef();
+  const navigate = useNavigate();
 
   // PROFILE DATA IMPORTS
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -375,9 +376,14 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
     }
   };
 
+  const onPressBackButton = () => {
+    navigate("/");
+  };
+
   return (
     <Layout
       _appBar={{
+        onPressBackButton,
         onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
         lang,
         setLang,

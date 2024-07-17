@@ -19,7 +19,7 @@ import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const EpcpForm = ({ footerLinks }) => {
+const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [loading, setLoading] = useState(true);
@@ -390,6 +390,10 @@ const EpcpForm = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _appBar={{
         onPressBackButton,
