@@ -118,9 +118,8 @@ const MarkLearnerAttendance = ({
       const LearnerList = await organisationService.getattendanceLearnerList(
         newData
       );
-      setLearners(LearnerList.data?.[0]);
-      setLearnersData(LearnerList.data?.data);
-      console.log("learnersData", learnersData);
+      setLearners(LearnerList?.data?.[0]);
+      setLearnersData(LearnerList?.data?.data);
     };
     fetchData();
   }, []);
@@ -242,7 +241,7 @@ const MarkLearnerAttendance = ({
 
   const SaveAttendance = async (event_id) => {
     const payload = (await getIndexedDBItem("exam_attendance")) || [];
-    const matchedPayload = payload.filter((item) => {
+    const matchedPayload = payload?.filter((item) => {
       const key = Object.keys(item)[0];
       return key.startsWith(event_id + "_");
     });
@@ -251,25 +250,27 @@ const MarkLearnerAttendance = ({
       matchedPayload,
       filter?.date
     );
-    const hasBlankStatus = finalPayload.some((item) => {
+    const hasBlankStatus = finalPayload?.some((item) => {
       return item.status === "";
     });
+
     if (hasBlankStatus) {
       setOpenModal(finalPayload);
     } else {
       const result = await organisationService.markExamAttendance(finalPayload);
       if (result?.success) {
         setIsDisable(true);
+        navigate(`/examattendance`);
       }
     }
   };
-
   const SaveModalAttendance = async (finalPayload) => {
     const newData = finalPayload?.filter((item) => item?.status?.trim() !== "");
     const result = await organisationService.markExamAttendance(newData);
     if (result?.success) {
       setIsDisable(true);
       setOpenModal(false);
+      navigate(`/examattendance`);
     }
   };
   const onPressBackButton = () => {
@@ -408,7 +409,7 @@ const MarkLearnerAttendance = ({
                 px="20px"
                 onPress={() => {
                   cancelAttendance(learners?.event_id);
-                  navigate(`/examattendance`);
+                  // navigate(`/examattendance`);
                 }}
               >
                 {t("CANCEL")}
@@ -418,7 +419,7 @@ const MarkLearnerAttendance = ({
                 isDisabled={isDisable}
                 onPress={() => {
                   SaveAttendance(learners?.event_id);
-                  navigate(`/examattendance`);
+                  // navigate(`/examattendance`);
                 }}
               >
                 {t("SAVE")}
@@ -485,6 +486,7 @@ const MarkLearnerAttendance = ({
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+
       <Modal isOpen={openModal} size="lg">
         <Modal.Content>
           <Modal.Header alignItems={"center"}>{t("ARE_YOU_SURE")}</Modal.Header>

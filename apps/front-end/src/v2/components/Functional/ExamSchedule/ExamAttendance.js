@@ -147,9 +147,9 @@ const ExamAttendance = ({
 
               <VStack space={4}>
                 {subjects?.map((subject, index) => (
-                  <Box>
+                  <Box key={subject?.id}>
                     {learnersListData?.map((learner, index) => (
-                      <Box>
+                      <Box key={subject?.id}>
                         {subject.id === learner.subject_id &&
                           learner?.data.length > 0 && (
                             <VStack key={subject.id}>
@@ -174,7 +174,7 @@ const ExamAttendance = ({
                                     <FrontEndTypo.H2 color={"blueText.700"}>
                                       {subject?.name}
                                       {subject?.events?.[0]?.type ==
-                                        "practical" && ` - ${t("PRACTICALS")}`}
+                                        "Practical" && ` - ${t("PRACTICALS")}`}
                                     </FrontEndTypo.H2>
                                   </HStack>
                                   {
