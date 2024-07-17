@@ -41,9 +41,9 @@ const ExamSchedule = (footerLinks) => {
     setBoardList(boardList);
   }, []);
 
-  const handleSelect = (event) => {
-    setFilter({ ...filter });
-    getSubjectList(event.target.value);
+  const handleSelect = (optionId) => {
+    setFilter({ ...filter, selectedId: optionId });
+    getSubjectList(optionId);
   };
 
   const getSubjectList = async (id) => {
@@ -131,16 +131,15 @@ const ExamSchedule = (footerLinks) => {
           </AdminTypo.H5>
           <HStack space={6}>
             {boardList?.boards?.map((board) => (
-              <label key={board.id}>
-                <input
-                  colorScheme="red"
-                  type="radio"
-                  value={board.id}
-                  name="board"
-                  onChange={handleSelect}
-                />
-                {board.name}
-              </label>
+              <Radio.Group
+                key={board.id}
+                onChange={(nextValue) => handleSelect(nextValue)}
+                value={filter?.selectedId}
+              >
+                <Radio colorScheme="red" value={board.id}>
+                  {board.name}
+                </Radio>
+              </Radio.Group>
             ))}
           </HStack>
         </VStack>

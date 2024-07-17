@@ -27,9 +27,6 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   const [accessData, SetAccessData] = useState(false);
   const [AbsentModal, setAbsentModal] = useState();
   const [selectedReason, setSelectedReason] = useState("");
-  const handleChange = (event) => {
-    setSelectedReason(event.target.value);
-  };
 
   const absentReasonsList = [
     "LEARNER_DEATH",
@@ -112,9 +109,9 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   const convertPayload = (payload) => {
     // Flatten the nested payload and extract event_id and user_id
     const flattenedData = payload.flatMap((item) =>
-      item?.data?.map((user) => ({
-        event_id: item?.event_id,
-        user_id: user?.user_id,
+      item.data.map((user) => ({
+        event_id: item.event_id,
+        user_id: user.user_id,
         status:
           user?.attendances?.[0]?.status === "present"
             ? "present"
@@ -125,8 +122,8 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
     );
 
     // Construct the new format
-    const formattedPayload = flattenedData?.map((item) => ({
-      [`${item?.event_id}_${item?.user_id}`]: item?.status,
+    const formattedPayload = flattenedData.map((item) => ({
+      [`${item.event_id}_${item.user_id}`]: item.status,
     }));
     return formattedPayload;
   };
@@ -215,7 +212,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   };
 
   const generateNewPayload = (original, updated, event_id) => {
-    const newPayload = updated?.map((originalItem) => {
+    const newPayload = updated.map((originalItem) => {
       const key = Object.keys(originalItem)[0];
       if (key.startsWith(`${event_id}_`)) {
         const updatedItem = original.find(
@@ -291,7 +288,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                         <tbody>
                           {/* Assuming attendance data is fetched from an API or stored elsewhere */}
                           {/* You can replace the placeholder values with actual attendance data */}
-                          {subject?.data?.map((user, index) => {
+                          {subject?.data.map((user, index) => {
                             return (
                               <tr style={{}} key={user?.user_id}>
                                 <td>{user.user_id}</td>
@@ -446,22 +443,22 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
           </Modal.Header>
           <Modal.Body p="5">
             <VStack space="4">
-              <div role="radiogroup" aria-label="favorite number">
-                {absentReasonsList?.map((item, index) => (
-                  <div key={index} style={{ margin: "8px 0" }}>
-                    <label>
-                      <input
-                        type="radio"
-                        name="myRadioGroup"
-                        value={item}
-                        checked={selectedReason === item}
-                        onChange={handleChange}
-                      />
+              <Radio.Group
+                name="myRadioGroup"
+                accessibilityLabel="favorite number"
+                value={selectedReason}
+                onChange={(nextValue) => {
+                  setSelectedReason(nextValue);
+                }}
+              >
+                {absentReasonsList?.map((item, index) => {
+                  return (
+                    <Radio my={2} value={item}>
                       {t(item)}
-                    </label>
-                  </div>
-                ))}
-              </div>
+                    </Radio>
+                  );
+                })}
+              </Radio.Group>
             </VStack>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-between"}>

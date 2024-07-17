@@ -434,22 +434,22 @@ const MarkLearnerAttendance = ({
           </Modal.Header>
           <Modal.Body p="5">
             <VStack space="4">
-              <div role="radiogroup" aria-label="favorite number">
-                {absentReasonsList?.map((item, index) => (
-                  <div key={index} style={{ margin: "8px 0" }}>
-                    <label>
-                      <input
-                        type="radio"
-                        name="myRadioGroup"
-                        value={item}
-                        checked={selectedReason === item}
-                        onChange={handleChange}
-                      />
+              <Radio.Group
+                name="myRadioGroup"
+                accessibilityLabel="favorite number"
+                value={selectedReason}
+                onChange={(nextValue) => {
+                  setSelectedReason(nextValue);
+                }}
+              >
+                {absentReasonsList?.map((item, index) => {
+                  return (
+                    <Radio my={2} value={item}>
                       {t(item)}
-                    </label>
-                  </div>
-                ))}
-              </div>
+                    </Radio>
+                  );
+                })}
+              </Radio.Group>
             </VStack>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-between"}>

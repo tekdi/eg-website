@@ -29,18 +29,16 @@ function Shortlisted({ status, setStatus, update, data }) {
           <AdminTypo.H5 bold>
             1.{t("DID_THE_INTERVIEW_TAKE_SUCCESSFULLY")}?*
           </AdminTypo.H5>
-          <div>
-            <HStack space="128px">
-              <label>
-                <input type="radio" name="radioGroup" value="1" size="sm" />
+          <Radio.Group>
+            <HStack space={"128px"}>
+              <Radio value="1" size="sm">
                 {t("YES")}
-              </label>
-              <label>
-                <input type="radio" name="radioGroup" value="2" size="sm" />
+              </Radio>
+              <Radio value="2" size="sm">
                 {t("NO")}
-              </label>
+              </Radio>
             </HStack>
-          </div>
+          </Radio.Group>
           <Box width={"450px"} paddingTop="20px" gap={"5"}>
             <FloatingInput
               required
