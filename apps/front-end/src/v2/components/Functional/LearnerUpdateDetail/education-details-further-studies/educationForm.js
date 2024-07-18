@@ -198,8 +198,20 @@ export default function App({ onClick, id }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors({});
-    const newData = { ...formData, ...data };
+    let newData = { ...formData, ...data };
+    if (id === "root_type_of_learner") {
+      newData = {
+        ...newData,
+        last_standard_of_education: null,
+        last_standard_of_education_year: null,
+        education_10th_date: null,
+        education_10th_exam_year: null,
+        previous_school_type: null,
+        reason_of_leaving_education: null,
+      };
+    }
     setFormData(newData);
+
     if (newData?.type_of_learner === "school_dropout") {
       const {
         alreadyOpenLabel,
@@ -229,7 +241,7 @@ export default function App({ onClick, id }) {
         education_10th_exam_year,
         ...properties
       } = fixedSchema?.properties || {};
-      const required = fixedSchema?.required.filter((item) =>
+      const required = fixedSchema?.required?.filter((item) =>
         [
           "type_of_learner",
           "learning_level",
@@ -297,26 +309,6 @@ export default function App({ onClick, id }) {
     } else {
       const newErrors = {};
       setErrors(newErrors);
-    }
-    if (id === "root_type_of_learner") {
-      if (
-        newData?.last_standard_of_education ||
-        newData?.last_standard_of_education_year ||
-        newData?.previous_school_type ||
-        newData?.reason_of_leaving_education ||
-        newData?.education_10th_exam_year ||
-        newData?.education_10th_date
-      ) {
-        setFormData({
-          ...newData,
-          last_standard_of_education: undefined,
-          last_standard_of_education_year: undefined,
-          previous_school_type: undefined,
-          reason_of_leaving_education: undefined,
-          education_10th_exam_year: undefined,
-          education_10th_date: undefined,
-        });
-      }
     }
   };
 
