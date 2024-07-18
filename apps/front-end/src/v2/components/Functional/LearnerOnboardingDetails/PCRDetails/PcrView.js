@@ -34,7 +34,7 @@ export default function PcrView() {
       const result = await benificiaryRegistoryService.getBeneficiaryScores({
         id,
       });
-      setScoresData(response?.data?.users?.[0] || []);
+      setScoresData(result?.data?.users?.[0] || []);
     };
     //getScoresData();
   }, []);
