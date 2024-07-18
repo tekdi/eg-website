@@ -54,7 +54,7 @@ export default function BenificiaryBasicDetails(userTokenInfo) {
     navigate(`/beneficiary/profile/${id}`);
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
     const data = await enumRegistryService.listOfEnum();
@@ -481,9 +481,31 @@ export default function BenificiaryBasicDetails(userTokenInfo) {
             _vstack={{ space: 0 }}
             _hstack={{ borderBottomWidth: 0 }}
             title={t("CONTACT_DETAILS")}
-            label={["SELF", "ALTERNATIVE_NUMBER", "EMAIL"]}
-            item={benificiary}
-            arr={["mobile", "alternative_mobile_number", "email_id"]}
+            label={[
+              "MOBILE_NUMBER",
+              "MARK_AS_WHATSAPP_REGISTER",
+              "TYPE_OF_MOBILE_PHONE",
+              "MARK_OWNERSHIP",
+              "ALTERNATIVE_NUMBER",
+              "EMAIL",
+            ]}
+            item={{
+              ...benificiary,
+              mark_as_whatsapp_number:
+                benificiary?.core_beneficiaries?.mark_as_whatsapp_number,
+
+              device_type: benificiary?.core_beneficiaries?.device_type,
+              device_ownership:
+                benificiary?.core_beneficiaries?.device_ownership,
+            }}
+            arr={[
+              "mobile",
+              "mark_as_whatsapp_number",
+              "device_type",
+              "device_ownership",
+              "alternative_mobile_number",
+              "email_id",
+            ]}
             onEdit={(e) => navigate(`/beneficiary/edit/${id}/contact-info`)}
           />
           <CardComponent
