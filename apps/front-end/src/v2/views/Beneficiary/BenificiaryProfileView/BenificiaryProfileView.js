@@ -846,28 +846,31 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   )}
               </HStack>
 
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="1"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
+              {benificiary?.program_beneficiaries?.status ===
+                "registered_in_camp" && (
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="Center"
+                  p="3"
+                  pr="1"
                 >
-                  {t("PCR_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="#790000"
-                  size="sm"
-                  onPress={(e) => {
-                    navigate(`/beneficiary/${id}/pcrview`);
-                  }}
-                  _icon={{ size: "20", color: "#1F1D76" }}
-                />
-              </HStack>
+                  <FrontEndTypo.H3
+                    color="floatingLabelColor.500"
+                    fontWeight={"600"}
+                  >
+                    {t("PCR_DETAILS")}
+                  </FrontEndTypo.H3>
+                  <IconByName
+                    name="ArrowRightSLineIcon"
+                    color="#790000"
+                    size="sm"
+                    onPress={(e) => {
+                      navigate(`/beneficiary/${id}/pcrview`);
+                    }}
+                    _icon={{ size: "20", color: "#1F1D76" }}
+                  />
+                </HStack>
+              )}
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"
