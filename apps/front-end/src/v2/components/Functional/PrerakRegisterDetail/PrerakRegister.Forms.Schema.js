@@ -35,17 +35,17 @@ export const basicRegister = {
         {
           name: "Female",
           px: "8",
-          _icon: { size: "30", color: "white" },
+          _icon: { size: "30", activeColor: "white", color: "#D53546" },
         },
         {
           name: "Male",
           px: "8",
-          _icon: { size: "30" },
+          _icon: { size: "30", activeColor: "white", color: "#D53546" },
         },
         {
           name: "Other",
           px: "8",
-          _icon: { size: "30" },
+          _icon: { size: "30", activeColor: "white", color: "#D53546" },
         },
       ],
       enumNames: ["FEMALE", "MALE", "OTHER"],
