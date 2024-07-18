@@ -40,11 +40,10 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     setLoading(false);
   }, []);
 
-  const handleSelect = (event) => {
-    setFilter({ ...filter, date: "" });
-    getSubjectList(event.target.value);
-    learnerList(event.target.value);
-    setBoardId(event.target.value);
+  const handleSelect = (optionId) => {
+    setFilter({ ...filter, selectedId: optionId, date: "" });
+    learnerList(optionId);
+    setBoardId(optionId);
   };
 
   const learnerList = async (id) => {
@@ -123,16 +122,15 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 
           <HStack space={6}>
             {boardList?.boards?.map((board) => (
-              <label key={board.id}>
-                <input
-                  colorScheme="red"
-                  type="radio"
-                  value={board.id}
-                  checked={selectedId === board.id.toString()}
-                  onChange={handleSelect}
-                />
-                {board.name}
-              </label>
+              <Radio.Group
+                key={board.id}
+                onChange={(nextValue) => handleSelect(nextValue)}
+                value={filter?.selectedId}
+              >
+                <Radio colorScheme="red" value={board.id}>
+                  {board.name}
+                </Radio>
+              </Radio.Group>
             ))}
           </HStack>
           {filter?.selectedId && (

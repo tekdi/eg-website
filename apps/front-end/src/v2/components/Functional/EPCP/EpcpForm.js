@@ -333,15 +333,9 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   useEffect(() => {
     let observation = "EPCP";
     const fetchData = async () => {
-      const getData = await ObservationService.getSubmissionData(
-        id,
-        observation
-      );
-      setData(getData?.data?.[0]?.observation_fields);
       const getSubject = await ObservationService.subjectList(id);
-
       setSubjectList(getSubject?.data?.subjectsArray);
-      const filteredSubjects = getSubject?.data?.subjectsArray.reduce(
+      const filteredSubjects = getSubject?.data?.subjectsArray?.reduce(
         (acc, subject) => {
           acc.id.push(subject.id);
           acc.name.push(subject.name);
@@ -350,6 +344,14 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
         { id: [], name: [] }
       );
       setSubjects(filteredSubjects);
+      const obj = {
+        id: id,
+        board_id: getSubject?.data?.subjectsArray?.[0]?.board_id,
+        observation: observation,
+      };
+      const getData = await ObservationService.getSubmissionData(obj);
+
+      setData(getData?.data?.[0]?.observation_fields);
     };
 
     fetchData();
@@ -392,7 +394,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
     <Layout
       facilitator={{
         ...authUser,
-        program_faciltators: authUser?.user_roles?.[0],
+        program_faciltators: authUser,
       }}
       loading={loading}
       _appBar={{

@@ -18,7 +18,7 @@ import {
 } from "@shiksha/common-lib";
 import EnrollmentMessage from "component/EnrollmentMessage";
 import moment from "moment";
-import { VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -366,14 +366,22 @@ export default function BenificiaryEnrollment(userTokenInfo) {
               _vstack={{ space: 0 }}
               _hstack={{ borderBottomWidth: 0 }}
               title={t("ENROLLMENT_DETAILS")}
-              format={{ payment_receipt_document_id: "file" }}
+              format={{
+                payment_receipt_document_id: "file",
+                application_form: "file",
+                application_login_id: "file",
+              }}
               label={[
                 "ENROLLMENT_STATUS",
                 "BOARD_OF_ENROLLMENT",
                 stateName != "RAJASTHAN" ? "APPLICATION_ID" : "ENROLLMENT_NO",
                 "MOBILE_NUMBER",
-                "ENROLLMENT_DATE",
+                stateName != "RAJASTHAN" ? "FEES_PAID_DATE" : "ENROLLMENT_DATE",
                 "ENROLLMENT_RECIEPT",
+                ...(stateName !== "RAJASTHAN"
+                  ? ["APPLICATION_FORM", "APPLICATION_LOGIN_ID_SCREENSHOT"]
+                  : []),
+                "SUBJECTS",
               ]}
               item={{
                 ...benificiary?.program_beneficiaries,
@@ -412,6 +420,20 @@ export default function BenificiaryEnrollment(userTokenInfo) {
                 ) : (
                   "-"
                 ),
+                subjects:
+                  benificiary?.program_beneficiaries?.subjects &&
+                  benificiary.program_beneficiaries.subjects.length > 0 ? (
+                    <SubjectsList
+                      boardId={
+                        benificiary?.program_beneficiaries?.enrolled_for_board
+                      }
+                      subjectIds={JSON.parse(
+                        benificiary?.program_beneficiaries?.subjects
+                      )}
+                    />
+                  ) : (
+                    "-"
+                  ),
               }}
               {...(["not_enrolled"].includes(
                 benificiary?.program_beneficiaries?.enrollment_status
@@ -450,6 +472,10 @@ export default function BenificiaryEnrollment(userTokenInfo) {
                 "enrollment_mobile_no",
                 "enrollment_date",
                 "payment_receipt_document_id",
+                ...(stateName !== "RAJASTHAN"
+                  ? ["application_form", "application_login_id"]
+                  : []),
+                "subjects",
               ]}
               onEdit={
                 onEditFunc()
@@ -509,3 +535,29 @@ export default function BenificiaryEnrollment(userTokenInfo) {
     </Layout>
   );
 }
+
+const SubjectsList = ({ boardId, subjectIds }) => {
+  const [subjectList, setSubjectList] = useState([]);
+  useEffect(() => {
+    if (boardId) {
+      const getSubjects = async () => {
+        let data = await enumRegistryService.subjectsList(boardId);
+        setSubjectList(data.subjects || []);
+      };
+      getSubjects();
+    }
+  }, [boardId]);
+  // return subjectNames.length ? subjectNames.join(", ") : "-";
+  return (
+    <VStack pl="2">
+      {subjectList
+        .filter((subject) => subjectIds.includes(subject.subject_id.toString()))
+        .map((subject, i) => (
+          <HStack space={1} key={subject?.name}>
+            <FrontEndTypo.H3>{i + 1}.</FrontEndTypo.H3>
+            <FrontEndTypo.H3>{subject?.name}</FrontEndTypo.H3>
+          </HStack>
+        ))}
+    </VStack>
+  );
+};

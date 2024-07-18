@@ -1,13 +1,4 @@
-import {
-  VStack,
-  HStack,
-  Box,
-  Modal,
-  Alert,
-  Checkbox,
-  Button,
-  Text,
-} from "native-base";
+import { VStack, HStack, Box, Modal, Alert, Text } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,11 +11,12 @@ import {
   removeOnboardingURLData,
   removeOnboardingMobile,
   login,
-  useWindowSize,
   CustomAlert,
   Loading,
   geolocationRegistryService,
   getOptions,
+  enumRegistryService,
+  validation,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
@@ -34,16 +26,19 @@ import validator from "@rjsf/validator-ajv8";
 import {
   address_details,
   basicRegister,
+  contact_details,
   verifyOTP,
 } from "./PrerakRegister.Forms.Schema.js";
 import {
   widgets,
   templates,
+  transformErrors,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import { getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
 import Loader from "v2/components/Static/Loader/Loader.js";
 import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
+import moment from "moment";
 
 export default function PrerakRegisterDetail({
   t,
@@ -107,7 +102,7 @@ export default function PrerakRegisterDetail({
   const [isLoginShow, setIsLoginShow] = useState(false);
   const [isUserExistModalText, setIsUserExistModalText] = useState("");
   const [isUserExistStatus, setIsUserExistStatus] = useState("");
-  const [width, height] = useWindowSize();
+  const [yearsRange, setYearsRange] = useState([1980, 2030]);
 
   // Consent modals
   const [isConsentModal, setIsConsentModal] = useState();
@@ -116,11 +111,9 @@ export default function PrerakRegisterDetail({
   const [noChecked, setNoChecked] = useState(false);
 
   //form variable
-  const [lang, setLang] = useState(getLanguage());
+  const [lang] = useState(getLanguage());
   const formRef = useRef();
   const [errors, setErrors] = useState({});
-  const [page, setPage] = useState();
-  const [pages, setPages] = useState();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
@@ -128,11 +121,46 @@ export default function PrerakRegisterDetail({
   // Toggle consent state based on user agreement
 
   useEffect(() => {
-    setErrors({});
     if (currentForm == 0) {
       setSchema(basicRegister);
       setFormData(registerFormData);
-    } else if (currentForm == 1) {
+      let minYear = moment().subtract("years", 50);
+      let maxYear = moment().subtract("years", 18);
+      setYearsRange([minYear.year(), maxYear.year()]);
+    } else if (currentForm === 1) {
+      let newSchema = contact_details;
+      try {
+        if (contact_details?.properties?.marital_status) {
+          let fetchData = async () => {
+            const ListOfEnum = await enumRegistryService.listOfEnum();
+            newSchema = getOptions(newSchema, {
+              key: "device_type",
+              arr: ListOfEnum?.data?.MOBILE_TYPE,
+              title: "title",
+              value: "value",
+            });
+            newSchema = getOptions(newSchema, {
+              key: "social_category",
+              arr: ListOfEnum?.data?.FACILITATOR_SOCIAL_STATUS,
+              title: "title",
+              value: "value",
+            });
+            newSchema = getOptions(newSchema, {
+              key: "marital_status",
+              arr: ListOfEnum?.data?.MARITAL_STATUS,
+              title: "title",
+              value: "value",
+            });
+            setLoading(false);
+            setSchema(newSchema);
+            setFormData(registerFormData);
+          };
+          fetchData();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (currentForm == 2) {
       const fetchData = async () => {
         let newSchema = address_details;
         try {
@@ -179,6 +207,7 @@ export default function PrerakRegisterDetail({
       setFormData({ verify_mobile: registerFormData?.mobile });
     }
   }, [currentForm]);
+
   const uiSchema = {
     labelName: {
       "ui:widget": "LabelNameWidget",
@@ -194,6 +223,15 @@ export default function PrerakRegisterDetail({
     },
     labelAddress: {
       "ui:widget": "LabelAddressWidget",
+    },
+    dob: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+        format: "DMY",
+      },
     },
   };
   const validate = (data, key) => {
@@ -227,6 +265,15 @@ export default function PrerakRegisterDetail({
           err?.[key]?.addError(isValid[key]);
       }
     });
+    if (data?.dob) {
+      validation({
+        data: data?.dob,
+        key: "dob",
+        errors: err,
+        message: `${t("MINIMUM_AGE_18_YEAR_OLD")}`,
+        type: "age-18",
+      });
+    }
     return err;
   };
 
@@ -395,6 +442,14 @@ export default function PrerakRegisterDetail({
   };
 
   const onSubmit = async (data) => {
+    if (
+      Object.keys(errors || {}).length > 0 &&
+      Object.keys(errors || {}).filter((e) =>
+        Object.keys(schema.properties).includes(e)
+      ).length > 0
+    ) {
+      return false;
+    }
     let newFormData = data.formData;
     if (currentForm == 0) {
       setIsLoading(true);
@@ -405,14 +460,16 @@ export default function PrerakRegisterDetail({
 
       setIsLoading(false);
     } else if (currentForm == 1) {
+      setCurrentForm(2);
+    } else if (currentForm == 2) {
       const fetchData = async () => {
         await sendAndVerifyOtp(schema, {
           mobile: isConsentModal?.mobile,
         });
-        setCurrentForm(2);
+        setCurrentForm(3);
       };
       fetchData();
-    } else if (currentForm == 2) {
+    } else if (currentForm == 3) {
       setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
       if (!isExist) {
@@ -437,6 +494,13 @@ export default function PrerakRegisterDetail({
               },
             };
             setErrors(newErrors);
+          } else if (createData?.validate_result?.status === false) {
+            const newErrors = {
+              verify_mobile: {
+                __errors: [createData?.validate_result?.message],
+              },
+            };
+            setErrors(newErrors);
           } else {
             let createDataNew = createData?.data;
             if (createDataNew?.username && createDataNew?.password) {
@@ -457,27 +521,12 @@ export default function PrerakRegisterDetail({
       setIsLoading(false);
     }
   };
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (currentForm == 0 || currentForm == 1) {
+    if (currentForm < 3) {
       setRegisterFormData(newData);
     }
     if (id === "root_mobile") {
@@ -540,8 +589,10 @@ export default function PrerakRegisterDetail({
     if (result?.data) {
       let response_isUserExist = result?.data;
       if (
-        response_isUserExist?.program_faciltators &&
-        response_isUserExist?.program_faciltators.length > 0
+        (response_isUserExist?.program_faciltators &&
+          response_isUserExist?.program_faciltators.length > 0) ||
+        (response_isUserExist?.program_users &&
+          response_isUserExist?.program_users.length > 0)
         //check learners duplicate entry for mobile number of prerak
         /*||
         (response_isUserExist?.program_beneficiaries &&
@@ -617,6 +668,69 @@ export default function PrerakRegisterDetail({
             }
           }
         }
+
+        if (response_isUserExist?.program_users?.length > 0) {
+          for (
+            let i = 0;
+            i < response_isUserExist?.program_users.length.length;
+            i++
+          ) {
+            let program_users = response_isUserExist?.program_users.length[i];
+            if (program_users?.program_id == programData?.program_id) {
+              if (
+                program_users?.academic_year_id == cohortData?.academic_year_id
+              ) {
+                setIsUserExistStatus("EXIST_LOGIN");
+                setIsUserExistModalText(
+                  t("EXIST_LOGIN")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)
+                );
+                setIsLoginShow(true);
+                break;
+              } else if (
+                program_users?.academic_year_id != cohortData?.academic_year_id
+              ) {
+                const academic_year =
+                  await facilitatorRegistryService.getCohort({
+                    cohortId: program_users?.academic_year_id,
+                  });
+                const program_data =
+                  await facilitatorRegistryService.getProgram({
+                    programId: program_users?.program_id,
+                  });
+                setIsUserExistStatus("REGISTER_EXIST");
+                setIsUserExistModalText(
+                  t("REGISTER_EXIST")
+                    .replace("{{state}}", programData?.program_name)
+                    .replace("{{year}}", cohortData?.academic_year_name)
+                    .replace("{{old_state}}", program_data[0]?.program_name)
+                    .replace("{{old_year}}", academic_year?.academic_year_name)
+                );
+                setOnboardingMobile(mobile);
+                setIsLoginShow(true);
+              }
+            } else {
+              const academic_year = await facilitatorRegistryService.getCohort({
+                cohortId: program_users?.academic_year_id,
+              });
+              const program_data = await facilitatorRegistryService.getProgram({
+                programId: program_users?.program_id,
+              });
+              setIsUserExistStatus("DONT_ALLOW");
+              setIsUserExistModalText(
+                t("DONT_ALLOW")
+                  .replace("{{state}}", programData?.program_name)
+                  .replace("{{year}}", cohortData?.academic_year_name)
+                  .replace("{{old_state}}", program_data[0]?.program_name)
+                  .replace("{{old_year}}", academic_year?.academic_year_name)
+              );
+              setIsLoginShow(false);
+              break;
+            }
+          }
+        }
+
         //check learners duplicate entry for mobile number of prerak
         /*else if (response_isUserExist?.program_beneficiaries.length > 0) {
           setIsUserExistStatus("DONT_ALLOW_MOBILE");
@@ -646,9 +760,9 @@ export default function PrerakRegisterDetail({
   const sendAndVerifyOtp = async (schema, { mobile, otp, hash }) => {
     if (otp) {
       const bodyData = {
-        mobile: mobile.toString(),
+        mobile: mobile?.toString(),
         reason: "verify_mobile",
-        otp: otp.toString(),
+        otp: otp?.toString(),
         hash: hash,
       };
       const verifyotp = await authRegistryService.verifyOtp(bodyData);
@@ -680,6 +794,7 @@ export default function PrerakRegisterDetail({
     // console.log(otpData)
     return otpData;
   };
+
   const formSubmitCreate = async () => {
     let first_name = registerFormData?.first_name
       ? typeof registerFormData.first_name === "string"
@@ -706,13 +821,19 @@ export default function PrerakRegisterDetail({
     let village = registerFormData?.village;
     let grampanchayat = registerFormData?.grampanchayat || "";
     let pincode = registerFormData?.pincode || "";
+    let dob = registerFormData?.dob;
+    let gender = registerFormData?.gender;
+    let device_type = registerFormData?.device_type;
+    let device_ownership = registerFormData?.device_ownership;
+    let marital_status = registerFormData?.marital_status;
+    let social_category = registerFormData?.social_category;
 
     const result = await facilitatorRegistryService.registerV2(
       {
         first_name: first_name,
         middle_name: middle_name,
         last_name: last_name,
-        mobile: registerFormData?.mobile.toString(),
+        mobile: registerFormData?.mobile?.toString(),
         lang: lang,
         state: state,
         district: district,
@@ -720,8 +841,14 @@ export default function PrerakRegisterDetail({
         village: village,
         grampanchayat: grampanchayat,
         pincode: pincode,
+        dob: dob,
+        gender: gender,
+        device_type: device_type,
+        device_ownership: device_ownership,
+        marital_status: marital_status,
+        social_category: social_category,
       },
-      ip?.id.toString(),
+      ip?.id?.toString(),
       programData?.program_id,
       cohortData?.academic_year_id
     );
@@ -795,9 +922,8 @@ export default function PrerakRegisterDetail({
               extraErrors={errors}
               showErrorList={false}
               noHtml5Validate={true}
-              widgets={widgets}
               {...{
-                //widgets,
+                widgets,
                 templates,
                 validator,
                 schema: schema,
@@ -805,12 +931,12 @@ export default function PrerakRegisterDetail({
                 formData,
                 customValidate,
                 onChange,
-                //onError,
+                // onError,
                 onSubmit,
-                transformErrors,
+                transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
             >
-              {currentForm === 2 ? (
+              {currentForm === 3 ? (
                 <FrontEndTypo.Primarybutton
                   width="60%"
                   mx="auto"
@@ -838,7 +964,9 @@ export default function PrerakRegisterDetail({
                   >
                     {currentForm == 0
                       ? t("CONSENT_TO_SHARE_INFORMATION")
-                      : currentForm == 1 && t("SEND_OTP")}
+                      : currentForm == 1
+                      ? t("NEXT")
+                      : t("SEND_OTP")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               )}

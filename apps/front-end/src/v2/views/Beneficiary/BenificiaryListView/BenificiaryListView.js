@@ -18,7 +18,15 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
-import { Box, HStack, Input, Pressable, Select, VStack } from "native-base";
+import {
+  Box,
+  HStack,
+  Input,
+  Pressable,
+  Select,
+  VStack,
+  Spinner,
+} from "native-base";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -552,7 +560,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   useEffect(async () => {
     const { search } = filter;
     setSearch(search);
-    setLoadingList(true);
+    if (filter?.page < 2) {
+      setLoadingList(true);
+    }
     const { currentPage, totalPages, error, ...result } =
       await benificiaryRegistoryService.getBeneficiariesList(filter);
     if (!error) {
@@ -680,6 +690,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           </Box>
         </HStack>
       </VStack>
+
       {!loadingList ? (
         <InfiniteScroll
           dataLength={data?.length}
@@ -691,7 +702,13 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           }
           hasMore={hasMore}
           height={loadingHeight}
-          loader={<Loading height="100" />}
+          loader={
+            <Spinner
+              accessibilityLabel="Loading posts"
+              color="bgRed.500"
+              size="lg"
+            />
+          }
           endMessage={
             <FrontEndTypo.H3
               fontWeight={"600"}
@@ -709,8 +726,13 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           <List data={data} />
         </InfiniteScroll>
       ) : (
-        <Loading height={loadingHeight} />
+        <Spinner
+          accessibilityLabel="Loading posts"
+          color="bgRed.500"
+          size="lg"
+        />
       )}
+
       <HStack
         ref={refButton}
         width={"100%"}
