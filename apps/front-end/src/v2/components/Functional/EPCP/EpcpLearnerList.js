@@ -57,8 +57,8 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const mergingData = (flattenedList, report) => {
     const mergedArray = flattenedList?.map((user) => {
       const userData = { ...user };
-      const responses = report.reduce((acc, observation) => {
-        const fieldResponse = observation.field_responses.find(
+      const responses = report?.reduce((acc, observation) => {
+        const fieldResponse = observation.field_responses?.find(
           (response) => response.context_id === user.user_id
         );
         if (fieldResponse) {
@@ -137,7 +137,7 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     <Layout
       facilitator={{
         ...authUser,
-        program_faciltators: authUser?.user_roles?.[0],
+        program_faciltators: authUser,
       }}
       loading={loading}
       _appBar={{
