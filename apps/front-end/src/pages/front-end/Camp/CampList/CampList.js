@@ -105,9 +105,9 @@ export default function List({ userTokenInfo, stateName }) {
   const mergingData = (flattenedList, report) => {
     const mergedArray = flattenedList?.map((user) => {
       const userData = { ...user };
-      const responses = report.reduce((acc, observation) => {
-        const fieldResponse = observation.field_responses.find(
-          (response) => response.context_id === user.user_id
+      const responses = report?.reduce((acc, observation) => {
+        const fieldResponse = observation?.field_responses?.find(
+          (response) => response.context_id === user?.user_id
         );
         if (fieldResponse) {
           acc.push({
@@ -124,11 +124,11 @@ export default function List({ userTokenInfo, stateName }) {
     setLeanerList(data);
   };
   const getStatus = (responses) => {
-    const response1 = responses.find((response) => response.field_id === 1);
-    const response2 = responses.find((response) => response.field_id === 2);
-    const response3 = responses.find((response) => response.field_id === 3);
-    const response5 = responses.find((response) => response.field_id === 5);
-    const response7 = responses.find((response) => response.field_id === 7);
+    const response1 = responses?.find((response) => response.field_id === 1);
+    const response2 = responses?.find((response) => response.field_id === 2);
+    const response3 = responses?.find((response) => response.field_id === 3);
+    const response5 = responses?.find((response) => response.field_id === 5);
+    const response7 = responses?.find((response) => response.field_id === 7);
     if (!response1 || !response2 || !response3 || !response5 || !response7) {
       return t("NOT_ENTERED");
     } else if (
