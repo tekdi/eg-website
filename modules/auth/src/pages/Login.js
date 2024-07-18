@@ -27,8 +27,6 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native-web";
-// import Motif_EG from "../../../assets/Images/Logo/Motif_EG.svg";
-// import Motif_EG from "../../../auth/public/";
 
 const styles = {
   box: {
