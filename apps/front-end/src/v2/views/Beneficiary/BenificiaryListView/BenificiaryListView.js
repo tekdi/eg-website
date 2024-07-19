@@ -3,7 +3,6 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  Loading,
   SelectStyle,
   arrList,
   benificiaryRegistoryService,
