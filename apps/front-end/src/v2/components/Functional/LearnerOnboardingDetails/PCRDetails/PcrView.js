@@ -17,6 +17,7 @@ export default function PcrView() {
   const { id } = useParams();
   const [data, setData] = useState({});
   const [enumOptions, setEnumOptions] = useState({});
+  const [scoresData, setScoresData] = useState([]);
 
   useEffect(async () => {
     const result = await benificiaryRegistoryService.getPCRScores({ id });
@@ -26,6 +27,16 @@ export default function PcrView() {
       ? result.data.filter((item) => item.user_id == id)
       : [];
     setData(userData[0]);
+  }, []);
+
+  useEffect(() => {
+    const getScoresData = async () => {
+      const result = await benificiaryRegistoryService.getBeneficiaryScores({
+        id,
+      });
+      setScoresData(result?.data?.users?.[0] || []);
+    };
+    //getScoresData();
   }, []);
 
   return (
