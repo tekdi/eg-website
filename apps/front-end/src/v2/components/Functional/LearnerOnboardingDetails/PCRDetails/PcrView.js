@@ -20,6 +20,7 @@ export default function PcrView() {
   useEffect(() => {
     const getScoresData = async () => {
       setLoading(true);
+      // add try catch
       try {
         const result = await benificiaryRegistoryService.getBeneficiaryScores({
           id,
