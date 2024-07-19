@@ -179,6 +179,7 @@ export default {
         "reason_of_leaving_education",
         "previous_school_type",
         "learning_level",
+        "education_10th_date",
       ],
       properties: {
         type_of_learner: {
