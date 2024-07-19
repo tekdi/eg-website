@@ -144,6 +144,14 @@ export default function Login() {
       getRefAppBar={(e) => setRef(e)}
     >
       <VStack bg="bgGreyColor.200" minH={height - ref?.clientHeight} space="1">
+        {/* <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
+          {t("LOGIN")}
+        </FrontEndTypo.H1> */}
+        {/* {width >= 676 && width <= 1080 && (
+          <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" mt="6">
+            {t("LOGIN")}
+          </FrontEndTypo.H1>
+        )} */}
         {isUserRegisterExist && (
           <Box py={6} px={4} mb={5}>
             <Alert
@@ -167,22 +175,37 @@ export default function Login() {
             </Alert>
           </Box>
         )}
+        <HStack></HStack>
+        {width > 676 && (
+          <Image
+            alignSelf="flex-end"
+            // alignSelf="left"
+            source={{
+              uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
+            }}
+            alt="Educate Girls"
+            resizeMode="contain"
+            size={200}
+          />
+        )}
+
         <VStack>
-          <HStack alignSelf="flex-end">
+          {width >= 360 && width < 676 && (
             <Image
-              alignSelf="left"
+              alignSelf="flex-end"
               source={{
                 uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
               }}
               alt="Educate Girls"
               resizeMode="contain"
-              size={200} // Adjust size as needed
+              size={200}
             />
-          </HStack>
-          <HStack mt="-61%">
+          )}
+          <HStack mt="-50%">
             {console.log("Current width:", width)}
-            {width >= 360 && width <= 390 && (
+            {width > 359 && width < 390 && (
               <Image
+                alignSelf="flex-end"
                 source={{
                   uri: `/images/logos/Motifs/360.svg`,
                 }}
@@ -192,8 +215,9 @@ export default function Login() {
               />
             )}
 
-            {width > 390 && width <= 393 && (
+            {width > 390 && width < 393 && (
               <Image
+                alignSelf="flex-end"
                 source={{
                   uri: `/images/logos/Motifs/390.svg`,
                 }}
@@ -202,8 +226,9 @@ export default function Login() {
                 size={390}
               />
             )}
-            {width > 393 && width <= 412 && (
+            {width > 393 && width < 412 && (
               <Image
+                alignSelf="flex-end"
                 source={{
                   uri: `/images/logos/Motifs/393.svg`,
                 }}
@@ -212,8 +237,9 @@ export default function Login() {
                 size={393}
               />
             )}
-            {width > 412 && width <= 676 && (
+            {width > 412 && width < 676 && (
               <Image
+                alignSelf="flex-end"
                 source={{
                   uri: `/images/logos/Motifs/412.svg`,
                 }}
@@ -226,7 +252,7 @@ export default function Login() {
         </VStack>
 
         <VStack space={5} p="5">
-          <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" mt="-22%">
+          <FrontEndTypo.H1 color="textMaroonColor.400" ml="6">
             {t("LOGIN")}
           </FrontEndTypo.H1>
           <CustomAlert
