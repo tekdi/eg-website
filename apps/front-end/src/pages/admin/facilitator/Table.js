@@ -233,7 +233,6 @@ function Table({
           ...tableCustomStyles,
           rows: {
             style: {
-              minHeight: "20px", // override the row height
               cursor: "pointer",
             },
           },
