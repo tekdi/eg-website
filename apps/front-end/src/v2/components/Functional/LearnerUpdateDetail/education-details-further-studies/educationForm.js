@@ -116,7 +116,6 @@ export default function App({ onClick, id }) {
       title: "title",
       value: "value",
     });
-    console.log(lastYear);
     newSchema = getOptions(newSchema, {
       key: "last_standard_of_education_year",
       arr: lastYear,

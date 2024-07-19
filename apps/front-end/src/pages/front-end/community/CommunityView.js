@@ -76,9 +76,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
     const getData = await benificiaryRegistoryService.getCommunityReferences({
       context: "community.user",
     });
-    const {
-      data: { community_response },
-    } = getData ?? {};
+    const community_response = getData?.data?.community_response;
     setData(community_response);
   }, []);
 
