@@ -20,12 +20,17 @@ export default function PcrView() {
   useEffect(() => {
     const getScoresData = async () => {
       setLoading(true);
-      const result = await benificiaryRegistoryService.getBeneficiaryScores({
-        id,
-      });
-      const groupedData = getAllScores(result?.data);
-      setAllScoresDetails(groupedData);
-      setLoading(false);
+      try {
+        const result = await benificiaryRegistoryService.getBeneficiaryScores({
+          id,
+        });
+        const groupedData = getAllScores(result?.data);
+        setAllScoresDetails(groupedData);
+      } catch (error) {
+        console.error("Failed to fetch scores data", error);
+      } finally {
+        setLoading(false);
+      }
     };
     getScoresData();
   }, []);
