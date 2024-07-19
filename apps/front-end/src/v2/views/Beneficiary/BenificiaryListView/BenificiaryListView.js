@@ -294,6 +294,24 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
     window ? window.navigator.onLine : false
   );
 
+  const state_name =
+    JSON.parse(localStorage.getItem("program"))?.state_name || "";
+
+  const academic_year_name =
+    JSON.parse(localStorage.getItem("academic_year"))?.academic_year_name || "";
+
+  const checkStateAndYear = (state_name, academic_year_name) => {
+    if (
+      state_name === "RAJASTHAN" &&
+      academic_year_name.includes("2023-2024")
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
+
   const saveDataToIndexedDB = async () => {
     const obj = {
       edit_req_for_context: "users",
@@ -732,37 +750,39 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
         />
       )}
 
-      <HStack
-        ref={refButton}
-        width={"100%"}
-        bg={"white"}
-        flex={1}
-        safeAreaTop
-        position="fixed"
-        bottom="70px"
-        zIndex={"9999999"}
-      >
-        <FrontEndTypo.Secondarybutton
-          onPress={(e) => {
-            if (
-              [
-                "pragati_mobilizer",
-                "selected_prerak",
-                "selected_for_training",
-                "selected_for_onboarding",
-              ].includes(facilitator.status)
-            ) {
-              navigate(`/beneficiary`);
-            } else {
-              navigate("/beneficiary");
-            }
-          }}
-          mx="auto"
-          my="2"
+      {!hideAddLearner && (
+        <HStack
+          ref={refButton}
+          width={"100%"}
+          bg={"white"}
+          flex={1}
+          safeAreaTop
+          position="fixed"
+          bottom="70px"
+          zIndex={"9999999"}
         >
-          {t("ADD_MORE_AG")}
-        </FrontEndTypo.Secondarybutton>
-      </HStack>
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => {
+              if (
+                [
+                  "pragati_mobilizer",
+                  "selected_prerak",
+                  "selected_for_training",
+                  "selected_for_onboarding",
+                ].includes(facilitator.status)
+              ) {
+                navigate(`/beneficiary`);
+              } else {
+                navigate("/beneficiary");
+              }
+            }}
+            mx="auto"
+            my="2"
+          >
+            {t("ADD_MORE_AG")}
+          </FrontEndTypo.Secondarybutton>
+        </HStack>
+      )}
     </Layout>
   );
 }

@@ -17,6 +17,7 @@ const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
   const [reasonData, setReasonData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [reason, setReason] = React.useState();
+  const [campDetails, setCampDetails] = React.useState({});
   const navigate = useNavigate();
 
   const enumData = React.useCallback(async () => {
@@ -31,6 +32,22 @@ const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
   }, []);
 
   React.useEffect(() => {
+    const getCampDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await campService.getCampDetails({ id });
+        setCampDetails(response?.data);
+      } catch (error) {
+        console.log("Error in fetching camp details", error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getCampDetails();
+  }, []);
+
+  React.useEffect(() => {
     enumData();
   }, [enumData]);
 
@@ -39,12 +56,17 @@ const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
       camp_id: id,
       camp_day_happening: "no",
       camp_day_not_happening_reason: reason,
+      camp_type: campDetails?.type,
     };
-    if (reason) {
+    setLoading(true);
+    try {
       await campService.campActivity(payLoad);
       navigate(`/camps`);
-    } else {
+    } catch (error) {
       setError(true);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   }, [id, reason, navigate]);
 
