@@ -29,8 +29,8 @@ import moment from "moment";
 import PropTypes from "prop-types";
 
 const checkboxIcons = [
-  { name: "CloseCircleLineIcon", activeColor: "red.500" },
-  { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
+  { name: "CloseCircleLineIcon" },
+  { name: "CheckboxCircleLineIcon" },
 ];
 
 export default function EnrollmentReceiptView({ footerLinks }) {
@@ -300,7 +300,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         _hstack: { space: "6" },
                         _subHstack: {
                           justifyContent: "space-between",
-                          width: "120px",
                         },
                         _pressable: {
                           p: 0,
@@ -365,7 +364,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         _hstack: { space: "4" },
                         _subHstack: {
                           justifyContent: "space-between",
-                          width: "120px",
                         },
                         _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
                       }}

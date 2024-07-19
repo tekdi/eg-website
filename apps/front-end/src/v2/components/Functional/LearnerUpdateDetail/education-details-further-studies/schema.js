@@ -18,7 +18,8 @@ export default {
       properties: {
         type_of_learner: {
           type: "string",
-          label: "TYPE_OF_LEARNER",
+          title: "TYPE_OF_LEARNER",
+          description: "TYPE_OF_LEARNER",
           format: "select",
         },
         alreadyOpenLabel: {
@@ -41,7 +42,7 @@ export default {
         },
         reason_of_leaving_education: {
           type: "string",
-          title: "REASON_FOR_BEING_DEPRIVED_OF_EDUCATION",
+          title: "REASON",
           format: "select",
         },
 
@@ -59,7 +60,7 @@ export default {
         learning_level: {
           label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
           type: "string",
-          format: "CustomR",
+          format: "RadioBtn",
         },
 
         edit_page_type: {

@@ -165,19 +165,18 @@ export function ChipStatus({
     <Chip
       px="4"
       bg={color}
-      label={
-        <>
-          <>{prefix}</>
-          {status ? newStatus : ""}
-          <>{sufix}</>
-        </>
-      }
       is_duplicate={is_duplicate}
       is_deactivated={is_deactivated}
       _text={{ color: textColor, textTransform: "capitalize" }}
       rounded="sm"
       {...props}
-    />
+    >
+      <>
+        <>{prefix}</>
+        {status ? newStatus : ""}
+        <>{sufix}</>
+      </>
+    </Chip>
   );
 }
 ChipStatus.propTypes = {

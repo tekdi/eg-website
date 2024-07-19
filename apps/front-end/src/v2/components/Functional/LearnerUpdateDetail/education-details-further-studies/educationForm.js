@@ -5,7 +5,6 @@ import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
 import {
   Layout,
-  t,
   BodyMedium,
   benificiaryRegistoryService,
   AgRegistryService,
@@ -27,6 +26,7 @@ import {
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 // App
 export default function App({ onClick, id }) {
@@ -38,10 +38,8 @@ export default function App({ onClick, id }) {
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState();
-  const [yearsRange, setYearsRange] = useState([
-    moment().year() - 30,
-    moment().year(),
-  ]);
+  const [yearsRange, setYearsRange] = useState([]);
+  const { t } = useTranslation();
 
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const navigate = useNavigate();
@@ -51,48 +49,6 @@ export default function App({ onClick, id }) {
   }
   const [fields, setFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
-
-  useEffect(async () => {
-    const qData = await benificiaryRegistoryService.getOne(userId);
-    let last_standard_of_education =
-      qData?.result?.core_beneficiaries?.last_standard_of_education;
-    let last_standard_of_education_year =
-      qData?.result?.core_beneficiaries?.last_standard_of_education_year;
-    let reason_of_leaving_education =
-      qData?.result?.core_beneficiaries?.reason_of_leaving_education;
-    let type_of_learner = qData?.result?.core_beneficiaries?.type_of_learner;
-    let previous_school_type =
-      qData?.result?.core_beneficiaries?.previous_school_type;
-    let learning_level = qData?.result?.program_beneficiaries?.learning_level;
-    let education_10th_date =
-      qData?.result?.core_beneficiaries?.education_10th_date;
-    let education_10th_exam_year =
-      qData?.result?.core_beneficiaries?.education_10th_exam_year;
-
-    setFormData({
-      ...formData,
-      type_of_learner: type_of_learner,
-      reason_of_leaving_education: reason_of_leaving_education,
-      last_standard_of_education_year: last_standard_of_education_year,
-      last_standard_of_education: last_standard_of_education,
-      previous_school_type: previous_school_type,
-      learning_level: learning_level,
-      education_10th_date: education_10th_date,
-      education_10th_exam_year: education_10th_exam_year,
-    });
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
-    const result = await facilitatorRegistryService.getEditRequests(obj);
-    let field;
-    const parseField = result?.data[0]?.fields;
-    if (parseField && typeof parseField === "string") {
-      field = JSON.parse(parseField);
-    }
-    setFields(field || []);
-  }, []);
-
   const uiSchema = {
     alreadyOpenLabel: {
       "ui:widget": "AlreadyOpenLabelWidget",
@@ -107,21 +63,59 @@ export default function App({ onClick, id }) {
       },
     },
   };
-
   useEffect(async () => {
+    const qData = await benificiaryRegistoryService.getOne(userId);
+    setYearsRange([moment(qData?.result?.dob).year(), moment().year()]);
+    let last_standard_of_education =
+      qData?.result?.core_beneficiaries?.last_standard_of_education;
+    let last_standard_of_education_year =
+      qData?.result?.core_beneficiaries?.last_standard_of_education_year;
+    let reason_of_leaving_education =
+      qData?.result?.core_beneficiaries?.reason_of_leaving_education;
+    let type_of_learner = qData?.result?.core_beneficiaries?.type_of_learner;
+    let previous_school_type =
+      qData?.result?.core_beneficiaries?.previous_school_type;
+    let learning_level = qData?.result?.program_beneficiaries?.learning_level;
+
+    setFormData({
+      ...formData,
+      type_of_learner: type_of_learner,
+      reason_of_leaving_education: reason_of_leaving_education,
+      last_standard_of_education_year: last_standard_of_education_year,
+      last_standard_of_education: last_standard_of_education,
+      previous_school_type: previous_school_type,
+      learning_level: learning_level,
+      education_10th_date:
+        qData?.result?.core_beneficiaries?.education_10th_date,
+      education_10th_exam_year:
+        qData?.result?.core_beneficiaries?.education_10th_exam_year,
+    });
+    const result = await facilitatorRegistryService.getEditRequests({
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    });
+
+    let field;
+    const parseField = result?.data[0]?.fields;
+    if (parseField && typeof parseField === "string") {
+      field = JSON.parse(parseField);
+    }
+    setFields(field || []);
+
     const ListOfEnum = await enumRegistryService.listOfEnum();
-    const lastYear = await benificiaryRegistoryService.lastYear();
+    const lastYear = await benificiaryRegistoryService.lastYear({
+      dob: qData?.result?.dob,
+    });
     const propertiesNew = schema1.properties;
     const newSteps = Object.keys(propertiesNew);
+    setPage(newSteps[0]);
     let newSchema = propertiesNew[newSteps[0]];
-
     newSchema = getOptions(newSchema, {
       key: "type_of_learner",
       arr: ListOfEnum?.data?.TYPE_OF_LEARNER,
       title: "title",
       value: "value",
     });
-
     newSchema = getOptions(newSchema, {
       key: "last_standard_of_education_year",
       arr: lastYear,
@@ -162,8 +156,7 @@ export default function App({ onClick, id }) {
       title: t("title"),
       value: "value",
     });
-
-    setPage(newSteps[0]);
+    setFixedSchema(newSchema);
     const {
       alreadyOpenLabel,
       education_10th_date,
@@ -171,7 +164,6 @@ export default function App({ onClick, id }) {
       ...properties
     } = newSchema?.properties || {};
     setSchemaData({ ...newSchema, properties });
-    setFixedSchema(newSchema);
   }, []);
 
   const onPressBackButton = async () => {
@@ -198,8 +190,20 @@ export default function App({ onClick, id }) {
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors({});
-    const newData = { ...formData, ...data };
+    let newData = { ...formData, ...data };
+    if (id === "root_type_of_learner") {
+      newData = {
+        ...newData,
+        last_standard_of_education: null,
+        last_standard_of_education_year: null,
+        education_10th_date: null,
+        education_10th_exam_year: null,
+        previous_school_type: null,
+        reason_of_leaving_education: null,
+      };
+    }
     setFormData(newData);
+
     if (newData?.type_of_learner === "school_dropout") {
       const {
         alreadyOpenLabel,
@@ -229,14 +233,13 @@ export default function App({ onClick, id }) {
         education_10th_exam_year,
         ...properties
       } = fixedSchema?.properties || {};
-      const required = fixedSchema?.required.filter((item) =>
+      const required = fixedSchema?.required?.filter((item) =>
         [
           "type_of_learner",
           "learning_level",
           "reason_of_leaving_education",
         ].includes(item)
       );
-
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
       const { education_10th_date, education_10th_exam_year, ...properties } =
@@ -297,26 +300,6 @@ export default function App({ onClick, id }) {
     } else {
       const newErrors = {};
       setErrors(newErrors);
-    }
-    if (id === "root_type_of_learner") {
-      if (
-        newData?.last_standard_of_education ||
-        newData?.last_standard_of_education_year ||
-        newData?.previous_school_type ||
-        newData?.reason_of_leaving_education ||
-        newData?.education_10th_exam_year ||
-        newData?.education_10th_date
-      ) {
-        setFormData({
-          ...newData,
-          last_standard_of_education: undefined,
-          last_standard_of_education_year: undefined,
-          previous_school_type: undefined,
-          reason_of_leaving_education: undefined,
-          education_10th_exam_year: undefined,
-          education_10th_date: undefined,
-        });
-      }
     }
   };
 

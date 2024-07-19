@@ -6,23 +6,9 @@ import {
   useWindowSize,
   CardComponent,
   IconByName,
-  PoAdminLayout,
-  cohortService,
-  enumRegistryService,
-  getSelectedProgramId,
   organisationService,
-  setSelectedProgramId,
 } from "@shiksha/common-lib";
-import {
-  Alert,
-  HStack,
-  Progress,
-  Radio,
-  ScrollView,
-  Select,
-  Stack,
-  VStack,
-} from "native-base";
+import { Alert, HStack, ScrollView, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import TextBox from "./TextBox";
@@ -41,6 +27,22 @@ function ManualExamResult(footerLinks) {
   const [error, setError] = useState();
   const [subjectCodeError, setSubjectCodeError] = useState(false);
 
+  // Update the subjects if practical is present or not for that subject.
+  const updateSubjects = (subjects) => {
+    return subjects.map((subject) => {
+      if (subject.practical_marks === null) {
+        return {
+          ...subject,
+          marks: {
+            practical: "-",
+          },
+        };
+      } else {
+        return subject;
+      }
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const obj = {
@@ -48,7 +50,8 @@ function ManualExamResult(footerLinks) {
       };
       const data = await organisationService.LearnerSujectList(obj);
       setData(data?.data);
-      setSubjects(data?.data?.subjectsArray || []);
+      const updatedData = updateSubjects(data?.data?.subjectsArray || []);
+      setSubjects(updatedData || []);
       data?.data?.subjectsArray?.map((item) => {
         if (!item?.code) {
           setSubjectCodeError(true);
@@ -58,35 +61,34 @@ function ManualExamResult(footerLinks) {
 
     fetchData();
   }, []);
-  const handleMarksChange = (index, type, newMarks) => {
+  const handleMarksChange = (index, type, newMarks, maxValue) => {
     const updatedSubjects = [...subjects];
     const subject = { ...updatedSubjects[index] };
-
-    // If marks object doesn't exist, create it
     if (!subject.marks) {
       subject.marks = {};
     }
 
-    // Update the marks based on the type
-    subject.marks[type] = newMarks;
+    // Ensure the newMarks does not exceed the maximum value
+    const numericMarks = parseInt(newMarks, 10);
+    if (isNaN(numericMarks) || numericMarks <= maxValue) {
+      subject.marks[type] = newMarks;
 
-    // Calculate total marks and result
-    const practical = isNaN(parseInt(subject.marks.practical))
-      ? 0
-      : parseInt(subject.marks.practical);
-    const theory = isNaN(parseInt(subject.marks.theory))
-      ? 0
-      : parseInt(subject.marks.theory);
-    const sessional = isNaN(parseInt(subject.marks.sessional))
-      ? 0
-      : parseInt(subject.marks.sessional);
+      const practical = isNaN(parseInt(subject.marks.practical))
+        ? 0
+        : parseInt(subject.marks.practical);
+      const theory = isNaN(parseInt(subject.marks.theory))
+        ? 0
+        : parseInt(subject.marks.theory);
+      const sessional = isNaN(parseInt(subject.marks.sessional))
+        ? 0
+        : parseInt(subject.marks.sessional);
 
-    const totalMarks = practical + theory + sessional;
-    subject.marks.total = totalMarks.toString();
+      const totalMarks = practical + theory + sessional;
+      subject.marks.total = totalMarks.toString();
 
-    updatedSubjects[index] = subject;
-
-    setSubjects(updatedSubjects);
+      updatedSubjects[index] = subject;
+      setSubjects(updatedSubjects);
+    }
   };
 
   const handleFinalResult = (value) => {
@@ -165,22 +167,10 @@ function ManualExamResult(footerLinks) {
           data?.enrollment_middle_name || ""
         } ${data?.data?.enrollment_last_name || ""}`,
         father: data?.user?.core_beneficiaries?.father_first_name
-          ? `${data?.user?.core_beneficiaries?.father_first_name} ${
-              data?.user?.core_beneficiaries?.father_middle_name &&
-              data?.user?.core_beneficiaries?.father_middle_name
-            } ${
-              data?.user?.core_beneficiaries?.father_last_name &&
-              data?.user?.core_beneficiaries?.father_last_name
-            }`
+          ? `${data?.user?.core_beneficiaries?.father_first_name} ${data?.user?.core_beneficiaries?.father_middle_name} ${data?.user?.core_beneficiaries?.father_last_name}`
           : "",
         mother: data?.user?.core_beneficiaries?.mother_first_name
-          ? `${data?.user?.core_beneficiaries?.mother_first_name} ${
-              data?.user?.core_beneficiaries?.mother_middle_name &&
-              data?.user?.core_beneficiaries?.mother_middle_name
-            } ${
-              data?.user?.core_beneficiaries?.mother_last_name &&
-              data?.user?.core_beneficiaries?.mother_last_name
-            }`
+          ? `${data?.user?.core_beneficiaries?.mother_first_name} ${data?.user?.core_beneficiaries?.mother_middle_name} ${data?.user?.core_beneficiaries?.mother_last_name}`
           : "",
         dob: data?.enrollment_dob,
         course_class: "10th",
@@ -332,28 +322,33 @@ function ManualExamResult(footerLinks) {
                                         "theory",
                                         e.target.value
                                           .toUpperCase()
-                                          .replace(/[^0-9AB-]/g, "")
+                                          .replace(/[^0-9AB-]/g, ""),
+                                        item?.theory_marks
                                       )
                                     }
                                     placeholder={"ENTER_THEORY_MARKS"}
                                   />
                                 </td>
                                 <td>
-                                  <TextBox
-                                    value={item?.marks?.practical}
-                                    onChange={(e) =>
-                                      handleMarksChange(
-                                        index,
-                                        "practical",
-                                        e.target.value
-                                          .toUpperCase()
-                                          .replace(/[^0-9AB-]/g, "")
-                                      )
-                                    }
-                                    placeholder={"ENTER_PRACTICAL_MARKS"}
-                                  />
+                                  {item?.practical_marks ? (
+                                    <TextBox
+                                      value={item?.marks?.practical}
+                                      onChange={(e) =>
+                                        handleMarksChange(
+                                          index,
+                                          "practical",
+                                          e.target.value
+                                            .toUpperCase()
+                                            .replace(/[^0-9AB-]/g, ""),
+                                          item?.practical_marks
+                                        )
+                                      }
+                                      placeholder={"ENTER_PRACTICAL_MARKS"}
+                                    />
+                                  ) : (
+                                    "-"
+                                  )}
                                 </td>
-
                                 <td>
                                   <TextBox
                                     value={item?.marks?.sessional}
@@ -363,7 +358,8 @@ function ManualExamResult(footerLinks) {
                                         "sessional",
                                         e.target.value
                                           .toUpperCase()
-                                          .replace(/[^0-9AB-]/g, "")
+                                          .replace(/[^0-9AB-]/g, ""),
+                                        item?.sessional_marks
                                       )
                                     }
                                     placeholder={"ENTER_SESSIONAL_MARKS"}

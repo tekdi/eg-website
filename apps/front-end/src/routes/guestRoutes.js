@@ -5,6 +5,9 @@ import React, { lazy } from "react";
 const FacilitatorRegister = lazy(() =>
   import("v2/views/Facilitator/FacilitatorRegister/FacilitatorRegister")
 );
+const VolunteerRegistration = lazy(() =>
+  import("pages/front-end/volunteer/VolunteerRegistration")
+);
 //end v2 code
 
 const Home = React.lazy(() => import("../pages/front-end/Home"));
@@ -35,6 +38,11 @@ export default [
   {
     path: "/facilitator-self-onboarding",
     component: FacilitatorRegister,
+  },
+
+  {
+    path: "/volunteer-self-onboarding",
+    component: VolunteerRegistration,
   },
   //end v2 code
 ];

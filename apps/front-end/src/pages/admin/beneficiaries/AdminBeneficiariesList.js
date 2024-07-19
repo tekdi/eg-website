@@ -187,10 +187,10 @@ export default function AdminHome({ footerLinks }) {
               placement="bottom right"
               trigger={(triggerProps) => dropDown(triggerProps, t)}
             >
-              <Menu.Item onPress={(item) => setMenu("export_learner")}>
+              <Menu.Item onPress={() => navigate(`/admin/reports/learner`)}>
                 {t("LEARNERS_LIST")}
               </Menu.Item>
-              <Menu.Item onPress={(item) => setMenu("export_subject")}>
+              <Menu.Item onPress={() => setMenu("export_subject")}>
                 {t("LEARNERS_SUBJECT_CSV")}
               </Menu.Item>
             </Menu>

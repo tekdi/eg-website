@@ -76,10 +76,15 @@ export default function PhotoUpload({
   };
 
   return (
-    <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
-      <FrontEndTypo.H2 color="textMaroonColor.400">
-        {t("ADD_ID_PHOTOS")}
-      </FrontEndTypo.H2>
+    <VStack py={6} px={4} mb={5} space="6">
+      <VStack space={2}>
+        <FrontEndTypo.H1 color="textGreyColor.750">
+          {t("ADD_ID_PHOTOS")}
+        </FrontEndTypo.H1>
+        <FrontEndTypo.H3 color="#4F4F4F">
+          {t("PHOTO_DESCRIPTION")}
+        </FrontEndTypo.H3>
+      </VStack>
       <VStack space={2}>
         <OfflineFileUpload
           schema={{
@@ -103,23 +108,27 @@ export default function PhotoUpload({
           </FrontEndTypo.H2>
         )}
 
-        <FrontEndTypo.Primarybutton
-          p="4"
-          mt="4"
-          onPress={() => {
-            handleProfilePhoto("next");
-          }}
-        >
-          {t("SAVE_AND_NEXT")}
-        </FrontEndTypo.Primarybutton>
+        <VStack alignItems={"center"}>
+          <FrontEndTypo.Primarybutton
+            p="4"
+            mt="4"
+            minW={"60%"}
+            onPress={() => {
+              handleProfilePhoto("next");
+            }}
+          >
+            {t("SAVE_AND_NEXT")}
+          </FrontEndTypo.Primarybutton>
 
-        <FrontEndTypo.Secondarybutton
-          p="4"
-          mt="4"
-          onPress={() => handleProfilePhoto("profile")}
-        >
-          {t("SAVE_AND_PROFILE")}
-        </FrontEndTypo.Secondarybutton>
+          <FrontEndTypo.Secondarybutton
+            p="4"
+            mt="4"
+            minW={"60%"}
+            onPress={() => handleProfilePhoto("profile")}
+          >
+            {t("SAVE_AND_PROFILE")}
+          </FrontEndTypo.Secondarybutton>
+        </VStack>
       </VStack>
     </VStack>
   );

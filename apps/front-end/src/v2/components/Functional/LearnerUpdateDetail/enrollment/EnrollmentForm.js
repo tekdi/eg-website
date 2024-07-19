@@ -277,7 +277,7 @@ export default function EnrollmentForm() {
 
   const [uiSchema, setUiSchema] = useState({
     subjects: {
-      "ui:widget": "checkboxes",
+      "ui:widget": "MultiCheck",
     },
     enrollment_date: {
       "ui:widget": "alt-date",
@@ -796,7 +796,7 @@ export default function EnrollmentForm() {
       } else if (success && formData.enrollment_status === "enrolled") {
         nextPreviewStep();
       } else {
-        navigate(`/beneficiary/${userId}`);
+        navigate(`/beneficiary/${userId}/enrollmentdetails`);
       }
     }
     setBtnLoading(false);

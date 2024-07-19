@@ -1,13 +1,12 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import AddressEdit from "v2/components/Functional/LearnerUpdateDetail/address/addressEdit";
 import BasicDetails from "v2/components/Functional/LearnerUpdateDetail/basicDetails/basicDetails";
 import ContactDetailsEdit from "v2/components/Functional/LearnerUpdateDetail/contact-details/contactDetailsEdit";
-import AddressEdit from "v2/components/Functional/LearnerUpdateDetail/address/addressEdit";
-import PersonalDetails from "v2/components/Functional/LearnerUpdateDetail/personal-details/personaldetails";
-import FamilyDetails from "v2/components/Functional/LearnerUpdateDetail/family-details/familydetails";
 import EducationDetails from "v2/components/Functional/LearnerUpdateDetail/education-details-further-studies/educationDetails";
 import FutureStudy from "v2/components/Functional/LearnerUpdateDetail/education-details-further-studies/futureStudy";
 import EnrollmentForm from "v2/components/Functional/LearnerUpdateDetail/enrollment/EnrollmentForm";
+import FamilyDetails from "v2/components/Functional/LearnerUpdateDetail/family-details/familydetails";
+import PersonalDetails from "v2/components/Functional/LearnerUpdateDetail/personal-details/personaldetails";
 import ReferenceDetails from "v2/components/Functional/LearnerUpdateDetail/reference-details/referencedetails";
 
 export default function BeneficiaryUpdate({ userTokenInfo, footerLinks }) {

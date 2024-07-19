@@ -3,10 +3,15 @@ export default {
   type: "step",
   properties: {
     1: {
-      title: "CONTACT_DETAILS",
-
+      title: "BASIC_DETAILS",
+      description: "CONTACT_DETAILS",
       type: "object",
-      required: ["mobile"],
+      required: [
+        "mobile",
+        "mark_as_whatsapp_number",
+        "device_type",
+        "device_ownership",
+      ],
       properties: {
         mobile: {
           type: "number",
@@ -16,7 +21,7 @@ export default {
           type: "string",
           label: "MARK_AS_WHATSAPP_REGISTER",
           format: "RadioBtn",
-
+          _stack: { direction: "row", justifyContent: "space-between" },
           enumNames: ["YES", "NO"],
           enum: ["yes", "no"],
         },
@@ -24,6 +29,11 @@ export default {
           type: "string",
           label: "TYPE_OF_MOBILE_PHONE",
           format: "CustomR",
+          grid: 2,
+          icons: [
+            { name: "SmartphoneLineIcon" },
+            { name: "CellphoneLineIcon" },
+          ],
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
         },
@@ -36,12 +46,13 @@ export default {
         },
 
         alternative_mobile_number: {
+          label: "ALTERNATIVE_NUMBER",
           type: ["number", "null"],
-          title: "ALTERNATIVE_NUMBER",
+          title: "MOBILE_NUMBER",
         },
         alternative_device_type: {
           label: "TYPE_OF_MOBILE_PHONE",
-          format: "CustomR",
+          format: "RadioBtn",
           type: "string",
           enumNames: ["SMARTPHONE", "BASIC"],
           enum: ["smartphone", "basic"],
@@ -55,6 +66,7 @@ export default {
         },
 
         email_id: {
+          description: "EMAIL_ID",
           type: "string",
           format: "email",
           title: "EMAIL_ID",

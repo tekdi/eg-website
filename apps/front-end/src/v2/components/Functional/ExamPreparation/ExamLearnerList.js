@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, Avatar, HStack, Pressable, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
 
-const ExamLearnerList = ({ footerLinks }) => {
+const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
   const [leanerList, setLeanerList] = useState([]);
 
@@ -86,19 +86,19 @@ const ExamLearnerList = ({ footerLinks }) => {
 
   const getStatus = (responses) => {
     const WILL_LEARNER_APPEAR_FOR_EXAM = responses?.find(
-      (response) => response.field_id === 10
+      (response) => response.field_id === 25
     );
     const WILL_LEARNER_APPEAR_FOR_EXAM_REASONS = responses?.find(
-      (response) => response.field_id === 11
+      (response) => response.field_id === 26
     );
     const DID_LEARNER_RECEIVE_ADMIT_CARD = responses?.find(
-      (response) => response.field_id === 12
+      (response) => response.field_id === 27
     );
     const HAS_LEARNER_PREPARED_PRACTICAL_FILE = responses?.find(
-      (response) => response.field_id === 13
+      (response) => response.field_id === 28
     );
     const LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER = responses?.find(
-      (response) => response.field_id === 14
+      (response) => response.field_id === 29
     );
     // const response6 = responses.find((response) => response.field_id === 15);
     if (
@@ -144,6 +144,10 @@ const ExamLearnerList = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _appBar={{
         onPressBackButton,

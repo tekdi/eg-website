@@ -477,4 +477,336 @@ export const report = {
       "https://egmb.tekdinext.com/public/question/229e6a52-0189-4a05-9a3f-90b68b62e35e",
     //
   },
+
+  "ip-id-18801": {
+    id: 9,
+
+    //Rj-23-24
+    "prerak-report-1-1": null,
+
+    "learner-report-1-1": null,
+
+    "camp-report-1-1": null,
+
+    "epcp-report-1-1": null,
+
+    "training-report-1-1": null,
+
+    "camp_execution-report-1-1": null,
+
+    "subjects-report-1-1": null,
+
+    //RJ-24-25
+    "prerak-report-1-2": null,
+
+    "learner-report-1-2": null,
+
+    "camp-report-1-2": null,
+
+    "epcp-report-1-2": null,
+
+    "training-report-1-2": null,
+
+    "camp_execution-report-1-2": null,
+
+    "subjects-report-1-2": null,
+
+    //bihar
+    "prerak-report-3-2":
+      "https://egmb.tekdinext.com/public/question/86a27644-963b-41d4-9351-42b1ef7605a0",
+
+    "learner-report-3-2":
+      "https://egmb.tekdinext.com/public/question/3297fc3e-dcea-4309-9846-55d840c20740",
+
+    "camp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/5ac208b4-1311-4c1f-9300-fbe1eb4a5084",
+
+    "epcp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/be2ff027-71eb-48a6-bd05-13d36e61fdcd",
+
+    "training-report-3-2":
+      "https://egmb.tekdinext.com/public/question/bee9768a-29b6-4b57-85ce-9b20288b8ff2",
+
+    "camp_execution-report-3-2":
+      "https://egmb.tekdinext.com/public/question/ac243be1-282f-44ce-94d1-5f41e86d5396",
+
+    "subjects-report-3-2":
+      "https://egmb.tekdinext.com/public/question/acb5cc6b-807b-4202-8b9c-0262b0a33bfc",
+  },
+
+  "ip-id-19579": {
+    id: 10,
+
+    //Rj-23-24
+    "prerak-report-1-1": null,
+
+    "learner-report-1-1": null,
+
+    "camp-report-1-1": null,
+
+    "epcp-report-1-1": null,
+
+    "training-report-1-1": null,
+
+    "camp_execution-report-1-1": null,
+
+    "subjects-report-1-1": null,
+
+    //RJ-24-25
+    "prerak-report-1-2":
+      "https://egmb.tekdinext.com/public/question/1a2a13b4-668e-4b5c-87ea-ffa969b65073",
+
+    "learner-report-1-2":
+      "https://egmb.tekdinext.com/public/question/70ee6ae1-91a6-4ed6-9af3-ea8cbc8ad1d3",
+
+    "camp-report-1-2":
+      "https://egmb.tekdinext.com/public/question/28f4069a-26ab-44c3-808b-498491374e4c",
+
+    "epcp-report-1-2":
+      "https://egmb.tekdinext.com/public/question/5f15201c-15c6-4b9a-9c6a-8fdda4356eae",
+
+    "training-report-1-2":
+      "https://egmb.tekdinext.com/public/question/705cf277-acca-429d-9a59-6a7f81dbdc09",
+
+    "camp_execution-report-1-2":
+      "https://egmb.tekdinext.com/public/question/e65a8f88-ef29-408e-9975-4f2c4e2bf6c1",
+
+    "subjects-report-1-2":
+      "https://egmb.tekdinext.com/public/question/b63ce962-d181-4996-8b67-1f6aaf0ddb68",
+
+    //bihar
+    "prerak-report-3-2": null,
+
+    "learner-report-3-2": null,
+
+    "camp-report-3-2": null,
+
+    "epcp-report-3-2": null,
+
+    "training-report-3-2": null,
+
+    "camp_execution-report-3-2": null,
+
+    "subjects-report-3-2": null,
+  },
+  "ip-id-19580": {
+    id: 11,
+
+    //Rj-23-24
+    "prerak-report-1-1": null,
+
+    "learner-report-1-1": null,
+
+    "camp-report-1-1": null,
+
+    "epcp-report-1-1": null,
+
+    "training-report-1-1": null,
+
+    "camp_execution-report-1-1": null,
+
+    "subjects-report-1-1": null,
+
+    //RJ-24-25
+    "prerak-report-1-2":
+      "https://egmb.tekdinext.com/public/question/668a7b1d-b5a0-46dd-b4b4-593c991ee136",
+
+    "learner-report-1-2":
+      "https://egmb.tekdinext.com/public/question/de79d861-592b-408a-ac37-2363f8d6b635",
+
+    "camp-report-1-2":
+      "https://egmb.tekdinext.com/public/question/74f141a8-c50e-460f-8c79-281768b3626c",
+
+    "epcp-report-1-2":
+      "https://egmb.tekdinext.com/public/question/b4a996b8-33e1-4445-a1fe-700cadaf8d3c",
+
+    "training-report-1-2":
+      "https://egmb.tekdinext.com/public/question/3a56fe3c-b1b2-4b64-8c0e-265d61b562ef",
+
+    "camp_execution-report-1-2":
+      "https://egmb.tekdinext.com/public/question/6e29ba80-04f9-4bed-94ed-a070dcf1f854",
+
+    "subjects-report-1-2":
+      "https://egmb.tekdinext.com/public/question/69f4cfd2-1b77-459e-9ce3-96c49fd47353",
+
+    //bihar
+    "prerak-report-3-2": null,
+
+    "learner-report-3-2": null,
+
+    "camp-report-3-2": null,
+
+    "epcp-report-3-2": null,
+
+    "training-report-3-2": null,
+
+    "camp_execution-report-3-2": null,
+
+    "subjects-report-3-2": null,
+  },
+  "ip-id-20212": {
+    id: 12,
+
+    //Rj-23-24
+    "prerak-report-1-1": null,
+
+    "learner-report-1-1": null,
+
+    "camp-report-1-1": null,
+
+    "epcp-report-1-1": null,
+
+    "training-report-1-1": null,
+
+    "camp_execution-report-1-1": null,
+
+    "subjects-report-1-1": null,
+
+    //RJ-24-25
+    "prerak-report-1-2": null,
+
+    "learner-report-1-2": null,
+
+    "camp-report-1-2": null,
+
+    "epcp-report-1-2": null,
+
+    "training-report-1-2": null,
+
+    "camp_execution-report-1-2": null,
+
+    "subjects-report-1-2": null,
+
+    //bihar
+    "prerak-report-3-2":
+      "https://egmb.tekdinext.com/public/question/9ef24edc-c02e-4e0c-b3ff-e03e9155e206",
+
+    "learner-report-3-2":
+      "https://egmb.tekdinext.com/public/question/5f52ec81-21f5-4235-8b40-0e7d6435132d",
+
+    "camp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/943da13a-a4ba-4e67-920b-3351b0e723ec",
+
+    "epcp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/abbbce7b-4d34-47d4-812a-38ce31d6ad03",
+
+    "training-report-3-2":
+      "https://egmb.tekdinext.com/public/question/ff946a80-058b-4fd0-b408-0355bb61f756",
+
+    "camp_execution-report-3-2":
+      "https://egmb.tekdinext.com/public/question/0e77e7cf-f5cb-4c69-80f9-1a5e6f934e6f",
+
+    "subjects-report-3-2":
+      "https://egmb.tekdinext.com/public/question/7e7566f9-3f5e-49ea-bcf7-0facb3c4dcd8",
+  },
+  "ip-id-20216": {
+    id: 13,
+
+    //Rj-23-24
+    "prerak-report-1-1": null,
+
+    "learner-report-1-1": null,
+
+    "camp-report-1-1": null,
+
+    "epcp-report-1-1": null,
+
+    "training-report-1-1": null,
+
+    "camp_execution-report-1-1": null,
+
+    "subjects-report-1-1": null,
+
+    //RJ-24-25
+    "prerak-report-1-2": null,
+
+    "learner-report-1-2": null,
+
+    "camp-report-1-2": null,
+
+    "epcp-report-1-2": null,
+
+    "training-report-1-2": null,
+
+    "camp_execution-report-1-2": null,
+
+    "subjects-report-1-2": null,
+
+    //bihar
+    "prerak-report-3-2":
+      "https://egmb.tekdinext.com/public/question/eb3b2d30-c885-4a1b-a6a7-1c7dcc3ae0ae",
+
+    "learner-report-3-2":
+      "https://egmb.tekdinext.com/public/question/3247075f-09fc-4fcd-a2ae-17da25661f06",
+
+    "camp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/4412ceab-44d9-472f-ab53-da2a9213bf85",
+
+    "epcp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/40beceec-3bfe-4275-8e91-1bccd1b9e369",
+
+    "training-report-3-2":
+      "https://egmb.tekdinext.com/public/question/9aa2f769-2c09-400c-8b34-0a738c28b0ff",
+
+    "camp_execution-report-3-2":
+      "https://egmb.tekdinext.com/public/question/b18de051-0dec-4f8e-a2e7-fdd550fec6fa",
+
+    "subjects-report-3-2":
+      "https://egmb.tekdinext.com/public/question/2588b360-0465-47be-aa8a-0e0a44658942",
+  },
+  "ip-id-20220": {
+    id: 14,
+
+    //Rj-23-24
+    "prerak-report-1-1": null,
+
+    "learner-report-1-1": null,
+
+    "camp-report-1-1": null,
+
+    "epcp-report-1-1": null,
+
+    "training-report-1-1": null,
+
+    "camp_execution-report-1-1": null,
+
+    "subjects-report-1-1": null,
+
+    //RJ-24-25
+    "prerak-report-1-2": null,
+
+    "learner-report-1-2": null,
+
+    "camp-report-1-2": null,
+
+    "epcp-report-1-2": null,
+
+    "training-report-1-2": null,
+
+    "camp_execution-report-1-2": null,
+
+    "subjects-report-1-2": null,
+
+    //bihar
+    "prerak-report-3-2":
+      "https://egmb.tekdinext.com/public/question/e565c22e-5f31-46f4-8d68-a222b58d96ce",
+
+    "learner-report-3-2":
+      "https://egmb.tekdinext.com/public/question/aa9ce185-1b6f-4533-8a82-1a3de17dbc17",
+
+    "camp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/f30b848c-b85a-4003-aa5a-85712f489b11",
+
+    "epcp-report-3-2":
+      "https://egmb.tekdinext.com/public/question/1d2492ae-c77e-4724-9914-e38b1d813e2d",
+
+    "training-report-3-2":
+      "https://egmb.tekdinext.com/public/question/a1df3d87-8b34-4a0a-b890-efbe70b3b257",
+
+    "camp_execution-report-3-2":
+      "https://egmb.tekdinext.com/public/question/3ae5c543-2814-4322-9926-8490b6e3e88a",
+
+    "subjects-report-3-2":
+      "https://egmb.tekdinext.com/public/question/0f6b92cb-3da4-43a2-a690-77dd228678ca",
+  },
 };

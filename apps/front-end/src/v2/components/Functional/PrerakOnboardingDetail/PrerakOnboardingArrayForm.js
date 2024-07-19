@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./arraySchema.js";
-import { Alert, Box, Button, HStack, VStack } from "native-base";
+import { Alert, Box, Button, HStack, Icon, VStack } from "native-base";
 import {
   facilitatorRegistryService,
   Layout,
@@ -13,6 +13,7 @@ import {
   enumRegistryService,
   validation,
   CardComponent,
+  IconByName,
 } from "@shiksha/common-lib";
 import { useParams } from "react-router-dom";
 import {
@@ -56,8 +57,24 @@ export default function PrerakOnboardingArrayForm({
     type === "reference_details"
       ? "REFERENCE_DETAILS"
       : type === "experience"
-      ? "JOB_EXPERIENCE"
+      ? "WORK_DETAILS"
       : "ADD_VOLUNTEER_EXPERIENCE";
+  const stepLabelList =
+    type === "reference_details"
+      ? "3_REFERENCE_DETAILS"
+      : type === "experience"
+      ? "WORK_DETAILS"
+      : "2_VOLUNTEER_AND_WORK_DETAILS";
+
+  const stepLabelListTwo =
+    type === "experience" ? "" : "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE";
+
+  const stepLabelLinks =
+    type === "reference_details"
+      ? "REFERENCE_DETAILS"
+      : type === "experience"
+      ? "ADD_ANOTHER_JOB_EXPERIENCE"
+      : "ADD_ANOTHER_VOLUNTEER_EXPERIENCE";
 
   const stepTitle = type === "experience" ? "JOB_TITLE" : "VOLUNTEER_TITLE";
   const nextPreviewStep = async (p = "n") => {
@@ -145,7 +162,8 @@ export default function PrerakOnboardingArrayForm({
               "experience_in_years",
               "related_to_teaching",
             ],
-            title: stepLabel,
+            title: stepLabelList,
+            description: stepLabel,
           };
           setSchema(updatedSchema);
         } else {
@@ -444,6 +462,20 @@ export default function PrerakOnboardingArrayForm({
         <Box py={6} px={4} mb={5}>
           {!addMore ? (
             <VStack space={"4"}>
+              <FrontEndTypo.H1
+                color="textGreyColor.900"
+                lineHeight="30px"
+                fontWeight="600"
+              >
+                {`${t(stepLabelList)}`}
+              </FrontEndTypo.H1>
+              <FrontEndTypo.H3
+                color="textGreyColor.750"
+                lineHeight="21px"
+                fontWeight="600"
+              >
+                {`${t(stepLabelListTwo)}`}
+              </FrontEndTypo.H3>
               {type == "vo_experience"
                 ? data &&
                   data.constructor.name === "Array" &&
@@ -524,27 +556,41 @@ export default function PrerakOnboardingArrayForm({
                     );
                   })}
               <Button variant={"link"} colorScheme="info" onPress={onAdd}>
-                <FrontEndTypo.H3 color="blueText.400" underline bold>
-                  {`${t(stepLabel)}`}
-                </FrontEndTypo.H3>
+                <FrontEndTypo.H5
+                  color="blueText.500"
+                  underline
+                  bold
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <IconByName
+                    name="AddLineIcon"
+                    _icon={{ size: "16px" }}
+                    style={{ fontSize: "8px", marginRight: "4px" }}
+                  />
+                  {`${t(stepLabelLinks)}`}
+                </FrontEndTypo.H5>
               </Button>
-              <FrontEndTypo.Primarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(false)}
-              >
-                {t("PRERAK_PROCEED_BTN")}
-              </FrontEndTypo.Primarybutton>
+              <Box alignItems={"center"}>
+                <FrontEndTypo.Primarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  minWidth="60%"
+                  onPress={() => onClickSubmit(false)}
+                >
+                  {t("PRERAK_PROCEED_BTN")}
+                </FrontEndTypo.Primarybutton>
 
-              <FrontEndTypo.Secondarybutton
-                isLoading={loading}
-                p="4"
-                mt="4"
-                onPress={() => onClickSubmit(true)}
-              >
-                {t("GO_TO_PROFILE")}
-              </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Secondarybutton
+                  isLoading={loading}
+                  p="4"
+                  mt="4"
+                  minWidth="60%"
+                  onPress={() => onClickSubmit(true)}
+                >
+                  {t("GO_TO_PROFILE")}
+                </FrontEndTypo.Secondarybutton>
+              </Box>
             </VStack>
           ) : (
             <Box>

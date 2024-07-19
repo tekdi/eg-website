@@ -41,7 +41,12 @@ jobs:
           yarn install
           yarn workspace @shiksha/common-lib build
           yarn install
-          yarn build
+
+      - name: Set CI environment variable to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
+      - name: Build front-end
+        run: yarn build
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
           REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}

@@ -674,8 +674,11 @@ export default function FacilitatorView({ footerLinks }) {
                     "WORK_EXPERIENCE",
                     "VOLUNTEER_EXPERIENCE",
                   ]}
+                  format={{ qualification_reference_document_id: "file" }}
                   item={{
                     ...data,
+                    qualification_reference_document_id:
+                      data?.qualifications?.qualification_reference_document_id,
                     qualification: (
                       <FrontEndTypo.H3>
                         {data?.qualifications?.qualification_master?.name}
@@ -700,6 +703,7 @@ export default function FacilitatorView({ footerLinks }) {
                     "teching_qualification",
                     "work_experience",
                     "volunteer_experience",
+                    "qualification_reference_document_id",
                   ]}
                   // onEdit={(e) => navigate(`/beneficiary/edit/${id}/contact-info`)}
                 />

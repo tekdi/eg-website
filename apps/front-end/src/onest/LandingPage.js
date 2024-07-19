@@ -51,7 +51,7 @@ const responsive = {
   },
 };
 
-const LandingPage = ({ userTokenInfo }) => {
+const LandingPage = ({ userTokenInfo, footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -60,39 +60,6 @@ const LandingPage = ({ userTokenInfo }) => {
     const chuckArr = Object.values(dataConfig);
     const newArr = chunk(chuckArr, 2);
     setDataArray(newArr);
-  }, []);
-
-  useEffect((e) => {
-    const fetchData = () => {
-      const { authUser } = userTokenInfo;
-      const Address = [
-        authUser?.state,
-        authUser?.district,
-        authUser?.block,
-        authUser?.village,
-        authUser?.grampanchayat,
-      ]
-        .filter((e) => e)
-        .join(", ");
-      const userDetails = {
-        "Education Qualification":
-          authUser?.qualifications?.qualification_master?.name || "",
-        gender: authUser?.gender || "",
-        "Student Name": authUser?.first_name + " " + authUser?.last_name,
-        name: authUser?.first_name + " " + authUser?.last_name,
-        email: authUser?.email_id || `${authUser?.first_name}@gmail.com`,
-        "Date Of Birth": authUser?.dob,
-        birth_date: authUser?.dob,
-        "mobile number": authUser?.mobile,
-        phone: authUser?.mobile,
-        contact: authUser?.mobile,
-        Address,
-        createdAt: moment().format("YYYY-MM-DD HH:mm"),
-        user_id: authUser?.id,
-      };
-      localStorage.setItem("userData", JSON.stringify(userDetails));
-    };
-    fetchData();
   }, []);
 
   const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
@@ -142,6 +109,7 @@ const LandingPage = ({ userTokenInfo }) => {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
       _appBar={{
         onPressBackButton: handleBack,
       }}

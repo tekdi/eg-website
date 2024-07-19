@@ -102,7 +102,7 @@ export default function App() {
       let newSchema = Schema;
       if (Schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
-          key: "state",
+          key: "state_name",
           arr: newData,
           title: "state_name",
           value: "id",

@@ -45,6 +45,9 @@ const ViewExamSchedule = lazy(() =>
 const ExamAttendance = lazy(() =>
   import("v2/components/Functional/ExamSchedule/ExamAttendance")
 );
+const MarkLearnerAttendance = lazy(() =>
+  import("v2/components/Functional/ExamSchedule/MarkLearnerAttendance")
+);
 const ExamAttendanceReport = lazy(() =>
   import("v2/components/Functional/ExamSchedule/ExamAttendanceReport")
 );
@@ -135,6 +138,18 @@ const CampOtherPlans = React.lazy(() =>
 const CampSessionList = React.lazy(() =>
   import("pages/admin/camps/CampSessionList")
 );
+
+const CampSubjectsList = React.lazy(() =>
+  import("pages/admin/camps/CampSubjectsList")
+);
+
+const CampSubjectScores = React.lazy(() =>
+  import("pages/admin/camps/CampSubjectScores")
+);
+
+const CampLearnerScores = React.lazy(() =>
+  import("pages/admin/camps/CampLearnerScores")
+);
 const CampSession = React.lazy(() => import("pages/admin/camps/CampSession"));
 
 const Assessment = React.lazy(() => import("component/Assessment"));
@@ -217,7 +232,16 @@ export default [
     path: "/camps/:id/kit_material_details",
     component: CampKitMaterialDetails,
   },
-  { path: "/camps/:id/sessionslist", component: CampSessionList },
+  { path: "/camps/:id/sessionslist/:activityId", component: CampSessionList },
+  { path: "/camps/:id/:type/subjectslist", component: CampSubjectsList },
+  {
+    path: "/camps/:id/:type/:subject",
+    component: CampSubjectScores,
+  },
+  {
+    path: "/camps/:id/:type/scores",
+    component: CampLearnerScores,
+  },
   // { path: "/camps/:id/sessionslist/:sessionId", component: CampSession },
   {
     path: "/assessment/:context/:context_id/:do_id",
@@ -286,6 +310,10 @@ export default [
   {
     path: "/examattendance",
     component: ExamAttendance,
+  },
+  {
+    path: "/learner/examattendance",
+    component: MarkLearnerAttendance,
   },
   {
     path: "/examattendancereport",

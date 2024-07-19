@@ -73,7 +73,11 @@ const SessionFeedback = ({
         value={submitStatus?.reason}
         onChange={(e) => setSubmitStatus({ ...submitStatus, reason: e })}
       />
-      {error && <Alert status="warning">{t(error)}</Alert>}
+      {error && (
+        <Alert status="warning">
+          {React.isValidElement(error) ? error : t(error)}
+        </Alert>
+      )}
       <HStack space={4}>
         <FrontEndTypo.DefaultButton
           flex="1"
@@ -104,6 +108,7 @@ const SessionActions = ({
   setSubmitStatus,
   submitStatus,
   enumOptions,
+  handleCancel,
   error,
 }) => {
   const { t } = useTranslation();
@@ -167,7 +172,7 @@ const SessionActions = ({
             enumOptions={enumOptions}
             error={error}
             isDisable={isDisable}
-            handleCancel={() => setSubmitStatus({})}
+            handleCancel={handleCancel}
             handlePartiallyDone={(id) => handlePartiallyDone(id)}
           />
         )}
@@ -194,13 +199,17 @@ const SessionActions = ({
               value={submitStatus?.reason}
               onChange={(e) => setSubmitStatus({ ...submitStatus, reason: e })}
             />
-            {error && <Alert status="warning">{t(error)}</Alert>}
+            {error && (
+              <Alert status="warning">
+                {React.isValidElement(error) ? error : t(error)}
+              </Alert>
+            )}
             <HStack space={4}>
               <FrontEndTypo.DefaultButton
                 flex="1"
                 textColor={"textMaroonColor.400"}
                 isDisabled={isDisable}
-                onPress={() => setSubmitStatus({})}
+                onPress={handleCancel}
               >
                 {t("CANCEL")}
               </FrontEndTypo.DefaultButton>
@@ -348,7 +357,10 @@ export const SessionList = React.memo(
                     />
                   )}
 
-                  <FrontEndTypo.H2 alignItem="center">
+                  <FrontEndTypo.H2
+                    alignItem="center"
+                    color="floatingLabelColor.500"
+                  >
                     {t("SESSION") + " " + item?.ordering}
                   </FrontEndTypo.H2>
                 </HStack>

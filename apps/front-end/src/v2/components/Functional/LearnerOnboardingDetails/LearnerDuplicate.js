@@ -106,25 +106,29 @@ const LearnerDuplicate = () => {
 
         <VStack mt={10} space="3">
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 bold color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontWeight={"600"} color="textMaroonColor.400">
               {t("FULL_NAME")}
             </FrontEndTypo.H3>
             <FrontEndTypo.H3>{firstname}</FrontEndTypo.H3>
           </HStack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 bold color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontWeight={"600"} color="textMaroonColor.400">
               {t("GENDER")}
             </FrontEndTypo.H3>
             <FrontEndTypo.H3>{gender}</FrontEndTypo.H3>
           </HStack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 bold color="textMaroonColor.400">
+            <FrontEndTypo.H3 fontWeight={"600"} color="textMaroonColor.400">
               {t("DATE_OF_BIRTH")}
             </FrontEndTypo.H3>
             <FrontEndTypo.H3>{DOB}</FrontEndTypo.H3>
           </HStack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <FrontEndTypo.H3 bold color="textMaroonColor.400" width="55%">
+            <FrontEndTypo.H3
+              fontWeight={"600"}
+              color="textMaroonColor.400"
+              width="55%"
+            >
               {t("VERIFICATION_ID_NUMBER")}
             </FrontEndTypo.H3>
             <FrontEndTypo.H3 ellipsis>{verify_id}</FrontEndTypo.H3>
@@ -208,7 +212,11 @@ const LearnerDuplicate = () => {
                   color="textGreyColor.150"
                   _icon={{ size: "50px" }}
                 />
-                <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
+                <FrontEndTypo.H1
+                  pb="2"
+                  color="worksheetBoxText.400"
+                  fontWeight={"600"}
+                >
                   {t("AG_ADDED_SUCCESSFULLY")}
                 </FrontEndTypo.H1>
                 <TextArea

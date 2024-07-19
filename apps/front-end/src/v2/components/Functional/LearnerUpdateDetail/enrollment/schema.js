@@ -21,22 +21,28 @@ export default {
       properties: {
         enrollment_status: {
           type: "string",
-          label: "ENROLLMENT_STATUS",
+          description: "ENROLLMENT_STATUS",
+          title: "ENROLLMENT_STATUS",
           format: "select",
         },
         enrolled_for_board: {
           type: "string",
+          _stack: { direction: "row", justifyContent: "space-between" },
           label: "BOARD_OF_ENROLLMENT",
-          format: "radio",
+          format: "RadioBtn",
         },
         enrollment_number: {
           type: "string",
-          label:
+          description:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_NO"
               : "APPLICATION_ID",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
+          title:
+            state?.state_name === "RAJASTHAN"
+              ? "ENROLLMENT_NO"
+              : "APPLICATION_ID",
         },
         enrollmentlabelMobile: {
           type: "string",
@@ -60,35 +66,37 @@ export default {
           maxItems: 7,
           type: "array",
           label: "SUBJECTS",
+          grid: 1,
           items: {
             type: ["string", "number"],
           },
+          format: "MultiCheck",
           uniqueItems: true,
         },
         payment_receipt_document_id: {
           label:
             state?.state_name === "RAJASTHAN"
-              ? "ENROLLMENT_RECIEPT"
-              : "PAYMENT_RECEIPTS",
-          description:
-            state?.state_name === "RAJASTHAN"
-              ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"
-              : "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+              ? [
+                  "ENROLLMENT_RECIEPT_AND_UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
+                ]
+              : [
+                  "PAYMENT_RECEIPTS_AND_PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
+                ],
+          uploadTitle: "UPLOAD_FROM_PHONE",
           type: ["string", "number"],
           format: "FileUpload",
         },
         application_form: {
           label: "APPLICATION_FORM",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+          uploadTitle: "UPLOAD_FROM_PHONE",
           type: ["string", "number"],
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
         },
         application_login_id: {
           label: "APPLICATION_LOGIN_ID_SCREENSHOT",
           description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+          uploadTitle: "UPLOAD_FROM_PHONE",
           isReduce: false,
           type: ["string", "number"],
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
@@ -106,7 +114,7 @@ export default {
         enrollment_first_name: {
           type: "string",
           title: "FIRST_NAME",
-          label: "FIRST_NAME",
+          description: "FIRST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
           description:
             state?.state_name === "RAJASTHAN"
@@ -117,13 +125,13 @@ export default {
           type: ["string", "null"],
           title: "MIDDLE_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          label: "MIDDLE_NAME",
+          description: "MIDDLE_NAME",
         },
         enrollment_last_name: {
           type: ["string", "null"],
           title: "LAST_NAME",
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          label: "LAST_NAME",
+          description: "LAST_NAME",
         },
         enrollment_dob: {
           type: "string",

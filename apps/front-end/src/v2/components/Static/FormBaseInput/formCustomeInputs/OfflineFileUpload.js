@@ -10,6 +10,7 @@ import imageCompression from "browser-image-compression";
 import { convertImageToBase64 } from "../FormBaseInput";
 import FilePreview from "../../FilePreview/FilePreview";
 import { convertFileToBase64 } from "v2/utils/Helper/JSHelper";
+import { size } from "lodash";
 
 const OfflineFileUpload = ({ value, onChange, schema }) => {
   const {
@@ -133,10 +134,9 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
           gap="5"
           borderWidth="1"
           borderStyle="dotted"
-          borderColor="textGreyColor.50"
-          minH="200px"
+          borderColor="UploadFileBorder.500"
+          minH="159px"
           justifyContent="center"
-          p="2"
           borderRadius="5"
         >
           <input
@@ -147,7 +147,7 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
             onChange={handleFileInputChange}
           />
 
-          <Box alignItems="center">
+          {/* <Box alignItems="center">
             {file ? (
               <FilePreview
                 base64={file}
@@ -171,22 +171,56 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
                 />
               )
             )}
+          </Box> */}
+
+          <Box alignItems="center">
+            {file && (
+              <FilePreview
+                base64={file}
+                // source={{
+                //   document_id: file,
+                // }}
+                // urlObject={{ file }}
+                alt={`Alternate ${t(label)}`}
+                width={"190px"}
+                height={"190px"}
+                borderRadius="0"
+                _image={{ borderRadius: 0 }}
+              />
+            )}
           </Box>
+
           <Pressable
+            justifyContent={"center"}
             flex="1"
             onPress={(e) => {
               uplodInputRef?.current?.click();
             }}
             alignItems="center"
             p="2"
-            bg="gray.200"
-            shadow={2}
           >
-            <HStack alignItems="center" space="2">
-              <IconByName name="Upload2FillIcon" isDisabled color="gray.800" />
-              <FrontEndTypo.H2 textAlign="center" color="gray.800">
+            <HStack
+              borderColor={"textRed.350"}
+              borderWidth={"1px"}
+              borderStyle={"solid"}
+              alignItems="center"
+              py={2}
+              px={6}
+              space="2"
+              rounded={"100px"}
+            >
+              <FrontEndTypo.H3
+                style={{ display: "flex", gap: "2px", alignItems: "center" }}
+                textAlign="center"
+                color="textRed.350"
+              >
                 {t(uploadTitle || label || title)}
-              </FrontEndTypo.H2>
+                <IconByName
+                  _icon={{ size: "18px" }}
+                  name="FileUploadFillIcon"
+                  color="textRed.350"
+                />
+              </FrontEndTypo.H3>
             </HStack>
           </Pressable>
         </Box>

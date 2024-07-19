@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 const uiSchema = {
   district: {
@@ -103,6 +104,7 @@ const schemat = {
 };
 export default function List({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
@@ -311,7 +313,7 @@ export default function List({ footerLinks, userTokenInfo }) {
         <HStack height={"5vh"} space={2}>
           <AdminTypo.Secondarybutton
             onPress={() => {
-              exportPrerakCSV();
+              navigate(`/admin/reports/prerak`);
             }}
             rightIcon={
               <IconByName

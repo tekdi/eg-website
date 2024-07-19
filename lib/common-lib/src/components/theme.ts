@@ -1,4 +1,5 @@
-const fontFamily = localStorage.getItem('lang') === 'hi' ? "'Baloo 2'" : 'Inter'
+const fontFamily =
+  localStorage.getItem('lang') === 'hi' ? "'Poppins'" : 'Poppins'
 const fontSize = localStorage.getItem('lang') === 'hi' ? '' : ''
 
 let red = {
@@ -264,12 +265,12 @@ const DEFAULT_THEME = {
     AlertShadow: {
       shadowColor: '#00000040',
       shadowOffset: {
-        width: 1,
-        height: 3
+        width: 2,
+        height: 2
       },
-      shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowOpacity: 0.5,
+      shadowRadius: 5,
+      elevation: 0
     },
     BlueOutlineShadow: {
       shadowColor: '#8B7171',
@@ -291,15 +292,25 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
-    FooterShadow: {
-      shadowColor: '#e0e0e066',
+    SliderCardShadow: {
+      shadowColor: '#000000',
       shadowOffset: {
-        width: 1,
-        height: 3
+        width: 0,
+        height: 4
       },
-      shadowOpacity: 1,
-      shadowRadius: 1.0,
-      elevation: 1
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 0
+    },
+    FooterShadow: {
+      shadowColor: '#E0E0E066',
+      shadowOffset: {
+        width: 0,
+        height: -4
+      },
+      shadowOpacity: 0.5,
+      shadowRadius: 8,
+      elevation: 0
     },
     RedFillShadow: {
       shadowColor: '#000000',
@@ -308,7 +319,7 @@ const DEFAULT_THEME = {
         height: 3
       },
       shadowOpacity: 1,
-      shadowRadius: 3,
+      shadowRadius: 0,
       elevation: 0
     },
 
@@ -333,6 +344,18 @@ const DEFAULT_THEME = {
       shadowRadius: 1.0,
       elevation: 1
     },
+
+    TitleCardShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 0 // Elevation does not have a direct equivalent in box-shadow, set it as per your requirements
+    },
+
     RedBlackShadow: {
       shadowColor: '#000000',
       shadowOffset: {
@@ -385,6 +408,26 @@ const DEFAULT_THEME = {
       shadowOpacity: 1,
       shadowRadius: 1.0,
       elevation: 1
+    },
+    LearnerProfileViewShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 4
+    },
+    CardComponentShadow: {
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 4
+      },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 4
     }
   },
   bg: {
@@ -392,14 +435,31 @@ const DEFAULT_THEME = {
       colors: ['#CAE9FF', '#CAE9FF', '#CAE9FF'],
       start: [0, 0],
       end: [1, 0]
-    }
+    },
+    gradients: 'linear-gradient(360deg, #DC3644 2%, #1F1D76 147%)'
   },
+
   colors: {
+    'eg-blue': {
+      50: '#eff6ff',
+      100: '#dbeafe',
+      200: '#bfdbfe',
+      300: '#93c5fd',
+      400: '#60a5fa',
+      500: '#3b82f6',
+      600: '#1F1D76',
+      700: '#1d4ed8',
+      800: '#1e40af',
+      900: '#1e3a8a'
+    },
     footer: {
-      boxBorder: '#FF0000'
+      boxBorder: '#D53546'
     },
     formBg: {
-      500: '#F4F4F7'
+      500: '#FFFFFF'
+    },
+    inputValueColor: {
+      500: '#1F1B13'
     },
     widgetColor: {
       400: '#7F9DAC',
@@ -454,6 +514,30 @@ const DEFAULT_THEME = {
       500: '#B9FBC0',
       800: '#5B7E5F'
     },
+    customAlertinfo: {
+      50: '#f0f9ff',
+      100: '#e0f2fe',
+      200: '#D6E8FF',
+      300: '#7dd3fc',
+      400: '#38bdf8',
+      500: '#0ea5e9',
+      600: '#0284c7',
+      700: '#0369a1',
+      800: '#075985',
+      900: '#0c4a6e'
+    },
+    customAlertdanger: {
+      50: '#f0f9ff',
+      100: '#e0f2fe',
+      200: '#FFBEC5',
+      300: '#7dd3fc',
+      400: '#38bdf8',
+      500: '#0ea5e9',
+      600: '#0284c7',
+      700: '#0369a1',
+      800: '#075985',
+      900: '#0c4a6e'
+    },
     successAlert: {
       500: '#B9FBC0'
     },
@@ -478,6 +562,18 @@ const DEFAULT_THEME = {
     },
     timeTablemiddle: {
       500: '#A1D6B6'
+    },
+    SlickDotsBg: {
+      500: '#D2D1FF'
+    },
+    UploadFileBorder: {
+      500: '#B7B7B7'
+    },
+    floatingLabelColor: {
+      500: '#1F1D76'
+    },
+    inputBorderColor: {
+      500: '#7F7667'
     },
     attendanceCard: {
       500: '#C9AFF4',
@@ -604,6 +700,14 @@ const DEFAULT_THEME = {
       200: '#10B981',
       300: '#A7F3D0'
     },
+    progressBarRed: {
+      400: '#790000',
+      500: '#A7F3D0',
+      600: '#790000',
+      700: '#A7F3D0',
+      800: '#790000',
+      900: '#A7F3D0'
+    },
     bgGreyColor: {
       200: '#F4F4F7'
     },
@@ -615,7 +719,6 @@ const DEFAULT_THEME = {
       150: '#61646B',
       350: '#EAEAEB',
       300: '#888888',
-
       400: '#F5F5F5',
       450: '#464646',
       500: '#424242',
@@ -623,16 +726,22 @@ const DEFAULT_THEME = {
       600: '#727271',
       650: '#666666',
       700: '#828282',
+      750: '#4F4F4F',
       800: '#212121',
+      850: '#535353',
       900: '#1E1E1E'
     },
+    chipGreyColor: {
+      500: '#585858'
+    },
+
     textMaroonColor: {
       50: '#FDCAB5',
       100: '#FFACAF',
       300: '#FF8080',
       350: '#FFE0E1',
       400: '#790000',
-      500: '#A93505',
+      500: '#D53546',
       600: '#FF0000',
       700: '#7c2704',
       800: '#4a1702',
@@ -644,8 +753,8 @@ const DEFAULT_THEME = {
       350: '#CAE9FF',
       400: '#084B82',
       450: '#3F8BF1',
-      700: '#004AAD',
-      800: '#004E9D'
+      500: '#0500FF',
+      700: '#004AAD'
     },
     bgPinkColor: {
       300: '#F9E9DB'
@@ -669,7 +778,7 @@ const DEFAULT_THEME = {
       400: '#BDBDBD'
     },
     Disablecolor: {
-      400: '#BDBDBD'
+      400: '#A7A7A7'
     },
     Defaultcolor: {
       400: '#616161'
@@ -702,6 +811,8 @@ const DEFAULT_THEME = {
     yellowColor: '#FEFFB8',
     dangerColor: '#DC2626',
     infoColor: '#3F8BF1',
+    absentColor: '#D53546',
+    presentColor: '#038400',
 
     secondaryBlue: {
       50: '#e7f3fe',
@@ -716,14 +827,20 @@ const DEFAULT_THEME = {
       900: '#010e18'
     },
     grayInLight: '#9ca3af',
+    grayTitleCard: '#484848',
+    garyTitleCardBorder: '#DDDDDD',
     grayIndark: '#18181b',
+    dashBoardCards: '#F4F4F4',
     btnGray: {
       100: '#e0e0e0'
     },
+    footerBorderGray: '#D4D4D4',
+    dashboardCardBorder: '#DCDCDC',
     textRed: {
       100: '#ff7b7b',
       200: '#ff5252',
       300: '#FF2815',
+      350: '#D53546',
       400: '#ff0000',
       500: '#ff000047'
     },
@@ -737,12 +854,30 @@ const DEFAULT_THEME = {
       600: '#488C04',
       700: '#0F6C41'
     },
+    SelectBorderColor: {
+      500: '#C6C6C6'
+    },
+    CardComponentBorderColor: {
+      500: '#EAEAEA'
+    },
+    LeanerListCardIDBorder: {
+      500: '#676767'
+    },
+    LearnerListCardNumber: {
+      500: '#929292'
+    },
+    LearnerListCardLink: {
+      500: '#0D34FF'
+    },
     textBlue: {
       100: '#a8e3fd',
       200: '#0038FF'
     },
     text: {
       100: '#a8e3fd'
+    },
+    bgRed: {
+      500: '#D53546'
     },
     zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',

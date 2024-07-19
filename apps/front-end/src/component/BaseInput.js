@@ -1,8 +1,21 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { customizeValidator } from "@rjsf/validator-ajv8";
+import {
+  AdminTypo,
+  CustomOTPBox,
+  CustomRadio,
+  FloatingInput,
+  FrontEndTypo,
+  H2,
+  IconByName,
+  MobileNumber,
+  chunk,
+  useLocationData,
+} from "@shiksha/common-lib";
 import {
   Box,
   Button,
   CheckIcon,
+  Checkbox,
   FormControl,
   HStack,
   Image,
@@ -13,26 +26,13 @@ import {
   TextArea,
   VStack,
 } from "native-base";
-import {
-  BodySmall,
-  H2,
-  FloatingInput,
-  MobileNumber,
-  IconByName,
-  FrontEndTypo,
-  CustomOTPBox,
-  AdminTypo,
-  chunk,
-  CustomRadio,
-  useLocationData,
-} from "@shiksha/common-lib";
-import { useTranslation } from "react-i18next";
-import FileUpload from "./formCustomeInputs/FileUpload";
-import StarRating from "./formCustomeInputs/StarRating";
-import { customizeValidator } from "@rjsf/validator-ajv8";
 import PropTypes from "prop-types";
+import { Fragment, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CalenderInput from "./CalenderInput";
 import Time from "./Time";
+import FileUpload from "./formCustomeInputs/FileUpload";
+import StarRating from "./formCustomeInputs/StarRating";
 
 // rjsf custom BaseInputTemplate for all text field use in all form
 export function BaseInputTemplate(props) {
@@ -96,9 +96,14 @@ export const DescriptionFieldTemplate = ({ description, id }) => {
   const { t } = useTranslation();
   return (
     <VStack pb="3">
-      <BodySmall id={id} color="textMaroonColor.400">
+      <FrontEndTypo.H3
+        id={id}
+        fontWeight="600"
+        lineHeight="21px"
+        color="textGreyColor.750"
+      >
         {t(description)}
-      </BodySmall>
+      </FrontEndTypo.H3>
     </VStack>
   );
 };
@@ -216,7 +221,7 @@ export const FieldTemplate = ({
   return (
     <VStack
       style={style}
-      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
     >
       {(!schema?.format ||
         !["hidden", "CheckUncheck"].includes(schema?.format)) &&
@@ -225,10 +230,14 @@ export const FieldTemplate = ({
             {(id === "root" || schema?.label) && (
               <label htmlFor={id}>
                 <HStack space="1" alignItems="center">
-                  <H2 color="textMaroonColor.400">
+                  <FrontEndTypo.H1
+                    fontSize="20px"
+                    color="textGreyColor.900"
+                    fontWeight="600"
+                  >
                     {t(schema?.label ? schema?.label : label)}
-                  </H2>
-                  <H2 color="textMaroonColor.400">{required ? "*" : null}</H2>
+                  </FrontEndTypo.H1>
+                  <H2 color="duplicatedColor">{required ? "*" : null}</H2>
                 </HStack>
               </label>
             )}
@@ -312,7 +321,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly } = schema || {};
+  const { label, format, readOnly, _stack } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -323,41 +332,41 @@ export const RadioBtn = ({
           {required && <H2 color="textMaroonColor.400">*</H2>}
         </FormControl.Label>
       )}
-      <Radio.Group
-        colorScheme="red"
-        key={items}
-        pb="4"
+      <CustomRadio
+        options={{
+          enumOptions: items,
+        }}
+        schema={{
+          // _pressable: { style: { backgroundColor: "#999" } },
+          _stackIcon: { flexDirection: "row" },
+          icons: items?.map((e) =>
+            e.value == value
+              ? {
+                  style: {},
+                  name: "RadioButtonLineIcon",
+                  py: 0,
+                  px: 0,
+                  mx: 2,
+                  borderWidth: 0,
+                  activeColor: "#1F1D76",
+                }
+              : {
+                  name: "CheckboxBlankCircleLineIcon",
+                  py: 0,
+                  px: 0,
+                  mx: 2,
+                  borderWidth: 0,
+                  color: "#333",
+                }
+          ),
+          // _box: { gap: "0", width: "auto" },
+          // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+        }}
         value={value}
-        accessibilityLabel="Pick your favorite number"
-        onChange={(value) => onChange(value)}
-      >
-        <Stack
-          direction={{
-            base: "column",
-            sm: directionColumn || "row",
-          }}
-          alignItems={{
-            base: "flex-start",
-            md: directionColumn ? "flex-start" : "center",
-          }}
-          space={4}
-          w="75%"
-          gap="4"
-        >
-          {items?.map((item) => (
-            <Radio
-              key={item?.value}
-              value={item?.value}
-              size="lg"
-              colorScheme="red"
-              _text={{ fontSize: 12, fontWeight: 500 }}
-              isDisabled={readOnly}
-            >
-              {t(item?.label)}
-            </Radio>
-          ))}
-        </Stack>
-      </Radio.Group>
+        onChange={(e) => {
+          onChange(e);
+        }}
+      />
     </FormControl>
   );
 };
@@ -404,7 +413,14 @@ export const Aadhaar = (props) => {
 };
 
 // rjsf custom select field
-export const select = ({ options, value, onChange, required, schema }) => {
+export const select = ({
+  options,
+  isDisabled,
+  value,
+  onChange,
+  required,
+  schema,
+}) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label, title, readOnly, isHideFloatingLabel } = schema || {};
   const { t } = useTranslation();
@@ -422,7 +438,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value
+            ...(value || true
               ? {
                   top: "0",
                   opacity: 1,
@@ -437,24 +453,35 @@ export const select = ({ options, value, onChange, required, schema }) => {
                 }),
           }}
         >
-          <Text fontSize="12" fontWeight="400">
+          <Text
+            bg={"white"}
+            zIndex={99999999}
+            color={"floatingLabelColor.500"}
+            fontSize="12"
+            fontWeight="400"
+          >
             {t(label || title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}
       <Select
         key={value + items}
-        isDisabled={readOnly}
-        selectedValue={`${value}`}
+        isDisabled={readOnly || isDisabled}
+        selectedValue={value}
         accessibilityLabel={t(label || title)}
         placeholder={t(label || title)}
+        borderColor={value ? "floatingLabelColor.500" : "inputBorderColor.500"}
+        bg="#FFFFFF"
+        dropdownIcon={
+          <IconByName color="grayTitleCard" name="ArrowDownSFillIcon" />
+        }
+        borderWidth={value ? "2px" : "1px"}
+        borderRadius={"4px"}
+        fontSize={"16px"}
+        letterSpacing={"0.5px"}
+        fontWeight={400}
+        lineHeight={"24px"}
         _selectedItem={{
           bg: "teal.600",
           endIcon: <CheckIcon size="5" />,
@@ -464,7 +491,7 @@ export const select = ({ options, value, onChange, required, schema }) => {
         {items?.map((item) => (
           <Select.Item
             key={item?.value}
-            value={`${item?.value}`}
+            value={item?.value}
             label={t(item?.label)}
             _text={{ fontSize: 12, fontWeight: 500 }}
           />
@@ -526,21 +553,23 @@ export const Location = ({ value, onChange, schema }) => {
   }, [value]);
   return (
     <HStack alignItems={"center"} space={2}>
-      <VStack space={2}>
+      <HStack space={2}>
         {[lat, long]?.map((item, index) => {
           return (
             <HStack alignItems={"center"} space={2} key={item}>
-              <FrontEndTypo.H3 bold color="textMaroonColor.400">
-                {index ? t("LONGITUDE") : t("LATITUDE")}
-              </FrontEndTypo.H3>
-              <Text>:{value?.[item]}</Text>
+              <FrontEndTypo.H4 bold color="floatingLabelColor.400">
+                {index ? t("LONGITUDE") : t("LATITUDE")}:
+              </FrontEndTypo.H4>
+              <FrontEndTypo.H4 color={"grayTitleCard"}>
+                {value?.[item]}
+              </FrontEndTypo.H4>
             </HStack>
           );
         })}
 
         {t(error)}
-      </VStack>
-      <Button onPress={updateValue}>{t("UPDATE")}</Button>
+      </HStack>
+      <IconByName name="PencilLineIcon" onPress={updateValue} />
     </HStack>
   );
 };
@@ -659,17 +688,20 @@ export const MultiCheck = ({
       )}
       <Stack flexDirection={grid ? "column" : ""} {...(_hstack || {})}>
         {items?.map((subItem, subKey) => (
-          <Box gap={"2"} key={subItem} flexDirection="row" flexWrap="wrap">
+          <Box
+            gap={"2"}
+            key={subItem + subKey}
+            flexDirection="row"
+            flexWrap="wrap"
+          >
             {subItem?.map((item, key) => (
-              <label key={item}>
+              <label key={item + key}>
                 <HStack alignItems="center" space="3" flex="1">
                   {icons?.[key] && icons?.[key].name && (
                     <IconByName
                       {...icons[key]}
                       isDisabled
-                      color={
-                        value === item?.value ? "secondaryBlue.500" : "gray.500"
-                      }
+                      color={value === item?.value ? "eg_blue" : "gray.500"}
                       _icon={{
                         ...(icons?.[key]?.["_icon"]
                           ? icons?.[key]?.["_icon"]
@@ -677,15 +709,20 @@ export const MultiCheck = ({
                       }}
                     />
                   )}
-                  <input
-                    checked={
+                  <Checkbox
+                    onChange={(e) =>
+                      handleCheck({
+                        target: { checked: e, value: item?.value },
+                      })
+                    }
+                    value={item?.value}
+                    size="sm"
+                    colorScheme={"eg-blue"}
+                    isChecked={
                       value?.constructor?.name === "Array" &&
                       (value?.includes(item?.value) ||
                         value?.includes(`${item?.value}`))
                     }
-                    type="checkbox"
-                    value={item?.value}
-                    onChange={handleCheck}
                   />
                   {t(item?.label || item?.title)}
                 </HStack>
@@ -711,8 +748,8 @@ const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { t } = useTranslation();
 
   const checkboxIcons = [
-    { name: "CheckboxCircleLineIcon", activeColor: "success.500" },
-    { name: "CloseCircleLineIcon", activeColor: "red.500" },
+    { name: "CheckboxCircleLineIcon" },
+    { name: "CloseCircleLineIcon" },
   ];
   return (
     <HStack space={2}>
@@ -776,13 +813,7 @@ const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
         >
           <Text fontSize="12" fontWeight="400">
             {t(title)}
-            {required ? (
-              <Text color={"danger.500"}>*</Text>
-            ) : (
-              <Text fontWeight="300" color={"#9E9E9E"}>
-                ({t("OPTIONAL")})
-              </Text>
-            )}
+            {required ? <Text color={"danger.500"}>*</Text> : ""}
           </Text>
         </FormControl.Label>
       )}
@@ -885,9 +916,13 @@ const transformErrors = (errors, schema, t) => {
             : "REQUIRED_MESSAGE"
         )} "${t(title)}"`;
       case "minItems":
-        return t("SELECT_MINIMUM", error?.params?.limit, title);
+        return t("SELECT_MINIMUM")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "maxItems":
-        return t("SELECT_MAXIMUM", error?.params?.limit, title);
+        return t("SELECT_MAXIMUM")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "enum":
         return t("SELECT_MESSAGE");
       case "format":
@@ -913,14 +948,14 @@ const onError = (errors, dsat) => {
 };
 
 export {
-  widgets,
-  templates,
+  CheckUncheck,
   CustomOTPBox,
   FileUpload,
-  validator,
   MobileNumber,
-  onError,
-  transformErrors,
   StarRating,
-  CheckUncheck,
+  onError,
+  templates,
+  transformErrors,
+  validator,
+  widgets,
 };

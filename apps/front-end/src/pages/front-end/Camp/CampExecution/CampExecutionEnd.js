@@ -1,17 +1,17 @@
 import {
-  campService,
+  CustomAlert,
   FrontEndTypo,
-  Layout,
   ImageView,
-  CardComponent,
-  IconByName,
+  Layout,
+  campService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React, { useEffect, useCallback, useState, useMemo } from "react";
+import { Box, HStack, Image, Modal, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
+import TimelineItem from "./TimeLine";
 
 function CampExecutionEnd({ facilitator, learnerCount, campType }) {
   const { t } = useTranslation();
@@ -93,13 +93,15 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     navigate(`/camps`);
   }, [todaysActivity?.id, navigate]);
 
-  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.png", []);
   return (
     <Layout
       _appBar={{
         name: t("CAMP_EXECUTION"),
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
+        onPressBackButton: () => navigate("/camps"),
       }}
+      facilitator={facilitator}
       loading={loading}
       analyticsPageTitle={"CAMP_EXECUTION"}
       pageTitle={t("CAMP_EXECUTION")}
@@ -108,6 +110,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
       }/${step}`}
     >
       <VStack py={6} px={4} mb={5} space="6">
+        <FrontEndTypo.H2>{t("CAMP_EXECUTION")}</FrontEndTypo.H2>
+        <HStack justifyContent={"space-between"}>
+          <FrontEndTypo.H3 bold color="textGreyColor.750">
+            {`${t("CAMP_ID")}: ${id}`}
+          </FrontEndTypo.H3>
+        </HStack>
         <Box
           margin={"auto"}
           height={"200px"}
@@ -123,7 +131,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             source={{
               uri: airplaneImageUri,
             }}
-            alt="airoplane.gif"
+            alt="airoplane.png"
             position="absolute"
             top={0}
             left={0}
@@ -132,56 +140,50 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             zIndex={-1}
           />
 
-          <VStack alignItems="center" justifyContent="center">
+          <VStack pr={"55px"} pb={"130px"}>
             <ImageView
-              width="80px"
-              height="80px"
+              style={{ boxShadow: "0px 4px 4px 0px #ffffff" }}
+              width="71px"
+              height="71px"
               source={{ document_id: facilitator?.profile_photo_1?.id }}
             />
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ bg: "light.100", space: 1, flex: 1, paddingTop: 4 }}
-            >
-              {t("LETS_START_TODAYS_CAMP")}
-            </CardComponent>
           </VStack>
         </Box>
-        <Alert status="warning">
-          <HStack alignItems={"center"} space={2}>
-            <Alert.Icon />
-            <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
-          </HStack>
-        </Alert>
-        <FrontEndTypo.Secondarybutton
-          onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
-        >
-          <HStack alignItems={"center"} space={3}>
-            <FrontEndTypo.H1 color={"textMaroonColor.400"}>
-              {t("LEARNER_ATTENDANCE")}
-            </FrontEndTypo.H1>
-            {learnerAttendanceCount && (
-              <IconByName name="CheckboxCircleFillIcon" color="successColor" />
-            )}
-          </HStack>
-        </FrontEndTypo.Secondarybutton>
-        <FrontEndTypo.Secondarybutton
-          isDisabled={disableTodayAct}
-          onPress={() => navigate(`/camps/${id}/campexecution/activities`)}
-        >
-          <HStack alignItems={"center"} space={3}>
-            <FrontEndTypo.H1 color={"textMaroonColor.400"}>
-              {t("TODAYS_TASKS")}
-            </FrontEndTypo.H1>
-            {(todaysActivity?.misc_activities || sessionList) && (
-              <IconByName name="CheckboxCircleFillIcon" color="successColor" />
-            )}
-          </HStack>
-        </FrontEndTypo.Secondarybutton>
+        <CustomAlert title={t("DONT_CLOSE_SCREEN")} />
+        <TimelineItem
+          _vstack={{ space: "9" }}
+          data={[
+            {
+              title: t("LEARNER_ATTENDANCE"),
+              isDone: true,
+              onPress: () => navigate(`/camps/${id}/campexecution/attendance`),
+            },
+            {
+              title: t("TODAYS_TASKS"),
+              isDone: !disableTodayAct,
+              onPress: () => navigate(`/camps/${id}/campexecution/activities`),
+            },
+            {
+              title: t("END_CAMP"),
+              isDone: !disable,
+              onPress: () => setOpenModal(true),
+            },
+          ]}
+        />
         <FrontEndTypo.Primarybutton
-          isDisabled={disable}
-          onPress={() => setOpenModal(true)}
+          onPress={() => {
+            !disable
+              ? setOpenModal(true)
+              : !disableTodayAct
+              ? navigate(`/camps/${id}/campexecution/activities`)
+              : navigate(`/camps/${id}/campexecution/attendance`);
+          }}
         >
-          {t("END_CAMP")}
+          {!disable
+            ? t("END_CAMP")
+            : !disableTodayAct
+            ? t("TODAYS_TASKS")
+            : t("LEARNER_ATTENDANCE")}
         </FrontEndTypo.Primarybutton>
       </VStack>
       <Modal isOpen={openModal} size="xs">

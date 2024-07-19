@@ -89,14 +89,14 @@ export default {
       properties: {
         marital_status: {
           label: "MARITAL_STATUS",
-          type: ["string", "null"],
-          format: "CustomR",
+          type: "string",
+          format: "RadioBtn",
           grid: 2,
         },
         social_category: {
           label: "SOCIAL_CATEGORY",
-          type: ["string", "null"],
-          format: "CustomR",
+          type: "string",
+          format: "RadioBtn",
           grid: 2,
         },
       },
@@ -118,7 +118,8 @@ export default {
       properties: {
         type_of_learner: {
           type: "string",
-          label: "TYPE_OF_LEARNER",
+          title: "TYPE_OF_LEARNER",
+          description: "TYPE_OF_LEARNER",
           format: "select",
         },
         alreadyOpenLabel: {

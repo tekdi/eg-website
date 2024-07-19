@@ -230,7 +230,7 @@ function FacilitatorRegister() {
     return (
       <PageLayout
         t={t}
-        isPageMiddle={true}
+        // isPageMiddle={true}
         customComponent={
           <ChooseLanguage t={t} languageChanged={languageChanged} />
         }
@@ -239,21 +239,27 @@ function FacilitatorRegister() {
   };
   const IntroductionPageScreen = () => {
     return (
-      <PageLayout
+      <IntroductionPage
         t={t}
-        showAppBar={true}
-        funBackButton={funBackButton}
-        showLangChange={true}
-        funLangChange={languageSelect}
-        customComponent={
-          <IntroductionPage
-            t={t}
-            showPrerakDuties={showPrerakDuties}
-            showApplyNow={showApplyNow}
-            showLogin={showLogin}
-          />
-        }
+        showPrerakDuties={showPrerakDuties}
+        showApplyNow={showApplyNow}
+        showLogin={showLogin}
       />
+      // <PageLayout
+      //   t={t}
+      //   showAppBar={true}
+      //   funBackButton={funBackButton}
+      //   showLangChange={true}
+      //   funLangChange={languageSelect}
+      //   customComponent={
+      //     <IntroductionPage
+      //       t={t}
+      //       showPrerakDuties={showPrerakDuties}
+      //       showApplyNow={showApplyNow}
+      //       showLogin={showLogin}
+      //     />
+      //   }
+      // />
     );
   };
   const PrerakDutiesScreen = () => {
