@@ -11,6 +11,7 @@ import {
   CardComponent,
   enumRegistryService,
   CustomAlert,
+  chunk,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import moment from "moment";
@@ -103,7 +104,7 @@ export default function CampExecution({
         ...mood,
         img: images[index % images?.length],
       }));
-      setMoodList(moodListWithImages);
+      setMoodList(chunk(moodListWithImages, 2));
     }
   }, [cameraFile, cameraUrl]);
 
@@ -307,48 +308,49 @@ export default function CampExecution({
             <FrontEndTypo.H4 bold color="textGreyColor.750">
               {t("LEARNER_ENVIRONMENT")}
             </FrontEndTypo.H4>
-            <HStack justifyContent={"center"} flexWrap={"wrap"}>
-              {moodList?.map((item) => {
+            <VStack space={4}>
+              {moodList?.map((pitem) => {
                 return (
-                  <VStack
-                    space={4}
-                    my={2}
-                    mx={3}
-                    alignItems={"center"}
-                    key={item}
-                    width={"42%"}
-                    borderColor="btnGray.100"
-                    borderRadius="10px"
-                    borderWidth="1px"
-                    shadow="AlertShadow"
-                    bg={activeChip === item?.value && "#E0E0FF"}
-                  >
-                    <Pressable
-                      isActive={activeChip === item?.value}
-                      onPress={() => handleChipClick(item?.value)}
-                    >
-                      <Image
-                        w={"120"}
-                        h={"120"}
-                        borderRadius="0"
-                        source={{
-                          uri: `${item?.img}`,
-                        }}
-                        alt="airoplane.png"
-                      />
-                      <FrontEndTypo.H5
-                        bold
-                        color={"textGreyColor.750"}
-                        textAlign={"center"}
-                        fontSize={"12px"}
-                      >
-                        {t(item?.title)}
-                      </FrontEndTypo.H5>
-                    </Pressable>
-                  </VStack>
+                  <HStack justifyContent={"center"} flex="1" space={4}>
+                    {pitem?.map((item) => {
+                      return (
+                        <Pressable
+                          flex="1"
+                          alignItems={"center"}
+                          key={item}
+                          borderColor="btnGray.100"
+                          borderRadius="10px"
+                          borderWidth="1px"
+                          shadow="AlertShadow"
+                          bg={activeChip === item?.value && "#E0E0FF"}
+                          isActive={activeChip === item?.value}
+                          onPress={() => handleChipClick(item?.value)}
+                        >
+                          <Image
+                            w={"120"}
+                            h={"120"}
+                            borderRadius="0"
+                            source={{
+                              uri: `${item?.img}`,
+                            }}
+                            alt="airoplane.png"
+                          />
+                          <FrontEndTypo.H4
+                            p="4"
+                            bold
+                            color={"textGreyColor.750"}
+                            textAlign={"center"}
+                            fontSize={"12px"}
+                          >
+                            {t(item?.title)}
+                          </FrontEndTypo.H4>
+                        </Pressable>
+                      );
+                    })}
+                  </HStack>
                 );
               })}
-            </HStack>
+            </VStack>
             {error && (
               <CustomAlert status={"warning"} title={t("SELECT_MESSAGE")} />
             )}
