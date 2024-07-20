@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function PcrView() {
+export default function PcrView({ userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { id } = useParams();
@@ -55,6 +55,7 @@ export default function PcrView() {
       analyticsPageTitle={"BENEFICIARY_PCR_VIEW"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("PCR_DETAILS")}
+      facilitator={userTokenInfo?.authUser}
     >
       <VStack space={4} padding={5}>
         <FrontEndTypo.H1 fontWeight="600">{t("PCR_DETAILS")}</FrontEndTypo.H1>
