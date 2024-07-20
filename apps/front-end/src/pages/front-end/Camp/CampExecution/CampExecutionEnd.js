@@ -57,7 +57,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
       const { countSession } = getSessionCount(data);
-      if (countSession >= 1.5) {
+      if (countSession > 0) {
         setDisableEndCamp(false);
       } else {
         setDisableEndCamp(true);
@@ -70,7 +70,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     fetchData();
   }, [fetchData]);
   const endCamp = useCallback(async () => {
-    setDisable(true);
+    setDisableEndCamp(true);
     const obj = {
       id: todaysActivity?.id,
       edit_page_type: "edit_end_date",
