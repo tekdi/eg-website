@@ -27,6 +27,7 @@ export const CampSessionPlan = ({
           {
             type: "MAIN_LEARNING_ACTIVITIES",
             navigatePath: getNavigatePath(`sessionslist/${activityId}`),
+            showIcon: sessionList,
           },
         ];
       } else {
