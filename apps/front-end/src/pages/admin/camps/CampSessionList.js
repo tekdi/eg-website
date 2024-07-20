@@ -43,6 +43,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const [facilitator, setFacilitator] = useState();
   const [showModal, setShowModal] = useState(false);
   const [assessmentWarning, setAssessmentWarning] = useState();
+  const [campDetails, setCampDetails] = useState();
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -78,6 +79,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
   const getCampSessionsList = async () => {
     const resultCamp = await campService.getCampDetails({ id });
+    setCampDetails(resultCamp?.data);
     const result = await campService.getCampSessionsList({
       id: id,
     });
@@ -211,7 +213,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
           sessionDetails?.ordering == 20 &&
           submitStatus.status == "complete" &&
           !showModal &&
-          campDetails.type !== "main"
+          campDetails?.type === "pcr"
         ) {
           setShowModal(true);
         } else {
