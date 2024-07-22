@@ -249,8 +249,17 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         });
         setSchema(newSchema);
       }
+      if (page == "5") {
+        setYearsRange([moment(formData?.dob).year(), moment().year()]);
+      } else if (page == "1") {
+        let minYear = moment().subtract("years", 30);
+        let maxYear = moment().subtract("years", 12);
+        setYearsRange([minYear.year(), maxYear.year()]);
+      }
       if (schema?.properties?.type_of_learner) {
-        const lastYear = await benificiaryRegistoryService.lastYear();
+        const lastYear = await benificiaryRegistoryService.lastYear({
+          dob: formData?.dob,
+        });
 
         newSchema = getOptions(newSchema, {
           key: "type_of_learner",
@@ -308,7 +317,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           properties,
         });
         setSchema(resultData?.schema);
-        setfixedSchema({ ...newSchema, properties });
+        setfixedSchema(newSchema);
       }
 
       if (schema?.properties?.parent_support) {

@@ -583,7 +583,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const checkStateAndYear = (state_name, academic_year_name) => {
     if (
       state_name === "RAJASTHAN" &&
-      academic_year_name.includes("2023-2024")
+      (academic_year_name.includes("2023-2024") ||
+        academic_year_name.includes("2023-24"))
     ) {
       return true;
     }
