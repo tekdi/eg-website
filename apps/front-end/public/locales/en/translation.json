@@ -689,7 +689,8 @@
       "YES": "Yes"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "NO": "No",
+      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
+      "NO_MEANS_TO_TRAVEL": "No mean to travel",
       "TITLE": "Does the learner have the travel arrangements to the exam center?",
       "YES": "Yes"
     },
