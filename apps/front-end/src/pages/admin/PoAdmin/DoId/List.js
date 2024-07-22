@@ -226,7 +226,7 @@ export default function List() {
               </Button>
             )}
           />
-          {/* <Select
+          <Select
             minH="40px"
             maxH="40px"
             selectedValue={`${filter?.program_id}`}
@@ -243,7 +243,7 @@ export default function List() {
                 value={`${item?.id}`}
               />
             ))}
-          </Select> */}
+          </Select>
         </HStack>
         <DataTable
           customStyles={{
