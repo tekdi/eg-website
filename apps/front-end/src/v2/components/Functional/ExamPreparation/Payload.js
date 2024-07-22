@@ -5,7 +5,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 1,
+      field_name: "WILL_LEARNER_APPEAR_FOR_EXAM",
       observation_fields_id: "",
       response_value: formData?.WILL_LEARNER_APPEAR_FOR_EXAM || "",
     },
@@ -14,7 +14,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 2,
+      field_name: "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS",
       observation_fields_id: "",
       response_value:
         formData?.WILL_LEARNER_APPEAR_FOR_EXAM === "YES"
@@ -29,7 +29,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 5,
+      field_name: "DID_LEARNER_RECEIVE_ADMIT_CARD",
       observation_fields_id: "",
       response_value: formData?.DID_LEARNER_RECEIVE_ADMIT_CARD
         ? formData?.DID_LEARNER_RECEIVE_ADMIT_CARD.split(".")[
@@ -42,7 +42,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 3,
+      field_name: "HAS_LEARNER_PREPARED_PRACTICAL_FILE",
       observation_fields_id: "",
       response_value: formData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE
         ? formData?.HAS_LEARNER_PREPARED_PRACTICAL_FILE.split(".")[
@@ -55,7 +55,7 @@ export function finalPayload(id, formData, field) {
       context: "users",
       context_id: parseInt(id),
       field_id: "",
-      fields_sequence: 4,
+      field_name: "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER",
       observation_fields_id: "",
       response_value: formData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER
         ? formData?.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.split(".")[
@@ -69,7 +69,7 @@ export function finalPayload(id, formData, field) {
     //   context: "users",
     //   context_id: parseInt(id),
     //   field_id: "",
-    //   fields_sequence: 15,
+    //   field_name: "LEARNER_RECEIVED_EXAM_TIME_TABLE",
     //   observation_fields_id: "",
     //   response_value: formData?.LEARNER_RECEIVED_EXAM_TIME_TABLE || "",
     // },
@@ -77,17 +77,18 @@ export function finalPayload(id, formData, field) {
 
   const updatedPayload = payload
     .map((payloadItem) => {
+      const { field_name, ...otherData } = payloadItem;
       const correspondingField = field.find(
-        (fieldItem) => fieldItem.fields_sequence === payloadItem.fields_sequence
+        (fieldItem) => fieldItem.fields?.[0].title === field_name
       );
       if (correspondingField) {
         return {
-          ...payloadItem,
-          field_id: correspondingField.field_id,
-          observation_fields_id: correspondingField.id,
+          ...otherData,
+          field_id: parseInt(correspondingField.field_id),
+          observation_fields_id: parseInt(correspondingField.id),
         };
       } else {
-        return payloadItem;
+        return otherData;
       }
     })
     .map(({ fields_sequence, ...rest }) => rest);
