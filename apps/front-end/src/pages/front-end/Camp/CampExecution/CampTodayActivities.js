@@ -144,23 +144,12 @@ export default function CampTodayActivities({
             setButtonName();
           }
         }
-
-        data.forEach((element) => {
-          const currentDate = new Date();
-          const createdAtDate = new Date(
-            element?.session_tracks?.[0]?.created_at
-          );
-          const updatedDate = new Date(
-            element?.session_tracks?.[0]?.updated_at
-          );
-          if (
-            currentDate.toDateString() === createdAtDate.toDateString() ||
-            (currentDate.toDateString() === updatedDate.toDateString() &&
-              element?.session_tracks?.[0]?.status === "complete")
-          ) {
-            setSessionList(true);
-          }
-        });
+        const { countSession } = getSessionCount(data);
+        if (countSession > 0) {
+          setSessionList(true);
+        } else {
+          setSessionList(false);
+        }
       } catch (error) {
         console.log("Error in getCampSessionsList:", error);
       } finally {
@@ -209,6 +198,7 @@ export default function CampTodayActivities({
           id={id}
           campType={campType}
           sessionList={sessionList}
+          activityId={activityId}
         />
         <CardComponent
           _vstack={{
@@ -434,4 +424,72 @@ const getIncompleteAssessments = (data, assessmentType) => {
   }
 
   return filteredResult;
+};
+
+const getSessionCount = (data) => {
+  let count = 0;
+
+  const format = "YYYY-MM-DD";
+  const today = moment().format(format);
+
+  const result = data
+    .filter((e) => e.session_tracks?.[0]?.id)
+    ?.map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
+  let sessionData = result?.[result?.length - 1] || { ordering: 1 };
+
+  const c1 = [];
+  const c2 = [];
+  const c3 = [];
+
+  result.forEach((e) => {
+    const createdAt = moment(e.created_at).format(format);
+    const updatedAt = moment(e.updated_at).format(format);
+
+    if (e.status === "complete" && createdAt !== today && updatedAt === today) {
+      c1.push(e);
+    } else if (
+      e.status === "incomplete" &&
+      createdAt === today &&
+      updatedAt === today
+    ) {
+      c2.push(e);
+    } else if (
+      e.status === "complete" &&
+      createdAt === today &&
+      updatedAt === today
+    ) {
+      c3.push(e);
+    }
+  });
+
+  if (c1?.length > 0) {
+    count += 0.5;
+    sessionData = c1[0];
+  }
+
+  if (c2?.length > 0) {
+    count += 0.5;
+    sessionData = c2[0];
+  }
+
+  if (c3?.length > 0) {
+    count += 1;
+    sessionData = c3[0];
+  }
+
+  if (sessionData?.status === "complete" && count < 1.5) {
+    sessionData =
+      data.find((e) => sessionData?.ordering + 1 === e?.ordering) ||
+      sessionData;
+  }
+
+  if (count >= 1.5) {
+    sessionData = {};
+  }
+
+  return {
+    ...sessionData,
+    countSession: count,
+    lastSession: result?.[result?.length - 1],
+  };
 };

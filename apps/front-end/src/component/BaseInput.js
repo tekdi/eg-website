@@ -916,9 +916,13 @@ const transformErrors = (errors, schema, t) => {
             : "REQUIRED_MESSAGE"
         )} "${t(title)}"`;
       case "minItems":
-        return t("SELECT_MINIMUM", error?.params?.limit, title);
+        return t("SELECT_MINIMUM")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "maxItems":
-        return t("SELECT_MAXIMUM", error?.params?.limit, title);
+        return t("SELECT_MAXIMUM")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "enum":
         return t("SELECT_MESSAGE");
       case "format":

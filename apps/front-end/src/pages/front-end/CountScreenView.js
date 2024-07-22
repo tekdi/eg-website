@@ -15,6 +15,7 @@ import {
 import { HStack, Text, VStack, View } from "native-base";
 import React, { useEffect, useState } from "react";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function TableView({ footerLinks, userTokenInfo }) {
   const [statusData, setStatusData] = React.useState([]);
@@ -36,6 +37,7 @@ export default function TableView({ footerLinks, userTokenInfo }) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
+  const navigate = useNavigate();
 
   React.useEffect(async () => {
     const selectStatus = await benificiaryRegistoryService.getStatusList();
@@ -295,9 +297,14 @@ export default function TableView({ footerLinks, userTokenInfo }) {
     }
   };
 
+  const onPressBackButton = () => {
+    navigate(-1);
+  };
+
   return (
     <Layout
       _appBar={{
+        onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         _box: { bg: "white", shadow: "appBarShadow" },
         profile_url: facilitator?.profile_photo_1?.name,

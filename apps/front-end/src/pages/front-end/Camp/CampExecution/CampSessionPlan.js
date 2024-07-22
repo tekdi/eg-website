@@ -4,7 +4,12 @@ import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export const CampSessionPlan = ({ button_list, id, sessionList }) => {
+export const CampSessionPlan = ({
+  button_list,
+  id,
+  sessionList,
+  activityId,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [cards, setCards] = useState();
@@ -21,7 +26,8 @@ export const CampSessionPlan = ({ button_list, id, sessionList }) => {
           ...arr,
           {
             type: "MAIN_LEARNING_ACTIVITIES",
-            navigatePath: getNavigatePath("sessionslist"),
+            navigatePath: getNavigatePath(`sessionslist/${activityId}`),
+            showIcon: sessionList,
           },
         ];
       } else {
@@ -76,7 +82,7 @@ export const CampSessionPlan = ({ button_list, id, sessionList }) => {
             ...arr,
             {
               type: "PCR_LEARNING_ACTIVITIES",
-              navigatePath: getNavigatePath("sessionslist"),
+              navigatePath: getNavigatePath(`sessionslist/${activityId}`),
               showIcon: sessionList,
             },
           ];
@@ -93,14 +99,14 @@ export const CampSessionPlan = ({ button_list, id, sessionList }) => {
         <Pressable onPress={() => navigate(card.navigatePath)} key={card.type}>
           <CardComponent _body={{ pt: 4, space: "4" }}>
             {(card?.total_count >= 0 || card.data?.length >= 0) && (
-              <VStack>
+              <VStack space={1}>
                 <HStack space={4} alignItems={"center"}>
+                  <FrontEndTypo.H5 bold color="textGreyColor.750">
+                    {t("COMPLETED")} :
+                  </FrontEndTypo.H5>
                   <FrontEndTypo.H4 bold color="textGreyColor.750">
-                    {t("COMPLETED_SESSIONS")} :
-                  </FrontEndTypo.H4>
-                  <FrontEndTypo.H3 bold color="textGreyColor.750">
                     {card?.total_count - card.data?.length}/{card?.total_count}
-                  </FrontEndTypo.H3>
+                  </FrontEndTypo.H4>
                 </HStack>
                 <Progress
                   value={calculateProgress(

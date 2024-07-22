@@ -5,16 +5,15 @@ export default {
     1: {
       title: "PERSONAL_DETAILS",
       type: "object",
+      required: ["marital_status", "social_category"],
       properties: {
         marital_status: {
-          title: "MARITAL_STATUS",
-          description: "MARITAL_STATUS",
+          label: "MARITAL_STATUS",
           type: "string",
           format: "RadioBtn",
         },
         social_category: {
-          title: "SOCIAL_CATEGORY",
-          description: "SOCIAL_CATEGORY",
+          label: "SOCIAL_CATEGORY",
           type: "string",
           format: "RadioBtn",
         },

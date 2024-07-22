@@ -429,7 +429,11 @@ export const RadioBtn = ({
         }}
         schema={{
           // _pressable: { style: { backgroundColor: "#999" } },
-          _stackIcon: { flexDirection: "row" },
+          _text: { textAlign: "" },
+          _stackIcon: {
+            flexDirection: "row",
+            alignItems: "flex-start",
+          },
           icons: items?.map((e) =>
             e.value == value
               ? {
@@ -452,6 +456,7 @@ export const RadioBtn = ({
           ),
           // _box: { gap: "0", width: "auto" },
           // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+          ...(schema || {}),
         }}
         value={value}
         onChange={(e) => {
@@ -967,7 +972,6 @@ const transformErrors = (errors, schema, t) => {
   const getMessage = (error) => {
     const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
     const title = getTitle(schemaItem);
-
     switch (error.name) {
       case "required":
         return `${t(
@@ -976,9 +980,13 @@ const transformErrors = (errors, schema, t) => {
             : "REQUIRED_MESSAGE"
         )} "${t(title)}"`;
       case "minItems":
-        return t("SELECT_MINIMUM", error?.params?.limit, title);
+        return t("SELECT_MINIMUM")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "maxItems":
-        return t("SELECT_MAXIMUM", error?.params?.limit, title);
+        return t("SELECT_MAXIMUM")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "enum":
         return t("SELECT_MESSAGE");
       case "type":

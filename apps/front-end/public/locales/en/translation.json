@@ -676,7 +676,8 @@
   "EXAM_START_STATUS": "Exam Start Status",
   "EXAM_PREPARATION": {
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
-      "NO": "no",
+      "NO": "No",
+      "NOT_APPLICABLE": "Not Applicable",
       "TITLE": "Did the learner receive the  admit card?",
       "YES": "Yes",
       "YET_TO_BE_PROCEED": "Yet to be proceed"
@@ -688,8 +689,7 @@
       "YES": "Yes"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
-      "NO_MEANS_TO_TRAVEL": "No mean to travel",
+      "NO": "No",
       "TITLE": "Does the learner have the travel arrangements to the exam center?",
       "YES": "Yes"
     },
@@ -699,7 +699,7 @@
       "YES": "Yes"
     },
     "WILL_LEARNER_APPEAR_FOR_EXAM": {
-      "NO": "no",
+      "NO": "No",
       "TITLE1": "Will",
       "TITLE2": "appear for the exam?",
       "YES": "yes"
@@ -712,7 +712,7 @@
       "GETTING_MARRIED/HAD_BABY": "Getting Married/Had a baby",
       "HOUSEHOLD_RESPONSIBILITIES": "Household responsibilities",
       "ILLNESS": "Illness",
-      "TITLE": "Choose the reason ",
+      "TITLE": "Choose the reason",
       "TRAVEL_RELATED_PROBLEM_NO_MEAN_OR_FARE": "Travel related problem, No mean or fare",
       "LEARNER_DEATH": "Learner's Death",
       "LEARNER_ESCAPED": "Learner's migration",
@@ -1001,6 +1001,7 @@
   "LEARNERS_INFO": "Learner Info",
   "LEARNERS_LIST": "Learner's List",
   "LEARNERS_NAME": "Learner's Name",
+  "LEARNER_STATUS_COUNT": "Learner status count",
   "LEARNERS_SUBJECT_CSV": "Learner's subject CSV",
   "LEARNERS_TARGET": "Learner's Target",
   "LEARNERS_WHATSAPP_NUMBER": "(WhatsApp phone number that is readily available to the learner)",
@@ -1215,7 +1216,7 @@
   "PCR_EDUCATION_LEVEL": "Neev learning Level Evaluation",
   "PCR_EVALUATION_1": "Formative Assessment-I",
   "PCR_EVALUATION_2": "Formative Assessment-II",
-  "PCR_FINAL_EVALUATON": "Final level Education (Evaluate on the last day of camp)",
+  "PCR_FINAL_EVALUATON": "Final level Education",
   "PCR_INITIAL_LEVEL": "Baseline Education Level",
   "PCR_SCORES_RAPID_QUESTION_ABSENT": "Absent",
   "PCR_SCORES_BASELINE_AND_ENDLINE_A": "A",
@@ -1468,6 +1469,7 @@
   "SEARCH_BY_NAME": "Search By Name",
   "SEARCH_BY_PRERAK_NAME": "Search by Prerak name",
   "SELECT": "Select",
+  "SELECT_ABSENT_REASON": "Select absent reason",
   "SELECT_ACADEMIC_YEAR": "Select Academic year",
   "SELECT_ALL": "Select all",
   "SELECT_BOARD": "Select Board",
@@ -2011,5 +2013,9 @@
   "YOU_HAVE_ALREADY_APPLIED_FOR_THIS_SCHOLARSHIP": "You have already applied for this scholarship. It's current status is",
   "SYNC_APPLICATION_STATUS": "Sync Application Status",
   "TOTAL_NUMBER_OF_STUDENTS": "Total Number Of Students",
-  "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?"
+  "SCORES_SUBMIT_WARNING": "You have not entered the scores for all the learners. Do you want to continue?",
+  "SCORES_SUBMIT_SUCCESS": "You have successfully submitted the scores for all the learners. Please continue with the camp.",
+  "ALL_SESSIONS_COMPLETED": "If you complete the 20th session, your today's camp will also end. Do you want to complete the 20th session and end today's camp?",
+  "DO_YOU_WISH_TO_CONTINUE": "Do you wish to continue?",
+  "NO_SUBJECTS_FOR_THIS_LEARNER": "Assessment subjects not opted by this learner."
 }

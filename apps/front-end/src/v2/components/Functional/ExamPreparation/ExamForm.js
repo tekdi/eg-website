@@ -19,7 +19,7 @@ import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const EpcpForm = ({ footerLinks }) => {
+const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [loading, setLoading] = useState(true);
@@ -82,7 +82,7 @@ const EpcpForm = ({ footerLinks }) => {
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.",
-                3
+                2
               ),
               default: null,
             },
@@ -94,7 +94,7 @@ const EpcpForm = ({ footerLinks }) => {
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.",
-                4
+                1
               ),
               default: null,
             },
@@ -139,7 +139,7 @@ const EpcpForm = ({ footerLinks }) => {
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.",
-                1
+                4
               ),
             },
           },
@@ -316,6 +316,10 @@ const EpcpForm = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       loading={loading}
       _appBar={{
         onPressBackButton,

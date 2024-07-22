@@ -1,13 +1,12 @@
 import {
   FrontEndTypo,
-  IconByName,
   Layout,
-  campService,
   Loading,
+  campService,
   enumRegistryService,
-  arrList,
   jsonParse,
 } from "@shiksha/common-lib";
+import Chip from "component/BeneficiaryStatus";
 import moment from "moment";
 import {
   Alert,
@@ -19,25 +18,15 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import SessionActions, { SessionList } from "./CampSessionModal";
-import Chip from "component/BeneficiaryStatus";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
-
-const checkNext = (status, updated_at) => {
-  return (
-    status === "complete" &&
-    updated_at &&
-    moment.utc(updated_at).format("YYYY-MM-DD") ===
-      moment.utc().format("YYYY-MM-DD")
-  );
-};
+import SessionActions, { SessionList } from "./CampSessionModal";
 
 export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const { id, activityId } = useParams();
   const [sessionList, setSessionList] = useState([]);
   const [sessionActive, setSessionActive] = useState();
   const [totalSessionsCompleted, setTotalSessionsCompleted] = useState(0);
@@ -50,10 +39,11 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const [error, setError] = useState();
   const navigate = useNavigate();
   const [bodyHeight, setBodyHeight] = useState();
-  const [campDetails, setCampDetails] = useState();
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
-  // const [campType, setCampType] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [assessmentWarning, setAssessmentWarning] = useState();
+  const [campDetails, setCampDetails] = useState();
 
   const getData = useCallback(async () => {
     if (modalVisible) {
@@ -89,7 +79,6 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
   const getCampSessionsList = async () => {
     const resultCamp = await campService.getCampDetails({ id });
-    // setCampType(campDetails?.data?.type);
     setCampDetails(resultCamp?.data);
     const result = await campService.getCampSessionsList({
       id: id,
@@ -182,15 +171,28 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
               ? "edit_complete_session"
               : "edit_incomplete_session",
           session_feedback: submitStatus?.reason,
+          ...(assessmentWarning && { warning: "accepted" }),
         });
         if (!result?.success) {
-          setError(
-            <SessionErrorMessage {...result} navigate={navigate} t={t} />
-          );
+          if (result?.data?.[0]?.assessment_type?.length > 0) {
+            setAssessmentWarning(
+              <SessionErrorMessage
+                {...result}
+                navigate={navigate}
+                t={t}
+                show={false}
+              />
+            );
+          } else {
+            setError(
+              <SessionErrorMessage {...result} navigate={navigate} t={t} />
+            );
+          }
         } else {
           await getCampSessionsList();
           setSubmitStatus();
           setModalVisible();
+          setAssessmentWarning();
         }
       } else {
         let newData = { status: submitStatus?.status };
@@ -198,33 +200,63 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
           newData = {
             ...newData,
             lesson_plan_incomplete_feedback: submitStatus?.reason,
+            ...(assessmentWarning && { warning: "accepted" }),
           };
         } else if (submitStatus?.status === "complete") {
           newData = {
             ...newData,
             lesson_plan_complete_feedback: submitStatus?.reason,
+            ...(assessmentWarning && { warning: "accepted" }),
           };
         }
-        const result = await campService.creatCampSession({
-          ...newData,
-          learning_lesson_plan_id: modalVisible,
-          camp_id: id,
-        });
-        if (!result?.success) {
-          setError(
-            <SessionErrorMessage {...result} navigate={navigate} t={t} />
-          );
+        if (
+          sessionDetails?.ordering == 20 &&
+          submitStatus.status == "complete" &&
+          !showModal &&
+          campDetails?.type === "pcr"
+        ) {
+          setShowModal(true);
         } else {
-          await getCampSessionsList();
-          setSubmitStatus();
-          setModalVisible();
+          const result = await campService.creatCampSession({
+            ...newData,
+            learning_lesson_plan_id: modalVisible,
+            camp_id: id,
+          });
+          if (!result?.success) {
+            if (result?.data?.[0]?.assessment_type?.length > 0) {
+              setAssessmentWarning(
+                <SessionErrorMessage
+                  {...result}
+                  navigate={navigate}
+                  t={t}
+                  show={false}
+                />
+              );
+            } else {
+              setError(
+                <SessionErrorMessage {...result} navigate={navigate} t={t} />
+              );
+            }
+          } else if (showModal) {
+            const obj = {
+              id: activityId,
+              edit_page_type: "edit_end_date",
+            };
+            await campService.addMoodActivity(obj);
+            navigate("/camps");
+          } else {
+            await getCampSessionsList();
+            setSubmitStatus();
+            setModalVisible();
+            setAssessmentWarning();
+          }
         }
       }
     } else {
       setError("PLEASE_SELECT");
     }
     setIsDisable(false);
-  }, [submitStatus]);
+  }, [submitStatus, showModal, assessmentWarning]);
 
   const handleCancel = () => {
     setError();
@@ -358,7 +390,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
               colorScheme="warning"
             />
           </VStack>
-          <ScrollView maxH={bodyHeight - 150} p="4">
+          <ScrollView maxH={bodyHeight - 190} p="4">
             <SessionList {...{ sessionList, sessionActive, setModalVisible }} />
           </ScrollView>
         </VStack>
@@ -406,15 +438,70 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
             </Modal.Body>
           </Modal.Content>
         </Modal>
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header textAlign={"center"}>
+              {t("EXPIRY_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body>
+              <FrontEndTypo.H2>{t("ALL_SESSIONS_COMPLETED")}</FrontEndTypo.H2>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton
+                onPress={() => handlePartiallyDone(submitStatus?.id)}
+              >
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+
+        <Modal
+          isOpen={assessmentWarning}
+          onClose={() => {
+            setAssessmentWarning();
+          }}
+        >
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header textAlign={"center"}>
+              {t("EXPIRY_CONTENT.HEADING")}
+            </Modal.Header>
+            <Modal.Body>
+              <Alert status="warning" alignItems={"start"}>
+                {assessmentWarning}
+                <FrontEndTypo.H3>
+                  {t("DO_YOU_WISH_TO_CONTINUE")}
+                </FrontEndTypo.H3>
+              </Alert>
+            </Modal.Body>
+            <Modal.Footer justifyContent={"space-evenly"}>
+              <FrontEndTypo.Secondarybutton
+                onPress={() => {
+                  setAssessmentWarning();
+                }}
+              >
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+              <FrontEndTypo.Primarybutton onPress={() => handlePartiallyDone()}>
+                {t("CONTINUE")}
+              </FrontEndTypo.Primarybutton>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </Stack>
       {/* )} */}
     </Layout>
   );
 }
 
-const SessionErrorMessage = ({ t, message, data, navigate }) => (
+const SessionErrorMessage = ({ t, message, data, navigate, show = true }) => (
   <VStack>
-    {t("CAMP_SESSION_INCOMPLETE_UNTIL_ALL_ASSESSMENTS_COMPLETED")}
+    {show && t("CAMP_SESSION_INCOMPLETE_UNTIL_ALL_ASSESSMENTS_COMPLETED")}
     <FrontEndTypo.H3>{t(message)}</FrontEndTypo.H3>
     {data && (
       <HStack flexWrap={"wrap"}>

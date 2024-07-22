@@ -5,6 +5,7 @@ import {
   UserCard,
   benificiaryRegistoryService,
   campService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { CheckIcon, HStack, Modal, Select, VStack } from "native-base";
 import { useEffect, useState } from "react";
@@ -12,9 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
-const scores = ["a+", "a", "b", "c", "d", "e"];
-
-export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
+export default function CampLearnerScores({ userTokenInfo }) {
   const { t } = useTranslation();
   const params = useParams();
   const [studentsData, setStudentsData] = useState([]);
@@ -23,8 +22,8 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
   const fa_id = localStorage.getItem("id");
   const [facilitator, setFacilitator] = useState();
   const [showModal, setShowModal] = useState(false);
-
-  const programDetails = JSON.parse(localStorage.getItem("program"));
+  const [scoresArray, setScoresArray] = useState([]);
+  const [submit, setSubmit] = useState(false);
 
   const getStudentsData = async () => {
     try {
@@ -57,8 +56,14 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
       if (!IpUserInfo) {
         ipUserData = await setIpUserInfo(fa_id);
       }
-
       setFacilitator(ipUserData);
+    }
+    const enumData = await enumRegistryService.listOfEnum();
+    if (enumData?.data) {
+      const scoresData = enumData?.data?.PCR_SCORES_BASELINE_AND_ENDLINE?.map(
+        (item) => item.value
+      );
+      setScoresArray(scoresData || []);
     }
     setLoading(false);
   }, []);
@@ -70,16 +75,25 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
         : "endline_learning_level";
 
     const canSubmit = studentsData?.every((item) => {
-      return scores.includes(item?.pcr_scores?.[0]?.[key]);
+      return scoresArray.includes(item?.pcr_scores?.[0]?.[key]);
     });
 
-    navigate(-1);
+    if (canSubmit) {
+      setShowModal(true);
+      setSubmit(true);
+    } else {
+      setShowModal(true);
+    }
+  };
 
-    // if (canSubmit) {
-    //   navigate(-1);
-    // } else {
-    //   setShowModal(true);
-    // }
+  const handleUpdateStudentScore = (userId, updatedScores) => {
+    setStudentsData((prevStudentsData) =>
+      prevStudentsData.map((student) =>
+        student.id === userId
+          ? { ...student, pcr_scores: updatedScores }
+          : student
+      )
+    );
   };
 
   if (loading) {
@@ -93,8 +107,7 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
           params.type === "base-line"
             ? t("PCR_INITIAL_LEVEL")
             : t("PCR_FINAL_EVALUATON"),
-        onPressBackButton: () =>
-          navigate(`/camps/${params?.id}/campexecution/activities`),
+        onPressBackButton: checkSubmissionStatus,
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("SESSION_LIST")}</FrontEndTypo.H2>,
         _box: { bg: "white", shadow: "appBarShadow" },
@@ -111,7 +124,8 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
           <StudentCard
             key={student?.user_id}
             student={student}
-            program_id={programDetails?.program_id}
+            updateStudentScore={handleUpdateStudentScore}
+            scoresArray={scoresArray}
           />
         ))}
         <HStack justifyContent={"center"}>
@@ -123,18 +137,24 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
-          <Modal.Header textAlign={"center"}>{t("WARNING")}</Modal.Header>
+          <Modal.Header textAlign={"center"}>
+            {t("EXPIRY_CONTENT.HEADING")}
+          </Modal.Header>
           <Modal.Body>
-            <FrontEndTypo.H2>{t("SCORES_SUBMIT_WARNING")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2>
+              {submit ? t("SCORES_SUBMIT_SUCCESS") : t("SCORES_SUBMIT_WARNING")}
+            </FrontEndTypo.H2>
           </Modal.Body>
           <Modal.Footer justifyContent={"space-evenly"}>
-            <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
-              {t("CANCEL")}
-            </FrontEndTypo.Secondarybutton>
+            {!submit && (
+              <FrontEndTypo.Secondarybutton onPress={() => setShowModal(false)}>
+                {t("CANCEL")}
+              </FrontEndTypo.Secondarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               onPress={() => {
                 setShowModal(false);
-                navigate(-1);
+                navigate(`/camps/${params?.id}/campexecution/activities`);
               }}
             >
               {t("CONTINUE")}
@@ -146,21 +166,26 @@ export default function CampLearnerScores({ footerLinks, userTokenInfo }) {
   );
 }
 
-const StudentCard = ({ student, program_id }) => {
+const StudentCard = ({ student, updateStudentScore, scoresArray }) => {
   const [data, setData] = useState(student);
   const params = useParams();
 
   const updateValue = async (key, value) => {
-    setData((prevData) => {
-      const newPcrScores = prevData.pcr_scores.map((score) => {
-        if (params.type === "base-line") {
-          return { ...score, baseline_learning_level: value };
-        } else {
-          return { ...score, endline_learning_level: value };
-        }
-      });
-      return { ...prevData, pcr_scores: newPcrScores };
-    });
+    const scoreKey =
+      params.type === "base-line"
+        ? "baseline_learning_level"
+        : "endline_learning_level";
+
+    const newPcrScores =
+      data.pcr_scores && data.pcr_scores.length > 0
+        ? data.pcr_scores.map((score) => ({ ...score, [scoreKey]: value }))
+        : [{ [scoreKey]: value }];
+    setData((prevData) => ({
+      ...prevData,
+      pcr_scores: newPcrScores,
+    }));
+
+    updateStudentScore(data?.id, newPcrScores);
 
     await benificiaryRegistoryService.createPCRScores({
       user_id: data?.id,
@@ -175,12 +200,20 @@ const StudentCard = ({ student, program_id }) => {
         p: 2,
         space: 1,
         flex: 1,
-        bg: "green.100",
+        bg: data?.pcr_scores?.[0]?.[
+          params.type === "base-line"
+            ? "baseline_learning_level"
+            : "endline_learning_level"
+        ]
+          ? "green.100"
+          : "gray.100",
       }}
       _vstack={{ py: 2 }}
       _image={{ size: 45, color: "gray" }}
       rightElement={
         <Select
+          maxH={"30px"}
+          overflow="none"
           accessibilityLabel="Choose Score"
           selectedValue={
             data?.pcr_scores?.[0]?.[
@@ -204,7 +237,7 @@ const StudentCard = ({ student, program_id }) => {
             )
           }
         >
-          {scores.map((score, index) => (
+          {scoresArray.map((score, index) => (
             <Select.Item
               key={index}
               label={score.toUpperCase()}

@@ -27,8 +27,6 @@ export default function List({ userTokenInfo, stateName }) {
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
   const [campCount, setCampCount] = useState();
-  const [learnerWithoutBaselineCount, setLearnerWithoutBaselineCount] =
-    useState();
   const [chartData, SetChartData] = useState();
   const [leanerList, setLeanerList] = useState([]);
 
@@ -52,9 +50,6 @@ export default function List({ userTokenInfo, stateName }) {
     } else {
       setCommunityLength(2);
     }
-    const getaBselineCount =
-      await benificiaryRegistoryService.getWithoutBaseline();
-    setLearnerWithoutBaselineCount(getaBselineCount?.data?.count || 0);
     const prerak_status = localStorage.getItem("status");
     setIpStatus(prerak_status);
     setEnumOptions(enums?.data || {});
@@ -110,9 +105,9 @@ export default function List({ userTokenInfo, stateName }) {
   const mergingData = (flattenedList, report) => {
     const mergedArray = flattenedList?.map((user) => {
       const userData = { ...user };
-      const responses = report.reduce((acc, observation) => {
-        const fieldResponse = observation.field_responses.find(
-          (response) => response.context_id === user.user_id
+      const responses = report?.reduce((acc, observation) => {
+        const fieldResponse = observation?.field_responses?.find(
+          (response) => response.context_id === user?.user_id
         );
         if (fieldResponse) {
           acc.push({
@@ -129,11 +124,11 @@ export default function List({ userTokenInfo, stateName }) {
     setLeanerList(data);
   };
   const getStatus = (responses) => {
-    const response1 = responses.find((response) => response.field_id === 1);
-    const response2 = responses.find((response) => response.field_id === 2);
-    const response3 = responses.find((response) => response.field_id === 3);
-    const response5 = responses.find((response) => response.field_id === 5);
-    const response7 = responses.find((response) => response.field_id === 7);
+    const response1 = responses?.find((response) => response.field_id === 1);
+    const response2 = responses?.find((response) => response.field_id === 2);
+    const response3 = responses?.find((response) => response.field_id === 3);
+    const response5 = responses?.find((response) => response.field_id === 5);
+    const response7 = responses?.find((response) => response.field_id === 7);
     if (!response1 || !response2 || !response3 || !response5 || !response7) {
       return t("NOT_ENTERED");
     } else if (
@@ -202,7 +197,7 @@ export default function List({ userTokenInfo, stateName }) {
           {`${t("HELLO")}, ${userTokenInfo?.authUser?.first_name}!`}
         </FrontEndTypo.H3>
 
-        {campList?.pcr_camp?.length > 0 && campList?.pcr_camp?.length < 2 && (
+        {campList?.pcr_camp?.length > 0 && campList?.pcr_camp?.length <= 2 && (
           <VStack
             // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
@@ -226,19 +221,17 @@ export default function List({ userTokenInfo, stateName }) {
                         <FrontEndTypo.H2 bold color={"textGreyColor.750"}>
                           {t("PCR_CAMPS")}
                         </FrontEndTypo.H2>
-                        <VStack>
-                          {/* {learnerWithoutBaselineCount && (
-                            <FrontEndTypo.H3 color="textMaroonColor.400">
-                              {`${learnerWithoutBaselineCount} `}
-                              {t("UNMAPPED_LEARNER_BUT_BASELINE_NOT_SUBMITTED")}
-                            </FrontEndTypo.H3>
-                          )} */}
+                        {/* <VStack>
                           <FrontEndTypo.H3 color="textMaroonColor.400">
                             {`${nonRegisteredUser?.length} `}
                             {t("UNMAPPED_LEARNERS")}
                           </FrontEndTypo.H3>
-                        </VStack>
+                        </VStack> */}
                         <HStack justifyContent={"space-between"}>
+                          <FrontEndTypo.H3 color="textMaroonColor.400">
+                            {`${nonRegisteredUser?.length} `}
+                            {t("UNMAPPED_LEARNERS")}
+                          </FrontEndTypo.H3>
                           <Center>
                             {nonRegisteredUser.length > 0 && (
                               <Avatar.Group

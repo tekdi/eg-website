@@ -16,12 +16,10 @@ import TimelineItem from "./TimeLine";
 function CampExecutionEnd({ facilitator, learnerCount, campType }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [disable, setDisable] = useState(true);
+  const [disableEndCamp, setDisableEndCamp] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [sessionList, setSessionList] = useState(false);
-  const [learnerAttendanceCount, setLearnerAttendanceCount] = useState(false);
   const [todaysActivity, setTodaysActivity] = useState();
   const [disableTodayAct, setdisableTodayAct] = useState(true);
 
@@ -43,16 +41,9 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     if (result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1) {
       setdisableTodayAct(true);
     } else {
-      setLearnerAttendanceCount(true);
       setdisableTodayAct(false);
     }
-    if (
-      result?.data?.beneficairesAttendaceCount?.aggregate?.count >= 1 &&
-      (result?.data?.misc_activities?.misc_activities?.length > 0 ||
-        result?.data?.today_session_count?.aggregate?.count > 0)
-    ) {
-      setDisable(false);
-    }
+
     if (
       result?.data?.beneficairesAttendaceCount?.aggregate?.count > 1 &&
       result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1
@@ -65,17 +56,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     if (todaysActivity?.id) {
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
-      let sessionListData = false;
-      data.forEach((element) => {
-        const currentDate = new Date();
-        const createdAtDate = new Date(
-          element?.session_tracks?.[0]?.created_at
-        );
-        if (currentDate.toDateString() === createdAtDate.toDateString()) {
-          sessionListData = true;
-          setSessionList(true);
-        }
-      });
+      const { countSession } = getSessionCount(data);
+      if (countSession > 0) {
+        setDisableEndCamp(false);
+      } else {
+        setDisableEndCamp(true);
+      }
     }
     setLoading(false);
   }, [todaysActivity?.id, step, learnerCount, facilitator, id]);
@@ -84,7 +70,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     fetchData();
   }, [fetchData]);
   const endCamp = useCallback(async () => {
-    setDisable(true);
+    setDisableEndCamp(true);
     const obj = {
       id: todaysActivity?.id,
       edit_page_type: "edit_end_date",
@@ -165,21 +151,21 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             },
             {
               title: t("END_CAMP"),
-              isDone: !disable,
+              isDone: !disableEndCamp,
               onPress: () => setOpenModal(true),
             },
           ]}
         />
         <FrontEndTypo.Primarybutton
           onPress={() => {
-            !disable
+            !disableEndCamp
               ? setOpenModal(true)
               : !disableTodayAct
               ? navigate(`/camps/${id}/campexecution/activities`)
               : navigate(`/camps/${id}/campexecution/attendance`);
           }}
         >
-          {!disable
+          {!disableEndCamp
             ? t("END_CAMP")
             : !disableTodayAct
             ? t("TODAYS_TASKS")
@@ -235,4 +221,72 @@ export default CampExecutionEnd;
 CampExecutionEnd.propTypes = {
   facilitator: PropTypes.any,
   learnerCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+const getSessionCount = (data) => {
+  let count = 0;
+
+  const format = "YYYY-MM-DD";
+  const today = moment().format(format);
+
+  const result = data
+    .filter((e) => e.session_tracks?.[0]?.id)
+    ?.map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
+  let sessionData = result?.[result?.length - 1] || { ordering: 1 };
+
+  const c1 = [];
+  const c2 = [];
+  const c3 = [];
+
+  result.forEach((e) => {
+    const createdAt = moment(e.created_at).format(format);
+    const updatedAt = moment(e.updated_at).format(format);
+
+    if (e.status === "complete" && createdAt !== today && updatedAt === today) {
+      c1.push(e);
+    } else if (
+      e.status === "incomplete" &&
+      createdAt === today &&
+      updatedAt === today
+    ) {
+      c2.push(e);
+    } else if (
+      e.status === "complete" &&
+      createdAt === today &&
+      updatedAt === today
+    ) {
+      c3.push(e);
+    }
+  });
+
+  if (c1?.length > 0) {
+    count += 0.5;
+    sessionData = c1[0];
+  }
+
+  if (c2?.length > 0) {
+    count += 0.5;
+    sessionData = c2[0];
+  }
+
+  if (c3?.length > 0) {
+    count += 1;
+    sessionData = c3[0];
+  }
+
+  if (sessionData?.status === "complete" && count < 1.5) {
+    sessionData =
+      data.find((e) => sessionData?.ordering + 1 === e?.ordering) ||
+      sessionData;
+  }
+
+  if (count >= 1.5) {
+    sessionData = {};
+  }
+
+  return {
+    ...sessionData,
+    countSession: count,
+    lastSession: result?.[result?.length - 1],
+  };
 };

@@ -3,7 +3,6 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  Loading,
   SelectStyle,
   arrList,
   benificiaryRegistoryService,
@@ -18,7 +17,15 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
-import { Box, HStack, Input, Pressable, Select, VStack } from "native-base";
+import {
+  Box,
+  HStack,
+  Input,
+  Pressable,
+  Select,
+  VStack,
+  Spinner,
+} from "native-base";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -287,6 +294,25 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
     window ? window.navigator.onLine : false
   );
 
+  const state_name =
+    JSON.parse(localStorage.getItem("program"))?.state_name || "";
+
+  const academic_year_name =
+    JSON.parse(localStorage.getItem("academic_year"))?.academic_year_name || "";
+
+  const checkStateAndYear = (state_name, academic_year_name) => {
+    if (
+      state_name === "RAJASTHAN" &&
+      (academic_year_name.includes("2023-2024") ||
+        academic_year_name.includes("2023-24"))
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
+
   const saveDataToIndexedDB = async () => {
     const obj = {
       edit_req_for_context: "users",
@@ -552,7 +578,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   useEffect(async () => {
     const { search } = filter;
     setSearch(search);
-    setLoadingList(true);
+    if (filter?.page < 2) {
+      setLoadingList(true);
+    }
     const { currentPage, totalPages, error, ...result } =
       await benificiaryRegistoryService.getBeneficiariesList(filter);
     if (!error) {
@@ -680,6 +708,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           </Box>
         </HStack>
       </VStack>
+
       {!loadingList ? (
         <InfiniteScroll
           dataLength={data?.length}
@@ -691,7 +720,13 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           }
           hasMore={hasMore}
           height={loadingHeight}
-          loader={<Loading height="100" />}
+          loader={
+            <Spinner
+              accessibilityLabel="Loading posts"
+              color="bgRed.500"
+              size="lg"
+            />
+          }
           endMessage={
             <FrontEndTypo.H3
               fontWeight={"600"}
@@ -709,39 +744,46 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           <List data={data} />
         </InfiniteScroll>
       ) : (
-        <Loading height={loadingHeight} />
+        <Spinner
+          accessibilityLabel="Loading posts"
+          color="bgRed.500"
+          size="lg"
+        />
       )}
-      <HStack
-        ref={refButton}
-        width={"100%"}
-        bg={"white"}
-        flex={1}
-        safeAreaTop
-        position="fixed"
-        bottom="70px"
-        zIndex={"9999999"}
-      >
-        <FrontEndTypo.Secondarybutton
-          onPress={(e) => {
-            if (
-              [
-                "pragati_mobilizer",
-                "selected_prerak",
-                "selected_for_training",
-                "selected_for_onboarding",
-              ].includes(facilitator.status)
-            ) {
-              navigate(`/beneficiary`);
-            } else {
-              navigate("/beneficiary");
-            }
-          }}
-          mx="auto"
-          my="2"
+
+      {!hideAddLearner && (
+        <HStack
+          ref={refButton}
+          width={"100%"}
+          bg={"white"}
+          flex={1}
+          safeAreaTop
+          position="fixed"
+          bottom="70px"
+          zIndex={"9999999"}
         >
-          {t("ADD_MORE_AG")}
-        </FrontEndTypo.Secondarybutton>
-      </HStack>
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => {
+              if (
+                [
+                  "pragati_mobilizer",
+                  "selected_prerak",
+                  "selected_for_training",
+                  "selected_for_onboarding",
+                ].includes(facilitator.status)
+              ) {
+                navigate(`/beneficiary`);
+              } else {
+                navigate("/beneficiary");
+              }
+            }}
+            mx="auto"
+            my="2"
+          >
+            {t("ADD_MORE_AG")}
+          </FrontEndTypo.Secondarybutton>
+        </HStack>
+      )}
     </Layout>
   );
 }

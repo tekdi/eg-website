@@ -6,7 +6,12 @@ export default {
       title: "BASIC_DETAILS",
       description: "CONTACT_DETAILS",
       type: "object",
-      required: ["mobile"],
+      required: [
+        "mobile",
+        "mark_as_whatsapp_number",
+        "device_type",
+        "device_ownership",
+      ],
       properties: {
         mobile: {
           type: "number",
@@ -14,7 +19,7 @@ export default {
         },
         mark_as_whatsapp_number: {
           type: "string",
-          description: "MARK_AS_WHATSAPP_REGISTER",
+          label: "MARK_AS_WHATSAPP_REGISTER",
           format: "RadioBtn",
           _stack: { direction: "row", justifyContent: "space-between" },
           enumNames: ["YES", "NO"],
@@ -22,7 +27,7 @@ export default {
         },
         device_type: {
           type: "string",
-          description: "TYPE_OF_MOBILE_PHONE",
+          label: "TYPE_OF_MOBILE_PHONE",
           format: "CustomR",
           grid: 2,
           icons: [
@@ -34,19 +39,19 @@ export default {
         },
         device_ownership: {
           type: "string",
-          description: "MARK_OWNERSHIP",
+          label: "MARK_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],
         },
 
         alternative_mobile_number: {
-          description: "ALTERNATIVE_NUMBER",
+          label: "ALTERNATIVE_NUMBER",
           type: ["number", "null"],
           title: "MOBILE_NUMBER",
         },
         alternative_device_type: {
-          description: "TYPE_OF_MOBILE_PHONE",
+          label: "TYPE_OF_MOBILE_PHONE",
           format: "RadioBtn",
           type: "string",
           enumNames: ["SMARTPHONE", "BASIC"],
@@ -54,7 +59,7 @@ export default {
         },
         alternative_device_ownership: {
           type: "string",
-          description: "MARK_OWNERSHIP",
+          label: "MARK_OWNERSHIP",
           format: "RadioBtn",
           enumNames: ["SELF", "FAMILY_MEMBER", "NEIGHBOUR", "OTHER"],
           enum: ["self", "family_member", "neighbour", "other"],

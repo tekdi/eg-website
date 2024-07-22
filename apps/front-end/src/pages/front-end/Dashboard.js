@@ -100,6 +100,9 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const state_name =
     JSON.parse(localStorage.getItem("program"))?.state_name || "";
 
+  const academic_year_name =
+    JSON.parse(localStorage.getItem("academic_year"))?.academic_year_name || "";
+
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
@@ -577,6 +580,18 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [isOnline]);
 
+  const checkStateAndYear = (state_name, academic_year_name) => {
+    if (
+      state_name === "RAJASTHAN" &&
+      (academic_year_name.includes("2023-2024") ||
+        academic_year_name.includes("2023-24"))
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
   return (
     <Layout
       loading={loading}
@@ -591,7 +606,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       pageTitle={t("HOME")}
     >
       <VStack pb="5" style={{ zIndex: -1 }}>
-        <VStack space="5">
+        <VStack space="2">
           {prerak_status === "applied" && (
             <InfoBox status={prerak_status} progress={progress} />
           )}
@@ -785,41 +800,45 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             "selected_prerak",
             "selected_for_training",
             "selected_for_onboarding",
-          ].includes(prerak_status) && (
-            <Stack
-              py={0}
-              px={4}
-              pb={"7"}
-              mx={"2"}
-              borderBottomRadius={"10px"}
-              borderBottomColor={"dashboardCardBorder"}
-              borderBottomWidth={"1px"}
-              borderBottomStyle={"solid"}
-            >
-              <TitleCard
-                _icon=""
-                icon={
-                  <IconByName _icon={{ color: "white" }} name="Book2LineIcon" />
-                }
-                onPress={(e) => navigate("/beneficiary")}
+          ].includes(prerak_status) &&
+            !hideAddLearner && (
+              <Stack
+                py={0}
+                px={4}
+                pb={"7"}
+                mx={"2"}
+                borderBottomRadius={"10px"}
+                borderBottomColor={"dashboardCardBorder"}
+                borderBottomWidth={"1px"}
+                borderBottomStyle={"solid"}
               >
-                <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
-              </TitleCard>
-              <Stack px="3">
-                {facilitator?.program_faciltators?.status ===
-                  "pragati_mobilizer" && (
-                  <FrontEndTypo.H3
-                    bold
-                    color="textGreyColor.750"
-                    pb="5px"
-                    pt="10"
-                  >
-                    {t("ITS_TIME_TO_START_MOBILIZING")}
-                  </FrontEndTypo.H3>
-                )}
+                <TitleCard
+                  _icon=""
+                  icon={
+                    <IconByName
+                      _icon={{ color: "white" }}
+                      name="UserAddLineIcon"
+                    />
+                  }
+                  onPress={(e) => navigate("/beneficiary")}
+                >
+                  <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
+                </TitleCard>
+                <Stack px="3">
+                  {facilitator?.program_faciltators?.status ===
+                    "pragati_mobilizer" && (
+                    <FrontEndTypo.H3
+                      bold
+                      color="textGreyColor.750"
+                      pb="5px"
+                      pt="10"
+                    >
+                      {t("ITS_TIME_TO_START_MOBILIZING")}
+                    </FrontEndTypo.H3>
+                  )}
+                </Stack>
               </Stack>
-            </Stack>
-          )}
+            )}
           {["applied", ""]?.includes(prerak_status) && progress !== 100 && (
             <Stack>
               <VStack p="5" pt={1}>

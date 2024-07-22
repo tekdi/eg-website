@@ -6,7 +6,7 @@ export default {
       title: "BASIC_DETAILS",
       description: "FULL_NAME",
       type: "object",
-      required: ["first_name"],
+      required: ["first_name", "dob"],
       properties: {
         first_name: {
           type: "string",
@@ -24,9 +24,9 @@ export default {
           regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
         },
         dob: {
+          label: "DATE_OF_BIRTH",
           type: ["string", "null"],
           format: "date",
-          description: "DATE_OF_BIRTH",
         },
         edit_page_type: {
           type: "string",
