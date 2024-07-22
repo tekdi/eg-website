@@ -1,22 +1,14 @@
+import { BodyLarge, IconByName } from "@shiksha/common-lib";
+import { Box, Button, HStack, Image, Modal } from "native-base";
 import React, { useState } from "react";
-import {
-  Box,
-  Center,
-  Stack,
-  ScrollView,
-  HStack,
-  Button,
-  Modal,
-  Image,
-} from "native-base";
 import getWindowSize from "v2/utils/Helper/JSHelper";
-import { IconByName, BodyLarge } from "@shiksha/common-lib";
 import LanguageChange from "../../../assets/Images/Icon/LanguageChange.png";
 
-export default function PageHeader({
+export default function PageHqeader({
   t,
   showHelpButton,
   funBackButton,
+  _backBtn,
   showLangChange,
   funLangChange,
 }) {
@@ -24,21 +16,25 @@ export default function PageHeader({
   const [helpModal, setHelpModal] = useState(false);
   return (
     <Box
-      style={{ height: 60 }}
-      shadow={5}
+      style={{
+        height: 60,
+        background:
+          "linear-gradient(360deg, rgb(220, 54, 68) 1%, rgb(31, 29, 118) 250%)",
+      }}
+      roundedBottom={15}
       flexDirection="row"
       alignItems="center"
       justifyContent="space-between"
       paddingX={4}
     >
-      <Button
-        py="1"
-        px="1"
-        variant="greyOutlineBtn"
+      <IconByName
+        size="sm"
+        pl="0"
+        name="ArrowLeftLineIcon"
+        _icon={{ color: "white" }}
+        {..._backBtn}
         onPress={() => funBackButton()}
-      >
-        <IconByName size="sm" name="ArrowLeftSLineIcon" />
-      </Button>
+      />
       {showLangChange ? (
         <Button
           py="1"

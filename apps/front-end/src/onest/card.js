@@ -125,12 +125,19 @@ export const dataConfig = {
     imageUrl: jobs,
     apiResponse: (e) => e?.data?.data?.[process.env.REACT_APP_JOBS_DB_CACHE],
     render: (obj) => {
-      const getSalary = (val1, val2) => {
-        const invalidValues = ["0", "undefined"];
-        if (invalidValues.includes(val1) || invalidValues.includes(val2)) {
-          return "As per Industry Standards";
+      const getSalaryInfo = (data) => {
+        // Find the object with descriptor.code === "salary-info"
+        const salaryInfo = data.find(
+          (item) => item.descriptor.code === "salary-info"
+        );
+        // If the object is found, proceed to return the values of list[0] and list[1]
+        if (salaryInfo && salaryInfo.list.length >= 2) {
+          const minSalary = salaryInfo.list[0].value;
+          const maxSalary = salaryInfo.list[1].value;
+          return `Rs. ${minSalary} - Rs. ${maxSalary}`;
         }
-        return `${val1} - ${val2}`;
+        // Return null if the object or required list items are not found
+        return "As per Industry Standards";
       };
       return (
         <VStack space={4}>
@@ -149,7 +156,8 @@ export const dataConfig = {
           <HStack alignItems={"center"} space={4}>
             <IconByName color="gray.700" name="" />
             <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
-              {obj?.item?.creator?.descriptor?.name}
+              {obj?.item?.creator?.descriptor?.name ||
+                "Company name not mentioned"}
             </Text>
           </HStack>
           <HStack alignItems={"center"} space={4}>
@@ -169,10 +177,7 @@ export const dataConfig = {
               ₹
             </Text>
             <Text color="gray.700" fontWeight={500} fontSize={["sm", "md"]}>
-              {getSalary(
-                obj.item.tags[2].list[0].value,
-                obj.item.tags[2].list[1].value
-              )}
+              {getSalaryInfo(obj.item.tags)}
             </Text>
           </HStack>
         </VStack>

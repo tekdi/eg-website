@@ -55,7 +55,23 @@ export default function ContactDetailsEdit({ ip }) {
   //getting data
   React.useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
-    setFormData(qData.result);
+    setFormData({
+      ...formData,
+      mobile: qData?.result?.mobile || undefined,
+      mark_as_whatsapp_number:
+        qData?.result?.core_beneficiaries?.mark_as_whatsapp_number || undefined,
+      device_type: qData?.result?.core_beneficiaries?.device_type || undefined,
+      device_ownership:
+        qData?.result?.core_beneficiaries?.device_ownership || undefined,
+      alternative_mobile_number:
+        qData?.result?.alternative_mobile_number || undefined,
+      alternative_device_type:
+        qData?.result?.core_beneficiaries?.alternative_device_type || undefined,
+      alternative_device_ownership:
+        qData?.result?.core_beneficiaries?.alternative_device_ownership ||
+        undefined,
+      email_id: qData?.result?.email_id || undefined,
+    });
     if (qData?.result?.alternative_mobile_number === null) {
       const propertiesMain = schema1.properties;
       const constantSchema = propertiesMain[1];

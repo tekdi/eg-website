@@ -189,20 +189,36 @@ const FileUpload = ({ value, onChange, schema }) => {
             )}
           </Box>
           <Pressable
+            justifyContent={"center"}
             flex="1"
             onPress={(e) => {
               uplodInputRef?.current?.click();
             }}
             alignItems="center"
             p="2"
-            bg="gray.200"
-            shadow={2}
           >
-            <HStack alignItems="center" space="2">
-              <IconByName name="Upload2FillIcon" isDisabled color="gray.800" />
-              <FrontEndTypo.H2 textAlign="center" color="gray.800">
+            <HStack
+              borderColor={"textRed.350"}
+              borderWidth={"1px"}
+              borderStyle={"solid"}
+              alignItems="center"
+              py={2}
+              px={6}
+              space="2"
+              rounded={"100px"}
+            >
+              <FrontEndTypo.H3
+                style={{ display: "flex", gap: "2px", alignItems: "center" }}
+                textAlign="center"
+                color="textRed.350"
+              >
                 {t(uploadTitle || label || title)}
-              </FrontEndTypo.H2>
+                <IconByName
+                  _icon={{ size: "18px" }}
+                  name="FileUploadFillIcon"
+                  color="textRed.350"
+                />
+              </FrontEndTypo.H3>
             </HStack>
           </Pressable>
         </Box>

@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import {
   geolocationRegistryService,
   Layout,
-  BodyMedium,
   filterObject,
   FrontEndTypo,
   enumRegistryService,

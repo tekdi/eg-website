@@ -7,163 +7,24 @@ import {
   GetEnumValue,
   getUniqueArray,
   FrontEndTypo,
-  tableCustomStyles,
-  CustomRadio,
   facilitatorRegistryService,
-  CardComponent,
   jsonParse,
   PoAdminLayout,
 } from "@shiksha/common-lib";
-import {
-  Box,
-  CheckIcon,
-  HStack,
-  Modal,
-  Select,
-  Stack,
-  VStack,
-  Text,
-  Input,
-  Actionsheet,
-  ScrollView,
-  Checkbox,
-} from "native-base";
+import { Box, HStack, Modal, Stack, VStack, Text } from "native-base";
 import Chip from "component/Chip";
 import { useNavigate, useParams } from "react-router-dom";
 import React, {
   useCallback,
   useEffect,
   useState,
-  Suspense,
   useMemo,
   Fragment,
 } from "react";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
-import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
-import { MultiCheck } from "component/BaseInput";
-
-const columns = (t) => [
-  {
-    name: t("ID"),
-    selector: (row) => row?.id,
-  },
-  {
-    name: t("NAME"),
-    selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        <AdminTypo.H5 bold>
-          {row?.first_name + " "}
-          {row?.last_name ? row?.last_name : ""}
-        </AdminTypo.H5>
-      </HStack>
-    ),
-    attr: "name",
-    wrap: true,
-  },
-  {
-    name: t("ROLE"),
-    selector: (row) => (
-      <HStack alignItems={"center"} space="2">
-        <AdminTypo.H5 bold>
-          {row?.program_faciltators?.length > 0
-            ? t("PRERAK")
-            : row?.program_beneficiaries?.length > 0
-            ? t("LEARNER")
-            : ""}
-        </AdminTypo.H5>
-      </HStack>
-    ),
-    attr: "name",
-    wrap: true,
-  },
-];
-const familyFieldsArray = [
-  {
-    label: "FATHER_FIRST_NAME",
-    value: "father_first_name",
-  },
-  {
-    label: "FATHER_MIDDLE_NAME",
-    value: "father_middle_name",
-  },
-  {
-    label: "FATHER_LAST_NAME",
-    value: "father_last_name",
-  },
-  {
-    label: "MOTHER_FIRST_NAME",
-    value: "mother_first_name",
-  },
-  {
-    label: "MOTHER_MIDDLE_NAME",
-    value: "mother_middle_name",
-  },
-  {
-    label: "MOTHER_LAST_NAME",
-    value: "mother_last_name",
-  },
-];
-const personalFieldsArray = [
-  {
-    label: "SOCIAL_CATEGORY",
-    value: "social_category",
-  },
-  {
-    label: "MARITAL_STATUS",
-    value: "marital_status",
-  },
-];
-const educationalFieldsArray = [
-  {
-    label: "TYPE_OF_LEARNER",
-    value: "type_of_learner",
-  },
-  {
-    label: "LAST_STANDARD_OF_EDUCATION",
-    value: "last_standard_of_education",
-  },
-  {
-    label: "LAST_YEAR_OF_EDUCATION",
-    value: "last_standard_of_education_year",
-  },
-  {
-    label: "PREVIOUS_SCHOOL_TYPE",
-    value: "previous_school_type",
-  },
-  {
-    label: "REASON_FOR_BEING_DEPRIVED_OF_EDUCATION",
-    value: "reason_of_leaving_education",
-  },
-  {
-    label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
-    value: "learning_level",
-  },
-];
-const addressFieldsArray = [
-  {
-    label: "STREET_ADDRESS",
-    value: "address",
-  },
-  {
-    label: "DISTRICT",
-    value: "district",
-  },
-  {
-    label: "BLOCK",
-    value: "block",
-  },
-  {
-    label: "VILLAGE_WARD",
-    value: "village",
-  },
-  {
-    label: "GRAMPANCHAYAT",
-    value: "grampanchayat",
-  },
-];
 
 export default function View({ footerLinks }) {
   const [modalVisible, setModalVisible] = useState(false);

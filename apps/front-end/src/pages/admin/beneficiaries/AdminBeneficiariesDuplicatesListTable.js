@@ -1,10 +1,10 @@
 import { IconByName, AdminTypo } from "@shiksha/common-lib";
 import { HStack, VStack, Image, Text } from "native-base";
-
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export const CustomStyles = {
   rows: {
@@ -31,7 +31,6 @@ export const CustomStyles = {
 
 // Table component
 function Table({
-  facilitator,
   paginationTotalRows,
   loading,
   duplicateData,
@@ -40,7 +39,7 @@ function Table({
 }) {
   const { t } = useTranslation();
 
-  const action = React.useCallback((row, t, navigate) => {
+  const action = useCallback((row, t, navigate) => {
     return (
       <AdminTypo.Secondarybutton
         my="3"
@@ -53,7 +52,7 @@ function Table({
     );
   }, []);
 
-  const District = React.useCallback((row) => {
+  const District = useCallback((row) => {
     const districtsString = row?.districts;
     const districtsArray = districtsString
       .split(",")
@@ -68,7 +67,7 @@ function Table({
     );
   }, []);
 
-  const Block = React.useCallback((row) => {
+  const Block = useCallback((row) => {
     const blockString = row?.block;
     const blockArray = blockString.split(",").map((block) => block.trim());
     const uniqueblockArray = [...new Set(blockArray)];
@@ -81,7 +80,7 @@ function Table({
     );
   }, []);
 
-  const columns = React.useCallback(
+  const columns = useCallback(
     (t) => [
       {
         name: t("AADHAAR_NUMBER"),
@@ -113,7 +112,7 @@ function Table({
   );
   const navigate = useNavigate();
 
-  const columnsMemoized = React.useMemo(
+  const columnsMemoized = useMemo(
     () => [
       ...columns(t),
       {
@@ -163,13 +162,13 @@ function Table({
         paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
         paginationServer
         paginationTotalRows={paginationTotalRows}
-        onChangeRowsPerPage={React.useCallback(
+        onChangeRowsPerPage={useCallback(
           (e) => {
             setFilter({ ...filter, limit: e });
           },
           [setFilter, filter]
         )}
-        onChangePage={React.useCallback(
+        onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
@@ -181,4 +180,12 @@ function Table({
   );
 }
 
-export default React.memo(Table);
+Table.PropTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.func,
+  paginationTotalRows: PropTypes.any,
+  duplicateData: PropTypes.any,
+  loading: PropTypes.bool,
+};
+
+export default memo(Table);

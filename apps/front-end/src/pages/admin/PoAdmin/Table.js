@@ -1,6 +1,6 @@
 import { IconByName, AdminTypo, tableCustomStyles } from "@shiksha/common-lib";
 import { HStack, VStack, Image } from "native-base";
-
+import PropTypes from "prop-types";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -21,7 +21,6 @@ const action = (row, t, navigate) => {
 
 // Table component
 function Table({
-  facilitator,
   paginationTotalRows,
   loading,
   duplicateData,
@@ -97,5 +96,13 @@ function Table({
     </VStack>
   );
 }
+
+Table.PropTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.func,
+  paginationTotalRows: PropTypes.any,
+  duplicateData: PropTypes.any,
+  loading: PropTypes.bool,
+};
 
 export default Table;
