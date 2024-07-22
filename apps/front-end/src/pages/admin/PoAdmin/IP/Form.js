@@ -9,7 +9,7 @@ import {
   Breadcrumb,
   validation,
 } from "@shiksha/common-lib";
-import { Button, HStack, VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -21,11 +21,8 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import Chip from "component/Chip";
 
 const Schema = {
-  // title: "CREATE_IP",
-  // description: "ADD_A_IP",
   type: "object",
   required: [
     "name",
@@ -33,9 +30,6 @@ const Schema = {
     "contact_person",
     "address",
     "learner_target",
-    // "doc_per_cohort_id",
-    // "doc_per_monthly_id",
-    // "doc_quarterly_id",
     "email_id",
     "state",
     "camp_target",
@@ -85,27 +79,6 @@ const Schema = {
       title: "TARGET_CAMP",
       readOnly: true,
     },
-    // doc_per_cohort_id: {
-    //   type: "string",
-    //   label: "DUE_DILIGENCE_SIGNED_PROPOSAL",
-    //   document_type: "camp",
-    //   document_sub_type: "consent_form",
-    //   format: "FileUpload",
-    // },
-    // doc_per_monthly_id: {
-    //   type: "string",
-    //   label: "QUARTELY_CA_CERTIFIED",
-    //   document_type: "camp",
-    //   document_sub_type: "consent_form",
-    //   format: "FileUpload",
-    // },
-    // doc_quarterly_id: {
-    //   type: "string",
-    //   label: "MONTHLY_UTILIZATION",
-    //   document_type: "camp",
-    //   document_sub_type: "consent_form",
-    //   format: "FileUpload",
-    // },
   },
 };
 
@@ -129,7 +102,7 @@ export default function App() {
       let newSchema = Schema;
       if (Schema["properties"]["state"]) {
         newSchema = getOptions(newSchema, {
-          key: "state",
+          key: "state_name",
           arr: newData,
           title: "state_name",
           value: "id",

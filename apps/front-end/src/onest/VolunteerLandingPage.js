@@ -1,6 +1,6 @@
 import { HStack, Heading, Image, VStack, Stack, Text } from "native-base";
 import { ImageBackground, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { dataConfig } from "./card";
 import Layout from "./Layout";
@@ -51,7 +51,7 @@ const responsive = {
   },
 };
 
-const VolunteerLandingPage = ({ userTokenInfo }) => {
+const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -64,7 +64,6 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
 
   useEffect((e) => {
     const fetchData = () => {
-      const { authUser } = userTokenInfo;
       const Address = [
         authUser?.state,
         authUser?.district,
@@ -144,8 +143,14 @@ const VolunteerLandingPage = ({ userTokenInfo }) => {
 
   return (
     <Layout
+      _footer={{ menues: footerLinks }}
+      userAccess
       _appBar={{
         onPressBackButton: handleBack,
+      }}
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
       }}
     >
       <VStack p="4" space={4}>

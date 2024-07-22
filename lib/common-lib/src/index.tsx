@@ -4,6 +4,7 @@ import Footer from './components/layout/Footer'
 import Layout from './components/layout/Layout'
 import AdminLayout from './components/admin_layout/Layout'
 import PCusers_layout from './components/PCusers_layout/Layout'
+import VolunteerAdminLayout from './components/volunteer-admin/Layout'
 import SearchLayout from './components/SearchLayout'
 import IconByName from './components/IconByName'
 import Widget from './components/Widget'
@@ -15,7 +16,6 @@ import ProgressBar from './components/ProgressBar'
 import Tab from './components/Tab'
 import Loading from './components/Loading'
 import SunbirdPlayer from './components/SunbirdPlayer'
-import FilterButton from './components/FilterButton'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
 import * as enumRegistryService from './services/enumRegistryService'
 import * as authRegistryService from './services/authRegistryService'
@@ -42,8 +42,10 @@ import * as aadhaarService from './services/aadhaarService'
 import * as OnestService from './services/OnestService'
 import Alert from './components/Alert'
 import GetEnumValue from './components/GetEnumValue'
+import CustomAlert from './components/frontend_component/CustomAlert'
 import ItemComponent from './components/ItemComponent'
 import CardComponent from './components/frontend_component/CardComponent'
+import TitleCard from './components/frontend_component/TitleCard'
 import PoAdminLayout from './components/Po_admin_layout/Layout'
 import { MapComponent } from './components/frontend_component/MapComponent'
 import CustomRadio from './components/frontend_component/CustomRadio'
@@ -51,6 +53,7 @@ import CheckUncheck from './components/frontend_component/CheckUncheck'
 import UserCard from './components/frontend_component/UserCard'
 import Breadcrumb from './components/Breadcrumb'
 import * as testRegistryService from './services/testRegistryService'
+import * as volunteerRegistryService from './services/volunteerRegistryService'
 import GeoLocation, {
   useLocationData
 } from './components/frontend_component/GeoLocation'
@@ -69,7 +72,6 @@ export {
   PCusers_layout,
   SearchLayout,
   IconByName,
-  FilterButton,
   Widget,
   Collapsible,
   Menu,
@@ -106,6 +108,7 @@ export {
   GetEnumValue,
   ItemComponent,
   CardComponent,
+  TitleCard,
   Breadcrumb,
   MapComponent,
   CheckUncheck,
@@ -113,9 +116,12 @@ export {
   UserCard,
   GeoLocation,
   useLocationData,
+  CustomAlert,
   SunbirdPlayer,
   GATrackPageView,
-  OnestService
+  OnestService,
+  VolunteerAdminLayout,
+  volunteerRegistryService
 }
 
 export * from './services/RestClient'

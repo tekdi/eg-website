@@ -5,11 +5,12 @@ import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 
-const ExamAttendanceReport = ({ footerLinks }) => {
+const ExamAttendanceReport = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const [tableData, setTableData] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await organisationService.attendanceReport();
@@ -78,8 +79,23 @@ const ExamAttendanceReport = ({ footerLinks }) => {
       wrap: true,
     },
   ];
+
+  const onPressBackButton = () => {
+    navigate(-1);
+  };
+
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
+    <Layout
+      _appBar={{
+        onPressBackButton,
+      }}
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+    >
       <VStack bg="primary.50" p="5" space={4} style={{ zIndex: -1 }}>
         <FrontEndTypo.H2 color="textMaroonColor.400">
           {t("LEARNER_EXAM_ATTENDANCE_OVERVIEW")}

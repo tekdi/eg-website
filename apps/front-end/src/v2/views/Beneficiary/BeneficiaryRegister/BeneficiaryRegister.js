@@ -16,6 +16,12 @@ import {
   enumRegistryService,
   jsonParse,
   geolocationRegistryService,
+  arrList,
+  facilitatorRegistryService,
+  getOnboardingMobile,
+  objProps,
+  setSelectedAcademicYear,
+  setSelectedProgramId,
 } from "@shiksha/common-lib";
 
 import moment from "moment";
@@ -23,9 +29,14 @@ import { useNavigate } from "react-router-dom";
 import {
   widgets,
   templates,
+  transformErrors,
 } from "../../../components/Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
-import { getIpUserInfo } from "v2/utils/SyncHelper/SyncHelper.js";
+import {
+  getIpUserInfo,
+  setIpUserInfo,
+} from "v2/utils/SyncHelper/SyncHelper.js";
+import { payload } from "./Payload.js";
 
 // App
 
@@ -47,7 +58,28 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpbtn, setotpbtn] = useState(false);
   const [isExistModal, setIsExistModal] = useState(false);
+  const [enumData, setEnumData] = useState({});
   const prerakStatus = localStorage.getItem("status");
+
+  // PROFILE DATA IMPORTS
+  const [facilitator, setFacilitator] = useState({ notLoaded: true });
+  const fa_id = localStorage.getItem("id");
+  const [loading, setLoading] = useState(true);
+  const [countLoad, setCountLoad] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
+  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [academicYear, setAcademicYear] = useState(null);
+  const [academicData, setAcademicData] = useState([]);
+  const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [fixedSchema, setfixedSchema] = useState();
+  const [isOnline, setIsOnline] = useState(
+    window ? window.navigator.onLine : false
+  );
 
   const onPressBackButton = async (e) => {
     setotpbtn(false);
@@ -73,6 +105,24 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     career_aspiration: {
       "ui:widget": "RadioBtn",
     },
+    learning_motivation: {
+      "ui:widget": "MultiCheck",
+    },
+    type_of_support_needed: {
+      "ui:widget": "MultiCheck",
+    },
+    alreadyOpenLabel: {
+      "ui:widget": "AlreadyOpenLabelWidget",
+    },
+    education_10th_date: {
+      "ui:widget": "alt-date",
+      "ui:options": {
+        yearsRange: yearsRange,
+        hideNowButton: true,
+        hideClearButton: true,
+        format: "DMY",
+      },
+    },
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
@@ -89,6 +139,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       if (nextIndex !== undefined) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
+        setfixedSchema(properties[nextIndex]);
       } else if (pageStape.toLowerCase() === "n") {
         setPage("upload");
       } else {
@@ -100,20 +151,12 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const createBeneficiary = async () => {
     let program = await getSelectedProgramId();
     let acadamic = await getSelectedAcademicYear();
-    let org_id = await getIpUserInfo(authUser?.id);
-    const formDataNew = {
-      ...formData,
-      role_fields: {
-        ...formData?.role_fields,
-        program_id: parseInt(program?.program_id),
-        academic_year_id: acadamic?.academic_year_id,
-        org_id: authUser?.program_faciltators?.parent_ip,
-      },
-    };
-    let url = await AgRegistryService.createBeneficiary(formDataNew);
+    let org_id = authUser?.program_faciltators?.parent_ip;
 
+    const mainPayload = await payload({ formData, org_id, acadamic, program });
+    let url = await AgRegistryService.createBeneficiary(mainPayload);
     if (url?.data) {
-      navigate(`/beneficiary/${url?.data?.user?.id}/2`);
+      navigate(`/beneficiary/${url?.data?.user?.id}/upload/1`);
     }
   };
 
@@ -154,27 +197,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   //   }
   // };
 
-  const otpfunction = async () => {
-    if (
-      formData?.mobile?.length === 10 &&
-      formData?.mobile > 6000000000 &&
-      formData?.mobile < 9999999999
-    ) {
-      const data = await benificiaryRegistoryService.isUserExists(formData);
-      if (data?.is_data_found) {
-        setIsExistModal(true);
-      } else {
-        setStep();
-      }
-    } else {
-      const newErrors = {
-        mobile: {
-          __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
-        },
-      };
-      setErrors(newErrors);
-    }
-  };
   // TODO document why this block is empty
 
   const setStep = async (pageNumber = "") => {
@@ -192,17 +214,16 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   };
 
   useEffect(() => {
-    if (page === "4") {
+    if (page === "3") {
       getLocation();
     }
   }, [page]);
 
   React.useEffect(() => {
     const fetchData = async () => {
+      let newSchema = schema;
       if (schema?.properties?.district) {
         let programSelected = jsonParse(localStorage.getItem("program"));
-        let newSchema = schema;
-
         newSchema = await setDistric({
           schemaData: newSchema,
           state: programSelected?.state_name,
@@ -212,9 +233,118 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         });
         setSchema(newSchema);
       }
+
+      if (schema?.properties?.marital_status) {
+        newSchema = getOptions(newSchema, {
+          key: "marital_status",
+          arr: enumData?.data?.MARITAL_STATUS,
+          title: "title",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "social_category",
+          arr: enumData?.data?.BENEFICIARY_SOCIAL_STATUS,
+          title: "title",
+          value: "value",
+        });
+        setSchema(newSchema);
+      }
+      if (page == "5") {
+        setYearsRange([moment(formData?.dob).year(), moment().year()]);
+      } else if (page == "1") {
+        let minYear = moment().subtract("years", 30);
+        let maxYear = moment().subtract("years", 12);
+        setYearsRange([minYear.year(), maxYear.year()]);
+      }
+      if (schema?.properties?.type_of_learner) {
+        const lastYear = await benificiaryRegistoryService.lastYear({
+          dob: formData?.dob,
+        });
+
+        newSchema = getOptions(newSchema, {
+          key: "type_of_learner",
+          arr: enumData?.data?.TYPE_OF_LEARNER,
+          title: "title",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "last_standard_of_education",
+          arr: enumData?.data?.LAST_STANDARD_OF_EDUCATION,
+          title: "title",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "last_standard_of_education_year",
+          arr: lastYear,
+          title: "value",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "education_10th_exam_year",
+          arr: lastYear,
+          title: "value",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "reason_of_leaving_education",
+          arr: enumData?.data?.REASON_OF_LEAVING_EDUCATION,
+          title: t("title"),
+          value: "value",
+        });
+
+        newSchema = getOptions(newSchema, {
+          key: "previous_school_type",
+          arr: enumData?.data?.PREVIOUS_SCHOOL_TYPE,
+          title: t("title"),
+          value: "value",
+        });
+
+        newSchema = getOptions(newSchema, {
+          key: "learning_level",
+          arr: enumData?.data?.BENEFICIARY_LEARNING_LEVEL,
+          title: t("title"),
+          value: "value",
+        });
+        const {
+          alreadyOpenLabel,
+          education_10th_date,
+          education_10th_exam_year,
+          ...properties
+        } = newSchema?.properties || {};
+        // setSchema({ ...newSchema, properties });
+        const resultData = updateTypeOfLearnerDependancy(formData, {
+          ...newSchema,
+          properties,
+        });
+        setSchema(resultData?.schema);
+        setfixedSchema(newSchema);
+      }
+
+      if (schema?.properties?.parent_support) {
+        newSchema = getOptions(newSchema, {
+          key: "parent_support",
+          arr: enumData?.data?.PARENT_SUPPORT,
+          title: "title",
+          value: "value",
+        });
+        newSchema = getOptions(newSchema, {
+          key: "learning_motivation",
+          arr: enumData.data?.LEARNING_MOTIVATION,
+          title: "title",
+          value: "value",
+        });
+
+        newSchema = getOptions(newSchema, {
+          key: "type_of_support_needed",
+          arr: enumData.data?.TYPE_OF_SUPPORT_NEEDED,
+          title: "title",
+          value: "value",
+        });
+        setSchema(newSchema);
+      }
     };
     fetchData();
-  }, [formData]);
+  }, [page]);
 
   const setDistric = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
@@ -255,10 +385,12 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
 
   const setBlock = async ({ gramp, state, district, block, schemaData }) => {
     let newSchema = schemaData;
+    let programSelected = jsonParse(localStorage.getItem("program"));
+
     if (schema?.properties?.block && district) {
       const qData = await geolocationRegistryService.getBlocks({
         name: district,
-        state: state,
+        state: programSelected?.state_name,
       });
       if (schema["properties"]["block"]) {
         newSchema = getOptions(newSchema, {
@@ -268,19 +400,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           value: "block_name",
         });
       }
-      // if (
-      //   schema?.["properties"]?.["grampanchayat"] &&
-      //   ["BIHAR"].includes(state)
-      // ) {
-      //   newSchema = await setGramp({
-      //     state,
-      //     district,
-      //     block,
-      //     gramp,
-      //     schemaData: newSchema,
-      //   });
-      //   setSchema(newSchema);
-      // } else {
+
       newSchema = await setVilage({
         state,
         district,
@@ -302,10 +422,11 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
 
   const setVilage = async ({ state, district, gramp, block, schemaData }) => {
     let newSchema = schemaData;
+    let programSelected = jsonParse(localStorage.getItem("program"));
     if (schema?.properties?.village && block) {
       const qData = await geolocationRegistryService.getVillages({
         name: block,
-        state: state,
+        state: programSelected?.state_name,
         district: district,
         gramp: gramp || "null",
       });
@@ -347,21 +468,31 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
 
     const fetchData = async () => {
       const career_aspiration = await enumRegistryService.listOfEnum();
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      let newSchema = properties[newSteps[0]];
-      newSchema = getOptions(newSchema, {
-        key: "career_aspiration",
-        arr: career_aspiration?.data?.CAREER_ASPIRATION,
-        title: "title",
-        value: "value",
-      });
-
-      setSchema(newSchema);
+      setEnumData(career_aspiration);
     };
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (schema?.properties?.first_name) {
+        const properties = schema1.properties;
+        const newSteps = Object.keys(properties);
+        let newSchema = properties[newSteps[0]];
+        newSchema = getOptions(newSchema, {
+          key: "career_aspiration",
+          arr: enumData?.data?.CAREER_ASPIRATION,
+          title: "title",
+          value: "value",
+        });
+
+        setSchema(newSchema);
+      }
+    };
+
+    fetchData();
+  }, [page, enumData]);
 
   const goErrorPage = (key) => {
     if (key) {
@@ -416,97 +547,111 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     return errors;
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
+  function cleanData(data) {
+    const newData = { ...data };
+
+    if (Array.isArray(newData.learning_motivation)) {
+      newData.learning_motivation = newData.learning_motivation.filter(
+        (item) => item !== undefined
+      );
+    }
+
+    if (Array.isArray(newData.type_of_support_needed)) {
+      newData.type_of_support_needed = newData.type_of_support_needed.filter(
+        (item) => item !== undefined
+      );
+    }
+
+    return newData;
+  }
 
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
     const newData = { ...formData, ...data };
-    setFormData(newData);
+    const cleanerData = cleanData(data);
+    setFormData(cleanerData);
     if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length < 10) {
+      if (
+        newData?.mobile?.length !== 10 &&
+        newData?.mobile < 6000000000 &&
+        newData?.mobile > 9999999999
+      ) {
         const newErrors = {
           mobile: {
             __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
           },
         };
         setErrors(newErrors);
-      }
-
-      if (id === "root_state") {
-        await setDistric({
-          schemaData: schema,
-          state: data?.state,
-          district: data?.district,
-          block: data?.block,
-        });
-      }
-
-      if (id === "root_district") {
-        await setBlock({
-          district: data?.district,
-          block: null,
-          schemaData: schema,
-        });
-      }
-
-      if (id === "root_block") {
-        await setVilage({ block: data?.block, schemaData: schema });
-      }
-
-      if (id === "root_grampanchayat") {
-        if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
-          const newErrors = {
-            grampanchayat: {
-              __errors: [t("REQUIRED_MESSAGE")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-
-      if (id === "root_address") {
-        if (
-          !data?.address?.match(
-            /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
-          ) &&
-          data?.address !== null
-        ) {
-          const newErrors = {
-            address: {
-              __errors: [t("REQUIRED_MESSAGE")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-      if (id === "root_pincode") {
-        const regex = /^[0-9]{6}$/;
-        if (data?.pincode && !regex.test(data.pincode)) {
-          const newErrors = {
-            pincode: {
-              __errors: [t("PINCODE_ERROR")],
-            },
-          };
-          setErrors(newErrors);
+      } else if (newData?.mobile?.length === 10) {
+        const Payload = {
+          mobile: newData?.mobile,
+          first_name: newData?.first_name,
+          middle_name: newData?.middle_name,
+          last_name: newData?.last_name,
+          dob: newData?.dob,
+        };
+        const data = await benificiaryRegistoryService.isUserExists(Payload);
+        if (data?.is_data_found) {
+          setIsExistModal(true);
         }
       }
     }
+
+    if (id === "root_district") {
+      await setBlock({
+        district: data?.district,
+        block: null,
+        schemaData: schema,
+      });
+    }
+
+    if (id === "root_block") {
+      await setVilage({
+        block: data?.block,
+        district: data?.district,
+        schemaData: schema,
+      });
+    }
+
+    if (id === "root_grampanchayat") {
+      if (!data?.grampanchayat?.match(/^[a-zA-Z ]*$/g)) {
+        const newErrors = {
+          grampanchayat: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
+    if (id === "root_address") {
+      if (
+        !data?.address?.match(
+          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+        ) &&
+        data?.address !== null
+      ) {
+        const newErrors = {
+          address: {
+            __errors: [t("REQUIRED_MESSAGE")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    if (id === "root_pincode") {
+      const regex = /^[0-9]{6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     if (id === "root_dob") {
       if (data?.dob) {
         const age_in_years = moment().diff(data?.dob, "years", true);
@@ -520,6 +665,140 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         }
       }
     }
+    if (id === "root_type_of_learner") {
+      const data2 = {
+        ...newData,
+        last_standard_of_education: null,
+        last_standard_of_education_year: null,
+        education_10th_date: null,
+        education_10th_exam_year: null,
+        previous_school_type: null,
+        reason_of_leaving_education: null,
+      };
+      const resultData = updateTypeOfLearnerDependancy(data2, fixedSchema);
+      setSchema(resultData?.schema);
+      setFormData(resultData?.newData);
+    }
+  };
+
+  const updateTypeOfLearnerDependancy = (newData, scehmaNew) => {
+    let schema = scehmaNew;
+    if (newData?.type_of_learner === "school_dropout") {
+      const {
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = scehmaNew?.properties || {};
+      // Filter required fields for "school_dropout" to ensure form relevance
+      const required = scehmaNew?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "last_standard_of_education",
+          "last_standard_of_education_year",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "learning_level",
+        ].includes(item)
+      );
+      schema = { ...scehmaNew, properties, required };
+    } else if (newData?.type_of_learner === "never_enrolled") {
+      const {
+        last_standard_of_education,
+        last_standard_of_education_year,
+        previous_school_type,
+        alreadyOpenLabel,
+        education_10th_date,
+        education_10th_exam_year,
+        ...properties
+      } = scehmaNew?.properties || {};
+      const required = scehmaNew?.required.filter((item) =>
+        [
+          "type_of_learner",
+          "learning_level",
+          "reason_of_leaving_education",
+        ].includes(item)
+      );
+
+      schema = { ...scehmaNew, properties, required };
+    } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
+      const { education_10th_date, education_10th_exam_year, ...properties } =
+        scehmaNew?.properties || {};
+      // Adjust required fields for learners already enrolled in open school
+
+      const required = scehmaNew?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "last_standard_of_education",
+          "last_standard_of_education_year",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "learning_level",
+        ].includes(item)
+      );
+      schema = { ...scehmaNew, properties, required };
+    } else if (newData?.type_of_learner === "already_open_school_syc") {
+      const {
+        alreadyOpenLabel,
+        last_standard_of_education,
+        last_standard_of_education_year,
+        education_10th_exam_year,
+        ...properties
+      } = scehmaNew?.properties || {};
+      // Set required fields for "already_open_school_syc" to match specific needs
+
+      const required = scehmaNew?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "previous_school_type",
+          "reason_of_leaving_education",
+          "education_10th_date",
+          "learning_level",
+        ].includes(item)
+      );
+      schema = { ...scehmaNew, properties, required };
+    } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
+      const {
+        last_standard_of_education,
+        last_standard_of_education_year,
+        previous_school_type,
+        alreadyOpenLabel,
+        education_10th_date,
+        ...properties
+      } = scehmaNew?.properties || {};
+      // Customize required fields for "stream_2_mainstream_syc" learners
+
+      const required = scehmaNew?.required?.filter((item) =>
+        [
+          "type_of_learner",
+          "reason_of_leaving_education",
+          "education_10th_exam_year",
+          "learning_level",
+        ].includes(item)
+      );
+      schema = { ...scehmaNew, properties, required };
+    }
+
+    const updatedData = { ...newData };
+    if (!newData?.last_standard_of_education) {
+      updatedData.last_standard_of_education = null;
+    }
+    if (!newData?.last_standard_of_education_year) {
+      updatedData.last_standard_of_education_year = null;
+    }
+    if (!newData?.previous_school_type) {
+      updatedData.previous_school_type = null;
+    }
+    if (!newData?.reason_of_leaving_education) {
+      updatedData.reason_of_leaving_education = null;
+    }
+    if (!newData?.education_10th_exam_year) {
+      updatedData.education_10th_exam_year = null;
+    }
+    if (!newData?.education_10th_date) {
+      updatedData.education_10th_date = null;
+    }
+    return { schema, newData: updatedData };
   };
 
   const onError = (data) => {
@@ -576,7 +855,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
     if (schema?.properties?.first_name) {
       newFormData = {
         ...newFormData,
-        ["first_name"]: newFormData?.first_name.replace(/ /g, ""),
+        ["first_name"]: newFormData?.first_name?.replace(/ /g, ""),
       };
     }
 
@@ -605,7 +884,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         setStep();
       }
 
-      if (page === "4") {
+      if (page === "7") {
         createBeneficiary();
       }
     } else {
@@ -613,6 +892,244 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
       if (key[0]) {
         goErrorPage(key[0]);
       }
+    }
+  };
+
+  const saveDataToIndexedDB = async () => {
+    const obj = {
+      edit_req_for_context: "users",
+      edit_req_for_context_id: id,
+    };
+    try {
+      const [ListOfEnum, qualification, editRequest] = await Promise.all([
+        enumRegistryService.listOfEnum(),
+        enumRegistryService.getQualificationAll(),
+        facilitatorRegistryService.getEditRequests(obj),
+        // enumRegistryService.userInfo(),
+      ]);
+      const currentTime = moment().toString();
+      await Promise.all([
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("qualification", qualification),
+        setIndexedDBItem("lastFetchTime", currentTime),
+        setIndexedDBItem("editRequest", editRequest),
+      ]);
+    } catch (error) {
+      console.error("Error saving data to IndexedDB:", error);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operation
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        //get user info
+        if (userTokenInfo) {
+          const IpUserInfo = await getIpUserInfo(fa_id);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      const programId = await getSelectedProgramId();
+      if (programId) {
+        try {
+          const c_data =
+            await facilitatorRegistryService.getPrerakCertificateDetails({
+              id: fa_id,
+            });
+          const data =
+            c_data?.data?.filter(
+              (eventItem) =>
+                eventItem?.params?.do_id?.length &&
+                eventItem?.lms_test_tracking?.length < 1
+            )?.[0] || {};
+          if (data) {
+            setIsTodayAttendace(
+              data?.attendances?.filter(
+                (attendance) =>
+                  attendance.user_id == fa_id &&
+                  attendance.status == "present" &&
+                  data.end_date ==
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
+            );
+
+            // setCertificateData(data);
+            if (data?.lms_test_tracking?.length > 0) {
+              setLmsDetails(data?.lms_test_tracking?.[0]);
+            }
+            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
+            const format = "HH:mm:ss";
+            const time = moment(moment().format(format), format);
+            const beforeTime = moment.utc(data?.start_time, format).local();
+            const afterTime = moment.utc(data?.end_time, format).local();
+            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
+              setIsEventActive(true);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchdata();
+  }, [selectedCohortData]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
+        });
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
+      }
+    }
+    fetchData();
+  }, [academicYear]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const res = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...res,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            [
+              "device_ownership",
+              "mobile",
+              "device_type",
+              "gender",
+              "marital_status",
+              "social_category",
+              "name",
+              "contact_number",
+              "availability",
+              "aadhar_no",
+              "aadhaar_verification_mode",
+              "aadhar_verified",
+              "qualification_ids",
+              "qua_name",
+            ]
+          )
+        );
+        //check exist user registered
+        try {
+          let onboardingURLData = await getOnboardingURLData();
+          setCohortData(onboardingURLData?.cohortData);
+          setProgramData(onboardingURLData?.programData);
+          //get program id and store in localstorage
+
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          setSelectedProgramData(program_data[0]);
+          await setSelectedProgramId(program_data[0]);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no != null &&
+            mobile_no_onboarding != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            localStorage.setItem("loadCohort", "yes");
+            setIsUserRegisterExist(true);
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {}
+      }
+    }
+    fetchData();
+  }, [facilitator]);
+
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0]
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+        await checkDataToIndex();
+        await checkUserToIndex();
+      } else {
+        setSelectCohortForm(true);
+      }
+    }
+  };
+  const checkDataToIndex = async () => {
+    // Online Data Fetch Time Interval
+    const timeInterval = 30;
+    const enums = await getIndexedDBItem("enums");
+    const qualification = await getIndexedDBItem("qualification");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
+    const editRequest = await getIndexedDBItem("editRequest");
+    let timeExpired = false;
+    if (lastFetchTime) {
+      const timeDiff = moment
+        .duration(moment().diff(lastFetchTime))
+        .asMinutes();
+      if (timeDiff >= timeInterval) {
+        timeExpired = true;
+      }
+    }
+    if (
+      isOnline &&
+      (!enums ||
+        !qualification ||
+        !editRequest ||
+        timeExpired ||
+        !lastFetchTime ||
+        editRequest?.status === 400)
+    ) {
+      await saveDataToIndexedDB();
     }
   };
 
@@ -624,8 +1141,11 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
+        profile_url: facilitator?.profile_photo_1?.name,
+        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+        exceptIconsShow: ["backBtn", "userInfo"],
       }}
-      _page={{ _scollView: { bg: "formBg.500" } }}
+      facilitator={facilitator}
       _footer={{ menues: footerLinks }}
       analyticsPageTitle={"BENEFICIARY_ONBOADING"}
       pageTitle={t("BENEFICIARY")}
@@ -660,7 +1180,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
           ) : (
             <Fragment />
           )}
-
           {page && page !== "" && (
             <Form
               key={lang}
@@ -679,37 +1198,26 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                 onChange,
                 onError,
                 onSubmit,
-                transformErrors,
+                transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
             >
-              {page === "2" ? (
-                <FrontEndTypo.Primarybutton
-                  mt="3"
-                  variant={"primary"}
-                  type="submit"
-                  onPress={otpfunction}
-                >
-                  {t("NEXT")}
-                </FrontEndTypo.Primarybutton>
-              ) : (
-                <FrontEndTypo.Primarybutton
-                  mt="5"
-                  p="4"
-                  variant={"primary"}
-                  type="submit"
-                  onPress={() => {
+              <FrontEndTypo.Primarybutton
+                mt="5"
+                p="4"
+                variant={"primary"}
+                type="submit"
+                onPress={() => {
+                  if (formRef.current.validateForm()) {
+                    formRef?.current?.submit();
+                  } else {
                     if (formRef.current.validateForm()) {
                       formRef?.current?.submit();
-                    } else {
-                      if (formRef.current.validateForm()) {
-                        formRef?.current?.submit();
-                      }
                     }
-                  }}
-                >
-                  {t("NEXT")}
-                </FrontEndTypo.Primarybutton>
-              )}
+                  }
+                }}
+              >
+                {t("NEXT")}
+              </FrontEndTypo.Primarybutton>
             </Form>
           )}
 
@@ -731,7 +1239,6 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                 </FrontEndTypo.Secondarybutton>
                 <FrontEndTypo.Primarybutton
                   onPress={async () => {
-                    await setStep();
                     setIsExistModal(false);
                   }}
                 >

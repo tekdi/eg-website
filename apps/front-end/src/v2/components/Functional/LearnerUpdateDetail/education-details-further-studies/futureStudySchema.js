@@ -3,9 +3,9 @@ export default {
   type: "step",
   properties: {
     1: {
-      // title: "FURTHER_STUDIES",
+      title: "LEARNER_ASPIRATIONS",
       type: "object",
-      required: ["aspiration_mapping"],
+      required: ["career_aspiration", "aspiration_mapping", "parent_support"],
       properties: {
         career_aspiration: {
           minItems: 1,

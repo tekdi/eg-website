@@ -1,27 +1,25 @@
 import {
-  campService,
+  CustomAlert,
   FrontEndTypo,
-  Layout,
   ImageView,
-  CardComponent,
-  IconByName,
+  Layout,
+  campService,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, VStack, Alert, Image, Box, Modal } from "native-base";
-import React, { useEffect, useCallback, useState, useMemo } from "react";
+import { Box, HStack, Image, Modal, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
+import TimelineItem from "./TimeLine";
 
 function CampExecutionEnd({ facilitator, learnerCount, campType }) {
   const { t } = useTranslation();
   const { id, step } = useParams();
-  const [disable, setDisable] = useState(true);
+  const [disableEndCamp, setDisableEndCamp] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [sessionList, setSessionList] = useState(false);
-  const [learnerAttendanceCount, setLearnerAttendanceCount] = useState(false);
   const [todaysActivity, setTodaysActivity] = useState();
   const [disableTodayAct, setdisableTodayAct] = useState(true);
 
@@ -43,16 +41,9 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     if (result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1) {
       setdisableTodayAct(true);
     } else {
-      setLearnerAttendanceCount(true);
       setdisableTodayAct(false);
     }
-    if (
-      result?.data?.beneficairesAttendaceCount?.aggregate?.count >= 1 &&
-      (result?.data?.misc_activities?.misc_activities?.length > 0 ||
-        result?.data?.today_session_count?.aggregate?.count > 0)
-    ) {
-      setDisable(false);
-    }
+
     if (
       result?.data?.beneficairesAttendaceCount?.aggregate?.count > 1 &&
       result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1
@@ -65,17 +56,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     if (todaysActivity?.id) {
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
-      let sessionListData = false;
-      data.forEach((element) => {
-        const currentDate = new Date();
-        const createdAtDate = new Date(
-          element?.session_tracks?.[0]?.created_at
-        );
-        if (currentDate.toDateString() === createdAtDate.toDateString()) {
-          sessionListData = true;
-          setSessionList(true);
-        }
-      });
+      const { countSession } = getSessionCount(data);
+      if (countSession > 0) {
+        setDisableEndCamp(false);
+      } else {
+        setDisableEndCamp(true);
+      }
     }
     setLoading(false);
   }, [todaysActivity?.id, step, learnerCount, facilitator, id]);
@@ -84,7 +70,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     fetchData();
   }, [fetchData]);
   const endCamp = useCallback(async () => {
-    setDisable(true);
+    setDisableEndCamp(true);
     const obj = {
       id: todaysActivity?.id,
       edit_page_type: "edit_end_date",
@@ -93,13 +79,15 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     navigate(`/camps`);
   }, [todaysActivity?.id, navigate]);
 
-  const airplaneImageUri = useMemo(() => "/airoplane.gif", []);
+  const airplaneImageUri = useMemo(() => "/airoplane.png", []);
   return (
     <Layout
       _appBar={{
         name: t("CAMP_EXECUTION"),
         onlyIconsShow: ["langBtn", "userInfo", "loginBtn"],
+        onPressBackButton: () => navigate("/camps"),
       }}
+      facilitator={facilitator}
       loading={loading}
       analyticsPageTitle={"CAMP_EXECUTION"}
       pageTitle={t("CAMP_EXECUTION")}
@@ -108,6 +96,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
       }/${step}`}
     >
       <VStack py={6} px={4} mb={5} space="6">
+        <FrontEndTypo.H2>{t("CAMP_EXECUTION")}</FrontEndTypo.H2>
+        <HStack justifyContent={"space-between"}>
+          <FrontEndTypo.H3 bold color="textGreyColor.750">
+            {`${t("CAMP_ID")}: ${id}`}
+          </FrontEndTypo.H3>
+        </HStack>
         <Box
           margin={"auto"}
           height={"200px"}
@@ -123,7 +117,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             source={{
               uri: airplaneImageUri,
             }}
-            alt="airoplane.gif"
+            alt="airoplane.png"
             position="absolute"
             top={0}
             left={0}
@@ -132,56 +126,50 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             zIndex={-1}
           />
 
-          <VStack alignItems="center" justifyContent="center">
+          <VStack pr={"55px"} pb={"130px"}>
             <ImageView
-              width="80px"
-              height="80px"
+              style={{ boxShadow: "0px 4px 4px 0px #ffffff" }}
+              width="71px"
+              height="71px"
               source={{ document_id: facilitator?.profile_photo_1?.id }}
             />
-            <CardComponent
-              _header={{ bg: "light.100" }}
-              _vstack={{ bg: "light.100", space: 1, flex: 1, paddingTop: 4 }}
-            >
-              {t("LETS_START_TODAYS_CAMP")}
-            </CardComponent>
           </VStack>
         </Box>
-        <Alert status="warning">
-          <HStack alignItems={"center"} space={2}>
-            <Alert.Icon />
-            <FrontEndTypo.H3>{t("DONT_CLOSE_SCREEN")}</FrontEndTypo.H3>
-          </HStack>
-        </Alert>
-        <FrontEndTypo.Secondarybutton
-          onPress={() => navigate(`/camps/${id}/campexecution/attendance`)}
-        >
-          <HStack alignItems={"center"} space={3}>
-            <FrontEndTypo.H1 color={"textMaroonColor.400"}>
-              {t("LEARNER_ATTENDANCE")}
-            </FrontEndTypo.H1>
-            {learnerAttendanceCount && (
-              <IconByName name="CheckboxCircleFillIcon" color="successColor" />
-            )}
-          </HStack>
-        </FrontEndTypo.Secondarybutton>
-        <FrontEndTypo.Secondarybutton
-          isDisabled={disableTodayAct}
-          onPress={() => navigate(`/camps/${id}/campexecution/activities`)}
-        >
-          <HStack alignItems={"center"} space={3}>
-            <FrontEndTypo.H1 color={"textMaroonColor.400"}>
-              {t("TODAYS_TASKS")}
-            </FrontEndTypo.H1>
-            {(todaysActivity?.misc_activities || sessionList) && (
-              <IconByName name="CheckboxCircleFillIcon" color="successColor" />
-            )}
-          </HStack>
-        </FrontEndTypo.Secondarybutton>
+        <CustomAlert title={t("DONT_CLOSE_SCREEN")} />
+        <TimelineItem
+          _vstack={{ space: "9" }}
+          data={[
+            {
+              title: t("LEARNER_ATTENDANCE"),
+              isDone: true,
+              onPress: () => navigate(`/camps/${id}/campexecution/attendance`),
+            },
+            {
+              title: t("TODAYS_TASKS"),
+              isDone: !disableTodayAct,
+              onPress: () => navigate(`/camps/${id}/campexecution/activities`),
+            },
+            {
+              title: t("END_CAMP"),
+              isDone: !disableEndCamp,
+              onPress: () => setOpenModal(true),
+            },
+          ]}
+        />
         <FrontEndTypo.Primarybutton
-          isDisabled={disable}
-          onPress={() => setOpenModal(true)}
+          onPress={() => {
+            !disableEndCamp
+              ? setOpenModal(true)
+              : !disableTodayAct
+              ? navigate(`/camps/${id}/campexecution/activities`)
+              : navigate(`/camps/${id}/campexecution/attendance`);
+          }}
         >
-          {t("END_CAMP")}
+          {!disableEndCamp
+            ? t("END_CAMP")
+            : !disableTodayAct
+            ? t("TODAYS_TASKS")
+            : t("LEARNER_ATTENDANCE")}
         </FrontEndTypo.Primarybutton>
       </VStack>
       <Modal isOpen={openModal} size="xs">
@@ -233,4 +221,72 @@ export default CampExecutionEnd;
 CampExecutionEnd.propTypes = {
   facilitator: PropTypes.any,
   learnerCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+const getSessionCount = (data) => {
+  let count = 0;
+
+  const format = "YYYY-MM-DD";
+  const today = moment().format(format);
+
+  const result = data
+    .filter((e) => e.session_tracks?.[0]?.id)
+    ?.map((e) => ({ ...e.session_tracks?.[0], ordering: e?.ordering }));
+  let sessionData = result?.[result?.length - 1] || { ordering: 1 };
+
+  const c1 = [];
+  const c2 = [];
+  const c3 = [];
+
+  result.forEach((e) => {
+    const createdAt = moment(e.created_at).format(format);
+    const updatedAt = moment(e.updated_at).format(format);
+
+    if (e.status === "complete" && createdAt !== today && updatedAt === today) {
+      c1.push(e);
+    } else if (
+      e.status === "incomplete" &&
+      createdAt === today &&
+      updatedAt === today
+    ) {
+      c2.push(e);
+    } else if (
+      e.status === "complete" &&
+      createdAt === today &&
+      updatedAt === today
+    ) {
+      c3.push(e);
+    }
+  });
+
+  if (c1?.length > 0) {
+    count += 0.5;
+    sessionData = c1[0];
+  }
+
+  if (c2?.length > 0) {
+    count += 0.5;
+    sessionData = c2[0];
+  }
+
+  if (c3?.length > 0) {
+    count += 1;
+    sessionData = c3[0];
+  }
+
+  if (sessionData?.status === "complete" && count < 1.5) {
+    sessionData =
+      data.find((e) => sessionData?.ordering + 1 === e?.ordering) ||
+      sessionData;
+  }
+
+  if (count >= 1.5) {
+    sessionData = {};
+  }
+
+  return {
+    ...sessionData,
+    countSession: count,
+    lastSession: result?.[result?.length - 1],
+  };
 };

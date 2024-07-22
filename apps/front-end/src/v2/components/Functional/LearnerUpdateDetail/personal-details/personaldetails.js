@@ -23,6 +23,8 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   CustomR,
+  select,
+  RadioBtn,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
@@ -235,7 +237,7 @@ export default function PersonalDetails({ ip }) {
           <Form
             key={lang}
             ref={formRef}
-            widgets={{ CustomR }}
+            widgets={{ CustomR, RadioBtn }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,

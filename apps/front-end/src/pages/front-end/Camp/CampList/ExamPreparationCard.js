@@ -8,15 +8,7 @@ const ExamPreparationCard = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   return (
-    <VStack
-      bg="boxBackgroundColour.200"
-      borderColor="btnGray.100"
-      borderRadius="10px"
-      borderWidth="1px"
-      padding="4"
-      shadow="AlertShadow"
-      background={"bgYellowColor.400"}
-    >
+    <VStack padding="2">
       <Stack space={4}>
         <FrontEndTypo.H2 color="textMaroonColor.400">
           {t("PREPARATION_FOR_EXAM")}

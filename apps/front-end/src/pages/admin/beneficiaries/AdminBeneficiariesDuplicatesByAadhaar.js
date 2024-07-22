@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -13,6 +13,7 @@ import moment from "moment";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { ChipStatus } from "component/BeneficiaryStatus";
+import PropTypes from "prop-types";
 
 const Name = (row) => {
   return (
@@ -72,22 +73,21 @@ const action = (row, setViewData, setModalVisible, t) => {
 export default function DuplicateView({ footerLinks }) {
   const { t } = useTranslation();
   const { aadhaarNo } = useParams();
-  const [data, setData] = React.useState();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
-  const [errormsg, seterrormsg] = React.useState(false);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({
+  const [data, setData] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({
     limit: 10,
     page: 1,
     aadhar_no: aadhaarNo,
   });
-  const [loading, setLoading] = React.useState(true);
-  const [viewData, setViewData] = React.useState();
+  const [loading, setLoading] = useState(true);
+  const [viewData, setViewData] = useState();
   const navigate = useNavigate();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
-  const columns = React.useCallback(
+  const columns = useCallback(
     (e) => [
       {
         name: t("LEARNERS_ID"),
@@ -142,7 +142,7 @@ export default function DuplicateView({ footerLinks }) {
     [t]
   );
 
-  const getDuplicateBeneficiariesList = React.useCallback(async () => {
+  const getDuplicateBeneficiariesList = useCallback(async () => {
     setLoading(true);
     const result =
       await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
@@ -153,11 +153,11 @@ export default function DuplicateView({ footerLinks }) {
     setLoading(false);
   }, [filter]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getDuplicateBeneficiariesList();
   }, [getDuplicateBeneficiariesList]);
 
-  const assignToPrerak = React.useCallback(async (id) => {
+  const assignToPrerak = useCallback(async (id) => {
     setIsButtonLoading(true);
     const activeId = { activeId: id };
     const result = await benificiaryRegistoryService?.deactivateDuplicates(
@@ -171,7 +171,7 @@ export default function DuplicateView({ footerLinks }) {
     setModalConfirmVisible(true);
   }, []);
 
-  const columnsMemoized = React.useMemo(
+  const columnsMemoized = useMemo(
     () => [
       ...columns(),
       {
@@ -221,13 +221,13 @@ export default function DuplicateView({ footerLinks }) {
             paginationRowsPerPageOptions={[10, 15, 25, 50, 100]}
             paginationServer
             paginationTotalRows={paginationTotalRows}
-            onChangeRowsPerPage={React.useCallback(
+            onChangeRowsPerPage={useCallback(
               (e) => {
                 setFilter({ ...filter, limit: e });
               },
               [setFilter, filter]
             )}
-            onChangePage={React.useCallback(
+            onChangePage={useCallback(
               (e) => {
                 setFilter({ ...filter, page: e });
               },
@@ -393,3 +393,6 @@ export default function DuplicateView({ footerLinks }) {
     </Layout>
   );
 }
+DuplicateView.propTypes = {
+  footerLinks: PropTypes.any,
+};
