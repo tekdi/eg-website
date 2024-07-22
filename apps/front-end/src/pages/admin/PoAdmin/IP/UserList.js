@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
   AdminTypo,
   IconByName,
@@ -59,7 +58,7 @@ const columns = (t) => [
   },
 ];
 
-function UserList(props) {
+function UserList() {
   const { t } = useTranslation();
   const [data, setData] = useState();
   const { id } = useParams();
@@ -101,7 +100,5 @@ function UserList(props) {
     </PoAdminLayout>
   );
 }
-
-UserList.propTypes = {};
 
 export default UserList;

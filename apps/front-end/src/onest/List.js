@@ -23,7 +23,7 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
 const limit = 6;
-const List = () => {
+const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
   const [filterData, setfilterData] = useState();
@@ -148,12 +148,29 @@ const List = () => {
     navigate(`/onest`);
   };
 
+  const getWarningMessage = () => {
+    const warningKey = cardData?.length
+      ? "NO_data_available"
+      : {
+          scholarship: "NO_SCHOLARSHIPS_FROM_PROVIDER",
+          jobs: "NO_JOBS_FROM_PROVIDER",
+          learning: "NO_LEARNING_EXPERIENCES_FROM_PROVIDER",
+        }[type] || "NO_data_available";
+    return t(warningKey);
+  };
+
   if (loading) {
     return <Loading message={loading} />;
   }
 
   return (
     <Layout
+      checkUserAccess
+      _footer={{ menues: footerLinks }}
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser?.user_roles?.[0],
+      }}
       getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
         onPressBackButton: handleBack,
@@ -274,7 +291,7 @@ const List = () => {
               <RenderCards key={e} obj={e} config={config} />
             ))
           ) : (
-            <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
+            <FrontEndTypo.H2>{getWarningMessage()}</FrontEndTypo.H2>
           )}
           {/* </InfiniteScroll> */}
           {hasMore && filterCardData?.length > 0 && (

@@ -22,12 +22,13 @@ import {
   Box,
   Pressable,
 } from "native-base";
-import React from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 const columns = (t, navigate, filter) => [
   {
@@ -158,27 +159,27 @@ const columns = (t, navigate, filter) => [
 
 // Table component
 function EnrollmentVerificationList({ footerLinks }) {
-  const [beneficiaryStatus, setBeneficiaryStatus] = React.useState();
+  const [beneficiaryStatus, setBeneficiaryStatus] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [Width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const ref = React.useRef(null);
-  const refSubHeader = React.useRef(null);
-  const [urlFilterApply, setUrlFilterApply] = React.useState(false);
+  const [refAppBar, setRefAppBar] = useState();
+  const ref = useRef(null);
+  const refSubHeader = useRef(null);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
 
-  const [filter, setFilter] = React.useState({ limit: 10 });
-  const [loading, setLoading] = React.useState(true);
+  const [filter, setFilter] = useState({ limit: 10 });
+  const [loading, setLoading] = useState(true);
 
-  const [data, setData] = React.useState([]);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
+  const [data, setData] = useState([]);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const handleRowClick = (row) => {
     navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
       state: filter,
     });
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
       const result = await benificiaryRegistoryService.beneficiariesFilter({
@@ -193,13 +194,13 @@ function EnrollmentVerificationList({ footerLinks }) {
     }
   }, [filter]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBeneficiaryStatus(result?.data?.ENROLLEMENT_VERIFICATION_STATUS);
   }, []);
@@ -214,10 +215,7 @@ function EnrollmentVerificationList({ footerLinks }) {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout
@@ -364,4 +362,8 @@ function EnrollmentVerificationList({ footerLinks }) {
   );
 }
 
-export default React.memo(EnrollmentVerificationList);
+EnrollmentVerificationList.PropTypes = {
+  footerLinks: PropTypes.any,
+};
+
+export default memo(EnrollmentVerificationList);

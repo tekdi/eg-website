@@ -22,7 +22,6 @@ import {
 } from "native-base";
 import { useTranslation } from "react-i18next";
 import DatePicker from "./DatePicker";
-import { useNavigate } from "react-router-dom";
 
 function ScheduleExam() {
   const { t } = useTranslation();
@@ -34,7 +33,6 @@ function ScheduleExam() {
   const [isDisableCancelBtn, setIsDisableCancelBtn] = useState(true);
   const [isVisibleEditBtn, setIsVisibleEditBtn] = useState(false);
   const [isVisibleEdit, setIsVisibleEdit] = useState(false);
-  const navigate = useNavigate();
   const [practicalSubjects, setPracticalSubjects] = useState([]);
   const [theorySubjects, setTheorySubjects] = useState([]);
   const [oldSelectedData, setOldSelectedData] = useState([]);

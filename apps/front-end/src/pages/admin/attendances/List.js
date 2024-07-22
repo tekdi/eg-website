@@ -8,14 +8,13 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { HStack, Image, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
 const PRESENT = "present";
-const ABSENT = "absent";
 
 const RenderAttendee = ({ row, t }) => (
   <Chip
@@ -32,7 +31,7 @@ const RenderAttendee = ({ row, t }) => (
     rounded="lg"
   />
 );
-const columns = (t, navigate) => [
+const columns = (t) => [
   {
     name: t("PERSON_ID"),
     selector: (row) => row?.user_id,
@@ -116,18 +115,18 @@ const columns = (t, navigate) => [
 
 // Table component
 function Table() {
-  const [attendances, setAttendances] = React.useState([]);
-  const [filter, setFilter] = React.useState({ page: 1, limit: 10 });
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+  const [attendances, setAttendances] = useState([]);
+  const [filter, setFilter] = useState({ page: 1, limit: 10 });
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(false);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let ignore = false;
     async function getData() {
       const resultAttendance = await attendanceService.list(filter);

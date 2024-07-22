@@ -89,7 +89,6 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
       const maxDateDisable = moment(currentDateFormatted, "YYYY/MM/DD").isAfter(
         maxDate
       );
-      console.log({ maxDate });
       if (maxDateDisable) {
         SetAccessData(true);
       } else {

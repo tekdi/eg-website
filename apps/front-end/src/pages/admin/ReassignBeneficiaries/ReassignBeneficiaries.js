@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -99,30 +99,30 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   const { t } = useTranslation();
   const { prerakId } = useParams();
 
-  const [filterfunction, setFilterfunction] = React.useState({
+  const [filterfunction, setFilterfunction] = useState({
     limit: 10,
     page: 1,
   });
-  const [clearvalue, setclearvalue] = React.useState(false);
+  const [clearvalue, setclearvalue] = useState(false);
 
-  const [selectedRows, setSelectedRows] = React.useState([]);
-  const [data, setData] = React.useState();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
-  const [errormsg, seterrormsg] = React.useState(false);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
-  const [prerak, setPrerak] = React.useState({});
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
-  const [facilitatorFilter, setFacilitatorFilter] = React.useState();
-  const [facilitator, setFacilitator] = React.useState([]);
-  const [isMore, setIsMore] = React.useState("");
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [data, setData] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
+  const [errormsg, seterrormsg] = useState(false);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [prerak, setPrerak] = useState({});
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [getDistrictsAll, setgetDistrictsAll] = useState();
+  const [facilitatorFilter, setFacilitatorFilter] = useState();
+  const [facilitator, setFacilitator] = useState([]);
+  const [isMore, setIsMore] = useState("");
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const facilitatorDetails = async () => {
       const result = await facilitatorRegistryService.filter(facilitatorFilter);
       const newData = result?.data?.data?.map((e) => ({
@@ -138,7 +138,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     facilitatorDetails();
   }, [facilitatorFilter]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let name = "RAJASTHAN";
     const getDistricts = await geolocationRegistryService.getDistricts({
       name,
@@ -156,7 +156,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     setSelectedRows(arr);
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await facilitatorRegistryService.getOne({ id: prerakId });
     setPrerak(result);
   }, []);
@@ -206,7 +206,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     },
   ];
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await facilitatorRegistryService.getPrerakLearnerList(
       prerakId,
       filter
@@ -245,10 +245,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     });
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
     <Layout _sidebar={footerLinks}>
@@ -491,7 +488,7 @@ export const Filter = ({
   debouncedHandleSearch,
 }) => {
   const { t } = useTranslation();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [getBlocksAll, setGetBlocksAll] = useState();
 
   // facilitator pagination
 
@@ -554,7 +551,7 @@ export const Filter = ({
     },
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let blockData = [];
     if (filterfunction?.district?.length > 0) {
       blockData = await geolocationRegistryService.getMultipleBlocks({
@@ -575,7 +572,7 @@ export const Filter = ({
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (clearvalue) {
       setFacilitatorFilter({});
       setFilterfunction({});
