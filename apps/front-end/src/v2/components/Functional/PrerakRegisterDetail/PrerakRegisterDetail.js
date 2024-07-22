@@ -28,13 +28,14 @@ import {
   basicRegister,
   contact_details,
   verifyOTP,
+  qualification_details,
 } from "./PrerakRegister.Forms.Schema.js";
 import {
   widgets,
   templates,
   transformErrors,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
-import { getLanguage } from "v2/utils/Helper/JSHelper.js";
+import { getIndexedDBItem, getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
 import Loader from "v2/components/Static/Loader/Loader.js";
 import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
@@ -162,6 +163,14 @@ export default function PrerakRegisterDetail({
       }
     } else if (currentForm == 2) {
       const fetchData = async () => {
+        let newSchema = await updateSchemaBasedOnDiploma(false);
+        setLoading(false);
+        setSchema(newSchema);
+        setFormData(registerFormData);
+      };
+      fetchData();
+    } else if (currentForm == 3) {
+      const fetchData = async () => {
         let newSchema = address_details;
         try {
           if (address_details?.properties?.district) {
@@ -204,7 +213,10 @@ export default function PrerakRegisterDetail({
         },
       };
       setSchema(verifySchema);
-      setFormData({ verify_mobile: registerFormData?.mobile });
+      setFormData({
+        ...registerFormData,
+        verify_mobile: registerFormData?.mobile,
+      });
     }
   }, [currentForm]);
 
@@ -232,6 +244,12 @@ export default function PrerakRegisterDetail({
         hideClearButton: true,
         format: "DMY",
       },
+    },
+    qualification_ids: {
+      "ui:widget": "MultiCheck",
+    },
+    has_diploma: {
+      "ui:widget": "RadioBtn",
     },
   };
   const validate = (data, key) => {
@@ -462,14 +480,16 @@ export default function PrerakRegisterDetail({
     } else if (currentForm == 1) {
       setCurrentForm(2);
     } else if (currentForm == 2) {
+      setCurrentForm(3);
+    } else if (currentForm == 3) {
       const fetchData = async () => {
         await sendAndVerifyOtp(schema, {
           mobile: isConsentModal?.mobile,
         });
-        setCurrentForm(3);
+        setCurrentForm(4);
       };
       fetchData();
-    } else if (currentForm == 3) {
+    } else if (currentForm == 4) {
       setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
       if (!isExist) {
@@ -526,7 +546,7 @@ export default function PrerakRegisterDetail({
     const data = e.formData;
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (currentForm < 3) {
+    if (currentForm < 4) {
       setRegisterFormData(newData);
     }
     if (id === "root_mobile") {
@@ -581,6 +601,13 @@ export default function PrerakRegisterDetail({
       } else {
         setErrors();
       }
+    }
+
+    if (id === "root_has_diploma") {
+      let newSchema = await updateSchemaBasedOnDiploma(
+        data?.has_diploma === "yes"
+      );
+      setSchema(newSchema);
     }
   };
   const checkMobileExist = async (mobile) => {
@@ -747,6 +774,51 @@ export default function PrerakRegisterDetail({
     return isExist;
   };
 
+  const updateSchemaBasedOnDiploma = async (hasDiploma) => {
+    let newSchema = {};
+    if (!hasDiploma) {
+      const constantSchema = qualification_details;
+      const { diploma_details, ...properties } =
+        constantSchema?.properties || {};
+      const required = constantSchema?.required.filter((item) =>
+        [
+          "has_diploma",
+          "qualification_ids",
+          "qualification_master_id",
+          "qualification_reference_document_id",
+        ].includes(item)
+      );
+      newSchema = { ...constantSchema, properties, required };
+    } else if (hasDiploma) {
+      newSchema = qualification_details;
+    }
+
+    try {
+      const ListOfEnum = await enumRegistryService.listOfEnum();
+      newSchema = getOptions(newSchema, {
+        key: "qualification_master_id",
+        arr: ListOfEnum?.data?.QUALIFICATION,
+        title: "title",
+        value: "value",
+      });
+      newSchema = getOptions(newSchema, {
+        key: "qualification_ids",
+        arr: ListOfEnum?.data?.TEACHING_QUALIFICATION,
+        title: "title",
+        value: "value",
+      });
+      newSchema = getOptions(newSchema, {
+        key: "has_diploma",
+        arr: ListOfEnum?.data?.TEACHING_DEGREE,
+        title: "title",
+        value: "value",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    return newSchema;
+  };
+
   const userExistClick = () => {
     if (
       isUserExistStatus == "EXIST_LOGIN" ||
@@ -883,7 +955,6 @@ export default function PrerakRegisterDetail({
               style={{ fontWeight: "600" }}
               color="textGreyColor.750"
             >
-              {" "}
               {t("SIGN_UP_IN_TWO_STEPS")}
             </FrontEndTypo.H3>
             {/* <Alert
@@ -936,7 +1007,7 @@ export default function PrerakRegisterDetail({
                 transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
             >
-              {currentForm === 3 ? (
+              {currentForm === 4 ? (
                 <FrontEndTypo.Primarybutton
                   width="60%"
                   mx="auto"
@@ -964,7 +1035,7 @@ export default function PrerakRegisterDetail({
                   >
                     {currentForm == 0
                       ? t("CONSENT_TO_SHARE_INFORMATION")
-                      : currentForm == 1
+                      : currentForm < 3
                       ? t("NEXT")
                       : t("SEND_OTP")}
                   </FrontEndTypo.Primarybutton>
