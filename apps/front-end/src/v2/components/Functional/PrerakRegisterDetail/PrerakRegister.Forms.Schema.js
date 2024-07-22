@@ -101,6 +101,58 @@ export const contact_details = {
   },
 };
 
+export const qualification_details = {
+  step_name: "QUALIFICATION_DETAILS",
+  required: [
+    "qualification_master_id",
+    "qualification_reference_document_id",
+    "qualification_ids",
+    "has_diploma",
+    "diploma_details",
+  ],
+  type: "object",
+  // title: "4_QUALIFICATION_DETAILS",
+  properties: {
+    qualification_master_id: {
+      label: "YOUR_HIGHEST_QUALIFICATION",
+      type: ["string", "number"],
+      format: "RadioBtn",
+      grid: 2,
+    },
+    // type_of_document: {
+    //   type: "string",
+    //   title: "TYPE_OF_DOCUMENT",
+    // },
+    qualification_reference_document_id: {
+      label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
+      document_type: "highest_qualification_document",
+      type: ["string", "number"],
+      format: "OfflineFileUpload",
+      uploadTitle: "UPLOAD_FROM_PHONE",
+    },
+    qualification_ids: {
+      label: "TEACHING_RALATED_DEGREE",
+      format: "MultiCheck",
+      type: "array",
+      grid: 1,
+      items: {
+        type: ["string", "number"],
+      },
+      uniqueItems: true,
+    },
+    has_diploma: {
+      label: "HAVE_YOU_DONE_YOUR_DIPLOMA",
+      type: "boolean",
+      format: "RadioBtn",
+      _stack: { direction: "row", justifyContent: "space-between" },
+    },
+    diploma_details: {
+      label: "NAME_OF_THE_DIPLOMA",
+      type: "string",
+    },
+  },
+};
+
 export const address_details = {
   type: "object",
   required: ["district", "block", "village"],
