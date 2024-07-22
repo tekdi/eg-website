@@ -145,7 +145,7 @@ export default function CampTodayActivities({
           }
         }
         const { countSession } = getSessionCount(data);
-        if (countSession >= 1.5) {
+        if (countSession > 0) {
           setSessionList(true);
         } else {
           setSessionList(false);
