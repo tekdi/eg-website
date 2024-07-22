@@ -175,84 +175,18 @@ export default function Login() {
             </Alert>
           </Box>
         )}
-        <HStack></HStack>
-        {width > 676 && (
-          <Image
-            alignSelf="flex-end"
-            // alignSelf="left"
-            source={{
-              uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
-            }}
-            alt="Educate Girls"
-            resizeMode="contain"
-            size={200}
-          />
-        )}
-
-        <VStack>
-          {width >= 360 && width < 676 && (
-            <Image
-              alignSelf="flex-end"
-              source={{
-                uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
-              }}
-              alt="Educate Girls"
-              resizeMode="contain"
-              size={200}
-            />
-          )}
-          <HStack mt="-50%">
-            {console.log("Current width:", width)}
-            {width > 359 && width < 390 && (
-              <Image
-                alignSelf="flex-end"
-                source={{
-                  uri: `/images/logos/Motifs/360.svg`,
-                }}
-                alt="Motif Logo"
-                resizeMode="cover"
-                size={360}
-              />
-            )}
-
-            {width > 390 && width < 393 && (
-              <Image
-                alignSelf="flex-end"
-                source={{
-                  uri: `/images/logos/Motifs/390.svg`,
-                }}
-                alt="Motif Logo"
-                resizeMode="cover"
-                size={390}
-              />
-            )}
-            {width > 393 && width < 412 && (
-              <Image
-                alignSelf="flex-end"
-                source={{
-                  uri: `/images/logos/Motifs/393.svg`,
-                }}
-                alt="Motif Logo"
-                resizeMode="cover"
-                size={393}
-              />
-            )}
-            {width > 412 && width < 676 && (
-              <Image
-                alignSelf="flex-end"
-                source={{
-                  uri: `/images/logos/Motifs/412.svg`,
-                }}
-                alt="Motif Logo"
-                resizeMode="cover"
-                size={412}
-              />
-            )}
-          </HStack>
-        </VStack>
-
+        <Image
+          alignSelf="center"
+          source={{
+            uri: `/images/logos/${language}/Motiflogo300*300.svg`,
+          }}
+          alt="Educate Girls"
+          resizeMode="contain"
+          size={750}
+          w={width}
+        />
         <VStack space={5} p="5">
-          <FrontEndTypo.H1 color="textMaroonColor.400" ml="6">
+          <FrontEndTypo.H1 color="textMaroonColor.400" mt={"-30px"}>
             {t("LOGIN")}
           </FrontEndTypo.H1>
           <CustomAlert
