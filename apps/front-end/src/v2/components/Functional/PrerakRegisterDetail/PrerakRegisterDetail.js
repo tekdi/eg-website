@@ -507,13 +507,7 @@ export default function PrerakRegisterDetail({
     } else if (currentForm == 2) {
       setCurrentForm(3);
     } else if (currentForm == 3) {
-      const fetchData = async () => {
-        await sendAndVerifyOtp(schema, {
-          mobile: isConsentModal?.mobile,
-        });
-        setCurrentForm(4);
-      };
-      fetchData();
+      setCurrentForm(4);
     } else if (currentForm == 4) {
       setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
@@ -627,13 +621,6 @@ export default function PrerakRegisterDetail({
         setErrors();
       }
     }
-
-    if (id === "root_has_diploma") {
-      let newSchema = await updateSchemaBasedOnDiploma(
-        data?.has_diploma === "yes"
-      );
-      setSchema(newSchema);
-    }
     if (id === "root_qualification_master_id") {
       const twelthId = findIdByName(allQualifictions, "12th grade");
       if (data?.qualification_master_id === twelthId) {
@@ -666,7 +653,14 @@ export default function PrerakRegisterDetail({
         });
       }
     }
+    if (id === "root_has_diploma") {
+      let newSchema = await updateSchemaBasedOnDiploma(
+        data?.has_diploma === "yes"
+      );
+      setSchema(newSchema);
+    }
   };
+  console.log(formData);
   const checkMobileExist = async (mobile) => {
     let isExist = false;
     const result = await facilitatorRegistryService.isUserExist({ mobile });
@@ -830,11 +824,22 @@ export default function PrerakRegisterDetail({
     }
     return isExist;
   };
-
+  console.log(schema);
   const updateSchemaBasedOnDiploma = async (hasDiploma) => {
     let newSchema = {};
     if (!hasDiploma) {
-      const constantSchema = qualification_details;
+      const constantSchema = {
+        ...qualification_details,
+        properties: {
+          ...qualification_details?.properties,
+          qualification_reference_document_id: {
+            ...qualification_details?.properties
+              ?.qualification_reference_document_id,
+            user_id: "{{user_id}}",
+            document_sub_type: "qualification_reference_document",
+          },
+        },
+      };
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
       const required = constantSchema?.required.filter((item) =>
@@ -958,6 +963,13 @@ export default function PrerakRegisterDetail({
     let device_ownership = registerFormData?.device_ownership;
     let marital_status = registerFormData?.marital_status;
     let social_category = registerFormData?.social_category;
+    const {
+      qualification_master_id,
+      qualification_ids,
+      has_diploma,
+      qualification_reference_document_id,
+      diploma_details,
+    } = registerFormData;
 
     const result = await facilitatorRegistryService.registerV2(
       {
@@ -978,6 +990,11 @@ export default function PrerakRegisterDetail({
         device_ownership: device_ownership,
         marital_status: marital_status,
         social_category: social_category,
+        qualification_master_id,
+        qualification_reference_document_id,
+        qualification_ids,
+        has_diploma: has_diploma === "yes",
+        ...(has_diploma === "yes" ? { diploma_details } : {}),
       },
       ip?.id?.toString(),
       programData?.program_id,

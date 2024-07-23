@@ -127,7 +127,7 @@ export const qualification_details = {
       label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
       document_type: "highest_qualification_document",
       type: ["string", "number"],
-      format: "OfflineFileUpload",
+      format: "FileUpload",
       uploadTitle: "UPLOAD_FROM_PHONE",
     },
     qualification_ids: {
