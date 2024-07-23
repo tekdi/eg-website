@@ -10,13 +10,14 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { RadioBtn } from "component/BaseInput";
 
-const CampOtherPlans = React.memo(({ footerLinks }) => {
+const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState(false);
   const { id } = useParams();
   const [reasonData, setReasonData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [reason, setReason] = React.useState();
+  const [campDetails, setCampDetails] = React.useState({});
   const navigate = useNavigate();
 
   const enumData = React.useCallback(async () => {
@@ -31,6 +32,22 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
   }, []);
 
   React.useEffect(() => {
+    const getCampDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await campService.getCampDetails({ id });
+        setCampDetails(response?.data);
+      } catch (error) {
+        console.log("Error in fetching camp details", error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getCampDetails();
+  }, []);
+
+  React.useEffect(() => {
     enumData();
   }, [enumData]);
 
@@ -39,31 +56,41 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
       camp_id: id,
       camp_day_happening: "no",
       camp_day_not_happening_reason: reason,
+      camp_type: campDetails?.type,
     };
-    if (reason) {
+    setLoading(true);
+    try {
       await campService.campActivity(payLoad);
       navigate(`/camps`);
-    } else {
+    } catch (error) {
       setError(true);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   }, [id, reason, navigate]);
 
   return (
     <Layout
-      _appBar={{ name: t("CAMP_OTHER_PLANS") }}
+      _appBar={{
+        name: t("CAMP_OTHER_PLANS"),
+        onPressBackButton: () => navigate(`/camps/${id}/campexecution`),
+      }}
+      facilitator={userTokenInfo?.authUser || {}}
       loading={loading}
       _footer={{ menues: footerLinks }}
       analyticsPageTitle={"CAMP_OTHERPLANS"}
       pageTitle={t("CAMP_OTHER_PLANS")}
     >
       <VStack space={2} padding={5}>
-        <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
+        <FrontEndTypo.H1>{t("CAMP_EXECUTION")}</FrontEndTypo.H1>
+        <FrontEndTypo.H3 color={"textGreyColor.750"}>
           {t("CAMP_OTHER_PLAN")}
-        </FrontEndTypo.H1>
-        <VStack borderWidth={1} alignItems={"center"} padding={5} space={4}>
-          <FrontEndTypo.H1 alignSelf={"center"} color={"textMaroonColor.400"}>
+        </FrontEndTypo.H3>
+        <VStack pt={5} space={4}>
+          <FrontEndTypo.H2 color={"textGreyColor.750"}>
             {t("WHATS_YOUR_PLAN_TODAY")}
-          </FrontEndTypo.H1>
+          </FrontEndTypo.H2>
           <RadioBtn
             directionColumn={"column"}
             value={reason || []}
@@ -87,9 +114,9 @@ const CampOtherPlans = React.memo(({ footerLinks }) => {
               {t("SELECT_MESSAGE")}
             </FrontEndTypo.H3>
           )}
-          <FrontEndTypo.Primarybutton px={5} onPress={submitReason}>
+          <FrontEndTypo.Secondarybutton px={5} onPress={submitReason}>
             {t("SAVE_AND_PROFILE")}
-          </FrontEndTypo.Primarybutton>
+          </FrontEndTypo.Secondarybutton>
         </VStack>
       </VStack>
     </Layout>

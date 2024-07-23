@@ -50,6 +50,7 @@ import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
 import Scholarship from "component/Scholarship";
+import PropTypes from "prop-types";
 
 const columns = (t) => [
   {
@@ -2104,4 +2105,9 @@ const SelectAllCheckBox = ({
 
 const TitleComponent = (props) => {
   return <AdminTypo.H5 {...props} bold color="textGreyColor.550" />;
+};
+
+AgAdminProfile.PropTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
 };

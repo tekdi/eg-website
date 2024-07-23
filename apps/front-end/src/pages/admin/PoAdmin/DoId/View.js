@@ -22,7 +22,7 @@ function View() {
   useEffect(async () => {
     try {
       const data = await eventService.getOneDoIdDetails({ id });
-      setDoId(data?.data);
+      setDoId({ ...data?.data, event_type: t(data?.data.event_type) });
     } catch (error) {
       console.error("Failed to fetch doId details:", error);
     }

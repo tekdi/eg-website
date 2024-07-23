@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   HStack,
@@ -11,7 +11,6 @@ import {
 } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
 import {
   IconByName,
   AdminTypo,
@@ -26,7 +25,6 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
-
 
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
@@ -47,7 +45,6 @@ function CustomFieldTemplate({ id, classNames, label, required, children }) {
               {label}
               {required ? "*" : null}
             </label>
-
             <IconByName name="SearchLineIcon" _icon={{ size: "15px" }} />
           </HStack>
         )}
@@ -59,51 +56,59 @@ function CustomFieldTemplate({ id, classNames, label, required, children }) {
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
-  const ref = React.useRef(null);
+  const ref = useRef(null);
   const [Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({});
-  const [data, setData] = React.useState();
-  const [getDistrictsAll, setgetDistrictsAll] = React.useState();
-  const [getBlocksAll, setGetBlocksAll] = React.useState();
+  const [refAppBar, setRefAppBar] = useState();
+  const [loading, setLoading] = useState(true);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({});
+  const [data, setData] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [blocks, setBlocks] = useState([]);
 
   const navigate = useNavigate();
 
   // facilitator pagination
-
-  React.useEffect(async () => {
-    const learnerStatus =
-      await facilitatorRegistryService.learnerStatusDistribution(filter);
-    setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
-    setData(learnerStatus?.data?.data);
-    setLoading(false);
+  useEffect(() => {
+    const fetchLearnerStatus = async () => {
+      setLoading(true);
+      const learnerStatus =
+        await facilitatorRegistryService.learnerStatusDistribution(filter);
+      setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
+      setData(learnerStatus?.data?.data || []);
+      setLoading(false);
+    };
+    fetchLearnerStatus();
   }, [filter]);
 
-  React.useEffect(async () => {
-    let name = "RAJASTHAN";
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    setgetDistrictsAll(getDistricts?.districts);
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      const response = await geolocationRegistryService.getDistricts({
+        name: "RAJASTHAN",
+      });
+      setDistricts(response?.districts || []);
+    };
+    fetchDistricts();
   }, []);
 
-  React.useEffect(async () => {
-    let blockData = [];
-    if (filter?.district?.length > 0) {
-      blockData = await geolocationRegistryService.getMultipleBlocks({
-        districts: filter?.district,
-      });
-    }
-    setGetBlocksAll(blockData);
+  useEffect(() => {
+    const fetchBlocks = async () => {
+      if (filter.district?.length) {
+        const response = await geolocationRegistryService.getMultipleBlocks({
+          districts: filter.district,
+        });
+        setBlocks(response || []);
+      } else {
+        setBlocks([]);
+      }
+    };
+    fetchBlocks();
   }, [filter?.district]);
 
   const setFilterObject = (data) => {
     setFilter(data);
     setQueryParameters(data);
   };
-
 
   const schema = {
     type: "object",
@@ -118,12 +123,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         items: {
           type: "string",
-          enumNames: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
-          enum: getDistrictsAll?.map((item, i) => {
-            return item?.district_name;
-          }),
+          enumNames: districts.map((item) => item?.district_name),
+          enum: districts.map((item) => item?.district_name),
         },
         uniqueItems: true,
       },
@@ -137,12 +138,8 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
         },
         items: {
           type: "string",
-          enumNames: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
-          enum: getBlocksAll?.map((item, i) => {
-            return item?.block_name;
-          }),
+          enumNames: blocks.map((item) => item?.block_name),
+          enum: blocks.map((item) => item?.block_name),
         },
         uniqueItems: true,
       },
@@ -160,12 +157,12 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     },
   };
 
-  const onChange = async (data) => {
+  const handleChange = (data) => {
     const { district, block } = data?.formData || {};
     setFilterObject({
       ...filter,
-      ...(district ? { district } : {}),
-      ...(block ? { block } : {}),
+      ...(district && { district }),
+      ...(block && { block }),
     });
   };
 
@@ -176,13 +173,11 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-    
   };
 
-  const debouncedHandleSearch = React.useCallback(
-    debounce(handleSearch, 1000),
-    []
-  );
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), [
+    filter,
+  ]);
 
   return (
     <Layout getRefAppBar={(e) => setRefAppBar(e)} _sidebar={footerLinks}>
@@ -246,17 +241,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   placeholder="search"
                   variant="outline"
                   onChange={debouncedHandleSearch}
-
                 />
                 <Form
                   schema={schema}
                   uiSchema={uiSchema}
-                  onChange={onChange}
+                  onChange={handleChange}
                   validator={validator}
                   formData={filter}
-                  templates={{
-                    FieldTemplate: CustomFieldTemplate,
-                  }}
+                  templates={{ FieldTemplate: CustomFieldTemplate }}
                 >
                   <Button display={"none"} type="submit"></Button>
                 </Form>

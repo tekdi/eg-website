@@ -424,7 +424,11 @@ export default function LearnerAdhaar({ userTokenInfo, footerLinks }) {
                 color="textGreyColor.150"
                 _icon={{ size: "50px" }}
               />
-              <FrontEndTypo.H1 pb="2" color="worksheetBoxText.400" bold>
+              <FrontEndTypo.H1
+                pb="2"
+                color="worksheetBoxText.400"
+                fontWeight={"600"}
+              >
                 {t("AG_ADDED_SUCCESSFULLY")}
               </FrontEndTypo.H1>
               <TextArea

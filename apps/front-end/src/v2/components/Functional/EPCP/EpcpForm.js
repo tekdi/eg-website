@@ -19,7 +19,7 @@ import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const EpcpForm = ({ footerLinks }) => {
+const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [loading, setLoading] = useState(true);
@@ -56,7 +56,8 @@ const EpcpForm = ({ footerLinks }) => {
     } ${t("EPCP.TITLE")}`,
     properties: {
       HAS_LOGGED_RSOS_APP: {
-        label: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
+        title: `${t("EPCP.HAS_LOGGED_RSOS_APP")}`,
+        description: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
         type: "string",
         direction: "row",
         format: "RadioBtn",
@@ -77,7 +78,8 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             TOOK_EPCP_EXAM_ON_RSOS_APP: {
-              label: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
+              title: `${t("EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP")}`,
+              description: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
@@ -99,7 +101,8 @@ const EpcpForm = ({ footerLinks }) => {
         then: {
           properties: {
             HAS_LOGGED_RSOS_APP_NO_REASONS: {
-              label: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
+              title: `${t("EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS")}`,
+              description: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",
               direction: "column",
@@ -126,7 +129,8 @@ const EpcpForm = ({ footerLinks }) => {
           properties: {
             TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: {
               format: "RadioBtn",
-              label: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
+              title: `${t("EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS")}`,
+              description: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               direction: "column",
               enum: sortEnums(
@@ -329,15 +333,9 @@ const EpcpForm = ({ footerLinks }) => {
   useEffect(() => {
     let observation = "EPCP";
     const fetchData = async () => {
-      const getData = await ObservationService.getSubmissionData(
-        id,
-        observation
-      );
-      setData(getData?.data?.[0]?.observation_fields);
       const getSubject = await ObservationService.subjectList(id);
-
       setSubjectList(getSubject?.data?.subjectsArray);
-      const filteredSubjects = getSubject?.data?.subjectsArray.reduce(
+      const filteredSubjects = getSubject?.data?.subjectsArray?.reduce(
         (acc, subject) => {
           acc.id.push(subject.id);
           acc.name.push(subject.name);
@@ -346,6 +344,14 @@ const EpcpForm = ({ footerLinks }) => {
         { id: [], name: [] }
       );
       setSubjects(filteredSubjects);
+      const obj = {
+        id: id,
+        board_id: getSubject?.data?.subjectsArray?.[0]?.board_id,
+        observation: observation,
+      };
+      const getData = await ObservationService.getSubmissionData(obj);
+
+      setData(getData?.data?.[0]?.observation_fields);
     };
 
     fetchData();
@@ -386,6 +392,10 @@ const EpcpForm = ({ footerLinks }) => {
 
   return (
     <Layout
+      facilitator={{
+        ...authUser,
+        program_faciltators: authUser,
+      }}
       loading={loading}
       _appBar={{
         onPressBackButton,
