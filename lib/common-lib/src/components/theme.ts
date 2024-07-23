@@ -197,7 +197,7 @@ const DEFAULT_THEME = {
         redOutlineBtn: () => ({
           bg: `#FFFFFF`,
           borderWidth: '1',
-          borderColor: `#FF0000`,
+          borderColor: `#d53546`,
           _hover: {
             bg: `#FFFFFF`
           },
@@ -366,7 +366,7 @@ const DEFAULT_THEME = {
       shadowRadius: 3,
       elevation: 0,
       borderWidth: 1,
-      borderColor: '#FF0000'
+      borderColor: '#d53546'
     },
 
     BlueBoxShadow: {
@@ -742,7 +742,7 @@ const DEFAULT_THEME = {
       350: '#FFE0E1',
       400: '#790000',
       500: '#D53546',
-      600: '#FF0000',
+      600: '#d53546',
       700: '#7c2704',
       800: '#4a1702',
       900: '#190801'
@@ -769,7 +769,7 @@ const DEFAULT_THEME = {
       200: '#14242D'
     },
     Darkmaroonprimarybutton: {
-      400: '#FF0000'
+      400: '#d53546'
     },
     textBlack: {
       500: '#000000'
@@ -841,8 +841,8 @@ const DEFAULT_THEME = {
       200: '#ff5252',
       300: '#FF2815',
       350: '#D53546',
-      400: '#ff0000',
-      500: '#ff000047'
+      400: '#d53546',
+      500: '#d5354647'
     },
     dividerColor: '#EEEEEE',
     textGreen: {

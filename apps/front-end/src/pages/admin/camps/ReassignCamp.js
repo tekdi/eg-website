@@ -136,7 +136,7 @@ const tableStyles = {
   },
   headCells: {
     style: {
-      background: "#ff0000",
+      background: "#d53546",
       color: "white",
       size: "16px",
       justifyContent: "flex-start",
