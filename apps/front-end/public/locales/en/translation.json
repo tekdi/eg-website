@@ -674,6 +674,7 @@
   "EXAM": "Exam",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
+  "EXAM_SCHEDULE": "Exam Schedule",
   "EXAM_PREPARATION": {
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "No",

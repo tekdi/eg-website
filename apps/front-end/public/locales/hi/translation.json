@@ -672,6 +672,7 @@
   "EXAM": "परीक्षा",
   "EXAM_ALREADY_TAKEN": "परीक्षा का प्रयास पहले ही किया जा चुका है",
   "EXAM_START_STATUS": "परीक्षा शुरुआत की स्थिति",
+  "EXAM_SCHEDULE": "परीक्षा कार्यक्रम",
   "EXAM_PREPARATION": {
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "नहीं",

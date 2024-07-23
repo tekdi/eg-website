@@ -17,6 +17,7 @@ import {
   getOptions,
   enumRegistryService,
   validation,
+  BodyMedium,
 } from "@shiksha/common-lib";
 import { useScreenshot } from "use-screenshot-hook";
 import Clipboard from "../Clipboard/Clipboard.js";
@@ -28,17 +29,19 @@ import {
   basicRegister,
   contact_details,
   verifyOTP,
+  qualification_details,
 } from "./PrerakRegister.Forms.Schema.js";
 import {
   widgets,
   templates,
   transformErrors,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
-import { getLanguage } from "v2/utils/Helper/JSHelper.js";
+import { getIndexedDBItem, getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
 import Loader from "v2/components/Static/Loader/Loader.js";
 import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
 import moment from "moment";
+import { tr } from "date-fns/locale";
 
 export default function PrerakRegisterDetail({
   t,
@@ -117,8 +120,31 @@ export default function PrerakRegisterDetail({
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
+  const [alert, setAlert] = useState();
+  const [allQualifictions, setAllQualifications] = useState([]);
 
   // Toggle consent state based on user agreement
+
+  useEffect(() => {
+    const getAllQualifications = async () => {
+      try {
+        setLoading(true);
+        const qualificationsList =
+          await enumRegistryService.getQualificationAll();
+        setAllQualifications(qualificationsList);
+      } catch (error) {
+        console.error("Error fetching qualifications:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getAllQualifications();
+  }, []);
+
+  const findIdByName = (data, targetName) => {
+    const element = data.find((item) => item.name === targetName);
+    return element ? `${element.id}` : null;
+  };
 
   useEffect(() => {
     if (currentForm == 0) {
@@ -162,6 +188,14 @@ export default function PrerakRegisterDetail({
       }
     } else if (currentForm == 2) {
       const fetchData = async () => {
+        let newSchema = await updateSchemaBasedOnDiploma(false);
+        setLoading(false);
+        setSchema(newSchema);
+        setFormData(registerFormData);
+      };
+      fetchData();
+    } else if (currentForm == 3) {
+      const fetchData = async () => {
         let newSchema = address_details;
         try {
           if (address_details?.properties?.district) {
@@ -204,7 +238,10 @@ export default function PrerakRegisterDetail({
         },
       };
       setSchema(verifySchema);
-      setFormData({ verify_mobile: registerFormData?.mobile });
+      setFormData({
+        ...registerFormData,
+        verify_mobile: registerFormData?.mobile,
+      });
     }
   }, [currentForm]);
 
@@ -232,6 +269,12 @@ export default function PrerakRegisterDetail({
         hideClearButton: true,
         format: "DMY",
       },
+    },
+    qualification_ids: {
+      "ui:widget": "MultiCheck",
+    },
+    has_diploma: {
+      "ui:widget": "RadioBtn",
     },
   };
   const validate = (data, key) => {
@@ -462,14 +505,16 @@ export default function PrerakRegisterDetail({
     } else if (currentForm == 1) {
       setCurrentForm(2);
     } else if (currentForm == 2) {
+      setCurrentForm(3);
+    } else if (currentForm == 3) {
       const fetchData = async () => {
         await sendAndVerifyOtp(schema, {
           mobile: isConsentModal?.mobile,
         });
-        setCurrentForm(3);
+        setCurrentForm(4);
       };
       fetchData();
-    } else if (currentForm == 3) {
+    } else if (currentForm == 4) {
       setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
       if (!isExist) {
@@ -526,7 +571,7 @@ export default function PrerakRegisterDetail({
     const data = e.formData;
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (currentForm < 3) {
+    if (currentForm < 4) {
       setRegisterFormData(newData);
     }
     if (id === "root_mobile") {
@@ -580,6 +625,45 @@ export default function PrerakRegisterDetail({
         setErrors(newErrors);
       } else {
         setErrors();
+      }
+    }
+
+    if (id === "root_has_diploma") {
+      let newSchema = await updateSchemaBasedOnDiploma(
+        data?.has_diploma === "yes"
+      );
+      setSchema(newSchema);
+    }
+    if (id === "root_qualification_master_id") {
+      const twelthId = findIdByName(allQualifictions, "12th grade");
+      if (data?.qualification_master_id === twelthId) {
+        setAlert(t("YOU_NOT_ELIGIBLE"));
+      } else {
+        setAlert();
+      }
+    }
+    if (id === "root_qualification_ids") {
+      const noneId = findIdByName(
+        allQualifictions,
+        "TEACHING_QUALIFICATION_NONE"
+      );
+      if (
+        formData?.qualification_ids.includes(noneId) &&
+        data?.qualification_ids?.length <= 1
+      ) {
+        setFormData({ ...formData, qualification_ids: [noneId] });
+      } else if (
+        data?.qualification_ids.includes(noneId) &&
+        !formData?.qualification_ids.includes(noneId)
+      ) {
+        setFormData({ ...formData, qualification_ids: [noneId] });
+      } else {
+        setFormData({
+          ...formData,
+          qualification_ids: data?.qualification_ids?.filter(
+            (e) => e !== noneId
+          ),
+        });
       }
     }
   };
@@ -747,6 +831,53 @@ export default function PrerakRegisterDetail({
     return isExist;
   };
 
+  const updateSchemaBasedOnDiploma = async (hasDiploma) => {
+    let newSchema = {};
+    if (!hasDiploma) {
+      const constantSchema = qualification_details;
+      const { diploma_details, ...properties } =
+        constantSchema?.properties || {};
+      const required = constantSchema?.required.filter((item) =>
+        [
+          "has_diploma",
+          "qualification_ids",
+          "qualification_master_id",
+          "qualification_reference_document_id",
+        ].includes(item)
+      );
+      newSchema = { ...constantSchema, properties, required };
+    } else if (hasDiploma) {
+      newSchema = qualification_details;
+    }
+    try {
+      const ListOfEnum = await enumRegistryService.listOfEnum();
+      newSchema = getOptions(newSchema, {
+        key: "qualification_master_id",
+        arr: allQualifictions,
+        title: "name",
+        value: "id",
+        filters: { type: "qualification" },
+      });
+      newSchema = getOptions(newSchema, {
+        key: "qualification_ids",
+        arr: allQualifictions,
+        title: "name",
+        value: "id",
+        filters: { type: "teaching" },
+      });
+
+      newSchema = getOptions(newSchema, {
+        key: "has_diploma",
+        arr: ListOfEnum?.data?.TEACHING_DEGREE,
+        title: "title",
+        value: "value",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    return newSchema;
+  };
+
   const userExistClick = () => {
     if (
       isUserExistStatus == "EXIST_LOGIN" ||
@@ -883,7 +1014,6 @@ export default function PrerakRegisterDetail({
               style={{ fontWeight: "600" }}
               color="textGreyColor.750"
             >
-              {" "}
               {t("SIGN_UP_IN_TWO_STEPS")}
             </FrontEndTypo.H3>
             {/* <Alert
@@ -916,6 +1046,15 @@ export default function PrerakRegisterDetail({
               }
             />
 
+            {alert && (
+              <Alert status="warning" alignItems={"start"} mb="3">
+                <HStack alignItems="center" space="2" color>
+                  <Alert.Icon />
+                  <BodyMedium>{alert}</BodyMedium>
+                </HStack>
+              </Alert>
+            )}
+
             <Form
               key={lang}
               ref={formRef}
@@ -936,7 +1075,7 @@ export default function PrerakRegisterDetail({
                 transformErrors: (errors) => transformErrors(errors, schema, t),
               }}
             >
-              {currentForm === 3 ? (
+              {currentForm === 4 ? (
                 <FrontEndTypo.Primarybutton
                   width="60%"
                   mx="auto"
@@ -964,7 +1103,7 @@ export default function PrerakRegisterDetail({
                   >
                     {currentForm == 0
                       ? t("CONSENT_TO_SHARE_INFORMATION")
-                      : currentForm == 1
+                      : currentForm < 3
                       ? t("NEXT")
                       : t("SEND_OTP")}
                   </FrontEndTypo.Primarybutton>
