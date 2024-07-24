@@ -507,7 +507,13 @@ export default function PrerakRegisterDetail({
     } else if (currentForm == 2) {
       setCurrentForm(3);
     } else if (currentForm == 3) {
-      setCurrentForm(4);
+      const fetchData = async () => {
+        await sendAndVerifyOtp(schema, {
+          mobile: isConsentModal?.mobile,
+        });
+        setCurrentForm(4);
+      };
+      fetchData();
     } else if (currentForm == 4) {
       setIsLoading(true);
       let isExist = await checkMobileExist(newFormData?.verify_mobile);
@@ -828,18 +834,19 @@ export default function PrerakRegisterDetail({
   const updateSchemaBasedOnDiploma = async (hasDiploma) => {
     let newSchema = {};
     if (!hasDiploma) {
-      const constantSchema = {
-        ...qualification_details,
-        properties: {
-          ...qualification_details?.properties,
-          qualification_reference_document_id: {
-            ...qualification_details?.properties
-              ?.qualification_reference_document_id,
-            user_id: "{{user_id}}",
-            document_sub_type: "qualification_reference_document",
-          },
-        },
-      };
+      // const constantSchema = {
+      //   ...qualification_details,
+      //   properties: {
+      //     ...qualification_details?.properties,
+      //     qualification_reference_document_id: {
+      //       ...qualification_details?.properties
+      //         ?.qualification_reference_document_id,
+      //       user_id: "{{user_id}}",
+      //       document_sub_type: "qualification_reference_document",
+      //     },
+      //   },
+      // };
+      const constantSchema = qualification_details;
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
       const required = constantSchema?.required.filter((item) =>
@@ -847,7 +854,7 @@ export default function PrerakRegisterDetail({
           "has_diploma",
           "qualification_ids",
           "qualification_master_id",
-          "qualification_reference_document_id",
+          // "qualification_reference_document_id",
         ].includes(item)
       );
       newSchema = { ...constantSchema, properties, required };
@@ -967,7 +974,7 @@ export default function PrerakRegisterDetail({
       qualification_master_id,
       qualification_ids,
       has_diploma,
-      qualification_reference_document_id,
+      // qualification_reference_document_id,
       diploma_details,
     } = registerFormData;
 
@@ -991,7 +998,7 @@ export default function PrerakRegisterDetail({
         marital_status: marital_status,
         social_category: social_category,
         qualification_master_id,
-        qualification_reference_document_id,
+        qualification_reference_document_id: null,
         qualification_ids,
         has_diploma: has_diploma === "yes",
         ...(has_diploma === "yes" ? { diploma_details } : {}),

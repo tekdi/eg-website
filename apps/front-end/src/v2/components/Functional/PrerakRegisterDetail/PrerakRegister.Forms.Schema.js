@@ -105,7 +105,7 @@ export const qualification_details = {
   step_name: "QUALIFICATION_DETAILS",
   required: [
     "qualification_master_id",
-    "qualification_reference_document_id",
+    // "qualification_reference_document_id",
     "qualification_ids",
     "has_diploma",
     "diploma_details",
@@ -123,13 +123,13 @@ export const qualification_details = {
     //   type: "string",
     //   title: "TYPE_OF_DOCUMENT",
     // },
-    qualification_reference_document_id: {
-      label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
-      document_type: "highest_qualification_document",
-      type: ["string", "number"],
-      format: "FileUpload",
-      uploadTitle: "UPLOAD_FROM_PHONE",
-    },
+    // qualification_reference_document_id: {
+    //   label: "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT",
+    //   document_type: "highest_qualification_document",
+    //   type: ["string", "number"],
+    //   format: "FileUpload",
+    //   uploadTitle: "UPLOAD_FROM_PHONE",
+    // },
     qualification_ids: {
       label: "TEACHING_RALATED_DEGREE",
       format: "MultiCheck",
