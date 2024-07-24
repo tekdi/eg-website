@@ -3,6 +3,7 @@ import {
   FrontEndTypo,
   GetEnumValue,
   IconByName,
+  Loading,
   ObservationService,
   TitleCard,
   benificiaryRegistoryService,
@@ -29,6 +30,7 @@ export default function List({ userTokenInfo, stateName }) {
   const [campCount, setCampCount] = useState();
   const [chartData, SetChartData] = useState();
   const [leanerList, setLeanerList] = useState([]);
+  const [data, setData] = useState({});
 
   const campSettingData = (item) => {
     return (
@@ -37,6 +39,14 @@ export default function List({ userTokenInfo, stateName }) {
       item?.week_off === null
     );
   };
+
+  useEffect(async () => {
+    const getData = await benificiaryRegistoryService.getCommunityReferences({
+      context: "community.user",
+    });
+    const community_response = getData?.data?.community_response;
+    setData(community_response);
+  }, []);
 
   useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
@@ -190,14 +200,32 @@ export default function List({ userTokenInfo, stateName }) {
     // pieHole: 0.3,
     is3D: true,
   };
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <Stack>
       <VStack p="4" space="5">
         <FrontEndTypo.H3>
           {`${t("HELLO")}, ${userTokenInfo?.authUser?.first_name}!`}
         </FrontEndTypo.H3>
+        {/* Alert message for community members  */}
+        {data?.length < 2 && (
+          <CustomAlert
+            _hstack={{ mb: 1 }}
+            status={"customAlertdanger"}
+            title={t("COMMUNITY_ALERT_MESSAGE")}
+          />
+        )}
+        {/* Alert if you have community members and do not have status */}
+        {data?.length >= 2 &&
+          !["selected_for_onboarding", "selected_prerak"].includes(
+            ipStatus
+          ) && (
+            <CustomAlert status={"warning"} title={t("CAMP_ACCESS_ERROR")} />
+          )}
 
-        {campList?.pcr_camp?.length > 0 && campList?.pcr_camp?.length <= 2 && (
+        {campList?.pcr_camp?.length >= 0 && campList?.pcr_camp?.length <= 2 && (
           <VStack
             // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"
@@ -209,7 +237,7 @@ export default function List({ userTokenInfo, stateName }) {
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
               ipStatus
-            ) ? (
+            ) && (
               <VStack>
                 {communityLength >= 2 ? (
                   <VStack space={5}>
@@ -305,13 +333,11 @@ export default function List({ userTokenInfo, stateName }) {
                   />
                 )}
               </VStack>
-            ) : (
-              <CustomAlert status={"warning"} title={t("CAMP_ACCESS_ERROR")} />
             )}
           </VStack>
         )}
 
-        {campList?.camps && (
+        {campList?.camps?.length > 0 && (
           <VStack
             // bg="boxBackgroundColour.200"
             borderColor="btnGray.100"

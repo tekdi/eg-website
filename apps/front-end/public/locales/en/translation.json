@@ -50,7 +50,7 @@
   "ADD_AN_AG": "Add Learner",
   "ADD_AN_AG_LEARNER": "Add Learner",
   "ADD_CAMP_PHOTOS": "Add Camp Photos",
-  "ADD_COMMUNITY_MEMBER": "Add Communty member",
+  "ADD_COMMUNITY_MEMBER": "Add Community Member",
   "ADD_DETAILS": "Add Details",
   "ADD_EXISTING_IP": "Add Existing IP (organisation)",
   "ADD_EXPERIENCE": "Add experience",
@@ -337,7 +337,7 @@
   "COMMENT_SECTION": "Comment Section",
   "COMMON_NO_MORE_RECORDS": "Sorry! There are no more records to display.",
   "COMMUNITY": "Community",
-  "COMMUNITY_ALERT_MESSAGE": "To create viable camp you need add at least 2 Community members",
+  "COMMUNITY_ALERT_MESSAGE": "To create viable camp you need to add at least 2 Community members",
   "COMMUNITY_DETAILS": "Community Details",
   "COMMUNITY_ENGAGEMENT": "Community Engagement",
   "COMMUNITY_ENGAGEMENT_HOME_VISIT": "Home Visit",
@@ -364,6 +364,7 @@
   "COMMUNITY_MEMBER_DESIGNATIONS_WARD_MEMBER": "Ward Member",
   "COMMUNITY_MEMBER_DESIGNATIONS_ZILA_PARISAD_MEMBER": "Zila Parisad Member",
   "COMMUNITY_MIN_ERROR": "To register a camp you need to add atleast two dignitaries contact details from the community.",
+  "COMMUNITY_REFRENCE": "Community Reference",
   "COMPANY": "Company",
   "COMPANY_AND_ORGANIZATION_NAME": "The title of the organization / company",
   "COMPANY_NAME": "The name of the organization/company",
@@ -674,6 +675,7 @@
   "EXAM": "Exam",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
+  "EXAM_SCHEDULE": "Exam Schedule",
   "EXAM_PREPARATION": {
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "No",
@@ -689,7 +691,8 @@
       "YES": "Yes"
     },
     "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER": {
-      "NO": "No",
+      "CANT_AFFORD_TRAVEL_FARE": "Can't afford the travel fare",
+      "NO_MEANS_TO_TRAVEL": "No mean to travel",
       "TITLE": "Does the learner have the travel arrangements to the exam center?",
       "YES": "Yes"
     },

@@ -123,13 +123,14 @@ const columns = (t, navigate) => [
       <Button.Group
         isAttached
         divider={<div style={{ background: "#333", padding: "0.5px" }} />}
-        my="1"
-        h="6"
+        my="3"
+        h="8"
         rounded={"full"}
         shadow="BlueOutlineShadow"
         borderWidth="1px"
       >
         <Button
+          width={"50px"}
           background="white"
           px="1.5"
           _text={{
@@ -233,7 +234,6 @@ function Table({
           ...tableCustomStyles,
           rows: {
             style: {
-              minHeight: "20px", // override the row height
               cursor: "pointer",
             },
           },

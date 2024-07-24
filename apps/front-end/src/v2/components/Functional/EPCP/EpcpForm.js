@@ -56,8 +56,8 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
     } ${t("EPCP.TITLE")}`,
     properties: {
       HAS_LOGGED_RSOS_APP: {
-        title: `${t("EPCP.HAS_LOGGED_RSOS_APP")}`,
-        description: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
+        // title: `${t("EPCP.HAS_LOGGED_RSOS_APP")}`,
+        label: `EPCP.HAS_LOGGED_RSOS_APP.TITLE`,
         type: "string",
         direction: "row",
         format: "RadioBtn",
@@ -78,8 +78,8 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
         then: {
           properties: {
             TOOK_EPCP_EXAM_ON_RSOS_APP: {
-              title: `${t("EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP")}`,
-              description: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
+              // title: `${t("EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP")}`,
+              label: "EPCP.TOOK_EPCP_EXAM_ON_RSOS_APP.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
@@ -101,8 +101,8 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
         then: {
           properties: {
             HAS_LOGGED_RSOS_APP_NO_REASONS: {
-              title: `${t("EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS")}`,
-              description: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
+              // title: `${t("EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS")}`,
+              label: "EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",
               direction: "column",
@@ -129,8 +129,8 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
           properties: {
             TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: {
               format: "RadioBtn",
-              title: `${t("EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS")}`,
-              description: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
+              // title: `${t("EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS")}`,
+              label: "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.TITLE",
               type: "string",
               direction: "column",
               enum: sortEnums(

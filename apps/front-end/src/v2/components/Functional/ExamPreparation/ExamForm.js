@@ -13,6 +13,7 @@ import {
   FrontEndTypo,
   Layout,
   ObservationService,
+  benificiaryRegistoryService,
   jsonParse,
 } from "@shiksha/common-lib";
 import { Box } from "native-base";
@@ -27,20 +28,16 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [errors, setErrors] = useState({});
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const user = useLocation();
-  const [learnerData, setLearnertData] = useState(user?.state);
+  const [learnerData, setLearnertData] = useState();
   const { id } = useParams();
-
   const onPressBackButton = () => {
     navigate(-1);
   };
 
   const sortEnums = (prefix, index) => {
-    const Newdata = data?.[index]
-      ? jsonParse(data?.[index]?.fields?.[0]?.enum)
-      : [];
+    const newData = data?.find((e) => e.fields?.[0]?.title == index);
+    const Newdata = newData ? jsonParse(newData?.fields?.[0]?.enum) : [];
     const prefixedData = Newdata?.map((item) => prefix + item);
-
     return prefixedData;
   };
 
@@ -48,9 +45,9 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
     type: "object",
     properties: {
       WILL_LEARNER_APPEAR_FOR_EXAM: {
-        description: `${t(
-          "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1"
-        )} ${learnerData?.first_name} ${
+        label: `${t("EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM.TITLE1")} ${
+          learnerData?.first_name
+        } ${
           learnerData?.last_name
             ? `${learnerData?.middle_name || ""} ${learnerData?.last_name}`
             : ""
@@ -58,7 +55,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
         type: "string",
         direction: "row",
         format: "RadioBtn",
-        enum: sortEnums("", 0),
+        enum: sortEnums("", "WILL_LEARNER_APPEAR_FOR_EXAM"),
         default: null,
       },
     },
@@ -75,38 +72,37 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
         then: {
           properties: {
             HAS_LEARNER_PREPARED_PRACTICAL_FILE: {
-              description:
+              label:
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.HAS_LEARNER_PREPARED_PRACTICAL_FILE.",
-                2
+                "HAS_LEARNER_PREPARED_PRACTICAL_FILE"
               ),
               default: null,
             },
             LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER: {
-              description:
+              label:
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.TITLE",
               type: ["string", "null"],
               direction: "column",
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.",
-                1
+                "LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER"
               ),
               default: null,
             },
             DID_LEARNER_RECEIVE_ADMIT_CARD: {
-              description:
-                "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
+              label: "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.TITLE",
               type: ["string", "null"],
               direction: "row",
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.DID_LEARNER_RECEIVE_ADMIT_CARD.",
-                2
+                "DID_LEARNER_RECEIVE_ADMIT_CARD"
               ),
               default: null,
             },
@@ -115,7 +111,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
             //   type: ["string", "null"],
             //   direction: "row",
             //   format: "RadioBtn",
-            //   enum: sortEnums("", 0),
+            //   enum: sortEnums("", "LEARNER_RECEIVED_EXAM_TIME_TABLE"),
             //   default: null,
             // },
           },
@@ -133,13 +129,13 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
         then: {
           properties: {
             WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS: {
-              description:
+              label:
                 "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.TITLE",
               type: "string",
               format: "RadioBtn",
               enum: sortEnums(
                 "EXAM_PREPARATION.WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS.",
-                4
+                "WILL_LEARNER_APPEAR_FOR_EXAM_NO_REASONS"
               ),
             },
           },
@@ -182,7 +178,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
     }
   };
 
-  const validation = () => {
+  const validation = async () => {
     let newFormData = formData;
     if (!newFormData?.WILL_LEARNER_APPEAR_FOR_EXAM) {
       const newErrors = {
@@ -236,17 +232,25 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
       setErrors(newErrors);
     } else {
       const payload = finalPayload(id, formData, data);
-      PostData(payload);
-      navigate("/camps/exampreparation");
+      const { error, data: reData } = await PostData(payload);
+      if (!error) {
+        navigate("/camps/exampreparation");
+      } else {
+        setErrors({
+          WILL_LEARNER_APPEAR_FOR_EXAM: {
+            __errors: [error],
+          },
+        });
+      }
     }
   };
 
   const PostData = async (payload) => {
-    await ObservationService.postBulkData(payload);
+    return await ObservationService.postBulkData(payload);
   };
 
   const onSubmit = async () => {
-    validation();
+    await validation();
   };
 
   const getFieldResponseByTitle = (title) => {
@@ -260,10 +264,14 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
     setLoading(true);
     let observation = "EXAM_PREPARATION";
     const fetchData = async () => {
-      const getData = await ObservationService.getSubmissionData(
-        id,
-        observation
-      );
+      const result = await benificiaryRegistoryService.getOne(id);
+      setLearnertData(result?.result || {});
+      const obj = {
+        id: id,
+        board_id: result?.result?.program_beneficiaries?.enrolled_for_board,
+        observation: observation,
+      };
+      const getData = await ObservationService.getSubmissionData(obj);
       setData(getData?.data?.[0]?.observation_fields);
     };
     fetchData();

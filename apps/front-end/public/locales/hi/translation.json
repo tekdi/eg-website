@@ -363,6 +363,7 @@
   "COMMUNITY_MEMBER_DESIGNATIONS_WARD_MEMBER": "वार्ड सदस्य",
   "COMMUNITY_MEMBER_DESIGNATIONS_ZILA_PARISAD_MEMBER": "जिला परिषद सदस्य",
   "COMMUNITY_MIN_ERROR": "किसी शिविर को पंजीकृत करने के लिए आपको समुदाय से कम से कम 2 गणमान्य व्यक्ती के संपर्क विवरण जोड़ने होंगे.",
+  "COMMUNITY_REFRENCE": "समुदाय संदेश",
   "COMPANY": "कंपनी",
   "COMPANY_AND_ORGANIZATION_NAME": "संस्था/कंपनी का शीर्षक",
   "COMPANY_NAME": "संस्था/कंपनी का शीर्षक",
@@ -672,6 +673,7 @@
   "EXAM": "परीक्षा",
   "EXAM_ALREADY_TAKEN": "परीक्षा का प्रयास पहले ही किया जा चुका है",
   "EXAM_START_STATUS": "परीक्षा शुरुआत की स्थिति",
+  "EXAM_SCHEDULE": "परीक्षा कार्यक्रम",
   "EXAM_PREPARATION": {
     "DID_LEARNER_RECEIVE_ADMIT_CARD": {
       "NO": "नहीं",
