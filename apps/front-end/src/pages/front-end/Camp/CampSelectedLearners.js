@@ -141,21 +141,19 @@ export default function CampSelectedLearners() {
             </Alert>
           )}
         </AdminTypo.H3>
-        {nonRegister?.length > 0 && (
-          <HStack
-            space={2}
-            paddingRight={2}
-            alignItems={"center"}
-            justifyContent={"flex-end"}
-          >
-            {t("SELECT_ALL")}
-            <Checkbox
-              isChecked={selectAllChecked}
-              onChange={handleSelectAllChange}
-              colorScheme="danger"
-            />
-          </HStack>
-        )}
+        <HStack
+          space={2}
+          paddingRight={2}
+          alignItems={"center"}
+          justifyContent={"flex-end"}
+        >
+          {t("SELECT_ALL")}
+          <Checkbox
+            isChecked={selectAllChecked}
+            onChange={handleSelectAllChange}
+            colorScheme="danger"
+          />
+        </HStack>
 
         {users?.map((item) => {
           return (
