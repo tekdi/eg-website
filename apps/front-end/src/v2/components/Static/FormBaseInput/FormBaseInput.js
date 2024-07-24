@@ -36,7 +36,7 @@ import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import OfflineFileUpload from "./formCustomeInputs/OfflineFileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
-
+//comment
 export function LabelNameWidget() {
   const { t } = useTranslation();
   return (

@@ -59,7 +59,7 @@ import GeoLocation, {
 } from './components/frontend_component/GeoLocation'
 import GATrackPageView from './services/AnalyticsService'
 
-// export
+// exports
 export {
   AdminTypo,
   FrontEndTypo,
