@@ -24,7 +24,6 @@ import {
   HStack,
   Heading,
   Image,
-  Radio,
   Select,
   Stack,
   Text,

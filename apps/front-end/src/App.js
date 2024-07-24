@@ -118,6 +118,7 @@ function App() {
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
       } else if (hasura?.roles?.includes("program_coordinator")) {
+        // for program_coordinator role user
         setAccessRoutes(PcUsersRoutes);
       } else if (hasura?.roles?.includes("volunteer_admin")) {
         setAccessRoutes(volunteerAdmin);
