@@ -666,7 +666,6 @@ export default function PrerakRegisterDetail({
       setSchema(newSchema);
     }
   };
-  console.log(formData);
   const checkMobileExist = async (mobile) => {
     let isExist = false;
     const result = await facilitatorRegistryService.isUserExist({ mobile });
@@ -830,7 +829,7 @@ export default function PrerakRegisterDetail({
     }
     return isExist;
   };
-  console.log(schema);
+
   const updateSchemaBasedOnDiploma = async (hasDiploma) => {
     let newSchema = {};
     if (!hasDiploma) {
