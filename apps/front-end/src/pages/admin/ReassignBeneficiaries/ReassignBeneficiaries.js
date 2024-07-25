@@ -128,9 +128,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
 
       const newData = result?.data?.data?.map((e) => ({
         value: e?.id,
-        label: `${e?.id}        ${e?.first_name} ${
-          e?.last_name ? e?.last_name : ""
-        }`,
+        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
       }));
       setIsMore(
         parseInt(`${result?.data?.currentPage}`) <
@@ -614,25 +612,57 @@ export const Filter = ({
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          <RadioBtn
-            directionColumn={"column"}
-            value={
-              filterfunction?.facilitator ? filterfunction?.facilitator : []
-            }
-            onChange={(e) => {
-              setFilterfunction({ ...filterfunction, facilitator: e });
-            }}
-            schema={{
-              grid: 1,
-              _hstack: {
-                maxH: 130,
-                overflowY: "scroll",
-              },
-            }}
-            options={{
-              enumOptions: facilitator,
-            }}
-          />
+          <div style={{ maxHeight: "130px", overflowY: "scroll" }}>
+            <table border style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid black", padding: "8px" }}>
+                    ID
+                  </th>
+                  <th style={{ border: "1px solid black", padding: "8px" }}>
+                    Name
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {facilitator?.map((item) => (
+                  <tr key={item.value}>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      <RadioBtn
+                        directionColumn={"column"}
+                        value={
+                          filterfunction?.facilitator
+                            ? filterfunction?.facilitator
+                            : []
+                        }
+                        onChange={(e) => {
+                          setFilterfunction({
+                            ...filterfunction,
+                            facilitator: e,
+                          });
+                        }}
+                        schema={{
+                          grid: 1,
+                          _hstack: {
+                            maxH: 130,
+                            overflowY: "scroll",
+                          },
+                        }}
+                        options={{
+                          enumOptions: [
+                            { label: item.value, value: item.value },
+                          ],
+                        }}
+                      />
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {item.label}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {isMore && (
             <AdminTypo.H5
               onPress={(e) =>
