@@ -28,7 +28,7 @@ import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, RadioBtn } from "../../../component/BaseInput.js";
-import { debounce } from "lodash";
+import { debounce, wrap } from "lodash";
 
 function CustomFieldTemplate({ id, schema, label, required, children }) {
   const { t } = useTranslation();
@@ -125,9 +125,12 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   useEffect(() => {
     const facilitatorDetails = async () => {
       const result = await facilitatorRegistryService.filter(facilitatorFilter);
+
       const newData = result?.data?.data?.map((e) => ({
         value: e?.id,
-        label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
+        label: `${e?.id}        ${e?.first_name} ${
+          e?.last_name ? e?.last_name : ""
+        }`,
       }));
       setIsMore(
         parseInt(`${result?.data?.currentPage}`) <

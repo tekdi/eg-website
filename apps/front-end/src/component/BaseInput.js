@@ -359,7 +359,7 @@ export const RadioBtn = ({
                   color: "#333",
                 }
           ),
-          // _box: { gap: "0", width: "auto" },
+          _box: { gap: "0", width: 100 },
           // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
         }}
         value={value}
