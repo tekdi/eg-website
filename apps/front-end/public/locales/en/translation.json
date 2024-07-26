@@ -2025,6 +2025,6 @@
   "ALL_SESSIONS_COMPLETED": "If you complete the 20th session, your today's camp will also end. Do you want to complete the 20th session and end today's camp?",
   "DO_YOU_WISH_TO_CONTINUE": "Do you wish to continue?",
   "NO_SUBJECTS_FOR_THIS_LEARNER": "Assessment subjects not opted by this learner.",
-  "FOLLOWING_FILEDS_MISSING_WARNING": "The following fields are missing. Prerak needs to fill in these missing details before you update the status.",
-  "LEARNER_FILEDS_MISSING_WARNING": "The following fields are missing. You needs to fill in these missing details before you proceed further."
+  "FOLLOWING_FIELDS_MISSING_WARNING": "The following fields are missing. Prerak needs to fill in these missing details before you update the status.",
+  "LEARNER_FIELDS_MISSING_WARNING": "The following fields are missing. You needs to fill in these missing details before you proceed further."
 }

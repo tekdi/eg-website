@@ -881,7 +881,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   </Modal.Header>
                   <Modal.Body>
                     <VStack space={4}>
-                      {t("LEARNER_FILEDS_MISSING_WARNING")}
+                      {t("LEARNER_FIELDS_MISSING_WARNING")}
                       <ul>
                         {missingData?.map((el, i) => (
                           <li color="textGreyColor.500" key={i}>

@@ -478,7 +478,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           </Modal.Header>
           <Modal.Body>
             <VStack space={4}>
-              {t("FOLLOWING_FILEDS_MISSING_WARNING")}
+              {t("FOLLOWING_FIELDS_MISSING_WARNING")}
               <ul>
                 {missingData?.map((el, i) => (
                   <li color="textGreyColor.500" key={i}>
