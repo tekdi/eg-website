@@ -89,7 +89,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       {location?.state === "camp" && nonRegisteredUser.length !== 0 ? (
         <Box py={6} px={4} mb={5}>
           <AdminTypo.H3 color={"textMaroonColor.400"}>
-            {alert ? (
+            {alert && selectedIds.length === 0 ? (
               <Alert
                 status="warning"
                 alignItems={"start"}

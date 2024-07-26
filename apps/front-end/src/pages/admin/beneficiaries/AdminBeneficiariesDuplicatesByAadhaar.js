@@ -86,6 +86,7 @@ export default function DuplicateView({ footerLinks }) {
   const [viewData, setViewData] = useState();
   const navigate = useNavigate();
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [errormsg, setErrormsg] = useState(false);
 
   const columns = useCallback(
     (e) => [

@@ -25,7 +25,7 @@ const getColor = (obj, arr) => {
   const result = arrList(obj, arr);
   let color = "gray.300";
   if (result === 100) {
-    color = "green.300";
+    color = "green.500";
   } else if (result > 20) {
     color = "amber.300";
   }
@@ -105,7 +105,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
     const userLength = result?.data?.group_users?.length;
     const campConsentLength = campConsent?.data?.length;
     if (userLength <= campConsentLength) {
-      setConsent("green.300");
+      setConsent("green.500");
     }
     const data = result?.data?.properties;
     setCampLocation({
@@ -145,7 +145,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
         (name) =>
           navdata.some(
-            (item) => item.Name === name && item.color === "green.300"
+            (item) => item.Name === name && item.color === "green.500"
           )
       )
     ) {
@@ -229,14 +229,11 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           borderRadius="10px"
           borderWidth="1px"
           shadow="AlertShadow"
-          // space={2}
+          bg="white"
+          space={1}
+          divider={<Box borderBottomWidth={1} borderBottomColor={"gray.400"} />}
         >
           <Pressable
-            bg="boxBackgroundColour.100"
-            // shadow="AlertShadow"
-            borderBottomColor={"garyTitleCardBorder"}
-            borderBottomStyle={"solid"}
-            borderBottomWidth={"2px"}
             onPress={async () => {
               disableEdit() &&
                 navigate(`/camps/${camp_id?.id}/edit_camp_selected_learners`);
@@ -274,9 +271,9 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           })}
           {campDetails?.kit_received === "yes" && (
             <Pressable
-              bg="boxBackgroundColour.100"
+              // bg="boxBackgroundColour.100"
               // shadow="AlertShadow"
-              borderRadius="10px"
+              // borderRadius="10px"
               onPress={async () => {
                 navigate(`/camps/${camp_id?.id}/kit_material_details`);
               }}
@@ -330,14 +327,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   );
 }
 
-const NavigationBox = ({
-  IconName,
-  NavName,
-  camp_id,
-  color,
-  step,
-  disableEdit,
-}) => {
+const NavigationBox = ({ NavName, camp_id, color, step, disableEdit }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const navToForm = (step) => {
@@ -351,33 +341,32 @@ const NavigationBox = ({
       onPress={async () => {
         navToForm(step);
       }}
-      bg="boxBackgroundColour.100"
-      shadow="AlertShadow"
-      borderLeftWidth={10}
-      borderLeftColor={color}
-      borderRadius="10px"
-      borderBottomColor={"garyTitleCardBorder"}
-      borderBottomStyle={"solid"}
-      borderBottomWidth={"2px"}
     >
-      <HStack w={"100%"} py={3} justifyContent={"space-between"}>
-        <HStack alignItems={"center"}>
-          <FrontEndTypo.H3 color="floatingLabelColor.500" bold ml={5}>
-            {t(NavName)}
+      <HStack w={"100%"}>
+        <Box
+          borderLeftWidth={10}
+          borderLeftColor={color}
+          style={{ "border-radius": "0px 15px 15px 0px" }}
+        />
+        <HStack flex={1} py={3} justifyContent={"space-between"}>
+          <HStack alignItems={"center"} space={1}>
+            <FrontEndTypo.H3 color="floatingLabelColor.500" bold ml={5}>
+              {t(NavName)}
+            </FrontEndTypo.H3>
             {!["FAMILY_CONSENT"].includes(NavName) && (
-              <FrontEndTypo.H3 color={"textMaroonColor.400"}>*</FrontEndTypo.H3>
+              <FrontEndTypo.H3 color={"red.500"}>*</FrontEndTypo.H3>
             )}
-          </FrontEndTypo.H3>
+          </HStack>
+          {disableEdit && (
+            <IconByName
+              isDisabled
+              name="ArrowRightSLineIcon"
+              //color="amber.400"
+              _icon={{ size: "30px" }}
+              color="textBlack.500"
+            />
+          )}
         </HStack>
-        {disableEdit && (
-          <IconByName
-            isDisabled
-            name="ArrowRightSLineIcon"
-            //color="amber.400"
-            _icon={{ size: "30px" }}
-            color="textBlack.500"
-          />
-        )}
       </HStack>
     </Pressable>
   );

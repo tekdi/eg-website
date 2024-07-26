@@ -101,9 +101,7 @@ const CommunityView = React.lazy(() =>
 const CampDashboard = React.lazy(() =>
   import("pages/front-end/Camp/CampDashboard")
 );
-const CampSelectedLearners = React.lazy(() =>
-  import("pages/front-end/Camp/CampSelectedLearners")
-);
+
 const CampRegistration = React.lazy(() =>
   import("pages/front-end/Camp/CampRegistration")
 );
