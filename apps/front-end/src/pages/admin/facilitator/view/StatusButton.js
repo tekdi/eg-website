@@ -1,17 +1,16 @@
-import React from "react";
-import { HStack, Modal, Radio, Input, VStack, Box, Alert } from "native-base";
 import {
-  H1,
-  facilitatorRegistryService,
   AdminTypo,
-  enumRegistryService,
-  checkAadhaar,
   campService,
+  checkAadhaar,
+  enumRegistryService,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import { useTranslation } from "react-i18next";
-import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
 import moment from "moment";
+import { Alert, Box, HStack, Input, Modal, Radio, VStack } from "native-base";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
@@ -53,6 +52,8 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
   const [alertModal, setAlertModal] = React.useState();
   const { t } = useTranslation();
   const [isDisable, setIsDisable] = React.useState(false);
+  const [missingData, setMissingData] = React.useState([]);
+  const [reqDataError, setReqDataError] = React.useState(false);
 
   const navigate = useNavigate();
 
@@ -193,18 +194,30 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
   }, [data?.status]);
 
   const isCampExistFunction = async ({ name, ...item }) => {
-    if (["rejected", "quit", "rusticate"].includes(item?.status)) {
+    const { status } = item;
+    if (["pragati_mobilizer", "selected_for_onboarding"].includes(status)) {
+      const response = await facilitatorRegistryService.checkPrerakStatusChange(
+        {
+          id: data?.id,
+          status,
+        }
+      );
+      const { required } = response;
+      if (required?.length > 0) {
+        setReqDataError(true);
+        setMissingData(required.map((key) => LABEL_NAMES[key] || key));
+        return;
+      }
+    }
+    if (["rejected", "quit", "rusticate"].includes(status)) {
       const campExist = await campService.campIsExist({ id: data?.id || "" });
       if (campExist?.length > 0) {
         setIsCampList(campExist);
-      } else {
-        setShowModal({ name, ...item });
-        setReason();
+        return;
       }
-    } else {
-      setShowModal({ name, ...item });
-      setReason();
     }
+    setShowModal({ name, ...item });
+    setReason();
   };
 
   return (
@@ -452,6 +465,71 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      <Modal
+        isOpen={reqDataError}
+        onClose={() => setReqDataError(false)}
+        size={"xl"}
+      >
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("EXPIRY_CONTENT.HEADING")}
+            </AdminTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack space={4}>
+              {t("FOLLOWING_FILEDS_MISSING_WARNING")}
+              <ul>
+                {missingData?.map((el, i) => (
+                  <li color="textGreyColor.500" key={i}>
+                    {t(el)}
+                  </li>
+                ))}
+              </ul>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer alignSelf="center">
+            <AdminTypo.PrimaryButton onPress={() => setReqDataError(false)}>
+              {t("CLOSE")}
+            </AdminTypo.PrimaryButton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 }
+
+const LABEL_NAMES = {
+  id: "ID",
+  first_name: "FIRST_NAME",
+  middle_name: "MIDDLE_NAME",
+  last_name: "LAST_NAME",
+  dob: "DATE_OF_BIRTH",
+  mobile: "MOBILE_NUMBER",
+  gender: "GENDER",
+  lat: "LATITUDE",
+  long: "LONGITUDE",
+  district: "DISTRICT",
+  block: "BLOCK",
+  village: "VILLAGE_WARD",
+  grampanchayat: "GRAMPANCHAYAT",
+  career_aspiration: "CAREER_ASPIRATION",
+  parent_support: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+  father_first_name: "FATHER_FIRST_NAME",
+  mother_first_name: "MOTHER_FIRST_NAME",
+  profile_photo_1: "PROFILE_PHOTO_1",
+  profile_photo_2: "PROFILE_PHOTO_2",
+  profile_photo_3: "PROFILE_PHOTO_3",
+  contact_number: "CONTACT_NUMBER",
+  qualifications: "QUALIFICATIONS",
+  type_vo_experience: "VOLUNTEER_EXPERIENCE",
+  type_experience: "WORK_EXPERIENCE",
+  mark_as_whatsapp_number: "MARK_AS_WHATSAPP_REGISTER",
+  teaching: "TEACHING_DEGREE",
+  "core_faciltator.device_type": "TYPE_OF_MOBILE_PHONE",
+  "core_faciltator.device_ownership": "DEVICE_OWNERSHIP",
+  "extended_users.marital_status": "MARITAL_STATUS",
+  "extended_users.social_category": "SOCIAL_CATEGORY",
+  "core_faciltator.has_diploma": "HAVE_YOU_DONE_YOUR_DIPLOMA",
+  "core_faciltator.diploma_details": "NAME_OF_THE_DIPLOMA",
+};
