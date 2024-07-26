@@ -1341,6 +1341,9 @@
   "PROFILE_EXIST": "A Profile for this learner already exists. Looks like you are creating a duplicate Profile. Do you still want to continue?",
   "PROFILE_NEEDS_TO_BE_COMPLETED": "Profile needs to be completed",
   "PROFILE_PHOTO": "Profile Photo",
+  "PROFILE_PHOTO_1": "Profile Photo 1",
+  "PROFILE_PHOTO_2": "Profile Photo 2",
+  "PROFILE_PHOTO_3": "Profile Photo 3",
   "PROJECT_PRAGATI": "Project Pragati",
   "PROPERTY_AND_FACILITY_DETAILS": "Property and Facility Details",
   "PROPERTY_DETAILS": "Property Details",
@@ -1686,6 +1689,7 @@
   "UPLOAD_YOUR_DOCUMENT": "Upload Your Document",
   "UPLOAD_YOUR_DOCUMENTS": "Upload Your Documents",
   "UPLOAD_YOUR_HIGHEST_QUALIFICATION_DOCUMENT": "Upload Your Highest Qualification Document",
+  "HIGHEST_QUALIFICATION_DOCUMENT": "Highest Qualification Document",
   "UPLOADED_AADHAR_NOT_EDITABLE": "Uploaded Aadhaar Card Photo Is Not Editable. Please Verify Before Uploading",
   "USER": "User",
   "USER_CONFIRM_PASSWORD": "Confirm Password",
@@ -2020,5 +2024,7 @@
   "SCORES_SUBMIT_SUCCESS": "You have successfully submitted the scores for all the learners. Please continue with the camp.",
   "ALL_SESSIONS_COMPLETED": "If you complete the 20th session, your today's camp will also end. Do you want to complete the 20th session and end today's camp?",
   "DO_YOU_WISH_TO_CONTINUE": "Do you wish to continue?",
-  "NO_SUBJECTS_FOR_THIS_LEARNER": "Assessment subjects not opted by this learner."
+  "NO_SUBJECTS_FOR_THIS_LEARNER": "Assessment subjects not opted by this learner.",
+  "FOLLOWING_FIELDS_MISSING_WARNING": "The following fields are missing. Prerak needs to fill in these missing details before you update the status.",
+  "LEARNER_FIELDS_MISSING_WARNING": "The following fields are missing. You needs to fill in these missing details before you proceed further."
 }

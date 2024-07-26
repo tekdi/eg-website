@@ -1,4 +1,5 @@
 import {
+  AdminTypo,
   BodyMedium,
   CustomRadio,
   FrontEndTypo,
@@ -24,6 +25,7 @@ import {
   Box,
   Divider,
   HStack,
+  Modal,
   Progress,
   ScrollView,
   Stack,
@@ -69,6 +71,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
+  const [missingData, setMissingData] = React.useState([]);
+  const [reqDataError, setReqDataError] = React.useState(false);
 
   const saveDataToIndexedDB = async () => {
     const obj = {
@@ -498,6 +502,27 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
     }
   }
 
+  const learnerDetailsCheck = async () => {
+    setLoading(true);
+    try {
+      const result = await benificiaryRegistoryService.checkLearnerDetails(id);
+      if (result?.data?.length > 0) {
+        const translatedData = result?.data.map(
+          (key) => LABEL_NAMES[key] || key
+        );
+        setReqDataError(true);
+        setMissingData(translatedData);
+      } else {
+        navigate(`/beneficiary/${id}/enrollmentdetails`);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log("Error in fetching learner details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Layout
       _appBar={{
@@ -838,13 +863,43 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   benificiary?.program_beneficiaries?.status !== "rejected" && (
                     <IconByName
                       name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/enrollmentdetails`);
-                      }}
+                      onPress={learnerDetailsCheck}
                       _icon={{ size: "20", color: "#1F1D76" }}
                     />
                   )}
               </HStack>
+              <Modal
+                isOpen={reqDataError}
+                onClose={() => setReqDataError(false)}
+                size={"xl"}
+              >
+                <Modal.Content>
+                  <Modal.Header textAlign={"Center"}>
+                    <AdminTypo.H2 color="textGreyColor.500">
+                      {t("EXPIRY_CONTENT.HEADING")}
+                    </AdminTypo.H2>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <VStack space={4}>
+                      {t("LEARNER_FIELDS_MISSING_WARNING")}
+                      <ul>
+                        {missingData?.map((el, i) => (
+                          <li color="textGreyColor.500" key={i}>
+                            {t(el)}
+                          </li>
+                        ))}
+                      </ul>
+                    </VStack>
+                  </Modal.Body>
+                  <Modal.Footer alignSelf="center">
+                    <AdminTypo.PrimaryButton
+                      onPress={() => setReqDataError(false)}
+                    >
+                      {t("CLOSE")}
+                    </AdminTypo.PrimaryButton>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
 
               {benificiary?.program_beneficiaries?.status ===
                 "registered_in_camp" && (
@@ -1093,3 +1148,35 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
     </Layout>
   );
 }
+
+const LABEL_NAMES = {
+  id: "ID",
+  first_name: "FIRST_NAME",
+  dob: "DATE_OF_BIRTH",
+  mobile: "MOBILE_NUMBER",
+  lat: "LATITUDE",
+  long: "LONGITUDE",
+  district: "DISTRICT",
+  block: "BLOCK",
+  village: "VILLAGE_WARD",
+  grampanchayat: "GRAMPANCHAYAT",
+  career_aspiration: "CAREER_ASPIRATION",
+  parent_support: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+  father_first_name: "FATHER_FIRST_NAME",
+  mother_first_name: "MOTHER_FIRST_NAME",
+  mark_as_whatsapp_number: "MARK_AS_WHATSAPP_REGISTER",
+  device_type: "TYPE_OF_MOBILE_PHONE",
+  device_ownership: "DEVICE_OWNERSHIP",
+  type_of_learner: "TYPE_OF_LEARNER",
+  last_standard_of_education: "LAST_STANDARD_OF_EDUCATION",
+  last_standard_of_education_year: "LAST_YEAR_OF_EDUCATION",
+  previous_school_type: "PREVIOUS_SCHOOL_TYPE",
+  reason_of_leaving_education: "REASON_OF_LEAVING_EDUCATION",
+  education_10th_exam_year: "REGISTERED_IN_TENTH_DATE",
+  learning_level: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+  type_of_support_needed: "TYPE_OF_SUPPORT_NEEDED",
+  marital_status: "MARITAL_STATUS",
+  social_category: "SOCIAL_CATEGORY",
+  profile_photo: "PROFILE_PHOTO",
+  contact_number: "CONTACT_NUMBER",
+};
