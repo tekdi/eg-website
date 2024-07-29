@@ -39,6 +39,9 @@ export default function LearnerProfileView({ userTokenInfo }) {
     <Layout
       _appBar={{
         name: t("LEARNER_PROFILE"),
+        onPressBackButton: () => {
+          navigate("/learner/LearnerListView");
+        },
       }}
       loading={loading}
       analyticsPageTitle={"LEARNER_PROFILE"}
