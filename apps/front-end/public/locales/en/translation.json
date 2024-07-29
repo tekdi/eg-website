@@ -2026,5 +2026,7 @@
   "DO_YOU_WISH_TO_CONTINUE": "Do you wish to continue?",
   "NO_SUBJECTS_FOR_THIS_LEARNER": "Assessment subjects not opted by this learner.",
   "FOLLOWING_FIELDS_MISSING_WARNING": "The following fields are missing. Prerak needs to fill in these missing details before you update the status.",
-  "LEARNER_FIELDS_MISSING_WARNING": "The following fields are missing. You needs to fill in these missing details before you proceed further."
+  "LEARNER_FIELDS_MISSING_WARNING": "The following fields are missing. You needs to fill in these missing details before you proceed further.",
+  "3_PROFILE_PICTURES_REQUIRED": "3 Profile Pictures Required",
+  "EDUCATION_STANDARD_WARNING": "Learner level is below 5th grade. (This learner cannot be verified by IP.) Do you want to add this learner's profile?"
 }
