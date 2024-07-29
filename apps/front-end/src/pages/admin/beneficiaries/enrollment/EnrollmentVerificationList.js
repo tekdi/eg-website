@@ -286,7 +286,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                   <Text
                     color={
                       !filter?.enrollment_verification_status
-                        ? "blueText.400"
+                        ? "textRed.400"
                         : ""
                     }
                     bold={!filter?.enrollment_verification_status}
@@ -311,7 +311,7 @@ function EnrollmentVerificationList({ footerLinks }) {
                           color={
                             filter?.enrollment_verification_status ==
                             t(item?.value)
-                              ? "blueText.400"
+                              ? "textRed.400"
                               : ""
                           }
                           bold={
