@@ -73,6 +73,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
   );
   const [missingData, setMissingData] = React.useState([]);
   const [reqDataError, setReqDataError] = React.useState(false);
+  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const saveDataToIndexedDB = async () => {
     const obj = {
@@ -503,21 +504,31 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
   }
 
   const learnerDetailsCheck = async () => {
-    setLoading(true);
     try {
-      const result = await benificiaryRegistoryService.checkLearnerDetails(id);
-      if (result?.data?.length > 0) {
-        const translatedData = result?.data.map(
-          (key) => LABEL_NAMES[key] || key
-        );
+      setLoading(true);
+      const { data } = await benificiaryRegistoryService.checkLearnerDetails(
+        id
+      );
+
+      if (data?.length > 0) {
+        const missingData = data.map((key) => LABEL_NAMES[key] || key);
         setReqDataError(true);
-        setMissingData(translatedData);
+        setMissingData(missingData);
       } else {
-        navigate(`/beneficiary/${id}/enrollmentdetails`);
+        const lastStandard = parseInt(
+          benificiary?.core_beneficiaries?.last_standard_of_education,
+          10
+        );
+
+        const hasWarning = lastStandard === null || lastStandard < 5;
+        if (hasWarning && !openWarningModal) {
+          setOpenWarningModal(true);
+        } else {
+          navigate(`/beneficiary/${id}/enrollmentdetails`);
+        }
       }
-      setLoading(false);
     } catch (error) {
-      console.log("Error in fetching learner details:", error);
+      console.error("Error in fetching learner details:", error);
     } finally {
       setLoading(false);
     }
@@ -891,12 +902,45 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                       </ul>
                     </VStack>
                   </Modal.Body>
-                  <Modal.Footer alignSelf="center">
-                    <AdminTypo.PrimaryButton
+                  <Modal.Footer justifyContent={"space-between"}>
+                    <AdminTypo.Secondarybutton
                       onPress={() => setReqDataError(false)}
                     >
                       {t("CLOSE")}
+                    </AdminTypo.Secondarybutton>
+                    <AdminTypo.PrimaryButton
+                      onPress={() =>
+                        navigate(`/beneficiary/${id}/basicdetails`)
+                      }
+                    >
+                      {t("EDIT_DETAILS")}
                     </AdminTypo.PrimaryButton>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
+
+              <Modal
+                isOpen={openWarningModal}
+                onClose={() => setOpenWarningModal(false)}
+              >
+                <Modal.Content>
+                  <Modal.Header textAlign={"Center"}>
+                    <FrontEndTypo.H2 color="textGreyColor.500">
+                      {t("EXPIRY_CONTENT.HEADING")}
+                    </FrontEndTypo.H2>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
+                  </Modal.Body>
+                  <Modal.Footer justifyContent={"space-between"}>
+                    <FrontEndTypo.Secondarybutton
+                      onPress={() => setOpenWarningModal(false)}
+                    >
+                      {t("CANCEL")}
+                    </FrontEndTypo.Secondarybutton>
+                    <FrontEndTypo.Primarybutton onPress={learnerDetailsCheck}>
+                      {t("PROCEED")}
+                    </FrontEndTypo.Primarybutton>
                   </Modal.Footer>
                 </Modal.Content>
               </Modal>
