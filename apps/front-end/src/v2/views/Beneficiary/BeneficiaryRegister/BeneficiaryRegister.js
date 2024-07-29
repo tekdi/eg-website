@@ -1272,7 +1272,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
               <Modal.Body>
                 <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
               </Modal.Body>
-              <Modal.Footer justifyContent={"space-evenly"}>
+              <Modal.Footer justifyContent={"space-between"}>
                 <FrontEndTypo.Secondarybutton onPress={() => navigate("/")}>
                   {t("CANCEL")}
                 </FrontEndTypo.Secondarybutton>

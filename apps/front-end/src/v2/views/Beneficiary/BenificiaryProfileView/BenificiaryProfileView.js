@@ -902,7 +902,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                       </ul>
                     </VStack>
                   </Modal.Body>
-                  <Modal.Footer justifyContent={"space-evenly"}>
+                  <Modal.Footer justifyContent={"space-between"}>
                     <AdminTypo.Secondarybutton
                       onPress={() => setReqDataError(false)}
                     >
@@ -932,7 +932,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   <Modal.Body>
                     <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
                   </Modal.Body>
-                  <Modal.Footer justifyContent={"space-evenly"}>
+                  <Modal.Footer justifyContent={"space-between"}>
                     <FrontEndTypo.Secondarybutton
                       onPress={() => setOpenWarningModal(false)}
                     >
