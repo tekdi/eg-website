@@ -1,25 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import schema1 from "./arraySchema.js";
-import { Alert, Box, Button, HStack, Icon, VStack } from "native-base";
 import {
-  facilitatorRegistryService,
-  Layout,
   BodyMedium,
+  CardComponent,
+  facilitatorRegistryService,
   filterObject,
   FrontEndTypo,
   getOptions,
-  enumRegistryService,
-  validation,
-  CardComponent,
   IconByName,
+  validation,
 } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
-import {
-  widgets,
-  templates,
-} from "../../Static/FormBaseInput/FormBaseInput.js";
+import { Alert, Box, Button, HStack, Radio, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
 import {
@@ -27,9 +19,10 @@ import {
   updateOnboardingData,
 } from "v2/utils/OfflineHelper/OfflineHelper.js";
 import {
-  mergeAndUpdate,
-  mergeOnlyChanged,
-} from "v2/utils/SyncHelper/SyncHelper.js";
+  templates,
+  widgets,
+} from "../../Static/FormBaseInput/FormBaseInput.js";
+import schema1 from "./arraySchema.js";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -67,7 +60,9 @@ export default function PrerakOnboardingArrayForm({
       : "2_VOLUNTEER_AND_WORK_DETAILS";
 
   const stepLabelListTwo =
-    type === "experience" ? "" : "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE";
+    type === "experience"
+      ? "DO_YOU_HAVE_ANY_JOB_EXPERIENCE"
+      : "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE";
 
   const stepLabelLinks =
     type === "reference_details"
@@ -448,7 +443,13 @@ export default function PrerakOnboardingArrayForm({
       navigatePage("/profile", "");
     }
   };
-
+  const onClickAdd = (value) => {
+    if (value) {
+      onAdd();
+    }
+  };
+  const displayQuation =
+    type === "vo_experience" ? data?.length == 0 : dataExperience?.length == 0;
   return (
     <>
       {["quit"].includes(facilitator?.status) ? (
@@ -469,13 +470,31 @@ export default function PrerakOnboardingArrayForm({
               >
                 {`${t(stepLabelList)}`}
               </FrontEndTypo.H1>
-              <FrontEndTypo.H3
-                color="textGreyColor.750"
-                lineHeight="21px"
-                fontWeight="600"
-              >
-                {`${t(stepLabelListTwo)}`}
-              </FrontEndTypo.H3>
+              {displayQuation && (
+                <VStack space={2}>
+                  <FrontEndTypo.H3
+                    color="textGreyColor.750"
+                    lineHeight="21px"
+                    fontWeight="600"
+                  >
+                    {`${t(stepLabelListTwo)}`}
+                  </FrontEndTypo.H3>
+                  <Radio.Group
+                    name="radioOptions"
+                    value={!displayQuation}
+                    onChange={(nextValue) => onClickAdd(nextValue)}
+                    flexDirection="row"
+                  >
+                    <Radio value={true} my={1}>
+                      {t("YES")}
+                    </Radio>
+                    <Radio value={false} my={1} ml={4}>
+                      {t("NO")}
+                    </Radio>
+                  </Radio.Group>
+                </VStack>
+              )}
+
               {type == "vo_experience"
                 ? data &&
                   data.constructor.name === "Array" &&
@@ -506,7 +525,7 @@ export default function PrerakOnboardingArrayForm({
                               : {}),
                           }}
                           onEdit={(e) => onEdit(e)}
-                          onDelete={(e) => onDelete(e)}
+                          // onDelete={(e) => onDelete(e)}
                           arr={[
                             "role_title",
                             "organization",
@@ -515,6 +534,7 @@ export default function PrerakOnboardingArrayForm({
                             "related_to_teaching",
                           ]}
                           label={labels}
+                          title={`${t("VOLUNTEER_EXPERIENCE")} ${index + 1}`}
                         />
                       </Box>
                     );
@@ -548,28 +568,31 @@ export default function PrerakOnboardingArrayForm({
                               : {}),
                           }}
                           onEdit={(e) => onEdit(e)}
-                          onDelete={(e) => onDelete(e)}
+                          // onDelete={(e) => onDelete(e)}
                           arr={keys}
                           label={labels}
+                          title={`${t("WORK_EXPERIENCE")} ${index + 1}`}
                         />
                       </Box>
                     );
                   })}
-              <Button variant={"link"} colorScheme="info" onPress={onAdd}>
-                <FrontEndTypo.H5
-                  color="blueText.500"
-                  underline
-                  bold
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <IconByName
-                    name="AddLineIcon"
-                    _icon={{ size: "16px" }}
-                    style={{ fontSize: "8px", marginRight: "4px" }}
-                  />
-                  {`${t(stepLabelLinks)}`}
-                </FrontEndTypo.H5>
-              </Button>
+              {data?.length >= 1 && (
+                <Button variant={"link"} colorScheme="info" onPress={onAdd}>
+                  <FrontEndTypo.H5
+                    color="blueText.500"
+                    underline
+                    bold
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <IconByName
+                      name="AddLineIcon"
+                      _icon={{ size: "16px" }}
+                      style={{ fontSize: "8px", marginRight: "4px" }}
+                    />
+                    {`${t(stepLabelLinks)}`}
+                  </FrontEndTypo.H5>
+                </Button>
+              )}
               <Box alignItems={"center"}>
                 <FrontEndTypo.Primarybutton
                   isLoading={loading}
