@@ -38,9 +38,9 @@ jobs:
           
       - name: Install deps, and build
         run: |
-          yarn install
+          yarn install --legacy-peer-deps
           yarn workspace @shiksha/common-lib build
-          yarn install
+          yarn install --legacy-peer-deps
      
       - name: Update Browserslist Database
         run: npx update-browserslist-db@latest
