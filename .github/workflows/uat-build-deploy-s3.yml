@@ -48,6 +48,12 @@ jobs:
       - name: Set CI environment variable to false
         run: echo "CI=false" >> $GITHUB_ENV
 
+      - name: Update Prettier and eslint-plugin-prettier
+        run: |
+          yarn add prettier@latest eslint-plugin-prettier@latest --dev
+          yarn install
+
+
       - name: Build front-end
         run: yarn build
         env:
@@ -103,10 +109,10 @@ jobs:
           files-to-include: '{.*/**,**}'
 
       ## Notify on Slack
-      - name: Notify on Slack channel
-        uses: iRoachie/slack-github-actions@v2.3.2
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-        if: ${{ always() }}
+ #     - name: Notify on Slack channel
+ #       uses: iRoachie/slack-github-actions@v2.3.2
+ #       env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#        with:
+#          status: ${{ job.status }}
+#        if: ${{ always() }}
