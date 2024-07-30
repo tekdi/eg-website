@@ -41,6 +41,9 @@ jobs:
           yarn install
           yarn workspace @shiksha/common-lib build
           yarn install
+     
+      - name: Update Browserslist Database
+        run: npx update-browserslist-db@latest
 
       - name: Set CI environment variable to false
         run: echo "CI=false" >> $GITHUB_ENV
