@@ -212,6 +212,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [programUser, setProgramUser] = useState();
   const [localData, setLocalData] = useState();
   const [publishEvent, setPublishEvent] = useState();
+  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   useEffect(() => {
     const getSubjectList = async () => {
@@ -553,7 +554,20 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     );
     setProgramUser(data);
   }, [fetchData]);
+  const enrollmentCheck = () => {
+    const lastStandard = parseInt(
+      data?.core_beneficiaries?.last_standard_of_education ?? "",
+      10
+    );
+    const hasWarning = isNaN(lastStandard) || lastStandard < 5;
 
+    if (hasWarning && !openWarningModal) {
+      setOpenWarningModal(true);
+      return;
+    } else {
+      navigate(`/admin/beneficiary/${id}/editEnrollmentDetails`);
+    }
+  };
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -561,7 +575,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">
-              {t("PROFILE")}
+              {t("All_AG_LEARNERS")}
             </AdminTypo.H1>
             <IconByName
               size="sm"
@@ -579,9 +593,18 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 data?.program_beneficiaries?.status
               )
                 ? `${
-                    data?.program_beneficiaries?.enrollment_first_name ?? "-"
-                  } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
-                : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
+                    [
+                      data?.program_beneficiaries?.enrollment_first_name,
+                      data?.program_beneficiaries?.enrollment_last_name,
+                    ]
+                      .filter(Boolean)
+                      .join(" ") || "-"
+                  }`
+                : `${
+                    [data?.first_name, data?.last_name]
+                      .filter(Boolean)
+                      .join(" ") || "-"
+                  }`}
             </AdminTypo.H1>
             <IconByName
               size="sm"
@@ -1487,11 +1510,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                         name="PencilLineIcon"
                         color="iconColor.200"
                         _icon={{ size: "25" }}
-                        onPress={(e) => {
-                          navigate(
-                            `/admin/beneficiary/${id}/editEnrollmentDetails`
-                          );
-                        }}
+                        onPress={enrollmentCheck}
                       />
                     )}
 
@@ -1817,6 +1836,33 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 {t("CONFIRM")}
               </AdminTypo.PrimaryButton>
             </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={openWarningModal}
+        onClose={() => setOpenWarningModal(false)}
+      >
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("EXPIRY_CONTENT.HEADING")}
+            </AdminTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack space={4}>
+              {t("EDUCATION_STANDARD_ENROLLMENT_WARNING")}
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <AdminTypo.Secondarybutton
+              onPress={() => setOpenWarningModal(false)}
+            >
+              {t("NO")}
+            </AdminTypo.Secondarybutton>
+            <AdminTypo.Successbutton onPress={enrollmentCheck}>
+              {t("YES")}
+            </AdminTypo.Successbutton>
           </Modal.Footer>
         </Modal.Content>
       </Modal>
