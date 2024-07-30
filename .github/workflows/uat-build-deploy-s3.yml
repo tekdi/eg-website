@@ -1,5 +1,6 @@
 name: Deploy to UAT S3 Bucket
 on: 
+  workflow_dispatch:
   push: 
     tags:
        - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
