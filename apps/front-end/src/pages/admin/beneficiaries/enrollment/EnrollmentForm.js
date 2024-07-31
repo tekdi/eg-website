@@ -65,6 +65,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
   });
 
   switch (data?.enrollment_status) {
+    case "ready_to_enroll":
     case "not_enrolled":
       newSchema = {
         ...constantSchema,
@@ -187,13 +188,15 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       }
       break;
   }
-  let boardList = await enumRegistryService.boardList();
-  newSchema = getOptions(newSchema, {
-    key: "enrolled_for_board",
-    arr: boardList?.boards,
-    title: "name",
-    value: "id",
-  });
+  if (data?.enrollment_status !== "ready_to_enroll") {
+    let boardList = await enumRegistryService.boardList();
+    newSchema = getOptions(newSchema, {
+      key: "enrolled_for_board",
+      arr: boardList?.boards,
+      title: "name",
+      value: "id",
+    });
+  }
   return { newSchema, newData };
 };
 

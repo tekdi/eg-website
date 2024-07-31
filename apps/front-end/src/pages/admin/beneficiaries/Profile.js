@@ -1211,16 +1211,19 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
                       {EditButton === true ? (
                         <Select
-                          selectedValue={status?.jan_adhar || ""}
+                          selectedValue={status?.jan_aadhaar_card || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.jan_adhar || "Select"}
+                          placeholder={status?.jan_aadhaar_card || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, jan_adhar: itemValue })
+                            setStatus({
+                              ...status,
+                              jan_aadhaar_card: itemValue,
+                            })
                           }
                         >
                           {Array.isArray(selectData) &&
@@ -1239,7 +1242,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.jan_adhar || ""}
+                            enumOptionValue={status?.jan_aadhaar_card || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1251,16 +1254,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       </AdminTypo.H5>
                       {EditButton === true ? (
                         <Select
-                          selectedValue={status?.aadhaar || ""}
+                          selectedValue={status?.aadhaar_card || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.aadhaar || "Select"}
+                          placeholder={status?.aadhaar_card || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon fontSize="sm" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, aadhaar: itemValue })
+                            setStatus({ ...status, aadhaar_card: itemValue })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1278,7 +1281,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.aadhaar || ""}
+                            enumOptionValue={status?.aadhaar_card || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1331,16 +1334,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       {EditButton === true ? (
                         <Select
                           isDisabled={EditButton === false}
-                          selectedValue={status?.mobile || ""}
+                          selectedValue={status?.mobile_number || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.mobile || "Select"}
+                          placeholder={status?.mobile_number || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, mobile: itemValue })
+                            setStatus({ ...status, mobile_number: itemValue })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1358,7 +1361,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.mobile || ""}
+                            enumOptionValue={status?.mobile_number || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1411,16 +1414,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       {EditButton === true ? (
                         <Select
                           isDisabled={EditButton === false}
-                          selectedValue={status?.bank || ""}
+                          selectedValue={status?.bank_passbook || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.bank || "Select"}
+                          placeholder={status?.bank_passbook || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, bank: itemValue })
+                            setStatus({ ...status, bank_passbook: itemValue })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1438,7 +1441,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.bank || ""}
+                            enumOptionValue={status?.bank_passbook || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1452,16 +1455,19 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       {EditButton === true ? (
                         <Select
                           isDisabled={EditButton === false}
-                          selectedValue={status?.birth || ""}
+                          selectedValue={status?.birth_certificate || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.birth || "Select"}
+                          placeholder={status?.birth_certificate || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, birth: itemValue })
+                            setStatus({
+                              ...status,
+                              birth_certificate: itemValue,
+                            })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1479,7 +1485,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.birth || ""}
+                            enumOptionValue={status?.birth_certificate || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
