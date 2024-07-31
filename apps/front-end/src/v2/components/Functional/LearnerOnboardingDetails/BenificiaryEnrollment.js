@@ -105,6 +105,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
               title={t("ENROLLMENT_DETAILS")}
               label={[
                 "ENROLLMENT_STATUS",
+                "ENROLLMENT_TYPE",
                 "BOARD_OF_ENROLLMENT",
                 stateName == "BIHAR"
                   ? "APPLICATION_ID"
@@ -179,6 +180,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                 : {
                     arr: [
                       "enrollment_status",
+                      "type_of_enrollement",
                       "enrolled_for_board",
                       "enrollment_number",
                       "enrollment_mobile_no",
