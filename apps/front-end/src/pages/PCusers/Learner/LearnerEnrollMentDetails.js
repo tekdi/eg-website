@@ -20,6 +20,7 @@ export default function BenificiaryEnrollment() {
   const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [boardName, setBoardName] = useState({});
+  const [boardID, setBoardID] = useState({});
   const [stateName, setStateName] = useState({});
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -37,6 +38,8 @@ export default function BenificiaryEnrollment() {
 
   const agDetails = async () => {
     const value = location?.state?.program_beneficiaries?.enrolled_for_board;
+    const boardID = location?.state?.program_beneficiaries?.bordID?.name;
+    setBoardID(boardID);
     if (value) {
       const boardName = await enumRegistryService.boardName(value);
       setBoardName(boardName?.name);
@@ -109,12 +112,23 @@ export default function BenificiaryEnrollment() {
               ) : (
                 "-"
               ),
-              enrolled_for_board: benificiary?.program_beneficiaries
-                ?.enrolled_for_board ? (
+              // enrolled_for_board: benificiary?.program_beneficiaries
+              //   ?.enrolled_for_board ? (
+              //   <GetEnumValue
+              //     t={t}
+              //     enumType={"ENROLLED_FOR_BOARD"}
+              //     enumOptionValue={boardName}
+              //     enumApiData={enumOptions}
+              //   />
+              // ) : (
+              //   "-"
+              // ),
+              enrolled_for_board: benificiary?.program_beneficiaries?.bordID
+                ?.name ? (
                 <GetEnumValue
                   t={t}
                   enumType={"ENROLLED_FOR_BOARD"}
-                  enumOptionValue={boardName}
+                  enumOptionValue={boardID}
                   enumApiData={enumOptions}
                 />
               ) : (
