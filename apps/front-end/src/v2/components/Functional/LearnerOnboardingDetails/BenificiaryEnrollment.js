@@ -45,11 +45,14 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
     setbenificiary(result?.result);
     setLoading(false);
   };
-  useEffect(async () => {
-    let { state_name } = await getSelectedProgramId();
-    setStateName(state_name);
-    const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
+  useEffect(() => {
+    const fetchData = async () => {
+      let { state_name } = await getSelectedProgramId();
+      setStateName(state_name);
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+    };
+    fetchData();
   }, [id]);
 
   const onEditFunc = () => {
