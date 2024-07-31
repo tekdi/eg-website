@@ -1561,7 +1561,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                         : "APPLICATION_ID",
                     payment_receipt_document_id:
                       localData === "RAJASTHAN"
-                        ? "ENROLLMENT_RECIEPT"
+                        ? "ENROLLMENT_RECEIPT"
                         : "PAYMENT_RECEIPTS",
                     ...(localData !== "RAJASTHAN"
                       ? {
