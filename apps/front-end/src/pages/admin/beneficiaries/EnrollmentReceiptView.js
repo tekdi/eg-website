@@ -51,6 +51,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [boardName, setBoardName] = useState({});
   const [localData, setLocalData] = useState({});
   const [paymentDocId, setPaymentDocId] = useState([]);
+  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const handleSetReceiptUrl = async (doc_id) => {
     setIsButtonLoading(true);
@@ -100,24 +101,42 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
   const submit = useCallback(
     async (status) => {
-      if (checkValidation()) {
-        const data = await benificiaryRegistoryService.verifyEnrollment({
-          user_id: id,
-          enrollment_verification_status: status,
-          enrollment_verification_reason: reason,
+      if (!checkValidation()) return;
+
+      const lastStandard = parseInt(
+        data?.core_beneficiaries?.last_standard_of_education ?? "",
+        10
+      );
+      const hasWarning = isNaN(lastStandard) || lastStandard < 5;
+
+      if (hasWarning && !openWarningModal) {
+        setOpenWarningModal(true);
+        return;
+      }
+
+      const response = await benificiaryRegistoryService.verifyEnrollment({
+        user_id: id,
+        enrollment_verification_status: status,
+        enrollment_verification_reason: reason,
+      });
+
+      if (response?.success) {
+        setOpenModal(false);
+        navigate({
+          pathname: "/admin/learners/enrollmentVerificationList",
+          search: `?${createSearchParams(filter)}`,
         });
-
-        if (data?.success) {
-          setOpenModal(false);
-
-          navigate({
-            pathname: "/admin/learners/enrollmentVerificationList",
-            search: `?${createSearchParams(filter)}`,
-          });
-        }
       }
     },
-    [checkValidation, createSearchParams, filter, id, navigate, reason]
+    [
+      checkValidation,
+      createSearchParams,
+      filter,
+      id,
+      navigate,
+      reason,
+      openWarningModal,
+    ]
   );
 
   return (
@@ -530,6 +549,31 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 {t("CHANGE_REQUIRED")}
               </AdminTypo.Secondarybutton>
             </HStack>
+            <Modal
+              isOpen={openWarningModal}
+              onClose={() => setOpenWarningModal(false)}
+            >
+              <Modal.Content>
+                <Modal.Header textAlign={"Center"}>
+                  <AdminTypo.H2 color="textGreyColor.500">
+                    {t("EXPIRY_CONTENT.HEADING")}
+                  </AdminTypo.H2>
+                </Modal.Header>
+                <Modal.Body>
+                  <VStack space={4}>
+                    {t("EDUCATION_STANDARD_IP_WARNING")}
+                  </VStack>
+                </Modal.Body>
+                <Modal.Footer justifyContent={"space-between"}>
+                  <AdminTypo.Secondarybutton onPress={() => submit("rejected")}>
+                    {t("REJECT")}
+                  </AdminTypo.Secondarybutton>
+                  <AdminTypo.Successbutton onPress={(e) => submit("verified")}>
+                    {t("PROCEED")}
+                  </AdminTypo.Successbutton>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
             <Modal isOpen={openModal} size="xl">
               <Modal.Content>
                 <Modal.Header>{t("ARE_YOU_SURE")}</Modal.Header>

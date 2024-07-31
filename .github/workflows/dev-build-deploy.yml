@@ -2,7 +2,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - feat-register-revamp
+      - release-2.3.2
 jobs:
   build:
     name: Generate Build and Deploy to DEV 
