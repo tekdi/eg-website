@@ -66,19 +66,6 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
 
   switch (data?.enrollment_status) {
     case "ready_to_enroll":
-      newSchema = {
-        ...constantSchema,
-        properties: {
-          enrollment_status,
-        },
-        required: ["enrollment_status"],
-      };
-      newData = {
-        enrollment_status: data?.enrollment_status,
-        subjects: [],
-      };
-      break;
-
     case "not_enrolled":
       newSchema = {
         ...constantSchema,
