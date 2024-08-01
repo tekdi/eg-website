@@ -11,7 +11,6 @@ import {
 } from "@shiksha/common-lib";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-// import schema1 from "../LearnerUpdateDetail/enrollment/schema";
 import schema1 from "../../../../../front-end/src/v2/components/Functional/LearnerUpdateDetail/enrollment/schema";
 import moment from "moment";
 import EnrollmentMessage from "component/EnrollmentMessage";
@@ -21,6 +20,7 @@ export default function BenificiaryEnrollment() {
   const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [boardName, setBoardName] = useState({});
+  const [boardID, setBoardID] = useState({});
   const [stateName, setStateName] = useState({});
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -38,6 +38,8 @@ export default function BenificiaryEnrollment() {
 
   const agDetails = async () => {
     const value = location?.state?.program_beneficiaries?.enrolled_for_board;
+    const boardID = location?.state?.program_beneficiaries?.bordID?.name;
+    setBoardID(boardID);
     if (value) {
       const boardName = await enumRegistryService.boardName(value);
       setBoardName(boardName?.name);
@@ -110,12 +112,23 @@ export default function BenificiaryEnrollment() {
               ) : (
                 "-"
               ),
-              enrolled_for_board: benificiary?.program_beneficiaries
-                ?.enrolled_for_board ? (
+              // enrolled_for_board: benificiary?.program_beneficiaries
+              //   ?.enrolled_for_board ? (
+              //   <GetEnumValue
+              //     t={t}
+              //     enumType={"ENROLLED_FOR_BOARD"}
+              //     enumOptionValue={boardName}
+              //     enumApiData={enumOptions}
+              //   />
+              // ) : (
+              //   "-"
+              // ),
+              enrolled_for_board: benificiary?.program_beneficiaries?.bordID
+                ?.name ? (
                 <GetEnumValue
                   t={t}
                   enumType={"ENROLLED_FOR_BOARD"}
-                  enumOptionValue={boardName}
+                  enumOptionValue={boardID}
                   enumApiData={enumOptions}
                 />
               ) : (

@@ -55,12 +55,8 @@ const List = ({ data, location }) => {
                   >
                     <FrontEndTypo.H3 bold color="textGreyColor.800">
                       {item?.first_name}
-                      {item?.middle_name &&
-                        item?.middle_name !== "null" &&
-                        ` ${item.middle_name}`}
-                      {item?.last_name &&
-                        item?.last_name !== "null" &&
-                        ` ${item.last_name}`}
+                      {item?.middle_name && item.middle_name !== ""}
+                      {item?.last_name && item.last_name !== ""}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.enrollment_number}
@@ -104,7 +100,10 @@ export default function LearnerListView() {
   const location = useLocation();
 
   const handleBack = () => {
-    navigate(`/learner/learnerList`);
+    navigate(`/learner/learnerList`),
+      {
+        state: { filteredData: location.state?.filteredData },
+      };
   };
 
   useEffect(() => {
