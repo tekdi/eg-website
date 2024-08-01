@@ -60,7 +60,7 @@ export default {
         learning_level: {
           label: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
           type: "string",
-          format: "RadioBtn",
+          format: "select",
         },
 
         edit_page_type: {
