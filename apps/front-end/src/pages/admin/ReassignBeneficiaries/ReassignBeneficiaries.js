@@ -617,10 +617,10 @@ export const Filter = ({
               <thead>
                 <tr>
                   <th style={{ border: "1px solid black", padding: "8px" }}>
-                    ID
+                    {t("ID")}
                   </th>
                   <th style={{ border: "1px solid black", padding: "8px" }}>
-                    Name
+                    {t("NAME")}
                   </th>
                 </tr>
               </thead>
