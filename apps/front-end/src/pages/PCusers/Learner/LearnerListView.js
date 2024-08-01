@@ -104,13 +104,9 @@ export default function LearnerListView() {
   const location = useLocation();
 
   const handleBack = () => {
-<<<<<<< Updated upstream
-    navigate(`/learner/learnerList`);
-=======
     navigate(`/learner/learnerList`, {
       state: { filteredData: location.state?.filteredData },
     });
->>>>>>> Stashed changes
   };
 
   useEffect(() => {
