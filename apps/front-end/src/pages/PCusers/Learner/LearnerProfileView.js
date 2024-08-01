@@ -39,6 +39,14 @@ export default function LearnerProfileView({ userTokenInfo }) {
     <Layout
       _appBar={{
         name: t("LEARNER_PROFILE"),
+<<<<<<< Updated upstream
+=======
+        onPressBackButton: () => {
+          navigate("/learner/LearnerListView", {
+            state: location.state?.filter,
+          });
+        },
+>>>>>>> Stashed changes
       }}
       loading={loading}
       analyticsPageTitle={"LEARNER_PROFILE"}
