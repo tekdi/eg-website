@@ -45,7 +45,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
     if (e === "subjects") {
       newData = { ...newData, [e]: getArray(data?.[e]) };
     } else if (e === "enrolled_for_board") {
-      newData = { ...newData, [e]: `${data?.[e]}` };
+      newData = { ...newData, [e]: data?.[e] ? `${data?.[e]}` : undefined };
     } else if (e === "payment_receipt_document_id") {
       if (Array.isArray(data?.[e])) {
         const idDoc = data?.[e]?.find(
@@ -53,9 +53,9 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         );
         newData = { ...newData, [e]: `${idDoc?.id}` };
       } else {
-        newData = { ...newData, [e]: `` };
+        newData = { ...newData, [e]: undefined };
       }
-    } else newData = { ...newData, [e]: data?.[e] };
+    } else newData = { ...newData, [e]: data?.[e] || undefined };
   });
 
   switch (data?.enrollment_status) {
@@ -102,7 +102,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         enrollment_status,
         type_of_enrollement,
         enrolled_for_board,
-        enrollment_number,
+        sso_id,
         enrollment_mobile_no,
         enrollment_date,
         enrollment_first_name,
@@ -118,7 +118,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
           enrollment_status,
           type_of_enrollement,
           enrolled_for_board,
-          sso_id: { ...enrollment_number, label: "SSO_ID" },
+          sso_id,
           enrollment_mobile_no,
           enrollment_date,
           enrollment_first_name,
@@ -126,16 +126,22 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
           enrollment_last_name,
           enrollment_dob,
         },
-        required: [
-          ...constantSchema?.required?.filter((e) => e != "enrollment_number"),
-          "sso_id",
-        ],
+        required: constantSchema?.required?.filter(
+          (e) => e != "enrollment_number"
+        ),
       };
 
       break;
 
     default:
-      newSchema = getOptions(constantSchema, {
+      const { sso_id: sso_id_1, ...properties } =
+        constantSchema?.properties || {};
+      newSchema = {
+        ...constantSchema,
+        properties,
+        required: constantSchema?.required?.filter((e) => e != "sso_id"),
+      };
+      newSchema = getOptions(newSchema, {
         key: "enrolled_for_board",
         arr: boards || [],
         title: "name",
