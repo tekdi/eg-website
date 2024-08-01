@@ -32,7 +32,6 @@ export const schema1 = {
 export const activities = [
   "ATTENDED_TRAINING",
   "PRAGATI_SABHA",
-  "PROVIDE_TRAINING",
   "LEARNER_WORKSHOP",
   "PROVIDE_TRAINING",
   "LEARNER_IDENTIFICATION_SUPPORT",
