@@ -17,7 +17,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import schema1 from "./schema.js";
 //updateSchemaEnum
 import validator from "@rjsf/validator-ajv8";
-import { debounce } from "lodash";
+import { debounce, includes } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
@@ -31,11 +31,8 @@ import {
   widgets,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 
-const setSchemaByStatus = async (data, fixedSchema) => {
-  let { state_name } = await getSelectedProgramId();
+const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   const constantSchema = fixedSchema;
-  const { enrollment_status, payment_receipt_document_id } =
-    fixedSchema?.properties || {};
   let newSchema = {};
   let newData = {};
   const keys = Object.keys(schema1?.properties || {}).reduce((acc, key) => {
@@ -78,12 +75,12 @@ const setSchemaByStatus = async (data, fixedSchema) => {
 
     case "enrollment_awaited":
     case "enrollment_rejected":
-      const { enrolled_for_board } = constantSchema?.properties || {};
+      const { enrolled_for_board: efd } = constantSchema?.properties || {};
       newSchema = {
         ...constantSchema,
         properties: {
           enrollment_status,
-          enrolled_for_board,
+          enrolled_for_board: efd,
         },
         required: ["enrollment_status", "enrolled_for_board"],
       };
@@ -92,9 +89,59 @@ const setSchemaByStatus = async (data, fixedSchema) => {
         enrolled_for_board: `${data?.enrolled_for_board}`,
       };
       break;
+    case "sso_id_enrolled":
+      newSchema = getOptions(constantSchema, {
+        key: "enrolled_for_board",
+        arr: boards || [],
+        filters: { name: "RSOS" },
+        title: "name",
+        value: "id",
+      });
+
+      const {
+        enrollment_status,
+        type_of_enrollement,
+        enrolled_for_board,
+        enrollment_number,
+        enrollment_mobile_no,
+        enrollment_date,
+        enrollment_first_name,
+        enrollment_middle_name,
+        enrollment_last_name,
+        enrollment_dob,
+      } = newSchema?.properties || {};
+      // Add boards list
+
+      newSchema = {
+        ...constantSchema,
+        properties: {
+          enrollment_status,
+          type_of_enrollement,
+          enrolled_for_board,
+          sso_id: { ...enrollment_number, label: "SSO_ID" },
+          enrollment_mobile_no,
+          enrollment_date,
+          enrollment_first_name,
+          enrollment_middle_name,
+          enrollment_last_name,
+          enrollment_dob,
+        },
+        required: [
+          ...constantSchema?.required?.filter((e) => e != "enrollment_number"),
+          "sso_id",
+        ],
+      };
+
+      break;
 
     default:
-      newSchema = constantSchema;
+      newSchema = getOptions(constantSchema, {
+        key: "enrolled_for_board",
+        arr: boards || [],
+        title: "name",
+        value: "id",
+      });
+
       break;
   }
   return { newSchema, newData };
@@ -154,6 +201,7 @@ export default function EnrollmentForm() {
   const [notMatched, setNotMatched] = useState();
   const [loading, setLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
+  const [boards, setBoards] = useState();
   const navigate = useNavigate();
 
   const [uiSchema, setUiSchema] = useState({
@@ -239,12 +287,19 @@ export default function EnrollmentForm() {
   const getEnrollmentStatus = async (schemaData) => {
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
+    let { state_name } = await getSelectedProgramId();
+
+    // filter by sso_id_enrolled if state id not RAJASTHAN
+    if (state_name !== "RAJASTHAN") {
+      list = list.filter((e) => e.value != "sso_id_enrolled");
+    }
     let newSchema = getOptions(schemaData, {
       key: "type_of_enrollement",
       arr: ListofEnum?.data?.ENROLLEMENT_VERIFICATION_TYPE,
       title: "title",
       value: "value",
     });
+
     return getOptions(newSchema, {
       key: "enrollment_status",
       arr: list,
@@ -294,6 +349,7 @@ export default function EnrollmentForm() {
     return err;
   };
 
+  // set form data page, pages and benificiary
   useEffect(() => {
     const init = async () => {
       const properties = schema1.properties;
@@ -306,29 +362,25 @@ export default function EnrollmentForm() {
       const { program_beneficiaries } = result || {};
       const updatedSchema = await setSchemaByStatus(program_beneficiaries, {});
       setFormData(updatedSchema?.newData || {});
+      let resultBoards = await enumRegistryService.boardList();
+      setBoards(resultBoards?.boards || []);
     };
     init();
   }, []);
 
+  // set fixedSchema, setSchema as per statue and state, dependacy on page
   useEffect(() => {
     const init = async () => {
-      if (page && benificiary?.program_beneficiaries) {
+      if (page && benificiary?.program_beneficiaries && boards) {
         const { program_beneficiaries } = benificiary || {};
         const constantSchema = schema1.properties?.[page];
         if (page === "edit_enrollement") {
           const newSchema = await getEnrollmentStatus(constantSchema);
-          let boardList = await enumRegistryService.boardList();
-          let BoardSchema = getOptions(newSchema, {
-            key: "enrolled_for_board",
-            arr: boardList?.boards,
-            title: "name",
-            value: "id",
-          });
-
-          setFixedSchema(BoardSchema);
+          setFixedSchema(newSchema);
           const updatedSchema = await setSchemaByStatus(
             program_beneficiaries,
-            BoardSchema
+            newSchema,
+            boards
           );
 
           let { state_name } = await getSelectedProgramId();
@@ -346,7 +398,11 @@ export default function EnrollmentForm() {
           }
           setSchema(updatedSchema?.newSchema);
         } else {
-          if (formData?.enrollment_status === "enrolled") {
+          if (
+            ["enrolled", "sso_id_enrolled"].includes(
+              formData?.enrollment_status
+            )
+          ) {
             setSchema(
               await getSubjects(constantSchema, formData?.enrolled_for_board)
             );
@@ -358,7 +414,7 @@ export default function EnrollmentForm() {
       }
     };
     init();
-  }, [page, benificiary]);
+  }, [page, benificiary, boards]);
 
   const enrollmentNumberExist = async (enrollment_number, re = false) => {
     let { state_name } = await getSelectedProgramId();
@@ -440,6 +496,23 @@ export default function EnrollmentForm() {
   };
   const debouncedFunction = useCallback(debounce(handleEnrollment, 1000), []);
 
+  const handleSSOID = async (data) => {
+    const result = await benificiaryRegistoryService.isExistSSOID({
+      userId,
+      sso_id: data?.sso_id,
+    });
+    if (result.error) {
+      setErrors({
+        ...errors,
+        sso_id: {
+          isNotMatched: true,
+          __errors: [t("SSO_ID_ALREADY_EXISTS"), result?.message || ""],
+        },
+      });
+    }
+  };
+  const debouncedSSOID = useCallback(debounce(handleSSOID, 1000), []);
+  console.log(formData);
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
@@ -449,6 +522,13 @@ export default function EnrollmentForm() {
         setErrors(otherError);
         if (data?.enrollment_number) {
           debouncedFunction(data);
+        }
+        break;
+      case "root_sso_id":
+        let { sso_id, ...ssoOtherError } = errors || {};
+        setErrors(ssoOtherError);
+        if (data?.sso_id) {
+          debouncedSSOID(data);
         }
         break;
       case "root_enrollment_date":
@@ -496,7 +576,11 @@ export default function EnrollmentForm() {
         break;
 
       case "root_enrollment_status":
-        const updatedSchema = await setSchemaByStatus(data, fixedSchema);
+        const updatedSchema = await setSchemaByStatus(
+          data,
+          fixedSchema,
+          boards
+        );
         newData = updatedSchema?.newData ? updatedSchema?.newData : {};
         setSchema(updatedSchema?.newSchema);
         setErrors();
@@ -593,13 +677,18 @@ export default function EnrollmentForm() {
 
       let newdata = filterObject(newFormData, [...keys, "is_eligible"], {}, "");
 
-      if (newdata?.enrollment_status === "enrolled") {
+      if (
+        ["enrolled", "sso_id_enrolled"].includes(newdata?.enrollment_status)
+      ) {
         newdata = {
           ...newdata,
           payment_receipt_document_id: [
             {
               id: newdata.payment_receipt_document_id,
-              key: "payment_receipt_document_id",
+              key:
+                newdata?.enrollment_status === "sso_id_enrolled"
+                  ? "sso_id_receipt_document_id"
+                  : "payment_receipt_document_id",
             },
           ],
         };
@@ -607,7 +696,8 @@ export default function EnrollmentForm() {
 
       if (
         page == "edit_enrollement_details" ||
-        (page == "edit_enrollement" && newdata?.enrollment_status != "enrolled")
+        (page == "edit_enrollement" &&
+          !["enrolled", "sso_id_enrolled"].includes(newdata?.enrollment_status))
       ) {
         const { success, isUserExist } =
           await benificiaryRegistoryService.updateAg(
@@ -705,13 +795,7 @@ export default function EnrollmentForm() {
                 }
               }}
             >
-              {t(
-                page === "edit_enrollement_details" ||
-                  (page == "edit_enrollement" &&
-                    formData?.enrollment_status != "enrolled")
-                  ? "SAVE"
-                  : "NEXT"
-              )}
+              {t(page == "edit_enrollement" ? "NEXT" : "SAVE")}
             </FrontEndTypo.Primarybutton>
           </Form>
         )}

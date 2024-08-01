@@ -97,10 +97,7 @@ export default {
       },
     },
     edit_enrollement_details: {
-      title:
-        state?.state_name === "RAJASTHAN"
-          ? "ENROLLMENT_RECEIPT_AS_PER_ENROLLMENT_RECEIPT"
-          : "ENROLLMENT_RECEIPT_DETAILS",
+      title: "ENROLLMENT_RECEIPT",
       type: "object",
       required: ["subjects", "payment_receipt_document_id"],
       properties: {
@@ -119,12 +116,9 @@ export default {
         payment_receipt_document_id: {
           label:
             state?.state_name === "RAJASTHAN"
-              ? [
-                  "RECEIPT_UPLOAD_AND_UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
-                ]
-              : [
-                  "RECEIPT_UPLOAD_AND_UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
-                ],
+              ? ["RECEIPT_UPLOAD"]
+              : ["RECEIPT_UPLOAD"],
+          description: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
           uploadTitle: "UPLOAD_FROM_PHONE",
           type: ["string", "number"],
           format: "FileUpload",
