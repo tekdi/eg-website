@@ -28,7 +28,7 @@ import Chip, { ChipStatus } from "component/BeneficiaryStatus";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, RadioBtn } from "../../../component/BaseInput.js";
-import { debounce } from "lodash";
+import { debounce, wrap } from "lodash";
 
 function CustomFieldTemplate({ id, schema, label, required, children }) {
   const { t } = useTranslation();
@@ -125,6 +125,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   useEffect(() => {
     const facilitatorDetails = async () => {
       const result = await facilitatorRegistryService.filter(facilitatorFilter);
+
       const newData = result?.data?.data?.map((e) => ({
         value: e?.id,
         label: `${e?.first_name} ${e?.last_name ? e?.last_name : ""}`,
@@ -611,25 +612,57 @@ export const Filter = ({
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          <RadioBtn
-            directionColumn={"column"}
-            value={
-              filterfunction?.facilitator ? filterfunction?.facilitator : []
-            }
-            onChange={(e) => {
-              setFilterfunction({ ...filterfunction, facilitator: e });
-            }}
-            schema={{
-              grid: 1,
-              _hstack: {
-                maxH: 130,
-                overflowY: "scroll",
-              },
-            }}
-            options={{
-              enumOptions: facilitator,
-            }}
-          />
+          <div style={{ maxHeight: "130px", overflowY: "scroll" }}>
+            <table border style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid black", padding: "8px" }}>
+                    {t("ID")}
+                  </th>
+                  <th style={{ border: "1px solid black", padding: "8px" }}>
+                    {t("NAME")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {facilitator?.map((item) => (
+                  <tr key={item.value}>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      <RadioBtn
+                        directionColumn={"column"}
+                        value={
+                          filterfunction?.facilitator
+                            ? filterfunction?.facilitator
+                            : []
+                        }
+                        onChange={(e) => {
+                          setFilterfunction({
+                            ...filterfunction,
+                            facilitator: e,
+                          });
+                        }}
+                        schema={{
+                          grid: 1,
+                          _hstack: {
+                            maxH: 130,
+                            overflowY: "scroll",
+                          },
+                        }}
+                        options={{
+                          enumOptions: [
+                            { label: item.value, value: item.value },
+                          ],
+                        }}
+                      />
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {item.label}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {isMore && (
             <AdminTypo.H5
               onPress={(e) =>
