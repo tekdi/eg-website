@@ -516,12 +516,14 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
         setMissingData(missingData);
       } else {
         const lastStandard = parseInt(
-          benificiary?.core_beneficiaries?.last_standard_of_education,
+          benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
           10
         );
-
-        const hasWarning = lastStandard === null || lastStandard < 5;
-        if (hasWarning && !openWarningModal) {
+        const hasWarning = isNaN(lastStandard) || lastStandard < 5;
+        const checkNeeded = ["identified", "ready_to_enroll"].includes(
+          benificiary?.program_beneficiaries?.enrollment_status
+        );
+        if (hasWarning && !openWarningModal && checkNeeded) {
           setOpenWarningModal(true);
         } else {
           navigate(`/beneficiary/${id}/enrollmentdetails`);
