@@ -4,6 +4,7 @@ import {
   AdminTypo,
   enumRegistryService,
   tableCustomStyles,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -16,7 +17,14 @@ import PropTypes from "prop-types";
 import { useMemo } from "react";
 
 // Table component
-function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
+function Table({
+  filter,
+  setFilter,
+  paginationTotalRows,
+  data,
+  loading,
+  stateName,
+}) {
   const [beneficiaryStatus, setBeneficiaryStatus] = useState();
 
   const { t } = useTranslation();
@@ -156,9 +164,17 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   );
 
   const fetchEnumRegistry = useCallback(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    setBeneficiaryStatus(result?.data?.BENEFICIARY_STATUS);
-  }, []);
+    if (stateName) {
+      const result = await enumRegistryService.listOfEnum();
+      let list = result?.data?.BENEFICIARY_STATUS;
+      if (stateName !== "RAJASTHAN") {
+        list = result?.data?.BENEFICIARY_STATUS?.filter((e) =>
+          ["sso_id_enrolled", "sso_id_verified"].includes(e.value)
+        );
+      }
+      setBeneficiaryStatus(list);
+    }
+  }, [stateName]);
 
   useEffect(() => {
     fetchEnumRegistry();
