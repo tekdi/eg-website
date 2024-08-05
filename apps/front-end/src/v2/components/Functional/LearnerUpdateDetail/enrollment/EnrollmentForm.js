@@ -48,8 +48,10 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
       newData = { ...newData, [e]: data?.[e] ? `${data?.[e]}` : undefined };
     } else if (e === "payment_receipt_document_id") {
       if (Array.isArray(data?.[e])) {
-        const idDoc = data?.[e]?.find(
-          (ie) => ie?.id && ie?.key == "payment_receipt_document_id"
+        const idDoc = data?.[e]?.find((ie) =>
+          ie?.id && (ie?.key == data?.enrollment_status) === "sso_id_enrolled"
+            ? "sso_id_receipt_document_id"
+            : "payment_receipt_document_id"
         );
         newData = { ...newData, [e]: `${idDoc?.id}` };
       } else {
@@ -518,7 +520,6 @@ export default function EnrollmentForm() {
     }
   };
   const debouncedSSOID = useCallback(debounce(handleSSOID, 1000), []);
-  console.log(formData);
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
@@ -788,7 +789,22 @@ export default function EnrollmentForm() {
               onError,
               onSubmit,
               customValidate,
-              transformErrors: (errors) => transformErrors(errors, schema, t),
+              transformErrors: (errorsData) => {
+                const filterError = transformErrors(errorsData, schema, t);
+                let newError = {};
+                filterError
+                  .filter((e) => e?.name == "enum" && e?.key_name)
+                  .forEach((e) => {
+                    newError = {
+                      ...newError,
+                      [e.key_name]: {
+                        __errors: [e.message],
+                      },
+                    };
+                  });
+                setErrors({ ...errors, ...newError });
+                return filterError;
+              },
             }}
           >
             <FrontEndTypo.Primarybutton
