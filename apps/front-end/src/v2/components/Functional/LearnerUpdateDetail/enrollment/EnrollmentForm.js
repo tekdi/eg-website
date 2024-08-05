@@ -45,17 +45,19 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
     if (e === "subjects") {
       newData = { ...newData, [e]: getArray(data?.[e]) };
     } else if (e === "enrolled_for_board") {
-      newData = { ...newData, [e]: `${data?.[e]}` };
+      newData = { ...newData, [e]: data?.[e] ? `${data?.[e]}` : undefined };
     } else if (e === "payment_receipt_document_id") {
       if (Array.isArray(data?.[e])) {
-        const idDoc = data?.[e]?.find(
-          (ie) => ie?.id && ie?.key == "payment_receipt_document_id"
+        const idDoc = data?.[e]?.find((ie) =>
+          ie?.id && (ie?.key == data?.enrollment_status) === "sso_id_enrolled"
+            ? "sso_id_receipt_document_id"
+            : "payment_receipt_document_id"
         );
         newData = { ...newData, [e]: `${idDoc?.id}` };
       } else {
-        newData = { ...newData, [e]: `` };
+        newData = { ...newData, [e]: undefined };
       }
-    } else newData = { ...newData, [e]: data?.[e] };
+    } else newData = { ...newData, [e]: data?.[e] || undefined };
   });
 
   switch (data?.enrollment_status) {
@@ -102,7 +104,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         enrollment_status,
         type_of_enrollement,
         enrolled_for_board,
-        enrollment_number,
+        sso_id,
         enrollment_mobile_no,
         enrollment_date,
         enrollment_first_name,
@@ -110,15 +112,15 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         enrollment_last_name,
         enrollment_dob,
       } = newSchema?.properties || {};
-      // Add boards list
 
+      // only for sso id validation
       newSchema = {
         ...constantSchema,
         properties: {
           enrollment_status,
           type_of_enrollement,
           enrolled_for_board,
-          sso_id: { ...enrollment_number, label: "SSO_ID" },
+          sso_id,
           enrollment_mobile_no,
           enrollment_date,
           enrollment_first_name,
@@ -126,16 +128,22 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
           enrollment_last_name,
           enrollment_dob,
         },
-        required: [
-          ...constantSchema?.required?.filter((e) => e != "enrollment_number"),
-          "sso_id",
-        ],
+        required: constantSchema?.required?.filter(
+          (e) => e != "enrollment_number"
+        ),
       };
 
       break;
 
     default:
-      newSchema = getOptions(constantSchema, {
+      const { sso_id: sso_id_1, ...properties } =
+        constantSchema?.properties || {};
+      newSchema = {
+        ...constantSchema,
+        properties,
+        required: constantSchema?.required?.filter((e) => e != "sso_id"),
+      };
+      newSchema = getOptions(newSchema, {
         key: "enrolled_for_board",
         arr: boards || [],
         title: "name",
@@ -512,7 +520,6 @@ export default function EnrollmentForm() {
     }
   };
   const debouncedSSOID = useCallback(debounce(handleSSOID, 1000), []);
-  console.log(formData);
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
@@ -782,7 +789,22 @@ export default function EnrollmentForm() {
               onError,
               onSubmit,
               customValidate,
-              transformErrors: (errors) => transformErrors(errors, schema, t),
+              transformErrors: (errorsData) => {
+                const filterError = transformErrors(errorsData, schema, t);
+                let newError = {};
+                filterError
+                  .filter((e) => e?.name == "enum" && e?.key_name)
+                  .forEach((e) => {
+                    newError = {
+                      ...newError,
+                      [e.key_name]: {
+                        __errors: [e.message],
+                      },
+                    };
+                  });
+                setErrors({ ...errors, ...newError });
+                return filterError;
+              },
             }}
           >
             <FrontEndTypo.Primarybutton

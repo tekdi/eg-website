@@ -813,10 +813,8 @@ export const MultiCheckSubject = ({
 }) => {
   const { t } = useTranslation();
   const { _subHstack, grid, label, format, enumOptions } = schema || {};
-
   let items = [enumOptions?.filter((e) => e.subject_type != "language")];
   let langItem = [enumOptions?.filter((e) => e.subject_type == "language")];
-
   if (grid && enumOptions?.constructor.name === "Array") {
     items = chunk(
       enumOptions?.filter((e) => e.subject_type != "language"),
@@ -1083,28 +1081,40 @@ export const focusToField = (errors) => {
 const transformErrors = (errors, schema, t) => {
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
-  const getMessage = (error) => {
+  const getTranslate = (error) => {
     const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
     const title = getTitle(schemaItem);
     switch (error.name) {
       case "required":
-        return `${t(
-          schemaItem?.format === "FileUpload"
-            ? "REQUIRED_MESSAGE_UPLOAD"
-            : "REQUIRED_MESSAGE"
-        )} "${t(title)}"`;
+        return {
+          ...error,
+          message: `${t(
+            schemaItem?.format === "FileUpload"
+              ? "REQUIRED_MESSAGE_UPLOAD"
+              : "REQUIRED_MESSAGE"
+          )} "${t(title)}"`,
+        };
       case "minItems":
-        return t("SELECT_MINIMUM")
-          .replace("{0}", error?.params?.limit)
-          .replace("{1}", t(title));
+        return {
+          ...error,
+          message: t("SELECT_MINIMUM")
+            .replace("{0}", error?.params?.limit)
+            .replace("{1}", t(title)),
+        };
       case "maxItems":
-        return t("SELECT_MAXIMUM")
-          .replace("{0}", error?.params?.limit)
-          .replace("{1}", t(title));
+        return {
+          ...error,
+          message: t("SELECT_MAXIMUM")
+            .replace("{0}", error?.params?.limit)
+            .replace("{1}", t(title)),
+        };
       case "enum":
-        return t("SELECT_MESSAGE");
-      case "type":
-        return "";
+        let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
+        const schemaItem = schema?.properties?.[name];
+        if (schemaItem) {
+          error.key_name = name;
+        }
+        return error;
       case "format":
         const { format } = error?.params || {};
         const messageKey =
@@ -1118,8 +1128,7 @@ const transformErrors = (errors, schema, t) => {
         return error.message;
     }
   };
-
-  return errors.map((error) => ({ ...error, message: getMessage(error) }));
+  return errors.map((error) => getTranslate(error));
 };
 
 // rjsf onerror parmaeter for common
