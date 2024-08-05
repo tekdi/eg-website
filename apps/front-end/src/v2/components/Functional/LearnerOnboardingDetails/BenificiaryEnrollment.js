@@ -91,6 +91,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
           "identified",
           "ready_to_enroll",
           "enrolled",
+          "sso_id_enrolled",
           "not_enrolled",
           "enrollment_awaited",
           "enrollment_rejected",

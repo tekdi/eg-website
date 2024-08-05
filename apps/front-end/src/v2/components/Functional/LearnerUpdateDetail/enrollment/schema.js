@@ -13,6 +13,7 @@ export default {
         "enrollment_status",
         "type_of_enrollement",
         "enrolled_for_board",
+        "sso_id",
         "enrollment_number",
         "enrollment_mobile_no",
         "enrollment_first_name",
@@ -36,6 +37,11 @@ export default {
           _stack: { direction: "row", justifyContent: "space-between" },
           label: "BOARD_OF_ENROLLMENT",
           format: "RadioBtn",
+        },
+        sso_id: {
+          type: "string",
+          _input: { keyboardType: "numeric" },
+          label: "SSO_ID",
         },
         enrollment_number: {
           type: "string",
