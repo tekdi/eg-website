@@ -168,14 +168,19 @@ function Table({
       const result = await enumRegistryService.listOfEnum();
       let list = result?.data?.BENEFICIARY_STATUS;
       if (stateName !== "RAJASTHAN") {
-        list = result?.data?.BENEFICIARY_STATUS?.filter((e) =>
-          ["sso_id_enrolled", "sso_id_verified"].includes(e.value)
+        list = result?.data?.BENEFICIARY_STATUS?.filter(
+          (e) =>
+            ![
+              "sso_id_enrolled",
+              "sso_id_verified",
+              "registered_in_neev_camp",
+            ].includes(e.value)
         );
       }
       setBeneficiaryStatus(list);
     }
   }, [stateName]);
-
+  console.log(beneficiaryStatus, stateName);
   useEffect(() => {
     fetchEnumRegistry();
   }, [fetchEnumRegistry]);
