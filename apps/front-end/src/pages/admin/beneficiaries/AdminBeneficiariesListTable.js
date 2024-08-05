@@ -180,7 +180,7 @@ function Table({
       setBeneficiaryStatus(list);
     }
   }, [stateName]);
-  console.log(beneficiaryStatus, stateName);
+
   useEffect(() => {
     fetchEnumRegistry();
   }, [fetchEnumRegistry]);

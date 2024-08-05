@@ -142,7 +142,6 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         enrollment_verification_status: status,
         enrollment_verification_reason: reason,
       });
-
       if (response?.success) {
         setOpenModal(false);
         navigate({
@@ -366,13 +365,28 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       _box={{ space: "2" }}
                       data={data?.program_beneficiaries}
                       arr={[
-                        {
-                          label:
-                            localData === "RAJASTHAN"
-                              ? "ENROLLMENT_NO"
-                              : "APPLICATION_ID",
-                          keyArr: "enrollment_number",
-                        },
+                        ...(data?.program_beneficiaries?.status == "enrolled"
+                          ? [
+                              {
+                                label:
+                                  localData == "BIHAR"
+                                    ? "APPLICATION_ID"
+                                    : localData == "MADHYA PRADESH"
+                                    ? "ROLL_NUMBER"
+                                    : "ENROLLMENT_NO",
+                                keyArr: "enrollment_number",
+                              },
+                            ]
+                          : []),
+                        ...(localData == "RAJASTHAN" &&
+                        data?.program_beneficiaries?.status == "sso_id_enrolled"
+                          ? [
+                              {
+                                label: "SSOID",
+                                keyArr: "sso_id",
+                              },
+                            ]
+                          : []),
                         {
                           label: "DATE",
                           value: (
@@ -561,7 +575,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 onPress={(e) =>
                   submit(
                     data?.program_beneficiaries?.status == "sso_id_enrolled"
-                      ? "sso_id_enrolled"
+                      ? "sso_id_verified"
                       : "verified"
                   )
                 }
@@ -606,7 +620,15 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   <AdminTypo.Secondarybutton onPress={() => submit("rejected")}>
                     {t("REJECT")}
                   </AdminTypo.Secondarybutton>
-                  <AdminTypo.Successbutton onPress={(e) => submit("verified")}>
+                  <AdminTypo.Successbutton
+                    onPress={(e) =>
+                      submit(
+                        data?.program_beneficiaries?.status == "sso_id_enrolled"
+                          ? "sso_id_verified"
+                          : "verified"
+                      )
+                    }
+                  >
                     {t("PROCEED")}
                   </AdminTypo.Successbutton>
                 </Modal.Footer>
