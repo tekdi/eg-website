@@ -28,10 +28,33 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-const checkboxIcons = [
-  { name: "CloseCircleLineIcon" },
-  { name: "CheckboxCircleLineIcon" },
-];
+const checkboxIcons = (value) => {
+  const iconsData = [
+    {
+      name: "CloseCircleLineIcon",
+      activeName: "CloseCircleFillIcon",
+      activeColor: "#d53546",
+      style: {},
+      _icon: { size: "25", activeColor: "#d53546", color: "#484848" },
+    },
+    {
+      name: "CheckboxCircleLineIcon",
+      activeName: "CheckboxCircleFillIcon",
+      activeColor: "#038400",
+      style: {},
+      _icon: { size: "25", activeColor: "#038400", color: "#484848" },
+    },
+  ];
+  return iconsData.map((e) => {
+    if (
+      (value === "yes" && e.name === "CheckboxCircleLineIcon") ||
+      (value === "no" && e.name === "CloseCircleLineIcon")
+    ) {
+      return { ...e, name: e?.activeName };
+    }
+    return e;
+  });
+};
 
 export default function EnrollmentReceiptView({ footerLinks }) {
   const { t } = useTranslation();
@@ -119,11 +142,13 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         enrollment_verification_status: status,
         enrollment_verification_reason: reason,
       });
-
       if (response?.success) {
         setOpenModal(false);
         navigate({
-          pathname: "/admin/learners/enrollmentVerificationList",
+          pathname:
+            data?.program_beneficiaries?.status == "sso_id_enrolled"
+              ? "/admin/learners/enrollmentVerificationList/SSOID"
+              : "/admin/learners/enrollmentVerificationList",
           search: `?${createSearchParams(filter)}`,
         });
       }
@@ -309,7 +334,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         enumOptions: [{ value: "no" }, { value: "yes" }],
                       }}
                       schema={{
-                        icons: checkboxIcons,
+                        icons: checkboxIcons(reason?.enrollment_details),
                         _box: {
                           flex: "1",
                           gap: "2",
@@ -340,13 +365,28 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       _box={{ space: "2" }}
                       data={data?.program_beneficiaries}
                       arr={[
-                        {
-                          label:
-                            localData === "RAJASTHAN"
-                              ? "ENROLLMENT_NO"
-                              : "APPLICATION_ID",
-                          keyArr: "enrollment_number",
-                        },
+                        ...(data?.program_beneficiaries?.status == "enrolled"
+                          ? [
+                              {
+                                label:
+                                  localData == "BIHAR"
+                                    ? "APPLICATION_ID"
+                                    : localData == "MADHYA PRADESH"
+                                    ? "ROLL_NUMBER"
+                                    : "ENROLLMENT_NO",
+                                keyArr: "enrollment_number",
+                              },
+                            ]
+                          : []),
+                        ...(localData == "RAJASTHAN" &&
+                        data?.program_beneficiaries?.status == "sso_id_enrolled"
+                          ? [
+                              {
+                                label: "SSOID",
+                                keyArr: "sso_id",
+                              },
+                            ]
+                          : []),
                         {
                           label: "DATE",
                           value: (
@@ -372,7 +412,9 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         enumOptions: [{ value: "no" }, { value: "yes" }],
                       }}
                       schema={{
-                        icons: checkboxIcons,
+                        icons: checkboxIcons(
+                          reason?.learner_enrollment_details
+                        ),
                         _box: {
                           flex: "1",
                           gap: "20px",
@@ -530,9 +572,19 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   reason?.enrollment_details === "no" ||
                   reason?.learner_enrollment_details === "no"
                 }
-                onPress={(e) => submit("verified")}
+                onPress={(e) =>
+                  submit(
+                    data?.program_beneficiaries?.status == "sso_id_enrolled"
+                      ? "sso_id_verified"
+                      : "verified"
+                  )
+                }
               >
-                {t("FACILITATOR_STATUS_VERIFY")}
+                {t(
+                  data?.program_beneficiaries?.status == "sso_id_enrolled"
+                    ? "BENEFICIARY_STATUS_BTNTEXT_SSOID_VERIFY"
+                    : "BENEFICIARY_STATUS_BTNTEXT_VERIFY"
+                )}
               </AdminTypo.Successbutton>
               <AdminTypo.Secondarybutton
                 isLoading={isButtonLoading}
@@ -568,7 +620,15 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   <AdminTypo.Secondarybutton onPress={() => submit("rejected")}>
                     {t("REJECT")}
                   </AdminTypo.Secondarybutton>
-                  <AdminTypo.Successbutton onPress={(e) => submit("verified")}>
+                  <AdminTypo.Successbutton
+                    onPress={(e) =>
+                      submit(
+                        data?.program_beneficiaries?.status == "sso_id_enrolled"
+                          ? "sso_id_verified"
+                          : "verified"
+                      )
+                    }
+                  >
                     {t("PROCEED")}
                   </AdminTypo.Successbutton>
                 </Modal.Footer>
@@ -602,40 +662,34 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
 const Body = ({ data, children }) => {
   const { t } = useTranslation();
-  if (data?.program_beneficiaries?.status !== "enrolled") {
-    return (
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <AdminTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</AdminTypo.H1>
-        </HStack>
-      </Alert>
-    );
-  } else if (
-    data?.program_beneficiaries?.enrollment_status === "not_enrolled"
-  ) {
-    return (
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <AdminTypo.H1>
-            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-          </AdminTypo.H1>
-        </HStack>
-      </Alert>
-    );
-  } else if (data?.is_duplicate === "yes" && data?.is_deactivated === null) {
-    return (
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <AdminTypo.H1>{t("RESOLVE_DUPLICATION")}</AdminTypo.H1>
-        </HStack>
-      </Alert>
-    );
-  } else {
-    return children;
+  const { program_beneficiaries, is_duplicate, is_deactivated } = data || {};
+  const status = program_beneficiaries?.status;
+  const enrollmentStatus = program_beneficiaries?.enrollment_status;
+
+  let alertContent = null;
+
+  switch (true) {
+    case !["enrolled", "sso_id_enrolled"].includes(status):
+      alertContent = t("PAGE_NOT_ACCESSABLE");
+      break;
+    case enrollmentStatus === "not_enrolled":
+      alertContent = t("FACILITATOR_STATUS_CANCEL_ENROLMENT");
+      break;
+    case is_duplicate === "yes" && is_deactivated === null:
+      alertContent = t("RESOLVE_DUPLICATION");
+      break;
+    default:
+      return children;
   }
+
+  return (
+    <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+      <HStack alignItems="center" space="2" color>
+        <Alert.Icon />
+        <AdminTypo.H1>{alertContent}</AdminTypo.H1>
+      </HStack>
+    </Alert>
+  );
 };
 
 const TextInfo = ({ data, _box, arr, board }) => {

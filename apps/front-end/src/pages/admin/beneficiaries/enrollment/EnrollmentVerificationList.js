@@ -142,7 +142,9 @@ const columns = (t, navigate, filter) => [
   {
     name: t("ACTION"),
     selector: (row) =>
-      row?.program_beneficiaries?.status === "enrolled" &&
+      ["enrolled", "sso_id_enrolled"].includes(
+        row?.program_beneficiaries?.status
+      ) &&
       !(row?.is_duplicate === "yes" && row?.is_deactivated === null) && (
         <AdminTypo.Secondarybutton
           my="3"
