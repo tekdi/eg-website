@@ -110,8 +110,8 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         enrollment_last_name,
         enrollment_dob,
       } = newSchema?.properties || {};
-      // Add boards list
 
+      // only for sso id validation
       newSchema = {
         ...constantSchema,
         properties: {
