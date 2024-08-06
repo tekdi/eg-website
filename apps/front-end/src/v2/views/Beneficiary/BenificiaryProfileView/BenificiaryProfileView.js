@@ -35,7 +35,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
-export default function BenificiaryProfileView(props, userTokenInfo) {
+export default function BenificiaryProfileView(userTokenInfo) {
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
@@ -714,7 +714,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/basicdetails`);
                           }}
-                          _icon={{ size: "20", color: "#1F1D76" }}
+                          color="floatingLabelColor.500"
+                          _icon={{ size: "20" }}
                         />
                       )}
                   </HStack>
@@ -745,7 +746,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/addressdetails`);
                           }}
-                          _icon={{ size: "20", color: "#1F1D76" }}
+                          color="floatingLabelColor.500"
+                          _icon={{ size: "20" }}
                         />
                       )}
                   </HStack>
@@ -823,7 +825,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/docschecklist`);
                     }}
-                    _icon={{ size: "20", color: "#1F1D76" }}
+                    color="floatingLabelColor.500"
+                    _icon={{ size: "20" }}
                   />
                 )}
               </HStack>
@@ -846,7 +849,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/educationdetails`);
                       }}
-                      _icon={{ size: "20", color: "#1F1D76" }}
+                      color="floatingLabelColor.500"
+                      _icon={{ size: "20" }}
                     />
                   )}
               </HStack>
@@ -858,7 +862,28 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   </HStack>
                 </Alert>
               )}
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="0"
+              >
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
+                  {t("BENEFICIARY_DISABILITY_DETAILS")}
+                </FrontEndTypo.H3>
 
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  onPress={(e) =>
+                    navigate(`/beneficiary/${id}/disability-details`)
+                  }
+                  color="floatingLabelColor.500"
+                  _icon={{ size: "20" }}
+                />
+              </HStack>
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"
@@ -877,7 +902,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     <IconByName
                       name="ArrowRightSLineIcon"
                       onPress={learnerDetailsCheck}
-                      _icon={{ size: "20", color: "#1F1D76" }}
+                      color="floatingLabelColor.500"
+                      _icon={{ size: "20" }}
                     />
                   )}
               </HStack>
@@ -968,7 +994,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/pcrview`);
                     }}
-                    _icon={{ size: "20", color: "#1F1D76" }}
+                    color="floatingLabelColor.500"
+                    _icon={{ size: "20" }}
                   />
                 </HStack>
               )}
@@ -986,12 +1013,12 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                 </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
-                  color="#790000"
                   size="sm"
                   onPress={(e) => {
                     navigate(`/beneficiary/${id}/benificiaryJourney`);
                   }}
-                  _icon={{ size: "20", color: "#1F1D76" }}
+                  color="floatingLabelColor.500"
+                  _icon={{ size: "20" }}
                 />
               </HStack>
             </VStack>

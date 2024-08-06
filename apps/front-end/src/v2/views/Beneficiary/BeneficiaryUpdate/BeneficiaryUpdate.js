@@ -4,6 +4,7 @@ import BasicDetails from "v2/components/Functional/LearnerUpdateDetail/basicDeta
 import ContactDetailsEdit from "v2/components/Functional/LearnerUpdateDetail/contact-details/contactDetailsEdit";
 import EducationDetails from "v2/components/Functional/LearnerUpdateDetail/education-details-further-studies/educationDetails";
 import FutureStudy from "v2/components/Functional/LearnerUpdateDetail/education-details-further-studies/futureStudy";
+import DisabilityForm from "v2/components/Functional/LearnerUpdateDetail/disability/DisabilityForm";
 import EnrollmentForm from "v2/components/Functional/LearnerUpdateDetail/enrollment/EnrollmentForm";
 import FamilyDetails from "v2/components/Functional/LearnerUpdateDetail/family-details/familydetails";
 import PersonalDetails from "v2/components/Functional/LearnerUpdateDetail/personal-details/personaldetails";
@@ -27,6 +28,8 @@ export default function BeneficiaryUpdate({ userTokenInfo, footerLinks }) {
         return <EducationDetails />;
       case "future-education":
         return <FutureStudy userTokenInfo={userTokenInfo} />;
+      case "disability-details":
+        return <DisabilityForm />;
       case "enrollment-details":
         return <EnrollmentForm />;
       case "reference-details":

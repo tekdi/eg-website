@@ -225,6 +225,7 @@
   "BENEFICIARY_STATUS_REGISTERED_IN_CAMP": "Registered In Camp",
   "BENEFICIARY_STATUS_REJECTED": "Rejected",
   "BENEFICIARY_STATUS_VERIFIED_IP": "Verified-IP",
+  "BENEFICIARY_DISABILITY_DETAILS": "Disability details",
   "BIRTH_CERTIFICATE": "Birth Certificate",
   "BLOCK": "Block",
   "BLOCK_NAME": "Block name",
