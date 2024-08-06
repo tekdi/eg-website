@@ -131,8 +131,11 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         10
       );
       const hasWarning = isNaN(lastStandard) || lastStandard < 5;
+      const checkNeeded = ["identified", "ready_to_enroll"].includes(
+        data?.program_beneficiaries?.enrollment_status
+      );
 
-      if (hasWarning && !openWarningModal) {
+      if (hasWarning && !openWarningModal && checkNeeded) {
         setOpenWarningModal(true);
         return;
       }

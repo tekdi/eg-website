@@ -382,6 +382,9 @@ export default function PrerakOnboardingArrayForm({
       //offline data submit
       await updateOnboardingData(userid, {
         ...newdata,
+        ...(type === "vo_experience"
+          ? { has_volunteer_exp: true }
+          : { has_job_exp: true }),
         type,
       });
       //get offline data
@@ -436,8 +439,8 @@ export default function PrerakOnboardingArrayForm({
     setData(data.filter((e) => e.id !== deletedata.id));
   };
 
-  const onClickSubmit = (data) => {
-    if (!data) {
+  const onClickSubmit = (bool) => {
+    if (!bool) {
       nextPreviewStep();
     } else {
       navigatePage("/profile", "");
@@ -576,7 +579,7 @@ export default function PrerakOnboardingArrayForm({
                       </Box>
                     );
                   })}
-              {data?.length >= 1 && (
+              {!displayQuation && (
                 <Button variant={"link"} colorScheme="info" onPress={onAdd}>
                   <FrontEndTypo.H5
                     color="blueText.500"
