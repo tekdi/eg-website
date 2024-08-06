@@ -205,7 +205,16 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
       const { required } = response;
       if (required?.length > 0) {
         setReqDataError(true);
-        setMissingData(required.map((key) => LABEL_NAMES[key] || key));
+        setMissingData(
+          required.map((el) => {
+            if (typeof el === "string") {
+              return LABEL_NAMES[el];
+            } else {
+              const { key } = el;
+              return LABEL_NAMES[key];
+            }
+          })
+        );
         return;
       }
     }
@@ -528,6 +537,8 @@ const LABEL_NAMES = {
   teaching: "TEACHING_DEGREE",
   has_volunteer_exp: "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE",
   has_job_exp: "DO_YOU_HAVE_ANY_JOB_EXPERIENCE",
+  experience: "DO_YOU_HAVE_ANY_JOB_EXPERIENCE",
+  vo_experience: "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE",
   "core_faciltator.device_type": "TYPE_OF_MOBILE_PHONE",
   "core_faciltator.device_ownership": "DEVICE_OWNERSHIP",
   "extended_users.marital_status": "MARITAL_STATUS",
