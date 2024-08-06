@@ -167,34 +167,50 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack space={"5"} p="6">
-        <HStack space={"2"} justifyContent="space-between">
-          <Breadcrumb
-            drawer={
-              <IconByName
-                size="sm"
-                name="ArrowRightSLineIcon"
-                onPress={(e) =>
-                  navigate("/admin/learners/enrollmentVerificationList")
-                }
-              />
+        <HStack alignItems={"center"} space="1">
+          <AdminTypo.H4>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H4>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) =>
+              navigate("/admin/learners/enrollmentVerificationList")
             }
-            data={[
-              <AdminTypo.H4 key="1">
-                {t("ENROLLMENT_VERIFICATION")}
-              </AdminTypo.H4>,
-              <AdminTypo.H4 key="2">{`${data?.first_name} ${
-                data?.last_name ? data?.last_name : " "
-              }`}</AdminTypo.H4>,
-              <AdminTypo.H4 key="3" bold>{`${data?.id}`}</AdminTypo.H4>,
-              <ChipStatus
-                key={"4"}
-                is_duplicate={data?.is_duplicate}
-                is_deactivated={data?.is_deactivated}
-                status={data?.program_beneficiaries?.status}
-              />,
-            ]}
           />
-          {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
+          <AdminTypo.H4>
+            {["enrolled_ip_verified", "registered_in_camp"].includes(
+              data?.program_beneficiaries?.status
+            )
+              ? `${
+                  [
+                    data?.program_beneficiaries?.enrollment_first_name,
+                    data?.program_beneficiaries?.enrollment_last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || "-"
+                }`
+              : `${
+                  [data?.first_name, data?.last_name]
+                    .filter(Boolean)
+                    .join(" ") || "-"
+                }`}
+          </AdminTypo.H4>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate(-1)}
+          />
+          <AdminTypo.H4 key="3" bold>{`${data?.id}`}</AdminTypo.H4>
+          <IconByName
+            size="sm"
+            name="ArrowRightSLineIcon"
+            onPress={(e) => navigate(-1)}
+          />
+          <ChipStatus
+            key={"4"}
+            is_duplicate={data?.is_duplicate}
+            is_deactivated={data?.is_deactivated}
+            status={data?.program_beneficiaries?.status}
+          />
         </HStack>
         <Body data={data}>
           <VStack>
