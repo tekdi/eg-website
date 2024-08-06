@@ -1503,7 +1503,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 rounded="xl"
                 w={"50%"}
               >
-                <HStack justifyContent={"space-between"}>
+                <HStack justifyContent={"space-between"} alignItems={"center"}>
                   <AdminTypo.H4 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </AdminTypo.H4>
@@ -1511,7 +1511,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   {!["enrolled_ip_verified", "registered_in_camp"].includes(
                     data?.program_beneficiaries?.status
                   ) &&
-                    !publishEvent && (
+                    publishEvent && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
@@ -1520,7 +1520,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       />
                     )}
 
-                  {data?.program_beneficiaries?.status === "enrolled" && (
+                  {["enrolled", "sso_id_enrolled"].includes(
+                    data?.program_beneficiaries?.status
+                  ) && (
                     <AdminTypo.StatusButton
                       width={"25%"}
                       status={"success"}
@@ -1575,7 +1577,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "payment_receipt_document_id",
                     ...(localData !== "RAJASTHAN"
                       ? ["application_form", "application_login_id"]
-                      : []),
+                      : ["sso_id"]),
                   ]}
                   labels={{
                     enrollment_status: "ENROLLMENT_STATUS",
@@ -1594,7 +1596,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           application_login_id:
                             "APPLICATION_LOGIN_ID_SCREENSHOT",
                         }
-                      : {}),
+                      : { sso_id: "SSO_ID" }),
                   }}
                   formats={{
                     payment_receipt_document_id: "FileUpload",

@@ -96,7 +96,7 @@ export function ChipStatus({
         break;
       case "sso_id_enrolled":
         setNewStatus(t("SSO_ID_ENROLLED"));
-        setTextColor("#fff");
+        setTextColor("black");
         setColor("textBlue.100");
         break;
       case "sso_id_verified":

@@ -111,6 +111,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                 "ENROLLMENT_STATUS",
                 "ENROLLMENT_TYPE",
                 "BOARD_OF_ENROLLMENT",
+                ...(stateName === "RAJASTHAN" ? ["SSO_ID"] : []),
                 stateName == "BIHAR"
                   ? "APPLICATION_ID"
                   : stateName == "MADHYA PRADESH"
@@ -186,6 +187,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                       "enrollment_status",
                       "type_of_enrollement",
                       "enrolled_for_board",
+                      ...(stateName === "RAJASTHAN" ? ["sso_id"] : []),
                       "enrollment_number",
                       "enrollment_mobile_no",
                       "enrollment_date",

@@ -169,23 +169,19 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       <VStack space={"5"} p="6">
         <HStack space={"2"} justifyContent="space-between">
           <Breadcrumb
-            drawer={
-              <IconByName
-                size="sm"
-                name="ArrowRightSLineIcon"
-                onPress={(e) =>
-                  navigate("/admin/learners/enrollmentVerificationList")
-                }
-              />
-            }
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
             data={[
-              <AdminTypo.H4 key="1">
+              <AdminTypo.H4 key="1" onPress={() => navigate(-1)}>
                 {t("ENROLLMENT_VERIFICATION")}
               </AdminTypo.H4>,
-              <AdminTypo.H4 key="2">{`${data?.first_name} ${
-                data?.last_name ? data?.last_name : " "
-              }`}</AdminTypo.H4>,
-              <AdminTypo.H4 key="3" bold>{`${data?.id}`}</AdminTypo.H4>,
+              <AdminTypo.H4 key="2" onPress={() => navigate(-1)}>{`${
+                data?.first_name
+              } ${data?.last_name ? data?.last_name : " "}`}</AdminTypo.H4>,
+              <AdminTypo.H4
+                key="3"
+                bold
+                onPress={() => navigate(-1)}
+              >{`${data?.id}`}</AdminTypo.H4>,
               <ChipStatus
                 key={"4"}
                 is_duplicate={data?.is_duplicate}
@@ -194,6 +190,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               />,
             ]}
           />
+
           {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
         </HStack>
         <Body data={data}>
