@@ -376,40 +376,48 @@ export default function BenificiaryEducation(userTokenInfo) {
           title={t("EDUCATION_DETAILS")}
           label={[
             "TYPE_OF_LEARNER",
-            "REASON_FOR_LEAVING",
-            "BENEFICIARY_LEARNING_LEVEL",
-            benificiary?.core_beneficiaries?.type_of_learner &&
-              ["stream_2_mainstream_syc"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
-              ) &&
-              "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+            ...(benificiary?.core_beneficiaries?.type_of_learner &&
+            ["school_dropout", "already_enrolled_in_open_school"].includes(
+              benificiary?.core_beneficiaries?.type_of_learner
+            )
+              ? [
+                  "LAST_STANDARD_OF_EDUCATION",
+                  "LAST_YEAR_OF_EDUCATION",
+                  "PREVIOUS_SCHOOL_TYPE",
+                  "REASON_FOR_LEAVING",
+                  "LEARNER_LEARNING_LEVEL",
+                ]
+              : []),
 
-            benificiary?.core_beneficiaries?.type_of_learner &&
-              [
-                "school_dropout",
-                // "already_open_school_syc",
-                "already_enrolled_in_open_school",
-              ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
-              "LAST_STANDARD_OF_EDUCATION",
-            benificiary?.core_beneficiaries?.type_of_learner &&
-              [
-                "school_dropout",
-                "already_open_school_syc",
-                "already_enrolled_in_open_school",
-              ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
-              "LAST_YEAR_OF_EDUCATION",
-            "PREVIOUS_SCHOOL_TYPE",
-            "REASON_OF_LEAVING_EDUCATION",
-            benificiary?.core_beneficiaries?.type_of_learner &&
-              ["already_open_school_syc"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
-              ) &&
-              "REGISTERED_IN_TENTH_DATE",
-            benificiary?.core_beneficiaries?.type_of_learner &&
-              ["already_open_school_syc"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
-              ) &&
-              "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+            ...(benificiary?.core_beneficiaries?.type_of_learner &&
+            ["never_enrolled"].includes(
+              benificiary?.core_beneficiaries?.type_of_learner
+            )
+              ? ["REASON_FOR_LEAVING", "LEARNER_LEARNING_LEVEL"]
+              : []),
+
+            ...(benificiary?.core_beneficiaries?.type_of_learner &&
+            ["already_open_school_syc"].includes(
+              benificiary?.core_beneficiaries?.type_of_learner
+            )
+              ? [
+                  "PREVIOUS_SCHOOL_TYPE",
+                  "REASON_FOR_LEAVING",
+                  "REGISTERED_IN_TENTH_DATE",
+                  "LEARNER_LEARNING_LEVEL",
+                ]
+              : []),
+
+            ...(benificiary?.core_beneficiaries?.type_of_learner &&
+            ["stream_2_mainstream_syc"].includes(
+              benificiary?.core_beneficiaries?.type_of_learner
+            )
+              ? [
+                  "REASON_FOR_LEAVING",
+                  "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+                  "LEARNER_LEARNING_LEVEL",
+                ]
+              : []),
           ].filter(Boolean)}
           item={{
             type_of_learner: benificiary?.core_beneficiaries
@@ -452,7 +460,7 @@ export default function BenificiaryEducation(userTokenInfo) {
               "-"
             ),
 
-            education_year_of_10th_exam:
+            education_10th_exam_year:
               benificiary?.core_beneficiaries?.type_of_learner ===
               "stream_2_mainstream_syc"
                 ? benificiary?.core_beneficiaries?.education_10th_exam_year
@@ -500,25 +508,14 @@ export default function BenificiaryEducation(userTokenInfo) {
 
                 education_10th_date:
                   benificiary?.core_beneficiaries?.type_of_learner ===
-                  "already_open_school_syc" ? (
-                    <GetEnumValue
-                      t={t}
-                      enumType={"REASON_OF_LEAVING_EDUCATION"}
-                      enumOptionValue={
-                        benificiary?.core_beneficiaries
-                          ?.reason_of_leaving_education
-                      }
-                      enumApiData={enumOptions}
-                    />
-                  ) : (
-                    "-"
-                  ),
+                  "already_open_school_syc"
+                    ? benificiary?.core_beneficiaries?.education_10th_date
+                    : "-",
                 education_10th_exam_year:
                   benificiary?.core_beneficiaries?.type_of_learner ===
-                  "already_open_school_syc"
-                    ? benificiary?.core_beneficiaries?.education_10th_date ||
-                      "-"
-                    : undefined,
+                  "stream_2_mainstream_syc"
+                    ? benificiary?.core_beneficiaries?.education_10th_exam_year
+                    : "-",
               }),
           }}
           arr={(() => {
@@ -528,12 +525,7 @@ export default function BenificiaryEducation(userTokenInfo) {
               benificiary?.core_beneficiaries?.reason_of_leaving_education ||
               benificiary?.program_beneficiaries?.learning_level
             ) {
-              arr = [
-                ...arr,
-                "type_of_learner",
-                "reason_of_leaving_education",
-                "learning_level",
-              ];
+              // arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
               if (
                 ["school_dropout", "already_enrolled_in_open_school"].includes(
                   benificiary?.core_beneficiaries?.type_of_learner
@@ -541,34 +533,55 @@ export default function BenificiaryEducation(userTokenInfo) {
               ) {
                 arr = [
                   ...arr,
+                  "type_of_learner",
                   "last_standard_of_education",
                   "last_standard_of_education_year",
                   "previous_school_type",
+                  "reason_of_leaving_education",
+                  "learning_level",
                 ];
               }
+
+              if (
+                benificiary?.core_beneficiaries?.type_of_learner ===
+                "never_enrolled"
+              ) {
+                arr = [
+                  ...arr,
+                  "type_of_learner",
+                  "reason_of_leaving_education",
+                  "learning_level",
+                ];
+              }
+
               if (
                 benificiary?.core_beneficiaries?.type_of_learner ===
                 "already_open_school_syc"
               ) {
                 arr = [
                   ...arr,
-                  // "education_10th_date",
-                  "education_10th_exam_year",
+                  "type_of_learner",
+                  "previous_school_type",
+                  "reason_of_leaving_education",
+                  "education_10th_date",
+                  "learning_level",
                 ];
               }
+
               if (
                 benificiary?.core_beneficiaries?.type_of_learner ===
                 "stream_2_mainstream_syc"
               ) {
-                arr = [...arr, "education_year_of_10th_exam"];
-              }
-              if (
-                benificiary?.core_beneficiaries?.type_of_learner ===
-                "already_open_school_syc"
-              ) {
-                arr = [...arr, "previous_school_type"];
+                arr = [
+                  ...arr,
+                  "type_of_learner",
+                  "reason_of_leaving_education",
+                  "education_10th_exam_year",
+                  "learning_level",
+                ];
               }
             }
+
             return arr;
           })()}
           onEdit={(e) => {
@@ -630,7 +643,7 @@ export default function BenificiaryEducation(userTokenInfo) {
                     benificiary.core_beneficiaries.career_aspiration
                   }
                   enumApiData={enumOptions}
-                  enumType={"CAREER_ASPERATION"}
+                  enumType={"CAREER_ASPIRATION"}
                 />
               ) : (
                 "-"
