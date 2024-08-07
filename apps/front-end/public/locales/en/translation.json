@@ -171,6 +171,7 @@
   "BEHAVIOUR_ISSUES": "Behaviour issues",
   "BENEFICIARY_ALL": "All",
   "BENEFICIARY_DATE_OF_BIRTH_VALIDATION": "Age of the learner should be above 12 years and less than 30 years.",
+  "LEARNER_LEARNING_LEVEL": "Learner learning grade",
   "BENEFICIARY_LEARNING_LEVEL": "Beneficiary learning grade",
   "BENEFICIARY_LEARNING_LEVEL_A+": "A+",
   "BENEFICIARY_LEARNING_LEVEL_A": "A",

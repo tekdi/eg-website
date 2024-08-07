@@ -377,7 +377,6 @@ export default function BenificiaryEducation(userTokenInfo) {
           label={[
             "TYPE_OF_LEARNER",
             "REASON_FOR_LEAVING",
-            "BENEFICIARY_LEARNING_LEVEL",
             benificiary?.core_beneficiaries?.type_of_learner &&
               ["stream_2_mainstream_syc"].includes(
                 benificiary?.core_beneficiaries?.type_of_learner
@@ -399,7 +398,7 @@ export default function BenificiaryEducation(userTokenInfo) {
               ].includes(benificiary?.core_beneficiaries?.type_of_learner) &&
               "LAST_YEAR_OF_EDUCATION",
             "PREVIOUS_SCHOOL_TYPE",
-            "REASON_OF_LEAVING_EDUCATION",
+            // "REASON_OF_LEAVING_EDUCATION",
             benificiary?.core_beneficiaries?.type_of_learner &&
               ["already_open_school_syc"].includes(
                 benificiary?.core_beneficiaries?.type_of_learner
@@ -410,6 +409,7 @@ export default function BenificiaryEducation(userTokenInfo) {
                 benificiary?.core_beneficiaries?.type_of_learner
               ) &&
               "IN_WHICH_YEAR_DID_I_GIVE_THE_MAINS_EXAM",
+            "LEARNER_LEARNING_LEVEL",
           ].filter(Boolean)}
           item={{
             type_of_learner: benificiary?.core_beneficiaries
@@ -525,15 +525,9 @@ export default function BenificiaryEducation(userTokenInfo) {
             let arr = [];
             if (
               benificiary?.core_beneficiaries?.type_of_learner ||
-              benificiary?.core_beneficiaries?.reason_of_leaving_education ||
-              benificiary?.program_beneficiaries?.learning_level
+              benificiary?.core_beneficiaries?.reason_of_leaving_education
             ) {
-              arr = [
-                ...arr,
-                "type_of_learner",
-                "reason_of_leaving_education",
-                "learning_level",
-              ];
+              arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
               if (
                 ["school_dropout", "already_enrolled_in_open_school"].includes(
                   benificiary?.core_beneficiaries?.type_of_learner
@@ -568,6 +562,9 @@ export default function BenificiaryEducation(userTokenInfo) {
               ) {
                 arr = [...arr, "previous_school_type"];
               }
+            }
+            if (benificiary?.program_beneficiaries?.learning_level) {
+              arr = [...arr, "learning_level"];
             }
             return arr;
           })()}
@@ -630,7 +627,7 @@ export default function BenificiaryEducation(userTokenInfo) {
                     benificiary.core_beneficiaries.career_aspiration
                   }
                   enumApiData={enumOptions}
-                  enumType={"CAREER_ASPERATION"}
+                  enumType={"CAREER_ASPIRATION"}
                 />
               ) : (
                 "-"
