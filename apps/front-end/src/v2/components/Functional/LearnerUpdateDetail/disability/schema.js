@@ -21,14 +21,14 @@ export default {
       properties: {
         has_disability: {
           type: "string",
-          title: "has_disability",
+          title: "BENEFICIARY_HAS_DISABILITY",
           format: "RadioBtn",
         },
         type_of_disability: {
           minItems: 1,
           maxItems: 7,
           type: "array",
-          label: "type_of_disability",
+          label: "BENEFICIARY_TYPE_OF_DISABILITY",
           grid: 1,
           items: {
             type: ["string", "number"],
@@ -38,29 +38,29 @@ export default {
         },
         has_disability_certificate: {
           type: "string",
-          label: "has_disability_certificate",
+          label: "BENEFICIARY_HAS_DISABILITY_CERTIFICATE",
           format: "RadioBtn",
         },
         disability_percentage: {
           type: "number",
-          label: "disability_percentage",
+          label: "BENEFICIARY_DISABILITY_PERCENTAGE",
         },
         disability_occurence: {
           type: "string",
-          title: "disability_occurence",
+          title: "BENEFICIARY_DISABILITY_OCCURANCE",
           format: "RadioBtn",
         },
 
         has_govt_advantage: {
           type: "string",
-          label: "has_govt_advantage",
+          label: "BENEFICIARY_HAS_GOVT_ADVANTAGE",
           format: "RadioBtn",
         },
         govt_advantages: {
           minItems: 1,
           maxItems: 7,
           type: "array",
-          label: "govt_advantages",
+          label: "BENEFICIARY_GOVT_ADVANTAGES",
           grid: 1,
           items: {
             type: ["string", "number"],
@@ -72,7 +72,7 @@ export default {
           minItems: 1,
           maxItems: 7,
           type: "array",
-          label: "support_for_exam",
+          label: "BENEFICIARY_SUPPORT_FOR_EXAM",
           grid: 1,
           items: {
             type: ["string", "number"],

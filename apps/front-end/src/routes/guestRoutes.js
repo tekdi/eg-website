@@ -30,7 +30,7 @@ export default [
   },
   {
     path: "*",
-    component: LoginComponent,
+    component: Test,
   },
 
   //v2 code

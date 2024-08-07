@@ -219,9 +219,7 @@ const getSubjects = async (schemaData, value, page) => {
 };
 const setEnums = async (schemaData) => {
   let { state_name } = await getSelectedProgramId();
-
   let ListofEnum = await enumRegistryService.listOfEnum();
-  console.log(ListofEnum, "ListofEnum");
   const {
     BENEFICIARY_HAVE_DISABILITY,
     BENEFICIARY_ENROLLMENT_DISABILITY_TYPE,
@@ -238,44 +236,42 @@ const setEnums = async (schemaData) => {
     value: "value",
   });
 
-  console.log(BENEFICIARY_HAVE_DISABILITY);
-
-  newSchema = getOptions(schemaData, {
+  newSchema = getOptions(newSchema, {
     key: "has_disability_certificate",
     arr: BENEFICIARY_DISABILITY_CERTIFICATE,
     title: "title",
     value: "value",
   });
 
-  newSchema = getOptions(schemaData, {
+  newSchema = getOptions(newSchema, {
     key: "type_of_disability",
     arr: BENEFICIARY_ENROLLMENT_DISABILITY_TYPE,
     title: "title",
     value: "value",
   });
 
-  newSchema = getOptions(schemaData, {
+  newSchema = getOptions(newSchema, {
     key: "disability_occurence",
     arr: BENEFICIARY_DISABILITY_OCCURENCE,
     title: "title",
     value: "value",
   });
 
-  newSchema = getOptions(schemaData, {
+  newSchema = getOptions(newSchema, {
     key: "has_govt_advantage",
     arr: BENEFICIARY_TAKING_ADVANTAGE_DISABILITY,
     title: "title",
     value: "value",
   });
 
-  newSchema = getOptions(schemaData, {
+  newSchema = getOptions(newSchema, {
     key: "govt_advantages",
     arr: ListofEnum?.data?.[`BENEFICIARY_DISABILITY_${state_name}`] || [],
     title: "title",
     value: "value",
   });
 
-  newSchema = getOptions(schemaData, {
+  newSchema = getOptions(newSchema, {
     key: "support_for_exam",
     arr: BENEFICIARY_EXAM_SUPPORT_NEEDED,
     title: "title",
@@ -302,7 +298,7 @@ export default function EnrollmentForm() {
   const [loading, setLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
-  console.log(schema);
+
   const [uiSchema, setUiSchema] = useState({
     type_of_disability: {
       "ui:widget": "MultiCheck",
@@ -425,9 +421,7 @@ export default function EnrollmentForm() {
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
       const { program_beneficiaries } = result || {};
-
       const newSchema = await setEnums(constantSchema);
-
       setFixedSchema(newSchema);
       const updatedSchema = await setSchemaByStatus(
         program_beneficiaries,
