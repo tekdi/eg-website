@@ -507,7 +507,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
 const RenderExperience = ({ experience, uniqueKey }) => {
   const { t } = useTranslation();
   return (
-    <ul key={uniqueKey}>
+    <ul key={`experience-${uniqueKey}`}>
       {experience.data.map((entry) => {
         return (
           <>
