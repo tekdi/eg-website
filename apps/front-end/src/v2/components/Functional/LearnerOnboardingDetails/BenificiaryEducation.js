@@ -377,6 +377,7 @@ export default function BenificiaryEducation(userTokenInfo) {
           label={[
             "TYPE_OF_LEARNER",
             "REASON_FOR_LEAVING",
+            "BENEFICIARY_LEARNING_LEVEL",
             benificiary?.core_beneficiaries?.type_of_learner &&
               ["stream_2_mainstream_syc"].includes(
                 benificiary?.core_beneficiaries?.type_of_learner
@@ -430,6 +431,20 @@ export default function BenificiaryEducation(userTokenInfo) {
                 enumType={"REASON_OF_LEAVING_EDUCATION"}
                 enumOptionValue={
                   benificiary.core_beneficiaries.reason_of_leaving_education
+                }
+                enumApiData={enumOptions}
+              />
+            ) : (
+              "-"
+            ),
+
+            learning_level: benificiary?.program_beneficiaries
+              ?.learning_level ? (
+              <GetEnumValue
+                t={t}
+                enumType={"BENEFICIARY_LEARNING_LEVEL"}
+                enumOptionValue={
+                  benificiary.program_beneficiaries.learning_level
                 }
                 enumApiData={enumOptions}
               />
@@ -510,9 +525,15 @@ export default function BenificiaryEducation(userTokenInfo) {
             let arr = [];
             if (
               benificiary?.core_beneficiaries?.type_of_learner ||
-              benificiary?.core_beneficiaries?.reason_of_leaving_education
+              benificiary?.core_beneficiaries?.reason_of_leaving_education ||
+              benificiary?.program_beneficiaries?.learning_level
             ) {
-              arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
+              arr = [
+                ...arr,
+                "type_of_learner",
+                "reason_of_leaving_education",
+                "learning_level",
+              ];
               if (
                 ["school_dropout", "already_enrolled_in_open_school"].includes(
                   benificiary?.core_beneficiaries?.type_of_learner
