@@ -19,6 +19,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
+import moment from "moment";
 import {
   Actionsheet,
   Alert,
@@ -68,6 +69,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [certificateData, setCertificateData] = useState({});
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
@@ -144,7 +146,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
-              data?.attendances.filter(
+              data?.attendances?.filter(
                 (attendance) =>
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&

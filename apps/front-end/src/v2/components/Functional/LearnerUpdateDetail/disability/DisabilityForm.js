@@ -266,7 +266,10 @@ const setEnums = async (schemaData) => {
 
   newSchema = getOptions(newSchema, {
     key: "govt_advantages",
-    arr: ListofEnum?.data?.[`BENEFICIARY_DISABILITY_${state_name}`] || [],
+    arr:
+      ListofEnum?.data?.[
+        `BENEFICIARY_DISABILITY_${state_name.replace(" ", "_")}`
+      ] || [],
     title: "title",
     value: "value",
   });
