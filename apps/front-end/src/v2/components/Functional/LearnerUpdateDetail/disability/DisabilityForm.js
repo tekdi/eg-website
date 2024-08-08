@@ -8,11 +8,12 @@ import {
   getOptions,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
-import { Box } from "native-base";
+import { VStack } from "native-base";
 import { useEffect, useRef, useState } from "react";
 import schema1 from "./schema.js";
 //updateSchemaEnum
 import validator from "@rjsf/validator-ajv8";
+import { scrollToField } from "component/BaseInput.js";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -21,7 +22,6 @@ import {
   transformErrors,
   widgets,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
-import { scrollToField } from "component/BaseInput.js";
 
 const setSchemaByDependency = async (data, fixedSchema) => {
   const constantSchema = fixedSchema;
@@ -162,7 +162,6 @@ export default function DisabilityForm() {
   const formRef = useRef();
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
-  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
@@ -277,50 +276,44 @@ export default function DisabilityForm() {
       loading={loading}
       _appBar={{
         onPressBackButton,
-        onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         name: t("BENEFICIARY_DISABILITY_DETAILS"),
-        lang,
-        setLang,
-        _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
-      <Box py={6} px={4} mb={5}>
-        {schema && schema !== "" && (
-          <Form
-            key={lang + schema}
-            ref={formRef}
-            extraErrors={errors}
-            showErrorList={false}
-            noHtml5Validate={true}
-            {...{
-              widgets,
-              templates,
-              validator,
-              schema: schema || {},
-              uiSchema,
-              formData,
-              onChange,
-              onError,
-              onSubmit,
-              transformErrors: (errors) => transformErrors(errors, schema, t),
+      <VStack py={6} px={4} mb={5}>
+        <Form
+          key={schema}
+          ref={formRef}
+          extraErrors={errors}
+          showErrorList={false}
+          noHtml5Validate={true}
+          {...{
+            widgets,
+            templates,
+            validator,
+            schema: schema || {},
+            uiSchema,
+            formData,
+            onChange,
+            onError,
+            onSubmit,
+            transformErrors: (errors) => transformErrors(errors, schema, t),
+          }}
+        >
+          <FrontEndTypo.Primarybutton
+            mt="3"
+            type="submit"
+            isLoading={btnLoading}
+            onPress={() => {
+              if (formRef.current.validateForm()) {
+                formRef?.current?.submit();
+              }
             }}
           >
-            <FrontEndTypo.Primarybutton
-              mt="3"
-              type="submit"
-              isLoading={btnLoading}
-              onPress={() => {
-                if (formRef.current.validateForm()) {
-                  formRef?.current?.submit();
-                }
-              }}
-            >
-              {t("SAVE")}
-            </FrontEndTypo.Primarybutton>
-          </Form>
-        )}
-      </Box>
+            {t("SAVE")}
+          </FrontEndTypo.Primarybutton>
+        </Form>
+      </VStack>
     </Layout>
   );
 }
