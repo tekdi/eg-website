@@ -1110,9 +1110,11 @@ const transformErrors = (errors, schema, t) => {
         };
       case "enum":
         let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
-        const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
-        if (enumSchemaItem) {
-          error.key_name = name;
+        {
+          const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
+          if (enumSchemaItem) {
+            error.key_name = name;
+          }
         }
         return error;
       case "format":
