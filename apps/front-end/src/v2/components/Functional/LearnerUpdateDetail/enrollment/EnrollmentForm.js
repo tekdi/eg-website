@@ -80,15 +80,14 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
     case "enrollment_awaited":
     case "enrollment_rejected":
       {
-        const { enrolled_for_board: efd, enrollment_status } =
-          constantSchema?.properties || {};
         newSchema = getOptions(constantSchema, {
           key: "enrolled_for_board",
           arr: boards || [],
           title: "name",
           value: "id",
         });
-        console.log(newSchema, "newSchema");
+        const { enrolled_for_board: efd, enrollment_status } =
+          newSchema?.properties || {};
         newSchema = {
           ...constantSchema,
           properties: {
@@ -394,13 +393,12 @@ export default function EnrollmentForm() {
   useEffect(() => {
     const init = async () => {
       if (page && benificiary?.program_beneficiaries && boards) {
-        const { program_beneficiaries } = benificiary || {};
         const constantSchema = schema1.properties?.[page];
         if (page === "edit_enrollement") {
           const newSchema = await getEnrollmentStatus(constantSchema);
           setFixedSchema(newSchema);
           const updatedSchema = await setSchemaByStatus(
-            program_beneficiaries,
+            formData,
             newSchema,
             boards
           );
