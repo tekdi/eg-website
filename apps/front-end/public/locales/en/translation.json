@@ -1120,6 +1120,8 @@
   "MAIN_CAMP_SETTINGS": "Prayas Settings",
   "MAKE_SURE_YOU_HAVE_THE_FOLLOWING_LIST_OF_DOCUMENTS": "Make sure you have the following list of documents with you when you attend the orientation",
   "MALE": "Male",
+  "MINIMUM_VALIDATION_MESSAGE": "{1} must be at least {0}",
+  "MAXIMUM_VALIDATION_MESSAGE": "{1} must be no more than {0}",
   "MANDATORY": "Mandatory",
   "MANUAL_AADHAAR_UPLOAD": "Manual Aadhaar Upload",
   "MAP": "Map",

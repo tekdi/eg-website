@@ -21,7 +21,7 @@ export default {
       properties: {
         has_disability: {
           type: "string",
-          title: "BENEFICIARY_HAS_DISABILITY",
+          label: "BENEFICIARY_HAS_DISABILITY",
           format: "RadioBtn",
         },
         type_of_disability: {
@@ -44,10 +44,13 @@ export default {
         disability_percentage: {
           type: "number",
           label: "BENEFICIARY_DISABILITY_PERCENTAGE",
+          minimum: 1,
+          maximum: 100,
+          regex: /^\d*$/,
         },
         disability_occurence: {
           type: "string",
-          title: "BENEFICIARY_DISABILITY_OCCURANCE",
+          label: "BENEFICIARY_DISABILITY_OCCURANCE",
           format: "RadioBtn",
         },
 
