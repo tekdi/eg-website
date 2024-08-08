@@ -71,7 +71,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const [isTodayAttendace, setIsTodayAttendace] = useState();
   const [certificateData, setCertificateData] = useState({});
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
   const [missingData, setMissingData] = React.useState([]);
   const [reqDataError, setReqDataError] = React.useState(false);
@@ -142,7 +142,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
+                eventItem?.lms_test_tracking?.length < 1,
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
@@ -151,8 +151,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
                   data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
+                    moment(attendance.date_time).format("YYYY-MM-DD"),
+              ),
             );
 
             setCertificateData(data);
@@ -218,8 +218,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
               "aadhar_verified",
               "qualification_ids",
               "qua_name",
-            ]
-          )
+            ],
+          ),
         );
         //check exist user registered
         try {
@@ -272,7 +272,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
+        user_cohort_list?.data[0],
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -318,11 +318,11 @@ export default function BenificiaryProfileView(userTokenInfo) {
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBenificiaryDropoutReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS,
     );
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
     setBenificiaryRejectReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER,
     );
   }, []);
 
@@ -508,9 +508,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const learnerDetailsCheck = async () => {
     try {
       setLoading(true);
-      const { data } = await benificiaryRegistoryService.checkLearnerDetails(
-        id
-      );
+      const { data } =
+        await benificiaryRegistoryService.checkLearnerDetails(id);
 
       if (data?.length > 0) {
         const missingData = data.map((key) => LABEL_NAMES[key] || key);
@@ -519,11 +518,11 @@ export default function BenificiaryProfileView(userTokenInfo) {
       } else {
         const lastStandard = parseInt(
           benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
-          10
+          10,
         );
         const hasWarning = isNaN(lastStandard) || lastStandard < 5;
         const checkNeeded = ["identified", "ready_to_enroll"].includes(
-          benificiary?.program_beneficiaries?.enrollment_status
+          benificiary?.program_beneficiaries?.enrollment_status,
         );
         if (hasWarning && !openWarningModal && checkNeeded) {
           setOpenWarningModal(true);
@@ -634,7 +633,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   <Alert.Icon />
                   <BodyMedium>
                     {t(
-                      "PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB"
+                      "PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB",
                     )}
                   </BodyMedium>
                 </HStack>
@@ -678,7 +677,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
                       "aadhar_no",
                       "aadhaar_verification_mode",
                       "aadhar_verified",
-                    ]
+                    ],
                   )}
                   size="xs"
                   colorScheme="danger"
@@ -991,12 +990,11 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   </FrontEndTypo.H3>
                   <IconByName
                     name="ArrowRightSLineIcon"
-                    color="#790000"
+                    color="floatingLabelColor.500"
                     size="sm"
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/pcrview`);
                     }}
-                    color="floatingLabelColor.500"
                     _icon={{ size: "20" }}
                   />
                 </HStack>
