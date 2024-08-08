@@ -65,6 +65,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
   });
 
   switch (data?.enrollment_status) {
+    case "ready_to_enroll":
     case "not_enrolled":
       newSchema = {
         ...constantSchema,
@@ -187,13 +188,15 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
       }
       break;
   }
-  let boardList = await enumRegistryService.boardList();
-  newSchema = getOptions(newSchema, {
-    key: "enrolled_for_board",
-    arr: boardList?.boards,
-    title: "name",
-    value: "id",
-  });
+  if (data?.enrollment_status !== "ready_to_enroll") {
+    let boardList = await enumRegistryService.boardList();
+    newSchema = getOptions(newSchema, {
+      key: "enrolled_for_board",
+      arr: boardList?.boards,
+      title: "name",
+      value: "id",
+    });
+  }
   return { newSchema, newData };
 };
 
@@ -800,21 +803,36 @@ export default function App(footerLinks) {
     >
       <HStack alignItems={"center"} space="1" pt="3">
         <IconByName name="UserLineIcon" size="md" />
-        <AdminTypo.H1 color="Activatedcolor.400">{t("PROFILE")}</AdminTypo.H1>
+        <AdminTypo.H1 color="Activatedcolor.400">
+          {t("All_AG_LEARNERS")}
+        </AdminTypo.H1>
         <IconByName
           size="sm"
           name="ArrowRightSLineIcon"
           onPress={(e) => navigate(-1)}
         />
-        <AdminTypo.H1>
-          {benificiary?.program_beneficiaries?.status === "enrolled_ip_verified"
+
+        <AdminTypo.H1
+          color="textGreyColor.800"
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
+        >
+          {["enrolled_ip_verified", "registered_in_camp"].includes(
+            benificiary?.program_beneficiaries?.status
+          )
             ? `${
-                benificiary?.program_beneficiaries?.enrollment_first_name ?? "-"
-              } ${
-                benificiary?.program_beneficiaries?.enrollment_last_name ?? "-"
+                [
+                  benificiary?.program_beneficiaries?.enrollment_first_name,
+                  benificiary?.program_beneficiaries?.enrollment_last_name,
+                ]
+                  .filter(Boolean)
+                  .join(" ") || "-"
               }`
-            : `${benificiary?.first_name ?? "-"} ${
-                benificiary?.last_name ?? "-"
+            : `${
+                [benificiary?.first_name, benificiary?.last_name]
+                  .filter(Boolean)
+                  .join(" ") || "-"
               }`}
         </AdminTypo.H1>
         <IconByName

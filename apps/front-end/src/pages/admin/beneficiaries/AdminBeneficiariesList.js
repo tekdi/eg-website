@@ -52,6 +52,7 @@ export default function AdminHome({ footerLinks }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [stateName, setStateName] = useState();
 
   const handleOpenButtonClick = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -97,18 +98,24 @@ export default function AdminHome({ footerLinks }) {
     );
   };
 
-  useEffect(async () => {
-    if (urlFilterApply) {
-      setLoading(true);
-      const result = await benificiaryRegistoryService.beneficiariesFilter(
-        filter
-      );
-      setData(result.data?.data);
-      setPaginationTotalRows(
-        result?.data?.totalCount ? result?.data?.totalCount : 0
-      );
-      setLoading(false);
-    }
+  useEffect(() => {
+    const init = async () => {
+      if (urlFilterApply) {
+        setLoading(true);
+        const result = await benificiaryRegistoryService.beneficiariesFilter(
+          filter
+        );
+        setData(result.data?.data);
+        setPaginationTotalRows(
+          result?.data?.totalCount ? result?.data?.totalCount : 0
+        );
+
+        let { state_name } = await getSelectedProgramId();
+        setStateName(state_name);
+        setLoading(false);
+      }
+    };
+    init();
   }, [filter]);
 
   useEffect(() => {
@@ -201,6 +208,17 @@ export default function AdminHome({ footerLinks }) {
               placement="bottom right"
               trigger={(triggerProps) => actiondropDown(triggerProps, t)}
             >
+              {stateName === "RAJASTHAN" && (
+                <Menu.Item
+                  onPress={() => {
+                    navigate(
+                      "/admin/learners/enrollmentVerificationList/SSOID"
+                    );
+                  }}
+                >
+                  {t("SSOID_VERIFICATION")}
+                </Menu.Item>
+              )}
               <Menu.Item
                 onPress={() => {
                   navigate("/admin/learners/enrollmentVerificationList");
@@ -307,6 +325,7 @@ export default function AdminHome({ footerLinks }) {
           >
             <Box roundedBottom={"2xl"} pl="0" px={4}>
               <Table
+                stateName={stateName}
                 customStyles={tableCustomStyles}
                 filter={filter}
                 setFilter={(e) => {

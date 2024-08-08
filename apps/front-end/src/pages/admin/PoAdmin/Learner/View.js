@@ -905,7 +905,7 @@ export default function View({ footerLinks }) {
                       </HStack>
                       <HStack alignItems={"Center"}>
                         <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
-                          {t("ENROLLMENT_RECIEPT")} :-
+                          {t("ENROLLMENT_RECEIPT")} :-
                         </AdminTypo.H5>
                         <AdminTypo.H5
                           flex="0.69"

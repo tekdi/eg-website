@@ -155,6 +155,9 @@ export async function getOnboardingData(id) {
           : false,
         diploma_details:
           userMergedInfo?.core_faciltators?.diploma_details || undefined,
+        has_job_exp: userMergedInfo?.core_faciltators?.has_job_exp || undefined,
+        has_volunteer_exp:
+          userMergedInfo?.core_faciltators?.has_volunteer_exp || undefined,
       },
       //step 10 profile photo 1
       profile_photo_1: {
@@ -281,6 +284,19 @@ export async function updateOnboardingData(id, onboardingData) {
       ? (core_faciltators.device_ownership = onboardingData.device_ownership)
       : delete userUpdatedInfo?.core_faciltators?.device_ownership
     : null;
+  onboardingData?.has_volunteer_exp || onboardingData?.has_volunteer_exp == ""
+    ? onboardingData.has_volunteer_exp !=
+      userInfo?.core_faciltators?.has_volunteer_exp
+      ? (core_faciltators.has_volunteer_exp = onboardingData.has_volunteer_exp)
+      : delete userUpdatedInfo?.core_faciltators?.has_volunteer_exp
+    : null;
+
+  onboardingData?.has_job_exp || onboardingData?.has_job_exp == ""
+    ? onboardingData.has_job_exp != userInfo?.core_faciltators?.has_job_exp
+      ? (core_faciltators.has_job_exp = onboardingData.has_job_exp)
+      : delete userUpdatedInfo?.core_faciltators?.has_job_exp
+    : null;
+
   onboardingData?.alternative_mobile_number ||
   onboardingData?.alternative_mobile_number == ""
     ? onboardingData.alternative_mobile_number !=

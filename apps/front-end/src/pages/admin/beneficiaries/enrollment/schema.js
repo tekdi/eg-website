@@ -51,7 +51,7 @@ export default {
           label:
             state?.state_name === "RAJASTHAN"
               ? "ENROLLMENT_DATE"
-              : "FEES_PAID_DATE",
+              : "APPLICATION_DATE",
           format: "DMY",
         },
         subjects: {
@@ -67,7 +67,7 @@ export default {
         payment_receipt_document_id: {
           label:
             state?.state_name === "RAJASTHAN"
-              ? "ENROLLMENT_RECIEPT"
+              ? "ENROLLMENT_RECEIPT"
               : "PAYMENT_RECEIPTS",
           description:
             state?.state_name === "RAJASTHAN"
@@ -97,7 +97,7 @@ export default {
     edit_enrollement_details: {
       title:
         state?.state_name === "RAJASTHAN"
-          ? "ENROLLMENT_RECEIPT"
+          ? "ENROLLMENT_RECEIPT_AS_PER_ENROLLMENT_RECEIPT"
           : "ENROLLMENT_RECEIPT_DETAILS",
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
@@ -131,7 +131,7 @@ export default {
             state?.state_name === "RAJASTHAN"
               ? "DATE_OF_BIRTH_AS_PER_ENROLLMENT"
               : "DATE_OF_BIRTH_AS_PER_APPLICATION",
-          help: "hello",
+          help: "",
         },
       },
     },
