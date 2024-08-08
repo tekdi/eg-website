@@ -522,7 +522,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
         );
         const hasWarning = isNaN(lastStandard) || lastStandard < 5;
         const checkNeeded = ["identified", "ready_to_enroll"].includes(
-          benificiary?.program_beneficiaries?.enrollment_status,
+          benificiary?.program_beneficiaries?.status,
         );
         if (hasWarning && !openWarningModal && checkNeeded) {
           setOpenWarningModal(true);

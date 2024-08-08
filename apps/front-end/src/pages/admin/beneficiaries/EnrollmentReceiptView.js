@@ -108,11 +108,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         10
       );
       const hasWarning = isNaN(lastStandard) || lastStandard < 5;
-      const checkNeeded = ["identified", "ready_to_enroll"].includes(
-        data?.program_beneficiaries?.enrollment_status
-      );
 
-      if (hasWarning && !openWarningModal && checkNeeded) {
+      if (hasWarning && !openWarningModal) {
         setOpenWarningModal(true);
         return;
       }
@@ -572,7 +569,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     {t("REJECT")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.Successbutton onPress={(e) => submit("verified")}>
-                    {t("PROCEED")}
+                    {t("PRERAK_PROCEED_BTN")}
                   </AdminTypo.Successbutton>
                 </Modal.Footer>
               </Modal.Content>
