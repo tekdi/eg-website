@@ -353,7 +353,6 @@ export default function EnrollmentForm() {
         break;
       case "subjects":
         if (page === "edit_enrollement_details") {
-          // console.log("subjects", data.subjects, page);
           const countLanguageSubjects = (subjectsArr, subjects) => {
             // Convert the subjects array to a Set for faster lookups
             const subjectsSet = new Set(subjects);
@@ -371,7 +370,6 @@ export default function EnrollmentForm() {
             data?.subjects
           );
           const nonLangCount = data?.subjects?.length - langCount;
-          console.log({ langCount, nonLangCount });
           if (langCount === 0 && nonLangCount === 0) {
             error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
           } else if (langCount > 3 && nonLangCount > 4) {
