@@ -76,7 +76,7 @@ const setEnums = async (schemaData) => {
     BENEFICIARY_DISABILITY_OCCURENCE,
     BENEFICIARY_TAKING_ADVANTAGE_DISABILITY,
     BENEFICIARY_EXAM_SUPPORT_NEEDED,
-  } = ListofEnum?.data;
+  } = ListofEnum?.data || {};
 
   let newSchema = getOptions(schemaData, {
     key: "has_disability",
@@ -191,45 +191,26 @@ export default function DisabilityForm() {
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
-    switch (id) {
-      case "root_has_disability":
-        {
-          const updatedSchema = await setSchemaByDependency(data, fixedSchema);
-          newData = updatedSchema?.newData ? updatedSchema?.newData : {};
-          setSchema(updatedSchema?.newSchema);
-          setErrors();
-        }
-        break;
-      case "root_has_govt_advantage":
-        {
-          const updatedSchema = await setSchemaByDependency(data, fixedSchema);
-          newData = updatedSchema?.newData ? updatedSchema?.newData : {};
-          setSchema(updatedSchema?.newSchema);
-          setErrors();
-        }
-        break;
-      case "root_support_for_exam":
-        {
-          if (
-            formData?.support_for_exam?.length == 1 &&
-            formData?.support_for_exam.includes("na") &&
-            newData?.support_for_exam?.length > 1
-          ) {
-            newData = {
-              ...newData,
-              support_for_exam: newData?.support_for_exam.filter(
-                (e) => e != "na"
-              ),
-            };
-          } else if (newData?.support_for_exam?.includes("na")) {
-            newData = { ...newData, support_for_exam: ["na"] };
-          }
-        }
-        break;
-
-      default:
-        break;
+    if (["root_has_disability", "root_has_govt_advantage"].includes(id)) {
+      const updatedSchema = await setSchemaByDependency(data, fixedSchema);
+      newData = updatedSchema?.newData ? updatedSchema?.newData : {};
+      setSchema(updatedSchema?.newSchema);
+      setErrors();
+    } else if (id == "root_support_for_exam") {
+      if (
+        formData?.support_for_exam?.length == 1 &&
+        formData?.support_for_exam.includes("na") &&
+        newData?.support_for_exam?.length > 1
+      ) {
+        newData = {
+          ...newData,
+          support_for_exam: newData?.support_for_exam.filter((e) => e != "na"),
+        };
+      } else if (newData?.support_for_exam?.includes("na")) {
+        newData = { ...newData, support_for_exam: ["na"] };
+      }
     }
+
     setFormData(newData);
   };
 
