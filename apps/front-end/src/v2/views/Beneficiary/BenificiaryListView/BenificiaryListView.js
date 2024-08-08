@@ -32,6 +32,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import { debounce } from "lodash";
+import moment from "moment";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = useState({});
@@ -274,6 +275,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [search, setSearch] = useState("");
   const ref = useRef(null);
   const refButton = useRef(null);
+  const [certificateData, setCertificateData] = useState({});
 
   // PROFILE DATA IMPORTS
   const [facilitator, setFacilitator] = useState({ notLoaded: true });

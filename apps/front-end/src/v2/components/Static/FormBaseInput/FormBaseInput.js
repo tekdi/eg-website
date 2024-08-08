@@ -24,7 +24,6 @@ import {
   HStack,
   Heading,
   Image,
-  Radio,
   Select,
   Stack,
   Text,
@@ -778,6 +777,7 @@ export const MultiCheck = ({
                     onChange={handleCheck}
                   /> */}
                   <Checkbox
+                    accessibilityLabel={t(item?.label || item?.title)}
                     onChange={(e) =>
                       handleCheck({
                         target: { checked: e, value: item?.value },
@@ -972,6 +972,7 @@ const transformErrors = (errors, schema, t) => {
   const getMessage = (error) => {
     const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
     const title = getTitle(schemaItem);
+    console.log(error.name);
     switch (error.name) {
       case "required":
         return `${t(
@@ -991,6 +992,14 @@ const transformErrors = (errors, schema, t) => {
         return t("SELECT_MESSAGE");
       case "type":
         return "";
+      case "minimum":
+        return t("MINIMUM_VALIDATION_MESSAGE")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
+      case "maximum":
+        return t("MAXIMUM_VALIDATION_MESSAGE")
+          .replace("{0}", error?.params?.limit)
+          .replace("{1}", t(title));
       case "format":
         const { format } = error?.params || {};
         const messageKey =
