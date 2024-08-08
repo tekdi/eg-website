@@ -518,7 +518,7 @@ export default function EnrollmentForm() {
 
   const handleSSOID = async (data) => {
     const result = await benificiaryRegistoryService.isExistSSOID({
-      userId,
+      user_id: userId,
       sso_id: data?.sso_id,
     });
     if (result.error) {
