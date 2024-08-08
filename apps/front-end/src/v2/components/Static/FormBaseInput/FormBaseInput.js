@@ -1110,9 +1110,11 @@ const transformErrors = (errors, schema, t) => {
         };
       case "enum":
         let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
-        const schemaItem = schema?.properties?.[name];
-        if (schemaItem) {
-          error.key_name = name;
+        {
+          const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
+          if (enumSchemaItem) {
+            error.key_name = name;
+          }
         }
         return error;
       case "format":
@@ -1123,11 +1125,15 @@ const transformErrors = (errors, schema, t) => {
             string: "PLEASE_ENTER_VALID_STRING",
             number: "PLEASE_ENTER_VALID_NUMBER",
           }[format] || "REQUIRED_MESSAGE";
-        return t(messageKey, title ? t(title) : "");
+        return {
+          ...error,
+          message: t(messageKey, title ? t(title) : ""),
+        };
       default:
-        return error.message;
+        return error;
     }
   };
+
   return errors.map((error) => getTranslate(error));
 };
 
