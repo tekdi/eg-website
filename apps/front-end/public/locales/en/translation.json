@@ -231,7 +231,7 @@
   "BENEFICIARY_HAS_DISABILITY_CERTIFICATE": "Does the learner have a disability certificate?",
   "BENEFICIARY_DISABILITY_PERCENTAGE": "Percentage of disability",
   "BENEFICIARY_DISABILITY_OCCURANCE": "Disability Occurance",
-  "BENEFICIARY_HAS_GOVT_ADVANTAGE": "Does the learner taking advantage of a specific government scheme?",
+  "BENEFICIARY_HAS_GOVT_ADVANTAGE": "Is the learner taking advantage of a specific government scheme?",
   "BENEFICIARY_GOVT_ADVANTAGES": "List advantages of the government scheme",
   "BENEFICIARY_SUPPORT_FOR_EXAM": "Does the learner require any support during the exam?",
   "BENEFICIARY_HAVE_DISABILITY_YES": "Yes",

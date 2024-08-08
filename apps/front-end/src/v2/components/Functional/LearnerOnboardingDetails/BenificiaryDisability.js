@@ -12,11 +12,9 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import schema1 from "../LearnerUpdateDetail/disability/schema";
+import PropTypes from "prop-types";
 
 const GetEnumValueLocal = ({ keyName, value, enums }) => {
-  if (keyName == "disability_percentage") {
-    return value;
-  }
   const { t } = useTranslation();
   const [enumType, setEnumType] = useState();
 
@@ -25,41 +23,32 @@ const GetEnumValueLocal = ({ keyName, value, enums }) => {
       let { state_name } = await getSelectedProgramId();
       switch (keyName) {
         case "has_disability":
-          {
-            setEnumType("BENEFICIARY_HAVE_DISABILITY");
-          }
+          setEnumType("BENEFICIARY_HAVE_DISABILITY");
+
           break;
         case "has_disability_certificate":
-          {
-            setEnumType("BENEFICIARY_DISABILITY_CERTIFICATE");
-          }
+          setEnumType("BENEFICIARY_DISABILITY_CERTIFICATE");
+
           break;
         case "type_of_disability":
-          {
-            setEnumType("BENEFICIARY_DISABILITY_TYPE");
-          }
+          setEnumType("BENEFICIARY_DISABILITY_TYPE");
+
           break;
         case "disability_occurence":
-          {
-            setEnumType("BENEFICIARY_DISABILITY_OCCURENCE");
-          }
+          setEnumType("BENEFICIARY_DISABILITY_OCCURENCE");
+
           break;
         case "has_govt_advantage":
-          {
-            setEnumType("BENEFICIARY_TAKING_ADVANTAGE_DISABILITY");
-          }
+          setEnumType("BENEFICIARY_TAKING_ADVANTAGE_DISABILITY");
+
           break;
         case "govt_advantages":
-          {
-            setEnumType(
-              `BENEFICIARY_DISABILITY_${state_name.replace(" ", "_")}`,
-            );
-          }
+          setEnumType(`BENEFICIARY_DISABILITY_${state_name.replace(" ", "_")}`);
+
           break;
         case "support_for_exam":
-          {
-            setEnumType("BENEFICIARY_EXAM_SUPPORT_NEEDED");
-          }
+          setEnumType("BENEFICIARY_EXAM_SUPPORT_NEEDED");
+
           break;
 
         default:
@@ -69,11 +58,16 @@ const GetEnumValueLocal = ({ keyName, value, enums }) => {
     init();
   }, [keyName, value, enums]);
 
+  if (keyName == "disability_percentage") {
+    return value;
+  }
+
   if (Array.isArray(value)) {
     return (
       <VStack>
-        {value?.map((itemVlaue) => (
+        {value?.map((itemVlaue, index) => (
           <GetEnumValue
+            key={enumType + index}
             t={t}
             enumType={enumType}
             enumOptionValue={itemVlaue}
@@ -94,8 +88,7 @@ const GetEnumValueLocal = ({ keyName, value, enums }) => {
   );
 };
 
-const setSchemaByDependency = async (item, fixedSchema) => {
-  const constantSchema = fixedSchema;
+const setSchemaByDependency = async (item) => {
   let cardData = {};
   const data = await enumRegistryService.listOfEnum();
   const enumOptions = data?.data ? data?.data : {};
@@ -109,7 +102,7 @@ const setSchemaByDependency = async (item, fixedSchema) => {
           let boolean = true;
           if (Array.isArray(only) && only?.length > 0) {
             if (!only.includes(e)) {
-              boolean = true;
+              boolean = false;
             }
           } else if (Array.isArray(except) && except?.length > 0) {
             if (except.includes(e)) {
@@ -145,7 +138,7 @@ const setSchemaByDependency = async (item, fixedSchema) => {
     }, {});
   };
 
-  switch (data?.has_disability) {
+  switch (item?.has_disability) {
     case "yes":
       {
         if (data?.has_govt_advantage == "yes") {
@@ -224,3 +217,13 @@ export default function BenificiaryDisability({ userTokenInfo }) {
     </Layout>
   );
 }
+
+GetEnumValueLocal.propTypes = {
+  keyName: PropTypes.string,
+  value: PropTypes.any,
+  enums: PropTypes.Object,
+};
+
+BenificiaryDisability.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

@@ -37,39 +37,31 @@ const setSchemaByDependency = async (data, fixedSchema) => {
     newData = { ...newData, [e]: data?.[e] || undefined };
   });
 
-  switch (data?.has_disability) {
-    case "yes":
-      {
-        let otherProperties = {},
-          required = [];
-        if (data?.has_govt_advantage == "yes") {
-          otherProperties = constantSchema?.properties || {};
-          required = keys;
-        } else {
-          const { govt_advantages, ...other } =
-            constantSchema?.properties || {};
-          otherProperties = other;
-          required = keys.filter((e) => e != "govt_advantages");
-        }
-        newSchema = {
-          ...constantSchema,
-          properties: otherProperties,
-          required: required,
-        };
-      }
-      break;
-    default:
-      {
-        const { has_disability } = constantSchema?.properties || {};
-        newSchema = {
-          ...constantSchema,
-          properties: {
-            has_disability,
-          },
-          required: ["has_disability"],
-        };
-      }
-      break;
+  if (data?.has_disability == "yes") {
+    let otherProperties = {},
+      required = [];
+    if (data?.has_govt_advantage == "yes") {
+      otherProperties = constantSchema?.properties || {};
+      required = keys;
+    } else {
+      const { govt_advantages, ...other } = constantSchema?.properties || {};
+      otherProperties = other;
+      required = keys.filter((e) => e != "govt_advantages");
+    }
+    newSchema = {
+      ...constantSchema,
+      properties: otherProperties,
+      required: required,
+    };
+  } else {
+    const { has_disability } = constantSchema?.properties || {};
+    newSchema = {
+      ...constantSchema,
+      properties: {
+        has_disability,
+      },
+      required: ["has_disability"],
+    };
   }
   return { newSchema, newData };
 };
@@ -219,7 +211,7 @@ export default function DisabilityForm() {
       case "root_support_for_exam":
         {
           if (
-            formData?.support_for_exam.length == 1 &&
+            formData?.support_for_exam?.length == 1 &&
             formData?.support_for_exam.includes("na") &&
             newData?.support_for_exam?.length > 1
           ) {
@@ -229,7 +221,7 @@ export default function DisabilityForm() {
                 (e) => e != "na"
               ),
             };
-          } else if (newData?.support_for_exam.includes("na")) {
+          } else if (newData?.support_for_exam?.includes("na")) {
             newData = { ...newData, support_for_exam: ["na"] };
           }
         }
