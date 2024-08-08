@@ -348,7 +348,7 @@ export default function EnrollmentForm() {
         break;
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
-          error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+          error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
         }
         break;
       case "subjects":
@@ -374,9 +374,9 @@ export default function EnrollmentForm() {
             error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
           } else if (langCount > 3 && nonLangCount > 4) {
             error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
-          } else if (langCount > 3 && nonLangCount <= 4) {
+          } else if (langCount > 3) {
             error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
-          } else if (langCount <= 3 && nonLangCount > 4) {
+          } else if (nonLangCount > 4) {
             error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
           }
         }
