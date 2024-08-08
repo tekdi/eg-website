@@ -112,6 +112,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
         "identified",
         "ready_to_enroll",
         "enrolled",
+        "sso_id_enrolled",
       ].includes(data?.program_beneficiaries?.enrollment_status);
 
       if (hasWarning && !openWarningModal && checkNeeded) {

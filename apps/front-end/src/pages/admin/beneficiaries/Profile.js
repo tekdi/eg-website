@@ -560,9 +560,12 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       10
     );
     const hasWarning = isNaN(lastStandard) || lastStandard < 5;
-    const checkNeeded = ["identified", "ready_to_enroll", "enrolled"].includes(
-      data?.program_beneficiaries?.enrollment_status
-    );
+    const checkNeeded = [
+      "identified",
+      "ready_to_enroll",
+      "enrolled",
+      "sso_id_enrolled",
+    ].includes(data?.program_beneficiaries?.enrollment_status);
     if (hasWarning && !openWarningModal && checkNeeded) {
       setOpenWarningModal(true);
       return;
