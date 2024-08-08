@@ -522,7 +522,8 @@ export default function BenificiaryEducation(userTokenInfo) {
             let arr = [];
             if (
               benificiary?.core_beneficiaries?.type_of_learner ||
-              benificiary?.core_beneficiaries?.reason_of_leaving_education
+              benificiary?.core_beneficiaries?.reason_of_leaving_education ||
+              benificiary?.program_beneficiaries?.learning_level
             ) {
               // arr = [...arr, "type_of_learner", "reason_of_leaving_education"];
               if (

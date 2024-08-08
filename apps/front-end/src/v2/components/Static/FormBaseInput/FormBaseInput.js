@@ -812,6 +812,119 @@ export const MultiCheck = ({
   );
 };
 
+// rjsf custom MultiCheckSubject field for specific enrollment subject group
+export const MultiCheckSubject = ({
+  options,
+  value,
+  onChange,
+  schema,
+  required,
+  ...props
+}) => {
+  const { t } = useTranslation();
+  const { _subHstack, grid, label, format, enumOptions } = schema || {};
+  let items = [enumOptions?.filter((e) => e.subject_type != "language")];
+  let langItem = [enumOptions?.filter((e) => e.subject_type == "language")];
+  if (grid && enumOptions?.constructor.name === "Array") {
+    items = chunk(
+      enumOptions?.filter((e) => e.subject_type != "language"),
+      grid
+    );
+  }
+  if (grid && enumOptions?.constructor.name === "Array") {
+    langItem = chunk(
+      enumOptions?.filter((e) => e.subject_type == "language"),
+      grid
+    );
+  }
+  const handleCheck = (event) => {
+    let newValue = [];
+    if (value?.constructor?.name === "Array") {
+      newValue = value.filter((val, index) => {
+        return value.indexOf(val) === index;
+      });
+    }
+
+    let updatedList = [...newValue];
+    if (event.target.checked) {
+      updatedList = [...newValue, `${event.target.value}`];
+    } else {
+      updatedList.splice(newValue.indexOf(`${event.target.value}`), 1);
+    }
+    onChange(updatedList);
+  };
+
+  const Item = ({ items, title }) => {
+    return (
+      <VStack
+        borderWidth={1}
+        borderColor={"gray.400"}
+        rounded={"sm"}
+        p="4"
+        space={1}
+      >
+        <FrontEndTypo.H3 mb="3" color={"textRed.400"}>
+          {t(title)}
+        </FrontEndTypo.H3>
+        {items?.map((subItem, subKey) => (
+          <HStack
+            space="2"
+            key={subKey || ""}
+            flexDirection="row"
+            flext="1"
+            {..._subHstack}
+          >
+            {subItem?.map((item) => (
+              <HStack key={`${item?.subject_id}`} flex="1">
+                <label>
+                  <HStack alignItems="center" space="3" flex="1">
+                    <Checkbox
+                      onChange={(e) =>
+                        handleCheck({
+                          target: { checked: e, value: item?.subject_id },
+                        })
+                      }
+                      value={item?.subject_id}
+                      size="sm"
+                      colorScheme={"eg-blue"}
+                      isChecked={
+                        value?.constructor?.name === "Array" &&
+                        (value?.includes(item?.subject_id) ||
+                          value?.includes(`${item?.subject_id}`))
+                      }
+                    />
+                    <FrontEndTypo.H4>
+                      {t(item?.label || item?.title || item?.name)}
+                    </FrontEndTypo.H4>
+                  </HStack>
+                </label>
+              </HStack>
+            ))}
+          </HStack>
+        ))}
+      </VStack>
+    );
+  };
+
+  return (
+    <FormControl gap="6">
+      {label && !format && (
+        <FormControl.Label>
+          <H2 color="textMaroonColor.400">{t(label)}</H2>
+          {required && <H2 color="textMaroonColor.400">*</H2>}
+        </FormControl.Label>
+      )}
+
+      <Stack space={4}>
+        {langItem?.length > 0 && (
+          <Item {...{ items: langItem, title: "GROUP_A" }} />
+        )}
+        {items?.length > 0 && <Item {...{ items: items, title: "GROUP_B" }} />}
+      </Stack>
+    </FormControl>
+  );
+};
+
 // select between 2 values radio button (yes or no)
 const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { label } = schema || {};
@@ -979,28 +1092,40 @@ export const focusToField = (errors) => {
 const transformErrors = (errors, schema, t) => {
   const getTitle = (schemaItem) => schemaItem?.label || schemaItem?.title || "";
 
-  const getMessage = (error) => {
+  const getTranslate = (error) => {
     const schemaItem = schema?.properties?.[error?.property?.replace(".", "")];
     const title = getTitle(schemaItem);
     switch (error.name) {
       case "required":
-        return `${t(
-          schemaItem?.format === "FileUpload"
-            ? "REQUIRED_MESSAGE_UPLOAD"
-            : "REQUIRED_MESSAGE"
-        )} "${t(title)}"`;
+        return {
+          ...error,
+          message: `${t(
+            schemaItem?.format === "FileUpload"
+              ? "REQUIRED_MESSAGE_UPLOAD"
+              : "REQUIRED_MESSAGE"
+          )} "${t(title)}"`,
+        };
       case "minItems":
-        return t("SELECT_MINIMUM")
-          .replace("{0}", error?.params?.limit)
-          .replace("{1}", t(title));
+        return {
+          ...error,
+          message: t("SELECT_MINIMUM")
+            .replace("{0}", error?.params?.limit)
+            .replace("{1}", t(title)),
+        };
       case "maxItems":
-        return t("SELECT_MAXIMUM")
-          .replace("{0}", error?.params?.limit)
-          .replace("{1}", t(title));
+        return {
+          ...error,
+          message: t("SELECT_MAXIMUM")
+            .replace("{0}", error?.params?.limit)
+            .replace("{1}", t(title)),
+        };
       case "enum":
-        return t("SELECT_MESSAGE");
-      case "type":
-        return "";
+        let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
+        const schemaItem = schema?.properties?.[name];
+        if (schemaItem) {
+          error.key_name = name;
+        }
+        return error;
       case "format":
         const { format } = error?.params || {};
         const messageKey =
@@ -1014,8 +1139,7 @@ const transformErrors = (errors, schema, t) => {
         return error.message;
     }
   };
-
-  return errors.map((error) => ({ ...error, message: getMessage(error) }));
+  return errors.map((error) => getTranslate(error));
 };
 
 // rjsf onerror parmaeter for common

@@ -94,6 +94,16 @@ export function ChipStatus({
         setTextColor("textMaroonColor.500");
         setColor("textMaroonColor.50");
         break;
+      case "sso_id_enrolled":
+        setNewStatus(t("SSO_ID_ENROLLED"));
+        setTextColor("black");
+        setColor("textBlue.100");
+        break;
+      case "sso_id_verified":
+        setNewStatus(t("ENROLLMENT_SSO_ID_VERIFIED"));
+        setTextColor("#fff");
+        setColor("textBlue.200");
+        break;
       case "enrolled":
         setNewStatus(t("ENROLLED"));
         setTextColor("#fff");
