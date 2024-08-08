@@ -43,8 +43,8 @@ jobs:
           yarn workspace @shiksha/common-lib build
           yarn install --legacy-peer-deps
      
-      - name: Update Browserslist Database
-        run: npx update-browserslist-db@latest --force --legacy-peer-deps
+  #    - name: Update Browserslist Database
+   #     run: npx update-browserslist-db@latest --force --legacy-peer-deps
 
       - name: Set CI environment variable to false
         run: echo "CI=false" >> $GITHUB_ENV
