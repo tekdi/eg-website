@@ -2037,5 +2037,6 @@
   "3_PROFILE_PICTURES_REQUIRED": "3 Profile Pictures Required",
   "EDUCATION_STANDARD_WARNING": "Learner level is below 5th grade. (This learner cannot be verified by IP.) Do you want to add this learner's profile?",
   "EDUCATION_STANDARD_IP_WARNING": "The level of the learner is below 5th class. Do you want to verify this learner?",
-  "EDUCATION_STANDARD_ENROLLMENT_WARNING": "The level of the learner is below 5th class. Do you still want to enroll this learner?"
+  "EDUCATION_STANDARD_ENROLLMENT_WARNING": "The level of the learner is below 5th class. Do you still want to enroll this learner?",
+  "MISSING_DATA": "Missing Data"
 }
