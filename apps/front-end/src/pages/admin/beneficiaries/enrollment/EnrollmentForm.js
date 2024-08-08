@@ -429,7 +429,7 @@ export default function App(footerLinks) {
         break;
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
-          error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+          error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
         }
         break;
       default:

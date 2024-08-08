@@ -874,7 +874,7 @@
   "FULL_TIME": "Full time work ",
   "FURTHER_STUDIES": "Further Studies",
   "FURTHUR_STUDIES": "Further Studies",
-  "FUTUTRE_DATES_NOT_ALLOWED": "Future dates not allowed",
+  "FUTURE_DATES_NOT_ALLOWED": "Future dates not allowed",
   "GENDER": "Gender",
   "GEO_AN_UNKNOWN_ERROR_OCCURRED": "An unknown error occurred.",
   "GEO_GEOLOCATION_IS_NOT_SUPPORTED_BY_THIS_BROWSER": "Geolocation is not supported by this browser.",
@@ -2058,5 +2058,9 @@
   "3_PROFILE_PICTURES_REQUIRED": "3 Profile Pictures Required",
   "EDUCATION_STANDARD_WARNING": "Learner level is below 5th grade. (This learner cannot be verified by IP.) Do you want to add this learner's profile?",
   "EDUCATION_STANDARD_IP_WARNING": "The level of the learner is below 5th class. Do you want to verify this learner?",
-  "EDUCATION_STANDARD_ENROLLMENT_WARNING": "The level of the learner is below 5th class. Do you still want to enroll this learner?"
+  "EDUCATION_STANDARD_ENROLLMENT_WARNING": "The level of the learner is below 5th class. Do you still want to enroll this learner?",
+  "GROUP_A_GROUP_B_MIN_SUBJECTS": "You should select atleast one subject from Group A or Group B",
+  "GROUP_A_MAX_SUBJECTS": "You can select maximum 3 subjects from Group A",
+  "GROUP_B_MAX_SUBJECTS": "You can select maximum 4 subjects from Group B",
+  "GROUP_A_GROUP_B_MAX_SUBJECTS": "You should select maximum of 3 subjects from Group A and 4 subjects from Group B"
 }

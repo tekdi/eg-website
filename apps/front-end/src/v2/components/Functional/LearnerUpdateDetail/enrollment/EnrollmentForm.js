@@ -348,7 +348,37 @@ export default function EnrollmentForm() {
         break;
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
-          error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+          error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
+        }
+        break;
+      case "subjects":
+        if (page === "edit_enrollement_details") {
+          const countLanguageSubjects = (subjectsArr, subjects) => {
+            // Convert the subjects array to a Set for faster lookups
+            const subjectsSet = new Set(subjects);
+            // Filter the array for objects with "language" subject_type and a subject_id in the subjects array
+            const languageSubjects = subjectsArr?.filter(
+              (subject) =>
+                subject.subject_type === "language" &&
+                subjectsSet.has(String(subject.subject_id))
+            );
+            // Return the count of filtered objects
+            return languageSubjects.length;
+          };
+          const langCount = countLanguageSubjects(
+            schema?.properties?.subjects?.enumOptions,
+            data?.subjects
+          );
+          const nonLangCount = data?.subjects?.length - langCount;
+          if (langCount === 0 && nonLangCount === 0) {
+            error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
+          } else if (langCount > 3 && nonLangCount > 4) {
+            error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
+          } else if (langCount > 3) {
+            error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
+          } else if (nonLangCount > 4) {
+            error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
+          }
         }
         break;
       default:

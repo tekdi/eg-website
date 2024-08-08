@@ -108,8 +108,8 @@ export default {
       required: ["subjects", "payment_receipt_document_id"],
       properties: {
         subjects: {
-          minItems: 1,
-          maxItems: 7,
+          // minItems: 1,
+          // maxItems: 7,
           type: "array",
           label: "SUBJECTS",
           grid: 2,
