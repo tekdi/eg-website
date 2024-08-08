@@ -82,6 +82,13 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
       {
         const { enrolled_for_board: efd, enrollment_status } =
           constantSchema?.properties || {};
+        newSchema = getOptions(constantSchema, {
+          key: "enrolled_for_board",
+          arr: boards || [],
+          title: "name",
+          value: "id",
+        });
+        console.log(newSchema, "newSchema");
         newSchema = {
           ...constantSchema,
           properties: {
