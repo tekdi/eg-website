@@ -2,6 +2,24 @@ import { jsonParse } from "@shiksha/common-lib";
 
 let state = jsonParse(localStorage.getItem("program"));
 
+const nameProperties = (labelPrefix) => ({
+  type: ["string", "null"],
+  regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+  label: `${labelPrefix}_NAME`,
+});
+
+const fileUploadProperties = (label, description) => ({
+  label,
+  description,
+  uploadTitle: " ",
+  type: ["string", "number"],
+  format: "FileUpload",
+});
+
+const getLabelBasedOnState = (rajasthanLabel, otherLabel) => {
+  return state?.state_name === "RAJASTHAN" ? rajasthanLabel : otherLabel;
+};
+
 export default {
   description: "1.AG Enrollment Details",
   type: "step",
@@ -48,62 +66,46 @@ export default {
           type: "string",
           regex: /^\d{0,11}$/,
           _input: { keyboardType: "numeric" },
-          label:
-            state?.state_name == "BIHAR"
-              ? "APPLICATION_ID"
-              : state?.state_name == "MADHYA PRADESH"
+          label: getLabelBasedOnState(
+            "APPLICATION_ID",
+            state?.state_name == "MADHYA PRADESH"
               ? "ROLL_NUMBER"
-              : "ENROLLMENT_NO",
+              : "ENROLLMENT_NO"
+          ),
         },
         enrollment_mobile_no: {
           type: "string",
           label: "MOBILE_NUMBER",
-          description:
-            state?.state_name === "RAJASTHAN"
-              ? "AS_PER_ENROLLMENT_RECEIPT"
-              : "AS_PER_APPLICATION_RECEIPT",
+          description: getLabelBasedOnState(
+            "AS_PER_ENROLLMENT_RECEIPT",
+            "AS_PER_APPLICATION_RECEIPT"
+          ),
           format: "MobileNumber",
         },
-
         enrollment_date: {
           type: "string",
-          label:
-            state?.state_name === "RAJASTHAN"
-              ? "ENROLLMENT_DATE"
-              : "APPLICATION_DATE",
+          label: getLabelBasedOnState("ENROLLMENT_DATE", "APPLICATION_DATE"),
           format: "DMY",
         },
         enrollment_first_name: {
-          type: "string",
-          label: "FIRST_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          description:
-            state?.state_name === "RAJASTHAN"
-              ? "AS_PER_ENROLLMENT_RECEIPT"
-              : "AS_PER_APPLICATION_RECEIPT",
+          ...nameProperties("FIRST"),
+          description: getLabelBasedOnState(
+            "AS_PER_ENROLLMENT_RECEIPT",
+            "AS_PER_APPLICATION_RECEIPT"
+          ),
         },
-        enrollment_middle_name: {
-          type: ["string", "null"],
-          label: "MIDDLE_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-        },
-        enrollment_last_name: {
-          type: ["string", "null"],
-          label: "LAST_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-        },
+        enrollment_middle_name: nameProperties("MIDDLE"),
+        enrollment_last_name: nameProperties("LAST"),
         enrollment_dob: {
           type: "string",
           format: "alt-date",
-          label:
-            state?.state_name === "RAJASTHAN"
-              ? "DATE_OF_BIRTH_AS_PER_ENROLLMENT"
-              : "DATE_OF_BIRTH_AS_PER_APPLICATION",
+          label: getLabelBasedOnState(
+            "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
+            "DATE_OF_BIRTH_AS_PER_APPLICATION"
+          ),
           help: "",
         },
         subjects: {
-          // minItems: 1,
-          // maxItems: 7,
           type: "array",
           label: "SUBJECTS",
           grid: 3,
@@ -113,73 +115,61 @@ export default {
           format: "MultiCheckSubject",
           uniqueItems: true,
         },
-        payment_receipt_document_id: {
-          label:
-            state?.state_name === "RAJASTHAN"
-              ? "ENROLLMENT_RECEIPT"
-              : "PAYMENT_RECEIPTS",
-          description:
-            state?.state_name === "RAJASTHAN"
-              ? "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT"
-              : "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
-          type: ["string", "number"],
-          format: "FileUpload",
-        },
+        payment_receipt_document_id: fileUploadProperties(
+          getLabelBasedOnState("ENROLLMENT_RECEIPT", "PAYMENT_RECEIPTS"),
+          getLabelBasedOnState(
+            "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
+            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
+          )
+        ),
         application_form: {
-          label: "APPLICATION_FORM",
-          description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
-          type: ["string", "number"],
+          ...fileUploadProperties(
+            "APPLICATION_FORM",
+            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
+          ),
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
         },
         application_login_id: {
-          label: "APPLICATION_LOGIN_ID_SCREENSHOT",
-          description: "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
-          uploadTitle: " ",
+          ...fileUploadProperties(
+            "APPLICATION_LOGIN_ID_SCREENSHOT",
+            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
+          ),
           isReduce: false,
-          type: ["string", "number"],
           format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
         },
       },
     },
     edit_enrollement_details: {
-      title:
-        state?.state_name === "RAJASTHAN"
-          ? "ENROLLMENT_RECEIPT_AS_PER_ENROLLMENT_RECEIPT"
-          : "ENROLLMENT_RECEIPT_DETAILS",
+      title: getLabelBasedOnState(
+        "ENROLLMENT_RECEIPT_AS_PER_ENROLLMENT_RECEIPT",
+        "ENROLLMENT_RECEIPT_DETAILS"
+      ),
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
       properties: {
         enrollment_first_name: {
-          type: "string",
+          ...nameProperties("FIRST"),
           title: "FIRST_NAME",
-          label: "FIRST_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          description:
-            state?.state_name === "RAJASTHAN"
-              ? "AS_PER_ENROLLMENT_RECEIPT"
-              : "AS_PER_APPLICATION_RECEIPT",
+          description: getLabelBasedOnState(
+            "AS_PER_ENROLLMENT_RECEIPT",
+            "AS_PER_APPLICATION_RECEIPT"
+          ),
         },
         enrollment_middle_name: {
-          type: ["string", "null"],
+          ...nameProperties("MIDDLE"),
           title: "MIDDLE_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          label: "MIDDLE_NAME",
         },
         enrollment_last_name: {
-          type: ["string", "null"],
+          ...nameProperties("LAST"),
           title: "LAST_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-          label: "LAST_NAME",
         },
         enrollment_dob: {
           type: "string",
           format: "alt-date",
-          label:
-            state?.state_name === "RAJASTHAN"
-              ? "DATE_OF_BIRTH_AS_PER_ENROLLMENT"
-              : "DATE_OF_BIRTH_AS_PER_APPLICATION",
+          label: getLabelBasedOnState(
+            "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
+            "DATE_OF_BIRTH_AS_PER_APPLICATION"
+          ),
           help: "",
         },
       },
