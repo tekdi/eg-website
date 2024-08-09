@@ -1,14 +1,14 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import BenificiaryAadhaarDetails from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryAadhaarDetails";
 import BenificiaryAddress from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryAddress";
 import BenificiaryBasicDetails from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryBasicDetails";
 import BenificiaryEducation from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryEducation";
 import BenificiaryEnrollment from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryEnrollment";
+import BenificiaryDisability from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryDisability";
 import BenificiaryJourney from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryJourney";
-import LearnerAdhaar from "v2/components/Functional/LearnerOnboardingDetails/LearnerAdhaar";
+// import LearnerAdhaar from "v2/components/Functional/LearnerOnboardingDetails/LearnerAdhaar";
 import LearnerDocsChecklist from "v2/components/Functional/LearnerOnboardingDetails/LearnerDocsChecklist";
-import LearnerDuplicate from "v2/components/Functional/LearnerOnboardingDetails/LearnerDuplicate";
+// import LearnerDuplicate from "v2/components/Functional/LearnerOnboardingDetails/LearnerDuplicate";
 import LearnerFormUpdate from "v2/components/Functional/LearnerOnboardingDetails/LearnerFormUpdate";
 import PcrDetails from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrDetails";
 import PcrView from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrView";
@@ -69,6 +69,13 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
       case "enrollmentdetails":
         return (
           <BenificiaryEnrollment
+            userTokenInfo={userTokenInfo}
+            footerLinks={footerLinks}
+          />
+        );
+      case "disability-details":
+        return (
+          <BenificiaryDisability
             userTokenInfo={userTokenInfo}
             footerLinks={footerLinks}
           />
