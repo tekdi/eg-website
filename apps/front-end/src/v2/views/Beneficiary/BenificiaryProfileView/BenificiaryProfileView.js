@@ -1,5 +1,4 @@
 import {
-  AdminTypo,
   BodyMedium,
   CustomRadio,
   FrontEndTypo,
@@ -16,6 +15,7 @@ import {
   setSelectedAcademicYear,
   setSelectedProgramId,
   t,
+  CardComponent,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
@@ -73,8 +73,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false,
   );
-  const [missingData, setMissingData] = React.useState([]);
-  const [reqDataError, setReqDataError] = React.useState(false);
+  const [missingData, setMissingData] = React.useState(LABEL_NAMES);
   const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const saveDataToIndexedDB = async () => {
@@ -513,7 +512,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
 
       if (data?.length > 0) {
         const missingData = data.map((key) => LABEL_NAMES[key] || key);
-        setReqDataError(true);
         setMissingData(missingData);
       } else {
         const lastStandard = parseInt(
@@ -557,7 +555,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("DEACTIVATED_PAGE_MSG")}</BodyMedium>
+            <FrontEndTypo.H2>{t("DEACTIVATED_PAGE_MSG")}</FrontEndTypo.H2>
           </HStack>
         </Alert>
       ) : (
@@ -909,41 +907,60 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   )}
               </HStack>
               <Modal
-                isOpen={reqDataError}
-                onClose={() => setReqDataError(false)}
+                isOpen={missingData}
+                onClose={() => setMissingData(false)}
                 size={"xl"}
               >
                 <Modal.Content>
                   <Modal.Header textAlign={"Center"}>
-                    <AdminTypo.H2 color="textGreyColor.500">
+                    <FrontEndTypo.H2 color="textGreyColor.500">
                       {t("EXPIRY_CONTENT.HEADING")}
-                    </AdminTypo.H2>
+                    </FrontEndTypo.H2>
                   </Modal.Header>
                   <Modal.Body>
                     <VStack space={4}>
                       {t("LEARNER_FIELDS_MISSING_WARNING")}
-                      <ul>
-                        {missingData?.map((el, i) => (
-                          <li color="textGreyColor.500" key={i}>
-                            {t(el)}
-                          </li>
-                        ))}
-                      </ul>
+                      {missingData?.map((item, i) => (
+                        <HStack
+                          key={item?.path}
+                          justifyContent="space-between"
+                          p="2"
+                          borderWidth={1}
+                          borderColor="textGreyColor.300"
+                          rounded={"sm"}
+                        >
+                          <VStack>
+                            {Object.keys(item?.keys || {}).map((keyName) => (
+                              <FrontEndTypo.H3 color="textGreyColor.500">
+                                {t(item?.keys?.[keyName])}
+                              </FrontEndTypo.H3>
+                            ))}
+                          </VStack>
+                          <IconByName
+                            name="PencilLineIcon"
+                            color="iconColor.200"
+                            _icon={{ size: "20" }}
+                            onPress={(e) =>
+                              navigate(item?.path?.replace(":id", id))
+                            }
+                          />
+                        </HStack>
+                      ))}
                     </VStack>
                   </Modal.Body>
                   <Modal.Footer justifyContent={"space-between"}>
-                    <AdminTypo.Secondarybutton
-                      onPress={() => setReqDataError(false)}
+                    <FrontEndTypo.Secondarybutton
+                      onPress={() => setMissingData(false)}
                     >
                       {t("CLOSE")}
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.PrimaryButton
+                    </FrontEndTypo.Secondarybutton>
+                    <FrontEndTypo.Primarybutton
                       onPress={() =>
                         navigate(`/beneficiary/${id}/basicdetails`)
                       }
                     >
                       {t("EDIT_DETAILS")}
-                    </AdminTypo.PrimaryButton>
+                    </FrontEndTypo.Primarybutton>
                   </Modal.Footer>
                 </Modal.Content>
               </Modal>
@@ -1222,34 +1239,97 @@ export default function BenificiaryProfileView(userTokenInfo) {
   );
 }
 
-const LABEL_NAMES = {
-  id: "ID",
-  first_name: "FIRST_NAME",
-  dob: "DATE_OF_BIRTH",
-  mobile: "MOBILE_NUMBER",
-  lat: "LATITUDE",
-  long: "LONGITUDE",
-  district: "DISTRICT",
-  block: "BLOCK",
-  village: "VILLAGE_WARD",
-  grampanchayat: "GRAMPANCHAYAT",
-  career_aspiration: "CAREER_ASPIRATION",
-  parent_support: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
-  father_first_name: "FATHER_FIRST_NAME",
-  mother_first_name: "MOTHER_FIRST_NAME",
-  mark_as_whatsapp_number: "MARK_AS_WHATSAPP_REGISTER",
-  device_type: "TYPE_OF_MOBILE_PHONE",
-  device_ownership: "DEVICE_OWNERSHIP",
-  type_of_learner: "TYPE_OF_LEARNER",
-  last_standard_of_education: "LAST_STANDARD_OF_EDUCATION",
-  last_standard_of_education_year: "LAST_YEAR_OF_EDUCATION",
-  previous_school_type: "PREVIOUS_SCHOOL_TYPE",
-  reason_of_leaving_education: "REASON_OF_LEAVING_EDUCATION",
-  education_10th_exam_year: "REGISTERED_IN_TENTH_DATE",
-  learning_level: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
-  type_of_support_needed: "TYPE_OF_SUPPORT_NEEDED",
-  marital_status: "MARITAL_STATUS",
-  social_category: "SOCIAL_CATEGORY",
-  profile_photo: "PROFILE_PHOTO",
-  contact_number: "CONTACT_NUMBER",
-};
+const LABEL_NAMES = [
+  {
+    path: "/beneficiary/:id/upload/1",
+    keys: {
+      profile_photo_1: "PROFILE_PHOTO_1",
+    },
+  },
+  {
+    path: "/beneficiary/:id/upload/2",
+    keys: {
+      profile_photo_2: "PROFILE_PHOTO_2",
+    },
+  },
+  {
+    path: "/beneficiary/:id/upload/3",
+    keys: {
+      profile_photo_3: "PROFILE_PHOTO_3",
+    },
+  },
+  {
+    path: "/beneficiary/edit/:id/basic-info",
+    keys: {
+      first_name: "FIRST_NAME",
+      dob: "DATE_OF_BIRTH",
+    },
+  },
+  {
+    path: "/beneficiary/edit/:id/contact-info",
+    keys: {
+      mobile: "MOBILE_NUMBER",
+      mark_as_whatsapp_number: "MARK_AS_WHATSAPP_REGISTER",
+      device_type: "TYPE_OF_MOBILE_PHONE",
+      device_ownership: "DEVICE_OWNERSHIP",
+    },
+  },
+  {
+    path: "/beneficiary/edit/:id/family-details",
+    keys: {
+      father_first_name: "FATHER_FIRST_NAME",
+      mother_first_name: "MOTHER_FIRST_NAME",
+    },
+  },
+  {
+    path: "/beneficiary/edit/:id/personal-details",
+    keys: {
+      marital_status: "MARITAL_STATUS",
+      social_category: "SOCIAL_CATEGORY",
+    },
+  },
+  {
+    path: "/beneficiary/edit/:id/personal-details",
+    keys: {
+      hashas_disability: "BENEFICIARY_HAS_DISABILITY",
+    },
+  },
+  {
+    path: "/beneficiary/edit/:id/reference-details",
+    keys: {
+      "references details": "REFERENCE_DETAILS",
+    },
+  },
+
+  {
+    path: "/beneficiary/edit/:id/address",
+    keys: {
+      lat: "LATITUDE",
+      long: "LONGITUDE",
+      district: "DISTRICT",
+      block: "BLOCK",
+      village: "VILLAGE_WARD",
+      grampanchayat: "GRAMPANCHAYAT",
+    },
+  },
+  {
+    path: "/beneficiary/edit/1458/future-education",
+    keys: {
+      type_of_support_needed: "TYPE_OF_SUPPORT_NEEDED",
+      parent_support: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
+      career_aspiration: "CAREER_ASPIRATION",
+      education_10th_exam_year: "REGISTERED_IN_TENTH_DATE",
+    },
+  },
+  {
+    path: "/beneficiary/edit/1458/education",
+    keys: {
+      type_of_learner: "TYPE_OF_LEARNER",
+      last_standard_of_education: "LAST_STANDARD_OF_EDUCATION",
+      last_standard_of_education_year: "LAST_YEAR_OF_EDUCATION",
+      reason_of_leaving_education: "REASON_OF_LEAVING_EDUCATION",
+      previous_school_type: "PREVIOUS_SCHOOL_TYPE",
+      learning_level: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
+    },
+  },
+];
