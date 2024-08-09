@@ -40,7 +40,8 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   let newData = {};
   const keys = Object.keys(schema1?.properties || {}).reduce((acc, key) => {
     if (schema1.properties[key].properties) {
-      acc = [...acc, ...Object.keys(schema1.properties[key].properties)];
+      // acc = [...acc, ...Object.keys(schema1.properties[key].properties)];
+      acc.push(...Object.keys(schema1.properties[key].properties));
     }
     return acc;
   }, []);
@@ -329,54 +330,60 @@ export default function App(footerLinks) {
     let error = {};
     switch (key) {
       case "enrollment_mobile_no":
-        const mobile = data?.enrollment_mobile_no;
-        const regex = /^[1-9][0-9]{0,9}$/;
-        if (
-          !mobile ||
-          !mobile?.match(regex) ||
-          !(
-            data?.enrollment_mobile_no > 6000000000 &&
-            data?.enrollment_mobile_no < 9999999999
-          )
-        ) {
-          error = { [key]: t("REQUIRED_MESSAGE") };
+        {
+          const mobile = data?.enrollment_mobile_no;
+          const regex = /^[1-9][0-9]{0,9}$/;
+          if (
+            !mobile ||
+            !mobile?.match(regex) ||
+            !(
+              data?.enrollment_mobile_no > 6000000000 &&
+              data?.enrollment_mobile_no < 9999999999
+            )
+          ) {
+            error = { [key]: t("REQUIRED_MESSAGE") };
+          }
         }
         break;
       case "enrollment_date":
-        if (moment.utc(data?.enrollment_date) > moment.utc()) {
-          error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
+        {
+          if (moment.utc(data?.enrollment_date) > moment.utc()) {
+            error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
+          }
         }
         break;
       case "subjects":
-        if (
-          page === "edit_enrollement" &&
-          ["enrolled", "sso_id_enrolled"].includes(data?.enrollment_status)
-        ) {
-          const countLanguageSubjects = (subjectsArr, subjects) => {
-            // Convert the subjects array to a Set for faster lookups
-            const subjectsSet = new Set(subjects);
-            // Filter the array for objects with "language" subject_type and a subject_id in the subjects array
-            const languageSubjects = subjectsArr?.filter(
-              (subject) =>
-                subject.subject_type === "language" &&
-                subjectsSet.has(String(subject.subject_id))
+        {
+          if (
+            page === "edit_enrollement" &&
+            ["enrolled", "sso_id_enrolled"].includes(data?.enrollment_status)
+          ) {
+            const countLanguageSubjects = (subjectsArr, subjects) => {
+              // Convert the subjects array to a Set for faster lookups
+              const subjectsSet = new Set(subjects);
+              // Filter the array for objects with "language" subject_type and a subject_id in the subjects array
+              const languageSubjects = subjectsArr?.filter(
+                (subject) =>
+                  subject.subject_type === "language" &&
+                  subjectsSet.has(String(subject.subject_id))
+              );
+              // Return the count of filtered objects
+              return languageSubjects.length;
+            };
+            const langCount = countLanguageSubjects(
+              schema?.properties?.subjects?.enumOptions,
+              data?.subjects
             );
-            // Return the count of filtered objects
-            return languageSubjects.length;
-          };
-          const langCount = countLanguageSubjects(
-            schema?.properties?.subjects?.enumOptions,
-            data?.subjects
-          );
-          const nonLangCount = data?.subjects?.length - langCount;
-          if (langCount === 0 && nonLangCount === 0) {
-            error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
-          } else if (langCount > 3 && nonLangCount > 4) {
-            error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
-          } else if (langCount > 3) {
-            error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
-          } else if (nonLangCount > 4) {
-            error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
+            const nonLangCount = data?.subjects?.length - langCount;
+            if (langCount === 0 && nonLangCount === 0) {
+              error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
+            } else if (langCount > 3 && nonLangCount > 4) {
+              error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
+            } else if (langCount > 3) {
+              error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
+            } else if (nonLangCount > 4) {
+              error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
+            }
           }
         }
         break;
@@ -575,112 +582,122 @@ export default function App(footerLinks) {
     let newData = { ...formData, ...data };
     switch (id) {
       case "root_enrollment_number":
-        let { enrollment_number, ...otherError } = errors || {};
-        setErrors(otherError);
-        if (data?.enrollment_number) {
-          debouncedFunction(data);
+        {
+          let { enrollment_number, ...otherError } = errors || {};
+          setErrors(otherError);
+          if (data?.enrollment_number) {
+            debouncedFunction(data);
+          }
         }
         break;
       case "root_sso_id":
-        let { sso_id, ...ssoOtherError } = errors || {};
-        setErrors(ssoOtherError);
-        if (data?.sso_id) {
-          debouncedSSOID(data);
+        {
+          let { sso_id, ...ssoOtherError } = errors || {};
+          setErrors(ssoOtherError);
+          if (data?.sso_id) {
+            debouncedSSOID(data);
+          }
         }
         break;
       case "root_enrollment_date":
-        let { enrollment_date, ...otherErrore } = errors || {};
-        setErrors(otherErrore);
-        const resultDate = validate(data, "enrollment_date");
+        {
+          let { enrollment_date, ...otherErrore } = errors || {};
+          setErrors(otherErrore);
+          const resultDate = validate(data, "enrollment_date");
 
-        if (resultDate?.enrollment_date) {
-          setErrors({
-            ...errors,
-            enrollment_date: {
-              __errors: [resultDate?.enrollment_date],
-            },
-          });
+          if (resultDate?.enrollment_date) {
+            setErrors({
+              ...errors,
+              enrollment_date: {
+                __errors: [resultDate?.enrollment_date],
+              },
+            });
+          }
+          if (data.enrollment_dob) {
+            const ageDate = checkEnrollmentDobAndDate(data, "enrollment_dob");
+            if (ageDate?.enrollment_dob) {
+              setUiSchema(
+                getUiSchema(uiSchema, {
+                  key: "enrollment_dob",
+                  extra: {
+                    "ui:help": (
+                      <VStack>
+                        {ageDate?.age?.message}
+                        <AlertCustom alert={ageDate?.enrollment_dob} />,
+                      </VStack>
+                    ),
+                  },
+                })
+              );
+              setFormData({ ...formData, is_eligible: "no" });
+            } else {
+              setUiSchema(
+                getUiSchema(uiSchema, {
+                  key: "enrollment_dob",
+                  extra: {
+                    "ui:help": ageDate?.age?.message,
+                  },
+                })
+              );
+              setFormData({ ...formData, is_eligible: "yes" });
+            }
+          }
         }
-        if (data.enrollment_dob) {
-          const ageDate = checkEnrollmentDobAndDate(data, "enrollment_dob");
-          if (ageDate?.enrollment_dob) {
+        break;
+
+      case "root_enrollment_status":
+        {
+          const updatedSchema = await setSchemaByStatus(
+            data,
+            fixedSchema,
+            boards
+          );
+          newData = updatedSchema?.newData ? updatedSchema?.newData : {};
+          if (
+            ["enrolled", "sso_id_enrolled"].includes(newData?.enrollment_status)
+          ) {
+            const constantSchema = schema1.properties?.[page];
+            const subjectsEnum = await getSubjects(
+              constantSchema,
+              formData?.enrolled_for_board
+            );
+            updatedSchema.newSchema.properties.subjects =
+              subjectsEnum?.properties?.subjects;
+          }
+          setSchema(updatedSchema?.newSchema);
+          setErrors();
+        }
+        break;
+
+      //   break;
+      case "root_enrollment_dob":
+        {
+          const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
+          if (age?.enrollment_dob) {
             setUiSchema(
               getUiSchema(uiSchema, {
                 key: "enrollment_dob",
                 extra: {
                   "ui:help": (
                     <VStack>
-                      {ageDate?.age?.message}
-                      <AlertCustom alert={ageDate?.enrollment_dob} />,
+                      <AlertCustom alert={age?.enrollment_dob} />,
                     </VStack>
                   ),
                 },
               })
             );
-            setFormData({ ...formData, is_eligible: "no" });
+            newData = { ...newData, is_eligible: "no" };
           } else {
+            newData = { ...newData, is_eligible: "yes" };
             setUiSchema(
               getUiSchema(uiSchema, {
                 key: "enrollment_dob",
                 extra: {
-                  "ui:help": ageDate?.age?.message,
+                  "ui:help": age?.age?.message,
                 },
               })
             );
-            setFormData({ ...formData, is_eligible: "yes" });
           }
-        }
-        break;
-
-      case "root_enrollment_status":
-        const updatedSchema = await setSchemaByStatus(
-          data,
-          fixedSchema,
-          boards
-        );
-        newData = updatedSchema?.newData ? updatedSchema?.newData : {};
-        if (
-          ["enrolled", "sso_id_enrolled"].includes(newData?.enrollment_status)
-        ) {
-          const constantSchema = schema1.properties?.[page];
-          const subjectsEnum = await getSubjects(
-            constantSchema,
-            formData?.enrolled_for_board
-          );
-          updatedSchema.newSchema.properties.subjects =
-            subjectsEnum?.properties?.subjects;
-        }
-        setSchema(updatedSchema?.newSchema);
-        setErrors();
-        break;
-
-      //   break;
-      case "root_enrollment_dob":
-        const age = checkEnrollmentDobAndDate(data, "enrollment_dob");
-        if (age?.enrollment_dob) {
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_dob",
-              extra: {
-                "ui:help": (
-                  <VStack>
-                    <AlertCustom alert={age?.enrollment_dob} />,
-                  </VStack>
-                ),
-              },
-            })
-          );
-          newData = { ...newData, is_eligible: "no" };
-        } else {
-          newData = { ...newData, is_eligible: "yes" };
-          setUiSchema(
-            getUiSchema(uiSchema, {
-              key: "enrollment_dob",
-              extra: {
-                "ui:help": age?.age?.message,
-              },
-            })
-          );
         }
         break;
       default:
