@@ -473,7 +473,6 @@ export default function EnrollmentForm() {
 
   useEffect(() => {
     const init = async () => {
-      setMissingData(await learnerDetailsCheck(id));
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
       const newStep = step || newSteps[0];
@@ -488,6 +487,7 @@ export default function EnrollmentForm() {
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
+      setMissingData(await learnerDetailsCheck({ id, benificiary: result }));
       const { program_beneficiaries } = result || {};
 
       if (page === "edit_enrollement") {
@@ -827,7 +827,7 @@ export default function EnrollmentForm() {
         stepTitle={t("ENROLLMENT_DETAILS")}
       >
         <Box py={6} px={4} mb={5}>
-          <UserDataCheck {...{ missingData, setMissingData, id }} />
+          <UserDataCheck {...{ missingData, id }} />
         </Box>
       </Layout>
     );
@@ -974,7 +974,7 @@ AlertCustom.propTypes = {
   alert: PropTypes.string,
 };
 
-const learnerDetailsCheck = async (id) => {
+const learnerDetailsCheck = async ({ id, benificiary }) => {
   const { data: searchKeys } =
     await benificiaryRegistoryService.checkLearnerDetails(id);
 
@@ -1008,18 +1008,19 @@ const learnerDetailsCheck = async (id) => {
     const checkNeeded = ["identified", "ready_to_enroll"].includes(
       benificiary?.program_beneficiaries?.status,
     );
-    if (hasWarning && !openWarningModal && checkNeeded) {
+
+    if (hasWarning && checkNeeded) {
       return "last_standard_of_education";
     }
   }
 };
 
-const UserDataCheck = ({ missingData, setMissingData, id }) => {
+const UserDataCheck = ({ missingData, id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
-    <VStack space={4}>
+    <VStack>
       {Array.isArray(missingData) ? (
         <VStack space={2}>
           {t("LEARNER_FIELDS_MISSING_WARNING")}
@@ -1068,17 +1069,17 @@ const UserDataCheck = ({ missingData, setMissingData, id }) => {
               </VStack>
             </VStack>
           ))}
+          <HStack>
+            <FrontEndTypo.Primarybutton
+              onPress={() => navigate(`/beneficiary/${id}/basicdetails`)}
+            >
+              {t("EDIT_DETAILS")}
+            </FrontEndTypo.Primarybutton>
+          </HStack>
         </VStack>
       ) : (
         <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
       )}
-      <HStack>
-        <FrontEndTypo.Primarybutton
-          onPress={() => navigate(`/beneficiary/${id}/basicdetails`)}
-        >
-          {t("EDIT_DETAILS")}
-        </FrontEndTypo.Primarybutton>
-      </HStack>
     </VStack>
   );
 };
