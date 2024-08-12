@@ -191,7 +191,7 @@ const getSubjects = async (schemaData, value) => {
                   ? "/enrollment-receipt.jpeg"
                   : state_name === "BIHAR"
                   ? "/application_receipt_bihar.jpg"
-                  : "/enrollment-receipt_mp.jpg",
+                  : "/enrollment_receipt_mp.jpg",
             }}
             height={"124px"}
             width={"200px"}
