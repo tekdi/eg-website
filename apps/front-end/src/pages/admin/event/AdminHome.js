@@ -56,7 +56,7 @@ export default function Orientation({ footerLinks }) {
   React.useEffect(() => {
     const fetchData = async () => {
       let academic_Id = await getSelectedAcademicYear();
-      if (academic_Id) {
+      if (academic_Id && !_.isEmpty(academic_Id)) {
         getEventLists();
         setModal(false);
       }
