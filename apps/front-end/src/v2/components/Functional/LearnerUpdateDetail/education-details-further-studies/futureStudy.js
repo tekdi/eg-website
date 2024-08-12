@@ -16,7 +16,7 @@ import {
   Loading,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   widgets,
   templates,
@@ -42,6 +42,8 @@ export default function FutureStudy({ userTokenInfo }) {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(true);
   const [isDisable, setIsDisable] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/educationdetails`);
@@ -153,10 +155,10 @@ export default function FutureStudy({ userTokenInfo }) {
         parent_support: result?.core_beneficiaries?.parent_support,
         aspiration_mapping: {
           learning_motivation: getUniqueArray(
-            result?.program_beneficiaries?.learning_motivation
+            result?.program_beneficiaries?.learning_motivation,
           ),
           type_of_support_needed: getUniqueArray(
-            result?.program_beneficiaries?.type_of_support_needed
+            result?.program_beneficiaries?.type_of_support_needed,
           ),
         },
       });
@@ -180,7 +182,7 @@ export default function FutureStudy({ userTokenInfo }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -248,7 +250,9 @@ export default function FutureStudy({ userTokenInfo }) {
     const mainPayload = transformData(newdata);
     const updateDetails = await AgRegistryService.updateAg(mainPayload, userId);
     if (updateDetails) {
-      navigate(`/beneficiary/${userId}/educationdetails`);
+      if (redirectLink) {
+        navigate(redirectLink);
+      } else navigate(`/beneficiary/${userId}/educationdetails`);
     }
   };
 
@@ -318,6 +322,16 @@ export default function FutureStudy({ userTokenInfo }) {
               onSubmit,
             }}
           >
+            {redirectLink && (
+              <FrontEndTypo.Primarybutton
+                p="4"
+                mt="4"
+                isDisabled={isDisable}
+                onPress={() => formRef?.current?.submit()}
+              >
+                {t("SAVE_AND_ENROLLMENT")}
+              </FrontEndTypo.Primarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
               mt="3"

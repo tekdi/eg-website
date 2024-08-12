@@ -1,5 +1,4 @@
 import {
-  AdminTypo,
   BodyMedium,
   CustomRadio,
   FrontEndTypo,
@@ -15,7 +14,6 @@ import {
   objProps,
   setSelectedAcademicYear,
   setSelectedProgramId,
-  t,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
@@ -26,17 +24,18 @@ import {
   Box,
   Divider,
   HStack,
-  Modal,
   Progress,
   ScrollView,
   Stack,
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 export default function BenificiaryProfileView(userTokenInfo) {
+  const { t } = useTranslation();
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
@@ -71,11 +70,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const [isTodayAttendace, setIsTodayAttendace] = useState();
   const [certificateData, setCertificateData] = useState({});
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false,
+    window ? window.navigator.onLine : false
   );
-  const [missingData, setMissingData] = React.useState([]);
-  const [reqDataError, setReqDataError] = React.useState(false);
-  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const saveDataToIndexedDB = async () => {
     const obj = {
@@ -142,7 +138,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1,
+                eventItem?.lms_test_tracking?.length < 1
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
@@ -151,8 +147,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
                   data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD"),
-              ),
+                    moment(attendance.date_time).format("YYYY-MM-DD")
+              )
             );
 
             setCertificateData(data);
@@ -218,8 +214,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
               "aadhar_verified",
               "qualification_ids",
               "qua_name",
-            ],
-          ),
+            ]
+          )
         );
         //check exist user registered
         try {
@@ -272,7 +268,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0],
+        user_cohort_list?.data[0]
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -318,11 +314,11 @@ export default function BenificiaryProfileView(userTokenInfo) {
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBenificiaryDropoutReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS,
+      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
     );
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
     setBenificiaryRejectReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER,
+      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
     );
   }, []);
 
@@ -505,38 +501,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
     }
   }
 
-  const learnerDetailsCheck = async () => {
-    try {
-      setLoading(true);
-      const { data } =
-        await benificiaryRegistoryService.checkLearnerDetails(id);
-
-      if (data?.length > 0) {
-        const missingData = data.map((key) => LABEL_NAMES[key] || key);
-        setReqDataError(true);
-        setMissingData(missingData);
-      } else {
-        const lastStandard = parseInt(
-          benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
-          10,
-        );
-        const hasWarning = isNaN(lastStandard) || lastStandard < 5;
-        const checkNeeded = ["identified", "ready_to_enroll"].includes(
-          benificiary?.program_beneficiaries?.status,
-        );
-        if (hasWarning && !openWarningModal && checkNeeded) {
-          setOpenWarningModal(true);
-        } else {
-          navigate(`/beneficiary/${id}/enrollmentdetails`);
-        }
-      }
-    } catch (error) {
-      console.error("Error in fetching learner details:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Layout
       _appBar={{
@@ -557,7 +521,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("DEACTIVATED_PAGE_MSG")}</BodyMedium>
+            <FrontEndTypo.H2>{t("DEACTIVATED_PAGE_MSG")}</FrontEndTypo.H2>
           </HStack>
         </Alert>
       ) : (
@@ -633,7 +597,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   <Alert.Icon />
                   <BodyMedium>
                     {t(
-                      "PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB",
+                      "PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB"
                     )}
                   </BodyMedium>
                 </HStack>
@@ -677,7 +641,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
                       "aadhar_no",
                       "aadhaar_verification_mode",
                       "aadhar_verified",
-                    ],
+                    ]
                   )}
                   size="xs"
                   colorScheme="danger"
@@ -902,77 +866,14 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   benificiary?.program_beneficiaries?.status !== "rejected" && (
                     <IconByName
                       name="ArrowRightSLineIcon"
-                      onPress={learnerDetailsCheck}
                       color="floatingLabelColor.500"
                       _icon={{ size: "20" }}
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/enrollmentdetails`);
+                      }}
                     />
                   )}
               </HStack>
-              <Modal
-                isOpen={reqDataError}
-                onClose={() => setReqDataError(false)}
-                size={"xl"}
-              >
-                <Modal.Content>
-                  <Modal.Header textAlign={"Center"}>
-                    <AdminTypo.H2 color="textGreyColor.500">
-                      {t("EXPIRY_CONTENT.HEADING")}
-                    </AdminTypo.H2>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <VStack space={4}>
-                      {t("LEARNER_FIELDS_MISSING_WARNING")}
-                      <ul>
-                        {missingData?.map((el, i) => (
-                          <li color="textGreyColor.500" key={i}>
-                            {t(el)}
-                          </li>
-                        ))}
-                      </ul>
-                    </VStack>
-                  </Modal.Body>
-                  <Modal.Footer justifyContent={"space-between"}>
-                    <AdminTypo.Secondarybutton
-                      onPress={() => setReqDataError(false)}
-                    >
-                      {t("CLOSE")}
-                    </AdminTypo.Secondarybutton>
-                    <AdminTypo.PrimaryButton
-                      onPress={() =>
-                        navigate(`/beneficiary/${id}/basicdetails`)
-                      }
-                    >
-                      {t("EDIT_DETAILS")}
-                    </AdminTypo.PrimaryButton>
-                  </Modal.Footer>
-                </Modal.Content>
-              </Modal>
-
-              <Modal
-                isOpen={openWarningModal}
-                onClose={() => setOpenWarningModal(false)}
-              >
-                <Modal.Content>
-                  <Modal.Header textAlign={"Center"}>
-                    <FrontEndTypo.H2 color="textGreyColor.500">
-                      {t("EXPIRY_CONTENT.HEADING")}
-                    </FrontEndTypo.H2>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
-                  </Modal.Body>
-                  <Modal.Footer justifyContent={"space-between"}>
-                    <FrontEndTypo.Secondarybutton
-                      onPress={() => setOpenWarningModal(false)}
-                    >
-                      {t("CANCEL")}
-                    </FrontEndTypo.Secondarybutton>
-                    <FrontEndTypo.Primarybutton onPress={learnerDetailsCheck}>
-                      {t("PROCEED")}
-                    </FrontEndTypo.Primarybutton>
-                  </Modal.Footer>
-                </Modal.Content>
-              </Modal>
 
               {benificiary?.program_beneficiaries?.status ===
                 "registered_in_camp" && (
@@ -1221,35 +1122,3 @@ export default function BenificiaryProfileView(userTokenInfo) {
     </Layout>
   );
 }
-
-const LABEL_NAMES = {
-  id: "ID",
-  first_name: "FIRST_NAME",
-  dob: "DATE_OF_BIRTH",
-  mobile: "MOBILE_NUMBER",
-  lat: "LATITUDE",
-  long: "LONGITUDE",
-  district: "DISTRICT",
-  block: "BLOCK",
-  village: "VILLAGE_WARD",
-  grampanchayat: "GRAMPANCHAYAT",
-  career_aspiration: "CAREER_ASPIRATION",
-  parent_support: "WILL_YOUR_PARENTS_SUPPORT_YOUR_STUDIES",
-  father_first_name: "FATHER_FIRST_NAME",
-  mother_first_name: "MOTHER_FIRST_NAME",
-  mark_as_whatsapp_number: "MARK_AS_WHATSAPP_REGISTER",
-  device_type: "TYPE_OF_MOBILE_PHONE",
-  device_ownership: "DEVICE_OWNERSHIP",
-  type_of_learner: "TYPE_OF_LEARNER",
-  last_standard_of_education: "LAST_STANDARD_OF_EDUCATION",
-  last_standard_of_education_year: "LAST_YEAR_OF_EDUCATION",
-  previous_school_type: "PREVIOUS_SCHOOL_TYPE",
-  reason_of_leaving_education: "REASON_OF_LEAVING_EDUCATION",
-  education_10th_exam_year: "REGISTERED_IN_TENTH_DATE",
-  learning_level: "WHAT_IS_THE_LEARNING_LEVEL_OF_THE_LEARNER",
-  type_of_support_needed: "TYPE_OF_SUPPORT_NEEDED",
-  marital_status: "MARITAL_STATUS",
-  social_category: "SOCIAL_CATEGORY",
-  profile_photo: "PROFILE_PHOTO",
-  contact_number: "CONTACT_NUMBER",
-};

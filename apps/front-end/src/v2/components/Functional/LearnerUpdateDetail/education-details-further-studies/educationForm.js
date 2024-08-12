@@ -13,7 +13,7 @@ import {
   getOptions,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   widgets,
   TitleFieldTemplate,
@@ -50,6 +50,10 @@ export default function App({ onClick, id }) {
   }
   const [fields, setFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
+
   const uiSchema = {
     alreadyOpenLabel: {
       "ui:widget": "AlreadyOpenLabelWidget",
@@ -176,7 +180,7 @@ export default function App({ onClick, id }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -221,7 +225,7 @@ export default function App({ onClick, id }) {
           "previous_school_type",
           "reason_of_leaving_education",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "never_enrolled") {
@@ -239,7 +243,7 @@ export default function App({ onClick, id }) {
           "type_of_learner",
           "learning_level",
           "reason_of_leaving_education",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
@@ -255,7 +259,7 @@ export default function App({ onClick, id }) {
           "previous_school_type",
           "reason_of_leaving_education",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "already_open_school_syc") {
@@ -275,7 +279,7 @@ export default function App({ onClick, id }) {
           "reason_of_leaving_education",
           "education_10th_date",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
@@ -295,7 +299,7 @@ export default function App({ onClick, id }) {
           "reason_of_leaving_education",
           "education_10th_exam_year",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else {
@@ -316,10 +320,12 @@ export default function App({ onClick, id }) {
       if (!Object.keys(errors).length) {
         const updateDetails = await AgRegistryService.updateAg(
           formData,
-          userId
+          userId,
         );
         if (updateDetails) {
-          navigate(`/beneficiary/${userId}/educationdetails`);
+          if (redirectLink) {
+            navigate(redirectLink);
+          } else navigate(`/beneficiary/${userId}/educationdetails`);
         }
       }
     }
@@ -380,6 +386,16 @@ export default function App({ onClick, id }) {
               onSubmit,
             }}
           >
+            {redirectLink && (
+              <FrontEndTypo.Primarybutton
+                p="4"
+                mt="4"
+                isDisabled={isDisable}
+                onPress={() => formRef?.current?.submit()}
+              >
+                {t("SAVE_AND_ENROLLMENT")}
+              </FrontEndTypo.Primarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
