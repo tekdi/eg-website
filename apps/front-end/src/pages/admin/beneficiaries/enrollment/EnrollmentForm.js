@@ -475,6 +475,22 @@ export default function App(footerLinks) {
           newSchema,
           page
         );
+        if (
+          state_name === "RAJASTHAN" &&
+          ["identified", "ready_to_enroll"].includes(
+            result?.program_beneficiaries?.status
+          )
+        ) {
+          let enrollmentStatus =
+            updatedSchema?.newSchema?.properties?.enrollment_status;
+          const index = enrollmentStatus?.enumNames.indexOf("ENROLLED");
+          if (index !== -1) {
+            enrollmentStatus?.enumNames.splice(index, 1);
+            enrollmentStatus.enum.splice(index, 1);
+          }
+          updatedSchema.newSchema.properties.enrollment_status =
+            enrollmentStatus;
+        }
         setSchema(updatedSchema?.newSchema);
         const newdata = filterObject(
           updatedSchema?.newData,

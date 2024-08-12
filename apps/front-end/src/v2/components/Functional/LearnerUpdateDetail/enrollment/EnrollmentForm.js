@@ -434,6 +434,22 @@ export default function EnrollmentForm() {
           );
 
           let { state_name } = await getSelectedProgramId();
+          if (
+            state_name === "RAJASTHAN" &&
+            ["identified", "ready_to_enroll"].includes(
+              benificiary?.program_beneficiaries?.status
+            )
+          ) {
+            let enrollmentStatus =
+              updatedSchema?.newSchema?.properties?.enrollment_status;
+            const index = enrollmentStatus?.enumNames.indexOf("ENROLLED");
+            if (index !== -1) {
+              enrollmentStatus?.enumNames.splice(index, 1);
+              enrollmentStatus.enum.splice(index, 1);
+            }
+            updatedSchema.newSchema.properties.enrollment_status =
+              enrollmentStatus;
+          }
           if (updatedSchema?.newSchema?.properties?.enrollment_number?.regex) {
             if (state_name === "BIHAR") {
               updatedSchema.newSchema.properties.enrollment_number.regex =
