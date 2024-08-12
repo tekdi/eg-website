@@ -1277,7 +1277,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                   {t("CANCEL")}
                 </FrontEndTypo.Secondarybutton>
                 <FrontEndTypo.Primarybutton onPress={onSubmit}>
-                  {t("PROCEED")}
+                  {t("PRERAK_PROCEED_BTN")}
                 </FrontEndTypo.Primarybutton>
               </Modal.Footer>
             </Modal.Content>
