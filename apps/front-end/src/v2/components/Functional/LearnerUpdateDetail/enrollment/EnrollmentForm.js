@@ -436,7 +436,7 @@ export default function EnrollmentForm() {
           let { state_name } = await getSelectedProgramId();
           if (
             state_name === "RAJASTHAN" &&
-            ["identified", "ready_to_enroll"].includes(
+            ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(
               benificiary?.program_beneficiaries?.status
             )
           ) {
