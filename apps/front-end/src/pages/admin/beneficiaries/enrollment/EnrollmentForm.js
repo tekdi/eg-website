@@ -302,13 +302,18 @@ export default function App(footerLinks) {
     return error;
   };
 
-  const getEnrollmentStatus = async (schemaData) => {
+  const getEnrollmentStatus = async (schemaData, status) => {
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let { state_name } = await getSelectedProgramId();
 
     // filter by sso_id_enrolled if state id not RAJASTHAN
-    if (state_name !== "RAJASTHAN") {
+    if (
+      state_name === "RAJASTHAN" &&
+      ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(status)
+    ) {
+      list = list.filter((e) => e.value != "enrolled");
+    } else if (state_name !== "RAJASTHAN") {
       list = list.filter((e) => e.value != "sso_id_enrolled");
     }
     let newSchema = getOptions(schemaData, {
@@ -429,7 +434,10 @@ export default function App(footerLinks) {
       if (page && benificiary?.program_beneficiaries && boards) {
         const constantSchema = schema1.properties?.[page];
         if (page === "edit_enrollement") {
-          const newSchema = await getEnrollmentStatus(constantSchema);
+          const newSchema = await getEnrollmentStatus(
+            constantSchema,
+            benificiary?.program_beneficiaries?.status
+          );
           setFixedSchema(newSchema);
           const updatedSchema = await setSchemaByStatus(
             benificiary?.program_beneficiaries,
