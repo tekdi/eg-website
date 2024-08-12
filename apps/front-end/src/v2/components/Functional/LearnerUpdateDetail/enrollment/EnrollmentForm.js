@@ -15,6 +15,7 @@ import {
   BodyMedium,
   getSelectedProgramId,
   getEnrollmentIds,
+  IconByName,
 } from "@shiksha/common-lib";
 //updateSchemaEnum
 import moment from "moment";
@@ -30,6 +31,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
+import { LABEL_NAMES } from "v2/views/Beneficiary/utils/beneficiaryData.js";
 
 const setSchemaByStatus = async (data, fixedSchema, page) => {
   let { state_name } = await getSelectedProgramId();
@@ -89,7 +91,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
             "payment_receipt_document_id",
             "application_form",
             "application_login_id",
-          ].includes(item)
+          ].includes(item),
       );
       newSchema = {
         ...constantSchema,
@@ -144,7 +146,7 @@ const setSchemaByStatus = async (data, fixedSchema, page) => {
         newSchema = await getSubjects(
           newSchema,
           data?.enrolled_for_board,
-          page
+          page,
         );
       } else {
         const { subjects, ...properties } = constantSchema?.properties || {};
@@ -230,7 +232,7 @@ const getSubjects = async (schemaData, value, page) => {
           arr: data?.subjects || [],
           title: "name",
           value: "subject_id",
-        }
+        },
       );
     } else {
       newSchema = getOptions(
@@ -247,7 +249,7 @@ const getSubjects = async (schemaData, value, page) => {
           arr: data?.subjects || [],
           title: "name",
           value: "subject_id",
-        }
+        },
       );
     }
     return newSchema;
@@ -274,6 +276,7 @@ export default function EnrollmentForm() {
   const [loading, setLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
+  const [missingData, setMissingData] = React.useState();
 
   const [uiSchema, setUiSchema] = useState({
     subjects: {
@@ -325,7 +328,7 @@ export default function EnrollmentForm() {
     if (data?.enrollment_dob) {
       const age = enrollmentDateOfBirth(
         benificiary?.program_beneficiaries?.enrollment_date,
-        data?.enrollment_dob
+        data?.enrollment_dob,
       );
       const {
         program_beneficiaries: { enrollment_date },
@@ -469,11 +472,14 @@ export default function EnrollmentForm() {
   };
 
   useEffect(() => {
-    const properties = schema1.properties;
-    const newSteps = Object.keys(properties);
-    const newStep = step || newSteps[0];
-    setPage(newStep);
-    setPages(newSteps);
+    const init = async () => {
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      const newStep = step || newSteps[0];
+      setPage(newStep);
+      setPages(newSteps);
+    };
+    init();
   }, []);
 
   useEffect(async () => {
@@ -481,6 +487,7 @@ export default function EnrollmentForm() {
       const constantSchema = schema1.properties?.[page];
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
+      setMissingData(await learnerDetailsCheck({ id, benificiary: result }));
       const { program_beneficiaries } = result || {};
 
       if (page === "edit_enrollement") {
@@ -497,7 +504,7 @@ export default function EnrollmentForm() {
         const updatedSchema = await setSchemaByStatus(
           program_beneficiaries,
           BoardSchema,
-          page
+          page,
         );
         let { state_name } = await getSelectedProgramId();
         if (updatedSchema?.newSchema?.properties?.enrollment_number?.regex) {
@@ -512,7 +519,7 @@ export default function EnrollmentForm() {
         setSchema(updatedSchema?.newSchema);
         const newdata = filterObject(
           updatedSchema?.newData,
-          Object.keys(updatedSchema?.newSchema?.properties)
+          Object.keys(updatedSchema?.newSchema?.properties),
         );
 
         setFormData({
@@ -524,11 +531,11 @@ export default function EnrollmentForm() {
         setSchema(constantSchema);
         let newdata = filterObject(
           program_beneficiaries,
-          Object.keys(constantSchema?.properties)
+          Object.keys(constantSchema?.properties),
         );
         const age = checkEnrollmentDobAndDate(
           program_beneficiaries,
-          "enrollment_dob"
+          "enrollment_dob",
         );
         if (age?.enrollment_dob) {
           setUiSchema(
@@ -542,7 +549,7 @@ export default function EnrollmentForm() {
                   </VStack>
                 ),
               },
-            })
+            }),
           );
           newdata = { ...newdata, is_eligible: "no" };
         } else {
@@ -553,7 +560,7 @@ export default function EnrollmentForm() {
               extra: {
                 "ui:help": age?.age?.message,
               },
-            })
+            }),
           );
         }
 
@@ -573,7 +580,7 @@ export default function EnrollmentForm() {
         userId,
         {
           enrollment_number: enrollment_number,
-        }
+        },
       );
       if (result.error) {
         setErrors({
@@ -583,7 +590,7 @@ export default function EnrollmentForm() {
               t(
                 state_name === "RAJASTHAN"
                   ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
-                  : "APPLICATION_ID_ALREADY_EXISTS"
+                  : "APPLICATION_ID_ALREADY_EXISTS",
               ),
             ],
           },
@@ -684,7 +691,7 @@ export default function EnrollmentForm() {
                   </VStack>
                 ),
               },
-            })
+            }),
           );
           newData = { ...newData, is_eligible: "no" };
         } else {
@@ -695,7 +702,7 @@ export default function EnrollmentForm() {
               extra: {
                 "ui:help": age?.age?.message,
               },
-            })
+            }),
           );
         }
         break;
@@ -732,8 +739,8 @@ export default function EnrollmentForm() {
             t(
               state_name === "RAJASTHAN"
                 ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
-                : "APPLICATION_ID_ALREADY_EXISTS"
-            )
+                : "APPLICATION_ID_ALREADY_EXISTS",
+            ),
           )
         ) {
           setNotMatched(errorData.filter((e) => e !== "enrollment_number"));
@@ -748,7 +755,7 @@ export default function EnrollmentForm() {
         newFormData,
         Object.keys(schema?.properties),
         {},
-        ""
+        "",
       );
 
       if (state_name === "BIHAR" && newdata?.enrollment_status === "enrolled") {
@@ -789,7 +796,7 @@ export default function EnrollmentForm() {
             edit_page_type: page,
             is_eligible: newFormData?.is_eligible,
           },
-          userId
+          userId,
         );
       if (isUserExist) {
         setNotMatched(["enrollment_number"]);
@@ -801,9 +808,34 @@ export default function EnrollmentForm() {
     }
     setBtnLoading(false);
   };
+
+  if (missingData) {
+    return (
+      <Layout
+        loading={loading}
+        _appBar={{
+          onPressBackButton,
+          onlyIconsShow: ["backBtn", "userInfo"],
+          name: t("ENROLLMENT_DETAILS"),
+          lang,
+          setLang,
+          _box: { bg: "white", shadow: "appBarShadow" },
+        }}
+        _page={{ _scollView: { bg: "formBg.500" } }}
+        analyticsPageTitle={"BENEFICIARY_ENROLLMENT_FORM"}
+        pageTitle={t("BENEFICIARY")}
+        stepTitle={t("ENROLLMENT_DETAILS")}
+      >
+        <Box py={6} px={4} mb={5}>
+          <UserDataCheck {...{ missingData, setMissingData, id }} />
+        </Box>
+      </Layout>
+    );
+  }
+
   if (
     ["enrolled_ip_verified", "registered_in_camp"].includes(
-      benificiary?.program_beneficiaries?.status
+      benificiary?.program_beneficiaries?.status,
     )
   ) {
     return (
@@ -940,4 +972,131 @@ const AlertCustom = ({ alert }) => (
 
 AlertCustom.propTypes = {
   alert: PropTypes.string,
+};
+
+const learnerDetailsCheck = async ({ id, benificiary }) => {
+  const { data: searchKeys } =
+    await benificiaryRegistoryService.checkLearnerDetails(id);
+
+  if (searchKeys?.length > 0) {
+    return LABEL_NAMES.map((label) => {
+      const matchedKeys = Object.keys(label.keys).filter((key) =>
+        searchKeys.includes(key),
+      );
+
+      if (matchedKeys.length > 0) {
+        const filteredKeys = matchedKeys.reduce((acc, key) => {
+          acc[key] = label.keys[key];
+          return acc;
+        }, {});
+
+        return {
+          title: label.title,
+          path: label.path,
+          keys: filteredKeys,
+        };
+      }
+
+      return null;
+    }).filter((item) => item !== null);
+  } else {
+    const lastStandard = parseInt(
+      benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
+      10,
+    );
+    const hasWarning = isNaN(lastStandard) || lastStandard < 5;
+    const checkNeeded = ["identified", "ready_to_enroll"].includes(
+      benificiary?.program_beneficiaries?.status,
+    );
+
+    if (hasWarning && checkNeeded) {
+      return "last_standard_of_education";
+    }
+  }
+};
+
+const UserDataCheck = ({ missingData, setMissingData, id }) => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  return (
+    <VStack>
+      {Array.isArray(missingData) ? (
+        <VStack space={2}>
+          {t("LEARNER_FIELDS_MISSING_WARNING")}
+          {missingData?.map((item, i) => (
+            <VStack
+              key={item?.path}
+              p="2"
+              borderWidth={1}
+              borderColor="gray.300"
+              rounded={"sm"}
+            >
+              <HStack alignItems={"center"} justifyContent="space-between">
+                <FrontEndTypo.H3 bold color="textGreyColor.500">
+                  {t(item?.title)}
+                </FrontEndTypo.H3>
+                <IconByName
+                  p="1"
+                  name="PencilLineIcon"
+                  color="iconColor.200"
+                  _icon={{ size: "20" }}
+                  onPress={(e) => {
+                    const searchParams = new URLSearchParams({
+                      redirectLink: `/beneficiary/edit/${id}/enrollment-details`,
+                    }).toString();
+                    if (item.title == "PROFILE_PHOTO") {
+                      navigate(
+                        `${item?.path
+                          ?.replace(":id", id)
+                          ?.replace(
+                            "upload_no",
+                            Object.keys(item?.keys || {})?.[0]?.replace(
+                              "profile_photo_",
+                              "",
+                            ),
+                          )}?${searchParams}`,
+                      );
+                    } else {
+                      navigate(
+                        `${item?.path?.replace(":id", id)}?${searchParams}`,
+                      );
+                    }
+                  }}
+                />
+              </HStack>
+              <VStack>
+                {Object.keys(item?.keys || {}).map((keyName) => (
+                  <FrontEndTypo.H4 color="textGreyColor.500">
+                    {t(item?.keys?.[keyName])}
+                  </FrontEndTypo.H4>
+                ))}
+              </VStack>
+            </VStack>
+          ))}
+        </VStack>
+      ) : (
+        <VStack
+          space={4}
+          p="2"
+          borderWidth={1}
+          borderColor="gray.300"
+          rounded={"sm"}
+          divider={<HStack borderBottomWidth={1} borderColor="gray.300" />}
+        >
+          {t("EDUCATION_STANDARD_WARNING")}
+          <HStack justifyContent={"space-between"}>
+            <FrontEndTypo.Secondarybutton
+              onPress={() => navigate(`/beneficiary/${id}`)}
+            >
+              {t("CANCEL")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton onPress={() => setMissingData()}>
+              {t("PROCEED")}
+            </FrontEndTypo.Primarybutton>
+          </HStack>
+        </VStack>
+      )}
+    </VStack>
+  );
 };
