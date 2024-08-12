@@ -189,7 +189,9 @@ const getSubjects = async (schemaData, value) => {
               uri:
                 state_name === "RAJASTHAN"
                   ? "/enrollment-receipt.jpeg"
-                  : "/payment_receipt_bihar.jpg",
+                  : state_name === "BIHAR"
+                  ? "/application_receipt_bihar.jpg"
+                  : "/enrollment-receipt_mp.jpg",
             }}
             height={"124px"}
             width={"200px"}

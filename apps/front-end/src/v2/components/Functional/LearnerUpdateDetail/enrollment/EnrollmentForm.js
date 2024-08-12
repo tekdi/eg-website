@@ -183,7 +183,9 @@ const getSubjects = async (schemaData, value) => {
               uri:
                 state_name === "RAJASTHAN"
                   ? "/enrollment-receipt.jpeg"
-                  : "/payment_receipt_bihar.jpg",
+                  : state_name === "BIHAR"
+                  ? "/application_receipt_bihar.jpg"
+                  : "/enrollment-receipt_mp.jpg",
             }}
             height={"124px"}
             width={"200px"}
@@ -969,7 +971,7 @@ const learnerDetailsCheck = async ({ id, benificiary }) => {
   if (searchKeys?.length > 0) {
     return LABEL_NAMES.map((label) => {
       const matchedKeys = Object.keys(label.keys).filter((key) =>
-        searchKeys.includes(key),
+        searchKeys.includes(key)
       );
 
       if (matchedKeys.length > 0) {
@@ -990,11 +992,11 @@ const learnerDetailsCheck = async ({ id, benificiary }) => {
   } else {
     const lastStandard = parseInt(
       benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
-      10,
+      10
     );
     const hasWarning = isNaN(lastStandard) || lastStandard < 5;
     const checkNeeded = ["identified", "ready_to_enroll"].includes(
-      benificiary?.program_beneficiaries?.status,
+      benificiary?.program_beneficiaries?.status
     );
 
     if (hasWarning && checkNeeded) {
@@ -1041,13 +1043,13 @@ const UserDataCheck = ({ missingData, setMissingData, id }) => {
                             "upload_no",
                             Object.keys(item?.keys || {})?.[0]?.replace(
                               "profile_photo_",
-                              "",
-                            ),
-                          )}?${searchParams}`,
+                              ""
+                            )
+                          )}?${searchParams}`
                       );
                     } else {
                       navigate(
-                        `${item?.path?.replace(":id", id)}?${searchParams}`,
+                        `${item?.path?.replace(":id", id)}?${searchParams}`
                       );
                     }
                   }}
@@ -1080,7 +1082,7 @@ const UserDataCheck = ({ missingData, setMissingData, id }) => {
               {t("CANCEL")}
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton onPress={() => setMissingData()}>
-              {t("PROCEED")}
+              {t("PRERAK_PROCEED_BTN")}
             </FrontEndTypo.Primarybutton>
           </HStack>
         </VStack>
