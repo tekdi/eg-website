@@ -225,7 +225,7 @@ export default function EnrollmentForm() {
   const [btnLoading, setBtnLoading] = useState(false);
   const [boards, setBoards] = useState();
   const navigate = useNavigate();
-  const [missingData, setMissingData] = React.useState();
+  const [missingData, setMissingData] = useState();
 
   const [uiSchema, setUiSchema] = useState({
     subjects: {
