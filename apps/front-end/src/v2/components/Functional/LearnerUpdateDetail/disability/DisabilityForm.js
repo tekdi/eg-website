@@ -15,7 +15,7 @@ import schema1 from "./schema.js";
 import validator from "@rjsf/validator-ajv8";
 import { scrollToField } from "component/BaseInput.js";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   onError,
   templates,
@@ -157,6 +157,8 @@ export default function DisabilityForm() {
   const [loading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/disability-details`);
@@ -174,12 +176,12 @@ export default function DisabilityForm() {
       setFixedSchema(newSchema);
       const updatedSchema = await setSchemaByDependency(
         extended_users,
-        newSchema
+        newSchema,
       );
       setSchema(updatedSchema?.newSchema);
       const newdata = filterObject(
         updatedSchema?.newData,
-        Object.keys(updatedSchema?.newSchema?.properties)
+        Object.keys(updatedSchema?.newSchema?.properties),
       );
 
       setFormData(newdata);
@@ -224,7 +226,7 @@ export default function DisabilityForm() {
         newFormData,
         Object.keys(schema?.properties),
         {},
-        undefined
+        undefined,
       );
       const { success, errors } =
         await benificiaryRegistoryService.updateDisability({
@@ -236,7 +238,11 @@ export default function DisabilityForm() {
         setErrors(errors);
         scrollToField({ property: errorKeys?.[0] });
       } else if (success) {
-        navigate(`/beneficiary/${userId}/disability-details`);
+        if (redirectLink) {
+          navigate(redirectLink);
+        } else {
+          navigate(`/beneficiary/${userId}/disability-details`);
+        }
       }
     } else {
       scrollToField({ property: keys?.[0] });
@@ -273,6 +279,16 @@ export default function DisabilityForm() {
             transformErrors: (errors) => transformErrors(errors, schema, t),
           }}
         >
+          {redirectLink && (
+            <FrontEndTypo.Primarybutton
+              p="4"
+              mt="4"
+              isLoading={btnLoading}
+              onPress={() => formRef?.current?.submit()}
+            >
+              {t("SAVE_AND_ENROLLMENT")}
+            </FrontEndTypo.Primarybutton>
+          )}
           <FrontEndTypo.Primarybutton
             mt="3"
             type="submit"
