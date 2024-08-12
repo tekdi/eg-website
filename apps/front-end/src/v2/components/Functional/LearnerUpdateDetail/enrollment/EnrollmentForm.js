@@ -305,15 +305,22 @@ export default function EnrollmentForm() {
     }
   };
 
-  const getEnrollmentStatus = async (schemaData) => {
+  const getEnrollmentStatus = async (schemaData, status) => {
     let ListofEnum = await enumRegistryService.listOfEnum();
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let { state_name } = await getSelectedProgramId();
 
     // filter by sso_id_enrolled if state id not RAJASTHAN
-    if (state_name !== "RAJASTHAN") {
+
+    if (
+      state_name === "RAJASTHAN" &&
+      ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(status)
+    ) {
+      list = list.filter((e) => e.value != "enrolled");
+    } else if (state_name !== "RAJASTHAN") {
       list = list.filter((e) => e.value != "sso_id_enrolled");
     }
+
     let newSchema = getOptions(schemaData, {
       key: "type_of_enrollement",
       arr: ListofEnum?.data?.ENROLLEMENT_VERIFICATION_TYPE,
@@ -425,31 +432,18 @@ export default function EnrollmentForm() {
       if (page && benificiary?.program_beneficiaries && boards) {
         const constantSchema = schema1.properties?.[page];
         if (page === "edit_enrollement") {
-          const newSchema = await getEnrollmentStatus(constantSchema);
+          const newSchema = await getEnrollmentStatus(
+            constantSchema,
+            benificiary?.program_beneficiaries.status
+          );
           setFixedSchema(newSchema);
           const updatedSchema = await setSchemaByStatus(
             formData,
             newSchema,
             boards
           );
-
           let { state_name } = await getSelectedProgramId();
-          if (
-            state_name === "RAJASTHAN" &&
-            ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(
-              benificiary?.program_beneficiaries?.status
-            )
-          ) {
-            let enrollmentStatus =
-              updatedSchema?.newSchema?.properties?.enrollment_status;
-            const index = enrollmentStatus?.enumNames.indexOf("ENROLLED");
-            if (index !== -1) {
-              enrollmentStatus?.enumNames.splice(index, 1);
-              enrollmentStatus.enum.splice(index, 1);
-            }
-            updatedSchema.newSchema.properties.enrollment_status =
-              enrollmentStatus;
-          }
+
           if (updatedSchema?.newSchema?.properties?.enrollment_number?.regex) {
             if (state_name === "BIHAR") {
               updatedSchema.newSchema.properties.enrollment_number.regex =
