@@ -40,13 +40,28 @@ const setSchemaByDependency = async (data, fixedSchema) => {
   if (data?.has_disability == "yes") {
     let otherProperties = {},
       required = [];
-    if (data?.has_govt_advantage == "yes") {
+    if (
+      data?.has_govt_advantage == "yes" &&
+      data?.has_disability_certificate == "yes"
+    ) {
       otherProperties = constantSchema?.properties || {};
       required = keys;
-    } else {
+    } else if (data?.has_govt_advantage == "yes") {
+      const { disability_percentage, ...other } =
+        constantSchema?.properties || {};
+      otherProperties = other || {};
+      required = keys.filter((e) => e != "disability_percentage");
+    } else if (data?.has_disability_certificate == "yes") {
       const { govt_advantages, ...other } = constantSchema?.properties || {};
-      otherProperties = other;
+      otherProperties = other || {};
       required = keys.filter((e) => e != "govt_advantages");
+    } else {
+      const { disability_percentage, govt_advantages, ...other } =
+        constantSchema?.properties || {};
+      otherProperties = other;
+      required = keys.filter(
+        (e) => !["disability_percentage", "govt_advantages"].includes(e),
+      );
     }
     newSchema = {
       ...constantSchema,
@@ -193,7 +208,13 @@ export default function DisabilityForm() {
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
-    if (["root_has_disability", "root_has_govt_advantage"].includes(id)) {
+    if (
+      [
+        "root_has_disability",
+        "root_has_govt_advantage",
+        "root_has_disability_certificate",
+      ].includes(id)
+    ) {
       const updatedSchema = await setSchemaByDependency(data, fixedSchema);
       newData = updatedSchema?.newData ? updatedSchema?.newData : {};
       setSchema(updatedSchema?.newSchema);
