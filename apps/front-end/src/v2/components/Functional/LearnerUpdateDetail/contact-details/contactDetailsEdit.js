@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack } from "native-base";
+import { Alert, Box, HStack, VStack } from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -14,7 +14,7 @@ import {
   CustomOTPBox,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import {
   TitleFieldTemplate,
@@ -46,6 +46,9 @@ export default function ContactDetailsEdit({ ip }) {
   const [verifyOtpData, setverifyOtpData] = useState();
   const [otpButton, setOtpButton] = React.useState(false);
   const [mobileConditon, setMobileConditon] = React.useState(false);
+
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
   const navigate = useNavigate();
 
   const onPressBackButton = async () => {
@@ -83,8 +86,8 @@ export default function ContactDetailsEdit({ ip }) {
       const required = constantSchema?.required.filter(
         (item) =>
           !["alternative_device_type", "alternative_device_ownership"].includes(
-            item
-          )
+            item,
+          ),
       );
       setSchema({ ...constantSchema, properties, required });
     }
@@ -183,8 +186,8 @@ export default function ContactDetailsEdit({ ip }) {
             data?.error?.constructor?.name === "String"
               ? [data?.error]
               : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("MINIMUM_LENGTH_IS_10")],
+                ? data?.error
+                : [t("MINIMUM_LENGTH_IS_10")],
         },
       };
       setErrors(newErrors);
@@ -198,8 +201,8 @@ export default function ContactDetailsEdit({ ip }) {
             data?.error?.constructor?.name === "String"
               ? [data?.error]
               : data?.error?.constructor?.name === "Array"
-              ? data?.error
-              : [t("PLEASE_ENTER_VALID_NUMBER")],
+                ? data?.error
+                : [t("PLEASE_ENTER_VALID_NUMBER")],
         },
       };
       setErrors(newErrors);
@@ -250,7 +253,7 @@ export default function ContactDetailsEdit({ ip }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -314,8 +317,8 @@ export default function ContactDetailsEdit({ ip }) {
         } = constantSchema?.properties || {};
         const required = constantSchema?.required.filter((item) =>
           ["alternative_device_type", "alternative_device_ownership"].includes(
-            item
-          )
+            item,
+          ),
         );
 
         setSchema({ ...constantSchema, properties, required });
@@ -376,7 +379,11 @@ export default function ContactDetailsEdit({ ip }) {
       !errors
     ) {
       await AgRegistryService.updateAg(formData, userId);
-      navigate(`/beneficiary/${userId}/basicdetails`);
+      if (redirectLink) {
+        navigate(redirectLink);
+      } else {
+        navigate(`/beneficiary/${userId}/basicdetails`);
+      }
     }
   };
 
@@ -440,14 +447,25 @@ export default function ContactDetailsEdit({ ip }) {
                 {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
               </FrontEndTypo.Primarybutton>
             ) : (
-              <FrontEndTypo.Primarybutton
-                mt="3"
-                variant={"primary"}
-                type="submit"
-                onPress={() => submit()}
-              >
-                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-              </FrontEndTypo.Primarybutton>
+              <VStack space={4}>
+                {redirectLink && (
+                  <FrontEndTypo.Primarybutton
+                    p="4"
+                    mt="4"
+                    onPress={() => submit()}
+                  >
+                    {t("SAVE_AND_ENROLLMENT")}
+                  </FrontEndTypo.Primarybutton>
+                )}
+                <FrontEndTypo.Primarybutton
+                  mt="3"
+                  variant={"primary"}
+                  type="submit"
+                  onPress={() => submit()}
+                >
+                  {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
+                </FrontEndTypo.Primarybutton>
+              </VStack>
             )}
           </Form>
         ) : (

@@ -1,7 +1,7 @@
 export const LABEL_NAMES = [
   {
     title: "PROFILE_PHOTO",
-    path: "/beneficiary/:id/upload/1",
+    path: "/beneficiary/:id/upload/upload_no",
     keys: {
       profile_photo_1: "PROFILE_PHOTO_1",
       profile_photo_2: "PROFILE_PHOTO_2",

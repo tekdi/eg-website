@@ -14,8 +14,6 @@ import {
   objProps,
   setSelectedAcademicYear,
   setSelectedProgramId,
-  t,
-  CardComponent,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
@@ -26,18 +24,18 @@ import {
   Box,
   Divider,
   HStack,
-  Modal,
   Progress,
   ScrollView,
   Stack,
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
-import { LABEL_NAMES } from "../utils/beneficiaryData";
 
 export default function BenificiaryProfileView(userTokenInfo) {
+  const { t } = useTranslation();
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
@@ -74,8 +72,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false,
   );
-  const [missingData, setMissingData] = React.useState();
-  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const saveDataToIndexedDB = async () => {
     const obj = {
@@ -505,56 +501,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
     }
   }
 
-  const learnerDetailsCheck = async () => {
-    try {
-      setLoading(true);
-      const { data: searchKeys } =
-        await benificiaryRegistoryService.checkLearnerDetails(id);
-
-      if (searchKeys?.length > 0) {
-        const filteredData = LABEL_NAMES.map((label) => {
-          const matchedKeys = Object.keys(label.keys).filter((key) =>
-            searchKeys.includes(key),
-          );
-
-          if (matchedKeys.length > 0) {
-            const filteredKeys = matchedKeys.reduce((acc, key) => {
-              acc[key] = label.keys[key];
-              return acc;
-            }, {});
-
-            return {
-              title: label.title,
-              path: label.path,
-              keys: filteredKeys,
-            };
-          }
-
-          return null;
-        }).filter((item) => item !== null);
-        setMissingData(filteredData);
-      } else {
-        const lastStandard = parseInt(
-          benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
-          10,
-        );
-        const hasWarning = isNaN(lastStandard) || lastStandard < 5;
-        const checkNeeded = ["identified", "ready_to_enroll"].includes(
-          benificiary?.program_beneficiaries?.status,
-        );
-        if (hasWarning && !openWarningModal && checkNeeded) {
-          setOpenWarningModal(true);
-        } else {
-          navigate(`/beneficiary/${id}/enrollmentdetails`);
-        }
-      }
-    } catch (error) {
-      console.error("Error in fetching learner details:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Layout
       _appBar={{
@@ -903,139 +849,31 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   _icon={{ size: "20" }}
                 />
               </HStack>
-              <VStack>
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="Center"
-                  p="3"
-                  pr="0"
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="0"
+              >
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
                 >
-                  <FrontEndTypo.H3
-                    color="floatingLabelColor.500"
-                    fontWeight={"600"}
-                  >
-                    {t("ENROLLMENT_DETAILS")}
-                  </FrontEndTypo.H3>
+                  {t("ENROLLMENT_DETAILS")}
+                </FrontEndTypo.H3>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={learnerDetailsCheck}
-                        color="floatingLabelColor.500"
-                        _icon={{ size: "20" }}
-                      />
-                    )}
-                </HStack>
-                <Modal
-                  isOpen={missingData}
-                  onClose={() => setMissingData()}
-                  size={"xl"}
-                >
-                  <Modal.Content>
-                    <Modal.Header textAlign={"Center"}>
-                      <FrontEndTypo.H2 color="textGreyColor.500">
-                        {t("EXPIRY_CONTENT.HEADING")}
-                      </FrontEndTypo.H2>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <VStack space={2}>
-                        {t("LEARNER_FIELDS_MISSING_WARNING")}
-                        {missingData?.map((item, i) => (
-                          <VStack
-                            key={item?.path}
-                            p="2"
-                            borderWidth={1}
-                            borderColor="gray.300"
-                            rounded={"sm"}
-                          >
-                            <HStack
-                              alignItems={"center"}
-                              justifyContent="space-between"
-                            >
-                              <FrontEndTypo.H3 bold color="textGreyColor.500">
-                                {t(item?.title)}
-                              </FrontEndTypo.H3>
-                              <IconByName
-                                p="1"
-                                name="PencilLineIcon"
-                                color="iconColor.200"
-                                _icon={{ size: "20" }}
-                                onPress={(e) => {
-                                  if (item.title == "PROFILE_PHOTO") {
-                                    navigate(
-                                      item?.path
-                                        ?.replace(":id", id)
-                                        ?.replace(
-                                          "1",
-                                          Object.keys(
-                                            item?.keys || {},
-                                          )?.[0]?.replace("profile_photo_", ""),
-                                        ),
-                                    );
-                                  } else {
-                                    navigate(item?.path?.replace(":id", id));
-                                  }
-                                }}
-                              />
-                            </HStack>
-                            <VStack>
-                              {Object.keys(item?.keys || {}).map((keyName) => (
-                                <FrontEndTypo.H4 color="textGreyColor.500">
-                                  {t(item?.keys?.[keyName])}
-                                </FrontEndTypo.H4>
-                              ))}
-                            </VStack>
-                          </VStack>
-                        ))}
-                      </VStack>
-                    </Modal.Body>
-                    <Modal.Footer justifyContent={"space-between"}>
-                      <FrontEndTypo.Secondarybutton
-                        onPress={() => setMissingData()}
-                      >
-                        {t("CLOSE")}
-                      </FrontEndTypo.Secondarybutton>
-                      <FrontEndTypo.Primarybutton
-                        onPress={() =>
-                          navigate(`/beneficiary/${id}/basicdetails`)
-                        }
-                      >
-                        {t("EDIT_DETAILS")}
-                      </FrontEndTypo.Primarybutton>
-                    </Modal.Footer>
-                  </Modal.Content>
-                </Modal>
-
-                <Modal
-                  isOpen={openWarningModal}
-                  onClose={() => setOpenWarningModal(false)}
-                >
-                  <Modal.Content>
-                    <Modal.Header textAlign={"Center"}>
-                      <FrontEndTypo.H2 color="textGreyColor.500">
-                        {t("EXPIRY_CONTENT.HEADING")}
-                      </FrontEndTypo.H2>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <VStack space={4}>
-                        {t("EDUCATION_STANDARD_WARNING")}
-                      </VStack>
-                    </Modal.Body>
-                    <Modal.Footer justifyContent={"space-between"}>
-                      <FrontEndTypo.Secondarybutton
-                        onPress={() => setOpenWarningModal(false)}
-                      >
-                        {t("CANCEL")}
-                      </FrontEndTypo.Secondarybutton>
-                      <FrontEndTypo.Primarybutton onPress={learnerDetailsCheck}>
-                        {t("PROCEED")}
-                      </FrontEndTypo.Primarybutton>
-                    </Modal.Footer>
-                  </Modal.Content>
-                </Modal>
-              </VStack>
+                {benificiary?.program_beneficiaries?.status !== "dropout" &&
+                  benificiary?.program_beneficiaries?.status !== "rejected" && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      color="floatingLabelColor.500"
+                      _icon={{ size: "20" }}
+                      onPress={(e) => {
+                        navigate(`/beneficiary/${id}/enrollmentdetails`);
+                      }}
+                    />
+                  )}
+              </HStack>
 
               {benificiary?.program_beneficiaries?.status ===
                 "registered_in_camp" && (

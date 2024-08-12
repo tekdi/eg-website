@@ -827,7 +827,7 @@ export default function EnrollmentForm() {
         stepTitle={t("ENROLLMENT_DETAILS")}
       >
         <Box py={6} px={4} mb={5}>
-          <UserDataCheck {...{ missingData, id }} />
+          <UserDataCheck {...{ missingData, setMissingData, id }} />
         </Box>
       </Layout>
     );
@@ -1015,7 +1015,7 @@ const learnerDetailsCheck = async ({ id, benificiary }) => {
   }
 };
 
-const UserDataCheck = ({ missingData, id }) => {
+const UserDataCheck = ({ missingData, setMissingData, id }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -1042,20 +1042,25 @@ const UserDataCheck = ({ missingData, id }) => {
                   color="iconColor.200"
                   _icon={{ size: "20" }}
                   onPress={(e) => {
+                    const searchParams = new URLSearchParams({
+                      redirectLink: `/beneficiary/edit/${id}/enrollment-details`,
+                    }).toString();
                     if (item.title == "PROFILE_PHOTO") {
                       navigate(
-                        item?.path
+                        `${item?.path
                           ?.replace(":id", id)
                           ?.replace(
-                            "1",
+                            "upload_no",
                             Object.keys(item?.keys || {})?.[0]?.replace(
                               "profile_photo_",
                               "",
                             ),
-                          ),
+                          )}?${searchParams}`,
                       );
                     } else {
-                      navigate(item?.path?.replace(":id", id));
+                      navigate(
+                        `${item?.path?.replace(":id", id)}?${searchParams}`,
+                      );
                     }
                   }}
                 />
@@ -1069,16 +1074,28 @@ const UserDataCheck = ({ missingData, id }) => {
               </VStack>
             </VStack>
           ))}
-          <HStack>
-            <FrontEndTypo.Primarybutton
-              onPress={() => navigate(`/beneficiary/${id}/basicdetails`)}
+        </VStack>
+      ) : (
+        <VStack
+          space={4}
+          p="2"
+          borderWidth={1}
+          borderColor="gray.300"
+          rounded={"sm"}
+          divider={<HStack borderBottomWidth={1} borderColor="gray.300" />}
+        >
+          {t("EDUCATION_STANDARD_WARNING")}
+          <HStack justifyContent={"space-between"}>
+            <FrontEndTypo.Secondarybutton
+              onPress={() => navigate(`/beneficiary/${id}`)}
             >
-              {t("EDIT_DETAILS")}
+              {t("CANCEL")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton onPress={() => setMissingData()}>
+              {t("PROCEED")}
             </FrontEndTypo.Primarybutton>
           </HStack>
         </VStack>
-      ) : (
-        <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
       )}
     </VStack>
   );
