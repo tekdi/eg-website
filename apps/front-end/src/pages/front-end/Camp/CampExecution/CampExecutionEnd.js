@@ -147,20 +147,12 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             {
               title: t("TODAYS_TASKS"),
               isDone: !disableTodayAct,
-              onPress: () => {
-                if (!disableTodayAct) {
-                  navigate(`/camps/${id}/campexecution/activities`);
-                }
-              },
+              onPress: () => navigate(`/camps/${id}/campexecution/activities`),
             },
             {
               title: t("END_CAMP"),
               isDone: !disableEndCamp,
-              onPress: () => {
-                if (!disableEndCamp) {
-                  setOpenModal(true);
-                }
-              },
+              onPress: () => setOpenModal(true),
             },
           ]}
         />

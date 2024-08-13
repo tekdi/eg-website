@@ -61,7 +61,7 @@ const App = ({ data, _vstack }) => {
 };
 
 function TimeLineBtn(props) {
-  if (props?.onPress) {
+  if (props?.onPress && props?.isDone) {
     return (
       <Pressable onPress={props?.onPress}>
         <TimelineItem {...props} />
