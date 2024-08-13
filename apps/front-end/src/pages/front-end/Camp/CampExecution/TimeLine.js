@@ -1,5 +1,6 @@
 import { FrontEndTypo } from "@shiksha/common-lib";
 import { Box, HStack, VStack, Pressable } from "native-base";
+import PropTypes from "prop-types";
 
 const TimelineItem = ({ index, title, description, isLast, space, isDone }) => {
   return (
@@ -73,3 +74,8 @@ function TimeLineBtn(props) {
 }
 
 export default App;
+
+TimeLineBtn.propTypes = {
+  onPress: PropTypes.func,
+  isDone: PropTypes.bool,
+};
