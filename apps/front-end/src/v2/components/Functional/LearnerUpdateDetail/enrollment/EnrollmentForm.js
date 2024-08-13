@@ -11,6 +11,7 @@ import {
   getArray,
   getOptions,
   getSelectedProgramId,
+  getUiSchema,
 } from "@shiksha/common-lib";
 import { Alert, Box, HStack, Image, Modal, VStack } from "native-base";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -184,8 +185,8 @@ const getSubjects = async (schemaData, value) => {
                 state_name === "RAJASTHAN"
                   ? "/enrollment-receipt.jpeg"
                   : state_name === "BIHAR"
-                  ? "/application_receipt_bihar.jpg"
-                  : "/enrollment_receipt_mp.jpg",
+                    ? "/application_receipt_bihar.jpg"
+                    : "/enrollment_receipt_mp.jpg",
             }}
             height={"200px"}
             width={"124px"}
