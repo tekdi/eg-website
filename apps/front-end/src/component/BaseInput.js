@@ -313,16 +313,9 @@ CustomR.propTypes = {
   schema: PropTypes.any,
 };
 // rjsf custom RadioBtn field
-export const RadioBtn = ({
-  options,
-  value,
-  onChange,
-  required,
-  schema,
-  directionColumn,
-}) => {
+export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, _stack } = schema || {};
+  const { label, format, ...otherSchema } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -338,6 +331,7 @@ export const RadioBtn = ({
           enumOptions: items,
         }}
         schema={{
+          ...(otherSchema || {}),
           // _pressable: { style: { backgroundColor: "#999" } },
           _stackIcon: { flexDirection: "row" },
           icons: items?.map((e) =>
