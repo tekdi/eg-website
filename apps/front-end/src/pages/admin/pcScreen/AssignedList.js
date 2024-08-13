@@ -26,6 +26,7 @@ import { debounce } from "lodash";
 import { MultiCheck } from "../../../component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
+import PropTypes from "prop-types";
 
 const AssignedList = ({ setPcData, setassignPrerak, fetchPcrDetails }) => {
   const { t } = useTranslation();
@@ -486,3 +487,9 @@ const AssignedList = ({ setPcData, setassignPrerak, fetchPcrDetails }) => {
 };
 
 export default AssignedList;
+
+AssignedList.propTypes = {
+  setPcData: PropTypes.func,
+  setassignPrerak: PropTypes.func,
+  fetchPcrDetails: PropTypes.func,
+};
