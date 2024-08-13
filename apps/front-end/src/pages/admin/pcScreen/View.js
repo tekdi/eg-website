@@ -130,18 +130,18 @@ function View() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await PcuserService.pcDetails({
-        id: id,
-        limit: 10,
-        page: 1,
-      });
-      setData(result);
-      setassignPrerakCount(result?.data);
-    };
-
-    fetchData();
+    fetchPcrDetails();
   }, []);
+
+  const fetchPcrDetails = async () => {
+    const result = await PcuserService.pcDetails({
+      id: id,
+      limit: 10,
+      page: 1,
+    });
+    setData(result);
+    setassignPrerakCount(result?.data);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -156,7 +156,7 @@ function View() {
     };
     fetchData();
   }, [filter]);
-
+  console.log("pcData", pcData);
   return (
     <AdminLayout>
       <VStack flex={1} mt="5" space={4} p="4">
@@ -527,7 +527,11 @@ function View() {
             </Modal.Footer>
           </Modal.Content>
         </Modal>
-        <AssignedList setPcData={setPcData} setassignPrerak={setassignPrerak} />
+        <AssignedList
+          setPcData={setPcData}
+          setassignPrerak={setassignPrerak}
+          fetchPcrDetails={fetchPcrDetails}
+        />
       </VStack>
     </AdminLayout>
   );

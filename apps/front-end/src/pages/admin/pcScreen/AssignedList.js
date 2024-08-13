@@ -27,7 +27,7 @@ import { MultiCheck } from "../../../component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 
-const AssignedList = ({ setPcData, setassignPrerak }) => {
+const AssignedList = ({ setPcData, setassignPrerak, fetchPcrDetails }) => {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
   const { id } = useParams();
@@ -218,6 +218,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
       setIsRemovePrerak(true);
       setIsCancelVisible(false);
       clearFilter();
+      fetchPcrDetails();
     }
   };
 
