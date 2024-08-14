@@ -212,6 +212,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [programUser, setProgramUser] = useState();
   const [localData, setLocalData] = useState();
   const [publishEvent, setPublishEvent] = useState();
+  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   useEffect(() => {
     const getSubjectList = async () => {
@@ -553,7 +554,25 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     );
     setProgramUser(data);
   }, [fetchData]);
-
+  const enrollmentCheck = () => {
+    const lastStandard = parseInt(
+      data?.core_beneficiaries?.last_standard_of_education ?? "",
+      10
+    );
+    const hasWarning = isNaN(lastStandard) || lastStandard < 5;
+    const checkNeeded = [
+      "identified",
+      "ready_to_enroll",
+      "enrolled",
+      "sso_id_enrolled",
+    ].includes(data?.program_beneficiaries?.enrollment_status);
+    if (hasWarning && !openWarningModal && checkNeeded) {
+      setOpenWarningModal(true);
+      return;
+    } else {
+      navigate(`/admin/beneficiary/${id}/editEnrollmentDetails`);
+    }
+  };
   return (
     <Layout _sidebar={footerLinks} loading={loading}>
       <VStack p={"4"} space={"3%"} width={"100%"}>
@@ -561,7 +580,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           <HStack alignItems={"center"} space="1" pt="3">
             <IconByName name="UserLineIcon" size="md" />
             <AdminTypo.H1 color="Activatedcolor.400">
-              {t("PROFILE")}
+              {t("All_AG_LEARNERS")}
             </AdminTypo.H1>
             <IconByName
               size="sm"
@@ -579,9 +598,18 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 data?.program_beneficiaries?.status
               )
                 ? `${
-                    data?.program_beneficiaries?.enrollment_first_name ?? "-"
-                  } ${data?.program_beneficiaries?.enrollment_last_name ?? "-"}`
-                : `${data?.first_name ?? "-"} ${data?.last_name ?? "-"}`}
+                    [
+                      data?.program_beneficiaries?.enrollment_first_name,
+                      data?.program_beneficiaries?.enrollment_last_name,
+                    ]
+                      .filter(Boolean)
+                      .join(" ") || "-"
+                  }`
+                : `${
+                    [data?.first_name, data?.last_name]
+                      .filter(Boolean)
+                      .join(" ") || "-"
+                  }`}
             </AdminTypo.H1>
             <IconByName
               size="sm"
@@ -1188,16 +1216,19 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
                       {EditButton === true ? (
                         <Select
-                          selectedValue={status?.jan_adhar || ""}
+                          selectedValue={status?.jan_aadhaar_card || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.jan_adhar || "Select"}
+                          placeholder={status?.jan_aadhaar_card || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, jan_adhar: itemValue })
+                            setStatus({
+                              ...status,
+                              jan_aadhaar_card: itemValue,
+                            })
                           }
                         >
                           {Array.isArray(selectData) &&
@@ -1216,7 +1247,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.jan_adhar || ""}
+                            enumOptionValue={status?.jan_aadhaar_card || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1228,16 +1259,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       </AdminTypo.H5>
                       {EditButton === true ? (
                         <Select
-                          selectedValue={status?.aadhaar || ""}
+                          selectedValue={status?.aadhaar_card || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.aadhaar || "Select"}
+                          placeholder={status?.aadhaar_card || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon fontSize="sm" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, aadhaar: itemValue })
+                            setStatus({ ...status, aadhaar_card: itemValue })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1255,7 +1286,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.aadhaar || ""}
+                            enumOptionValue={status?.aadhaar_card || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1308,16 +1339,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       {EditButton === true ? (
                         <Select
                           isDisabled={EditButton === false}
-                          selectedValue={status?.mobile || ""}
+                          selectedValue={status?.mobile_number || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.mobile || "Select"}
+                          placeholder={status?.mobile_number || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, mobile: itemValue })
+                            setStatus({ ...status, mobile_number: itemValue })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1335,7 +1366,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.mobile || ""}
+                            enumOptionValue={status?.mobile_number || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1388,16 +1419,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       {EditButton === true ? (
                         <Select
                           isDisabled={EditButton === false}
-                          selectedValue={status?.bank || ""}
+                          selectedValue={status?.bank_passbook || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.bank || "Select"}
+                          placeholder={status?.bank_passbook || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, bank: itemValue })
+                            setStatus({ ...status, bank_passbook: itemValue })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1415,7 +1446,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.bank || ""}
+                            enumOptionValue={status?.bank_passbook || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1429,16 +1460,19 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       {EditButton === true ? (
                         <Select
                           isDisabled={EditButton === false}
-                          selectedValue={status?.birth || ""}
+                          selectedValue={status?.birth_certificate || ""}
                           accessibilityLabel="Select"
-                          placeholder={status?.birth || "Select"}
+                          placeholder={status?.birth_certificate || "Select"}
                           _selectedItem={{
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />,
                           }}
                           mt={1}
                           onValueChange={(itemValue) =>
-                            setStatus({ ...status, birth: itemValue })
+                            setStatus({
+                              ...status,
+                              birth_certificate: itemValue,
+                            })
                           }
                         >
                           {selectData?.map((item) => {
@@ -1456,7 +1490,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           <GetEnumValue
                             t={t}
                             enumType={"DOCUMENT_STATUS"}
-                            enumOptionValue={status?.birth || ""}
+                            enumOptionValue={status?.birth_certificate || ""}
                             enumApiData={enumOptions}
                           />
                         </AdminTypo.H4>
@@ -1474,28 +1508,28 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 rounded="xl"
                 w={"50%"}
               >
-                <HStack justifyContent={"space-between"}>
+                <HStack justifyContent={"space-between"} alignItems={"center"}>
                   <AdminTypo.H4 color="textGreyColor.800" bold>
                     {t("ENROLLMENT_DETAILS")}
                   </AdminTypo.H4>
 
-                  {!["enrolled_ip_verified", "registered_in_camp"].includes(
-                    data?.program_beneficiaries?.status
-                  ) &&
-                    !publishEvent && (
+                  {![
+                    "enrolled_ip_verified",
+                    "registered_in_camp",
+                    "sso_id_verified",
+                  ].includes(data?.program_beneficiaries?.status) &&
+                    publishEvent && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
                         _icon={{ size: "25" }}
-                        onPress={(e) => {
-                          navigate(
-                            `/admin/beneficiary/${id}/editEnrollmentDetails`
-                          );
-                        }}
+                        onPress={enrollmentCheck}
                       />
                     )}
 
-                  {data?.program_beneficiaries?.status === "enrolled" && (
+                  {["enrolled", "sso_id_enrolled"].includes(
+                    data?.program_beneficiaries?.status
+                  ) && (
                     <AdminTypo.StatusButton
                       width={"25%"}
                       status={"success"}
@@ -1550,7 +1584,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "payment_receipt_document_id",
                     ...(localData !== "RAJASTHAN"
                       ? ["application_form", "application_login_id"]
-                      : []),
+                      : ["sso_id"]),
                   ]}
                   labels={{
                     enrollment_status: "ENROLLMENT_STATUS",
@@ -1561,7 +1595,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                         : "APPLICATION_ID",
                     payment_receipt_document_id:
                       localData === "RAJASTHAN"
-                        ? "ENROLLMENT_RECIEPT"
+                        ? "ENROLLMENT_RECEIPT"
                         : "PAYMENT_RECEIPTS",
                     ...(localData !== "RAJASTHAN"
                       ? {
@@ -1569,7 +1603,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                           application_login_id:
                             "APPLICATION_LOGIN_ID_SCREENSHOT",
                         }
-                      : {}),
+                      : { sso_id: "SSO_ID" }),
                   }}
                   formats={{
                     payment_receipt_document_id: "FileUpload",
@@ -1817,6 +1851,33 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                 {t("CONFIRM")}
               </AdminTypo.PrimaryButton>
             </HStack>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={openWarningModal}
+        onClose={() => setOpenWarningModal(false)}
+      >
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <AdminTypo.H2 color="textGreyColor.500">
+              {t("EXPIRY_CONTENT.HEADING")}
+            </AdminTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack space={4}>
+              {t("EDUCATION_STANDARD_ENROLLMENT_WARNING")}
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <AdminTypo.Secondarybutton
+              onPress={() => setOpenWarningModal(false)}
+            >
+              {t("NO")}
+            </AdminTypo.Secondarybutton>
+            <AdminTypo.Successbutton onPress={enrollmentCheck}>
+              {t("YES")}
+            </AdminTypo.Successbutton>
           </Modal.Footer>
         </Modal.Content>
       </Modal>

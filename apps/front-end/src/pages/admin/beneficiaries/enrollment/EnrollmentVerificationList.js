@@ -9,6 +9,7 @@ import {
   AdminLayout as Layout,
   urlData,
   setQueryParameters,
+  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -21,10 +22,11 @@ import {
   Input,
   Box,
   Pressable,
+  Stack,
 } from "native-base";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 import { debounce } from "lodash";
@@ -140,7 +142,9 @@ const columns = (t, navigate, filter) => [
   {
     name: t("ACTION"),
     selector: (row) =>
-      row?.program_beneficiaries?.status === "enrolled" &&
+      ["enrolled", "sso_id_enrolled"].includes(
+        row?.program_beneficiaries?.status
+      ) &&
       !(row?.is_duplicate === "yes" && row?.is_deactivated === null) && (
         <AdminTypo.Secondarybutton
           my="3"
@@ -159,6 +163,7 @@ const columns = (t, navigate, filter) => [
 
 // Table component
 function EnrollmentVerificationList({ footerLinks }) {
+  const { type } = useParams();
   const [beneficiaryStatus, setBeneficiaryStatus] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -167,7 +172,8 @@ function EnrollmentVerificationList({ footerLinks }) {
   const ref = useRef(null);
   const refSubHeader = useRef(null);
   const [urlFilterApply, setUrlFilterApply] = useState(false);
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [stateName, setStateName] = useState();
   const [filter, setFilter] = useState({ limit: 10 });
   const [loading, setLoading] = useState(true);
 
@@ -179,20 +185,30 @@ function EnrollmentVerificationList({ footerLinks }) {
     });
   };
 
-  useEffect(async () => {
-    if (urlFilterApply) {
-      setLoading(true);
-      const result = await benificiaryRegistoryService.beneficiariesFilter({
-        ...filter,
-        status: "enrolled",
-      });
-      setData(result.data?.data);
-      setPaginationTotalRows(
-        result?.data?.totalCount ? result?.data?.totalCount : 0
-      );
-      setLoading(false);
-    }
-  }, [filter]);
+  const handleOpenButtonClick = () => {
+    setIsDrawerOpen((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      if (urlFilterApply && stateName) {
+        setLoading(true);
+        const result = await benificiaryRegistoryService.beneficiariesFilter({
+          ...filter,
+          status:
+            type === "SSOID" && stateName == "RAJASTHAN"
+              ? "sso_id_enrolled"
+              : "enrolled",
+        });
+        setData(result.data?.data);
+        setPaginationTotalRows(
+          result?.data?.totalCount ? result?.data?.totalCount : 0
+        );
+        setLoading(false);
+      }
+    };
+    init();
+  }, [filter, stateName]);
 
   useEffect(() => {
     const urlFilter = urlData(["district", "facilitator", "block"]);
@@ -202,7 +218,15 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
-    setBeneficiaryStatus(result?.data?.ENROLLEMENT_VERIFICATION_STATUS);
+    let { state_name } = await getSelectedProgramId();
+    setStateName(state_name);
+    let list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS;
+    if (state_name !== "RAJASTHAN") {
+      list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS?.filter(
+        (e) => e.value != "sso_id_verified"
+      );
+    }
+    setBeneficiaryStatus(list);
   }, []);
 
   const setFilterObject = (data) => {
@@ -232,7 +256,13 @@ function EnrollmentVerificationList({ footerLinks }) {
             name="ArrowRightSLineIcon"
             onPress={(e) => navigate("/admin/learners")}
           />
-          <AdminTypo.H4 bold>{t("ENROLLMENT_VERIFICATION")}</AdminTypo.H4>
+          <AdminTypo.H4 bold>
+            {t(
+              type === "SSOID"
+                ? "SSOID_VERIFICATION"
+                : "ENROLLMENT_VERIFICATION"
+            )}
+          </AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}
@@ -252,23 +282,77 @@ function EnrollmentVerificationList({ footerLinks }) {
         />
       </HStack>
       <HStack>
-        <Box
-          flex={[2, 2, 1]}
-          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
-        >
-          <HStack ref={ref}></HStack>
-          <ScrollView
-            maxH={
-              Height -
-              (refAppBar?.clientHeight +
-                ref?.current?.clientHeight +
-                refSubHeader?.current?.clientHeight)
-            }
-            pr="2"
+        <Stack style={{ position: "relative", overflowX: "hidden" }}>
+          <Stack
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "0",
+              transition: "left 0.3s ease",
+              width: "250px",
+              height: "100%",
+              background: "white",
+              zIndex: 1,
+            }}
           >
-            <Filter {...{ filter, setFilter }} />
-          </ScrollView>
-        </Box>
+            <Box
+              flex={[2, 2, 1]}
+              style={{
+                borderRightColor: "dividerColor",
+                borderRightWidth: "2px",
+              }}
+            >
+              <ScrollView
+                maxH={
+                  Height -
+                  (refAppBar?.clientHeight +
+                    ref?.current?.clientHeight +
+                    refSubHeader?.current?.clientHeight)
+                }
+                pr="2"
+              >
+                {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+              </ScrollView>
+            </Box>
+          </Stack>
+
+          <Stack
+            style={{
+              marginLeft: isDrawerOpen ? "250px" : "0",
+              transition: "margin-left 0.3s ease",
+            }}
+          />
+        </Stack>
+        <VStack
+          ml={"-1"}
+          rounded={"xs"}
+          height={"50px"}
+          bg={
+            filter?.district ||
+            filter?.state ||
+            filter?.block ||
+            filter?.status ||
+            filter?.facilitator
+              ? "textRed.400"
+              : "#E0E0E0"
+          }
+          justifyContent="center"
+          onClick={handleOpenButtonClick}
+        >
+          <IconByName
+            name={isDrawerOpen ? "ArrowLeftSLineIcon" : "FilterLineIcon"}
+            color={
+              filter?.state ||
+              filter?.district ||
+              filter?.block ||
+              filter?.status ||
+              filter?.facilitator
+                ? "white"
+                : "black"
+            }
+            _icon={{ size: "30px" }}
+          />
+        </VStack>
         <Box flex={[5, 5, 4]}>
           <ScrollView
             maxH={
@@ -280,7 +364,7 @@ function EnrollmentVerificationList({ footerLinks }) {
               (refAppBar?.clientHeight + refSubHeader?.current?.clientHeight)
             }
           >
-            <VStack py={6} px={4} mb={5}>
+            <VStack py={6} px={0} mb={5}>
               <ScrollView horizontal={true} mb="2">
                 <HStack pb="2">
                   <Text

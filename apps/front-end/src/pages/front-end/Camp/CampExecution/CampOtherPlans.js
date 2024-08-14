@@ -1,45 +1,48 @@
-import React from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   FrontEndTypo,
   Layout,
   campService,
   enumRegistryService,
 } from "@shiksha/common-lib";
-import { VStack } from "native-base";
+import { VStack, HStack, ScrollView } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { RadioBtn } from "component/BaseInput";
 
-const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
+const CampOtherPlans = memo(({ footerLinks, userTokenInfo }) => {
   const { t } = useTranslation();
-  const [error, setError] = React.useState(false);
+  const [error, setError] = useState(false);
   const { id } = useParams();
-  const [reasonData, setReasonData] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [reason, setReason] = React.useState();
-  const [campDetails, setCampDetails] = React.useState({});
+  const [reasonData, setReasonData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [reason, setReason] = useState();
+  const [camp, setCamp] = useState({});
   const navigate = useNavigate();
+  const refButton = useRef(null);
+  const [bodyHeight, setBodyHeight] = useState(0);
+  const [loadingHeight, setLoadingHeight] = useState(0);
 
-  const enumData = React.useCallback(async () => {
-    const listOfEnum = await enumRegistryService.listOfEnum();
-    const absentReasons = listOfEnum?.data?.CAMP_ABSENT_REASONS;
-    const transformedAbsentReasons = absentReasons.map((reason) => ({
-      label: reason.title,
-      value: reason.value,
-    }));
-    setReasonData(transformedAbsentReasons);
-    setLoading(false);
-  }, []);
-
-  React.useEffect(() => {
+  useEffect(() => {
     const getCampDetails = async () => {
       setLoading(true);
       try {
         const response = await campService.getCampDetails({ id });
-        setCampDetails(response?.data);
+        setCamp(response?.data);
+
+        const listOfEnum = await enumRegistryService.listOfEnum();
+        let absentReasons = listOfEnum?.data?.CAMP_ABSENT_REASONS;
+        console.log(response?.data?.type);
+        if (response?.data?.type == "pcr") {
+          absentReasons = listOfEnum?.data?.NEEV_CAMP_ABSENT_REASONS;
+        }
+        const transformedAbsentReasons = absentReasons?.map((reason) => ({
+          label: reason.title,
+          value: reason.value,
+        }));
+        setReasonData(transformedAbsentReasons);
       } catch (error) {
         console.log("Error in fetching camp details", error);
-        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -47,21 +50,28 @@ const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
     getCampDetails();
   }, []);
 
-  React.useEffect(() => {
-    enumData();
-  }, [enumData]);
+  useEffect(() => {
+    if (refButton?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - refButton?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight]);
 
-  const submitReason = React.useCallback(async () => {
+  const submitReason = useCallback(async () => {
+    if (!reason) {
+      setError(true);
+    }
     const payLoad = {
       camp_id: id,
       camp_day_happening: "no",
       camp_day_not_happening_reason: reason,
-      camp_type: campDetails?.type,
+      camp_type: camp?.type,
     };
     setLoading(true);
     try {
-      await campService.campActivity(payLoad);
-      navigate(`/camps`);
+      // await campService.campActivity(payLoad);
+      // navigate(`/camps`);
     } catch (error) {
       setError(true);
       setLoading(false);
@@ -72,6 +82,7 @@ const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
 
   return (
     <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
         name: t("CAMP_OTHER_PLANS"),
         onPressBackButton: () => navigate(`/camps/${id}/campexecution`),
@@ -82,42 +93,58 @@ const CampOtherPlans = React.memo(({ footerLinks, userTokenInfo }) => {
       analyticsPageTitle={"CAMP_OTHERPLANS"}
       pageTitle={t("CAMP_OTHER_PLANS")}
     >
-      <VStack space={2} padding={5}>
-        <FrontEndTypo.H1>{t("CAMP_EXECUTION")}</FrontEndTypo.H1>
-        <FrontEndTypo.H3 color={"textGreyColor.750"}>
-          {t("CAMP_OTHER_PLAN")}
-        </FrontEndTypo.H3>
-        <VStack pt={5} space={4}>
-          <FrontEndTypo.H2 color={"textGreyColor.750"}>
-            {t("WHATS_YOUR_PLAN_TODAY")}
-          </FrontEndTypo.H2>
-          <RadioBtn
-            directionColumn={"column"}
-            value={reason || []}
-            onChange={(e) => {
-              setReason(e);
-              setError(false);
-            }}
-            schema={{
-              grid: 1,
-              _hstack: {
-                maxH: 130,
-                overflowY: "scroll",
-              },
-            }}
-            options={{
-              enumOptions: reasonData,
-            }}
-          />
-          {error && (
-            <FrontEndTypo.H3 alignSelf={"start"} color={"textMaroonColor.400"}>
-              {t("SELECT_MESSAGE")}
+      <ScrollView maxH={loadingHeight} minH={loadingHeight}>
+        <VStack space={3} padding={5}>
+          <VStack>
+            <FrontEndTypo.H2>{t("CAMP_EXECUTION")}</FrontEndTypo.H2>
+            <FrontEndTypo.H4 color={"textGreyColor.750"}>
+              {t("CAMP_OTHER_PLAN")}
+            </FrontEndTypo.H4>
+          </VStack>
+          <VStack space={1}>
+            <FrontEndTypo.H3 bold color={"textMaroonColor.400"}>
+              {t("WHATS_YOUR_PLAN_TODAY")}
             </FrontEndTypo.H3>
-          )}
-          <FrontEndTypo.Secondarybutton px={5} onPress={submitReason}>
-            {t("SAVE_AND_PROFILE")}
-          </FrontEndTypo.Secondarybutton>
+            {error && (
+              <FrontEndTypo.H3
+                alignSelf={"start"}
+                color={"textMaroonColor.500"}
+              >
+                {t("SELECT_MESSAGE")}
+              </FrontEndTypo.H3>
+            )}
+            <RadioBtn
+              directionColumn={"column"}
+              value={reason || []}
+              onChange={(e) => {
+                setReason(e);
+                setError(false);
+              }}
+              schema={{
+                grid: 1,
+              }}
+              options={{
+                enumOptions: reasonData,
+              }}
+            />
+          </VStack>
         </VStack>
+      </ScrollView>
+      <VStack
+        ref={refButton}
+        width={"100%"}
+        bg={"white"}
+        flex={1}
+        safeAreaTop
+        position="fixed"
+        bottom="70px"
+        zIndex={"9999999"}
+        alignItems={"center"}
+        py="4"
+      >
+        <FrontEndTypo.Secondarybutton px="5" onPress={submitReason}>
+          {t("SAVE_AND_PROFILE")}
+        </FrontEndTypo.Secondarybutton>
       </VStack>
     </Layout>
   );

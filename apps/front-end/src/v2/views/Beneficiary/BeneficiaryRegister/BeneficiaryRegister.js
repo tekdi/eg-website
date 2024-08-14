@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./BeneficiaryRegister.Schema.js";
-import { Alert, Box, HStack, Modal } from "native-base";
+import { Alert, Box, HStack, Modal, VStack } from "native-base";
 import {
   AgRegistryService,
   Layout,
@@ -59,6 +59,7 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
   const [otpbtn, setotpbtn] = useState(false);
   const [isExistModal, setIsExistModal] = useState(false);
   const [enumData, setEnumData] = useState({});
+  const [openWarningModal, setOpenWarningModal] = useState(false);
   const prerakStatus = localStorage.getItem("status");
 
   // PROFILE DATA IMPORTS
@@ -852,45 +853,56 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
-    if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name?.replace(/ /g, ""),
-      };
-    }
-
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name.replace(/ /g, ""),
-      };
-    }
-
-    const newData = {
-      ...formData,
-      ...newFormData,
-      ["form_step_number"]: parseInt(page) + 1,
-    };
-    setFormData(newData);
-    if (_.isEmpty(errors)) {
-      const { id } = authUser;
-      let success = false;
-      if (id) {
-        success = true;
-      } else if (page <= 1) {
-        success = true;
-      }
-      if (success) {
-        setStep();
-      }
-
-      if (page === "7") {
-        createBeneficiary();
-      }
+    // Parse the last_standard_of_education as an integer
+    const lastStandard = newFormData?.last_standard_of_education
+      ? parseInt(newFormData.last_standard_of_education, 10)
+      : null;
+    const hasWarning = lastStandard === null || lastStandard < 5;
+    // Set setOpenWarningModal to true if lastStandard is null or less than 5
+    if (page === "5" && hasWarning && !openWarningModal) {
+      setOpenWarningModal(true);
     } else {
-      const key = Object.keys(errors);
-      if (key[0]) {
-        goErrorPage(key[0]);
+      setOpenWarningModal(false);
+      if (schema?.properties?.first_name) {
+        newFormData = {
+          ...newFormData,
+          ["first_name"]: newFormData?.first_name?.replace(/ /g, ""),
+        };
+      }
+
+      if (schema?.properties?.last_name && newFormData?.last_name) {
+        newFormData = {
+          ...newFormData,
+          ["last_name"]: newFormData?.last_name.replace(/ /g, ""),
+        };
+      }
+
+      const newData = {
+        ...formData,
+        ...newFormData,
+        ["form_step_number"]: parseInt(page) + 1,
+      };
+      setFormData(newData);
+      if (_.isEmpty(errors)) {
+        const { id } = authUser;
+        let success = false;
+        if (id) {
+          success = true;
+        } else if (page <= 1) {
+          success = true;
+        }
+        if (success) {
+          setStep();
+        }
+
+        if (page === "7") {
+          createBeneficiary();
+        }
+      } else {
+        const key = Object.keys(errors);
+        if (key[0]) {
+          goErrorPage(key[0]);
+        }
       }
     }
   };
@@ -1243,6 +1255,29 @@ export default function BeneficiaryRegister({ userTokenInfo, footerLinks }) {
                   }}
                 >
                   {t("CONTINUE")}
+                </FrontEndTypo.Primarybutton>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <Modal
+            isOpen={openWarningModal}
+            onClose={() => setOpenWarningModal(false)}
+          >
+            <Modal.Content>
+              <Modal.Header textAlign={"Center"}>
+                <FrontEndTypo.H2 color="textGreyColor.500">
+                  {t("EXPIRY_CONTENT.HEADING")}
+                </FrontEndTypo.H2>
+              </Modal.Header>
+              <Modal.Body>
+                <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
+              </Modal.Body>
+              <Modal.Footer justifyContent={"space-between"}>
+                <FrontEndTypo.Secondarybutton onPress={() => navigate("/")}>
+                  {t("CANCEL")}
+                </FrontEndTypo.Secondarybutton>
+                <FrontEndTypo.Primarybutton onPress={onSubmit}>
+                  {t("PRERAK_PROCEED_BTN")}
                 </FrontEndTypo.Primarybutton>
               </Modal.Footer>
             </Modal.Content>

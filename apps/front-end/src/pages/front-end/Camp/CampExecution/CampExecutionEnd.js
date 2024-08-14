@@ -57,7 +57,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
       const session = await campService.getCampSessionsList({ id: id });
       const data = session?.data?.learning_lesson_plans_master || [];
       const { countSession } = getSessionCount(data);
-      if (countSession > 0) {
+      if (countSession > 0 || todaysActivity?.misc_activities) {
         setDisableEndCamp(false);
       } else {
         setDisableEndCamp(true);

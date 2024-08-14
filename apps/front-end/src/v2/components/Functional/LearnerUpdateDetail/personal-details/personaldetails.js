@@ -14,7 +14,7 @@ import {
   getOptions,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -44,6 +44,8 @@ export default function PersonalDetails({ ip }) {
   const { id } = useParams();
   const [fields, setFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
 
   const userId = id;
   const navigate = useNavigate();
@@ -173,7 +175,7 @@ export default function PersonalDetails({ ip }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -202,7 +204,9 @@ export default function PersonalDetails({ ip }) {
   const Submit = async (data) => {
     setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    if (redirectLink) {
+      navigate(redirectLink);
+    } else navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const setSchemaData = (newSchema) => {
@@ -258,6 +262,16 @@ export default function PersonalDetails({ ip }) {
               transformErrors,
             }}
           >
+            {redirectLink && (
+              <FrontEndTypo.Primarybutton
+                p="4"
+                mt="4"
+                isDisabled={isDisable}
+                onPress={() => Submit()}
+              >
+                {t("SAVE_AND_ENROLLMENT")}
+              </FrontEndTypo.Primarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
               mt="3"

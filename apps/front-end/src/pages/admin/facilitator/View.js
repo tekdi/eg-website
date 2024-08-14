@@ -673,6 +673,7 @@ export default function FacilitatorView({ footerLinks }) {
                     "TEACHING_QUALIFICATION",
                     "WORK_EXPERIENCE",
                     "VOLUNTEER_EXPERIENCE",
+                    "HIGHEST_QUALIFICATION_DOCUMENT",
                   ]}
                   format={{ qualification_reference_document_id: "file" }}
                   item={{

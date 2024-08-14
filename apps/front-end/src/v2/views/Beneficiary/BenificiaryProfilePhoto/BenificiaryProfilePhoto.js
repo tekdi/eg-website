@@ -6,7 +6,7 @@ import {
   FrontEndTypo,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
 
@@ -17,7 +17,8 @@ export default function BenificiaryProfilePhoto() {
   const page = photoNo ? parseInt(photoNo) : 1;
   const [file, setFile] = useState();
   const [benificiary, setBenificiary] = useState({});
-
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
   const onPressBackButton = () => {
     if (page === 1) {
       navigate(`/beneficiary/${id}/basicdetails`);
@@ -68,6 +69,15 @@ export default function BenificiaryProfilePhoto() {
             value={file?.id}
             onChange={(e) => console.log(e)}
           />
+          {redirectLink && (
+            <FrontEndTypo.Primarybutton
+              p="4"
+              mt="4"
+              onPress={() => navigate(redirectLink)}
+            >
+              {t("SAVE_AND_ENROLLMENT")}
+            </FrontEndTypo.Primarybutton>
+          )}
           <FrontEndTypo.Primarybutton
             p="4"
             mt="4"

@@ -108,6 +108,10 @@ export default [
     component: EnrollmentVerificationList,
   },
   {
+    path: "/admin/learners/enrollmentVerificationList/:type",
+    component: EnrollmentVerificationList,
+  },
+  {
     path: "/admin/learners/enrollmentReceipt/:id",
     component: EnrollmentReceiptView,
   },
