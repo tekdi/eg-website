@@ -205,7 +205,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
       const { required } = response;
       if (required?.length > 0) {
         setReqDataError(true);
-        setMissingData(required.map((key) => LABEL_NAMES[key] || key));
+        setMissingData(required);
         return;
       }
     }
@@ -480,11 +480,16 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
             <VStack space={4}>
               {t("FOLLOWING_FIELDS_MISSING_WARNING")}
               <ul>
-                {missingData?.map((el, i) => (
-                  <li color="textGreyColor.500" key={i}>
-                    {t(el)}
-                  </li>
-                ))}
+                {missingData?.map((el, i) => {
+                  if (typeof el === "string") {
+                    const label = LABEL_NAMES[el];
+                    return <li key={i}>{t(label)}</li>;
+                  } else {
+                    return (
+                      <RenderExperience experience={el} key={i} uniqueKey={i} />
+                    );
+                  }
+                })}
               </ul>
             </VStack>
           </Modal.Body>
@@ -499,8 +504,32 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
   );
 }
 
+const RenderExperience = ({ experience, uniqueKey }) => {
+  const { t } = useTranslation();
+  return (
+    <ul key={`experience-${uniqueKey}`}>
+      {experience.data.map((entry) => {
+        return (
+          <>
+            <li>{`${t(LABEL_NAMES[experience.key])}-${entry.key}  ${t(
+              "MISSING_DATA"
+            )}`}</li>
+            <ol key={entry.key}>
+              {entry.data.map((item, index) => (
+                <li key={index}>{t(LABEL_NAMES[item])}</li>
+              ))}
+            </ol>
+          </>
+        );
+      })}
+    </ul>
+  );
+};
+
 const LABEL_NAMES = {
   id: "ID",
+  availability: "AVAILABILITY",
+  aadhar_no: "AADHAAR_NUMBER",
   first_name: "FIRST_NAME",
   middle_name: "MIDDLE_NAME",
   last_name: "LAST_NAME",
@@ -521,13 +550,20 @@ const LABEL_NAMES = {
   profile_photo_2: "PROFILE_PHOTO_2",
   profile_photo_3: "PROFILE_PHOTO_3",
   contact_number: "CONTACT_NUMBER",
-  qualifications: "QUALIFICATIONS",
+  qualifications: "QUALIFICATION",
+  qualification: "QUALIFICATION",
   type_vo_experience: "VOLUNTEER_EXPERIENCE",
   type_experience: "WORK_EXPERIENCE",
   mark_as_whatsapp_number: "MARK_AS_WHATSAPP_REGISTER",
-  teaching: "TEACHING_DEGREE",
+  teaching_degree: "TEACHING_DEGREE",
   has_volunteer_exp: "DO_YOU_HAVE_ANY_VOLUNTEER_EXPERIENCE",
   has_job_exp: "DO_YOU_HAVE_ANY_JOB_EXPERIENCE",
+  experience: "WORK_EXPERIENCE",
+  vo_experience: "VOLUNTEER_EXPERIENCE",
+  organization: "COMPANY_NAME",
+  role_title: "JOB_TITLE",
+  experience_in_years: "EXPERIENCE_IN_YEARS",
+  related_to_teaching: "IS_THE_JOB_RELATED_TO_TEACHING",
   "core_faciltator.device_type": "TYPE_OF_MOBILE_PHONE",
   "core_faciltator.device_ownership": "DEVICE_OWNERSHIP",
   "extended_users.marital_status": "MARITAL_STATUS",

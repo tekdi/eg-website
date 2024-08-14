@@ -17,7 +17,7 @@ import {
   facilitatorRegistryService,
   jsonParse,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   templates,
   widgets,
@@ -42,6 +42,8 @@ export default function AddressEdit({ ip }) {
     navigate(`/beneficiary/profile/${userId}`);
   };
   const [isDisable, setIsDisable] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
 
   //getting data
   React.useEffect(async () => {
@@ -176,7 +178,7 @@ export default function AddressEdit({ ip }) {
         data?.grampanchayat?.replace(/\s/g, "") === ""
       ) {
         errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
     });
@@ -189,7 +191,7 @@ export default function AddressEdit({ ip }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -388,7 +390,7 @@ export default function AddressEdit({ ip }) {
     if (id === "root_address") {
       if (
         !data?.address?.match(
-          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/,
         ) &&
         data?.address !== null
       ) {
@@ -430,7 +432,9 @@ export default function AddressEdit({ ip }) {
       };
 
       await AgRegistryService.updateAg(obj, userId);
-      navigate(`/beneficiary/${userId}/addressdetails`);
+      if (redirectLink) {
+        navigate(redirectLink);
+      } else navigate(`/beneficiary/${userId}/addressdetails`);
     }
   };
 
@@ -479,6 +483,24 @@ export default function AddressEdit({ ip }) {
               templates,
             }}
           >
+            {redirectLink && (
+              <FrontEndTypo.Primarybutton
+                p="4"
+                mt="4"
+                isDisabled={isDisable}
+                onPress={() => {
+                  if (formRef.current.validateForm()) {
+                    formRef?.current?.submit();
+                  } else {
+                    if (formRef.current.validateForm()) {
+                      formRef?.current?.submit();
+                    }
+                  }
+                }}
+              >
+                {t("SAVE_AND_ENROLLMENT")}
+              </FrontEndTypo.Primarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               isDisabled={isDisable}
               mt="3"
