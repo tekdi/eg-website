@@ -11,6 +11,7 @@
   "scripts": {
     "start": "lerna run --parallel start --stream",
     "build": "lerna run build --stream",
+    "test": "lerna run test --stream",
     "serve": "lerna run --parallel serve --stream",
     "clean": "lerna run --parallel clean --stream",
     "cls-dep": "npx rimraf ./**/node_modules",
