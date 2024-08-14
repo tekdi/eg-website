@@ -156,7 +156,7 @@ function View() {
     };
     fetchData();
   }, [filter]);
-  console.log("pcData", pcData);
+
   return (
     <AdminLayout>
       <VStack flex={1} mt="5" space={4} p="4">
