@@ -266,7 +266,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                 <VStack key={index} space="4">
                   <HStack alignItems="center" justifyContent="space-between">
                     <H2 color="textMaroonColor.400">{`${index + 1}. ${t(
-                      schema?.title
+                      schema?.title,
                     )}`}</H2>
                     {hasRemove && (
                       <IconByName
@@ -286,7 +286,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                   {children}
                 </VStack>
               );
-            }
+            },
           )}
           {props.canAdd && (
             <Button
@@ -461,7 +461,7 @@ export const RadioBtn = ({
                   mx: 2,
                   borderWidth: 0,
                   color: "#333",
-                }
+                },
           ),
           // _box: { gap: "0", width: "auto" },
           // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
@@ -787,6 +787,7 @@ export const MultiCheck = ({
                     onChange={handleCheck}
                   /> */}
                   <Checkbox
+                    accessibilityLabel={t(item?.label || item?.title)}
                     onChange={(e) =>
                       handleCheck({
                         target: { checked: e, value: item?.value },
@@ -828,13 +829,13 @@ export const MultiCheckSubject = ({
   if (grid && enumOptions?.constructor.name === "Array") {
     items = chunk(
       enumOptions?.filter((e) => e.subject_type != "language"),
-      grid
+      grid,
     );
   }
   if (grid && enumOptions?.constructor.name === "Array") {
     langItem = chunk(
       enumOptions?.filter((e) => e.subject_type == "language"),
-      grid
+      grid,
     );
   }
   const handleCheck = (event) => {
@@ -1067,13 +1068,13 @@ const templates = {
 export const scrollToField = ({ property } = {}) => {
   if (property) {
     const element = document.getElementById(
-      `element_${property.replace(".", "")}`
+      `element_${property.replace(".", "")}`,
     );
     if (element) {
       element?.scrollIntoView();
     } else {
       const element1 = document.getElementById(
-        `root_${property.replace(".", "")}__error`
+        `root_${property.replace(".", "")}__error`,
       );
       if (element1) {
         element1?.scrollIntoView();
@@ -1102,7 +1103,7 @@ const transformErrors = (errors, schema, t) => {
           message: `${t(
             schemaItem?.format === "FileUpload"
               ? "REQUIRED_MESSAGE_UPLOAD"
-              : "REQUIRED_MESSAGE"
+              : "REQUIRED_MESSAGE",
           )} "${t(title)}"`,
         };
       case "minItems":
@@ -1121,11 +1122,32 @@ const transformErrors = (errors, schema, t) => {
         };
       case "enum":
         let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
-        const schemaItem = schema?.properties?.[name];
-        if (schemaItem) {
-          error.key_name = name;
+        {
+          const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
+          if (enumSchemaItem) {
+            error.key_name = name;
+          }
         }
         return error;
+      case "type":
+        return {
+          ...error,
+          message: "",
+        };
+      case "minimum":
+        return {
+          ...error,
+          message: t("MINIMUM_VALIDATION_MESSAGE")
+            .replace("{0}", error?.params?.limit)
+            .replace("{1}", t(title)),
+        };
+      case "maximum":
+        return {
+          ...error,
+          message: t("MAXIMUM_VALIDATION_MESSAGE")
+            .replace("{0}", error?.params?.limit)
+            .replace("{1}", t(title)),
+        };
       case "format":
         const { format } = error?.params || {};
         const messageKey =
@@ -1134,11 +1156,15 @@ const transformErrors = (errors, schema, t) => {
             string: "PLEASE_ENTER_VALID_STRING",
             number: "PLEASE_ENTER_VALID_NUMBER",
           }[format] || "REQUIRED_MESSAGE";
-        return t(messageKey, title ? t(title) : "");
+        return {
+          ...error,
+          message: t(messageKey, title ? t(title) : ""),
+        };
       default:
-        return error.message;
+        return error;
     }
   };
+
   return errors.map((error) => getTranslate(error));
 };
 

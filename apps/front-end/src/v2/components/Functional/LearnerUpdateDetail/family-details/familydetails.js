@@ -12,7 +12,7 @@ import {
   FrontEndTypo,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   TitleFieldTemplate,
   DescriptionFieldTemplate,
@@ -41,6 +41,8 @@ export default function FamilyDetails({ ip }) {
   const navigate = useNavigate();
   const [fields, setFields] = React.useState([]);
   const [isDisable, setIsDisable] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
@@ -182,7 +184,7 @@ export default function FamilyDetails({ ip }) {
         data?.father_details?.father_first_name?.replace(/\s/g, "") === ""
       ) {
         errors?.father_details?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
 
@@ -191,7 +193,7 @@ export default function FamilyDetails({ ip }) {
         !data?.father_details?.[key]?.match(/^[a-zA-Z ]*$/g)
       ) {
         errors?.father_details?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
 
@@ -200,7 +202,7 @@ export default function FamilyDetails({ ip }) {
         data?.mother_details?.mother_first_name?.replaceAll(" ", "") === ""
       ) {
         errors?.mother_details?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
 
@@ -209,7 +211,7 @@ export default function FamilyDetails({ ip }) {
         !data?.mother_details?.[key]?.match(/^[a-zA-Z ]*$/g)
       ) {
         errors?.mother_details?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
     });
@@ -222,7 +224,7 @@ export default function FamilyDetails({ ip }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -310,7 +312,9 @@ export default function FamilyDetails({ ip }) {
   const onSubmit = async (data) => {
     setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    if (redirectLink) {
+      navigate(redirectLink);
+    } else navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   const setSchemaData = (newSchema) => {
@@ -378,6 +382,16 @@ export default function FamilyDetails({ ip }) {
                 transformErrors,
               }}
             >
+              {redirectLink && (
+                <FrontEndTypo.Primarybutton
+                  p="4"
+                  mt="4"
+                  isDisabled={isDisable}
+                  onPress={() => formRef?.current?.submit()}
+                >
+                  {t("SAVE_AND_ENROLLMENT")}
+                </FrontEndTypo.Primarybutton>
+              )}
               <Box display={"flex"} alignItems={"center"}>
                 <FrontEndTypo.Primarybutton
                   isDisabled={isDisable}

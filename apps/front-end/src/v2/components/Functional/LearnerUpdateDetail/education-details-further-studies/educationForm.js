@@ -13,7 +13,7 @@ import {
   getOptions,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   widgets,
   TitleFieldTemplate,
@@ -50,6 +50,10 @@ export default function App({ onClick, id }) {
   }
   const [fields, setFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
+
   const uiSchema = {
     alreadyOpenLabel: {
       "ui:widget": "AlreadyOpenLabelWidget",
@@ -319,7 +323,9 @@ export default function App({ onClick, id }) {
           userId
         );
         if (updateDetails) {
-          navigate(`/beneficiary/${userId}/educationdetails`);
+          if (redirectLink) {
+            navigate(redirectLink);
+          } else navigate(`/beneficiary/${userId}/educationdetails`);
         }
       }
     }
@@ -380,6 +386,16 @@ export default function App({ onClick, id }) {
               onSubmit,
             }}
           >
+            {redirectLink && (
+              <FrontEndTypo.Primarybutton
+                p="4"
+                mt="4"
+                isDisabled={isDisable}
+                onPress={() => formRef?.current?.submit()}
+              >
+                {t("SAVE_AND_ENROLLMENT")}
+              </FrontEndTypo.Primarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
@@ -411,10 +427,10 @@ export default function App({ onClick, id }) {
             <FrontEndTypo.Secondarybutton
               onPress={() => setOpenWarningModal(false)}
             >
-              {t("CLOSE")}
+              {t("CANCEL")}
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton onPress={onSubmit}>
-              {t("PROCEED")}
+              {t("PRERAK_PROCEED_BTN")}
             </FrontEndTypo.Primarybutton>
           </Modal.Footer>
         </Modal.Content>

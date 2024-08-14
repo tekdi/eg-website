@@ -20,7 +20,7 @@ import {
   setSelectedProgramId,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 import {
@@ -52,6 +52,8 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
   const userId = id;
   const navigate = useNavigate();
   const [isDisable, setIsDisable] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
 
   // PROFILE DATA IMPORTS
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -69,7 +71,7 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
   const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   const onPressBackButton = async () => {
@@ -154,7 +156,7 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
+                eventItem?.lms_test_tracking?.length < 1,
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
@@ -163,8 +165,8 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
                   data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
+                    moment(attendance.date_time).format("YYYY-MM-DD"),
+              ),
             );
 
             setCertificateData(data);
@@ -230,8 +232,8 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
               "aadhar_verified",
               "qualification_ids",
               "qua_name",
-            ]
-          )
+            ],
+          ),
         );
         //check exist user registered
         try {
@@ -284,7 +286,7 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
+        user_cohort_list?.data[0],
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -410,13 +412,13 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
     ["first_name", "last_name", "middle_name"].forEach((key) => {
       if (key === "first_name" && data?.first_name?.replace(/ /g, "") === "") {
         errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
 
       if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
         errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
     });
@@ -429,7 +431,7 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -483,7 +485,9 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
   const onSubmit = async (data) => {
     setIsDisable(true);
     await AgRegistryService.updateAg(formData, userId);
-    navigate(`/beneficiary/${userId}/basicdetails`);
+    if (redirectLink) {
+      navigate(redirectLink);
+    } else navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
   return (
@@ -549,6 +553,16 @@ export default function BasicDetailsForm({ id, userTokenInfo }) {
                 transformErrors,
               }}
             >
+              {redirectLink && (
+                <FrontEndTypo.Primarybutton
+                  p="4"
+                  mt="4"
+                  isDisabled={isDisable}
+                  onPress={() => formRef?.current?.submit()}
+                >
+                  {t("SAVE_AND_ENROLLMENT")}
+                </FrontEndTypo.Primarybutton>
+              )}
               <FrontEndTypo.Primarybutton
                 isDisabled={isDisable}
                 mt="3"
