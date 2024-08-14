@@ -132,11 +132,46 @@ const DailyActivities = () => {
       setErrors({
         ...errors,
         minutes: {
-          __errors: ["CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY"],
+          __errors: [t("CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY")],
+        },
+      });
+    } else if (hours === 0 && minutes === 0) {
+      setErrors({
+        ...errors,
+        minutes: {
+          __errors: [t("TIME_CANNOT_BE_ZERO")],
         },
       });
     } else {
-      setErrors();
+      setErrors({});
+    }
+  };
+  const validateTimeOnSubmit = (input) => {
+    const MAX_HOURS = 8;
+    const prev_hours = 0 + parseInt(input.hours);
+    const prev_min = 0 + parseInt(input.minutes);
+    const hours = parseInt(prev_hours, 10);
+    const minutes = parseInt(prev_min, 10);
+    const totalHours = hours + minutes / 60;
+    if (totalHours > MAX_HOURS) {
+      setErrors({
+        ...errors,
+        minutes: {
+          __errors: [t("CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY")],
+        },
+      });
+      return false;
+    } else if (hours === 0 && minutes === 0) {
+      setErrors({
+        ...errors,
+        minutes: {
+          __errors: [t("TIME_CANNOT_BE_ZERO")],
+        },
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
     }
   };
 
@@ -162,7 +197,11 @@ const DailyActivities = () => {
 
   const onSubmit = async (data) => {
     let newFormData = data.formData;
-    if (_.isEmpty(errors)) {
+    const obj = {
+      hours: newFormData?.hours || 0,
+      minutes: newFormData?.minutes || 0,
+    };
+    if (_.isEmpty(errors) && validateTimeOnSubmit(obj)) {
       const id = location?.state?.id;
 
       const payload = {
@@ -228,7 +267,7 @@ const DailyActivities = () => {
                 }
               }}
             >
-              {t("MARK_AND_DONE")}
+              {t("ADD_ONE_ACTIVITY")}
             </FrontEndTypo.Primarybutton>
           </HStack>
         </Form>
