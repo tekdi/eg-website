@@ -32,6 +32,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import { debounce } from "lodash";
+import moment from "moment";
 
 const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = useState({});
@@ -274,6 +275,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [search, setSearch] = useState("");
   const ref = useRef(null);
   const refButton = useRef(null);
+  const [certificateData, setCertificateData] = useState({});
 
   // PROFILE DATA IMPORTS
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -553,8 +555,19 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const prerak_status = localStorage.getItem("status");
 
   useEffect(async () => {
-    const data = await benificiaryRegistoryService.getStatusList();
+    let data = await benificiaryRegistoryService.getStatusList();
     if (data.length > 0) {
+      setSelectStatus(data);
+      if (state_name !== "RAJASTHAN") {
+        data = data?.filter(
+          (e) =>
+            ![
+              "sso_id_enrolled",
+              "sso_id_verified",
+              "registered_in_neev_camp",
+            ].includes(e.value)
+        );
+      }
       setSelectStatus(data);
     }
   }, []);
@@ -629,11 +642,11 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       analyticsPageTitle={"BENEFICIARY_LIST"}
       pageTitle={t("BENEFICIARY_LIST")}
     >
-      <VStack ref={ref}>
+      <VStack ref={ref} space={"4"}>
         <FrontEndTypo.H1 fontWeight="600" mx="4" my="6" mb="0">
           {t("LEARNER_LIST")}
         </FrontEndTypo.H1>
-        <HStack space={2} padding={4}>
+        <HStack space={2} px={4}>
           <Input
             value={search}
             width={"100%"}
@@ -650,7 +663,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           justifyContent="space-between"
           space="2"
           alignItems="Center"
-          p="4"
+          px="4"
         >
           <Box flex="2">
             <SelectStyle

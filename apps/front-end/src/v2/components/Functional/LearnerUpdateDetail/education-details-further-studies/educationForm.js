@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack } from "native-base";
+import { Alert, Box, HStack, Modal, VStack } from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -13,7 +13,7 @@ import {
   getOptions,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   widgets,
   TitleFieldTemplate,
@@ -39,6 +39,7 @@ export default function App({ onClick, id }) {
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState();
   const [yearsRange, setYearsRange] = useState([]);
+  const [openWarningModal, setOpenWarningModal] = useState(false);
   const { t } = useTranslation();
 
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -49,6 +50,10 @@ export default function App({ onClick, id }) {
   }
   const [fields, setFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const redirectLink = searchParams.get("redirectLink");
+
   const uiSchema = {
     alreadyOpenLabel: {
       "ui:widget": "AlreadyOpenLabelWidget",
@@ -304,11 +309,24 @@ export default function App({ onClick, id }) {
   };
 
   const onSubmit = async (data) => {
-    setIsDisable(true);
-    if (!Object.keys(errors).length) {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
-      if (updateDetails) {
-        navigate(`/beneficiary/${userId}/educationdetails`);
+    const lastStandard = formData?.last_standard_of_education
+      ? parseInt(formData.last_standard_of_education, 10)
+      : null;
+    const hasWarning = lastStandard === null || lastStandard < 5;
+    if (hasWarning && !openWarningModal) {
+      setOpenWarningModal(true);
+    } else {
+      setIsDisable(true);
+      if (!Object.keys(errors).length) {
+        const updateDetails = await AgRegistryService.updateAg(
+          formData,
+          userId
+        );
+        if (updateDetails) {
+          if (redirectLink) {
+            navigate(redirectLink);
+          } else navigate(`/beneficiary/${userId}/educationdetails`);
+        }
       }
     }
   };
@@ -368,6 +386,16 @@ export default function App({ onClick, id }) {
               onSubmit,
             }}
           >
+            {redirectLink && (
+              <FrontEndTypo.Primarybutton
+                p="4"
+                mt="4"
+                isDisabled={isDisable}
+                onPress={() => formRef?.current?.submit()}
+              >
+                {t("SAVE_AND_ENROLLMENT")}
+              </FrontEndTypo.Primarybutton>
+            )}
             <FrontEndTypo.Primarybutton
               mt="3"
               variant={"primary"}
@@ -382,6 +410,31 @@ export default function App({ onClick, id }) {
           <React.Fragment />
         )}
       </Box>
+      <Modal
+        isOpen={openWarningModal}
+        onClose={() => setOpenWarningModal(false)}
+      >
+        <Modal.Content>
+          <Modal.Header textAlign={"Center"}>
+            <FrontEndTypo.H2 color="textGreyColor.500">
+              {t("EXPIRY_CONTENT.HEADING")}
+            </FrontEndTypo.H2>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack space={4}>{t("EDUCATION_STANDARD_WARNING")}</VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <FrontEndTypo.Secondarybutton
+              onPress={() => setOpenWarningModal(false)}
+            >
+              {t("CANCEL")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton onPress={onSubmit}>
+              {t("PRERAK_PROCEED_BTN")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }

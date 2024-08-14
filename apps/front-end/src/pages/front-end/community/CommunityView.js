@@ -397,14 +397,13 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
       pageTitle={t("COMMUNITY_REFRENCE")}
     >
       <Box p="4">
-        {!addMore ||
-          (data?.length <= 2 && (
-            <CustomAlert
-              _hstack={{ mb: 9 }}
-              status={"customAlertdanger"}
-              title={t("COMMUNITY_ALERT_MESSAGE")}
-            />
-          ))}
+        {data?.length < 2 && (
+          <CustomAlert
+            _hstack={{ mb: 9 }}
+            status={"customAlertdanger"}
+            title={t("COMMUNITY_ALERT_MESSAGE")}
+          />
+        )}
         {!addMore ? (
           <VStack paddingTop="4" space="4">
             <FrontEndTypo.H3 color="textGreyColor.750" bold>

@@ -14,10 +14,10 @@ import {
   objProps,
   setSelectedAcademicYear,
   setSelectedProgramId,
-  t,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
+import moment from "moment";
 import {
   Actionsheet,
   Alert,
@@ -30,10 +30,12 @@ import {
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
-export default function BenificiaryProfileView(props, userTokenInfo) {
+export default function BenificiaryProfileView(userTokenInfo) {
+  const { t } = useTranslation();
   const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
   const [isOpenReactive, setIsOpenReactive] = React.useState(false);
   const [isOpenReject, setIsOpenReject] = React.useState(false);
@@ -66,6 +68,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [certificateData, setCertificateData] = useState({});
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false
   );
@@ -139,7 +142,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
-              data?.attendances.filter(
+              data?.attendances?.filter(
                 (attendance) =>
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
@@ -518,7 +521,7 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
         <Alert status="warning" alignItems={"start"} mb="3" mt="4">
           <HStack alignItems="center" space="2" color>
             <Alert.Icon />
-            <BodyMedium>{t("DEACTIVATED_PAGE_MSG")}</BodyMedium>
+            <FrontEndTypo.H2>{t("DEACTIVATED_PAGE_MSG")}</FrontEndTypo.H2>
           </HStack>
         </Alert>
       ) : (
@@ -676,7 +679,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/basicdetails`);
                           }}
-                          _icon={{ size: "20", color: "#1F1D76" }}
+                          color="floatingLabelColor.500"
+                          _icon={{ size: "20" }}
                         />
                       )}
                   </HStack>
@@ -707,7 +711,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                           onPress={(e) => {
                             navigate(`/beneficiary/${id}/addressdetails`);
                           }}
-                          _icon={{ size: "20", color: "#1F1D76" }}
+                          color="floatingLabelColor.500"
+                          _icon={{ size: "20" }}
                         />
                       )}
                   </HStack>
@@ -785,7 +790,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/docschecklist`);
                     }}
-                    _icon={{ size: "20", color: "#1F1D76" }}
+                    color="floatingLabelColor.500"
+                    _icon={{ size: "20" }}
                   />
                 )}
               </HStack>
@@ -808,7 +814,8 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/educationdetails`);
                       }}
-                      _icon={{ size: "20", color: "#1F1D76" }}
+                      color="floatingLabelColor.500"
+                      _icon={{ size: "20" }}
                     />
                   )}
               </HStack>
@@ -820,7 +827,28 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   </HStack>
                 </Alert>
               )}
+              <HStack
+                justifyContent="space-between"
+                alignItems="Center"
+                p="3"
+                pr="0"
+              >
+                <FrontEndTypo.H3
+                  color="floatingLabelColor.500"
+                  fontWeight={"600"}
+                >
+                  {t("BENEFICIARY_DISABILITY_DETAILS")}
+                </FrontEndTypo.H3>
 
+                <IconByName
+                  name="ArrowRightSLineIcon"
+                  onPress={(e) =>
+                    navigate(`/beneficiary/${id}/disability-details`)
+                  }
+                  color="floatingLabelColor.500"
+                  _icon={{ size: "20" }}
+                />
+              </HStack>
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"
@@ -838,10 +866,11 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   benificiary?.program_beneficiaries?.status !== "rejected" && (
                     <IconByName
                       name="ArrowRightSLineIcon"
+                      color="floatingLabelColor.500"
+                      _icon={{ size: "20" }}
                       onPress={(e) => {
                         navigate(`/beneficiary/${id}/enrollmentdetails`);
                       }}
-                      _icon={{ size: "20", color: "#1F1D76" }}
                     />
                   )}
               </HStack>
@@ -862,12 +891,12 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                   </FrontEndTypo.H3>
                   <IconByName
                     name="ArrowRightSLineIcon"
-                    color="#790000"
+                    color="floatingLabelColor.500"
                     size="sm"
                     onPress={(e) => {
                       navigate(`/beneficiary/${id}/pcrview`);
                     }}
-                    _icon={{ size: "20", color: "#1F1D76" }}
+                    _icon={{ size: "20" }}
                   />
                 </HStack>
               )}
@@ -885,12 +914,12 @@ export default function BenificiaryProfileView(props, userTokenInfo) {
                 </FrontEndTypo.H3>
                 <IconByName
                   name="ArrowRightSLineIcon"
-                  color="#790000"
                   size="sm"
                   onPress={(e) => {
                     navigate(`/beneficiary/${id}/benificiaryJourney`);
                   }}
-                  _icon={{ size: "20", color: "#1F1D76" }}
+                  color="floatingLabelColor.500"
+                  _icon={{ size: "20" }}
                 />
               </HStack>
             </VStack>

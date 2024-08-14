@@ -15,19 +15,23 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     navigate("/camps");
   };
 
-  const flattenList = (list) => {
+  const flattenList = (list, report) => {
     let flattenedArray = [];
     list?.forEach((item) => {
       item?.group?.group_users?.forEach((userObj) => {
         const { user_id, program_beneficiaries } = userObj?.user;
-        flattenedArray?.push({
-          user_id,
-          first_name: program_beneficiaries?.[0]?.enrollment_first_name,
-          middle_name: program_beneficiaries?.[0]?.enrollment_middle_name,
-          last_name: program_beneficiaries?.[0]?.enrollment_last_name,
-          group_id: item.group.group_id,
-          camp_id: item.camp_id,
-        });
+        const userData = mergingData(
+          {
+            user_id,
+            first_name: program_beneficiaries?.[0]?.enrollment_first_name,
+            middle_name: program_beneficiaries?.[0]?.enrollment_middle_name,
+            last_name: program_beneficiaries?.[0]?.enrollment_last_name,
+            group_id: item.group.group_id,
+            camp_id: item.camp_id,
+          },
+          report
+        );
+        flattenedArray?.push(userData);
       });
     });
 
@@ -39,108 +43,24 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     const fetchData = async () => {
       let observation = "EXAM_PREPARATION";
       const listData = await ObservationService.getCampLearnerList();
-      const flattenedList = flattenList(listData?.data);
       const userIds = listData?.data.flatMap((group) =>
         group.group.group_users.map((user) => user.user.user_id)
       );
-      const data = await ObservationService.getSubmissionData(
-        userIds,
-        observation
-      );
+      const data = await ObservationService.getSubmissionData({
+        id: userIds,
+        board_id:
+          listData?.data?.[0]?.group?.group_users?.[0]?.user
+            ?.program_beneficiaries?.[0]?.enrolled_for_board,
+
+        observation,
+      });
       const report = data?.data?.[0]?.observation_fields;
-      mergingData(flattenedList, report);
+      const flattenedList = flattenList(listData?.data, report);
+      setLeanerList(flattenedList);
       setLoading(false);
     };
     fetchData();
   }, []);
-
-  const mergingData = (flattenedList, report) => {
-    const mergedArray = flattenedList?.map((user) => {
-      const userData = { ...user };
-      const responses = report?.reduce((acc, observation) => {
-        const fieldResponse = observation?.field_responses?.find(
-          (response) => response.context_id === user.user_id
-        );
-        if (fieldResponse) {
-          acc?.push({
-            field_id: observation.field_id,
-            response_value: fieldResponse.response_value,
-          });
-        }
-        return acc;
-      }, []);
-      userData.responses = responses;
-      return userData;
-    });
-    const data = ProcessData(mergedArray);
-    setLeanerList(data);
-  };
-
-  const ProcessData = (mergedArray) => {
-    const newData = mergedArray?.map((user) => {
-      const status = getStatus(user.responses);
-      return { ...user, status };
-    });
-    return newData;
-  };
-
-  const getStatus = (responses) => {
-    const WILL_LEARNER_APPEAR_FOR_EXAM = responses?.find(
-      (response) => response.field_id === 25
-    );
-    const WILL_LEARNER_APPEAR_FOR_EXAM_REASONS = responses?.find(
-      (response) => response.field_id === 26
-    );
-    const DID_LEARNER_RECEIVE_ADMIT_CARD = responses?.find(
-      (response) => response.field_id === 27
-    );
-    const HAS_LEARNER_PREPARED_PRACTICAL_FILE = responses?.find(
-      (response) => response.field_id === 28
-    );
-    const LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER = responses?.find(
-      (response) => response.field_id === 29
-    );
-    // const response6 = responses.find((response) => response.field_id === 15);
-    if (
-      !WILL_LEARNER_APPEAR_FOR_EXAM ||
-      !WILL_LEARNER_APPEAR_FOR_EXAM_REASONS ||
-      !DID_LEARNER_RECEIVE_ADMIT_CARD ||
-      !HAS_LEARNER_PREPARED_PRACTICAL_FILE ||
-      !LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER
-    ) {
-      return "not_entered";
-    } else if (
-      WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "NO" &&
-      WILL_LEARNER_APPEAR_FOR_EXAM_REASONS &&
-      WILL_LEARNER_APPEAR_FOR_EXAM_REASONS.response_value !== ""
-    ) {
-      return "not_started";
-    } else if (
-      WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "YES" &&
-      (DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "NO" ||
-        DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "YET_TO_BE_PROCEED" ||
-        HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "NO" ||
-        LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
-          "NO_MEANS_TO_TRAVEL" ||
-        LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
-          "CANT_AFFORD_TRAVEL_FARE")
-    ) {
-      return "in_progress";
-    } else if (
-      WILL_LEARNER_APPEAR_FOR_EXAM.response_value === "YES" &&
-      DID_LEARNER_RECEIVE_ADMIT_CARD.response_value === "YES" &&
-      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER.response_value ===
-        "YES" &&
-      (HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "YES" ||
-        HAS_LEARNER_PREPARED_PRACTICAL_FILE.response_value === "NOT_APPLICABLE")
-    ) {
-      return "completed";
-    } else if (responses.every((response) => response.response_value === "")) {
-      return "not_entered";
-    } else {
-      return "unknown";
-    }
-  };
 
   return (
     <Layout
@@ -249,3 +169,74 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
 };
 
 export default ExamLearnerList;
+
+const mergingData = (userData, report) => {
+  const responses = report?.reduce((acc, observation) => {
+    const fieldResponse = observation?.field_responses?.find(
+      (response) => response.context_id === userData.user_id
+    );
+    if (fieldResponse) {
+      acc?.push({
+        field_id: observation.field_id,
+        field_name: observation.fields?.[0].title,
+        response_value: fieldResponse.response_value,
+      });
+    }
+    return acc;
+  }, []);
+  const status = getStatus(responses);
+  return { ...userData, status };
+};
+
+const getStatus = (responses) => {
+  if (!responses) return "not_entered";
+
+  const responseMap = responses.reduce((acc, response) => {
+    acc[response.field_name] = response.response_value;
+    return acc;
+  }, {});
+
+  const {
+    WILL_LEARNER_APPEAR_FOR_EXAM,
+    DID_LEARNER_RECEIVE_ADMIT_CARD,
+    HAS_LEARNER_PREPARED_PRACTICAL_FILE,
+    LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER,
+  } = responseMap;
+
+  if (!WILL_LEARNER_APPEAR_FOR_EXAM) {
+    return "not_entered";
+  }
+
+  if (WILL_LEARNER_APPEAR_FOR_EXAM === "NO") {
+    return "not_started";
+  }
+
+  if (
+    WILL_LEARNER_APPEAR_FOR_EXAM === "YES" &&
+    (DID_LEARNER_RECEIVE_ADMIT_CARD === "NO" ||
+      DID_LEARNER_RECEIVE_ADMIT_CARD === "YET_TO_BE_PROCEED" ||
+      HAS_LEARNER_PREPARED_PRACTICAL_FILE === "NO" ||
+      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER ===
+        "NO_MEANS_TO_TRAVEL" ||
+      LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER ===
+        "CANT_AFFORD_TRAVEL_FARE")
+  ) {
+    return "in_progress";
+  }
+
+  if (
+    WILL_LEARNER_APPEAR_FOR_EXAM === "YES" &&
+    DID_LEARNER_RECEIVE_ADMIT_CARD === "YES" &&
+    LEARNER_HAVE_TRAVEL_ARRANGEMENTS_TO_EXAM_CENTER === "YES" &&
+    (HAS_LEARNER_PREPARED_PRACTICAL_FILE === "YES" ||
+      HAS_LEARNER_PREPARED_PRACTICAL_FILE === "NOT_APPLICABLE")
+  ) {
+    return "completed";
+  }
+
+  if (responses.every((response) => response.response_value === "")) {
+    return "not_entered";
+  }
+
+  return "unknown";
+};

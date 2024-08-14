@@ -10,6 +10,7 @@ import {
   MobileNumber,
   chunk,
   useLocationData,
+  CheckUncheck,
 } from "@shiksha/common-lib";
 import {
   Box,
@@ -312,16 +313,9 @@ CustomR.propTypes = {
   schema: PropTypes.any,
 };
 // rjsf custom RadioBtn field
-export const RadioBtn = ({
-  options,
-  value,
-  onChange,
-  required,
-  schema,
-  directionColumn,
-}) => {
+export const RadioBtn = ({ options, value, onChange, required, schema }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, _stack } = schema || {};
+  const { label, format, ...otherSchema } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -337,6 +331,7 @@ export const RadioBtn = ({
           enumOptions: items,
         }}
         schema={{
+          ...(otherSchema || {}),
           // _pressable: { style: { backgroundColor: "#999" } },
           _stackIcon: { flexDirection: "row" },
           icons: items?.map((e) =>
@@ -742,42 +737,6 @@ MultiCheck.propTypes = {
   required: PropTypes.bool,
 };
 
-// select between 2 values radio button (yes or no)
-const CheckUncheck = ({ required, schema, value, onChange }) => {
-  const { label } = schema || {};
-  const { t } = useTranslation();
-
-  const checkboxIcons = [
-    { name: "CheckboxCircleLineIcon" },
-    { name: "CloseCircleLineIcon" },
-  ];
-  return (
-    <HStack space={2}>
-      {required && <Text color={"danger.500"}>*</Text>}
-      <CustomRadio
-        options={{
-          enumOptions: [{ value: "1" }, { value: "0" }],
-        }}
-        schema={{
-          icons: checkboxIcons,
-          _box: { gap: "0", width: "auto" },
-          _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
-        }}
-        value={value}
-        onChange={(e) => {
-          onChange(e);
-        }}
-      />
-      <Text flex="4">{label ? t(label) : ""}</Text>
-    </HStack>
-  );
-};
-CheckUncheck.propTypes = {
-  value: PropTypes.any,
-  onChange: PropTypes.func,
-  schema: PropTypes.any,
-  required: PropTypes.bool,
-};
 // rjsf custom textarea field
 const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
   const [isFocus, setIsfocus] = useState(false);

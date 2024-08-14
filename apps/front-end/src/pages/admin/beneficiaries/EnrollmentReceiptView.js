@@ -28,10 +28,33 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-const checkboxIcons = [
-  { name: "CloseCircleLineIcon" },
-  { name: "CheckboxCircleLineIcon" },
-];
+const checkboxIcons = (value) => {
+  const iconsData = [
+    {
+      name: "CloseCircleLineIcon",
+      activeName: "CloseCircleFillIcon",
+      activeColor: "#d53546",
+      style: {},
+      _icon: { size: "25", activeColor: "#d53546", color: "#484848" },
+    },
+    {
+      name: "CheckboxCircleLineIcon",
+      activeName: "CheckboxCircleFillIcon",
+      activeColor: "#038400",
+      style: {},
+      _icon: { size: "25", activeColor: "#038400", color: "#484848" },
+    },
+  ];
+  return iconsData.map((e) => {
+    if (
+      (value === "yes" && e.name === "CheckboxCircleLineIcon") ||
+      (value === "no" && e.name === "CloseCircleLineIcon")
+    ) {
+      return { ...e, name: e?.activeName };
+    }
+    return e;
+  });
+};
 
 export default function EnrollmentReceiptView({ footerLinks }) {
   const { t } = useTranslation();
@@ -51,6 +74,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
   const [boardName, setBoardName] = useState({});
   const [localData, setLocalData] = useState({});
   const [paymentDocId, setPaymentDocId] = useState([]);
+  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const handleSetReceiptUrl = async (doc_id) => {
     setIsButtonLoading(true);
@@ -72,7 +96,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     setBoardName(boardName?.name);
     const documentData = getEnrollmentIds(
       result?.program_beneficiaries?.payment_receipt_document_id,
-      state_name
+      state_name,
     );
     setPaymentDocId(documentData);
     await handleSetReceiptUrl(documentData?.payment_receipt_document_id);
@@ -100,24 +124,44 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
   const submit = useCallback(
     async (status) => {
-      if (checkValidation()) {
-        const data = await benificiaryRegistoryService.verifyEnrollment({
-          user_id: id,
-          enrollment_verification_status: status,
-          enrollment_verification_reason: reason,
+      if (!checkValidation()) return;
+
+      const lastStandard = parseInt(
+        data?.core_beneficiaries?.last_standard_of_education ?? "",
+        10,
+      );
+      const hasWarning = isNaN(lastStandard) || lastStandard < 5;
+
+      if (hasWarning && !openWarningModal) {
+        setOpenWarningModal(true);
+        return;
+      }
+
+      const response = await benificiaryRegistoryService.verifyEnrollment({
+        user_id: id,
+        enrollment_verification_status: status,
+        enrollment_verification_reason: reason,
+      });
+      if (response?.success) {
+        setOpenModal(false);
+        navigate({
+          pathname:
+            data?.program_beneficiaries?.status == "sso_id_enrolled"
+              ? "/admin/learners/enrollmentVerificationList/SSOID"
+              : "/admin/learners/enrollmentVerificationList",
+          search: `?${createSearchParams(filter)}`,
         });
-
-        if (data?.success) {
-          setOpenModal(false);
-
-          navigate({
-            pathname: "/admin/learners/enrollmentVerificationList",
-            search: `?${createSearchParams(filter)}`,
-          });
-        }
       }
     },
-    [checkValidation, createSearchParams, filter, id, navigate, reason]
+    [
+      checkValidation,
+      createSearchParams,
+      filter,
+      id,
+      navigate,
+      reason,
+      openWarningModal,
+    ],
   );
 
   return (
@@ -125,23 +169,19 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       <VStack space={"5"} p="6">
         <HStack space={"2"} justifyContent="space-between">
           <Breadcrumb
-            drawer={
-              <IconByName
-                size="sm"
-                name="ArrowRightSLineIcon"
-                onPress={(e) =>
-                  navigate("/admin/learners/enrollmentVerificationList")
-                }
-              />
-            }
+            drawer={<IconByName size="sm" name="ArrowRightSLineIcon" />}
             data={[
-              <AdminTypo.H4 key="1">
+              <AdminTypo.H4 key="1" onPress={() => navigate(-1)}>
                 {t("ENROLLMENT_VERIFICATION")}
               </AdminTypo.H4>,
-              <AdminTypo.H4 key="2">{`${data?.first_name} ${
-                data?.last_name ? data?.last_name : " "
-              }`}</AdminTypo.H4>,
-              <AdminTypo.H4 key="3" bold>{`${data?.id}`}</AdminTypo.H4>,
+              <AdminTypo.H4 key="2" onPress={() => navigate(-1)}>{`${
+                data?.first_name
+              } ${data?.last_name ? data?.last_name : " "}`}</AdminTypo.H4>,
+              <AdminTypo.H4
+                key="3"
+                bold
+                onPress={() => navigate(-1)}
+              >{`${data?.id}`}</AdminTypo.H4>,
               <ChipStatus
                 key={"4"}
                 is_duplicate={data?.is_duplicate}
@@ -150,6 +190,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               />,
             ]}
           />
+
           {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
         </HStack>
         <Body data={data}>
@@ -158,7 +199,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               {t(
                 localData === "BIHAR"
                   ? "ENROLLMENT_DETAILS_VERIFICATION_BIHAR"
-                  : "ENROLLMENT_DETAILS_VERIFICATION"
+                  : "ENROLLMENT_DETAILS_VERIFICATION",
               )}
             </AdminTypo.H5>
 
@@ -229,7 +270,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                   document_id: photo?.id,
                                 }}
                               />
-                            )
+                            ),
                         )
                       ) : (
                         <IconByName
@@ -272,7 +313,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                             <AdminTypo.H5>
                               {data?.program_beneficiaries?.enrollment_dob
                                 ? moment(
-                                    data?.program_beneficiaries?.enrollment_dob
+                                    data?.program_beneficiaries?.enrollment_dob,
                                   ).format("DD-MM-YYYY")
                                 : "-"}
                             </AdminTypo.H5>
@@ -290,7 +331,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         enumOptions: [{ value: "no" }, { value: "yes" }],
                       }}
                       schema={{
-                        icons: checkboxIcons,
+                        icons: checkboxIcons(reason?.enrollment_details),
                         _box: {
                           flex: "1",
                           gap: "2",
@@ -321,20 +362,36 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       _box={{ space: "2" }}
                       data={data?.program_beneficiaries}
                       arr={[
-                        {
-                          label:
-                            localData === "RAJASTHAN"
-                              ? "ENROLLMENT_NO"
-                              : "APPLICATION_ID",
-                          keyArr: "enrollment_number",
-                        },
+                        ...(data?.program_beneficiaries?.status == "enrolled"
+                          ? [
+                              {
+                                label:
+                                  localData == "BIHAR"
+                                    ? "APPLICATION_ID"
+                                    : localData == "MADHYA PRADESH"
+                                      ? "ROLL_NUMBER"
+                                      : "ENROLLMENT_NO",
+                                keyArr: "enrollment_number",
+                              },
+                            ]
+                          : []),
+                        ...(localData == "RAJASTHAN" &&
+                        data?.program_beneficiaries?.status == "sso_id_enrolled"
+                          ? [
+                              {
+                                label: "SSOID",
+                                keyArr: "sso_id",
+                              },
+                            ]
+                          : []),
                         {
                           label: "DATE",
                           value: (
                             <AdminTypo.H5>
                               {data?.program_beneficiaries?.enrollment_date
                                 ? moment(
-                                    data?.program_beneficiaries?.enrollment_date
+                                    data?.program_beneficiaries
+                                      ?.enrollment_date,
                                   ).format("DD-MM-YYYY")
                                 : "-"}
                             </AdminTypo.H5>
@@ -353,7 +410,9 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                         enumOptions: [{ value: "no" }, { value: "yes" }],
                       }}
                       schema={{
-                        icons: checkboxIcons,
+                        icons: checkboxIcons(
+                          reason?.learner_enrollment_details,
+                        ),
                         _box: {
                           flex: "1",
                           gap: "20px",
@@ -385,7 +444,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       }
                       onPress={() => {
                         handleButtonClick(
-                          paymentDocId?.payment_receipt_document_id
+                          paymentDocId?.payment_receipt_document_id,
                         );
                       }}
                     >
@@ -511,9 +570,19 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   reason?.enrollment_details === "no" ||
                   reason?.learner_enrollment_details === "no"
                 }
-                onPress={(e) => submit("verified")}
+                onPress={(e) =>
+                  submit(
+                    data?.program_beneficiaries?.status == "sso_id_enrolled"
+                      ? "sso_id_verified"
+                      : "verified",
+                  )
+                }
               >
-                {t("FACILITATOR_STATUS_VERIFY")}
+                {t(
+                  data?.program_beneficiaries?.status == "sso_id_enrolled"
+                    ? "BENEFICIARY_STATUS_BTNTEXT_SSOID_VERIFY"
+                    : "BENEFICIARY_STATUS_BTNTEXT_VERIFY",
+                )}
               </AdminTypo.Successbutton>
               <AdminTypo.Secondarybutton
                 isLoading={isButtonLoading}
@@ -530,6 +599,39 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                 {t("CHANGE_REQUIRED")}
               </AdminTypo.Secondarybutton>
             </HStack>
+            <Modal
+              isOpen={openWarningModal}
+              onClose={() => setOpenWarningModal(false)}
+            >
+              <Modal.Content>
+                <Modal.Header textAlign={"Center"}>
+                  <AdminTypo.H2 color="textGreyColor.500">
+                    {t("EXPIRY_CONTENT.HEADING")}
+                  </AdminTypo.H2>
+                </Modal.Header>
+                <Modal.Body>
+                  <VStack space={4}>
+                    {t("EDUCATION_STANDARD_IP_WARNING")}
+                  </VStack>
+                </Modal.Body>
+                <Modal.Footer justifyContent={"space-between"}>
+                  <AdminTypo.Secondarybutton onPress={() => submit("rejected")}>
+                    {t("REJECT")}
+                  </AdminTypo.Secondarybutton>
+                  <AdminTypo.Successbutton
+                    onPress={(e) =>
+                      submit(
+                        data?.program_beneficiaries?.status == "sso_id_enrolled"
+                          ? "sso_id_verified"
+                          : "verified",
+                      )
+                    }
+                  >
+                    {t("PRERAK_PROCEED_BTN")}
+                  </AdminTypo.Successbutton>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
             <Modal isOpen={openModal} size="xl">
               <Modal.Content>
                 <Modal.Header>{t("ARE_YOU_SURE")}</Modal.Header>
@@ -558,40 +660,34 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
 const Body = ({ data, children }) => {
   const { t } = useTranslation();
-  if (data?.program_beneficiaries?.status !== "enrolled") {
-    return (
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <AdminTypo.H1>{t("PAGE_NOT_ACCESSABLE")}</AdminTypo.H1>
-        </HStack>
-      </Alert>
-    );
-  } else if (
-    data?.program_beneficiaries?.enrollment_status === "not_enrolled"
-  ) {
-    return (
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <AdminTypo.H1>
-            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT")}
-          </AdminTypo.H1>
-        </HStack>
-      </Alert>
-    );
-  } else if (data?.is_duplicate === "yes" && data?.is_deactivated === null) {
-    return (
-      <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-        <HStack alignItems="center" space="2" color>
-          <Alert.Icon />
-          <AdminTypo.H1>{t("RESOLVE_DUPLICATION")}</AdminTypo.H1>
-        </HStack>
-      </Alert>
-    );
-  } else {
-    return children;
+  const { program_beneficiaries, is_duplicate, is_deactivated } = data || {};
+  const status = program_beneficiaries?.status;
+  const enrollmentStatus = program_beneficiaries?.enrollment_status;
+
+  let alertContent = null;
+
+  switch (true) {
+    case !["enrolled", "sso_id_enrolled"].includes(status):
+      alertContent = t("PAGE_NOT_ACCESSABLE");
+      break;
+    case enrollmentStatus === "not_enrolled":
+      alertContent = t("FACILITATOR_STATUS_CANCEL_ENROLMENT");
+      break;
+    case is_duplicate === "yes" && is_deactivated === null:
+      alertContent = t("RESOLVE_DUPLICATION");
+      break;
+    default:
+      return children;
   }
+
+  return (
+    <Alert status="warning" alignItems={"start"} mb="3" mt="4">
+      <HStack alignItems="center" space="2" color>
+        <Alert.Icon />
+        <AdminTypo.H1>{alertContent}</AdminTypo.H1>
+      </HStack>
+    </Alert>
+  );
 };
 
 const TextInfo = ({ data, _box, arr, board }) => {

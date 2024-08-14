@@ -9,7 +9,7 @@ export default {
         "organization",
         "experience_in_years",
         "related_to_teaching",
-        "reference_details",
+        // "reference_details",
       ],
       properties: {
         role_title: {

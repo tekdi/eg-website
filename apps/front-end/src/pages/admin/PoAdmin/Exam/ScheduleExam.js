@@ -298,7 +298,7 @@ function ScheduleExam() {
                     textOverflow="ellipsis"
                     bold
                   >
-                    {t("USER")}
+                    {t("EXAM_SCHEDULE")}
                   </AdminTypo.H4>
                 ),
               },
