@@ -312,7 +312,13 @@ export default function App(footerLinks) {
     // filter by sso_id_enrolled if state id not RAJASTHAN
     if (
       state_name === "RAJASTHAN" &&
-      ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(status)
+      [
+        "identified",
+        "ready_to_enroll",
+        "sso_id_enrolled",
+        "enrollment_awaited",
+        "enrollment_rejected",
+      ].includes(status)
     ) {
       list = list.filter((e) => e.value != "enrolled");
     } else if (state_name !== "RAJASTHAN") {

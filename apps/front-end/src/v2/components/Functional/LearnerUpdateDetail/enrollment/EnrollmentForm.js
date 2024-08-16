@@ -185,8 +185,8 @@ const getSubjects = async (schemaData, value) => {
                 state_name === "RAJASTHAN"
                   ? "/enrollment-receipt.jpeg"
                   : state_name === "BIHAR"
-                    ? "/application_receipt_bihar.jpg"
-                    : "/enrollment_receipt_mp.jpg",
+                  ? "/application_receipt_bihar.jpg"
+                  : "/enrollment_receipt_mp.jpg",
             }}
             height={"200px"}
             width={"124px"}
@@ -319,7 +319,13 @@ export default function EnrollmentForm() {
 
     if (
       state_name === "RAJASTHAN" &&
-      ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(status)
+      [
+        "identified",
+        "ready_to_enroll",
+        "sso_id_enrolled",
+        "enrollment_awaited",
+        "enrollment_rejected",
+      ].includes(status)
     ) {
       list = list.filter((e) => e.value != "enrolled");
     } else if (state_name !== "RAJASTHAN") {
