@@ -40,7 +40,7 @@ export default {
         },
         sso_id: {
           type: "string",
-          _input: { keyboardType: "numeric" },
+          // _input: { keyboardType: "numeric" },
           label: "SSO_ID",
         },
         enrollment_number: {
