@@ -24,6 +24,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import NotFound from "../../NotFound";
 import { ChipStatus } from "./list/ChipStatus";
 import Chip from "component/Chip";
+import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
 
 export default function FacilitatorView({ footerLinks }) {
   const { t } = useTranslation();
@@ -311,35 +312,7 @@ const ResetPassword = memo(({ data, id }) => {
   }, []);
 
   const validate = useCallback(() => {
-    let arr = {};
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (
-      typeof credentials?.password === "undefined" ||
-      credentials?.password === ""
-    ) {
-      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.password)) {
-      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
-    }
-
-    if (
-      typeof credentials?.confirmPassword === "undefined" ||
-      credentials?.confirmPassword === ""
-    ) {
-      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.confirmPassword)) {
-      arr = {
-        ...arr,
-        confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
-      };
-    } else if (credentials?.confirmPassword !== credentials?.password) {
-      arr = {
-        ...arr,
-        confirmPassword: t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"),
-      };
-    }
-
+    const arr = changePasswordValidation(credentials, t);
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
   }, [credentials, t]);
@@ -534,7 +507,7 @@ const ResetPassword = memo(({ data, id }) => {
                 onPress={() => {
                   handleResetPassword(
                     credentials?.password,
-                    credentials?.confirmPassword
+                    credentials?.confirmPassword,
                   );
                 }}
               >

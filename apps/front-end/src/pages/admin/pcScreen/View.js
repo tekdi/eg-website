@@ -28,6 +28,7 @@ import AssignedList from "./AssignedList";
 import DailyActivityList from "./DailyActivityList";
 
 import DatePicker from "../../../v2/components/Static/FormBaseInput/DatePicker";
+import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
 
 function View() {
   const { t } = useTranslation();
@@ -56,35 +57,7 @@ function View() {
   }, []);
 
   const validate = useCallback(() => {
-    let arr = {};
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (
-      typeof credentials?.password === "undefined" ||
-      credentials?.password === ""
-    ) {
-      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.password)) {
-      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
-    }
-
-    if (
-      typeof credentials?.confirmPassword === "undefined" ||
-      credentials?.confirmPassword === ""
-    ) {
-      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.confirmPassword)) {
-      arr = {
-        ...arr,
-        confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
-      };
-    } else if (credentials?.confirmPassword !== credentials?.password) {
-      arr = {
-        ...arr,
-        confirmPassword: t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"),
-      };
-    }
-
+    const arr = changePasswordValidation(credentials, t);
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
   }, [credentials, t]);
