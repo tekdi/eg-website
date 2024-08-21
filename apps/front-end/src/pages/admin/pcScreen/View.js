@@ -97,9 +97,8 @@ function View() {
           id: id.toString(),
           password: password,
         };
-        const resetPassword = await authRegistryService.resetPasswordAdmin(
-          bodyData
-        );
+        const resetPassword =
+          await authRegistryService.resetPasswordAdmin(bodyData);
         if (resetPassword.success === true) {
           setCredentials();
           setPasswordModal(false);
@@ -141,7 +140,7 @@ function View() {
     };
 
     fetchData();
-  }, []);
+  }, [pcData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -286,9 +285,7 @@ function View() {
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={{
               ...data,
-              name: `${pcData?.first_name} ${pcData?.middle_name || ""}  ${
-                pcData?.last_name || ""
-              }`,
+              name: `${pcData?.first_name}${pcData?.middle_name ? " " + pcData.middle_name : ""}${pcData?.last_name ? " " + pcData.last_name : ""}`,
               address: `${pcData?.state ?? ""}, ${pcData?.district ?? ""}, ${
                 pcData?.block ?? ""
               }, ${pcData?.village ?? ""}${
@@ -517,7 +514,7 @@ function View() {
                   onPress={() => {
                     handleResetPassword(
                       credentials?.password,
-                      credentials?.confirmPassword
+                      credentials?.confirmPassword,
                     );
                   }}
                 >
