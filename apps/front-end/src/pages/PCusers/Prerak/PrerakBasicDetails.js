@@ -130,7 +130,7 @@ export default function PrerakBasicDetails() {
             label={["Gender", "Social Category", "Martial Status"]}
             item={prerakProfile}
             arr={["gender", "social_category", "marital_status"]}
-            onEdit={(e) => navigate(`/profile/edit/personal_details`)}
+            // onEdit={(e) => navigate(`/profile/edit/personal_details`)}
           />
           <CardComponent
             _vstack={{ space: 0 }}
@@ -143,7 +143,7 @@ export default function PrerakBasicDetails() {
               contact_number: [prerakProfile?.references?.contact_number],
             }}
             arr={["name", "designation", "contact_number"]}
-            onEdit={(e) => navigate(`/profile/edit/reference_details`)}
+            // onEdit={(e) => navigate(`/profile/edit/reference_details`)}
           />
           <CardComponent
             _vstack={{ space: 0 }}
@@ -154,7 +154,7 @@ export default function PrerakBasicDetails() {
               availability: [prerakProfile?.program_faciltators?.availability],
             }}
             arr={["availability"]}
-            onEdit={(e) => navigate(`/profile/edit/work_availability_details`)}
+            // onEdit={(e) => navigate(`/profile/edit/work_availability_details`)}
           />
         </VStack>
       </VStack>
