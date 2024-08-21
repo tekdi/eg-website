@@ -62,34 +62,27 @@ function View() {
     return !(arr.password || arr.confirmPassword);
   }, [credentials, t]);
 
-  const handleResetPassword = async (password, confirm_password) => {
+  const handleResetPassword = async () => {
     setIsButtonLoading(true);
     if (validate()) {
-      if (password === confirm_password) {
-        const bodyData = {
-          id: id.toString(),
-          password: password,
-        };
-        const resetPassword =
-          await authRegistryService.resetPasswordAdmin(bodyData);
-        if (resetPassword.success === true) {
-          setCredentials();
-          setPasswordModal(false);
-          toast.show({
-            title: "Success",
-            variant: "solid",
-            description: resetPassword?.message,
-          });
-          setPasswordModal(false);
-          setIsButtonLoading(false);
-          return { status: true };
-        } else if (resetPassword.success === false) {
-          setIsButtonLoading(false);
-          setCredentials();
-          setPasswordModal(false);
-          return { status: false };
-        }
-      } else if (password !== confirm_password) {
+      const bodyData = {
+        id: id.toString(),
+        password: credentials?.password,
+      };
+      const resetPassword =
+        await authRegistryService.resetPasswordAdmin(bodyData);
+      if (resetPassword.success === true) {
+        setCredentials();
+        setPasswordModal(false);
+        toast.show({
+          title: "Success",
+          variant: "solid",
+          description: resetPassword?.message,
+        });
+        setPasswordModal(false);
+        setIsButtonLoading(false);
+        return { status: true };
+      } else if (resetPassword.success === false) {
         setIsButtonLoading(false);
         setCredentials();
         setPasswordModal(false);
@@ -485,10 +478,7 @@ function View() {
                 <AdminTypo.PrimaryButton
                   isLoading={isButtonLoading}
                   onPress={() => {
-                    handleResetPassword(
-                      credentials?.password,
-                      credentials?.confirmPassword,
-                    );
+                    handleResetPassword();
                   }}
                 >
                   {t("USER_SET_NEW_PASSWORD")}
