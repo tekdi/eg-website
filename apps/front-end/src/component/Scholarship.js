@@ -12,7 +12,6 @@ import { useWindowDimensions } from "react-native-web";
 
 const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
   const { t } = useTranslation();
-  // const width = useS;
   const { width, height } = useWindowDimensions();
   const [alert, setAlert] = useState();
 
@@ -51,21 +50,6 @@ const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const iframe = document.getElementById("preview");
-  //   console.log(iframe);
-  //   if (iframe) {
-  //     iframe.onload = function () {
-  //       const iframeDocument =
-  //         iframe.contentDocument || iframe.contentWindow.document;
-  //       const iframeBody = iframeDocument.body;
-  //       console.log(iframeBody);
-  //       // Apply CSS styles to the iframe content
-  //       iframeBody.style.backgroundColor = "lightblue";
-  //       iframeBody.style.color = "red";
-  //     };
-  //   }
-  // }, [jsonData]);
   return (
     <Stack>
       <Alert {...{ alert, setAlert }} />
@@ -93,8 +77,8 @@ const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
                   ]
                     .filter((e) => e)
                     .join(", "),
-                })
-              )
+                }),
+              ),
             );
           }}
         >

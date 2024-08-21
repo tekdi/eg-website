@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  Flex,
   HStack,
   Heading,
   Text,
@@ -21,24 +20,16 @@ const Details = () => {
   const state = location?.state;
   const navigate = useNavigate();
   const { t } = useTranslation();
-
   const { jobId, type } = useParams();
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
-
   const [product, setProduct] = useState(state?.product);
   const [details, setDetails] = useState({});
   const fieldsToSkip = ["lastupdatedon", "createdon"];
-
-  const [story, setStory] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [transactionId, setTransactionId] = useState(uuidv4());
-  // const messageId = uuidv4();
-  const [siteUrl, setSiteUrl] = useState(window.location.href);
-  // const [info, setInfo] = useState(state?.product);
-  const dataShow = ["title", "name"];
+  const [error] = useState(null);
+  const [transactionId] = useState(uuidv4());
   const toast = useToast();
 
   function errorMessage(message) {
@@ -81,7 +72,6 @@ const Details = () => {
           bpp_uri: productInfo?.bpp_uri,
           transaction_id: transactionId,
           message_id: uuidv4(),
-          // message_id: "06974a96-e996-4e22-9265-230f69f22f57",
           timestamp: new Date().toISOString(),
         },
         message: {
@@ -105,51 +95,29 @@ const Details = () => {
         setDetails(response.responses?.[0].message?.order?.items?.[0] || {});
       } else {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
-      // console.log("resp", response);
       if (response && response.responses && response.responses.length > 0) {
-        // console.log("Entered 1");
-        let arrayOfObjects = [];
         let uniqueItemIds = new Set();
 
         for (const responses of response.responses) {
           const provider = responses.message.order;
           for (const item of provider.items) {
             if (!uniqueItemIds.has(item.id)) {
-              let obj = {
-                item_id: item.id,
-                title: productInfo.title,
-                description: productInfo.description
-                  ? productInfo.description
-                  : "",
-                long_desc: item.descriptor.long_desc,
-                provider_id: productInfo.provider_id,
-                provider_name: productInfo.provider_name,
-                bpp_id: productInfo.bpp_id,
-                bpp_uri: productInfo.bpp_uri,
-                icon: productInfo.icon ? productInfo.icon : "",
-                descriptionshort: productInfo.shortDescription
-                  ? productInfo.shortDescription
-                  : "",
-              };
-              arrayOfObjects.push(obj);
               uniqueItemIds.add(item.id);
             }
           }
         }
-        setStory(arrayOfObjects[0]);
-        // console.log("arrayOfObjects", arrayOfObjects);
       } else {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
     } catch (error) {
       console.error("Error fetching details:", error);
       errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
       );
     } finally {
       setLoading(false);
@@ -157,8 +125,7 @@ const Details = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      // registerTelementry(siteUrl, transactionId);
-      var requestOptions = {
+      let requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +140,7 @@ const Details = () => {
           setProduct(result?.data[db_cache]?.[0]);
           localStorage.setItem(
             "searchProduct",
-            JSON.stringify(result?.data[db_cache]?.[0])
+            JSON.stringify(result?.data[db_cache]?.[0]),
           );
 
           const userDataString = localStorage.getItem("userData");
@@ -191,12 +158,11 @@ const Details = () => {
           if (trackData?.params?.type) {
             handleSubscribe(result?.data[db_cache]?.[0]);
           } else if (transactionId !== undefined) {
-            fetchSelectedCourseData(result?.data[db_cache]?.[0]);
+            fetchSelectedCourseData();
           }
         });
     };
     fetchData();
-    // .catch((error) => console.log("error", error));
   }, [transactionId]); // Runs only once when the component mounts
 
   const handleSubscribe = (productData) => {
@@ -207,14 +173,8 @@ const Details = () => {
           product: productData,
           transactionId: transactionId,
         },
-      }
+      },
     );
-    // navigate(`/form`, { // Navigate to UserDetailsForm.jsx
-    //   state: {
-    //     product: story, // Pass selected data as state
-    //     transactionId: transactionId
-    //   },
-    // });
   };
   const handleBack = () => {
     navigate("/");
@@ -271,16 +231,6 @@ const Details = () => {
       ) : (
         <Box p={4} pt={30}>
           <Box padding={4} borderRadius={15} backgroundColor={"white"} mb={5}>
-            <Flex justify="space-between" alignItems="center">
-              <Box>
-                {/* {product.image_url && (
-                  <Box width={80} height={"auto"}>
-                    <img src={product.image_url} alt="Product" />
-                  </Box>
-                )} */}
-              </Box>
-            </Flex>
-
             <Heading mt={5} as="h2">
               {product?.title}
             </Heading>
@@ -307,55 +257,53 @@ const Details = () => {
           {details !== undefined && (
             <Box padding={4} borderRadius={15} backgroundColor={"white"}>
               {details?.tags?.[0]?.list?.map((item, itemIndex) => (
-                <>
+                <div key={item + itemIndex}>
                   {!fieldsToSkip.includes(item.descriptor.name) && (
-                    <>
-                      <Box key={itemIndex} ml={5}>
-                        <ul style={{ listStyleType: "disc" }}>
-                          <li>
-                            {!item?.descriptor?.name &&
-                              item?.descriptor?.code &&
-                              item?.value !== "" && (
-                                <Text fontSize={16} fontWeight={900} mt={3}>
+                    <Box ml={5}>
+                      <ul style={{ listStyleType: "disc" }}>
+                        <li>
+                          {!item?.descriptor?.name &&
+                            item?.descriptor?.code &&
+                            item?.value !== "" && (
+                              <Text fontSize={16} fontWeight={900} mt={3}>
+                                {convertNameToLearningOutcomes(
+                                  item?.descriptor?.code,
+                                )}
+                              </Text>
+                            )}
+
+                          {item?.descriptor?.name &&
+                          item?.value &&
+                          item?.value !== "null" &&
+                          item?.value !== null &&
+                          !fieldsToSkip.includes(item.descriptor.name) ? (
+                            <Box display="flex" mt={3}>
+                              {item?.descriptor?.name && (
+                                <Text
+                                  fontSize={16}
+                                  fontWeight={900}
+                                  marginRight={2}
+                                >
                                   {convertNameToLearningOutcomes(
-                                    item?.descriptor?.code
+                                    item?.descriptor?.name,
                                   )}
+                                  :
                                 </Text>
                               )}
-
-                            {item?.descriptor?.name &&
-                            item?.value &&
-                            item?.value !== "null" &&
-                            item?.value !== null &&
-                            !fieldsToSkip.includes(item.descriptor.name) ? (
-                              <Box display="flex" mt={3}>
-                                {item?.descriptor?.name && (
-                                  <Text
-                                    fontSize={16}
-                                    fontWeight={900}
-                                    marginRight={2}
-                                  >
-                                    {convertNameToLearningOutcomes(
-                                      item?.descriptor?.name
-                                    )}
-                                    :
-                                  </Text>
-                                )}
-                                {item?.value && (
-                                  <Text fontSize={16} color="gray.700">
-                                    {item?.value}
-                                  </Text>
-                                )}
-                              </Box>
-                            ) : (
-                              ""
-                            )}
-                          </li>
-                        </ul>
-                      </Box>
-                    </>
+                              {item?.value && (
+                                <Text fontSize={16} color="gray.700">
+                                  {item?.value}
+                                </Text>
+                              )}
+                            </Box>
+                          ) : (
+                            ""
+                          )}
+                        </li>
+                      </ul>
+                    </Box>
                   )}
-                </>
+                </div>
               ))}
             </Box>
           )}

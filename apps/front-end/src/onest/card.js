@@ -22,19 +22,19 @@ export const dataConfig = {
     render: (obj) => {
       const getDates = (range) => {
         return `${moment(range.start).format("DD MMM YYYY")} to ${moment(
-          range.end
+          range.end,
         ).format("DD MMM YYYY")}`;
       };
       const getMinEligibilityValue = (data) => {
         // Find the object with descriptor.code === "academic-eligibility"
         const academicEligibility = data.find(
-          (item) => item.descriptor.code === "academic-eligibility"
+          (item) => item.descriptor.code === "academic-eligibility",
         );
         // If the object is found, proceed to map the "list" array
         if (academicEligibility) {
           // Find the value where descriptor.code === "min-eligibility"
           const minEligibility = academicEligibility.list.find(
-            (listItem) => listItem.descriptor.code === "min-eligibility"
+            (listItem) => listItem.descriptor.code === "min-eligibility",
           );
           // Return the value if found, otherwise return an empty string
           return minEligibility ? minEligibility.value : "";
@@ -128,7 +128,7 @@ export const dataConfig = {
       const getSalaryInfo = (data) => {
         // Find the object with descriptor.code === "salary-info"
         const salaryInfo = data.find(
-          (item) => item.descriptor.code === "salary-info"
+          (item) => item.descriptor.code === "salary-info",
         );
         // If the object is found, proceed to return the values of list[0] and list[1]
         if (salaryInfo && salaryInfo.list.length >= 2) {
@@ -239,15 +239,6 @@ export const dataConfig = {
         val.response.responses?.[0]?.message.order?.fulfillments?.[0]?.stops?.[0]?.instructions?.media?.[0]?.url;
       paramData.type =
         val.response.responses?.[0]?.message.order?.fulfillments?.[0]?.stops?.[0]?.type;
-      // const list =
-      //   val.response.responses[0].message.order.items[0].tags[0].list;
-      // list.forEach((item) => {
-      //   // Check if the descriptor code is "urlType"
-      //   if (item.descriptor.code === "urlType") {
-      //     // If found, extract the value associated with it
-      //     paramData.type = item.value;
-      //   }
-      // });
       const data = {
         user_id: val?.userData?.user_id,
         context: val?.type,

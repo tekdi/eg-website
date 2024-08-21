@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dataConfig } from "./card";
 import Layout from "./Layout";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
 import { chunk } from "@shiksha/common-lib";
 import slide2 from "./assets/images/slide-2.png";
 import slide3 from "./assets/images/slide-3.png";
@@ -54,7 +52,6 @@ const responsive = {
 const LandingPage = ({ userTokenInfo, footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const chuckArr = Object.values(dataConfig);
@@ -131,7 +128,7 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
           {CAROUSEL_LIST.map((item, i) => {
             return (
               <ImageBackground
-                key={`carousel-item-${i}`}
+                key={`carousel-item-${item.title + i}`}
                 source={{ uri: item.bgImage }}
                 style={styles.backgroundImage}
               >
@@ -152,7 +149,7 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
 
         {dataConfig.constructor.name === "Object" &&
           dataArray?.map((pItem) => (
-            <HStack space={"6%"}>
+            <HStack space={"6%"} key={pItem}>
               {pItem.map((item) => {
                 return (
                   <FeatureCard

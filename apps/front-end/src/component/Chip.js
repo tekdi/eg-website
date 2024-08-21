@@ -209,12 +209,10 @@ export function ExamChipStatus({ width, status, ...props }) {
         setColor("yellowColor");
         break;
       case "assign_to_ip":
-        setNewStatus(t("ASSIGNED_TO_IP"));
-        setColor("yellowColor");
-        break;
       default:
         setNewStatus(t("ASSIGNED_TO_IP"));
         setColor("yellowColor");
+        break;
     }
   }, [status]);
 
