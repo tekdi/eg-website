@@ -32,7 +32,7 @@ const List = ({ data, location }) => {
             <Pressable
               onPress={() =>
                 navigate(`/learner/learnerListView/${item?.user_id}`, {
-                  state: location,
+                  state: { filter: location?.state },
                 })
               }
             >
@@ -104,7 +104,9 @@ export default function LearnerListView() {
   const location = useLocation();
 
   const handleBack = () => {
-    navigate(`/learner/learnerList`);
+    navigate(`/learner/learnerList`, {
+      state: { filter: location?.state },
+    });
   };
 
   useEffect(() => {

@@ -39,6 +39,11 @@ export default function LearnerProfileView({ userTokenInfo }) {
     <Layout
       _appBar={{
         name: t("LEARNER_PROFILE"),
+        onPressBackButton: () => {
+          navigate("/learner/LearnerListView", {
+            state: location.state?.filter,
+          });
+        },
       }}
       loading={loading}
       analyticsPageTitle={"LEARNER_PROFILE"}
@@ -126,7 +131,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                     onPress={() => {
                       navigate(
                         `/learner/learnerListView/${id}/learnerBasicDetails`,
-                        { state: beneficiary }
+                        { state: beneficiary },
                       );
                     }}
                     color="maroon.400"
@@ -145,7 +150,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                     onPress={() => {
                       navigate(
                         `/learner/learnerListView/${id}/learnerAddAddress`,
-                        { state: beneficiary }
+                        { state: beneficiary },
                       );
                     }}
                     color="maroon.400"
@@ -177,7 +182,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                     onPress={() => {
                       navigate(
                         `/learner/learnerListView/${id}/learnerDocumentDetails`,
-                        { state: beneficiary }
+                        { state: beneficiary },
                       );
                     }}
                     color="maroon.400"
@@ -196,7 +201,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                     onPress={() => {
                       navigate(
                         `/learner/learnerListView/${id}/learnerEducationDetails`,
-                        { state: beneficiary }
+                        { state: beneficiary },
                       );
                     }}
                     color="maroon.400"
@@ -215,7 +220,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                     onPress={() => {
                       navigate(
                         `/learner/learnerListView/${id}/learnerEnrollmentDetails`,
-                        { state: beneficiary }
+                        { state: beneficiary },
                       );
                     }}
                     color="maroon.400"
@@ -255,7 +260,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                     onPress={() => {
                       navigate(
                         `/learner/learnerListView/${id}/learnerJourneyDetails`,
-                        { state: beneficiary }
+                        { state: beneficiary },
                       );
                     }}
                     color="maroon.400"

@@ -180,7 +180,7 @@ export default function LearnerList() {
 
   const handleContinueBtn = () => {
     const filteredUsers = prerakList?.filter((item) =>
-      selectedPrerak?.includes(item.user_id)
+      selectedPrerak?.includes(item.user_id),
     );
     setFilteredData(filteredUsers);
     setIsModalOpen(false);
@@ -440,6 +440,7 @@ export default function LearnerList() {
                                 academic: academic,
                                 prerak_id: item?.user_id,
                                 program_id: item?.program_id,
+                                filter: location?.state,
                               },
                             });
                           }}
@@ -521,10 +522,13 @@ export default function LearnerList() {
                   {prerakList &&
                     prerakList?.map((item) => (
                       <Checkbox key={item.user_id} value={item.user_id} my={2}>
-                        {item?.user.first_name}
-                        {item?.user.middle_name
-                          ? `${item?.user.middle_name} ${item?.user.last_name}`
-                          : item?.user.last_name}
+                        {[
+                          item?.user.first_name,
+                          item?.user.middle_name,
+                          item?.user.last_name,
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                       </Checkbox>
                     ))}
                 </Checkbox.Group>

@@ -79,7 +79,7 @@ export default function BenificiaryEnrollment() {
           "enrollment_rejected",
         ].includes(
           benificiary?.program_beneficiaries?.enrollment_status ||
-            benificiary?.program_beneficiaries?.status
+            benificiary?.program_beneficiaries?.status,
         ) && (
           <ItemComponent
             title={t("ENROLLMENT_DETAILS")}
@@ -89,12 +89,12 @@ export default function BenificiaryEnrollment() {
               ...benificiary?.program_beneficiaries,
               ...getEnrollmentIds(
                 benificiary?.program_beneficiaries?.payment_receipt_document_id,
-                stateName
+                stateName,
               ),
               enrollment_date: benificiary?.program_beneficiaries
                 ?.enrollment_date
                 ? moment(
-                    benificiary?.program_beneficiaries?.enrollment_date
+                    benificiary?.program_beneficiaries?.enrollment_date,
                   ).format("DD-MM-YYYY")
                 : "-",
               enrollment_status: benificiary?.program_beneficiaries
@@ -110,48 +110,40 @@ export default function BenificiaryEnrollment() {
               ) : (
                 "-"
               ),
-              enrolled_for_board: benificiary?.program_beneficiaries
-                ?.enrolled_for_board ? (
-                <GetEnumValue
-                  t={t}
-                  enumType={"ENROLLED_FOR_BOARD"}
-                  enumOptionValue={boardName}
-                  enumApiData={enumOptions}
-                />
-              ) : (
-                "-"
-              ),
+              enrolled_for_board: benificiary?.program_beneficiaries?.bordID
+                ? benificiary?.program_beneficiaries?.bordID?.name
+                : "-",
             }}
             {...(["not_enrolled"].includes(
-              benificiary?.program_beneficiaries?.enrollment_status
+              benificiary?.program_beneficiaries?.enrollment_status,
             )
               ? {
                   onlyField: ["enrollment_status"],
                 }
               : [
-                  "identified",
-                  "applied_but_pending",
-                  "enrollment_rejected",
-                  "enrollment_awaited",
-                ].includes(
-                  benificiary?.program_beneficiaries?.enrollment_status
-                )
-              ? {
-                  onlyField: ["enrollment_status", "enrolled_for_board"],
-                }
-              : {
-                  onlyField: [
-                    "enrollment_status",
-                    "enrolled_for_board",
-                    "enrollment_number",
-                    "enrollment_mobile_no",
-                    "enrollment_date",
-                    "payment_receipt_document_id",
-                    ...(stateName !== "RAJASTHAN"
-                      ? ["application_form", "application_login_id"]
-                      : []),
-                  ],
-                })}
+                    "identified",
+                    "applied_but_pending",
+                    "enrollment_rejected",
+                    "enrollment_awaited",
+                  ].includes(
+                    benificiary?.program_beneficiaries?.enrollment_status,
+                  )
+                ? {
+                    onlyField: ["enrollment_status", "enrolled_for_board"],
+                  }
+                : {
+                    onlyField: [
+                      "enrollment_status",
+                      "enrolled_for_board",
+                      "enrollment_number",
+                      "enrollment_mobile_no",
+                      "enrollment_date",
+                      "payment_receipt_document_id",
+                      ...(stateName !== "RAJASTHAN"
+                        ? ["application_form", "application_login_id"]
+                        : []),
+                    ],
+                  })}
             BenificiaryStatus={benificiary?.program_beneficiaries?.status}
           />
         )}
@@ -168,7 +160,7 @@ export default function BenificiaryEnrollment() {
               ...benificiary?.program_beneficiaries,
               enrollment_dob: benificiary?.program_beneficiaries?.enrollment_dob
                 ? moment(
-                    benificiary?.program_beneficiaries?.enrollment_dob
+                    benificiary?.program_beneficiaries?.enrollment_dob,
                   ).format("DD-MM-YYYY")
                 : "-",
               enrollment_status: (
