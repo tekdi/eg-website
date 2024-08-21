@@ -28,6 +28,7 @@ import AssignedList from "./AssignedList";
 import DailyActivityList from "./DailyActivityList";
 
 import DatePicker from "../../../v2/components/Static/FormBaseInput/DatePicker";
+import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
 
 function View() {
   const { t } = useTranslation();
@@ -56,68 +57,32 @@ function View() {
   }, []);
 
   const validate = useCallback(() => {
-    let arr = {};
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (
-      typeof credentials?.password === "undefined" ||
-      credentials?.password === ""
-    ) {
-      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.password)) {
-      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
-    }
-
-    if (
-      typeof credentials?.confirmPassword === "undefined" ||
-      credentials?.confirmPassword === ""
-    ) {
-      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.confirmPassword)) {
-      arr = {
-        ...arr,
-        confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
-      };
-    } else if (credentials?.confirmPassword !== credentials?.password) {
-      arr = {
-        ...arr,
-        confirmPassword: t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"),
-      };
-    }
-
+    const arr = changePasswordValidation(credentials, t);
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
   }, [credentials, t]);
 
-  const handleResetPassword = async (password, confirm_password) => {
+  const handleResetPassword = async () => {
     setIsButtonLoading(true);
     if (validate()) {
-      if (password === confirm_password) {
-        const bodyData = {
-          id: id.toString(),
-          password: password,
-        };
-        const resetPassword = await authRegistryService.resetPasswordAdmin(
-          bodyData
-        );
-        if (resetPassword.success === true) {
-          setCredentials();
-          setPasswordModal(false);
-          toast.show({
-            title: "Success",
-            variant: "solid",
-            description: resetPassword?.message,
-          });
-          setPasswordModal(false);
-          setIsButtonLoading(false);
-          return { status: true };
-        } else if (resetPassword.success === false) {
-          setIsButtonLoading(false);
-          setCredentials();
-          setPasswordModal(false);
-          return { status: false };
-        }
-      } else if (password !== confirm_password) {
+      const bodyData = {
+        id: id.toString(),
+        password: credentials?.password,
+      };
+      const resetPassword =
+        await authRegistryService.resetPasswordAdmin(bodyData);
+      if (resetPassword.success === true) {
+        setCredentials();
+        setPasswordModal(false);
+        toast.show({
+          title: "Success",
+          variant: "solid",
+          description: resetPassword?.message,
+        });
+        setPasswordModal(false);
+        setIsButtonLoading(false);
+        return { status: true };
+      } else if (resetPassword.success === false) {
         setIsButtonLoading(false);
         setCredentials();
         setPasswordModal(false);
@@ -141,7 +106,7 @@ function View() {
     };
 
     fetchData();
-  }, []);
+  }, [pcData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -286,9 +251,7 @@ function View() {
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={{
               ...data,
-              name: `${pcData?.first_name} ${pcData?.middle_name || ""}  ${
-                pcData?.last_name || ""
-              }`,
+              name: `${pcData?.first_name}${pcData?.middle_name ? " " + pcData.middle_name : ""}${pcData?.last_name ? " " + pcData.last_name : ""}`,
               address: `${pcData?.state ?? ""}, ${pcData?.district ?? ""}, ${
                 pcData?.block ?? ""
               }, ${pcData?.village ?? ""}${
@@ -515,10 +478,7 @@ function View() {
                 <AdminTypo.PrimaryButton
                   isLoading={isButtonLoading}
                   onPress={() => {
-                    handleResetPassword(
-                      credentials?.password,
-                      credentials?.confirmPassword
-                    );
+                    handleResetPassword();
                   }}
                 >
                   {t("USER_SET_NEW_PASSWORD")}
