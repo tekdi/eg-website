@@ -16,7 +16,6 @@ import { TouchableHighlight } from "react-native-web";
 import moment from "moment";
 import {
   IconByName,
-  // getStudentsPresentAbsent,
   capture,
   telemetryFactory,
   calendar,
@@ -135,27 +134,10 @@ export const MultipalAttendance = ({
   }, [showModal]);
 
   React.useEffect(() => {
-    const getPresentStudents = async ({ students }) => {
-      // let weekdays = calendar(-1, "week");
-      // let workingDaysCount = weekdays.filter((e) => !!e.day())?.length;
-      // let params = {
-      //   id,
-      //   start_date: weekdays?.[0]?.format("YYYY-MM-DD"),
-      //   end_date: weekdays?.[weekdays.length - 1]?.format("YYYY-MM-DD"),
-      // };
-      // let attendanceData = await GetAttendance(params);
-      // const present = getStudentsPresentAbsent(
-      //   attendanceData,
-      //   students,
-      //   workingDaysCount,
-      // );
-      // let presentNew = students.filter((e) =>
-      //   present.map((e) => e.id).includes(e.id),
-      // );
-      // console.log(presentNew);
+    const getPresentStudents = async () => {
       setPresentStudents([]);
     };
-    getPresentStudents({ students });
+    getPresentStudents();
   }, [students, attendance]);
 
   const groupExists = (classObject) => classObject?.id;
@@ -166,23 +148,6 @@ export const MultipalAttendance = ({
       students.length > 0 &&
       moment().format("HH:MM") <= manifest?.["class_attendance.submit_by"]
     ) {
-      // let student = students.find((e, index) => !index);
-
-      // const attendanceData = students.map((item, index) => {
-      //   return {
-      //     attendance: PRESENT,
-      //     userId: item.id,
-      //   };
-      // });
-      // let allData = {
-      //   schoolId: student?.schoolId,
-      //   userType: "Student",
-      //   groupId: student?.currentClassID,
-      //   attendanceDate: moment().format("YYYY-MM-DD"),
-      //   attendanceData,
-      // };
-
-      // const result = await attendanceRegistryService.multipal(allData);
       if (getAttendance) {
         getAttendance();
       }
@@ -340,28 +305,6 @@ export const MultipalAttendance = ({
                     </H2>
                     <BodyLarge>{moment().format("DD MMM, Y")}</BodyLarge>
                   </HStack>
-                  {/* <ReportSummary
-                    {...{
-                      students,
-                      attendance: [
-                        attendance.filter(
-                          (e) => e.date === moment().format("YYYY-MM-DD")
-                        ),
-                      ],
-                      footer: (
-                        <HStack justifyContent={"space-between"}>
-                          <Subtitle textTransform="none">
-                            {t("ATTENDANCE_TAKEN_BY")}
-                          </Subtitle>
-                          <Subtitle color={colors.successAlertText}>
-                            {fullName ? fullName : ""}
-                            {" at "}
-                            {lastAttedance}
-                          </Subtitle>
-                        </HStack>
-                      ),
-                    }}
-                  /> */}
                 </Box>
                 <Box bg={colors.white} p="5" textAlign={"center"}>
                   <VStack space={2}>
@@ -471,14 +414,6 @@ export const MultipalAttendance = ({
                       {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
                     </Caption>
                     <Button.Group width="100%">
-                      {/* <Button
-                        flex={1}
-                        variant="outline"
-                        colorScheme="button"
-                        onPress={(e) => modalClose()}
-                      >
-                        {t("CLOSE")}
-                      </Button> */}
                       <Button
                         flex={1}
                         colorScheme="button"
@@ -729,12 +664,6 @@ export default function AttendanceComponent({
           onClose={() => setSmsShowModal(false)}
         >
           <Actionsheet.Content alignItems={"left"}>
-            {/* <HStack justifyContent={"end"}>
-              <IconByName
-                name="CloseCircleLineIcon"
-                onPress={(e) => setSmsShowModal(false)}
-              />
-            </HStack> */}
             <VStack space={5} alignItems="center" p="5">
               <Subtitle color={colors.messageSent}>
                 Message Sent to Parent
@@ -938,33 +867,7 @@ const CalendarComponent = ({
                 </HStack>
               )}
             </Text>
-            <TouchableHighlight
-              onPress={(e) => {
-                //check if isToday required or not
-                // if (!isEditDisabled && isAllowDay && !isHoliday && isToday) {
-                //   const newAttendanceData = {
-                //     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
-                //     id: attendanceItem?.id ? attendanceItem.id : null,
-                //     date: dateValue,
-                //     attendance: attendanceType,
-                //     studentId: student.id,
-                //   };
-                //   markAttendance(newAttendanceData);
-                // }
-              }}
-              // onLongPress={(event) => {
-              //   if (!isEditDisabled && isAllowDay && !isHoliday) {
-              //     setAttendanceObject({
-              //       attendanceId: attendanceItem?.id ? attendanceItem.id : null,
-              //       date: dateValue,
-              //       attendance: attendanceItem?.attendance,
-              //       id: attendanceItem?.id,
-              //       studentId: student.id,
-              //     });
-              //     setShowModal(true);
-              //   }
-              // }}
-            >
+            <TouchableHighlight>
               <Box alignItems="center">
                 {loading[dateValue + student.id] ? (
                   <GetIcon
