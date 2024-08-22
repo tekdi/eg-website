@@ -35,7 +35,6 @@ export default function App({ facilitator, ip, onClick }) {
   const formRef = React.useRef();
   const [formData, setFormData] = React.useState(facilitator);
   const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
   const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
   const [lang, setLang] = React.useState(localStorage.getItem("lang"));
   const [loading, setLoading] = React.useState(false);
@@ -79,7 +78,6 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
     const index = pages.indexOf(page);
     const properties = schema1.properties;
     if (index !== undefined) {
@@ -210,12 +208,13 @@ export default function App({ facilitator, ip, onClick }) {
       //     error = { mobile: t("PLEASE_ENTER_VALID_STATE") };
       //   }
       //   break;
-      case "dob":
+      case "dob": {
         const years = moment().diff(data?.dob, "years");
         if (years < 18) {
           error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
         }
         break;
+      }
       default:
         break;
     }
@@ -240,7 +239,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -288,7 +287,7 @@ export default function App({ facilitator, ip, onClick }) {
     }
 
     if (id === "root_pincode") {
-      const regex = /^[0-9]{6}$/;
+      const regex = /^\d{6}$/;
       if (data?.pincode && !regex.test(data.pincode)) {
         const newErrors = {
           pincode: {
@@ -361,7 +360,7 @@ export default function App({ facilitator, ip, onClick }) {
             hash: localStorage.getItem("hash"),
           });
           if (status === true) {
-            const { data, success } = await formSubmitCreate(newFormData);
+            const { data, success } = await formSubmitCreate();
             if (!success) {
               const newErrors = {
                 mobile: {
@@ -369,8 +368,8 @@ export default function App({ facilitator, ip, onClick }) {
                     data?.message?.constructor?.name === "String"
                       ? [data?.message]
                       : data?.error?.constructor?.name === "Array"
-                      ? data?.error
-                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                        ? data?.error
+                        : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
                 },
               };
               setErrors(newErrors);
@@ -411,8 +410,7 @@ export default function App({ facilitator, ip, onClick }) {
   };
 
   const formSubmitCreate = async () => {
-    const result = await volunteerRegistryService.create(formData);
-    return result;
+    return await volunteerRegistryService.create(formData);
   };
 
   const changeLanguage = () => {

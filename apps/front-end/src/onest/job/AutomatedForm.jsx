@@ -206,19 +206,24 @@ const AutomatedForm = () => {
         let appId = data.responses[0].message.order.id;
         localStorage.setItem("applicationId", appId);
         if (data.responses[0].hasOwnProperty("message")) {
-          for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
-            ?.customer?.person?.tags) {
-            // Check if the descriptor code is "instructions"
-            if (
-              tag.descriptor &&
-              (tag.descriptor.code === "instructions" ||
-                tag.descriptor.code === "PROVISION-LETTER")
-            ) {
-              // Read its value
-              const instructionsValue = tag.list[0]?.value || "";
-              localStorage.setItem("instructionsValue", instructionsValue);
-              // You can do further processing with the instructions value here
-              break; // If you only want to read the value once found, you can break the loop
+          const fulfillments = data.responses[0]?.message?.order?.fulfillments;
+          const customer = fulfillments?.[0]?.customer;
+          const person = customer?.person;
+          const tags = person?.tags;
+          if (Array.isArray(tags)) {
+            for (const tag of tags) {
+              // Check if the descriptor code is "instructions"
+              if (
+                tag.descriptor &&
+                (tag.descriptor.code === "instructions" ||
+                  tag.descriptor.code === "PROVISION-LETTER")
+              ) {
+                // Read its value
+                const instructionsValue = tag.list[0]?.value || "";
+                localStorage.setItem("instructionsValue", instructionsValue);
+                // You can do further processing with the instructions value here
+                break; // If you only want to read the value once found, you can break the loop
+              }
             }
           }
         }
@@ -257,19 +262,21 @@ const AutomatedForm = () => {
         let appId = data.responses[0].message.order.id;
         localStorage.setItem("applicationId", appId);
         if (data.responses[0].hasOwnProperty("message")) {
-          for (const tag of data.responses[0]?.message?.order?.fulfillments[0]
-            ?.customer?.person?.tags) {
-            // Check if the descriptor code is "instructions"
-            if (
-              tag.descriptor &&
-              (tag.descriptor.code === "instructions" ||
-                tag.descriptor.code === "PROVISION-LETTER")
-            ) {
-              // Read its value
-              const instructionsValue = tag.list[0]?.value || "";
-              localStorage.setItem("instructionsValue", instructionsValue);
-              // You can do further processing with the instructions value here
-              break; // If you only want to read the value once found, you can break the loop
+          const fulfillments = data.responses[0]?.message?.order?.fulfillments;
+          if (fulfillments?.[0]?.customer?.person?.tags) {
+            for (const tag of fulfillments[0].customer.person.tags) {
+              // Check if the descriptor code is "instructions"
+              if (
+                tag.descriptor &&
+                (tag.descriptor.code === "instructions" ||
+                  tag.descriptor.code === "PROVISION-LETTER")
+              ) {
+                // Read its value
+                const instructionsValue = tag.list ? tag.list[0]?.value : "";
+                localStorage.setItem("instructionsValue", instructionsValue);
+                // You can do further processing with the instructions value here
+                break; // If you only want to read the value once found, you can break the loop
+              }
             }
           }
         }
