@@ -263,13 +263,7 @@ const AutomatedForm = () => {
         localStorage.setItem("applicationId", appId);
         if (data.responses[0].hasOwnProperty("message")) {
           const fulfillments = data.responses[0]?.message?.order?.fulfillments;
-          if (
-            fulfillments &&
-            fulfillments[0] &&
-            fulfillments[0].customer &&
-            fulfillments[0].customer.person &&
-            fulfillments[0].customer.person.tags
-          ) {
+          if (fulfillments?.[0]?.customer?.person?.tags) {
             for (const tag of fulfillments[0].customer.person.tags) {
               // Check if the descriptor code is "instructions"
               if (
