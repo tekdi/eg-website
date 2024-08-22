@@ -11,8 +11,7 @@
 [class^="sb-icon-"],
 [class*="sb-icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: "icomoon" !important;
-  speak: none;
+  font-family: "icomoon", sans-serif !important;
   font-style: normal;
   font-weight: normal;
   font-feature-settings: normal;
@@ -66,20 +65,6 @@
 .sb-lock-icon {
   cursor: pointer;
 }
-/*[class*="sb-icon-"] {
-    -webkit-mask-size: contain;
-    -webkit-mask-position: 50% 50%;
-    -webkit-mask-repeat: no-repeat;
-    mask-size: contain;
-    mask-position: 50% 50%;
-    mask-repeat: no-repeat;
-    background-color: $primary-color;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    cursor: pointer;
-  }
-  */
 [class*="sb-icon-primary"] {
   background-color: #024f9d;
   background-color: var(--primary-color);
@@ -254,7 +239,6 @@ p {
 }
 abbr[title],
 abbr[data-original-title] {
-  text-decoration: underline;
   -webkit-text-decoration: underline dotted;
   text-decoration: underline dotted;
   cursor: help;
@@ -311,10 +295,10 @@ sup {
   top: -0.5em;
 }
 a {
-  color: theme-color("primary");
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
+  color: var(--primary-color);
 }
 a:hover {
   color: #0056b3;
@@ -336,7 +320,7 @@ pre,
 code,
 kbd,
 samp {
-  font-family: monospace, monospace;
+  font-family: monospace, sans-serif;
   font-size: 1em;
 }
 pre {
@@ -413,6 +397,7 @@ html [type="button"],
 [type="reset"],
 [type="submit"] {
   -webkit-appearance: button;
+  appearance: button;
 }
 button::-moz-focus-inner,
 [type="button"]::-moz-focus-inner,
@@ -431,6 +416,7 @@ input[type="time"],
 input[type="datetime-local"],
 input[type="month"] {
   -webkit-appearance: listbox;
+  appearance: listbox;
 }
 textarea {
   overflow: auto;
@@ -463,6 +449,7 @@ progress {
 [type="search"] {
   outline-offset: -2px;
   -webkit-appearance: none;
+  appearance: none;
 }
 [type="search"]::-webkit-search-cancel-button,
 [type="search"]::-webkit-search-decoration {
@@ -785,10 +772,6 @@ template {
   color: hsl(0, 0%, 20%);
   color: var(--gray-800);
 }
-.sb-bg-color-black {
-  background-color: #000000;
-  background-color: var(--black);
-}
 .bg-contain {
   background-position: center;
   background-repeat: no-repeat;
@@ -1109,14 +1092,6 @@ p,
 }
 .font-italic {
   font-style: italic;
-}
-a {
-  color: #024f9d;
-  color: var(--primary-color);
-}
-a:hover {
-  color: #024f9d;
-  color: var(--primary-color);
 }
 a:focus {
   outline: 0;
@@ -4408,7 +4383,7 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   padding: 0 0.5rem;
 }
 .ui.toggle.checkbox.sb-toggle {
-  min-height: 1.5rem;
+  min-height: 1rem;
   position: relative;
   display: inline-block;
   -webkit-backface-visibility: hidden;
@@ -4416,7 +4391,6 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   outline: 0;
   vertical-align: baseline;
   font-style: normal;
-  min-height: 1rem;
   font-size: 1rem;
   min-width: 1rem;
 }
@@ -4501,7 +4475,6 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   border: 0.0625rem solid var(--gray-100);
   display: inline-flex;
   flex-direction: row;
-  flex-direction: row;
   font-size: 0;
   vertical-align: baseline;
 }
@@ -4513,7 +4486,6 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   flex: 1 0 auto;
   margin: 0;
   border-radius: 0;
-  margin: 0;
   border: 0;
   color: #024f9d;
   color: var(--primary-400);
@@ -4996,69 +4968,69 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   font-style: italic;
 }
 .katex .textrm {
-  font-family: KaTeX_Main;
+  font-family: KaTeX_Main, sans-serif;
 }
 .katex .textsf {
-  font-family: KaTeX_SansSerif;
+  font-family: KaTeX_SansSerif, sans-serif;
 }
 .katex .texttt {
-  font-family: KaTeX_Typewriter;
+  font-family: KaTeX_Typewriter, sans-serif;
 }
 .katex .mathdefault {
-  font-family: KaTeX_Math;
+  font-family: KaTeX_Math, sans-serif;
   font-style: italic;
 }
 .katex .mathit {
-  font-family: KaTeX_Main;
+  font-family: KaTeX_Main, sans-serif;
   font-style: italic;
 }
 .katex .mathrm {
   font-style: normal;
 }
 .katex .mathbf {
-  font-family: KaTeX_Main;
+  font-family: KaTeX_Main, sans-serif;
   font-weight: 700;
 }
 .katex .boldsymbol {
-  font-family: KaTeX_Math;
+  font-family: KaTeX_Math, sans-serif;
   font-weight: 700;
   font-style: italic;
 }
 .katex .amsrm,
 .katex .mathbb,
 .katex .textbb {
-  font-family: KaTeX_AMS;
+  font-family: KaTeX_AMS, sans-serif;
 }
 .katex .mathcal {
-  font-family: KaTeX_Caligraphic;
+  font-family: KaTeX_Caligraphic, sans-serif;
 }
 .katex .mathfrak,
 .katex .textfrak {
-  font-family: KaTeX_Fraktur;
+  font-family: KaTeX_Fraktur, sans-serif;
 }
 .katex .mathtt {
-  font-family: KaTeX_Typewriter;
+  font-family: KaTeX_Typewriter, sans-serif;
 }
 .katex .mathscr,
 .katex .textscr {
-  font-family: KaTeX_Script;
+  font-family: KaTeX_Script, sans-serif;
 }
 .katex .mathsf,
 .katex .textsf {
-  font-family: KaTeX_SansSerif;
+  font-family: KaTeX_SansSerif, sans-serif;
 }
 .katex .mathboldsf,
 .katex .textboldsf {
-  font-family: KaTeX_SansSerif;
+  font-family: KaTeX_SansSerif, sans-serif;
   font-weight: 700;
 }
 .katex .mathitsf,
 .katex .textitsf {
-  font-family: KaTeX_SansSerif;
+  font-family: KaTeX_SansSerif, sans-serif;
   font-style: italic;
 }
 .katex .mainrm {
-  font-family: KaTeX_Main;
+  font-family: KaTeX_Main, sans-serif;
   font-style: normal;
 }
 .katex .vlist-t {
@@ -5650,22 +5622,22 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   font-size: 1em;
 }
 .katex .delimsizing.size1 {
-  font-family: KaTeX_Size1;
+  font-family: KaTeX_Size1, sans-serif;
 }
 .katex .delimsizing.size2 {
-  font-family: KaTeX_Size2;
+  font-family: KaTeX_Size2, sans-serif;
 }
 .katex .delimsizing.size3 {
-  font-family: KaTeX_Size3;
+  font-family: KaTeX_Size3, sans-serif;
 }
 .katex .delimsizing.size4 {
-  font-family: KaTeX_Size4;
+  font-family: KaTeX_Size4, sans-serif;
 }
 .katex .delimsizing.mult .delim-size1 > span {
-  font-family: KaTeX_Size1;
+  font-family: KaTeX_Size1, sans-serif;
 }
 .katex .delimsizing.mult .delim-size4 > span {
-  font-family: KaTeX_Size4;
+  font-family: KaTeX_Size4, sans-serif;
 }
 .katex .nulldelimiter {
   display: inline-block;
@@ -5676,10 +5648,10 @@ html[dir="rtl"] .sb-left-icon-btn i.icon {
   position: relative;
 }
 .katex .op-symbol.small-op {
-  font-family: KaTeX_Size1;
+  font-family: KaTeX_Size1, sans-serif;
 }
 .katex .op-symbol.large-op {
-  font-family: KaTeX_Size2;
+  font-family: KaTeX_Size2, sans-serif;
 }
 .katex .op-limits > .vlist-t {
   text-align: center;
