@@ -184,7 +184,7 @@ const MarkDailyActivity = () => {
     }
   };
   const onSubmit = () => {
-    if (formData && formData?.village) {
+    if (formData?.village) {
       localStorage.setItem("activityAddress", JSON.stringify(formData));
       navigate(`/dailyactivities/list`);
     }
