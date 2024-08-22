@@ -4,16 +4,19 @@ import React, { lazy } from "react";
 
 const PcDashboard = lazy(() => import("pages/PCusers/PcDashboard"));
 const DailyActivitiesList = lazy(
-  () => import("pages/PCusers/DailyActivities/DailyActivitiesList"),
+  () => import("pages/PCusers/DailyActivities/List"),
 );
-const DailyActivities = lazy(
-  () => import("pages/PCusers/DailyActivities/DailyActivites"),
+const CategoriesList = lazy(
+  () => import("pages/PCusers/DailyActivities/CategoriesList"),
 );
-const MarkDailyActivity = lazy(
-  () => import("pages/PCusers/DailyActivities/MarkDailyActivity"),
+const CreateUpdateActivities = lazy(
+  () => import("pages/PCusers/DailyActivities/Form"),
+);
+const SelectVillage = lazy(
+  () => import("pages/PCusers/DailyActivities/SelectVillage"),
 );
 const DailyActivitiesView = lazy(
-  () => import("pages/PCusers/DailyActivities/DailyActivitiesView"),
+  () => import("pages/PCusers/DailyActivities/View"),
 );
 const CampList = lazy(() => import("pages/PCusers/camps/CampList"));
 const CampProfileView = lazy(
@@ -69,26 +72,28 @@ const PcProfilePhoto = lazy(
 // PC users Routes
 
 export default [
-  { path: "/", component: PcDashboard },
-  { path: "*", component: PcDashboard },
   {
-    path: "/Dashboard",
-    component: PcDashboard,
+    path: "/select-village",
+    component: SelectVillage,
   },
   {
-    path: "/markDailyActivity",
-    component: MarkDailyActivity,
+    path: "/daily-activities/categories",
+    component: CategoriesList,
   },
   {
-    path: "/dailyactivities/list",
+    path: "/daily-activities/:category/list",
     component: DailyActivitiesList,
   },
   {
-    path: "/dailyactivities/:activity/:step",
-    component: DailyActivities,
+    path: "/daily-activities/:category/:activity/create",
+    component: CreateUpdateActivities,
   },
   {
-    path: "/dailyactivities/:activity/view",
+    path: "/daily-activities/:category/:activity/:id/edit",
+    component: CreateUpdateActivities,
+  },
+  {
+    path: "/daily-activities/:category/:activity/view",
     component: DailyActivitiesView,
   },
   {
@@ -179,7 +184,6 @@ export default [
     path: "/profile/:id/upload/1",
     component: PcProfilePhoto,
   },
-
   { path: "/", component: PcDashboard },
   { path: "*", component: PcDashboard },
 ];

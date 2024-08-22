@@ -11,15 +11,16 @@ const DashboardCard = ({ title, titleDetail, primaryBtn, navigation }) => {
 
   return (
     <Stack
-      space="7"
-      p={"2"}
-      pb={"4"}
+      space="4"
+      p={"4"}
       borderBottomColor={"1px"}
-      borderBottomRadius={"10px"}
-      borderColor={"dashboardCardBorder"}
-      borderBottomWidth={"1px"}
+      borderWidth="1px"
+      borderColor="garyTitleCardBorder"
+      shadow={"CardComponentShadow"}
+      rounded="5px"
     >
       <FrontEndTypo.H3
+        bold
         _fontWeight={{
           fontWeight: "600",
         }}

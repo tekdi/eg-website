@@ -4,6 +4,7 @@ import {
   FrontEndTypo,
   geolocationRegistryService,
   getOptions,
+  jsonParse,
   PCusers_layout as Layout,
   PcuserService,
 } from "@shiksha/common-lib";
@@ -20,7 +21,7 @@ import {
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./MarkActivitySchema";
 
-const MarkDailyActivity = () => {
+const App = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -29,7 +30,6 @@ const MarkDailyActivity = () => {
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
-  const [pcDetails, setPcDetails] = useState();
 
   const uiSchema = {
     labelTime: {
@@ -38,21 +38,23 @@ const MarkDailyActivity = () => {
   };
 
   useEffect(() => {
-    fetchDistricts();
+    setFormData(jsonParse(localStorage.getItem("activityAddress"), {}));
   }, []);
+
+  useEffect(() => {
+    fetchDistricts();
+  }, [formData]);
 
   const fetchDistricts = async () => {
     try {
-      const data = await PcuserService.getPcProfile();
-      setPcDetails(data?.data);
+      const { data } = await PcuserService.getPcProfile();
       let newSchema = schema1;
       if (newSchema?.properties?.district) {
         newSchema = await setDistric({
           schemaData: newSchema,
-          state: "RAJASTHAN",
+          state: data?.program_users?.programs?.state?.state_name,
           district: formData?.district,
           block: formData?.block,
-          // gramp: formData?.grampanchayat,
         });
         setSchema(newSchema);
       }
@@ -186,12 +188,13 @@ const MarkDailyActivity = () => {
   const onSubmit = () => {
     if (formData?.village) {
       localStorage.setItem("activityAddress", JSON.stringify(formData));
-      navigate(`/dailyactivities/list`);
+      navigate(`/daily-activities/categories`);
     }
   };
 
   return (
     <Layout
+      facilitator={userTokenInfo?.authUser || {}}
       loading={loading}
       _appBar={{
         lang,
@@ -243,4 +246,4 @@ const MarkDailyActivity = () => {
   );
 };
 
-export default MarkDailyActivity;
+export default App;
