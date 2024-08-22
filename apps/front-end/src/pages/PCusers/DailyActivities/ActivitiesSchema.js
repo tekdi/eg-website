@@ -5,7 +5,7 @@ export const schema1 = {
     village: {
       label: "VILLAGE_WARD",
       type: "string",
-      format: "select",
+      readOnly: true,
     },
     description: {
       label: "DESCRIPTION",

@@ -2201,5 +2201,6 @@
   "GROUP_A_MAX_SUBJECTS": "You can select maximum 3 subjects from Group A",
   "GROUP_B_MAX_SUBJECTS": "You can select maximum 4 subjects from Group B",
   "GROUP_A_GROUP_B_MAX_SUBJECTS": "You should select maximum of 3 subjects from Group A and 4 subjects from Group B",
-  "MISSING_DATA": "Missing Data"
+  "MISSING_DATA": "Missing Data",
+  "SELECT_VILLAGE": "Select Village"
 }

@@ -1,26 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Form from "@rjsf/core";
 import {
-  PCusers_layout as Layout,
-  CardComponent,
   FrontEndTypo,
   getOptions,
-  geolocationRegistryService,
+  jsonParse,
+  PCusers_layout as Layout,
   PcuserService,
 } from "@shiksha/common-lib";
+import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Box, HStack, Pressable, VStack } from "native-base";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Form from "@rjsf/core";
-
+import moment from "moment";
 import {
-  templates,
-  widgets,
-  validator,
-  transformErrors,
   onError,
+  templates,
+  transformErrors,
+  validator,
+  widgets,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./ActivitiesSchema";
-import moment from "moment";
+
 const DailyActivities = () => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
@@ -34,6 +33,18 @@ const DailyActivities = () => {
   const { activity } = useParams();
   const { step } = useParams();
   const location = useLocation();
+
+  useEffect(() => {
+    const activityAddress = jsonParse(localStorage.getItem("activityAddress"));
+    if (!_.isEmpty(activityAddress)) {
+      setFormData({
+        ...formData,
+        village: activityAddress?.village,
+      });
+    } else {
+      navigate("/markDailyActivity");
+    }
+  }, []);
 
   const hours = [
     { title: 0 },
@@ -82,11 +93,6 @@ const DailyActivities = () => {
         await getActivityDetail();
       }
       const result = await PcuserService.getPrerakList();
-      const village = result.facilitator_data
-        ?.filter((item) => item?.user?.village !== null) // Filter out items where block is null
-        .map((item) => {
-          return { name: item?.user?.village };
-        });
 
       let newSchema = getOptions(schema1, {
         key: "hours",
@@ -95,26 +101,12 @@ const DailyActivities = () => {
         value: "title",
       });
 
-      newSchema = getOptions(
-        newSchema,
-
-        {
-          key: "village",
-          arr: village,
-          title: "name",
-          value: "name",
-        }
-      );
-      newSchema = getOptions(
-        newSchema,
-
-        {
-          key: "minutes",
-          arr: minutes,
-          title: "title",
-          value: "title",
-        }
-      );
+      newSchema = getOptions(newSchema, {
+        key: "minutes",
+        arr: minutes,
+        title: "title",
+        value: "title",
+      });
       setSchema(newSchema);
       setLoading(false);
     };

@@ -2172,5 +2172,6 @@
   "GROUP_A_MAX_LANGUAGES": "आप ग्रुप A से अधिकतम 3 विषय चुन सकते हैं।",
   "GROUP_B_MAX_LANGUAGES": "आप ग्रुप B से अधिकतम 4 विषय चुन सकते हैं।",
   "GROUP_A_GROUP_B_MAX_LANGUAGES": "आपको ग्रुप A से अधिकतम 3 विषय और ग्रुप बB से अधिकतम 4 विषय का चयन करना चाहिए।",
-  "MISSING_DATA": "अधूरा डेटा"
+  "MISSING_DATA": "अधूरा डेटा",
+  "SELECT_VILLAGE": "गांव चुनें"
 }

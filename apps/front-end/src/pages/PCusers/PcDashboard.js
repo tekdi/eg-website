@@ -71,7 +71,7 @@ const PcDashboard = () => {
               title={"MY_DAILY_ACTIVITIES"}
               titleDetail={"MARK_YOUR_DAILY_ACTIVITIES_AND_TASKS"}
               primaryBtn={"MARK_DAILY_ACTIVITIES"}
-              navigation={"/dailyactivities/list"}
+              navigation={"/markDailyActivity"}
             />
             {/* <DashboardCard
               title={"PRAGATI_SABHA"}

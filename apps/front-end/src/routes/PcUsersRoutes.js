@@ -3,64 +3,67 @@ import React, { lazy } from "react";
 // PC Users Routes
 
 const PcDashboard = lazy(() => import("pages/PCusers/PcDashboard"));
-const DailyActivitiesList = lazy(() =>
-  import("pages/PCusers/DailyActivities/DailyActivitiesList")
+const DailyActivitiesList = lazy(
+  () => import("pages/PCusers/DailyActivities/DailyActivitiesList"),
 );
-const DailyActivities = lazy(() =>
-  import("pages/PCusers/DailyActivities/DailyActivites")
+const DailyActivities = lazy(
+  () => import("pages/PCusers/DailyActivities/DailyActivites"),
 );
-const DailyActivitiesView = lazy(() =>
-  import("pages/PCusers/DailyActivities/DailyActivitiesView")
+const MarkDailyActivity = lazy(
+  () => import("pages/PCusers/DailyActivities/MarkDailyActivity"),
+);
+const DailyActivitiesView = lazy(
+  () => import("pages/PCusers/DailyActivities/DailyActivitiesView"),
 );
 const CampList = lazy(() => import("pages/PCusers/camps/CampList"));
-const CampProfileView = lazy(() =>
-  import("pages/PCusers/camps/CampProfileView")
+const CampProfileView = lazy(
+  () => import("pages/PCusers/camps/CampProfileView"),
 );
-const CampLearnerList = lazy(() =>
-  import("pages/PCusers/camps/CampLearnerList")
+const CampLearnerList = lazy(
+  () => import("pages/PCusers/camps/CampLearnerList"),
 );
 const CampForm = lazy(() => import("pages/PCusers/camps/CampForm/Form"));
 const PcProfile = lazy(() => import("pages/PCusers/Profile/PcProfile"));
-const PcProfileDetails = lazy(() =>
-  import("pages/PCusers/Profile/PcProfileDetails")
+const PcProfileDetails = lazy(
+  () => import("pages/PCusers/Profile/PcProfileDetails"),
 );
 const EditProfile = lazy(() => import("pages/PCusers/Profile/EditProfile"));
 const PrerakList = lazy(() => import("pages/PCusers/Prerak/PrerakList"));
 
-const PrerakProfileView = lazy(() =>
-  import("pages/PCusers/Prerak/PrerakProfileView")
+const PrerakProfileView = lazy(
+  () => import("pages/PCusers/Prerak/PrerakProfileView"),
 );
 const PrerakProfile = lazy(() => import("pages/PCusers/Prerak/PrerakProfile"));
 const LearnerList = lazy(() => import("pages/PCusers/Learner/LearnerList"));
-const LearnerProfileView = lazy(() =>
-  import("pages/PCusers/Learner/LearnerProfileView")
+const LearnerProfileView = lazy(
+  () => import("pages/PCusers/Learner/LearnerProfileView"),
 );
-const LearnerListView = lazy(() =>
-  import("pages/PCusers/Learner/LearnerListView")
+const LearnerListView = lazy(
+  () => import("pages/PCusers/Learner/LearnerListView"),
 );
-const LearnerBasicDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerBasicDetails")
+const LearnerBasicDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerBasicDetails"),
 );
-const LearnerDocumentDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerDocumentDetails")
+const LearnerDocumentDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerDocumentDetails"),
 );
-const LearnerAddAddress = lazy(() =>
-  import("pages/PCusers/Learner/LearnerAddAddress")
+const LearnerAddAddress = lazy(
+  () => import("pages/PCusers/Learner/LearnerAddAddress"),
 );
-const LearnerEducationDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerEducationDetails")
+const LearnerEducationDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerEducationDetails"),
 );
-const LearnerEnrollMentDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerEnrollMentDetails")
+const LearnerEnrollMentDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerEnrollMentDetails"),
 );
-const LearnerPCRDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerPCRDetails")
+const LearnerPCRDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerPCRDetails"),
 );
-const LearnerJourneyDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerJourneyDetails")
+const LearnerJourneyDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerJourneyDetails"),
 );
-const PcProfilePhoto = lazy(() =>
-  import("pages/PCusers/Profile/PcProfilePhoto")
+const PcProfilePhoto = lazy(
+  () => import("pages/PCusers/Profile/PcProfilePhoto"),
 );
 
 // PC users Routes
@@ -71,6 +74,10 @@ export default [
   {
     path: "/Dashboard",
     component: PcDashboard,
+  },
+  {
+    path: "/markDailyActivity",
+    component: MarkDailyActivity,
   },
   {
     path: "/dailyactivities/list",
