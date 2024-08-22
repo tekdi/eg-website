@@ -16,7 +16,7 @@ import { TouchableHighlight } from "react-native-web";
 import moment from "moment";
 import {
   IconByName,
-  getStudentsPresentAbsent,
+  // getStudentsPresentAbsent,
   capture,
   telemetryFactory,
   calendar,
@@ -45,7 +45,7 @@ export const GetAttendance = async (params) => {
 };
 
 export const GetIcon = ({ status, _box, color, _icon }) => {
-  let icon = <></>;
+  let icon = null;
   let iconProps = { fontSize: "xl", isDisabled: true, ..._icon };
 
   switch (status) {
@@ -129,7 +129,6 @@ export const MultipalAttendance = ({
   const [presentStudents, setPresentStudents] = React.useState([]);
   const navigate = useNavigate();
   const [startTime, setStartTime] = useState();
-  const holidays = [];
   const buttonRef = React.useRef(null);
   useEffect(() => {
     if (showModal) setStartTime(moment());
@@ -137,24 +136,23 @@ export const MultipalAttendance = ({
 
   React.useEffect(() => {
     const getPresentStudents = async ({ students }) => {
-      let weekdays = calendar(-1, "week");
-      let workingDaysCount = weekdays.filter(
-        (e) => !(!e.day() || holidays.includes(e.format("YYYY-MM-DD")))
-      )?.length;
-      let params = {
-        id,
-        start_date: weekdays?.[0]?.format("YYYY-MM-DD"),
-        end_date: weekdays?.[weekdays.length - 1]?.format("YYYY-MM-DD"),
-      };
-      let attendanceData = await GetAttendance(params);
-      const present = getStudentsPresentAbsent(
-        attendanceData,
-        students,
-        workingDaysCount
-      );
-      let presentNew = students.filter((e) =>
-        present.map((e) => e.id).includes(e.id)
-      );
+      // let weekdays = calendar(-1, "week");
+      // let workingDaysCount = weekdays.filter((e) => !!e.day())?.length;
+      // let params = {
+      //   id,
+      //   start_date: weekdays?.[0]?.format("YYYY-MM-DD"),
+      //   end_date: weekdays?.[weekdays.length - 1]?.format("YYYY-MM-DD"),
+      // };
+      // let attendanceData = await GetAttendance(params);
+      // const present = getStudentsPresentAbsent(
+      //   attendanceData,
+      //   students,
+      //   workingDaysCount,
+      // );
+      // let presentNew = students.filter((e) =>
+      //   present.map((e) => e.id).includes(e.id),
+      // );
+      // console.log(presentNew);
       setPresentStudents([]);
     };
     getPresentStudents({ students });
@@ -168,23 +166,23 @@ export const MultipalAttendance = ({
       students.length > 0 &&
       moment().format("HH:MM") <= manifest?.["class_attendance.submit_by"]
     ) {
-      let student = students.find((e, index) => !index);
+      // let student = students.find((e, index) => !index);
 
-      const attendanceData = students.map((item, index) => {
-        return {
-          attendance: PRESENT,
-          userId: item.id,
-        };
-      });
-      let allData = {
-        schoolId: student?.schoolId,
-        userType: "Student",
-        groupId: student?.currentClassID,
-        attendanceDate: moment().format("YYYY-MM-DD"),
-        attendanceData,
-      };
+      // const attendanceData = students.map((item, index) => {
+      //   return {
+      //     attendance: PRESENT,
+      //     userId: item.id,
+      //   };
+      // });
+      // let allData = {
+      //   schoolId: student?.schoolId,
+      //   userType: "Student",
+      //   groupId: student?.currentClassID,
+      //   attendanceDate: moment().format("YYYY-MM-DD"),
+      //   attendanceData,
+      // };
 
-      const result = await attendanceRegistryService.multipal(allData);
+      // const result = await attendanceRegistryService.multipal(allData);
       if (getAttendance) {
         getAttendance();
       }
@@ -249,15 +247,16 @@ export const MultipalAttendance = ({
                 <Button.Group>
                   {manifest?.[
                     "class_attendance.mark_all_attendance_at_once"
-                  ] === "true" ? (
+                  ] === "true" && (
                     <Button
                       flex={1}
                       variant="outline"
                       colorScheme="button"
                       isDisabled={
-                        !(
-                          moment().format("HH:MM") <=
-                          manifest?.["class_attendance.submit_by"]
+                        moment(moment().format("HH:MM"), "HH:mm") >
+                        moment(
+                          manifest?.["class_attendance.submit_by"],
+                          "HH:mm",
                         )
                       }
                       onPress={markAllAttendance}
@@ -265,8 +264,6 @@ export const MultipalAttendance = ({
                     >
                       {t("MARK_ALL_PRESENT")}
                     </Button>
-                  ) : (
-                    <React.Fragment />
                   )}
                   <Button
                     flex={1}
@@ -311,7 +308,7 @@ export const MultipalAttendance = ({
                   </Stack>
                   <IconByName
                     name="CloseCircleLineIcon"
-                    onPress={(e) => modalClose(false)}
+                    onPress={(e) => modalClose()}
                     color={colors.white}
                   />
                 </HStack>
@@ -389,7 +386,7 @@ export const MultipalAttendance = ({
                             "/attendance/sendSms/" +
                               (classObject?.id?.startsWith("1-")
                                 ? classObject?.id?.replace("1-", "")
-                                : classObject?.id)
+                                : classObject?.id),
                           );
                         }}
                       >
@@ -447,8 +444,8 @@ export const MultipalAttendance = ({
                               </Suspense>
                             </Stack>
                           ) : (
-                            <div key={index}></div>
-                          )
+                            <div key={student}></div>
+                          ),
                         )}
                       </HStack>
                       {presentStudents?.length <= 0 ? (
@@ -492,7 +489,7 @@ export const MultipalAttendance = ({
                               (classObject?.id?.startsWith("1-")
                                 ? classObject?.id?.replace("1-", "")
                                 : classObject?.id) +
-                              "/days"
+                              "/days",
                           )
                         }
                       >
@@ -565,7 +562,7 @@ export default function AttendanceComponent({
             },
             {
               onlyParameter: ["attendance", "id", "date", "classId"],
-            }
+            },
           )
           .then((e) => {
             const newData = attendance.filter(
@@ -573,7 +570,7 @@ export default function AttendanceComponent({
                 !(
                   e.date === dataObject.date &&
                   e.user?.id === dataObject.user?.id
-                )
+                ),
             );
 
             setAttendance([
@@ -585,7 +582,7 @@ export default function AttendanceComponent({
             setShowModal(false);
           })
           .catch((e) =>
-            setAlert ? setAlert(e.message) : console.log(e.message)
+            setAlert ? setAlert(e.message) : console.log(e.message),
           );
       } else {
         attendanceRegistryService
@@ -608,7 +605,7 @@ export default function AttendanceComponent({
             setShowModal(false);
           })
           .catch((e) =>
-            setAlert ? setAlert(e.message) : console.log(e.message)
+            setAlert ? setAlert(e.message) : console.log(e.message),
           );
       }
     } else {
@@ -699,31 +696,32 @@ export default function AttendanceComponent({
             </HStack>
           </Actionsheet.Content>
           <Box w="100%" p={4} justifyContent="center" bg={colors.white}>
-            {status.map((item) => {
-              return (
-                <Pressable
-                  key={item}
-                  p={3}
-                  onPress={(e) => {
-                    if (attendanceObject.attendance !== item) {
-                      markAttendance({
-                        ...attendanceObject,
-                        attendance: item,
-                      });
-                    } else {
-                      setShowModal(false);
-                    }
-                  }}
-                >
-                  <HStack alignItems="center" space={2}>
-                    <GetIcon status={item} _box={{ p: 2 }} />
-                    <Text color={colors.darkGray} bold fontSize="lg">
-                      {t(item)}
-                    </Text>
-                  </HStack>
-                </Pressable>
-              );
-            })}
+            {status?.length > 0 &&
+              status.map((item) => {
+                return (
+                  <Pressable
+                    key={item}
+                    p={3}
+                    onPress={(e) => {
+                      if (attendanceObject.attendance !== item) {
+                        markAttendance({
+                          ...attendanceObject,
+                          attendance: item,
+                        });
+                      } else {
+                        setShowModal(false);
+                      }
+                    }}
+                  >
+                    <HStack alignItems="center" space={2}>
+                      <GetIcon status={item} _box={{ p: 2 }} />
+                      <Text color={colors.darkGray} bold fontSize="lg">
+                        {t(item)}
+                      </Text>
+                    </HStack>
+                  </Pressable>
+                );
+              })}
           </Box>
         </Actionsheet>
         <Actionsheet
@@ -783,14 +781,13 @@ const CalendarComponent = ({
   _weekBox,
 }) => {
   let thisMonth = monthDays?.[1]?.[0]?.format("M");
-  const holidays = [];
   const status = Array.isArray(
-    manifest?.["attendance.default_attendance_states"]
+    manifest?.["attendance.default_attendance_states"],
   )
     ? manifest?.["attendance.default_attendance_states"]
     : manifest?.["attendance.default_attendance_states"]
-    ? JSON.parse(manifest?.["attendance.default_attendance_states"])
-    : [];
+      ? JSON.parse(manifest?.["attendance.default_attendance_states"])
+      : [];
 
   const handleAttendaceData = (attendance, day) => {
     let isToday = moment().format("YYYY-MM-DD") === day.format("YYYY-MM-DD");
@@ -801,11 +798,11 @@ const CalendarComponent = ({
       isAllowDay = day.format("YYYY-MM-DD") === moment().format("YYYY-MM-DD");
     }
 
-    let isHoliday = holidays.includes(day.format("YYYY-MM-DD"));
+    let isHoliday = false;
     let dateValue = day.format("YYYY-MM-DD");
     let smsDay = sms?.find(
       (e) =>
-        e.date_time === day.format("YYYY-MM-DD") && e.user?.id === student.id
+        e.date_time === day.format("YYYY-MM-DD") && e.user?.id === student.id,
     );
     let attendanceItem = attendance
       .slice()
@@ -881,7 +878,6 @@ const CalendarComponent = ({
       {...(type === "day" ? { px: "2" } : { p: "2" })}
       {..._weekBox}
     >
-      {console.log({ week })}
       {week?.map((day, subIndex) => {
         const { isToday, isHoliday, dateValue, smsDay, attendanceIconProp } =
           handleAttendaceData(attendance, day);
@@ -898,8 +894,8 @@ const CalendarComponent = ({
               type !== "month" && thisMonth && day.format("M") !== thisMonth
                 ? 0
                 : isHoliday
-                ? 0.3
-                : 1
+                  ? 0.3
+                  : 1
             }
             bg={
               smsDay?.type && isEditDisabled
@@ -922,18 +918,16 @@ const CalendarComponent = ({
               ""
             )}
             <Text
-              key={subIndex}
+              key={subIndex + day}
               pt={monthDays.length > 1 && index ? 0 : !isIconSizeSmall ? 2 : 0}
               textAlign="center"
             >
               {!isIconSizeSmall ? (
                 <VStack alignItems={"center"}>
-                  {index === 0 ? (
+                  {index === 0 && (
                     <BodySmall pb="1" color={colors.dateText}>
                       {day.format("ddd")}
                     </BodySmall>
-                  ) : (
-                    ""
                   )}
                   <BodySmall color={colors.date}>{day.format("DD")}</BodySmall>
                 </VStack>
