@@ -1,4 +1,3 @@
-// import { get, post, update as coreUpdate, patch, distory } from "./index";
 import { get, patch, post } from "@shiksha/common-lib";
 import apiPath from "./ApiUrl.json";
 import config from "./config.json";
@@ -47,7 +46,7 @@ export const getAuthUser = async ({ ...params } = {}, header = {}) => {
     {
       params,
       headers,
-    }
+    },
   ).catch((error) => error);
 
   if (result.data) {
@@ -111,7 +110,7 @@ export const getTekdiallContent = async (header = {}) => {
         bodyData,
         {
           headers,
-        }
+        },
       );
       if (result.data) {
         return result.data;
@@ -125,7 +124,7 @@ export const getTekdiallContent = async (header = {}) => {
         {
           // Default tekdi search
           headers,
-        }
+        },
       );
       if (result.data) {
         return result.data;
@@ -165,13 +164,9 @@ export const getAllCollections = async (params = {}, header = {}) => {
 };
 
 export const getallContent = async (params = {}, header = {}) => {
-  let headers = {
-    ...header,
-  };
-
   try {
     const result = await post(
-      `${baseUrl}/${env?.VITE_API_ROUTE}/${apiPath.search}`
+      `${baseUrl}/${env?.VITE_API_ROUTE}/${apiPath.search}`,
     );
     if (result.data) {
       return result.data;
@@ -255,7 +250,7 @@ export const getInitdata = async (params = {}, header = {}) => {
 export const getContentbyCollectionId = async (
   id,
   params = {},
-  header = {}
+  header = {},
 ) => {
   let headers = {
     ...header,
@@ -422,8 +417,8 @@ export const removeFrombookmark = async (id, header = {}) => {
       `${baseUrl}/seeker/contentBookmark/${id}`,
       {},
       {
-        headers: headers ? headers : {},
-      }
+        headers: headers || {},
+      },
     );
 
     if (result?.data) {
@@ -449,8 +444,8 @@ export const removebookmarkFromList = async (id, header = {}) => {
       `${baseUrl}/${apiPath?.bookmark}/${id}`,
       {},
       {
-        headers: headers ? headers : {},
-      }
+        headers: headers || {},
+      },
     );
 
     if (result?.data) {
@@ -535,30 +530,6 @@ export const uploadImage = async (params = {}, header = {}) => {
   }
 };
 
-// export const getConfiguration = async (params = {}, header = {}) => {
-//   let headers = {
-//     ...header,
-//     Authorization: "Bearer " + localStorage.getItem("token"),
-//   };
-
-//   try {
-//     const result = await get(`${baseUrl}/seeker/configuration`, {
-//       headers,
-//     });
-
-//     if (result?.data) {
-//       return result?.data?.data?.Seeker[0];
-//     } else {
-//       return [];
-//     }
-//   } catch ({ response, message }) {
-//     return {
-//       status: response?.status ? response?.status : 404,
-//       error: response?.data?.message ? response?.data?.message : message,
-//     };
-//   }
-// };
-
 export const getSunbirdContent = async (id, header = {}) => {
   let headers = {
     ...header,
@@ -614,7 +585,7 @@ export const getDikshaContentWithBody = async (id, header = {}) => {
       `${diksha}/${id}?fields=transcripts,ageGroup,appIcon,artifactUrl,attributions,attributions,audience,author,badgeAssertions,board,body,channel,code,concepts,contentCredits,contentType,contributors,copyright,copyrightYear,createdBy,createdOn,creator,creators,description,displayScore,domain,editorState,flagReasons,flaggedBy,flags,framework,gradeLevel,identifier,itemSetPreviewUrl,keywords,language,languageCode,lastUpdatedOn,license,mediaType,medium,mimeType,name,originData,osId,owner,pkgVersion,publisher,questions,resourceType,scoreDisplayConfig,status,streamingUrl,subject,template,templateId,totalQuestions,totalScore,versionKey,visibility,year,primaryCategory,additionalCategories,interceptionPoints,interceptionType&orgdetails=orgName,email&licenseDetails=name,description,url`,
       {
         headers,
-      }
+      },
     );
 
     if (result?.data) {
@@ -639,7 +610,7 @@ export const getShikshaWithBody = async (id, header = {}) => {
       `${sunbird}/${id}?fields=transcripts,ageGroup,appIcon,artifactUrl,attributions,attributions,audience,author,badgeAssertions,board,body,channel,code,concepts,contentCredits,contentType,contributors,copyright,copyrightYear,createdBy,createdOn,creator,creators,description,displayScore,domain,editorState,flagReasons,flaggedBy,flags,framework,gradeLevel,identifier,itemSetPreviewUrl,keywords,language,languageCode,lastUpdatedOn,license,mediaType,medium,mimeType,name,originData,osId,owner,pkgVersion,publisher,questions,resourceType,scoreDisplayConfig,status,streamingUrl,subject,template,templateId,totalQuestions,totalScore,versionKey,visibility,year,primaryCategory,additionalCategories,interceptionPoints,interceptionType&orgdetails=orgName,email&licenseDetails=name,description,url`,
       {
         headers,
-      }
+      },
     );
 
     if (result?.data) {
@@ -690,7 +661,7 @@ export const registerTelementry = async (siteUrl, transactionId) => {
     ? url.searchParams.get("agent")
     : "";
   telementryJson.events[0].actor.distributor = url.searchParams.get(
-    "distributor-name"
+    "distributor-name",
   )
     ? url.searchParams.get("distributor-name")
     : "";

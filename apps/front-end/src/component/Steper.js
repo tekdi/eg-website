@@ -6,15 +6,15 @@ import PropTypes from "prop-types";
 const Circal = ({ text, color, size, ...props }) => (
   <VStack>
     <Box
-      width={size ? size : "12px"}
-      height={size ? size : "12px"}
+      width={size || "12px"}
+      height={size || "12px"}
       top={size ? `-${parseInt(size) / 3}` : "-4px"}
       borderWidth={1}
-      borderColor={color ? color : "gray.300"}
+      borderColor={color || "gray.300"}
       rounded="full"
       {...props}
     />
-    <Text fontSize={size ? size : "12px"}>{text}</Text>
+    <Text fontSize={size || "12px"}>{text}</Text>
   </VStack>
 );
 Circal.propTypes = {
@@ -36,8 +36,8 @@ export default function Steper({
   const [stepPer, setStepPer] = useState(0);
   const [stage, setStage] = useState({});
   const { colors } = useTheme();
-  const ncColor = cColor ? cColor : colors?.["textMaroonColor"]?.["600"];
-  const nrColor = rColor ? rColor : colors?.["textMaroonColor"]?.["350"];
+  const ncColor = cColor || colors?.["textMaroonColor"]?.["600"];
+  const nrColor = rColor || colors?.["textMaroonColor"]?.["350"];
 
   useEffect(() => {
     if (steps?.length > 0) {
@@ -115,7 +115,7 @@ const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
         {steps?.length > 0 ? (
           steps?.map((e, key) => (
             <Circal
-              key={key}
+              key={key + e.label}
               text={e.label}
               color={rColor}
               size={size}
@@ -136,13 +136,7 @@ const LineSteper = ({ per, stepPer, steps, cColor, rColor, size }) => {
         <Circal
           color={rColor}
           size={size}
-          bg={
-            steps?.length * stepPer <= per
-              ? cColor
-                ? cColor
-                : "gray.500"
-              : "white"
-          }
+          bg={steps?.length * stepPer <= per ? cColor || "gray.500" : "white"}
           left={size ? `${parseInt(size) / 3}` : "4px"}
         />
       </HStack>
@@ -158,14 +152,14 @@ LineSteper.propTypes = {
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
-  const nSize = parseInt(size ? size : "40px");
+  const nSize = parseInt(size || "40px");
   const fontSize = Math.floor(nSize / 5);
   return (
     <HStack space={4}>
       <Stack
         style={{
           background: `radial-gradient(closest-side, ${
-            bg ? bg : "#F4F4F7"
+            bg || "#F4F4F7"
           } 59%, transparent 70% 100%), conic-gradient(${cColor} ${per}%, ${rColor} 0)`,
           animation: "progress 2s 1 forwards",
         }}
@@ -195,15 +189,15 @@ const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
             {steps
               ?.map((e, key) => (
                 <Text
-                  key={key}
+                  key={key + e?.label}
                   fontSize="8px"
                   fontWeight="400"
                   color={
                     stage?.index > key
                       ? cColor
                       : stage?.index === key
-                      ? "gray.500"
-                      : "gray.400"
+                        ? "gray.500"
+                        : "gray.400"
                   }
                 >
                   {e?.label}

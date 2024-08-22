@@ -1,7 +1,7 @@
 // AutomatedForm.js
 import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import initReqBodyJson from "../assets/bodyJson/userDetailsBody.json";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
@@ -21,32 +21,26 @@ import {
 } from "native-base";
 import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-// import { registerTelementry } from "../api/Apicall";
 import { FrontEndTypo, Loading } from "@shiksha/common-lib";
 import Layout from "../Layout";
 
 const AutomatedForm = () => {
-  const location = useLocation();
-  const state = location?.state;
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
   const { type, jobId, transactionId } = useParams();
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
   const envConfig = dataConfig[type];
-  const [submissionStatus, setSubmissionStatus] = useState(null);
   const [jobInfo, setJobInfo] = useState();
   const [isAutoForm, setIsAutoForm] = useState(true);
 
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
-  // const [siteUrl, setSiteUrl] = useState(window.location.href);
   const toast = useToast();
   let confirmPayload = {};
 
@@ -87,7 +81,6 @@ const AutomatedForm = () => {
       let jsonData = atob(jsonDataParam);
       localStorage.setItem("userData", jsonData);
     }
-    // registerTelementry(siteUrl, transactionId);
   }, []);
 
   const [formData, setFormData] = useState({
@@ -117,15 +110,6 @@ const AutomatedForm = () => {
   });
 
   let customerBody;
-  let submitFormData = {
-    customer: {
-      person: {
-        tags: [],
-      },
-    },
-  };
-  let current = 1;
-  let currentXinput;
 
   const handleInputChange = (section, field, value) => {
     setFormData((prevData) => ({
@@ -144,50 +128,6 @@ const AutomatedForm = () => {
         [field]: "",
       },
     }));
-  };
-
-  const validateForm = (data) => {
-    // Implement your validation logic here
-    const errors = {
-      person: {
-        name: "",
-        gender: "",
-      },
-      contact: {
-        phone: "",
-        email: "",
-      },
-    };
-
-    // Example: Check if required fields are empty
-    if (!data.person.name) {
-      errors.person.name = t("Name_is_required");
-    }
-
-    if (!data.person.gender) {
-      errors.person.gender = t("Gender_is_required");
-    }
-
-    if (!data.contact.phone) {
-      errors.contact.phone = t("Phone_number_is_required");
-    } else if (!/^\d{10}$/.test(data.contact.phone)) {
-      errors.contact.phone = t("Phone_number_should_be_10_digits");
-    }
-
-    if (!data.contact.email) {
-      errors.contact.email = t("Email_is_required");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.email)) {
-      errors.contact.email = t("Invalid_email_address");
-    }
-
-    return errors;
-  };
-
-  const hasErrors = (errors) => {
-    // Check if there are any validation errors
-    return Object.values(errors).some((sectionErrors) =>
-      Object.values(sectionErrors).some((error) => Boolean(error))
-    );
   };
 
   function storedOrderId(appId) {
@@ -284,14 +224,13 @@ const AutomatedForm = () => {
         }
 
         setOrderId(appId);
-        setMessage(message);
-        setModalOpen(true);
+        setIsModalOpen(true);
         setLoading(false);
         storedOrderId(appId);
       } else {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
     } catch (error) {
@@ -336,14 +275,13 @@ const AutomatedForm = () => {
         }
 
         setOrderId(appId);
-        setMessage(message);
-        setModalOpen(true);
+        setIsModalOpen(true);
         setLoading(false);
         storedOrderId(appId);
       } else {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
     } catch (error) {
@@ -393,17 +331,14 @@ const AutomatedForm = () => {
       if (!data?.responses.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
-        // setjobDetails(data?.responses[0]);
         fetchInitDetails(data?.responses[0]);
       }
     } catch (error) {
       console.error("Error fetching job details:", error);
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -425,16 +360,7 @@ const AutomatedForm = () => {
     });
   }
 
-  const fetchInitDetails = async () => {
-    // let usrtemp = localStorage.getItem("userData");
-    // if (!usrtemp) {
-    //   const errors = validateForm(formData);
-    //   if (hasErrors(errors)) {
-    //     setFormErrors(errors);
-    //     return;
-    //   }
-    // }
-
+  const fetchInitDetails = async (data = {}) => {
     try {
       setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
@@ -442,27 +368,6 @@ const AutomatedForm = () => {
       localStorage.setItem("jobDetails", JSON.stringify(jobDetails));
       let contactDetails = formData["contact"];
       contactDetails.phone = formData.contact.phone.toString();
-      let initReqBody = initReqBodyJson.init[1];
-      // initReqBody["context"]["action"] = "init";
-      // initReqBody["context"]["domain"] = envConfig.apiLink_DOMAIN;
-      // initReqBody["context"]["bap_id"] = envConfig.apiLink_BAP_ID;
-      // initReqBody["context"]["bap_uri"] = envConfig.apiLink_BAP_URI;
-      // initReqBody["context"]["bpp_id"] = jobDetails?.context?.bpp_id;
-      // initReqBody["context"]["bpp_uri"] = jobDetails?.context?.bpp_uri;
-      // initReqBody["context"]["transaction_id"] = transactionId;
-      // initReqBody["context"]["timestamp"] = new Date().toISOString();
-      // initReqBody["context"]["message_id"] = uuidv4();
-      // initReqBody.message.order.provider["id"] =
-      //   jobDetails?.message?.order?.provider?.id;
-      // initReqBody.message.order.items[0]["id"] =
-      //   jobDetails?.message?.order?.items[0]?.id;
-      // initReqBody.message.order.fulfillments[0]["id"] =
-      //   jobDetails?.message?.order?.items[0]?.fulfillment_ids[0];
-
-      // initReqBody.message.order.fulfillments[0]["customer"]["person"] =
-      //   formData["person"];
-      // initReqBody.message.order.fulfillments[0]["customer"]["contact"] =
-      //   contactDetails;
       let tempTags = [
         {
           code: "distributor-details",
@@ -500,7 +405,6 @@ const AutomatedForm = () => {
           version: "1.1.0",
           bpp_id: jobDetails?.context?.bpp_id,
           bpp_uri: jobDetails?.context?.bpp_uri,
-          transaction_id: transactionId,
           message_id: uuidv4(),
           timestamp: new Date().toISOString(),
         },
@@ -512,7 +416,6 @@ const AutomatedForm = () => {
             items: [
               {
                 id: jobDetails?.message?.order?.items[0]?.id,
-                // fulfillment_ids: customInfo?.items[0]?.fulfillment_ids,
               },
             ],
             fulfillments: [
@@ -528,11 +431,6 @@ const AutomatedForm = () => {
         },
       };
 
-      // initReqBody.message.order.fulfillments[0]["customer"]["person"]["tags"] =
-      //   tempTags;
-
-      let paramBody = initReqBody;
-
       // Perform API call with formData
       const response = await fetch(`${baseUrl}/init`, {
         method: "POST",
@@ -545,7 +443,7 @@ const AutomatedForm = () => {
       if (!data || !data?.responses.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         if (data.responses[0].hasOwnProperty("message")) {
@@ -557,10 +455,10 @@ const AutomatedForm = () => {
           const curr =
             data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index
               ?.cur;
-          var max =
+          let max =
             data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index
               ?.max;
-          var formUrl =
+          let formUrl =
             data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
           if (curr < max) {
             searchForm(formUrl);
@@ -576,20 +474,16 @@ const AutomatedForm = () => {
     } catch (error) {
       setLoading(false);
       errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
       );
       console.error("Error submitting form:", error);
-    } finally {
-      // setTimeout(() => {
-      //   setLoading(false);
-      // }, 20000);
     }
   };
 
   useEffect(() => {
     const getData = () => {
       setLoading(t("FETCHING_THE_DETAILS"));
-      var requestOptions = {
+      let requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -604,7 +498,7 @@ const AutomatedForm = () => {
           setJobInfo(result?.data[db_cache][0]);
           localStorage.setItem(
             "unique_id",
-            result?.data[db_cache][0]?.unique_id
+            result?.data[db_cache][0]?.unique_id,
           );
         })
         .catch((error) => console.log("error", error));
@@ -619,14 +513,6 @@ const AutomatedForm = () => {
           let data = JSON.parse(localStorage.getItem("selectRes"));
           if (data && data?.responses.length) {
             await fetchInitDetails(data?.responses[0]);
-
-            // let usrtemp = localStorage.getItem("userData");
-            /* if(usrtemp){
-              fetchInitDetails(data?.responses[0]);
-              }else{
-                setIsAutoForm(false);
-                setLoading(false);
-            }*/
           } else if (jobInfo) {
             getSelectDetails(jobInfo);
           }
@@ -634,7 +520,7 @@ const AutomatedForm = () => {
       };
       fetchData();
     },
-    [jobInfo]
+    [jobInfo],
   );
 
   const trackReactGA = () => {
@@ -678,7 +564,7 @@ const AutomatedForm = () => {
   const closeModal = () => {
     // Close the modal and reset state
     localStorage.setItem("instructionsValue", "");
-    setModalOpen(false);
+    setIsModalOpen(false);
     setOrderId("");
     setMessage("");
     navigate("/");
@@ -714,7 +600,6 @@ const AutomatedForm = () => {
             // Add a CSS class to each input field
             inputFields.forEach((input) => {
               input.classList.add("autoInputField");
-              //input.style.border = "1px solid #000"; // Replace 'your-css-class' with the desired class name
             });
 
             const selectFields = form.querySelectorAll("select");
@@ -768,7 +653,7 @@ const AutomatedForm = () => {
                 if (userData && userData[selectName] !== undefined) {
                   // Find the option with the corresponding value
                   const optionToSelect = select.querySelector(
-                    `option[value="${userData[selectName]}"]`
+                    `option[value="${userData[selectName]}"]`,
                   );
 
                   // If the option is found, set its selected attribute to true
@@ -782,7 +667,7 @@ const AutomatedForm = () => {
             form.addEventListener("submit", (e) => {
               e.preventDefault();
               const formData = new FormData(form);
-              var urlencoded = new URLSearchParams();
+              let urlencoded = new URLSearchParams();
               let formDataObject = {};
               formData.forEach(function (value, key) {
                 formDataObject[key] = value;
@@ -794,7 +679,6 @@ const AutomatedForm = () => {
         });
     } catch (error) {
       console.error("Error submitting form:", error);
-      setSubmissionStatus("error");
     }
   };
 

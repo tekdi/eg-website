@@ -3,7 +3,6 @@ import telementryJson from "../assets/bodyJson/telementry.json";
 import config from "./config.json";
 
 const baseUrl = "import.meta.env.VITE_API_BASE_URL";
-//const baseUrl = 'https://jobs-api.tekdinext.com';
 
 const searchUrl = "import.meta.env.VITE_BASE_URL";
 const sunbird = "import.meta.env.VITE_SUNBIRD_API";
@@ -46,7 +45,7 @@ export const getAuthUser = async ({ ...params } = {}, header = {}) => {
     {
       params,
       headers,
-    }
+    },
   ).catch((error) => error);
 
   if (result.data) {
@@ -187,7 +186,7 @@ export const getallContent = async (params = {}, header = {}) => {
 export const getContentbyCollectionId = async (
   id,
   params = {},
-  header = {}
+  header = {},
 ) => {
   let headers = {
     ...header,
@@ -354,8 +353,8 @@ export const removeFrombookmark = async (id, header = {}) => {
       `${baseUrl}/seeker/contentBookmark/${id}`,
       {},
       {
-        headers: headers ? headers : {},
-      }
+        headers: headers || {},
+      },
     );
 
     if (result?.data) {
@@ -381,8 +380,8 @@ export const removebookmarkFromList = async (id, header = {}) => {
       `${baseUrl}/seeker/bookmark/${id}`,
       {},
       {
-        headers: headers ? headers : {},
-      }
+        headers: headers || {},
+      },
     );
 
     if (result?.data) {
@@ -568,7 +567,7 @@ export const getDikshaContentWithBody = async (id, header = {}) => {
       `${diksha}/${id}?fields=transcripts,ageGroup,appIcon,artifactUrl,attributions,attributions,audience,author,badgeAssertions,board,body,channel,code,concepts,contentCredits,contentType,contributors,copyright,copyrightYear,createdBy,createdOn,creator,creators,description,displayScore,domain,editorState,flagReasons,flaggedBy,flags,framework,gradeLevel,identifier,itemSetPreviewUrl,keywords,language,languageCode,lastUpdatedOn,license,mediaType,medium,mimeType,name,originData,osId,owner,pkgVersion,publisher,questions,resourceType,scoreDisplayConfig,status,streamingUrl,subject,template,templateId,totalQuestions,totalScore,versionKey,visibility,year,primaryCategory,additionalCategories,interceptionPoints,interceptionType&orgdetails=orgName,email&licenseDetails=name,description,url`,
       {
         headers,
-      }
+      },
     );
 
     if (result?.data) {
@@ -593,7 +592,7 @@ export const getShikshaWithBody = async (id, header = {}) => {
       `${sunbird}/${id}?fields=transcripts,ageGroup,appIcon,artifactUrl,attributions,attributions,audience,author,badgeAssertions,board,body,channel,code,concepts,contentCredits,contentType,contributors,copyright,copyrightYear,createdBy,createdOn,creator,creators,description,displayScore,domain,editorState,flagReasons,flaggedBy,flags,framework,gradeLevel,identifier,itemSetPreviewUrl,keywords,language,languageCode,lastUpdatedOn,license,mediaType,medium,mimeType,name,originData,osId,owner,pkgVersion,publisher,questions,resourceType,scoreDisplayConfig,status,streamingUrl,subject,template,templateId,totalQuestions,totalScore,versionKey,visibility,year,primaryCategory,additionalCategories,interceptionPoints,interceptionType&orgdetails=orgName,email&licenseDetails=name,description,url`,
       {
         headers,
-      }
+      },
     );
 
     if (result?.data) {
@@ -644,7 +643,7 @@ export const registerTelementry = async (siteUrl, transactionId) => {
     ? url.searchParams.get("agent")
     : "";
   telementryJson.events[0].actor.distributor = url.searchParams.get(
-    "distributor-name"
+    "distributor-name",
   )
     ? url.searchParams.get("distributor-name")
     : "";

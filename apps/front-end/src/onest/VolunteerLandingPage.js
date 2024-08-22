@@ -170,7 +170,7 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
           {CAROUSEL_LIST.map((item, i) => {
             return (
               <ImageBackground
-                key={`carousel-item-${i}`}
+                key={`carousel-item-${item.title + i}`}
                 source={{ uri: item.bgImage }}
                 style={styles.backgroundImage}
               >
@@ -191,7 +191,7 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
 
         {dataConfig.constructor.name === "Object" &&
           dataArray?.map((pItem) => (
-            <HStack space={"6%"}>
+            <HStack space={"6%"} key={pItem}>
               {pItem.map((item) => {
                 return (
                   <FeatureCard

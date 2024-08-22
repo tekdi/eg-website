@@ -34,7 +34,7 @@ const AutomatedForm = () => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
 
@@ -116,15 +116,6 @@ const AutomatedForm = () => {
   });
 
   let customerBody;
-  let submitFormData = {
-    customer: {
-      person: {
-        tags: [],
-      },
-    },
-  };
-  let current = 1;
-  let currentXinput;
 
   const handleInputChange = (section, field, value) => {
     setFormData((prevData) => ({
@@ -143,50 +134,6 @@ const AutomatedForm = () => {
         [field]: "",
       },
     }));
-  };
-
-  const validateForm = (data) => {
-    // Implement your validation logic here
-    const errors = {
-      person: {
-        name: "",
-        gender: "",
-      },
-      contact: {
-        phone: "",
-        email: "",
-      },
-    };
-
-    // Example: Check if required fields are empty
-    if (!data.person.name) {
-      errors.person.name = t("Name_is_required");
-    }
-
-    if (!data.person.gender) {
-      errors.person.gender = t("Gender_is_required");
-    }
-
-    if (!data.contact.phone) {
-      errors.contact.phone = t("Phone_number_is_required");
-    } else if (!/^\d{10}$/.test(data.contact.phone)) {
-      errors.contact.phone = t("Phone_number_should_be_10_digits");
-    }
-
-    if (!data.contact.email) {
-      errors.contact.email = t("Email_is_required");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.email)) {
-      errors.contact.email = t("Invalid_email_address");
-    }
-
-    return errors;
-  };
-
-  const hasErrors = (errors) => {
-    // Check if there are any validation errors
-    return Object.values(errors).some((sectionErrors) =>
-      Object.values(sectionErrors).some((error) => Boolean(error))
-    );
   };
 
   function storedOrderId(appId) {
@@ -265,23 +212,21 @@ const AutomatedForm = () => {
       const data = await response.json();
       // Set state and open the modal
       if (data.responses.length) {
-        for (let i = 0; i < data.responses.length; i++) {
-          if (data.responses[i].hasOwnProperty("message")) {
-            setLoading(false);
-            let appId = data.responses[i].message.order.id;
-            window?.parent?.postMessage({ orderId: appId }, "*");
-            setOrderId(appId);
-            setMessage(message);
-            setModalOpen(true);
-            setLoading(false);
-            storedOrderId(appId);
-          }
+        const responseWithMessage = data.responses.find((response) =>
+          response.hasOwnProperty("message"),
+        );
+
+        if (responseWithMessage) {
+          setLoading(false);
+          const appId = responseWithMessage.message.order.id;
+          window?.parent?.postMessage({ orderId: appId }, "*");
+          setOrderId(appId);
+          setIsModalOpen(true);
+          storedOrderId(appId);
         }
       } else {
         setLoading(false);
-        errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
-        );
+        errorMessage(t("Delay_in_fetching_the_details") + `(${transactionId})`);
       }
     } catch (error) {
       setLoading(false);
@@ -330,22 +275,15 @@ const AutomatedForm = () => {
       if (!data?.responses?.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
-        /*if (data.responses[0].message.order.items[0].xinput.form.url) {
-          searchForm(data.responses[0].message.order.items[0].xinput.form.url)
-        }
-        setLoading(false);*/
-        // setjobDetails(data?.responses[0]);
         fetchInitDetails(data?.responses[0]);
       }
     } catch (error) {
       setLoading(false);
       console.error("Error fetching job details:", error);
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -367,14 +305,8 @@ const AutomatedForm = () => {
     });
   }
 
-  const fetchInitDetails = async () => {
-    // const errors = validateForm(formData);
-    // if (hasErrors(errors)) {
-    //   setFormErrors(errors);
-    //   return;
-    // }
+  const fetchInitDetails = async (data) => {
     localStorage.setItem("initRes", "");
-
     try {
       setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
@@ -431,39 +363,25 @@ const AutomatedForm = () => {
       if (!data || !data?.responses.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         localStorage.setItem("initRes", JSON.stringify(data));
         if (localStorage.getItem("submissionId")) {
           confirmDetails(data);
-        } else {
-          if (
-            data?.responses[0]?.message?.order?.items[0].hasOwnProperty(
-              "xinput"
-            )
-          ) {
-            //   const curr = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.cur;
-            //   var max = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.max;
-            var formUrl =
-              data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
-            //   if (curr < max) {
-            searchForm(formUrl);
-            //   } else if (curr == max) {
-            //     setLoading(true);
-            //     confirmDetails();
-            //   }
-            setLoading(false);
-
-            // } else {
-            //   confirmDetails(formData);
-          }
+        } else if (
+          data?.responses[0]?.message?.order?.items[0].hasOwnProperty("xinput")
+        ) {
+          let formUrl =
+            data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
+          searchForm(formUrl);
+          setLoading(false);
         }
       }
     } catch (error) {
       setLoading(false);
       errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
       );
       console.error("Error submitting form:", error);
     } finally {
@@ -476,7 +394,7 @@ const AutomatedForm = () => {
     const getData = () => {
       setLoading(t("FETCHING_THE_DETAILS"));
       localStorage.setItem("submissionId", "");
-      var requestOptions = {
+      let requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -491,7 +409,7 @@ const AutomatedForm = () => {
           setJobInfo(result?.data[db_cache][0]);
           localStorage.setItem(
             "unique_id",
-            result?.data[db_cache][0]?.unique_id
+            result?.data[db_cache][0]?.unique_id,
           );
         })
         .catch((error) => console.log("error", error));
@@ -505,21 +423,13 @@ const AutomatedForm = () => {
         let data = JSON.parse(localStorage.getItem("selectRes"));
         if (data && data?.responses.length && jobInfo) {
           await fetchInitDetails(data?.responses[0]);
-
-          // let usrtemp = localStorage.getItem("userData");
-          /* if(usrtemp){
-       fetchInitDetails(data?.responses[0]);
-       }else{
-         setIsAutoForm(false);
-         setLoading(false);
-       }*/
         } else if (jobInfo) {
           getSelectDetails(jobInfo);
         }
       };
       fetchData();
     },
-    [jobInfo]
+    [jobInfo],
   );
   const trackReactGA = () => {
     ReactGA.event({
@@ -546,8 +456,6 @@ const AutomatedForm = () => {
         setTimeout(() => {
           let initRes = JSON.parse(localStorage.getItem("initRes"));
           confirmDetails(initRes);
-          // fetchInitDetails();
-          // getInitJson();
         }, 7000);
       }
     } catch (error) {
@@ -564,7 +472,7 @@ const AutomatedForm = () => {
 
   const closeModal = () => {
     // Close the modal and reset state
-    setModalOpen(false);
+    setIsModalOpen(false);
     setOrderId("");
     setMessage("");
     navigate("/");
@@ -579,10 +487,10 @@ const AutomatedForm = () => {
 
   // Function to add submit button dynamically
   function addSubmitButton() {
-    var form = document.querySelector("form");
+    let form = document.querySelector("form");
 
     // Create submit button
-    var submitBtn = document.createElement("input");
+    let submitBtn = document.createElement("input");
     submitBtn.type = "submit";
     submitBtn.value = "Submit";
     submitBtn.id = "submitBtn";
@@ -636,11 +544,11 @@ const AutomatedForm = () => {
             const userData = JSON.parse(userDataString);
             const createdDateTime = moment(
               userData.createdAt,
-              "YYYY-MM-DD HH:mm"
+              "YYYY-MM-DD HH:mm",
             );
             const currentDateTime = moment();
             const timeDiff = moment.duration(
-              currentDateTime.diff(createdDateTime)
+              currentDateTime.diff(createdDateTime),
             );
             if (timeDiff.asSeconds() > envConfig.expiryLimit) {
               setOpenModal(true);
@@ -689,7 +597,7 @@ const AutomatedForm = () => {
                   if (userData && userData[selectName] !== undefined) {
                     // Find the option with the corresponding value
                     const optionToSelect = select.querySelector(
-                      `option[value="${userData[selectName]}"]`
+                      `option[value="${userData[selectName]}"]`,
                     );
 
                     // If the option is found, set its selected attribute to true
@@ -703,7 +611,7 @@ const AutomatedForm = () => {
               form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 const formDataTmp = new FormData(form);
-                var urlencoded = new URLSearchParams();
+                let urlencoded = new URLSearchParams();
 
                 let formDataObject = {};
 
@@ -714,7 +622,7 @@ const AutomatedForm = () => {
 
                 localStorage.setItem(
                   "autoFormData",
-                  JSON.stringify(formDataObject)
+                  JSON.stringify(formDataObject),
                 );
                 // setFormData({...formData['person'] , ...localStorage.getItem('autoFormData')})
 
