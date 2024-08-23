@@ -2,11 +2,9 @@ import React, { useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, HStack, VStack } from "native-base";
+import { Box, VStack } from "native-base";
 import {
   Layout,
-  BodyMedium,
-  enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
   FrontEndTypo,
@@ -25,9 +23,11 @@ import {
   CustomR,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
+import { transformErrors } from "component/BaseInput.js";
+import PropTypes from "prop-types";
 
 // App
-export default function ContactDetailsEdit({ ip }) {
+export default function ContactDetailsEdit({ userTokenInfo }) {
   const { t } = useTranslation();
   const [page, setPage] = useState();
   const [pages, setPages] = useState();
@@ -36,7 +36,6 @@ export default function ContactDetailsEdit({ ip }) {
   const formRef = useRef();
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
-  const [alert, setAlert] = useState();
   const [yearsRange, setYearsRange] = useState([1980, 2030]);
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
@@ -122,42 +121,6 @@ export default function ContactDetailsEdit({ ip }) {
     },
   };
 
-  const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
-    const index = pages.indexOf(page);
-    const properties = schema1.properties;
-    if (index !== undefined) {
-      let nextIndex = "";
-      if (pageStape.toLowerCase() === "n") {
-        nextIndex = pages[index + 1];
-      } else {
-        nextIndex = pages[index - 1];
-      }
-      if (nextIndex !== undefined) {
-        setPage(nextIndex);
-        setSchema(properties[nextIndex]);
-      } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "6" });
-        setPage("SAVE");
-      } else {
-        return true;
-      }
-    }
-  };
-  const setStep = async (pageNumber = "") => {
-    if (schema1.type === "step") {
-      const properties = schema1.properties;
-      if (pageNumber !== "") {
-        if (page !== pageNumber) {
-          setPage(pageNumber);
-          setSchema(properties[pageNumber]);
-        }
-      } else {
-        nextPreviewStep();
-      }
-    }
-  };
-
   React.useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -171,43 +134,6 @@ export default function ContactDetailsEdit({ ip }) {
       setSubmitBtn(t("NEXT"));
     }
   }, []);
-
-  const formSubmitUpdate = async (formData) => {
-    if (id) {
-      await enumRegistryService.editProfileById({
-        ...formData,
-        id: id,
-      });
-    }
-  };
-
-  const goErrorPage = (key) => {
-    if (key) {
-      pages.forEach((e) => {
-        const data = schema1["properties"]?.[e]["properties"]?.[key];
-        if (data) {
-          setStep(e);
-        }
-      });
-    }
-  };
-
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
 
   const onChange = async (e, id) => {
     const data = e.formData;
@@ -298,7 +224,7 @@ export default function ContactDetailsEdit({ ip }) {
   const onError = (data) => {
     if (data[0]) {
       const key = data[0]?.property?.slice(1);
-      goErrorPage(key);
+      scrollToField({ property: key });
     }
   };
 
@@ -331,7 +257,7 @@ export default function ContactDetailsEdit({ ip }) {
       }
     }
   };
-
+  console.log(userTokenInfo);
   return (
     <Layout
       _appBar={{
@@ -344,16 +270,9 @@ export default function ContactDetailsEdit({ ip }) {
       analyticsPageTitle={"BENEFICIARY_CONTACT_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("CONTACT_DETAILS")}
+      facilitator={userTokenInfo?.authUser}
     >
       <Box py={6} px={4} mb={5}>
-        {alert && (
-          <Alert status="warning" alignItems={"start"} mb="3">
-            <HStack alignItems="center" space="2" color>
-              <Alert.Icon />
-              <BodyMedium>{alert}</BodyMedium>
-            </HStack>
-          </Alert>
-        )}
         {page && page !== "" && (
           <Form
             key={lang}
@@ -378,7 +297,7 @@ export default function ContactDetailsEdit({ ip }) {
               onChange,
               onError,
               onSubmit,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
             <VStack space={4}>
@@ -406,3 +325,7 @@ export default function ContactDetailsEdit({ ip }) {
     </Layout>
   );
 }
+
+ContactDetailsEdit.propTypes = {
+  userTokenInfo: PropTypes.func,
+};
