@@ -3,25 +3,30 @@ import {
   PCusers_layout as Layout,
   FrontEndTypo,
   PcuserService,
+  jsonParse,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
+import { PCUserBreadcrumb } from "./Form";
+import PropTypes from "prop-types";
 
-function DailyActivitiesView(props) {
+function View({ userTokenInfo }) {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { t } = useTranslation();
-  const { activity } = useParams();
+  const { category, activity } = useParams();
   const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const getActivityDetail = async () => {
     setLoading(true);
+    const { village } = jsonParse(localStorage.getItem("activityAddress"), {});
     const payload = {
       page: "1",
-      limit: "10",
+      limit: "100",
+      village,
       type: activity,
       date: moment().format("YYYY-MM-DD"),
     };
@@ -41,26 +46,24 @@ function DailyActivitiesView(props) {
 
   return (
     <Layout
+      facilitator={userTokenInfo?.authUser || {}}
       _appBar={{
         lang,
         setLang,
         onPressBackButton: (e) => {
-          navigate(`/dailyactivities/list`);
+          navigate(`/daily-activities/${category}/list`);
         },
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
       loading={loading}
     >
       <VStack space="2" p={4}>
-        <VStack space={4}>
-          <FrontEndTypo.H1>{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>
-          <FrontEndTypo.H2 color={"#4F4F4F"}>{t(activity)}</FrontEndTypo.H2>
-        </VStack>
-
+        <PCUserBreadcrumb {...{ category, activity, t }} />
         {activities.length > 0 ? (
           activities.map((item) => {
             return (
               <VStack
+                key={item}
                 borderColor="btnGray.100"
                 borderRadius="10px"
                 borderWidth="1px"
@@ -99,11 +102,9 @@ function DailyActivitiesView(props) {
                   <FrontEndTypo.Primarybutton
                     px={"40px"}
                     onPress={() =>
-                      navigate(`/dailyactivities/${activity}/edit`, {
-                        state: {
-                          id: item.id,
-                        },
-                      })
+                      navigate(
+                        `/daily-activities/${category}/${activity}/${item?.id}/edit`,
+                      )
                     }
                   >
                     {t("EDIT")}
@@ -122,7 +123,9 @@ function DailyActivitiesView(props) {
           <FrontEndTypo.H4
             underline
             color="#0500FF"
-            onPress={() => navigate(`/dailyactivities/${activity}/form`)}
+            onPress={() =>
+              navigate(`/daily-activities/${category}/${activity}/create`)
+            }
           >
             {activities.length > 0
               ? t("ADD_ACTIVITY_FOR_ANOTHER_VILLAGE")
@@ -134,6 +137,8 @@ function DailyActivitiesView(props) {
   );
 }
 
-DailyActivitiesView.propTypes = {};
+export default View;
 
-export default DailyActivitiesView;
+View.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

@@ -5,7 +5,7 @@ export const schema1 = {
     village: {
       label: "VILLAGE_WARD",
       type: "string",
-      format: "select",
+      readOnly: true,
     },
     description: {
       label: "DESCRIPTION",
@@ -28,18 +28,3 @@ export const schema1 = {
     },
   },
 };
-
-export const activities = [
-  "ATTENDED_TRAINING",
-  "PRAGATI_SABHA",
-  "PROVIDE_TRAINING",
-  "LEARNER_WORKSHOP",
-  "LEARNER_IDENTIFICATION_SUPPORT",
-  "LEARNER_DOCUMENTATION_SUPPORT",
-  "LEARNER_OS_ENR_SUPPORT",
-  "ATTEND_NODAL_MEETING",
-  "CONDUCT_PRI_MEETING",
-  "CAMP_EXECUTION_SUPPORT",
-  "CAMP_VISIT_FOR_MONITORING_AND_HH_SUPPORT",
-  "COLLECT_CASE_STUDY_FROM_FIELD",
-];

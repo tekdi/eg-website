@@ -1,26 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Form from "@rjsf/core";
 import {
-  PCusers_layout as Layout,
-  CardComponent,
+  Breadcrumb,
   FrontEndTypo,
   getOptions,
-  geolocationRegistryService,
+  jsonParse,
+  PCusers_layout as Layout,
   PcuserService,
 } from "@shiksha/common-lib";
+import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Box, HStack, Pressable, VStack } from "native-base";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Form from "@rjsf/core";
-
+import { useNavigate, useParams } from "react-router-dom";
+import moment from "moment";
 import {
-  templates,
-  widgets,
-  validator,
-  transformErrors,
   onError,
+  templates,
+  transformErrors,
+  validator,
+  widgets,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./ActivitiesSchema";
-import moment from "moment";
+import PropTypes from "prop-types";
+
+const hours = [
+  { title: "0" },
+  { title: 1 },
+  { title: 2 },
+  { title: 3 },
+  { title: 4 },
+  { title: 5 },
+  { title: 6 },
+  { title: 7 },
+  { title: 8 },
+];
+const minutes = [{ title: "0" }, { title: 15 }, { title: 30 }, { title: 45 }];
+
+const uiSchema = {
+  labelTime: {
+    "ui:widget": "LabelTimeWidget",
+  },
+};
+
+export const PCUserBreadcrumb = ({ category, activity, t }) => (
+  <Breadcrumb
+    _hstack={{ flexWrap: "wrap", pb: 4 }}
+    data={[
+      <FrontEndTypo.H1 key="1-b">{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>,
+      <FrontEndTypo.H2 key="2-b">
+        {t(
+          "PCUSER_ACTIVITY.PC_USER_ACTIVITY_CATEGORIES_" +
+            category.replace("_ACTIVITY", ""),
+        )}
+      </FrontEndTypo.H2>,
+      <FrontEndTypo.H2 key="3-b" color="textGreyColor.700">
+        {t(`PCUSER_ACTIVITY.${category}_${activity.toUpperCase()}`)}
+      </FrontEndTypo.H2>,
+    ]}
+  />
+);
+
+PCUserBreadcrumb.propTypes = {
+  category: PropTypes.string,
+  activity: PropTypes.string,
+  t: PropTypes.func,
+};
+
 const DailyActivities = () => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
@@ -31,28 +75,19 @@ const DailyActivities = () => {
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
   const [isDisable, setIsDisable] = useState(false);
-  const { activity } = useParams();
-  const { step } = useParams();
-  const location = useLocation();
+  const { id, category, activity } = useParams();
 
-  const hours = [
-    { title: 0 },
-    { title: 1 },
-    { title: 2 },
-    { title: 3 },
-    { title: 4 },
-    { title: 5 },
-    { title: 6 },
-    { title: 7 },
-    { title: 8 },
-  ];
-  const minutes = [{ title: 0 }, { title: 15 }, { title: 30 }, { title: 45 }];
-
-  const uiSchema = {
-    labelTime: {
-      "ui:widget": "LabelTimeWidget",
-    },
-  };
+  useEffect(() => {
+    const activityAddress = jsonParse(localStorage.getItem("activityAddress"));
+    if (!_.isEmpty(activityAddress)) {
+      setFormData({
+        ...formData,
+        village: activityAddress?.village,
+      });
+    } else {
+      navigate(`/daily-activities/${category}/${activity}/view`);
+    }
+  }, []);
 
   const getActivityDetail = async () => {
     const payload = {
@@ -62,10 +97,9 @@ const DailyActivities = () => {
       date: moment().format("YYYY-MM-DD"),
     };
     const data = await PcuserService.activitiesDetails(payload);
-    const id = location?.state?.id;
     const activities = data?.data?.activities;
     const selectedActivity = activities.find((item) => {
-      return item.id === id;
+      return item.id == id;
     });
     setFormData({
       ...formData,
@@ -78,16 +112,9 @@ const DailyActivities = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (step === "edit") {
+      if (id) {
         await getActivityDetail();
       }
-      const result = await PcuserService.getPrerakList();
-      const village = result.facilitator_data
-        ?.filter((item) => item?.user?.village !== null) // Filter out items where block is null
-        .map((item) => {
-          return { name: item?.user?.village };
-        });
-
       let newSchema = getOptions(schema1, {
         key: "hours",
         arr: hours,
@@ -95,84 +122,39 @@ const DailyActivities = () => {
         value: "title",
       });
 
-      newSchema = getOptions(
-        newSchema,
-
-        {
-          key: "village",
-          arr: village,
-          title: "name",
-          value: "name",
-        }
-      );
-      newSchema = getOptions(
-        newSchema,
-
-        {
-          key: "minutes",
-          arr: minutes,
-          title: "title",
-          value: "title",
-        }
-      );
+      newSchema = getOptions(newSchema, {
+        key: "minutes",
+        arr: minutes,
+        title: "title",
+        value: "title",
+      });
       setSchema(newSchema);
       setLoading(false);
     };
     fetchData();
   }, []);
 
-  const validateTime = (input) => {
+  const validateTime = ({ hours, minutes }) => {
+    const totalHours = parseInt(hours, 10) + parseInt(minutes, 10) / 60;
     const MAX_HOURS = 8;
-    const prev_hours = 0 + parseInt(input.hours);
-    const prev_min = 0 + parseInt(input.minutes);
-    const hours = parseInt(prev_hours, 10);
-    const minutes = parseInt(prev_min, 10);
-    const totalHours = hours + minutes / 60;
+
     if (totalHours > MAX_HOURS) {
-      setErrors({
-        ...errors,
+      return {
         minutes: {
           __errors: [t("CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY")],
         },
-      });
-    } else if (hours === 0 && minutes === 0) {
-      setErrors({
-        ...errors,
+      };
+    }
+
+    if (totalHours === 0) {
+      return {
         minutes: {
           __errors: [t("TIME_CANNOT_BE_ZERO")],
         },
-      });
-    } else {
-      setErrors({});
+      };
     }
-  };
-  const validateTimeOnSubmit = (input) => {
-    const MAX_HOURS = 8;
-    const prev_hours = 0 + parseInt(input.hours);
-    const prev_min = 0 + parseInt(input.minutes);
-    const hours = parseInt(prev_hours, 10);
-    const minutes = parseInt(prev_min, 10);
-    const totalHours = hours + minutes / 60;
-    if (totalHours > MAX_HOURS) {
-      setErrors({
-        ...errors,
-        minutes: {
-          __errors: [t("CAN_ONLY_ADD_UPTO_8_HOURS_PER_DAY")],
-        },
-      });
-      return false;
-    } else if (hours === 0 && minutes === 0) {
-      setErrors({
-        ...errors,
-        minutes: {
-          __errors: [t("TIME_CANNOT_BE_ZERO")],
-        },
-      });
-      return false;
-    } else {
-      setErrors({});
-      return true;
-    }
+
+    return null;
   };
 
   const onChange = async (e, id) => {
@@ -185,7 +167,10 @@ const DailyActivities = () => {
       minutes: data?.minutes || 0,
     };
     if (id === "root_hours" || id === "root_minutes") {
-      validateTime(obj);
+      const errorResult = validateTime(obj);
+      if (errorResult) {
+        setErrors({ ...errors, ...errorResult });
+      }
     }
 
     if (id === "root_description") {
@@ -196,14 +181,14 @@ const DailyActivities = () => {
   };
 
   const onSubmit = async (data) => {
+    setIsDisable(true);
     let newFormData = data.formData;
     const obj = {
       hours: newFormData?.hours || 0,
       minutes: newFormData?.minutes || 0,
     };
-    if (_.isEmpty(errors) && validateTimeOnSubmit(obj)) {
-      const id = location?.state?.id;
 
+    if (_.isEmpty(errors) && !validateTime(obj)) {
       const payload = {
         ...newFormData,
         type: activity,
@@ -211,14 +196,16 @@ const DailyActivities = () => {
         hours: parseInt(newFormData.hours),
         minutes: parseInt(newFormData.minutes),
         id: id,
+        categories: category?.replace("_ACTIVITY", "")?.toLowerCase(),
       };
-      if (step === "edit") {
+      if (id) {
         await PcuserService.editActivity(payload);
       } else {
         await PcuserService.MarkActivity(payload);
       }
-      navigate(`/dailyactivities/${activity}/view`);
+      navigate(`/daily-activities/${category}/${activity}/view`);
     }
+    setIsDisable(false);
   };
 
   return (
@@ -228,15 +215,13 @@ const DailyActivities = () => {
         lang,
         setLang,
         onPressBackButton: (e) => {
-          navigate(`/dailyactivities/${activity}/view`);
+          navigate(`/daily-activities/${category}/${activity}/view`);
         },
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
     >
-      <VStack space="4" px="4" pb="90px" alignContent="center">
-        <FrontEndTypo.H1 pt="10px">{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>
-        <FrontEndTypo.H3>{t(activity)}</FrontEndTypo.H3>
-
+      <VStack space="4" p="4" pb="90px" alignContent="center">
+        <PCUserBreadcrumb {...{ category, activity, t }} />
         <Form
           key={schema}
           ref={formRef}

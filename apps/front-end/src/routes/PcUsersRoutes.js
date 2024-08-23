@@ -3,85 +3,97 @@ import React, { lazy } from "react";
 // PC Users Routes
 
 const PcDashboard = lazy(() => import("pages/PCusers/PcDashboard"));
-const DailyActivitiesList = lazy(() =>
-  import("pages/PCusers/DailyActivities/DailyActivitiesList")
+const DailyActivitiesList = lazy(
+  () => import("pages/PCusers/DailyActivities/List"),
 );
-const DailyActivities = lazy(() =>
-  import("pages/PCusers/DailyActivities/DailyActivites")
+const CategoriesList = lazy(
+  () => import("pages/PCusers/DailyActivities/CategoriesList"),
 );
-const DailyActivitiesView = lazy(() =>
-  import("pages/PCusers/DailyActivities/DailyActivitiesView")
+const CreateUpdateActivities = lazy(
+  () => import("pages/PCusers/DailyActivities/Form"),
+);
+const SelectVillage = lazy(
+  () => import("pages/PCusers/DailyActivities/SelectVillage"),
+);
+const DailyActivitiesView = lazy(
+  () => import("pages/PCusers/DailyActivities/View"),
 );
 const CampList = lazy(() => import("pages/PCusers/camps/CampList"));
-const CampProfileView = lazy(() =>
-  import("pages/PCusers/camps/CampProfileView")
+const CampProfileView = lazy(
+  () => import("pages/PCusers/camps/CampProfileView"),
 );
-const CampLearnerList = lazy(() =>
-  import("pages/PCusers/camps/CampLearnerList")
+const CampLearnerList = lazy(
+  () => import("pages/PCusers/camps/CampLearnerList"),
 );
 const CampForm = lazy(() => import("pages/PCusers/camps/CampForm/Form"));
 const PcProfile = lazy(() => import("pages/PCusers/Profile/PcProfile"));
-const PcProfileDetails = lazy(() =>
-  import("pages/PCusers/Profile/PcProfileDetails")
+const PcProfileDetails = lazy(
+  () => import("pages/PCusers/Profile/PcProfileDetails"),
 );
 const EditProfile = lazy(() => import("pages/PCusers/Profile/EditProfile"));
 const PrerakList = lazy(() => import("pages/PCusers/Prerak/PrerakList"));
 
-const PrerakProfileView = lazy(() =>
-  import("pages/PCusers/Prerak/PrerakProfileView")
+const PrerakProfileView = lazy(
+  () => import("pages/PCusers/Prerak/PrerakProfileView"),
 );
 const PrerakProfile = lazy(() => import("pages/PCusers/Prerak/PrerakProfile"));
 const LearnerList = lazy(() => import("pages/PCusers/Learner/LearnerList"));
-const LearnerProfileView = lazy(() =>
-  import("pages/PCusers/Learner/LearnerProfileView")
+const LearnerProfileView = lazy(
+  () => import("pages/PCusers/Learner/LearnerProfileView"),
 );
-const LearnerListView = lazy(() =>
-  import("pages/PCusers/Learner/LearnerListView")
+const LearnerListView = lazy(
+  () => import("pages/PCusers/Learner/LearnerListView"),
 );
-const LearnerBasicDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerBasicDetails")
+const LearnerBasicDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerBasicDetails"),
 );
-const LearnerDocumentDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerDocumentDetails")
+const LearnerDocumentDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerDocumentDetails"),
 );
-const LearnerAddAddress = lazy(() =>
-  import("pages/PCusers/Learner/LearnerAddAddress")
+const LearnerAddAddress = lazy(
+  () => import("pages/PCusers/Learner/LearnerAddAddress"),
 );
-const LearnerEducationDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerEducationDetails")
+const LearnerEducationDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerEducationDetails"),
 );
-const LearnerEnrollMentDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerEnrollMentDetails")
+const LearnerEnrollMentDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerEnrollMentDetails"),
 );
-const LearnerPCRDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerPCRDetails")
+const LearnerPCRDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerPCRDetails"),
 );
-const LearnerJourneyDetails = lazy(() =>
-  import("pages/PCusers/Learner/LearnerJourneyDetails")
+const LearnerJourneyDetails = lazy(
+  () => import("pages/PCusers/Learner/LearnerJourneyDetails"),
 );
-const PcProfilePhoto = lazy(() =>
-  import("pages/PCusers/Profile/PcProfilePhoto")
+const PcProfilePhoto = lazy(
+  () => import("pages/PCusers/Profile/PcProfilePhoto"),
 );
 
 // PC users Routes
 
 export default [
-  { path: "/", component: PcDashboard },
-  { path: "*", component: PcDashboard },
   {
-    path: "/Dashboard",
-    component: PcDashboard,
+    path: "/select-village",
+    component: SelectVillage,
   },
   {
-    path: "/dailyactivities/list",
+    path: "/daily-activities/categories",
+    component: CategoriesList,
+  },
+  {
+    path: "/daily-activities/:category/list",
     component: DailyActivitiesList,
   },
   {
-    path: "/dailyactivities/:activity/:step",
-    component: DailyActivities,
+    path: "/daily-activities/:category/:activity/create",
+    component: CreateUpdateActivities,
   },
   {
-    path: "/dailyactivities/:activity/view",
+    path: "/daily-activities/:category/:activity/:id/edit",
+    component: CreateUpdateActivities,
+  },
+  {
+    path: "/daily-activities/:category/:activity/view",
     component: DailyActivitiesView,
   },
   {
@@ -172,7 +184,6 @@ export default [
     path: "/profile/:id/upload/1",
     component: PcProfilePhoto,
   },
-
   { path: "/", component: PcDashboard },
   { path: "*", component: PcDashboard },
 ];
