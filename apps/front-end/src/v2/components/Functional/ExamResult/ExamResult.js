@@ -12,6 +12,7 @@ import { HStack, VStack, Radio, Alert, Modal, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
 import { ExamChipStatus } from "component/Chip";
 import Chip from "component/BeneficiaryStatus";
+import PropTypes from "prop-types";
 
 const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -274,3 +275,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 };
 
 export default ExamResult;
+
+ExamResult.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
