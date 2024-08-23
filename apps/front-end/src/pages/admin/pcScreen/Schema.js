@@ -40,7 +40,8 @@ export const schema1 = {
     state: {
       title: "STATE",
       type: "string",
-      format: "select",
+      // format: "select",
+      readOnly: true,
     },
     district: {
       title: "DISTRICT",
@@ -58,7 +59,7 @@ export const schema1 = {
       format: "select",
     },
     address: {
-      title: "DETAILED_ADDRESS",
+      title: "ADDRESS_DETAILS",
       type: ["string", "null"],
     },
   },
