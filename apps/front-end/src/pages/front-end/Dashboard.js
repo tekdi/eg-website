@@ -351,30 +351,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     async function fetchData() {
       if (!facilitator?.notLoaded === true) {
         // ...async operations
-        const res = objProps(facilitator);
+        const resp = objProps(facilitator);
         setProgress(
           arrList(
             {
-              ...res,
+              ...resp,
               qua_name: facilitator?.qualifications?.qualification_master?.name,
             },
             fieldsArr,
           ),
         );
         //check exist user registered
+        setLoading(true);
         try {
-          setLoading(true);
-          let onboardingURLData = await getOnboardingURLData();
-          setProgramData(onboardingURLData?.programData);
-          setCohortData(onboardingURLData?.cohortData);
           //get program id and store in localstorage
-
           const user_program_id = facilitator?.program_faciltators?.program_id;
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
           });
           setSelectedProgramData(program_data[0]);
           await setSelectedProgramId(program_data[0]);
+          //set program data and cohort data
+          let onboardingURLData = await getOnboardingURLData();
+          setProgramData(onboardingURLData?.programData);
+          setCohortData(onboardingURLData?.cohortData);
           //check mobile number with localstorage mobile no
           let mobile_no = facilitator?.mobile;
           let mobile_no_onboarding = await getOnboardingMobile();
@@ -398,8 +398,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             setIsUserRegisterExist(false);
             await showSelectCohort();
           }
+        } catch (e) {
+          console.log("Error ::", e);
+        } finally {
           setLoading(false);
-        } catch (e) {}
+        }
       }
     }
     fetchData();
