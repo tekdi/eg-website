@@ -379,8 +379,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           let mobile_no = facilitator?.mobile;
           let mobile_no_onboarding = await getOnboardingMobile();
           if (
-            mobile_no != null &&
             mobile_no_onboarding != null &&
+            mobile_no != null &&
             mobile_no == mobile_no_onboarding &&
             onboardingURLData?.cohortData
           ) {
@@ -392,8 +392,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             });
             setSelectedCohortData(cohort_data);
             await setSelectedAcademicYear(cohort_data);
-            localStorage.setItem("loadCohort", "yes");
             setIsUserRegisterExist(true);
+            localStorage.setItem("loadCohort", "yes");
           } else {
             setIsUserRegisterExist(false);
             await showSelectCohort();
