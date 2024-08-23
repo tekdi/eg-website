@@ -21,9 +21,14 @@ const List = ({ userTokenInfo }) => {
 
   useEffect(() => {
     const init = async () => {
-      const { data: enums } = await enumRegistryService.listOfEnum();
-      setList(chunk(enums.PC_USER_ACTIVITY_CATEGORIES, 2));
-      setLoading(false);
+      try {
+        const { data: enums } = await enumRegistryService.listOfEnum();
+        setList(chunk(enums.PC_USER_ACTIVITY_CATEGORIES, 2));
+      } catch (error) {
+        console.error("Failed to fetch enums:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     init();
   }, []);
