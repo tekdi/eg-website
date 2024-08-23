@@ -105,7 +105,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(() => {
@@ -277,7 +277,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               id: fa_id,
             });
           const data = c_data?.data?.filter(
-            (eventItem) => eventItem?.params?.do_id?.length
+            (eventItem) => eventItem?.params?.do_id?.length,
           );
           setEvents(data);
         } catch (error) {
@@ -295,7 +295,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         (attendance) =>
           attendance.user_id == fa_id &&
           attendance.status == "present" &&
-          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
+          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD"),
       );
 
       if (data?.lms_test_tracking?.length > 0) {
@@ -316,8 +316,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       } else if (!newData?.event_started) {
         setExamButtonText(
           `${t("EVENT_NOT_IN_DURATION")} ${t("START_TIME")} ${beforeTime.format(
-            "hh:mm a"
-          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`
+            "hh:mm a",
+          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`,
         );
       } else if (isTodayAttendace?.length < 1) {
         setExamButtonText(t("TODAYS_ATTENDANCE_MISSING"));
@@ -386,8 +386,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               "aadhar_verified",
               "qualification_ids",
               "qua_name",
-            ]
-          )
+            ],
+          ),
         );
         //check exist user registered
         try {
@@ -471,7 +471,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
     if (key === "" || key === "vo_experience") {
       const expData = facilitator?.vo_experience?.filter(
-        (e) => e?.reference?.document_id
+        (e) => e?.reference?.document_id,
       );
       if (expData?.length > 0) {
         isAllow++;
@@ -545,7 +545,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
+        user_cohort_list?.data[0],
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -722,8 +722,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                                     attendance.status == "present" &&
                                     row.end_date ==
                                       moment(attendance.date_time).format(
-                                        "YYYY-MM-DD"
-                                      )
+                                        "YYYY-MM-DD",
+                                      ),
                                 );
                                 return attData.length > 0 ? "yes" : "no";
                               },
@@ -869,7 +869,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Stack>
               )}
               {["upload", ""].includes(
-                facilitator?.aadhaar_verification_mode
+                facilitator?.aadhaar_verification_mode,
               ) && (
                 <Stack space="3">
                   <CustomAlert
@@ -971,33 +971,30 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {/* Temp Comment */}
 
-          {
-            state_name === "RAJASTHAN" && (
-              <Stack bg="bgYellowColor.400" space="6" p={4}>
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("LEARNER_EXAMINATION")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.H3>
-                  {t("LEARNER_EXAMINATION_DETAILS")}
-                </FrontEndTypo.H3>
+          {state_name === "RAJASTHAN" && (
+            <Stack bg="bgYellowColor.400" space="6" p={4}>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("LEARNER_EXAMINATION")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3>
+                {t("LEARNER_EXAMINATION_DETAILS")}
+              </FrontEndTypo.H3>
 
-                <FrontEndTypo.Primarybutton
-                  width="100%"
-                  // onPress={(e) => navigate("/examattendance")}
-                  onPress={(e) => navigate("/examschedule")}
-                >
-                  {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
-                </FrontEndTypo.Primarybutton>
-              </Stack>
-            )
-            /* 
-          <DashboardCard
-            title={"LEARNER_EXAM_RESULTS"}
-            titleDetail={"LEARNER_EXAMINATION_DETAILS"}
-            primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
-            navigation={"/examresult"}
-          /> */
-          }
+              <FrontEndTypo.Primarybutton
+                width="100%"
+                // onPress={(e) => navigate("/examattendance")}
+                onPress={(e) => navigate("/examschedule")}
+              >
+                {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+              </FrontEndTypo.Primarybutton>
+              <DashboardCard
+                title={"LEARNER_EXAM_RESULTS"}
+                titleDetail={"LEARNER_EXAMINATION_DETAILS"}
+                primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
+                navigation={"/examresult"}
+              />
+            </Stack>
+          )}
           {/* Temp Comment  End*/}
         </VStack>
       </VStack>
