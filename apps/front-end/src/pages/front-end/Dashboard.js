@@ -24,7 +24,6 @@ import {
   CheckIcon,
   CloseIcon,
   HStack,
-  Image,
   Modal,
   Select,
   Stack,
@@ -46,7 +45,6 @@ import {
   getIndexedDBItem,
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
-import DashboardCard from "component/common_components/DashboardCard";
 
 const styles = {
   inforBox: {
@@ -65,6 +63,107 @@ const styles = {
   },
 };
 
+const CertificationStatus = ({
+  isEventActive,
+  examButtonText,
+  certificateData,
+  floatValue,
+  events,
+  setExamEvent,
+  fa_id,
+  t,
+}) => {
+  const renderContent = () => {
+    if (isEventActive) {
+      return (
+        <AdminTypo.H3 color="textGreyColor.500">{examButtonText}</AdminTypo.H3>
+      );
+    }
+
+    if (certificateData?.certificate_status === null) {
+      return (
+        <AdminTypo.H3 color="textGreyColor.500">
+          {t("CERTIFICATION_IS_PENDING")}
+        </AdminTypo.H3>
+      );
+    }
+
+    if (certificateData?.certificate_status === false) {
+      if (certificateData?.score >= floatValue) {
+        return (
+          <AdminTypo.H3 color="textGreyColor.500">
+            {t("TRAINING_INCOMPLETE")}{" "}
+            {certificateData?.score?.toFixed(2) + "%"}
+          </AdminTypo.H3>
+        );
+      }
+      return (
+        <AdminTypo.H3 color="textGreyColor.500">
+          {t("TRAINING_NOT_PASSED")}
+        </AdminTypo.H3>
+      );
+    }
+
+    if (certificateData?.certificate_status === true) {
+      return (
+        <AdminTypo.H3 color="textGreyColor.500">
+          {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}{" "}
+          {certificateData.score?.toFixed(2) + "%"}
+        </AdminTypo.H3>
+      );
+    }
+
+    if (events) {
+      return (
+        <TableCard
+          setExamEvent={setExamEvent}
+          pagination
+          data={events}
+          columns={[
+            {
+              name: `${t("EVENT_ID")} / ${t("NAME")}`,
+              selector: (row) => `${row?.id} / ${row?.name}`,
+            },
+            {
+              name: t("ATTENDANCE"),
+              selector: (row) => {
+                const attData = row?.attendances?.filter(
+                  (attendance) =>
+                    attendance.user_id == fa_id &&
+                    attendance.status == "present" &&
+                    row.end_date ==
+                      moment(attendance.date_time).format("YYYY-MM-DD"),
+                );
+                return attData.length > 0 ? "yes" : "no";
+              },
+            },
+            {
+              name: t("EXAM_START_STATUS"),
+              selector: (row) =>
+                row?.params?.start_exam == "yes" ? "yes" : "no",
+            },
+          ]}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  return <VStack width={"100%"}>{renderContent()}</VStack>;
+};
+
+CertificationStatus.propTypes = {
+  t: PropTypes.func,
+  isEventActive : PropTypes.bool,
+  examButtonText : PropTypes.string,
+  certificateData : PropTypes.object,
+  floatValue : PropTypes.number,
+  events : PropTypes.func,
+  setExamEvent : PropTypes.func,
+  fa_id : PropTypes.number,
+};
+
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -77,7 +176,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = useState();
   const { id } = userTokenInfo?.authUser || {};
   const [examButtonText, setExamButtonText] = useState("");
-  const [prerak_status, SetPrerak_status] = useState("");
+  const [prerak_status, setPrerak_status] = useState("");
   const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -105,11 +204,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(() => {
-    SetPrerak_status(localStorage.getItem("status"));
+    setPrerak_status(localStorage.getItem("status"));
   }, [localStorage.getItem("status")]);
 
   const saveDataToIndexedDB = async () => {
@@ -186,7 +285,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     ) {
       await setIpUserInfo(fa_id);
       const data = await setPrerakOfflineInfo(fa_id);
-      SetPrerak_status(data?.program_faciltators?.status);
+      setPrerak_status(data?.program_faciltators?.status);
     }
   };
 
@@ -277,7 +376,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               id: fa_id,
             });
           const data = c_data?.data?.filter(
-            (eventItem) => eventItem?.params?.do_id?.length
+            (eventItem) => eventItem?.params?.do_id?.length,
           );
           setEvents(data);
         } catch (error) {
@@ -295,7 +394,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         (attendance) =>
           attendance.user_id == fa_id &&
           attendance.status == "present" &&
-          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
+          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD"),
       );
 
       if (data?.lms_test_tracking?.length > 0) {
@@ -316,8 +415,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       } else if (!newData?.event_started) {
         setExamButtonText(
           `${t("EVENT_NOT_IN_DURATION")} ${t("START_TIME")} ${beforeTime.format(
-            "hh:mm a"
-          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`
+            "hh:mm a",
+          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`,
         );
       } else if (isTodayAttendace?.length < 1) {
         setExamButtonText(t("TODAYS_ATTENDANCE_MISSING"));
@@ -347,19 +446,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [academicYear]);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // ...async operations
-  //     const getCertificate = await testRegistryService.getCertificate({
-  //       id,
-  //     });
-  //     if (getCertificate?.data?.length > 0) {
-  //       setCertificateData(getCertificate?.data?.[0]);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
   useEffect(() => {
     async function fetchData() {
       if (!facilitator?.notLoaded === true) {
@@ -386,8 +472,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               "aadhar_verified",
               "qualification_ids",
               "qua_name",
-            ]
-          )
+            ],
+          ),
         );
         //check exist user registered
         try {
@@ -471,7 +557,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
     if (key === "" || key === "vo_experience") {
       const expData = facilitator?.vo_experience?.filter(
-        (e) => e?.reference?.document_id
+        (e) => e?.reference?.document_id,
       );
       if (expData?.length > 0) {
         isAllow++;
@@ -524,13 +610,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         academic_year_id: parseInt(onboardingURLData?.cohortId),
         parent_ip: onboardingURLData?.id,
       });
-    if (register_exist_user?.success == true) {
+    if (register_exist_user?.success) {
       try {
         await removeOnboardingURLData();
         await removeOnboardingMobile();
         setIsUserRegisterExist(false);
         window.location.reload();
-      } catch (e) {}
+      } catch (e) {
+        console.error(e); // Optionally log the error for debugging
+      }
     } else {
       alert(register_exist_user?.message);
     }
@@ -545,7 +633,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
+        user_cohort_list?.data[0],
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -578,16 +666,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [isOnline]);
 
-  const checkStateAndYear = (state_name, academic_year_name) => {
-    if (
-      state_name === "RAJASTHAN" &&
-      (academic_year_name.includes("2023-2024") ||
-        academic_year_name.includes("2023-24"))
-    ) {
-      return true;
-    }
-    return false;
-  };
+  const checkStateAndYear = (state_name, academic_year_name) =>
+    state_name === "RAJASTHAN" &&
+    (academic_year_name.includes("2023-2024") ||
+      academic_year_name.includes("2023-24"));
 
   const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
   return (
@@ -679,64 +761,16 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack width={"100%"}>
-                    {isEventActive ? (
-                      <AdminTypo.H3 color="textGreyColor.500">
-                        {examButtonText}
-                      </AdminTypo.H3>
-                    ) : certificateData?.certificate_status === null ? (
-                      <AdminTypo.H3 color="textGreyColor.500">
-                        {t("CERTIFICATION_IS_PENDING")}
-                      </AdminTypo.H3>
-                    ) : certificateData?.certificate_status === false &&
-                      certificateData?.score >= floatValue ? (
-                      <AdminTypo.H3 color="textGreyColor.500">
-                        {t(`TRAINING_INCOMPLETE`)}
-                        {certificateData?.score?.toFixed(2) + "%"}
-                      </AdminTypo.H3>
-                    ) : certificateData?.certificate_status === true ? (
-                      <AdminTypo.H3 color="textGreyColor.500">
-                        {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
-                        {certificateData.score?.toFixed(2) + "%"}
-                      </AdminTypo.H3>
-                    ) : certificateData?.certificate_status === false ? (
-                      <AdminTypo.H3 color="textGreyColor.500">
-                        {t("TRAINING_NOT_PASSED")}
-                      </AdminTypo.H3>
-                    ) : (
-                      events && (
-                        <TableCard
-                          setExamEvent={setExamEvent}
-                          pagination
-                          data={events}
-                          columns={[
-                            {
-                              name: `${t("EVENT_ID")} / ${t("NAME")}`,
-                              selector: (row) => `${row?.id} / ${row?.name}`,
-                            },
-                            {
-                              name: t("ATTENDANCE"),
-                              selector: (row) => {
-                                const attData = row?.attendances?.filter(
-                                  (attendance) =>
-                                    attendance.user_id == fa_id &&
-                                    attendance.status == "present" &&
-                                    row.end_date ==
-                                      moment(attendance.date_time).format(
-                                        "YYYY-MM-DD"
-                                      )
-                                );
-                                return attData.length > 0 ? "yes" : "no";
-                              },
-                            },
-                            {
-                              name: t("EXAM_START_STATUS"),
-                              selector: (row) =>
-                                row?.params?.start_exam == "yes" ? "yes" : "no",
-                            },
-                          ]}
-                        />
-                      )
-                    )}
+                    <CertificationStatus
+                      isEventActive={isEventActive}
+                      examButtonText={examButtonText}
+                      certificateData={certificateData}
+                      floatValue={floatValue}
+                      events={events}
+                      setExamEvent={setExamEvent}
+                      fa_id={fa_id}
+                      t={t}
+                    />
                   </VStack>
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
@@ -762,7 +796,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {isEventActive?.take_test == true && (
+                    {isEventActive?.take_test && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={startTest}
@@ -869,7 +903,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Stack>
               )}
               {["upload", ""].includes(
-                facilitator?.aadhaar_verification_mode
+                facilitator?.aadhaar_verification_mode,
               ) && (
                 <Stack space="3">
                   <CustomAlert
@@ -923,42 +957,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.H5>
                 </VStack>
               </HStack>
-              {/* {isDocumentUpload("experience") && (
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
-                      {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
-                      {t("THIS_CAN_BE_LETTER_OF")}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              )} */}
-              {/* {isDocumentUpload("vo_experience") && (
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
-                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
-                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              )} */}
+
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"
@@ -1254,6 +1253,11 @@ const InfoBox = ({ status, progress }) => {
   return infoBox;
 };
 
+Dashboard.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};
+
 const TableCard = ({ data, columns, setExamEvent }) => {
   const { t } = useTranslation();
 
@@ -1301,7 +1305,9 @@ const TableCard = ({ data, columns, setExamEvent }) => {
     </VStack>
   );
 };
-Dashboard.propTypes = {
-  userTokenInfo: PropTypes.any,
-  footerLinks: PropTypes.any,
+
+TableCard.propTypes = {
+  columns: PropTypes.array,
+  data: PropTypes.array.isRequired,
+  setExamEvent: PropTypes.func,
 };

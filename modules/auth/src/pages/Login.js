@@ -84,6 +84,7 @@ export default function Login() {
   const [language, setLanguage] = React.useState();
   useEffect(() => {
     setLanguage(localStorage.getItem("lang") || "en");
+    console.log(width);
   }, []);
 
   const validate = () => {
@@ -104,10 +105,7 @@ export default function Login() {
 
     setErrors(arr);
 
-    if (arr.username || arr.password) {
-      return false;
-    }
-    return true;
+    return !(arr.username || arr.password);
   };
 
   const handleLogin = async () => {

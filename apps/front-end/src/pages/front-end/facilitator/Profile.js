@@ -10,9 +10,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
+import PropTypes from "prop-types";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
-  const { id } = userTokenInfo?.authUser;
+  const { id } = userTokenInfo?.authUser ?? {};
   const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -267,3 +268,9 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+Profile.propTypes = {
+  userTokenInfo : PropTypes.func,
+  footerLinks : PropTypes.func
+};
+

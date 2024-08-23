@@ -1,36 +1,21 @@
-import {
-  Center,
-  VStack,
-  Image,
-  HStack,
-  Text,
-  Input,
-  Stack,
-  Box,
-  Button,
-  Pressable,
-  Heading,
-  Flex,
-} from "native-base";
-import React, { useEffect, useState, useRef } from "react";
 import { FrontEndTypo } from "@shiksha/common-lib";
+import { Box, HStack, Image, Text, VStack } from "native-base";
+import { useEffect, useRef } from "react";
 
-import Logo from "../../../assets/Images/Logo/Logo.png";
-import prerakDutiesImage1 from "../../../assets/Images/PrerakDuties/img1.png";
+import "react-multi-carousel/lib/styles.css";
+import { ImageBackground } from "react-native-web";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import CarouselBG from "../../../assets/Images/PrerakDuties/CarouselBG.svg";
+import prerakDutiesImage1 from "../../../assets/Images/PrerakDuties/img1.png";
 import prerakDutiesImage2 from "../../../assets/Images/PrerakDuties/img2.png";
 import prerakDutiesImage3 from "../../../assets/Images/PrerakDuties/img3.png";
 import prerakDutiesImage4 from "../../../assets/Images/PrerakDuties/img4.png";
 import prerakDutiesImage5 from "../../../assets/Images/PrerakDuties/img5.png";
 import prerakDutiesImage6 from "../../../assets/Images/PrerakDuties/img6.png";
 import { stylesheet } from "./PrerakDutiesSlider.Styles";
-import { head } from "lodash";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { ImageBackground } from "react-native-web";
+import PropTypes from "prop-types";
 
 const header = [
   { text: "PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS", uri: prerakDutiesImage1 },
@@ -117,7 +102,7 @@ export default function PrerakDutiesSlider({
         >
           {header.map((item) => {
             return (
-              <HStack>
+              <HStack key={item}>
                 <VStack
                   mx={"auto"}
                   maxW={"317px"}
@@ -189,3 +174,10 @@ export default function PrerakDutiesSlider({
     </VStack>
   );
 }
+
+PrerakDutiesSlider.propTypes = {
+  t: PropTypes.func,
+  showApplyNow: PropTypes.func,
+  currentImage: PropTypes.string,
+  setCurrentImage: PropTypes.string,
+};
