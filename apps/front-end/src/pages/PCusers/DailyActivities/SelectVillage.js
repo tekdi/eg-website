@@ -20,6 +20,7 @@ import {
   widgets,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./MarkActivitySchema";
+import { setBlock, setDistric, setVilage } from "utils/localHelper";
 
 const App = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -46,122 +47,22 @@ const App = ({ userTokenInfo }) => {
   }, [formData]);
 
   const fetchDistricts = async () => {
-    try {
-      const { data } = await PcuserService.getPcProfile();
-      let newSchema = schema1;
-      if (newSchema?.properties?.district) {
-        newSchema = await setDistric({
-          schemaData: newSchema,
-          state: data?.program_users?.programs?.state?.state_name,
-          district: formData?.district,
-          block: formData?.block,
-        });
-        setSchema(newSchema);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.log("Error in fetching district", error);
-    }
-  };
-
-  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema1?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema1["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema1["properties"]["block"]) {
-        newSchema = await setBlock({
-          gramp,
-          state,
-          district,
-          block,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema1["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema1["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-
-    if (schema1?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-        state: "RAJASTHAN",
-        // state: programSelected?.state_name,
-      });
-      if (schema1["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-
-      newSchema = await setVilage({
-        state,
-        district,
-        block,
-        gramp: "null",
+    // try {
+    const { data } = await PcuserService.getPcProfile();
+    let newSchema = schema1;
+    if (newSchema?.properties?.district) {
+      newSchema = await setDistric({
         schemaData: newSchema,
+        state: data?.program_users?.programs?.state?.state_name,
+        district: formData?.district,
+        block: formData?.block,
       });
       setSchema(newSchema);
-      // }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema1["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
     }
-    return newSchema;
-  };
-
-  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema1?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-        // state: programSelected?.state_name,
-        state: "RAJASTHAN",
-        district: district,
-        gramp: gramp || "null",
-      });
-      if (schema1["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData?.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    return newSchema;
+    setLoading(false);
+    // } catch (error) {
+    //   console.log("Error in fetching district", error);
+    // }
   };
 
   const onChange = async (e, id) => {

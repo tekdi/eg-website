@@ -1,0 +1,190 @@
+import { geolocationRegistryService, getOptions } from "@shiksha/common-lib";
+
+/**
+ * Get districts based on the state and set the newSchema for the district select box
+ * @param {Object} param0 - options
+ * @param {string} param0.state - state code
+ * @param {string} param0.gramp - gram panchayat name
+ * @param {string} param0.district - district name
+ * @param {string} param0.block - block name
+ * @param {Object} param0.schemaData - newSchema data
+ * @returns {Object} - updated newSchema data
+ */
+export const setDistric = async ({
+  state,
+  gramp,
+  district,
+  block,
+  schemaData,
+  setSchema,
+}) => {
+  let newSchema = schemaData;
+  // if district is a form field and state is given, then set districts
+  if (newSchema?.properties?.district && state) {
+    const qData = await geolocationRegistryService.getDistricts({
+      name: state,
+    });
+    if (newSchema?.["properties"]?.["district"]) {
+      // set district options
+      newSchema = getOptions(newSchema, {
+        key: "district",
+        arr: qData?.districts,
+        title: "district_name",
+        value: "district_name",
+      });
+    }
+    if (newSchema?.["properties"]?.["block"]) {
+      // set block options
+      newSchema = await setBlock({
+        state,
+        gramp,
+        district,
+        block,
+        schemaData: newSchema,
+      });
+      // set the newSchema
+      if (typeof setSchema === "function") {
+        setSchema(newSchema);
+      } else {
+        return newSchema;
+      }
+    }
+  } else {
+    // if district is not a form field or state is not given, then reset district and block options
+    newSchema = getOptions(newSchema, { key: "district", arr: [] });
+    if (newSchema?.["properties"]?.["block"]) {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+    }
+    if (newSchema?.["properties"]?.["village"]) {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+    }
+    // set the newSchema
+    if (typeof setSchema === "function") {
+      setSchema(newSchema);
+    } else {
+      return newSchema;
+    }
+  }
+  return newSchema;
+};
+
+/**
+ * Get blocks based on the district and state and set the newSchema for the block select box
+ * @param {Object} param0 - options
+ * @param {string} param0.state - state code
+ * @param {string} param0.district - district name
+ * @param {string} param0.block - block name
+ * @param {string} param0.gramp - gram panchayat name
+ * @param {Object} param0.schemaData - newSchema data
+ * @returns {Object} - updated newSchema data
+ */
+export const setBlock = async ({
+  state,
+  district,
+  block,
+  gramp,
+  schemaData,
+  setSchema,
+}) => {
+  let newSchema = schemaData;
+  if (newSchema?.properties?.block && district) {
+    // get blocks based on the district and state
+    const qData = await geolocationRegistryService.getBlocks({
+      state: state,
+      name: district,
+    });
+    if (newSchema?.["properties"]?.["block"]) {
+      // set block options
+      newSchema = getOptions(newSchema, {
+        key: "block",
+        arr: qData?.blocks,
+        title: "block_name",
+        value: "block_name",
+      });
+    }
+    if (newSchema?.["properties"]?.["village"]) {
+      // set village options
+      newSchema = await setVilage({
+        block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
+        schemaData: newSchema,
+      });
+      // set the newSchema
+      if (typeof setSchema === "function") {
+        setSchema(newSchema);
+      } else {
+        return newSchema;
+      }
+    }
+  } else {
+    // if block is not a form field or district is not given, then reset block and village options
+    newSchema = getOptions(newSchema, { key: "block", arr: [] });
+    if (newSchema?.["properties"]?.["village"]) {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+    }
+    // set the newSchema
+    if (typeof setSchema === "function") {
+      setSchema(newSchema);
+    } else {
+      return newSchema;
+    }
+  }
+  return newSchema;
+};
+
+/**
+ * Set the newSchema for the village select box
+ * @param {Object} options - options
+ * @param {string} options.state - state code
+ * @param {string} options.district - district name
+ * @param {string} options.block - block name
+ * @param {string} options.gramp - gram panchayat name
+ * @param {Object} options.schemaData - newSchema data
+ * @returns {Object} - updated newSchema data
+ */
+export const setVilage = async ({
+  state,
+  district,
+  block,
+  gramp,
+  schemaData,
+  setSchema,
+}) => {
+  let newSchema = schemaData;
+  if (newSchema?.properties?.village && block) {
+    // get villages based on the block and district and state
+    const qData = await geolocationRegistryService.getVillages({
+      name: block,
+      state: state,
+      district: district,
+      gramp: gramp || "null",
+    });
+    if (newSchema?.["properties"]?.["village"]) {
+      // set village options
+      newSchema = getOptions(newSchema, {
+        key: "village",
+        arr: qData?.villages,
+        title: "village_ward_name",
+        value: "village_ward_name",
+      });
+    }
+    // set the newSchema
+    if (typeof setSchema === "function") {
+      setSchema(newSchema);
+    } else {
+      return newSchema;
+    }
+  } else {
+    // if village is not a form field or block is not given, then reset village options
+    newSchema = getOptions(newSchema, { key: "village", arr: [] });
+    // set the newSchema
+    if (typeof setSchema === "function") {
+      setSchema(newSchema);
+    } else {
+      return newSchema;
+    }
+  }
+  return newSchema;
+};

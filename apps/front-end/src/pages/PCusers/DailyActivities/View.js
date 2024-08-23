@@ -4,12 +4,12 @@ import {
   FrontEndTypo,
   PcuserService,
   jsonParse,
-  Breadcrumb,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
+import { PCUserBreadcrumb } from "./Form";
 
 function View({ userTokenInfo }) {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -57,24 +57,7 @@ function View({ userTokenInfo }) {
       loading={loading}
     >
       <VStack space="2" p={4}>
-        <Breadcrumb
-          _hstack={{ flexWrap: "wrap", pb: 4 }}
-          data={[
-            <FrontEndTypo.H1 key="1-b">
-              {t("DAILY_ACTIVITIES")}
-            </FrontEndTypo.H1>,
-            <FrontEndTypo.H2 key="2-b">
-              {t(
-                "PCUSER_ACTIVITY.PC_USER_ACTIVITY_CATEGORIES_" +
-                  category.replace("_ACTIVITY", ""),
-              )}
-            </FrontEndTypo.H2>,
-            <FrontEndTypo.H2 key="3-b" color="textGreyColor.700">
-              {t(`PCUSER_ACTIVITY.${category}_${activity.toUpperCase()}`)}
-            </FrontEndTypo.H2>,
-          ]}
-        />
-
+        <PCUserBreadcrumb {...{ category, activity, t }} />
         {activities.length > 0 ? (
           activities.map((item) => {
             return (

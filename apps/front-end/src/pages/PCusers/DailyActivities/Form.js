@@ -40,6 +40,24 @@ const uiSchema = {
   },
 };
 
+export const PCUserBreadcrumb = ({ category, activity, t }) => (
+  <Breadcrumb
+    _hstack={{ flexWrap: "wrap", pb: 4 }}
+    data={[
+      <FrontEndTypo.H1 key="1-b">{t("DAILY_ACTIVITIES")}</FrontEndTypo.H1>,
+      <FrontEndTypo.H2 key="2-b">
+        {t(
+          "PCUSER_ACTIVITY.PC_USER_ACTIVITY_CATEGORIES_" +
+            category.replace("_ACTIVITY", ""),
+        )}
+      </FrontEndTypo.H2>,
+      <FrontEndTypo.H2 key="3-b" color="textGreyColor.700">
+        {t(`PCUSER_ACTIVITY.${category}_${activity.toUpperCase()}`)}
+      </FrontEndTypo.H2>,
+    ]}
+  />
+);
+
 const DailyActivities = () => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
@@ -196,24 +214,7 @@ const DailyActivities = () => {
       }}
     >
       <VStack space="4" p="4" pb="90px" alignContent="center">
-        <Breadcrumb
-          _hstack={{ flexWrap: "wrap", pb: 4 }}
-          data={[
-            <FrontEndTypo.H1 key="1-b">
-              {t("DAILY_ACTIVITIES")}
-            </FrontEndTypo.H1>,
-            <FrontEndTypo.H2 key="2-b">
-              {t(
-                "PCUSER_ACTIVITY.PC_USER_ACTIVITY_CATEGORIES_" +
-                  category.replace("_ACTIVITY", ""),
-              )}
-            </FrontEndTypo.H2>,
-            <FrontEndTypo.H2 key="3-b" color="textGreyColor.700">
-              {t(`PCUSER_ACTIVITY.${category}_${activity.toUpperCase()}`)}
-            </FrontEndTypo.H2>,
-          ]}
-        />
-
+        <PCUserBreadcrumb {...{ category, activity, t }} />
         <Form
           key={schema}
           ref={formRef}
