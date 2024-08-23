@@ -24,6 +24,7 @@ import {
 import { getLanguage } from "v2/utils/Helper/JSHelper";
 import { useNavigate } from "react-router-dom";
 import { setBlock, setDistrict, setVillage } from "utils/localHelper";
+import { transformErrors } from "component/BaseInput";
 
 const PcAdd = ({ footerLinks }) => {
   const [lang] = useState(getLanguage());
@@ -128,22 +129,7 @@ const PcAdd = ({ footerLinks }) => {
     };
     return payload;
   };
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
+
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
@@ -235,7 +221,7 @@ const PcAdd = ({ footerLinks }) => {
             onChange,
             //onError,
             onSubmit,
-            transformErrors,
+            transformErrors: (errors) => transformErrors(errors, schema, t),
           }}
         >
           {error && (
