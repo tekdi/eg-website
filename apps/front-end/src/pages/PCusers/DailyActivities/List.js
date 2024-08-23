@@ -8,6 +8,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Pressable, VStack } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const List = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -33,10 +34,6 @@ const List = ({ userTokenInfo }) => {
 
   return (
     <Layout
-      loading={loading}
-      facilitator={userTokenInfo?.authUser || {}}
-      analyticsPageTitle={"HOME"}
-      pageTitle={t("HOME")}
       _appBar={{
         lang,
         setLang,
@@ -44,6 +41,10 @@ const List = ({ userTokenInfo }) => {
           navigate(`/daily-activities/categories`);
         },
       }}
+      loading={loading}
+      facilitator={userTokenInfo?.authUser || {}}
+      analyticsPageTitle={"LIST"}
+      pageTitle={t("PCUSER_ACTIVITY")}
     >
       <VStack space="4" p="4" alignContent="center">
         <FrontEndTypo.H1 py="4">
@@ -75,3 +76,7 @@ const List = ({ userTokenInfo }) => {
 };
 
 export default List;
+
+List.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

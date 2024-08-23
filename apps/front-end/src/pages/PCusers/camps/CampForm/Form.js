@@ -77,7 +77,7 @@ export default function App() {
       if (campDetails?.kit_received === null) {
         const { kit_received } = schemaData.properties;
         const required = schemaData?.required.filter((item) =>
-          ["kit_received"].includes(item)
+          ["kit_received"].includes(item),
         );
         const newSchema = {
           ...schemaData,
@@ -170,7 +170,7 @@ export default function App() {
 
       const facilities = {
         property_facilities: jsonParse(
-          campDetails?.properties?.property_facilities || "{}"
+          campDetails?.properties?.property_facilities || "{}",
         ),
       };
       setFormData(facilities);
@@ -189,7 +189,7 @@ export default function App() {
       });
     }
     if (schema?.properties?.district) {
-      await setDistric({
+      await setDistrict({
         schemaData: newSchema,
         state: programSelected?.state_name,
         district: formData?.district,
@@ -215,7 +215,7 @@ export default function App() {
         } else if (formData?.kit_received === "no") {
           const { kit_received } = schemaData.properties;
           const required = schemaData?.required.filter((item) =>
-            ["kit_received"].includes(item)
+            ["kit_received"].includes(item),
           );
           const newSchema = {
             ...schemaData,

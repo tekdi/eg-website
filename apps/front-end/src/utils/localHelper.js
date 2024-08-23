@@ -10,7 +10,7 @@ import { geolocationRegistryService, getOptions } from "@shiksha/common-lib";
  * @param {Object} param0.schemaData - newSchema data
  * @returns {Object} - updated newSchema data
  */
-export const setDistric = async ({
+export const setDistrict = async ({
   state,
   gramp,
   district,
@@ -104,7 +104,7 @@ export const setBlock = async ({
     }
     if (newSchema?.["properties"]?.["village"]) {
       // set village options
-      newSchema = await setVilage({
+      newSchema = await setVillage({
         block,
         state: state,
         district: district,
@@ -144,7 +144,7 @@ export const setBlock = async ({
  * @param {Object} options.schemaData - newSchema data
  * @returns {Object} - updated newSchema data
  */
-export const setVilage = async ({
+export const setVillage = async ({
   state,
   district,
   block,

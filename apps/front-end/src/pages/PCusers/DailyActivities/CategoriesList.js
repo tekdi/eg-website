@@ -11,6 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { HStack, Pressable, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const List = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -37,8 +38,8 @@ const List = ({ userTokenInfo }) => {
     <Layout
       loading={loading}
       facilitator={userTokenInfo?.authUser || {}}
-      analyticsPageTitle={"HOME"}
-      pageTitle={t("HOME")}
+      pageTitle={t("PCUSER_ACTIVITY")}
+      analyticsPageTitle={"CATEGORY"}
       _appBar={{
         lang,
         setLang,
@@ -90,3 +91,7 @@ const List = ({ userTokenInfo }) => {
 };
 
 export default List;
+
+List.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import {
   FrontEndTypo,
-  geolocationRegistryService,
-  getOptions,
   jsonParse,
   PCusers_layout as Layout,
   PcuserService,
@@ -20,7 +18,7 @@ import {
   widgets,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./MarkActivitySchema";
-import { setBlock, setDistric, setVilage } from "utils/localHelper";
+import { setBlock, setDistrict, setVillage } from "utils/localHelper";
 
 const App = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -47,22 +45,22 @@ const App = ({ userTokenInfo }) => {
   }, [formData]);
 
   const fetchDistricts = async () => {
-    // try {
-    const { data } = await PcuserService.getPcProfile();
-    let newSchema = schema1;
-    if (newSchema?.properties?.district) {
-      newSchema = await setDistric({
-        schemaData: newSchema,
-        state: data?.program_users?.programs?.state?.state_name,
-        district: formData?.district,
-        block: formData?.block,
-      });
-      setSchema(newSchema);
+    try {
+      const { data } = await PcuserService.getPcProfile();
+      let newSchema = schema1;
+      if (newSchema?.properties?.district) {
+        newSchema = await setDistrict({
+          schemaData: newSchema,
+          state: data?.program_users?.programs?.state?.state_name,
+          district: formData?.district,
+          block: formData?.block,
+        });
+        setSchema(newSchema);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log("Error in fetching district", error);
     }
-    setLoading(false);
-    // } catch (error) {
-    //   console.log("Error in fetching district", error);
-    // }
   };
 
   const onChange = async (e, id) => {
@@ -79,7 +77,7 @@ const App = ({ userTokenInfo }) => {
     }
 
     if (id === "root_block") {
-      await setVilage({
+      await setVillage({
         block: data?.block,
         district: data?.district,
         schemaData: schema,

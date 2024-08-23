@@ -10,7 +10,7 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import {
   onError,
