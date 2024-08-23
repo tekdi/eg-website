@@ -119,18 +119,16 @@ function View({ userTokenInfo }) {
           </HStack>
         )}
 
-        <VStack alignSelf={"center"}>
-          <FrontEndTypo.H4
+        <VStack alignSelf={"center"} pt={4}>
+          <FrontEndTypo.Primarybutton
             underline
             color="#0500FF"
             onPress={() =>
               navigate(`/daily-activities/${category}/${activity}/create`)
             }
           >
-            {activities.length > 0
-              ? t("ADD_ACTIVITY_FOR_ANOTHER_VILLAGE")
-              : t("ADD_ACTIVITY")}
-          </FrontEndTypo.H4>
+            {t("ADD_ACTIVITY")}
+          </FrontEndTypo.Primarybutton>
         </VStack>
       </VStack>
     </Layout>

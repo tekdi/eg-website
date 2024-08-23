@@ -208,6 +208,23 @@ const DailyActivities = () => {
     setIsDisable(false);
   };
 
+  const checkActivites = async () => {
+    const { village } = JSON.parse(localStorage.getItem("activityAddress"), {});
+    const payload = {
+      page: "1",
+      limit: "100",
+      village,
+      type: activity,
+      date: moment().format("YYYY-MM-DD"),
+    };
+    const data = await PcuserService.activitiesDetails(payload);
+    if (_.isEmpty(data?.data)) {
+      navigate(`/daily-activities/${category}/list`);
+    } else {
+      navigate(`/daily-activities/${category}/${activity}/view`);
+    }
+  };
+
   return (
     <Layout
       loading={loading}
@@ -215,7 +232,7 @@ const DailyActivities = () => {
         lang,
         setLang,
         onPressBackButton: (e) => {
-          navigate(`/daily-activities/${category}/${activity}/view`);
+          checkActivites();
         },
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
@@ -252,7 +269,7 @@ const DailyActivities = () => {
                 }
               }}
             >
-              {t("ADD_ONE_ACTIVITY")}
+              {t("SAVE_ACTIVITY")}
             </FrontEndTypo.Primarybutton>
           </HStack>
         </Form>

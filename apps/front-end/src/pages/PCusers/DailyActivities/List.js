@@ -4,11 +4,13 @@ import {
   CardComponent,
   FrontEndTypo,
   enumRegistryService,
+  PcuserService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { Pressable, VStack } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
+import moment from "moment";
 
 const List = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -32,6 +34,23 @@ const List = ({ userTokenInfo }) => {
     init();
   }, []);
 
+  const getActivites = async (category, item) => {
+    const { village } = JSON.parse(localStorage.getItem("activityAddress"), {});
+    const payload = {
+      page: "1",
+      limit: "100",
+      village,
+      type: item?.value,
+      date: moment().format("YYYY-MM-DD"),
+    };
+    const data = await PcuserService.activitiesDetails(payload);
+    if (_.isEmpty(data?.data)) {
+      navigate(`/daily-activities/${category}/${item?.value}/create`);
+    } else {
+      navigate(`/daily-activities/${category}/${item?.value}/view`);
+    }
+  };
+
   return (
     <Layout
       _appBar={{
@@ -54,9 +73,7 @@ const List = ({ userTokenInfo }) => {
           return (
             <Pressable
               flex={1}
-              onPress={async () => {
-                navigate(`/daily-activities/${category}/${item?.value}/view`);
-              }}
+              onPress={() => getActivites(category, item)}
               key={item}
             >
               <CardComponent

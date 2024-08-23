@@ -1,34 +1,31 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  AdminTypo,
   AdminLayout,
+  AdminTypo,
+  authRegistryService,
+  Breadcrumb,
   CardComponent,
   IconByName,
-  organisationService,
-  Breadcrumb,
+  ImageView,
   PcuserService,
-  authRegistryService,
 } from "@shiksha/common-lib";
+import Chip from "component/Chip";
 import {
-  HStack,
-  VStack,
   Box,
-  Select,
-  Pressable,
-  Modal,
   Button,
   FormControl,
+  HStack,
   Input,
+  Modal,
   useToast,
+  VStack,
 } from "native-base";
-import Chip, { ChipStatus } from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import AssignedList from "./AssignedList";
-import DailyActivityList from "./DailyActivityList";
 
-import DatePicker from "../../../v2/components/Static/FormBaseInput/DatePicker";
 import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
+import DatePicker from "../../../v2/components/Static/FormBaseInput/DatePicker";
 
 function View() {
   const { t } = useTranslation();
@@ -143,10 +140,15 @@ function View() {
 
             <Chip
               textAlign="center"
+              key={pcData?.id}
               lineHeight="15px"
-              label={`${pcData?.first_name} ${pcData?.middle_name || ""}  ${
-                pcData?.last_name || ""
-              }`}
+              label={[
+                pcData?.first_name,
+                pcData?.middle_name,
+                pcData?.last_name,
+              ]
+                .filter(Boolean)
+                .join(" ")}
             />,
           ]}
         />
@@ -333,7 +335,10 @@ function View() {
                     </tr>
                     {dailyActivities?.map((item, index) => {
                       return (
-                        <tr style={{ textAlign: "center", margin: "10px 0 " }}>
+                        <tr
+                          style={{ textAlign: "center", margin: "10px 0 " }}
+                          key={index}
+                        >
                           <td>{t(item?.type)}</td>
                           <td>{item?.description}</td>
                           <td>{t("COMPLETED")}</td>
