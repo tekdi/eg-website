@@ -23,7 +23,7 @@ import {
   CustomR,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
-import { transformErrors } from "component/BaseInput.js";
+import { scrollToField, transformErrors } from "component/BaseInput.js";
 import PropTypes from "prop-types";
 
 // App
@@ -169,9 +169,6 @@ export default function ContactDetailsEdit({ userTokenInfo }) {
       case "root_mobile": {
         if (!validatePhoneNumber(data?.mobile)) {
           newErrors.mobile = { __errors: [t("PLEASE_ENTER_VALID_NUMBER")] };
-          setMobileConditon(false);
-        } else {
-          setMobileConditon(true);
         }
         break;
       }
@@ -223,19 +220,12 @@ export default function ContactDetailsEdit({ userTokenInfo }) {
 
   const onError = (data) => {
     if (data[0]) {
-      const key = data[0]?.property?.slice(1);
+      const key = data[0]?.property;
       scrollToField({ property: key });
     }
   };
 
   const onSubmit = async (data) => {
-    console.log(
-      "hello",
-      formData?.mobile != formData?.alternative_mobile_number,
-      "&&",
-      Object.keys(errors || {}).length < 1,
-      errors,
-    );
     if (formData?.mobile == formData?.alternative_mobile_number) {
       const newErrors = {
         alternative_mobile_number: {
@@ -257,7 +247,7 @@ export default function ContactDetailsEdit({ userTokenInfo }) {
       }
     }
   };
-  console.log(userTokenInfo);
+
   return (
     <Layout
       _appBar={{
