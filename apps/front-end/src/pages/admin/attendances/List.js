@@ -10,7 +10,6 @@ import moment from "moment";
 import { HStack, Image, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -120,7 +119,6 @@ function Table() {
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   useEffect(async () => {
     setLoading(false);
