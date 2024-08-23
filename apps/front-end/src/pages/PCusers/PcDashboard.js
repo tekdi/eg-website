@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  PCusers_layout as Layout,
-  FrontEndTypo,
-  PcuserService,
-} from "@shiksha/common-lib";
+import { PCusers_layout as Layout, FrontEndTypo } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { HStack, Image, VStack } from "native-base";
 import DashboardCard from "component/common_components/DashboardCard";
+import PropTypes from "prop-types";
 
 const PcDashboard = ({ userTokenInfo }) => {
   const [loading, setLoading] = useState(true);
@@ -81,3 +78,7 @@ const PcDashboard = ({ userTokenInfo }) => {
 };
 
 export default PcDashboard;
+
+PcDashboard.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

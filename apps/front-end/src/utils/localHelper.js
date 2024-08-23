@@ -19,53 +19,47 @@ export const setDistrict = async ({
   setSchema,
 }) => {
   let newSchema = schemaData;
-  // if district is a form field and state is given, then set districts
-  if (newSchema?.properties?.district && state) {
+  const hasDistrict = newSchema?.properties?.district;
+  const hasBlock = newSchema?.properties?.block;
+  const hasVillage = newSchema?.properties?.village;
+
+  if (state && hasDistrict) {
     const qData = await geolocationRegistryService.getDistricts({
       name: state,
     });
-    if (newSchema?.["properties"]?.["district"]) {
-      // set district options
-      newSchema = getOptions(newSchema, {
-        key: "district",
-        arr: qData?.districts,
-        title: "district_name",
-        value: "district_name",
-      });
-    }
-    if (newSchema?.["properties"]?.["block"]) {
-      // set block options
-      newSchema = await setBlock({
-        state,
-        gramp,
-        district,
-        block,
-        schemaData: newSchema,
-      });
-      // set the newSchema
-      if (typeof setSchema === "function") {
-        setSchema(newSchema);
-      } else {
-        return newSchema;
-      }
-    }
-  } else {
-    // if district is not a form field or state is not given, then reset district and block options
+    newSchema = getOptions(newSchema, {
+      key: "district",
+      arr: qData?.districts,
+      title: "district_name",
+      value: "district_name",
+    });
+  }
+
+  if (hasBlock) {
+    newSchema = await setBlock({
+      state,
+      gramp,
+      district,
+      block,
+      schemaData: newSchema,
+    });
+  }
+
+  if (!state || !hasDistrict) {
     newSchema = getOptions(newSchema, { key: "district", arr: [] });
-    if (newSchema?.["properties"]?.["block"]) {
+    if (hasBlock) {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
     }
-    if (newSchema?.["properties"]?.["village"]) {
+    if (hasVillage) {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
     }
-    // set the newSchema
-    if (typeof setSchema === "function") {
-      setSchema(newSchema);
-    } else {
-      return newSchema;
-    }
   }
-  return newSchema;
+
+  if (typeof setSchema === "function") {
+    setSchema(newSchema);
+  } else {
+    return newSchema;
+  }
 };
 
 /**
@@ -87,44 +81,43 @@ export const setBlock = async ({
   setSchema,
 }) => {
   let newSchema = schemaData;
-  if (newSchema?.properties?.block && district) {
-    // get blocks based on the district and state
+
+  const hasBlock = newSchema?.properties?.block;
+  const hasVillage = newSchema?.properties?.village;
+
+  if (district && hasBlock) {
     const qData = await geolocationRegistryService.getBlocks({
-      state: state,
+      state,
       name: district,
     });
-    if (newSchema?.["properties"]?.["block"]) {
-      // set block options
-      newSchema = getOptions(newSchema, {
-        key: "block",
-        arr: qData?.blocks,
-        title: "block_name",
-        value: "block_name",
-      });
+    newSchema = getOptions(newSchema, {
+      key: "block",
+      arr: qData?.blocks,
+      title: "block_name",
+      value: "block_name",
+    });
+  }
+
+  if (hasVillage) {
+    newSchema = await setVillage({
+      block,
+      state,
+      district,
+      gramp: gramp || "null",
+      schemaData: newSchema,
+    });
+    if (typeof setSchema === "function") {
+      setSchema(newSchema);
+    } else {
+      return newSchema;
     }
-    if (newSchema?.["properties"]?.["village"]) {
-      // set village options
-      newSchema = await setVillage({
-        block,
-        state: state,
-        district: district,
-        gramp: gramp || "null",
-        schemaData: newSchema,
-      });
-      // set the newSchema
-      if (typeof setSchema === "function") {
-        setSchema(newSchema);
-      } else {
-        return newSchema;
-      }
-    }
-  } else {
-    // if block is not a form field or district is not given, then reset block and village options
+  }
+
+  if (!district || !hasBlock) {
     newSchema = getOptions(newSchema, { key: "block", arr: [] });
-    if (newSchema?.["properties"]?.["village"]) {
+    if (hasVillage) {
       newSchema = getOptions(newSchema, { key: "village", arr: [] });
     }
-    // set the newSchema
     if (typeof setSchema === "function") {
       setSchema(newSchema);
     } else {

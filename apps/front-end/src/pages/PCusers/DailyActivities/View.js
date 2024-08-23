@@ -10,6 +10,7 @@ import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { PCUserBreadcrumb } from "./Form";
+import PropTypes from "prop-types";
 
 function View({ userTokenInfo }) {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -136,6 +137,8 @@ function View({ userTokenInfo }) {
   );
 }
 
-View.propTypes = {};
-
 export default View;
+
+View.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

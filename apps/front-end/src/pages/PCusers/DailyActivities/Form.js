@@ -20,6 +20,7 @@ import {
   widgets,
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./ActivitiesSchema";
+import PropTypes from "prop-types";
 
 const hours = [
   { title: "0" },
@@ -57,6 +58,12 @@ export const PCUserBreadcrumb = ({ category, activity, t }) => (
     ]}
   />
 );
+
+PCUserBreadcrumb.propTypes = {
+  category: PropTypes.string,
+  activity: PropTypes.string,
+  t: PropTypes.func,
+};
 
 const DailyActivities = () => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));

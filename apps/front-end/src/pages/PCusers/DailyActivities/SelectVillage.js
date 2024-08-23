@@ -19,6 +19,7 @@ import {
 } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { schema1 } from "./MarkActivitySchema";
 import { setBlock, setDistrict, setVillage } from "utils/localHelper";
+import PropTypes from "prop-types";
 
 const App = ({ userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -146,3 +147,7 @@ const App = ({ userTokenInfo }) => {
 };
 
 export default App;
+
+App.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
