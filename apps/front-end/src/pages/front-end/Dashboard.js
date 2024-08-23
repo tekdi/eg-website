@@ -361,7 +361,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             fieldsArr,
           ),
         );
-        //check exist user registered
+        //Checking if current user registered
         setLoading(true);
         try {
           //get program id and store in localstorage
