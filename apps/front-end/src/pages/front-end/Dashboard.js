@@ -239,7 +239,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   //end
 
   useEffect(() => {
-    async function fetchData() {
+    const getData = async () => {
       // ...async operation
       if (countLoad == 0) {
         setCountLoad(1);
@@ -262,8 +262,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       } else if (countLoad == 2) {
         setCountLoad(3);
       }
-    }
-    fetchData();
+    };
+    getData();
   }, [countLoad]);
 
   useEffect(() => {
