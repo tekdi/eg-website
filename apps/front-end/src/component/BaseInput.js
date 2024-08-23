@@ -20,7 +20,6 @@ import {
   FormControl,
   HStack,
   Image,
-  Radio,
   Select,
   Stack,
   Text,
@@ -28,7 +27,7 @@ import {
   VStack,
 } from "native-base";
 import PropTypes from "prop-types";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CalenderInput from "./CalenderInput";
 import Time from "./Time";
@@ -158,7 +157,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                 <VStack key={index} space="4">
                   <HStack alignItems="center" justifyContent="space-between">
                     <H2 color="textMaroonColor.400">{`${index + 1}. ${t(
-                      schema?.title
+                      schema?.title,
                     )}`}</H2>
                     {hasRemove && (
                       <IconByName
@@ -178,7 +177,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                   {children}
                 </VStack>
               );
-            }
+            },
           )}
           {props.canAdd && (
             <Button
@@ -217,7 +216,6 @@ export const FieldTemplate = ({
   schema,
   ...props
 }) => {
-  const { type } = schema;
   const { t } = useTranslation();
   return (
     <VStack
@@ -282,7 +280,7 @@ export const ObjectFieldTemplate = (props) => {
 };
 
 export const ArrayFieldTitleTemplate = (props) => {
-  return <Fragment />;
+  return null;
 };
 
 // rjsf custom CustomRadioBtn as CustomR field
@@ -352,7 +350,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
                   mx: 2,
                   borderWidth: 0,
                   color: "#333",
-                }
+                },
           ),
           // _box: { gap: "0", width: "auto" },
           // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
@@ -372,7 +370,6 @@ RadioBtn.propTypes = {
   onChange: PropTypes.func,
   required: PropTypes.bool,
   schema: PropTypes.any,
-  directionColumn: PropTypes.any,
 };
 // rjsf custom Aadhaar field
 export const Aadhaar = (props) => {
@@ -408,7 +405,7 @@ export const Aadhaar = (props) => {
 };
 
 // rjsf custom select field
-export const select = ({
+export const SelectApp = ({
   options,
   isDisabled,
   value,
@@ -433,19 +430,10 @@ export const select = ({
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value || true
-              ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
-              : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+            top: "0",
+            opacity: 1,
+            zIndex: 5,
+            transition: "all 0.3s ease",
           }}
         >
           <Text
@@ -495,13 +483,16 @@ export const select = ({
     </FormControl>
   );
 };
-select.propTypes = {
+SelectApp.propTypes = {
   options: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
   required: PropTypes.bool,
   schema: PropTypes.any,
 };
+
+export const select = SelectApp;
+
 // rjsf custom readOnly field
 export const ReadOnly = ({ value, required, schema }) => {
   const { title } = schema || {};
@@ -739,7 +730,7 @@ MultiCheck.propTypes = {
 
 // rjsf custom textarea field
 const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
-  const [isFocus, setIsfocus] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
   const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
   return (
@@ -779,8 +770,8 @@ const Textarea = ({ schema, value, onChange, required, isInvalid }) => {
       <TextArea
         totalLines={rows || 3}
         key={title}
-        onFocus={(e) => setIsfocus(true)}
-        onBlur={(e) => setIsfocus(false)}
+        onFocus={(e) => setIsFocus(true)}
+        onBlur={(e) => setIsFocus(false)}
         onChange={(e) => onChange(e.target.value)}
         value={value}
         placeholder={t(label || schema?.label)}
@@ -810,7 +801,7 @@ const widgets = {
   RadioBtn,
   CustomR,
   Aadhaar,
-  select,
+  select: SelectApp,
   Textarea,
   CustomOTPBox,
   FileUpload,
@@ -838,13 +829,13 @@ const templates = {
 export const scrollToField = ({ property } = {}) => {
   if (property) {
     const element = document.getElementById(
-      `element_${property.replace(".", "")}`
+      `element_${property.replace(".", "")}`,
     );
     if (element) {
       element?.scrollIntoView();
     } else {
       const element1 = document.getElementById(
-        `root_${property.replace(".", "")}__error`
+        `root_${property.replace(".", "")}__error`,
       );
       if (element1) {
         element1?.scrollIntoView();
@@ -872,7 +863,7 @@ const transformErrors = (errors, schema, t) => {
         return `${t(
           schemaItem?.format === "FileUpload"
             ? "REQUIRED_MESSAGE_UPLOAD"
-            : "REQUIRED_MESSAGE"
+            : "REQUIRED_MESSAGE",
         )} "${t(title)}"`;
       case "minItems":
         return t("SELECT_MINIMUM")
@@ -884,7 +875,7 @@ const transformErrors = (errors, schema, t) => {
           .replace("{1}", t(title));
       case "enum":
         return t("SELECT_MESSAGE");
-      case "format":
+      case "format": {
         const { format } = error?.params || {};
         const messageKey =
           {
@@ -893,6 +884,7 @@ const transformErrors = (errors, schema, t) => {
             number: "PLEASE_ENTER_VALID_NUMBER",
           }[format] || "REQUIRED_MESSAGE";
         return t(messageKey, title ? t(title) : "");
+      }
       default:
         return error.message;
     }

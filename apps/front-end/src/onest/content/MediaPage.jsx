@@ -4,7 +4,7 @@ import { Alert, Box, HStack, Link, Text, VStack, useToast } from "native-base";
 import { dataConfig } from "onest/card";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import AudioPlayer from "../components/AudioPlayer";
 import ExternalLink from "../components/ExternalLink";
@@ -15,9 +15,6 @@ import Layout from "../Layout";
 import FormComponent from "./FormComponent";
 
 const MediaPage = () => {
-  const location = useLocation();
-  const state = location?.state;
-  const formData = state?.formData;
   const { type, itemId, transactionId } = useParams();
   const baseUrl = dataConfig[type].apiLink_API_BASE_URL;
   const db_cache = dataConfig[type].apiLink_DB_CACHE;
@@ -28,16 +25,13 @@ const MediaPage = () => {
   const [story, setStory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error] = useState(null);
-  const [product, setProduct] = useState();
   const [jobInfo, setJobInfo] = useState(null);
-  const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [isAutoForm, setIsAutoForm] = useState(true);
   const toast = useToast();
   const [urlType, setUrlType] = useState("");
   const [orderId, setOrderId] = useState("");
   const [showForm, setShowForm] = useState(true);
   const [userFormData, setUserFormData] = useState({});
-  const [subscribed, setSuscribed] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
     const url = window.location.href;
@@ -101,14 +95,14 @@ const MediaPage = () => {
           descriptionshort: product.shortDescription || "",
           media_url: trackData?.params?.url,
         };
-        setSuscribed(true);
+        setSubscribed(true);
         setOrderId(trackData?.order_id);
         setStory([obj]);
         setShowForm(false);
         setUrlType(trackData?.params?.type);
         setLoading(false);
       } else {
-        var requestOptions = {
+        let requestOptions = {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -123,17 +117,16 @@ const MediaPage = () => {
             setJobInfo(result?.data[db_cache][0]);
             localStorage.setItem(
               "unique_id",
-              result?.data[db_cache][0]?.unique_id
+              result?.data[db_cache][0]?.unique_id,
             );
-            setProduct(result?.data[db_cache][0]);
             setLoading(false);
             localStorage.setItem(
               "searchProduct",
-              JSON.stringify(result?.data[db_cache][0])
+              JSON.stringify(result?.data[db_cache][0]),
             );
             localStorage.setItem(
               "image_url",
-              result?.data[db_cache][0].image_url
+              result?.data[db_cache][0].image_url,
             );
           })
           .catch((error) => console.error("error", error));
@@ -148,14 +141,6 @@ const MediaPage = () => {
         let data = JSON.parse(localStorage.getItem("selectRes"));
         if (data && data?.responses.length) {
           await fetchInitDetails(data?.responses[0]);
-
-          // let usrtemp = localStorage.getItem("userData");
-          /* if(usrtemp){
-       fetchInitDetails(data?.responses[0]);
-       }else{
-         setIsAutoForm(false);
-         setLoading(false);
-       }*/
         } else if (jobInfo) {
           getSelectDetails(jobInfo);
         }
@@ -211,7 +196,7 @@ const MediaPage = () => {
       if (!data?.responses?.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
@@ -240,7 +225,6 @@ const MediaPage = () => {
           version: "1.1.0",
           bpp_id: details?.context?.bpp_id,
           bpp_uri: details?.context?.bpp_uri,
-          transaction_id: transactionId,
           message_id: uuidv4(),
           timestamp: new Date().toISOString(),
         },
@@ -274,8 +258,6 @@ const MediaPage = () => {
         },
       };
 
-      // delete bodyData.message.order.items[0]["add-ons"];
-
       if (localStorage.getItem("tempTags")) {
         bodyData.message.order.fulfillments[0]["customer"]["person"]["tags"] =
           JSON.parse(localStorage.getItem("tempTags"));
@@ -288,7 +270,6 @@ const MediaPage = () => {
               : "",
           },
         };
-        // bodyData.message.order.items[0].xinput.form['submission_id'] = localStorage.getItem('submissionId')? localStorage.getItem('submissionId'): '';
       }
       setLoading(true);
       const result = await post(`${baseUrl}/confirm`, bodyData);
@@ -314,25 +295,15 @@ const MediaPage = () => {
             if (responseItem?.message && responseItem?.message?.order) {
               const order = responseItem?.message.order;
               let appId = responseItem.message.order.id;
-              // order?.items?.[0].tags.forEach((tag) => {
-              //   tag?.list.forEach((item) => {
-              //     if (item.descriptor.code === "urlType") {
-              //       let urlTypeValue = item.value;
-              //       setUrlType(urlTypeValue);
-              //     }
-              //   });
-              // });
-
               setOrderId(appId);
               window?.parent?.postMessage({ orderId: appId }, "*");
               if (order.items) {
-                const items = order.items;
                 order.fulfillments[0].stops.forEach((item) => {
                   if (!uniqueItemIds.has(item.id)) {
                     let mediaUrl = "";
                     mediaUrl = item.instructions.media[0].url;
                     let product = JSON.parse(
-                      localStorage.getItem("searchProduct")
+                      localStorage.getItem("searchProduct"),
                     );
                     let obj = {
                       item_id: item.id,
@@ -366,13 +337,13 @@ const MediaPage = () => {
         }, 1000);
       } else {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
         console.error("No valid responses found.");
       }
     } catch (error) {
       errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
       );
       console.error("Error fetching details:", error);
     } finally {
@@ -380,7 +351,7 @@ const MediaPage = () => {
     }
   };
 
-  const fetchInitDetails = async () => {
+  const fetchInitDetails = async (data = {}) => {
     if (!showForm) {
       setLoading(true);
       try {
@@ -395,7 +366,6 @@ const MediaPage = () => {
             version: "1.1.0",
             bpp_id: details?.context?.bpp_id,
             bpp_uri: details?.context?.bpp_uri,
-            transaction_id: transactionId,
             message_id: uuidv4(),
             timestamp: new Date().toISOString(),
           },
@@ -436,37 +406,34 @@ const MediaPage = () => {
         if (!data || !data?.responses.length) {
           setLoading(false);
           errorMessage(
-            t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+            t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
           );
-        } else {
-          if (
-            data?.responses[0]?.message?.order?.items[0].hasOwnProperty(
-              "xinput"
-            ) &&
-            data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url
-          ) {
-            const curr =
-              data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index
-                ?.cur;
-            var max =
-              data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index
-                ?.max;
-            var formUrl =
-              data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
-            if (curr < max) {
-              searchForm(formUrl);
-            } else if (curr == max) {
-              setLoading(true);
-              searchForm(formUrl);
-              // fetchConfirmMedia();
-            }
-          } else {
-            fetchConfirmMedia(JSON.parse(localStorage.getItem("initRes")));
+        } else if (
+          data?.responses[0]?.message?.order?.items[0].hasOwnProperty(
+            "xinput",
+          ) &&
+          data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url
+        ) {
+          const curr =
+            data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index
+              ?.cur;
+          let max =
+            data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index
+              ?.max;
+          let formUrl =
+            data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
+          if (curr < max) {
+            searchForm(formUrl);
+          } else if (curr == max) {
+            setLoading(true);
+            searchForm(formUrl);
           }
+        } else {
+          fetchConfirmMedia(JSON.parse(localStorage.getItem("initRes")));
         }
       } catch (error) {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
         console.error("Error submitting form:", error);
       } finally {
@@ -474,13 +441,6 @@ const MediaPage = () => {
       }
     }
   };
-
-  function hasSubmitButton() {
-    return (
-      document.querySelector('input[type="submit"]') !== null ||
-      document.querySelector('button[type="submit"]') !== null
-    );
-  }
 
   function errorMessage(message) {
     toast.show({
@@ -516,24 +476,14 @@ const MediaPage = () => {
           const container = document.getElementById("formContainer");
           if (container) {
             container.innerHTML = htmlContent;
-
-            if (!hasSubmitButton()) {
-              // addSubmitButton();
-            }
-
-            setIsAutoForm(true);
             const form = document.getElementsByTagName("form")[0];
             const inputFields = form.querySelectorAll("input");
             const btnField = form.querySelector("button");
-
-            // if (btnField) {
             btnField.classList.add("autosubmit");
-            // }
 
             // Add a CSS class to each input field
             inputFields.forEach((input) => {
               input.classList.add("autoInputField");
-              //input.style.border = "1px solid #000"; // Replace 'your-css-class' with the desired class name
             });
 
             const selectFields = form.querySelectorAll("select");
@@ -587,7 +537,7 @@ const MediaPage = () => {
                 if (userData && userData[selectName] !== undefined) {
                   // Find the option with the corresponding value
                   const optionToSelect = select.querySelector(
-                    `option[value="${userData[selectName]}"]`
+                    `option[value="${userData[selectName]}"]`,
                   );
 
                   // If the option is found, set its selected attribute to true
@@ -601,18 +551,18 @@ const MediaPage = () => {
             form.addEventListener("submit", (e) => {
               e.preventDefault();
               const formDataTmp = new FormData(form);
-              var urlencoded = new URLSearchParams();
+              let urlencoded = new URLSearchParams();
 
               let formDataObject = {};
 
-              formDataTmp.forEach(function (value, key) {
+              formDataTmp.forEach((value, key) => {
                 formDataObject[key] = value;
                 urlencoded.append(key, value.toString());
               });
 
               localStorage.setItem(
                 "autoFormData",
-                JSON.stringify(formDataObject)
+                JSON.stringify(formDataObject),
               );
               // setFormData({...formData['person'] , ...localStorage.getItem('autoFormData')})
 
@@ -622,7 +572,6 @@ const MediaPage = () => {
         });
     } catch (error) {
       console.error("Error submitting form:", error);
-      setSubmissionStatus("error");
     } finally {
       setLoading(false);
     }
@@ -643,8 +592,6 @@ const MediaPage = () => {
         setTimeout(() => {
           let initRes = JSON.parse(localStorage.getItem("initRes"));
           fetchConfirmMedia(initRes);
-          // fetchInitDetails();
-          // getInitJson();
         }, 7000);
       }
     } catch (error) {
@@ -697,144 +644,23 @@ const MediaPage = () => {
           >
             <Box textAlign="center">
               <Text fontSize="xl">{error}</Text>
-              <button mt={4} onClick={handleBack}>
-                Go Back
-              </button>
+              <button onClick={handleBack}>Go Back</button>
             </Box>
           </div>
         ) : (
-          <>
-            {story.map((item, index) => {
-              const mediaUrl = item.media_url;
-
-              if (item.type == "BPP-EMBEDDABLE-PLAYER") {
-                if (
-                  mediaUrl.includes("youtube.com") ||
-                  mediaUrl.includes("youtu.be")
-                ) {
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text
-                        fontSize={22}
-                        p={15}
-                        fontWeight={500}
-                        textAlign={"center"}
-                      >
-                        {subscribed
-                          ? "You have already subscribed for this course ! "
-                          : "Thanks for Subscribing ! "}
-                        Your Subscription Id for this resources is:
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <YouTubeEmbed key={index} url={mediaUrl} />
-                    </VStack>
-                  );
-                } else if (mediaUrl.endsWith(".mp3")) {
-                  // MP3 audio
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text
-                        fontSize={22}
-                        p={15}
-                        fontWeight={500}
-                        textAlign={"center"}
-                      >
-                        {subscribed
-                          ? "You have already subscribed for this course ! "
-                          : "Thanks for Subscribing ! "}
-                        Your Subscription Id for this resources is:
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <AudioPlayer key={index} mediaUrl={mediaUrl} />
-                    </VStack>
-                  );
-                } else if (mediaUrl.endsWith(".pdf")) {
-                  // PDF document
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text
-                        fontSize={22}
-                        p={15}
-                        fontWeight={500}
-                        textAlign={"center"}
-                      >
-                        {subscribed
-                          ? "You have already subscribed for this course ! "
-                          : "Thanks for Subscribing ! "}
-                        Your Subscription Id for this resources is:
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <PDFViewer key={index} src={mediaUrl} />
-                    </VStack>
-                  );
-                } else if (mediaUrl.endsWith(".mp4")) {
-                  // MP4 video
-                  return (
-                    <VStack pt={2} pb={20}>
-                      <Text
-                        fontSize={22}
-                        p={15}
-                        fontWeight={500}
-                        textAlign={"center"}
-                      >
-                        {subscribed
-                          ? "You have already subscribed for this course ! "
-                          : "Thanks for Subscribing ! "}
-                        Your Subscription Id for this resources is:
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <VideoPlayer key={index} url={mediaUrl} />
-                    </VStack>
-                  );
-                } else {
-                  return (
-                    <VStack pt={2} pb={20} mb={120}>
-                      <Text
-                        fontSize={22}
-                        p={15}
-                        fontWeight={500}
-                        textAlign={"center"}
-                      >
-                        {subscribed
-                          ? "You have already subscribed for this course ! "
-                          : "Thanks for Subscribing ! "}
-                        Your Subscription Id for this resources is:
-                        <span>
-                          <b>{orderId}</b>
-                        </span>
-                      </Text>
-                      <ExternalLink key={index} url={mediaUrl} />
-                    </VStack>
-                  );
-                }
-              } else {
+          story.map((item, index) => {
+            const mediaUrl = item.media_url;
+            if (item.type == "BPP-EMBEDDABLE-PLAYER") {
+              if (
+                mediaUrl.includes("youtube.com") ||
+                mediaUrl.includes("youtu.be")
+              ) {
                 return (
-                  // <ExternalLink key={index} url={mediaUrl} />
-                  <VStack
-                    p={20}
-                    mb={150}
-                    background={"white"}
-                    w={"80%"}
-                    ml={"10%"}
-                    border={"1"}
-                  >
-                    <Box maxW={"200px"} maxH={"200px"}>
-                      {/* {localStorage.getItem('image_url') && <img width={'auto'} height={'auto'} maxW={'300px'} maxH={'300px'} src={localStorage.getItem('image_url')} alt="" />}
-              {!localStorage.getItem('image_url') && <img width={'100px'} height={'100px'} src={image_url} alt="" />} */}
-                    </Box>
+                  <VStack pt={2} pb={20} mb={120} key={item}>
                     <Text
-                      fontSize={20}
-                      py={15}
-                      color={"#197219"}
-                      fontWeight={700}
+                      fontSize={22}
+                      p={15}
+                      fontWeight={500}
                       textAlign={"center"}
                     >
                       {subscribed
@@ -843,28 +669,140 @@ const MediaPage = () => {
                       Your Subscription Id for this resources is:
                       <span>
                         <b>{orderId}</b>
-                      </span>{" "}
+                      </span>
                     </Text>
-                    <Text fontSize={16} p={10} fontWeight={500}>
-                      Please use the below link to access the learning
-                      materials.
-                    </Text>
-                    <Link
-                      isExternal // Open link in new tab
-                      rel="noopener noreferrer"
-                      _text={{
-                        color: "blue.400",
-                        fontSize: "20px",
-                      }}
-                      href={mediaUrl}
+                    <YouTubeEmbed key={mediaUrl} url={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".mp3")) {
+                // MP3 audio
+                return (
+                  <VStack pt={2} pb={20} mb={120} key={item}>
+                    <Text
+                      fontSize={22}
+                      p={15}
+                      fontWeight={500}
+                      textAlign={"center"}
                     >
-                      {mediaUrl}
-                    </Link>
+                      {subscribed
+                        ? "You have already subscribed for this course ! "
+                        : "Thanks for Subscribing ! "}
+                      Your Subscription Id for this resources is:
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <AudioPlayer key={mediaUrl} mediaUrl={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".pdf")) {
+                // PDF document
+                return (
+                  <VStack pt={2} pb={20} mb={120} key={item}>
+                    <Text
+                      fontSize={22}
+                      p={15}
+                      fontWeight={500}
+                      textAlign={"center"}
+                    >
+                      {subscribed
+                        ? "You have already subscribed for this course ! "
+                        : "Thanks for Subscribing ! "}
+                      Your Subscription Id for this resources is:
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <PDFViewer key={mediaUrl} src={mediaUrl} />
+                  </VStack>
+                );
+              } else if (mediaUrl.endsWith(".mp4")) {
+                // MP4 video
+                return (
+                  <VStack pt={2} pb={20} key={item}>
+                    <Text
+                      fontSize={22}
+                      p={15}
+                      fontWeight={500}
+                      textAlign={"center"}
+                    >
+                      {subscribed
+                        ? "You have already subscribed for this course ! "
+                        : "Thanks for Subscribing ! "}
+                      Your Subscription Id for this resources is:
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <VideoPlayer key={mediaUrl} url={mediaUrl} />
+                  </VStack>
+                );
+              } else {
+                return (
+                  <VStack pt={2} pb={20} mb={120} key={item}>
+                    <Text
+                      fontSize={22}
+                      p={15}
+                      fontWeight={500}
+                      textAlign={"center"}
+                    >
+                      {subscribed
+                        ? "You have already subscribed for this course ! "
+                        : "Thanks for Subscribing ! "}
+                      Your Subscription Id for this resources is:
+                      <span>
+                        <b>{orderId}</b>
+                      </span>
+                    </Text>
+                    <ExternalLink key={mediaUrl} url={mediaUrl} />
                   </VStack>
                 );
               }
-            })}
-          </>
+            } else {
+              return (
+                // <ExternalLink key={index} url={mediaUrl} />
+                <VStack
+                  p={20}
+                  mb={150}
+                  background={"white"}
+                  w={"80%"}
+                  ml={"10%"}
+                  border={"1"}
+                  key={item}
+                >
+                  <Text
+                    fontSize={20}
+                    py={15}
+                    color={"#197219"}
+                    fontWeight={700}
+                    textAlign={"center"}
+                  >
+                    {subscribed
+                      ? "You have already subscribed for this course ! "
+                      : "Thanks for Subscribing ! "}
+                    Your Subscription Id for this resources is:
+                    <span>
+                      <b>{orderId}</b>
+                    </span>{" "}
+                  </Text>
+                  <Text fontSize={16} p={10} fontWeight={500}>
+                    Please use the below link to access the learning materials.
+                  </Text>
+                  <Link
+                    isExternal // Open link in new tab
+                    rel="noopener noreferrer"
+                    _text={{
+                      color: "blue.400",
+                      fontSize: "20px",
+                    }}
+                    href={mediaUrl}
+                  >
+                    {mediaUrl}
+                  </Link>
+                </VStack>
+              );
+            }
+          })
         )}
       </Box>
     </Layout>

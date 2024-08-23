@@ -1,10 +1,7 @@
 import { Box, Center } from "native-base";
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 const AudioPlayer = ({ mediaUrl }) => {
-  const { t } = useTranslation();
-
   return (
     <Center>
       <Box>

@@ -17,8 +17,8 @@ const UserDetailsForm = () => {
   });
 
   // Define isLoading and error variables
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [isLoading] = useState(false);
+  const [error] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -42,7 +42,7 @@ function Player({ setAlert }) {
   React.useEffect(async () => {
     const getCertificate = await testRegistryService.getCertificate({ id });
     const data = getCertificate?.data?.filter(
-      (e) => e?.events?.filter((i) => i.id == context_id).length > 0
+      (e) => e?.events?.filter((i) => i.id == context_id).length > 0,
     );
     if (data?.length > 0) {
       setModalVisible2(true);
@@ -50,13 +50,11 @@ function Player({ setAlert }) {
   }, []);
 
   React.useEffect(async () => {
-    const { error, ...assesmentData } = await testRegistryService.getAssessment(
-      do_id
-    );
+    const { error, ...assesmentData } =
+      await testRegistryService.getAssessment(do_id);
     if (!error) {
-      const updatedAssessmentData = await updateAllowSkipProperty(
-        assesmentData
-      );
+      const updatedAssessmentData =
+        await updateAllowSkipProperty(assesmentData);
       setAssessmentData(updatedAssessmentData);
       setType("Course");
     } else {
@@ -94,7 +92,7 @@ function Player({ setAlert }) {
 
   const handleTrackData = async (
     { score, attempts, ...props },
-    playerType = "quml"
+    playerType = "quml",
   ) => {
     setModalVisible(true);
     let data = {};
@@ -103,7 +101,7 @@ function Player({ setAlert }) {
     let trackData = JSON.parse(trackDataold);
     const newFormatData = trackData.reduce((oldData, newObj) => {
       const dataExist = oldData.findIndex(
-        (e) => e.sectionId === newObj["item"]["sectionId"]
+        (e) => e.sectionId === newObj["item"]["sectionId"],
       );
       if (dataExist >= 0) {
         oldData[dataExist]["data"].push(newObj);
@@ -126,7 +124,7 @@ function Player({ setAlert }) {
     const calculateSectionDuration = (section) => {
       return section.data.reduce(
         (totalDuration, item) => totalDuration + item.duration,
-        0
+        0,
       );
     };
 
@@ -135,7 +133,7 @@ function Player({ setAlert }) {
       return jsonData.reduce(
         (totalDuration, section) =>
           totalDuration + calculateSectionDuration(section),
-        0
+        0,
       );
     };
 
@@ -243,11 +241,11 @@ function Player({ setAlert }) {
               handleTrackData(data);
             } else if (
               ["application/vnd.sunbird.questionset"].includes(
-                assessmentData?.mimeType
+                assessmentData?.mimeType,
               )
             ) {
               const lastData = data?.summary?.find(
-                (e) => e?.endpageseen !== undefined
+                (e) => e?.endpageseen !== undefined,
               );
 
               if (lastData?.endpageseen === true) {
@@ -263,22 +261,20 @@ function Player({ setAlert }) {
               ].includes(assessmentData?.mimeType)
             ) {
               handleTrackData(data, "pdf-video");
-            } else {
-              if (
-                ["application/vnd.ekstep.ecml-archive"].includes(
-                  assessmentData?.mimeType
-                )
-              ) {
-                if (Array.isArray(data)) {
-                  const score = data.reduce(
-                    (old, newData) => old + newData?.score,
-                    0
-                  );
-                  handleTrackData({ ...data, score: `${score}` }, "ecml");
-                  setTrackData(data);
-                } else {
-                  handleTrackData({ ...data, score: `0` }, "ecml");
-                }
+            } else if (
+              ["application/vnd.ekstep.ecml-archive"].includes(
+                assessmentData?.mimeType,
+              )
+            ) {
+              if (Array.isArray(data)) {
+                const score = data.reduce(
+                  (old, newData) => old + newData?.score,
+                  0,
+                );
+                handleTrackData({ ...data, score: `${score}` }, "ecml");
+                setTrackData(data);
+              } else {
+                handleTrackData({ ...data, score: `0` }, "ecml");
               }
             }
           }}

@@ -1,12 +1,8 @@
 import { FrontEndTypo } from "@shiksha/common-lib";
-import { Box, Center, Text, Button, Stack } from "native-base";
+import { Box, Center, Text, Stack } from "native-base";
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 const ExternalLink = ({ url }) => {
-  const { t } = useTranslation();
-
-  console.log("Url", url);
   return (
     <Center>
       <Box>
