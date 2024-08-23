@@ -10,7 +10,6 @@ import moment from "moment";
 import { HStack, Image, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
 
@@ -24,8 +23,8 @@ const RenderAttendee = ({ row, t }) => (
         {row?.fa_is_processed === null
           ? t("NO")
           : row?.fa_is_processed === true
-          ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
-          : t("NO")}
+            ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
+            : t("NO")}
       </AdminTypo.H6>
     }
     rounded="lg"
@@ -120,14 +119,12 @@ function Table() {
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   useEffect(async () => {
     setLoading(false);
   }, []);
 
   useEffect(async () => {
-    let ignore = false;
     async function getData() {
       const resultAttendance = await attendanceService.list(filter);
       if (resultAttendance?.data?.data?.length > 0) {
@@ -135,15 +132,12 @@ function Table() {
         setPaginationTotalRows(
           resultAttendance?.data?.totalCount
             ? resultAttendance?.data?.totalCount
-            : 0
+            : 0,
         );
       }
     }
     await getData();
     setLoading(false);
-    return () => {
-      ignore = true;
-    };
   }, [filter]);
 
   return (
@@ -164,7 +158,7 @@ function Table() {
       </VStack>
       <DataTable
         customStyles={tableCustomStyles}
-        columns={[...columns(t, navigate)]}
+        columns={[...columns(t)]}
         data={attendances}
         persistTableHead
         progressPending={loading}
