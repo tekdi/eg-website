@@ -8,19 +8,11 @@ import {
   ImageView,
   CustomAlert,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Radio,
-  Alert,
-  Modal,
-  Pressable,
-  Stack,
-} from "native-base";
+import { HStack, VStack, Radio, Alert, Modal, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
-import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
-import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
 import { ExamChipStatus } from "component/Chip";
+import Chip from "component/BeneficiaryStatus";
+import PropTypes from "prop-types";
 
 const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -78,7 +70,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
         : selectedRow?.result_upload_status === "first_time_upload_failed" &&
           "assign_to_ip",
     };
-    const data = await organisationService.examResultStatusUpdate(obj);
+    await organisationService.examResultStatusUpdate(obj);
     learnerList(boardId);
   };
 
@@ -97,11 +89,11 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     }
     const result = await uploadRegistryService.uploadExamResult(
       form_data,
-      {},
-      (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percent = Math.floor((loaded * 100) / total);
-      }
+      // {},
+      // (progressEvent) => {
+      //   const { loaded, total } = progressEvent;
+      //   const percent = Math.floor((loaded * 100) / total);
+      // },
     );
     if (!result?.data) {
       setErrorMsg(result?.message);
@@ -112,11 +104,15 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     setLoading(false);
   };
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
-      <VStack p="5" minHeight={"500px"} space={4} style={{ zIndex: -1 }}>
+    <Layout
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+      facilitator={userTokenInfo?.authUser}
+    >
+      <VStack py="6" px="4" space={4}>
         <FrontEndTypo.H1>{t("UPDATE_LEARNER_EXAM_RESULTS")}</FrontEndTypo.H1>
-        <VStack space={4}>
-          <FrontEndTypo.H3 bold color="textGreyColor.500">
+        <VStack space={5}>
+          <FrontEndTypo.H3 fontWeight={600} color="textGreyColor.500">
             {t("SELECT_BOARD")}
           </FrontEndTypo.H3>
 
@@ -127,8 +123,10 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                 onChange={(nextValue) => handleSelect(nextValue)}
                 value={filter?.selectedId}
               >
-                <Radio colorScheme="red" value={board.id}>
-                  {board.name}
+                <Radio size="16px" p="2px" colorScheme="red" value={board.id}>
+                  <FrontEndTypo.H4 fontWeight={600} color="textGreyColor.500">
+                    {board.name}
+                  </FrontEndTypo.H4>
                 </Radio>
               </Radio.Group>
             ))}
@@ -147,11 +145,11 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
           />
 
           {data.length > 0 && (
-            <>
+            <VStack space={4}>
               <FrontEndTypo.H3 bold color="textGreyColor.500">
                 {t("STUDENT_LIST")}
               </FrontEndTypo.H3>
-              {data?.map((item, index) => {
+              {data?.map((item) => {
                 return (
                   <HStack
                     key={item?.enrollment_number}
@@ -160,17 +158,34 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                     pb={"10px"}
                     borderColor={"grayColor"}
                   >
-                    <VStack space={2}>
-                      <FrontEndTypo.H3>
+                    <VStack space={1}>
+                      <FrontEndTypo.H4
+                        fontWeight={400}
+                        color="inputValueColor.500"
+                      >
                         {t("ENR_NO")}
                         {item?.enrollment_number}
+                      </FrontEndTypo.H4>
+                      <FrontEndTypo.H3
+                        fontWeight={400}
+                        color="inputValueColor.500"
+                      >
+                        {[
+                          item?.enrollment_first_name,
+                          item?.enrollment_middle_name,
+                          item?.enrollment_last_name,
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                       </FrontEndTypo.H3>
-                      <FrontEndTypo.H3>
-                        {/* {t("NAME")}:{" "} */}
-                        {`${item?.beneficiary_user?.first_name} ${
-                          item?.beneficiary_user?.middle_name || ""
-                        } ${item?.beneficiary_user?.last_name || ""}`}
-                      </FrontEndTypo.H3>
+                      <HStack>
+                        <Chip
+                          m="0"
+                          label={item?.user_id}
+                          alignItems="center"
+                          _text={{ fontSize: "10px" }}
+                        />
+                      </HStack>
                     </VStack>
                     {item?.result_upload_status === "uploaded" ||
                     item?.result_upload_status === "assign_to_ip" ? (
@@ -184,7 +199,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                         <Pressable
                           onPress={() => {
                             setOpenView(
-                              item?.beneficiary_user?.exam_results?.[0]
+                              item?.beneficiary_user?.exam_results?.[0],
                             );
                           }}
                         >
@@ -212,7 +227,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                   </HStack>
                 );
               })}
-            </>
+            </VStack>
           )}
         </VStack>
         <input
@@ -260,3 +275,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 };
 
 export default ExamResult;
+
+ExamResult.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
