@@ -65,6 +65,23 @@ const styles = {
   },
 };
 
+const fieldsArr = [
+  "device_ownership",
+  "mobile",
+  "device_type",
+  "gender",
+  "marital_status",
+  "social_category",
+  "name",
+  "contact_number",
+  "availability",
+  "aadhar_no",
+  "aadhaar_verification_mode",
+  "aadhar_verified",
+  "qualification_ids",
+  "qua_name",
+];
+
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -332,35 +349,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     async function fetchData() {
-      // ...async operations
-      if (academicYear != null) {
-        //get cohort id and store in localstorage
-        const user_cohort_id = academicYear;
-        const cohort_data = await facilitatorRegistryService.getCohort({
-          cohortId: user_cohort_id,
-        });
-        setSelectedCohortData(cohort_data);
-        await setSelectedAcademicYear(cohort_data);
-      }
-    }
-    fetchData();
-  }, [academicYear]);
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // ...async operations
-  //     const getCertificate = await testRegistryService.getCertificate({
-  //       id,
-  //     });
-  //     if (getCertificate?.data?.length > 0) {
-  //       setCertificateData(getCertificate?.data?.[0]);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
-  useEffect(() => {
-    async function fetchData() {
       if (!facilitator?.notLoaded === true) {
         // ...async operations
         const res = objProps(facilitator);
@@ -370,30 +358,15 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               ...res,
               qua_name: facilitator?.qualifications?.qualification_master?.name,
             },
-            [
-              "device_ownership",
-              "mobile",
-              "device_type",
-              "gender",
-              "marital_status",
-              "social_category",
-              "name",
-              "contact_number",
-              "availability",
-              "aadhar_no",
-              "aadhaar_verification_mode",
-              "aadhar_verified",
-              "qualification_ids",
-              "qua_name",
-            ],
+            fieldsArr,
           ),
         );
         //check exist user registered
         try {
           setLoading(true);
           let onboardingURLData = await getOnboardingURLData();
-          setCohortData(onboardingURLData?.cohortData);
           setProgramData(onboardingURLData?.programData);
+          setCohortData(onboardingURLData?.cohortData);
           //get program id and store in localstorage
 
           const user_program_id = facilitator?.program_faciltators?.program_id;
@@ -431,6 +404,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     fetchData();
   }, [facilitator]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
+        });
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
+      }
+    }
+    fetchData();
+  }, [academicYear]);
 
   const handleRandomise = async () => {
     const doIdArray = isEventActive?.params?.do_id;
