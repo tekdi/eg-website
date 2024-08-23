@@ -59,7 +59,7 @@ export const schema1 = {
       format: "select",
     },
     address: {
-      title: "DETAILED_ADDRESS",
+      title: "ADDRESS_DETAILS",
       type: ["string", "null"],
     },
   },
