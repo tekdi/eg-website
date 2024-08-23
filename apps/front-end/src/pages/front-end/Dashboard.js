@@ -112,24 +112,23 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     SetPrerak_status(localStorage.getItem("status"));
   }, [localStorage.getItem("status")]);
 
-  const saveDataToIndexedDB = async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
+  const saveToIndexDB = async () => {
     try {
       const [ListOfEnum, qualification, editRequest] = await Promise.all([
         enumRegistryService.listOfEnum(),
         enumRegistryService.getQualificationAll(),
-        facilitatorRegistryService.getEditRequests(obj),
+        facilitatorRegistryService.getEditRequests({
+          edit_req_for_context: "users",
+          edit_req_for_context_id: id,
+        }),
         // enumRegistryService.userInfo(),
       ]);
       const currentTime = moment().toString();
       await Promise.all([
-        setIndexedDBItem("enums", ListOfEnum.data),
         setIndexedDBItem("qualification", qualification),
-        setIndexedDBItem("lastFetchTime", currentTime),
         setIndexedDBItem("editRequest", editRequest),
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("lastFetchTime", currentTime),
       ]);
     } catch (error) {
       console.error("Error saving data to IndexedDB:", error);
@@ -202,19 +201,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      await checkDataToIndex();
+      await checkToIndex();
     };
 
     fetchData();
   }, [isOnline]);
 
-  const checkDataToIndex = async () => {
+  const checkToIndex = async () => {
     // Online Data Fetch Time Interval
     const timeInterval = 30;
-    const enums = await getIndexedDBItem("enums");
     const qualification = await getIndexedDBItem("qualification");
-    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
     const editRequest = await getIndexedDBItem("editRequest");
+    const enums = await getIndexedDBItem("enums");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
     let timeExpired = false;
     if (lastFetchTime) {
       const timeDiff = moment
@@ -227,13 +226,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     if (
       isOnline &&
       (!enums ||
-        !qualification ||
         !editRequest ||
+        !qualification ||
         timeExpired ||
         !lastFetchTime ||
         editRequest?.status === 400)
     ) {
-      await saveDataToIndexedDB();
+      await saveToIndexDB();
     }
   };
 
@@ -498,7 +497,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const selectAcademicYear = async () => {
     setSelectCohortForm(false);
-    await checkDataToIndex();
+    await checkToIndex();
     await checkUserToIndex();
   };
 
@@ -552,7 +551,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       localStorage.setItem("loadCohort", "yes");
       if (user_cohort_list?.data.length == 1) {
         setSelectCohortForm(false);
-        await checkDataToIndex();
+        await checkToIndex();
         await checkUserToIndex();
       } else {
         setSelectCohortForm(true);
