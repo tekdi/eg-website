@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -9,9 +9,7 @@ import {
   enumRegistryService,
   benificiaryRegistoryService,
   AgRegistryService,
-  sendAndVerifyOtp,
   FrontEndTypo,
-  CustomOTPBox,
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -31,21 +29,18 @@ import { useTranslation } from "react-i18next";
 // App
 export default function ContactDetailsEdit({ ip }) {
   const { t } = useTranslation();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [submitBtn, setSubmitBtn] = useState();
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [yearsRange, setYearsRange] = useState([1980, 2030]);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const userId = id;
-  const [verifyOtpData, setverifyOtpData] = useState();
-  const [otpButton, setOtpButton] = React.useState(false);
-  const [mobileConditon, setMobileConditon] = React.useState(false);
 
   const [searchParams] = useSearchParams();
   const redirectLink = searchParams.get("redirectLink");
@@ -176,57 +171,6 @@ export default function ContactDetailsEdit({ ip }) {
       setSubmitBtn(t("NEXT"));
     }
   }, []);
-  const otpfunction = async () => {
-    if (formData?.mobile?.length < 10) {
-      const data = await formSubmitCreate(formData);
-
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("MINIMUM_LENGTH_IS_10")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    if (!(formData?.mobile > 6000000000 && formData?.mobile < 9999999999)) {
-      const data = await formSubmitCreate(formData);
-      const newErrors = {
-        mobile: {
-          __errors:
-            data?.error?.constructor?.name === "String"
-              ? [data?.error]
-              : data?.error?.constructor?.name === "Array"
-                ? data?.error
-                : [t("PLEASE_ENTER_VALID_NUMBER")],
-        },
-      };
-      setErrors(newErrors);
-    }
-
-    const { status, otpData, newSchema } = await sendAndVerifyOtp(schema, {
-      ...formData,
-      hash: localStorage.getItem("hash"),
-    });
-    setverifyOtpData(otpData);
-    if (status === true) {
-      submit();
-    } else if (status === false) {
-      const newErrors = {
-        otp: {
-          __errors: [t("USER_ENTER_VALID_OTP")],
-        },
-      };
-      setErrors(newErrors);
-    } else {
-      setSchema(newSchema);
-      setOtpButton(true);
-    }
-  };
 
   const formSubmitUpdate = async (formData) => {
     if (id) {
@@ -267,86 +211,78 @@ export default function ContactDetailsEdit({ ip }) {
 
   const onChange = async (e, id) => {
     const data = e.formData;
-    setErrors();
     const newData = { ...formData, ...data };
-    const regex = /^([+]\d{2})?\d{10}$/;
+    const regexPhone = /^([+]\d{2})?\d{10}$/;
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (id === "root_mobile") {
-      if (data?.mobile && !data?.mobile?.toString()?.match(regex)) {
-        const newErrors = {
-          mobile: {
-            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
-          },
-        };
-        setErrors(newErrors);
-        setMobileConditon(false);
-      } else {
-        setMobileConditon(true);
-      }
-      if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties || {};
-        const required = schema?.required.filter((item) => item !== "otp");
-        setSchema({ ...schema, properties, required });
-        setFormData((e) => {
-          const { otp, ...fData } = e;
-          return fData;
-        });
-        setOtpButton(false);
-      }
-    }
-    if (id === "root_alternative_mobile_number") {
-      if (
-        data?.alternative_mobile_number &&
-        !data?.alternative_mobile_number?.toString()?.match(regex)
-      ) {
-        const newErrors = {
-          alternative_mobile_number: {
-            __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
-          },
-        };
-        setErrors(newErrors);
-      }
+    let newErrors = {};
 
-      if (!data?.alternative_mobile_number?.toString()?.match(regex)) {
-        const propertiesMain = schema1.properties;
-        const constantSchema = propertiesMain[1];
+    const validatePhoneNumber = (number) => regexPhone.test(number?.toString());
+
+    const updateAlternativeSchema = (isValid) => {
+      const propertiesMain = schema1.properties;
+      const constantSchema = propertiesMain[1];
+
+      if (!isValid) {
         const {
           alternative_device_type,
           alternative_device_ownership,
           ...properties
-        } = constantSchema?.properties || {};
-        const required = constantSchema?.required.filter((item) =>
+        } = constantSchema.properties;
+        const required = constantSchema.required.filter((item) =>
           ["alternative_device_type", "alternative_device_ownership"].includes(
             item,
           ),
         );
-
         setSchema({ ...constantSchema, properties, required });
-      }
-
-      if (
-        data?.alternative_mobile_number &&
-        data?.alternative_mobile_number?.toString()?.match(regex)
-      ) {
-        const propertiesMain = schema1.properties;
-        const constantSchema = propertiesMain[1];
+      } else {
         setSchema(constantSchema);
       }
-    }
+    };
 
-    if (id === "root_email_id") {
-      if (data?.email_id && !data?.email_id?.toString()?.match(regexEmail)) {
-        const newErrors = {
-          email_id: {
-            __errors: [t("PLEASE_ENTER_VALID_EMAIL")],
-          },
-        };
-        setErrors(newErrors);
+    switch (id) {
+      case "root_mobile": {
+        if (!validatePhoneNumber(data?.mobile)) {
+          newErrors.mobile = { __errors: [t("PLEASE_ENTER_VALID_NUMBER")] };
+          setMobileConditon(false);
+        } else {
+          setMobileConditon(true);
+        }
+        break;
+      }
+
+      case "root_alternative_mobile_number": {
+        if (!data?.alternative_mobile_number) {
+          updateAlternativeSchema(false);
+        } else {
+          const isValidAlternativeNumber = validatePhoneNumber(
+            data?.alternative_mobile_number,
+          );
+          if (!isValidAlternativeNumber) {
+            newErrors.alternative_mobile_number = {
+              __errors: [t("PLEASE_ENTER_VALID_NUMBER")],
+            };
+            updateAlternativeSchema(false);
+          } else {
+            updateAlternativeSchema(true);
+            setFormData(newData);
+          }
+        }
+        break;
+      }
+
+      case "root_email_id": {
+        if (!regexEmail.test(data?.email_id?.toString())) {
+          newErrors.email_id = { __errors: [t("PLEASE_ENTER_VALID_EMAIL")] };
+        }
+        break;
+      }
+
+      default: {
+        break;
       }
     }
 
-    setFormData(newData);
-
+    setErrors(newErrors);
     if (data?.alternative_mobile_number == null) {
       setFormData({
         ...newData,
@@ -354,6 +290,8 @@ export default function ContactDetailsEdit({ ip }) {
         alternative_device_type: null,
         alternative_mobile_number: null,
       });
+    } else {
+      setFormData(newData);
     }
   };
 
@@ -364,7 +302,14 @@ export default function ContactDetailsEdit({ ip }) {
     }
   };
 
-  const submit = async (data) => {
+  const onSubmit = async (data) => {
+    console.log(
+      "hello",
+      formData?.mobile != formData?.alternative_mobile_number,
+      "&&",
+      Object.keys(errors || {}).length < 1,
+      errors,
+    );
     if (formData?.mobile == formData?.alternative_mobile_number) {
       const newErrors = {
         alternative_mobile_number: {
@@ -376,7 +321,7 @@ export default function ContactDetailsEdit({ ip }) {
       setErrors(newErrors);
     } else if (
       formData?.mobile != formData?.alternative_mobile_number &&
-      !errors
+      Object.keys(errors || {}).length < 1
     ) {
       await AgRegistryService.updateAg(formData, userId);
       if (redirectLink) {
@@ -401,21 +346,19 @@ export default function ContactDetailsEdit({ ip }) {
       stepTitle={t("CONTACT_DETAILS")}
     >
       <Box py={6} px={4} mb={5}>
-        {alert ? (
+        {alert && (
           <Alert status="warning" alignItems={"start"} mb="3">
             <HStack alignItems="center" space="2" color>
               <Alert.Icon />
               <BodyMedium>{alert}</BodyMedium>
             </HStack>
           </Alert>
-        ) : (
-          <React.Fragment />
         )}
-        {page && page !== "" ? (
+        {page && page !== "" && (
           <Form
             key={lang}
             ref={formRef}
-            widgets={{ RadioBtn, CustomR, CustomOTPBox }}
+            widgets={{ RadioBtn, CustomR }}
             templates={{
               FieldTemplate,
               ArrayFieldTitleTemplate,
@@ -434,42 +377,30 @@ export default function ContactDetailsEdit({ ip }) {
               formData,
               onChange,
               onError,
+              onSubmit,
               transformErrors,
             }}
           >
-            {mobileConditon ? (
+            <VStack space={4}>
+              {redirectLink && (
+                <FrontEndTypo.Primarybutton
+                  p="4"
+                  mt="4"
+                  onPress={() => formRef.current.submit()}
+                >
+                  {t("SAVE_AND_ENROLLMENT")}
+                </FrontEndTypo.Primarybutton>
+              )}
               <FrontEndTypo.Primarybutton
                 mt="3"
                 variant={"primary"}
                 type="submit"
-                onPress={otpfunction}
+                onPress={() => formRef.current.submit()}
               >
-                {otpButton ? t("VERIFY_OTP") : t("SEND_OTP")}
+                {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
               </FrontEndTypo.Primarybutton>
-            ) : (
-              <VStack space={4}>
-                {redirectLink && (
-                  <FrontEndTypo.Primarybutton
-                    p="4"
-                    mt="4"
-                    onPress={() => submit()}
-                  >
-                    {t("SAVE_AND_ENROLLMENT")}
-                  </FrontEndTypo.Primarybutton>
-                )}
-                <FrontEndTypo.Primarybutton
-                  mt="3"
-                  variant={"primary"}
-                  type="submit"
-                  onPress={() => submit()}
-                >
-                  {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
-                </FrontEndTypo.Primarybutton>
-              </VStack>
-            )}
+            </VStack>
           </Form>
-        ) : (
-          <React.Fragment />
         )}
       </Box>
     </Layout>
