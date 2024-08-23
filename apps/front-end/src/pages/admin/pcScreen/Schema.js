@@ -1,5 +1,3 @@
-import { ReadOnly } from "component/BaseInput";
-
 export const schema1 = {
   type: "object",
   required: [
