@@ -1,3 +1,5 @@
+import { ReadOnly } from "component/BaseInput";
+
 export const schema1 = {
   type: "object",
   required: [
@@ -40,7 +42,8 @@ export const schema1 = {
     state: {
       title: "STATE",
       type: "string",
-      format: "select",
+      // format: "select",
+      readOnly: true,
     },
     district: {
       title: "DISTRICT",

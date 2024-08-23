@@ -36,19 +36,23 @@ const PcAdd = ({ footerLinks }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getData = async () => {
       let newSchema = schema1;
-      const qData = await geolocationRegistryService.getStates();
-      newSchema = getOptions(newSchema, {
-        key: "state",
-        arr: qData?.states,
-        title: "state_name",
-        value: "state_name",
-      });
-      setSchema(newSchema);
-      setLoading(false);
+      const programData = JSON.parse(localStorage.getItem("program"));
+      if (programData) {
+        setFormData({
+          ...formData,
+          state: programData?.state_name,
+        });
+        await setDistric({
+          schemaData: newSchema,
+          state: programData?.state_name,
+          district: formData?.district,
+          block: formData?.block,
+        });
+      }
     };
-    fetchData();
+    getData();
   }, []);
 
   const uiSchema = {};
@@ -211,7 +215,7 @@ const PcAdd = ({ footerLinks }) => {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -244,15 +248,6 @@ const PcAdd = ({ footerLinks }) => {
         const newErrors = {};
         setErrors(newErrors);
       }
-    }
-
-    if (id === "root_state") {
-      await setDistric({
-        schemaData: schema,
-        state: data?.state,
-        district: data?.district,
-        block: data?.block,
-      });
     }
 
     if (id === "root_district") {
