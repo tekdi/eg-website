@@ -505,18 +505,17 @@ export default function LearnerList() {
                 value={selectedPrerak}
                 onChange={handlePrerakChange}
               >
-                {prerakList &&
-                  prerakList?.map((item) => (
-                    <Checkbox key={item.user_id} value={item.user_id} mb="1">
-                      {[
-                        item?.user.first_name,
-                        item?.user.middle_name,
-                        item?.user.last_name,
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                    </Checkbox>
-                  ))}
+                {prerakList?.map((item) => (
+                  <Checkbox key={item.user_id} value={item.user_id} mb="1">
+                    {[
+                      item?.user.first_name,
+                      item?.user.middle_name,
+                      item?.user.last_name,
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  </Checkbox>
+                ))}
               </Checkbox.Group>
             </VStack>
           </Modal.Body>

@@ -86,7 +86,7 @@ const List = ({ data }) => {
 };
 
 List.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 const select2 = [
