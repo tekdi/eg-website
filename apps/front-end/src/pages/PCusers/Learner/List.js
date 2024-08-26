@@ -1,41 +1,34 @@
 import {
-  t,
+  AdminTypo,
+  CardComponent,
+  FrontEndTypo,
   IconByName,
   PCusers_layout as Layout,
-  FrontEndTypo,
-  SelectStyle,
-  CardComponent,
-  AdminTypo,
-  PcUserService,
-  benificiaryRegistoryService,
   PcuserService,
-  enumRegistryService,
+  SelectStyle,
+  benificiaryRegistoryService,
+  jsonParse,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Box,
-  Select,
-  Pressable,
-  Modal,
-  Checkbox,
-  IconButton,
-  Button,
-  Divider,
-  Stack,
-  Input,
-} from "native-base";
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import Chip, { ChipStatus } from "component/BeneficiaryStatus";
-import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
+import {
+  Box,
+  Checkbox,
+  HStack,
+  IconButton,
+  Modal,
+  Pressable,
+  Select,
+  Stack,
+  VStack,
+} from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   return (
     <VStack space="4" p="4" alignContent="center">
@@ -93,6 +86,10 @@ const List = ({ data }) => {
   );
 };
 
+List.propTypes = {
+  data: PropTypes.object,
+};
+
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
@@ -100,32 +97,44 @@ const select2 = [
 
 export default function LearnerList() {
   const [filter, setFilter] = useState({});
-  const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingList, setLoadingList] = useState(false);
-  const [loadingHeight, setLoadingHeight] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prerakList, setPrerakList] = useState();
   const [selectedPrerak, setSelectedPrerak] = useState([]);
   const ref = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setloading] = useState(false);
-  const [prerakList, setPrerakList] = useState();
   const [filteredData, setFilteredData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [beneficiary, setBeneficiary] = useState(true);
 
-  useEffect(async () => {
-    setLoadingList(true);
-    try {
-      const status = await benificiaryRegistoryService.getStatusList();
-      setSelectStatus(status);
-      getPrerakList();
-    } catch (error) {
-      console.error("Failed to fetch status list:", error);
-    }
-    setLoadingList(false);
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      try {
+        const status = await benificiaryRegistoryService.getStatusList();
+        setSelectStatus(status);
+        const result = await PcuserService.getPrerakList(filter);
+        const apiData = transformData(result?.facilitator_data);
+        setPrerakList(apiData);
+        const getSelectedPrerakList = jsonParse(
+          localStorage.getItem("pc_user_prerak_filter_for_leaner"),
+          [],
+        );
+        if (getSelectedPrerakList?.length > 0) {
+          const filteredUsers = apiData?.filter((item) =>
+            getSelectedPrerakList?.includes(item.user_id),
+          );
+          setFilteredData(filteredUsers);
+          setSelectedPrerak(getSelectedPrerakList);
+        }
+      } catch (error) {
+        console.error("Failed to fetch status list:", error);
+      }
+      setLoading(false);
+    };
+    init();
   }, []);
 
   const transformData = (data) => {
@@ -154,21 +163,7 @@ export default function LearnerList() {
     return Object.values(userMap);
   };
 
-  const getPrerakList = async () => {
-    setLoadingList(true);
-    try {
-      const result = await PcuserService.getPrerakList(filter);
-      const apiData = transformData(result?.facilitator_data);
-      setPrerakList(apiData);
-      setLoadingList(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setLoadingList(false);
-    }
-  };
-
   const onHandleChange = () => {
-    getPrerakList();
     setIsModalOpen(true);
     setFilter({});
   };
@@ -181,6 +176,10 @@ export default function LearnerList() {
   const handleContinueBtn = () => {
     const filteredUsers = prerakList?.filter((item) =>
       selectedPrerak?.includes(item.user_id),
+    );
+    localStorage.setItem(
+      "pc_user_prerak_filter_for_leaner",
+      JSON.stringify(selectedPrerak),
     );
     setFilteredData(filteredUsers);
     setIsModalOpen(false);
@@ -221,115 +220,90 @@ export default function LearnerList() {
       analyticsPageTitle={"LEARNER_PROFILE"}
       pageTitle={t("LEARNER_PROFILE")}
     >
-      <VStack ref={ref}>
-        <HStack
-          justifyContent="space-between"
-          space="2"
-          alignItems="center"
-          p="4"
+      <VStack ref={ref} p="4" space={4}>
+        <Box
+          flex="1"
+          onClick={() => onHandleChange()}
+          borderColor="textMaroonColor.500"
+          borderBottomColor="black"
+          bg="white"
+          borderWidth="2px"
+          p="2"
+          minH="30px"
+          rounded={"full"}
         >
-          <Box
-            flex="2"
-            onClick={() => onHandleChange()}
-            placeholderTextColor="textBlack.500"
-            borderColor="textMaroonColor.500"
-            borderBottomColor="black"
-            bg="#FFFFFF"
-            borderWidth="2px"
-            p="2"
-            minH="30px"
-            rounded={"full"}
-          >
-            <HStack alignItems={"center"} justifyContent={"space-between"}>
-              <FrontEndTypo.H4>{t("SELECT_PRERAK")}</FrontEndTypo.H4>
-              <IconByName name="ArrowDownSLineIcon" />
-            </HStack>
-          </Box>
-        </HStack>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <FrontEndTypo.H4>{t("SELECT_PRERAK")}</FrontEndTypo.H4>
+            <IconByName name="ArrowDownSLineIcon" />
+          </HStack>
+        </Box>
         <HStack>
-          <Box
-            marginLeft={"25px"}
-          >{`Selected Prerak: ${selectedPrerak?.length}`}</Box>
+          <Box>{`Selected Prerak: ${selectedPrerak?.length}`}</Box>
         </HStack>
-        <HStack
-          justifyContent="space-between"
-          space="2"
-          alignItems="center"
-          p="4"
-        >
-          <Box flex="2">
-            <SelectStyle
-              overflowX="hidden"
-              selectedValue={filter?.status || ""}
-              placeholder={t("STATUS_ALL")}
-              onValueChange={(nextValue) => {
-                setFilter({
-                  ...filter,
-                  status: nextValue,
-                  search: undefined,
-                  page: 1,
-                });
-                setFilteredData([]);
-                setSelectedPrerak([]);
-                setIsDisable(true);
-              }}
-              _selectedItem={{
-                bg: "cyan.600",
-                endIcon: <IconByName name="ArrowDownSLineIcon" />,
-              }}
-              accessibilityLabel="Select a position for Menu"
-            >
-              <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
-              {Array.isArray(selectStatus) &&
-                selectStatus.map((option, index) => (
-                  <Select.Item
-                    key={index || ""}
-                    label={t(option.title)}
-                    value={option.value}
-                  />
-                ))}
-            </SelectStyle>
-          </Box>
-          <Box flex="2">
-            <SelectStyle
-              overflowX="hidden"
-              selectedValue={filter?.sortType ? filter?.sortType : ""}
-              placeholder={t("SORT_BY")}
-              onValueChange={(nextValue) => {
-                setFilter({
-                  ...filter,
-                  sortType: nextValue,
-                  search: undefined,
-                  page: 1,
-                });
-                setFilteredData([]);
-                setSelectedPrerak([]);
-                setIsDisable(true);
-              }}
-              _selectedItem={{
-                bg: "secondary.700",
-              }}
-              accessibilityLabel="Select a position for Menu"
-            >
-              {select2.map((option, index) => (
+        <HStack justifyContent="space-between" space="2" alignItems="center">
+          <SelectStyle
+            flex="1"
+            overflowX="hidden"
+            selectedValue={filter?.status || ""}
+            placeholder={t("STATUS_ALL")}
+            onValueChange={(nextValue) => {
+              setFilter({
+                ...filter,
+                status: nextValue,
+                search: undefined,
+                page: 1,
+              });
+              setFilteredData([]);
+              setSelectedPrerak([]);
+              setIsDisable(true);
+            }}
+            _selectedItem={{
+              bg: "cyan.600",
+              endIcon: <IconByName name="ArrowDownSLineIcon" />,
+            }}
+            accessibilityLabel="Select a position for Menu"
+          >
+            <Select.Item key={0} label={t("BENEFICIARY_ALL")} value={""} />
+            {Array.isArray(selectStatus) &&
+              selectStatus.map((option) => (
                 <Select.Item
-                  key={index || ""}
-                  label={t(option.label)}
+                  key={option?.value}
+                  label={t(option.title)}
                   value={option.value}
-                  p="5"
                 />
               ))}
-            </SelectStyle>
-          </Box>
+          </SelectStyle>
+          <SelectStyle
+            flex="1"
+            overflowX="hidden"
+            selectedValue={filter?.sortType ? filter?.sortType : ""}
+            placeholder={t("SORT_BY")}
+            onValueChange={(nextValue) => {
+              setFilter({
+                ...filter,
+                sortType: nextValue,
+                search: undefined,
+                page: 1,
+              });
+              setFilteredData([]);
+              setSelectedPrerak([]);
+              setIsDisable(true);
+            }}
+            _selectedItem={{
+              bg: "secondary.700",
+            }}
+            accessibilityLabel="Select a position for Menu"
+          >
+            {select2.map((option) => (
+              <Select.Item
+                key={option?.value}
+                label={t(option.label)}
+                value={option.value}
+                p="5"
+              />
+            ))}
+          </SelectStyle>
         </HStack>
-        <Box
-          onClick={() => onHandleChange()}
-          mb="2"
-          mt="4"
-          style={{ cursor: "pointer" }}
-          width={"100%"}
-          alignItems={"center"}
-        ></Box>
       </VStack>
       <Box p={4} flex={1}>
         {filteredData.length <= 0 &&
@@ -406,7 +380,7 @@ export default function LearnerList() {
           !filter?.search &&
           !filter?.status &&
           !filter?.sortType ? (
-          filteredData.map((item, index) => (
+          filteredData.map((item) => (
             <Box key={item.user_id}>
               <FrontEndTypo.H3 my={"15px"}>
                 {item?.user.first_name} {item?.user.middle_name}{" "}
@@ -490,11 +464,27 @@ export default function LearnerList() {
         size="xl"
       >
         <Modal.Content>
-          <Modal.Header p="5" borderBottomWidth="0">
+          <Modal.Header p="4">
+            <Checkbox
+              colorScheme="red"
+              position="absolute"
+              left="0"
+              top="1"
+              isChecked={prerakList?.length <= selectedPrerak?.length}
+              onChange={(e) => {
+                setIsDisable(false);
+                if (e) {
+                  setSelectedPrerak(prerakList.map((i) => i.user_id));
+                } else {
+                  setSelectedPrerak([]);
+                }
+              }}
+            >
+              {t("SELECT_ALL")}
+            </Checkbox>
             <AdminTypo.H3 textAlign="center" color="black">
               {t("SELECT_PRERAK")}
             </AdminTypo.H3>
-
             <IconButton
               icon={<IconByName name="CloseCircleLineIcon" size="4" />}
               onPress={() => setIsModalOpen(false)}
@@ -504,60 +494,46 @@ export default function LearnerList() {
             />
           </Modal.Header>
 
-          <Modal.Body p="5" pb="10">
+          <Modal.Body p="4">
             <VStack space="5">
-              <HStack
-                space="5"
-                // borderBottomWidth={1}
-                // borderBottomColor="gray.300"
-                pb="5"
-                alignItems={"center"}
-                justifyContent={"space-between"}
+              <Checkbox.Group
+                colorScheme="red"
+                value={selectedPrerak}
+                onChange={handlePrerakChange}
               >
-                <Checkbox.Group
-                  colorScheme="gray"
-                  value={selectedPrerak}
-                  onChange={handlePrerakChange}
-                >
-                  {prerakList &&
-                    prerakList?.map((item) => (
-                      <Checkbox key={item.user_id} value={item.user_id} my={2}>
-                        {[
-                          item?.user.first_name,
-                          item?.user.middle_name,
-                          item?.user.last_name,
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      </Checkbox>
-                    ))}
-                </Checkbox.Group>
-              </HStack>
-
-              <HStack justifyContent="space-between" alignItems="center" mt="5">
-                <Button
-                  colorScheme="red"
-                  onPress={(e) => setIsModalOpen(false)}
-                >
-                  {t("GO_BACK")}
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onPress={handleContinueBtn}
-                  isDisabled={isDisable}
-                >
-                  {t("VIEW_LEARNERS")}
-                </Button>
-              </HStack>
+                {prerakList &&
+                  prerakList?.map((item) => (
+                    <Checkbox key={item.user_id} value={item.user_id} mb="1">
+                      {[
+                        item?.user.first_name,
+                        item?.user.middle_name,
+                        item?.user.last_name,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </Checkbox>
+                  ))}
+              </Checkbox.Group>
             </VStack>
           </Modal.Body>
+          <Modal.Footer justifyContent="space-between" alignItems="center">
+            <FrontEndTypo.Secondarybutton
+              onPress={(e) => setIsModalOpen(false)}
+            >
+              {t("GO_BACK")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton
+              colorScheme="red"
+              onPress={handleContinueBtn}
+              isDisabled={isDisable}
+            >
+              {t("VIEW_LEARNERS")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
         </Modal.Content>
       </Modal>
     </Layout>
   );
 }
 
-LearnerList.propTypes = {
-  userTokenInfo: PropTypes.any,
-  footerLinks: PropTypes.any,
-};
+LearnerList.propTypes = {};

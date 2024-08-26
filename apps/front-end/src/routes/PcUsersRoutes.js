@@ -26,10 +26,7 @@ const CampLearnerList = lazy(
   () => import("pages/PCusers/camps/CampLearnerList"),
 );
 const CampForm = lazy(() => import("pages/PCusers/camps/CampForm/Form"));
-const PcProfile = lazy(() => import("pages/PCusers/Profile/PcProfile"));
-const PcProfileDetails = lazy(
-  () => import("pages/PCusers/Profile/PcProfileDetails"),
-);
+const PcProfileDetails = lazy(() => import("pages/PCusers/Profile/Details"));
 const EditProfile = lazy(() => import("pages/PCusers/Profile/EditProfile"));
 const PrerakList = lazy(() => import("pages/PCusers/Prerak/PrerakList"));
 
@@ -37,7 +34,7 @@ const PrerakProfileView = lazy(
   () => import("pages/PCusers/Prerak/PrerakProfileView"),
 );
 const PrerakProfile = lazy(() => import("pages/PCusers/Prerak/PrerakProfile"));
-const LearnerList = lazy(() => import("pages/PCusers/Learner/LearnerList"));
+const LearnerList = lazy(() => import("pages/PCusers/Learner/List"));
 const LearnerProfileView = lazy(
   () => import("pages/PCusers/Learner/LearnerProfileView"),
 );
@@ -114,10 +111,6 @@ export default [
   },
   {
     path: "/profile",
-    component: PcProfile,
-  },
-  {
-    path: "/profile/:step",
     component: PcProfileDetails,
   },
   {
@@ -141,7 +134,7 @@ export default [
     component: PrerakProfile,
   },
   {
-    path: "/learner/learnerList",
+    path: "/learners",
     component: LearnerList,
   },
   {
