@@ -1,5 +1,4 @@
 import {
-  AdminTypo,
   CardComponent,
   FrontEndTypo,
   IconByName,
@@ -343,21 +342,21 @@ export default function LearnerList() {
                         </Chip>
                       </VStack>
                       <VStack
-                        pl="2"
-                        flex="1"
                         wordWrap="break-word"
+                        flex="1"
                         whiteSpace="nowrap"
-                        overflow="hidden"
                         textOverflow="ellipsis"
+                        overflow="hidden"
+                        pl="2"
                       >
                         <FrontEndTypo.H3 bold color="textGreyColor.800">
-                          {item?.first_name}
-                          {item?.middle_name &&
-                            item?.middle_name !== "null" &&
-                            ` ${item.middle_name}`}
-                          {item?.last_name &&
-                            item?.last_name !== "null" &&
-                            ` ${item.last_name}`}
+                          {[
+                            item?.first_name,
+                            item?.middle_name,
+                            item?.last_name,
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
                         </FrontEndTypo.H3>
                         <FrontEndTypo.H5 color="textGreyColor.800">
                           {item?.enrollment_number}
@@ -366,9 +365,9 @@ export default function LearnerList() {
                     </HStack>
                     <VStack alignItems="end" flex={[1]}>
                       <ChipStatus
-                        w="fit-content"
-                        status={item?.status}
                         rounded={"sm"}
+                        status={item?.status}
+                        w="fit-content"
                       />
                     </VStack>
                   </HStack>
@@ -383,24 +382,29 @@ export default function LearnerList() {
           filteredData.map((item) => (
             <Box key={item.user_id}>
               <FrontEndTypo.H3 my={"15px"}>
-                {item?.user.first_name} {item?.user.middle_name}{" "}
-                {item?.user.last_name}
+                {[
+                  item?.user.first_name,
+                  item?.user.middle_name,
+                  item?.user.last_name,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
               </FrontEndTypo.H3>
               {item?.academic_year?.map((academic) => {
                 return (
                   <HStack
-                    key={academic.user_id}
                     bg="gray.100"
                     borderColor="gray.300"
-                    borderRadius="10px"
+                    key={academic.user_id}
                     borderWidth="1px"
                     my={2}
+                    borderRadius="10px"
                     px={4}
                   >
                     <HStack
-                      width={"100%"}
-                      alignItems="center"
                       justifyContent="space-between"
+                      alignItems="center"
+                      width={"100%"}
                     >
                       <Stack space="md" alignItems="center">
                         {academic?.name}
@@ -411,10 +415,10 @@ export default function LearnerList() {
                           onPress={() => {
                             navigate(`/learner/LearnerListView`, {
                               state: {
-                                academic: academic,
-                                prerak_id: item?.user_id,
-                                program_id: item?.program_id,
                                 filter: location?.state,
+                                prerak_id: item?.user_id,
+                                academic: academic,
+                                program_id: item?.program_id,
                               },
                             });
                           }}
@@ -448,12 +452,12 @@ export default function LearnerList() {
                 )}
               </VStack>
             </VStack>
-            <AdminTypo.H4 textAlign="center" color="black">
+            <FrontEndTypo.H4 textAlign="center" color="black">
               {t("SELECT_A_PRERAK")}
-            </AdminTypo.H4>
-            <AdminTypo.H6 textAlign="center" color="black">
+            </FrontEndTypo.H4>
+            <FrontEndTypo.H6 textAlign="center" color="black">
               {t("SELECT_AT_LEAST_ONE_PRERAK")}
-            </AdminTypo.H6>
+            </FrontEndTypo.H6>
           </VStack>
         )}
       </Box>
@@ -482,9 +486,9 @@ export default function LearnerList() {
             >
               {t("SELECT_ALL")}
             </Checkbox>
-            <AdminTypo.H3 textAlign="center" color="black">
+            <FrontEndTypo.H3 textAlign="center" color="black">
               {t("SELECT_PRERAK")}
-            </AdminTypo.H3>
+            </FrontEndTypo.H3>
             <IconButton
               icon={<IconByName name="CloseCircleLineIcon" size="4" />}
               onPress={() => setIsModalOpen(false)}
