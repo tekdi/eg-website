@@ -16,7 +16,7 @@ import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-const List = ({ data, location }) => {
+const List = ({ data }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -85,6 +85,10 @@ const List = ({ data, location }) => {
   );
 };
 
+List.propTypes = {
+  data: PropTypes.array,
+};
+
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
@@ -104,7 +108,7 @@ export default function LearnerListView() {
   const location = useLocation();
 
   const handleBack = () => {
-    navigate(`/learner/learnerList`, {
+    navigate(`/learners`, {
       state: { filter: location?.state },
     });
   };
@@ -219,7 +223,7 @@ export default function LearnerListView() {
           </Box>
         </HStack>
       </VStack>
-      {!loadingList ? (
+      {!loadingList && (
         <InfiniteScroll
           dataLength={data?.length}
           // next={() =>
@@ -240,9 +244,6 @@ export default function LearnerListView() {
         >
           <List data={data} location={location} />
         </InfiniteScroll>
-      ) : (
-        // Loading component here if needed
-        <></>
       )}
     </Layout>
   );
