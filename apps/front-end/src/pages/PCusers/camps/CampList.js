@@ -59,7 +59,6 @@ export default function CampList() {
     search: "",
   });
   const [loadingList, setLoadingList] = useState(true);
-  const [bodyHeight, setBodyHeight] = useState(0);
   const [prerakList, setPrerakList] = React.useState([]);
   const [selectedPrerak, setSelectedPrerak] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -137,14 +136,13 @@ export default function CampList() {
 
   return (
     <Layout
-      getBodyHeight={(e) => setBodyHeight(e)}
       _footer={{ menues: true }}
       _page={{ _scollView: { bg: "formBg.500" } }}
       analyticsPageTitle={"CAMP_LIST"}
       pageTitle={t("CAMP_LIST")}
       _appBar={{
         onPressBackButton: () => {
-          navigate("/camps");
+          navigate("/");
         },
         isEnableSearchBtn: "true",
       }}

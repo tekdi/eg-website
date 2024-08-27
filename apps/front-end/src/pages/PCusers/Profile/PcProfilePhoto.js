@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Image, VStack } from "native-base";
 import {
-  PCusers_layout as Layout,
-  H2,
   FrontEndTypo,
-  benificiaryRegistoryService,
+  H2,
+  PCusers_layout as Layout,
   PcuserService,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
+import { Image, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function PcProfilePhoto() {
+export default function PcProfilePhoto({ userTokenInfo }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { id, photoNo } = useParams();
-  const page = photoNo ? parseInt(photoNo) : 1;
+  const { id } = useParams();
   const [file, setFile] = useState();
-  const [benificiary, setBenificiary] = useState({});
 
   const onPressBackButton = () => {
     navigate(`/profile`);
@@ -26,11 +24,10 @@ export default function PcProfilePhoto() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await PcuserService.getPcProfile();
-      setBenificiary(data?.data);
       setFile(data?.data?.document_id);
     };
     fetchData();
-  }, [id, photoNo]);
+  }, [id]);
 
   return (
     <Layout
@@ -41,6 +38,7 @@ export default function PcProfilePhoto() {
       }}
       _page={{ _scollView: { bg: "white" } }}
       stepTitle={t("PHOTOS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack py={6} px={4} mb={5} space="6" bg="gray.100">
         <H2 color="textMaroonColor.400">{t("ADD_PHOTOS")}</H2>
@@ -56,22 +54,14 @@ export default function PcProfilePhoto() {
                 <Image w={"120"} h="200" source={{ uri: "/profile1.svg" }} />
               ),
             }}
-            key={page}
             value={file}
             onChange={(e) => console.log(e)}
           />
-          {/* <FrontEndTypo.Primarybutton
-            p="4"
-            mt="4"
-            onPress={() => navigate(`/beneficiary/${id}/upload/${page + 1}`)}
-          >
-            {t("SAVE_AND_NEXT")}
-          </FrontEndTypo.Primarybutton> */}
 
           <FrontEndTypo.Secondarybutton
             p="4"
             mt="4"
-            onPress={() => navigate(`/profile/basicdetails`)}
+            onPress={() => navigate(`/profile`)}
           >
             {t("SAVE_AND_PROFILE")}
           </FrontEndTypo.Secondarybutton>
@@ -80,3 +70,7 @@ export default function PcProfilePhoto() {
     </Layout>
   );
 }
+
+PcProfilePhoto.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
