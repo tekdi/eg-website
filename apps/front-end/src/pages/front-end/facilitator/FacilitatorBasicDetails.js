@@ -4,12 +4,10 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  arrList,
   enumRegistryService,
   facilitatorRegistryService,
   getOnboardingMobile,
   getSelectedProgramId,
-  objProps,
   setSelectedAcademicYear,
   setSelectedProgramId,
   t,
@@ -33,19 +31,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const fa_id = localStorage.getItem("id");
   const [loading, setLoading] = useState(true);
   const [countLoad, setCountLoad] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [cohortData, setCohortData] = useState(null);
-  const [programData, setProgramData] = useState(null);
-  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
   const [selectedCohortData, setSelectedCohortData] = useState(null);
-  const [selectedProgramData, setSelectedProgramData] = useState(null);
-  const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
-  const [academicData, setAcademicData] = useState([]);
-  const [isTodayAttendace, setIsTodayAttendace] = useState();
-  const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
-  );
+  const [isOnline] = useState(window ? window.navigator.onLine : false);
 
   React.useEffect(() => {
     facilitatorDetails();
@@ -59,11 +47,6 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
   };
 
   const getEditRequestFields = async () => {
-    const { id } = userTokenInfo?.authUser || {};
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
     const result = await getIndexedDBItem(`editRequest`);
     let field;
     const parseField = result?.data?.[0]?.fields;
@@ -174,20 +157,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
+                eventItem?.lms_test_tracking?.length < 1,
             )?.[0] || {};
           if (data) {
-            setIsTodayAttendace(
-              data?.attendances.filter(
-                (attendance) =>
-                  attendance.user_id == fa_id &&
-                  attendance.status == "present" &&
-                  data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
-            );
-
-            setCertificateData(data);
             if (data?.lms_test_tracking?.length > 0) {
               setLmsDetails(data?.lms_test_tracking?.[0]);
             }
@@ -228,43 +200,15 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
     async function fetchData() {
       if (!facilitator?.notLoaded === true) {
         // ...async operations
-        const res = objProps(facilitator);
-        setProgress(
-          arrList(
-            {
-              ...res,
-              qua_name: facilitator?.qualifications?.qualification_master?.name,
-            },
-            [
-              "device_ownership",
-              "mobile",
-              "device_type",
-              "gender",
-              "marital_status",
-              "social_category",
-              "name",
-              "contact_number",
-              "availability",
-              "aadhar_no",
-              "aadhaar_verification_mode",
-              "aadhar_verified",
-              "qualification_ids",
-              "qua_name",
-            ]
-          )
-        );
         //check exist user registered
         try {
           let onboardingURLData = await getOnboardingURLData();
-          setCohortData(onboardingURLData?.cohortData);
-          setProgramData(onboardingURLData?.programData);
           //get program id and store in localstorage
 
           const user_program_id = facilitator?.program_faciltators?.program_id;
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
           });
-          setSelectedProgramData(program_data[0]);
           await setSelectedProgramId(program_data[0]);
           //check mobile number with localstorage mobile no
           let mobile_no = facilitator?.mobile;
@@ -284,9 +228,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
             setSelectedCohortData(cohort_data);
             await setSelectedAcademicYear(cohort_data);
             localStorage.setItem("loadCohort", "yes");
-            setIsUserRegisterExist(true);
           } else {
-            setIsUserRegisterExist(false);
             await showSelectCohort();
           }
         } catch (e) {}
@@ -303,18 +245,11 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
     if (loadCohort == null || loadCohort == "no") {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
-      );
-      setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
       localStorage.setItem("loadCohort", "yes");
       if (user_cohort_list?.data.length == 1) {
-        setSelectCohortForm(false);
         await checkDataToIndex();
         await checkUserToIndex();
-      } else {
-        setSelectCohortForm(true);
       }
     }
   };
@@ -349,11 +284,11 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
 
   return (
     <Layout
+      loading={loading}
       _appBar={{
         name: t("BASIC_DETAILS"),
         onPressBackButton: (e) => navigate(`/profile`),
         profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
@@ -387,25 +322,14 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                 <VStack>
                   <HStack justifyContent="space-between" alignItems="Center">
                     <FrontEndTypo.H3 color="textGreyColor.200" fontWeight="700">
-                      {`${
-                        facilitator?.first_name ? facilitator?.first_name : ""
-                      } ${
-                        facilitator?.middle_name ? facilitator?.middle_name : ""
-                      } ${
-                        facilitator?.last_name ? facilitator?.last_name : ""
-                      }`}
+                      {[
+                        facilitator?.first_name,
+                        facilitator?.middle_name,
+                        facilitator?.last_name,
+                      ]
+                        .filter((name) => name)
+                        .join(" ")}
                     </FrontEndTypo.H3>
-
-                    {/* {isNameEdit() && (
-                      <IconByName
-                        name="PencilLineIcon"
-                        color="iconColor.200"
-                        _icon={{ size: "20" }}
-                        onPress={(e) => {
-                          navigate(`/profile/edit/basic_details`);
-                        }}
-                      />
-                    )} */}
                   </HStack>
                   <HStack alignItems="Center">
                     {/* <IconByName name="Cake2LineIcon" color="iconColor.300" /> */}
@@ -448,7 +372,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
                           height={"36px"}
                           borderRadius="50%"
                         />
-                      )
+                      ),
                   )}
                 </HStack>
                 <HStack>
