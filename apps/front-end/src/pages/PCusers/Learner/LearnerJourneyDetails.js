@@ -33,7 +33,7 @@ export default function BenificiaryJourney() {
   }, [id]);
 
   const onPressBackButton = async () => {
-    navigate(`/learner/learnerListView/${id}`);
+    navigate(`/learners/list-view/${id}`);
   };
 
   const agDetails = async () => {
@@ -71,7 +71,7 @@ export default function BenificiaryJourney() {
 
           return acc;
         },
-        { dates: [], months: [], years: [] }
+        { dates: [], months: [], years: [] },
       );
       setauditMonth(uniqueDates.months);
       setauditYear(uniqueDates.years);

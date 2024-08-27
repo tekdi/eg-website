@@ -19,7 +19,7 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
   useEffect(() => {
     setLoading(true);
     setBenificiary(
-      jsonParse(location?.state?.program_beneficiaries?.documents_status || {})
+      jsonParse(location?.state?.program_beneficiaries?.documents_status || {}),
     );
     setLoading(false);
   }, []);
@@ -32,7 +32,7 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
         lang,
         setLang,
         onPressBackButton: (e) => {
-          navigate(`/learner/learnerListView/${id}`);
+          navigate(`/learners/list-view/${id}`);
         },
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}

@@ -138,39 +138,39 @@ export default [
     component: LearnerList,
   },
   {
-    path: "/learner/learnerListView",
+    path: "/learners/list-view",
     component: LearnerListView,
   },
   {
-    path: "/learner/learnerListView/:id",
+    path: "/learners/list-view/:id",
     component: LearnerProfileView,
   },
   {
-    path: "/learner/learnerListView/:id/learnerBasicDetails",
+    path: "/learners/list-view/:id/learnerBasicDetails",
     component: LearnerBasicDetails,
   },
   {
-    path: "/learner/learnerListView/:id/learnerAddAddress",
+    path: "/learners/list-view/:id/learnerAddAddress",
     component: LearnerAddAddress,
   },
   {
-    path: "/learner/learnerListView/:id/learnerDocumentDetails",
+    path: "/learners/list-view/:id/learnerDocumentDetails",
     component: LearnerDocumentDetails,
   },
   {
-    path: "/learner/learnerListView/:id/learnerEducationDetails",
+    path: "/learners/list-view/:id/learnerEducationDetails",
     component: LearnerEducationDetails,
   },
   {
-    path: "/learner/learnerListView/:id/learnerEnrollMentDetails",
+    path: "/learners/list-view/:id/learnerEnrollMentDetails",
     component: LearnerEnrollMentDetails,
   },
   {
-    path: "/learner/learnerListView/:id/learnerPCRDetails",
+    path: "/learners/list-view/:id/learnerPCRDetails",
     component: LearnerPCRDetails,
   },
   {
-    path: "/learner/learnerListView/:id/learnerJourneyDetails",
+    path: "/learners/list-view/:id/learnerJourneyDetails",
     component: LearnerJourneyDetails,
   },
   {

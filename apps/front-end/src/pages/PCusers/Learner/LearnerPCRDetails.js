@@ -124,7 +124,7 @@ const PcrDetails = () => {
         onlyIconsShow: ["backBtn", "loginBtn", "langBtn", "userInfo"],
         name: t("PCR_DETAILS"),
         onPressBackButton: (e) => {
-          navigate(`/learner/learnerListView/${userId}`);
+          navigate(`/learners/list-view/${userId}`);
         },
       }}
       analyticsPageTitle={"BENEFICIARY_PCR_DETAILS"}
