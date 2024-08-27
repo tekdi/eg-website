@@ -11,8 +11,9 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export default function FacilitatorBasicDetails() {
+export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const [pcDetails, setPcDetails] = useState();
   const navigate = useNavigate();
 
@@ -28,11 +29,11 @@ export default function FacilitatorBasicDetails() {
     <Layout
       _appBar={{
         name: t("BASIC_DETAILS"),
-        onPressBackButton: (e) => navigate(`/profile`),
+        onPressBackButton: () => navigate(`/`),
       }}
       analyticsPageTitle={"PC_BASIC_DETAILS"}
       pageTitle={t("PC_BASIC_DETAILS")}
-      stepTitle={t("PC_BASIC_DETAILS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
@@ -130,3 +131,7 @@ export default function FacilitatorBasicDetails() {
     </Layout>
   );
 }
+
+FacilitatorBasicDetails.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

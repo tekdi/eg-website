@@ -1,27 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
+import Form from "@rjsf/core";
 import {
-  PCusers_layout as Layout,
-  CardComponent,
   FrontEndTypo,
-  getOptions,
-  geolocationRegistryService,
+  PCusers_layout as Layout,
   PcuserService,
 } from "@shiksha/common-lib";
-import { useTranslation } from "react-i18next";
-import Form from "@rjsf/core";
-import { schema1 } from "./schema";
-import {
-  templates,
-  widgets,
-  validator,
-  transformErrors,
-  onError,
-} from "v2/components/Static/FormBaseInput/FormBaseInput";
-import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  onError,
+  templates,
+  transformErrors,
+  validator,
+  widgets,
+} from "v2/components/Static/FormBaseInput/FormBaseInput";
+import { schema1 } from "./schema";
 
-const EditProfile = () => {
+const EditProfile = ({ userTokenInfo }) => {
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const formRef = useRef();
@@ -29,7 +27,7 @@ const EditProfile = () => {
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
   const [yearsRange, setYearsRange] = useState([1980, 2030]);
-  const { step, id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
     let minYear = moment().subtract("years", 30);
@@ -73,7 +71,7 @@ const EditProfile = () => {
     let newFormData = data.formData;
     if (_.isEmpty(errors)) {
       await PcuserService.editProfile(newFormData);
-      navigate(`/profile/basicdetails`);
+      navigate(`/profile`);
     }
   };
 
@@ -85,9 +83,10 @@ const EditProfile = () => {
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t("YOUR_PROFILE")}</FrontEndTypo.H2>,
       }}
-      analyticsPageTitle={"FACILITATOR_PROFILE"}
-      pageTitle={t("FACILITATOR")}
-      stepTitle={t("PROFILE")}
+      analyticsPageTitle={"PC_BASIC_DETAILS"}
+      pageTitle={t("PC_BASIC_DETAILS")}
+      stepTitle={t("EDIT")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack p={4}>
         <Form
@@ -117,10 +116,6 @@ const EditProfile = () => {
             onPress={() => {
               if (formRef.current.validateForm()) {
                 formRef?.current?.submit();
-              } else {
-                if (formRef.current.validateForm()) {
-                  formRef?.current?.submit();
-                }
               }
             }}
           >
@@ -133,3 +128,7 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
+
+EditProfile.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
