@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { HStack, VStack, Box, Divider, Alert } from "native-base";
 import {
@@ -13,23 +13,21 @@ import {
   AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
+import PropTypes from "prop-types";
 
 export default function CampProfileView({ userTokenInfo }) {
-  const [loading, setloading] = React.useState(false);
+  const [loading, setloading] = useState(false);
   const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState({});
-  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
-    React.useState();
-  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
-    React.useState();
-  const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
-    React.useState();
   const navigate = useNavigate();
-  const [prerakProfile, setPrerakProfile] = React.useState();
+  const [prerakProfile, setPrerakProfile] = useState();
   const [loadingList, setLoadingList] = useState(false);
   const location = useLocation();
-  const [beneficiary, setBeneficiary] = React.useState({});
+  const [beneficiary, setBeneficiary] = useState({});
   const [enumOptions, setEnumOptions] = useState({});
+
+  useEffect(() => {
+    getPrerakCampProfile();
+  }, []);
 
   const getPrerakCampProfile = async () => {
     setLoadingList(true);
@@ -40,9 +38,10 @@ export default function CampProfileView({ userTokenInfo }) {
         user_id: location.state?.user_id,
       };
       const result = await campService.getPrerakCampProfile(id, payload);
+      console.log("getPrerakCampProfile", result);
       setPrerakProfile(result?.faciltator[0]);
-      const data = await enumRegistryService.listOfEnum();
-      setEnumOptions(data?.data ? data?.data?.FACILITATOR_STATUS : {});
+      // const data = await enumRegistryService.listOfEnum();
+      // setEnumOptions(data?.data ? data?.data?.FACILITATOR_STATUS : {});
       setLoadingList(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -51,21 +50,28 @@ export default function CampProfileView({ userTokenInfo }) {
     }
   };
 
-  React.useEffect(() => {
-    getPrerakCampProfile();
-  }, []);
+  const navigateOnClick = (path) => {
+    navigate(path, {
+      state: {
+        academic_year_id: location.state?.academic_year_id,
+        program_id: location.state?.program_id,
+        user_id: location.state?.user_id,
+      },
+    });
+  };
 
   return (
     <Layout
       _appBar={{
-        name: t("PRERAK_PROFILE"),
+        name: t("CAMP_DETAILS"),
         onPressBackButton: () => {
           navigate("/camps");
         },
       }}
       loading={loading}
-      analyticsPageTitle={"PRERAK_PROFILE"}
-      pageTitle={t("PRERAK_PROFILE")}
+      analyticsPageTitle={"CAMP_DETAILS"}
+      pageTitle={t("CAMP_DETAILS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       {beneficiary?.is_deactivated ? (
         <Alert status="warning" alignItems="start" mb="3" mt="4">
@@ -74,7 +80,7 @@ export default function CampProfileView({ userTokenInfo }) {
           </HStack>
         </Alert>
       ) : (
-        <VStack paddingBottom="64px" bg="gray.200">
+        <VStack paddingBottom="64px">
           <VStack paddingLeft="16px" paddingRight="16px" space="24px">
             <Box justifyContent={"space-between"} flexWrap="wrap">
               <AdminTypo.H3
@@ -151,7 +157,7 @@ export default function CampProfileView({ userTokenInfo }) {
               </VStack>
             </Box>
 
-            <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+            <VStack space={"4"}>
               <FrontEndTypo.H3 bold color="textGreyColor.800">
                 {t("CAMP_DETAILS")}
               </FrontEndTypo.H3>
@@ -161,80 +167,58 @@ export default function CampProfileView({ userTokenInfo }) {
                 borderColor="btnGray.100"
                 borderRadius="10px"
                 borderWidth="1px"
-                pb="6"
+                p="4"
               >
-                <VStack
-                  paddingLeft="16px"
-                  paddingRight="16px"
-                  paddingTop="16px"
-                >
-                  <VStack space="2" paddingTop="5">
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack space="md" alignItems="Center">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-                        <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
-                      </HStack>
+                <VStack space="2">
+                  <HStack alignItems="Center" justifyContent="space-between">
+                    <HStack space="md" alignItems="Center">
+                      <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
                     </HStack>
-                    <Divider
-                      orientation="horizontal"
-                      bg="btnGray.100"
-                      thickness="1"
+                    <IconByName
+                      name="ArrowRightSFillIcon"
+                      onPress={() => {}}
+                      color="maroon.400"
                     />
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack space="md" alignItems="Center">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-                        <FrontEndTypo.H3>{t("KIT_DETAILS")}</FrontEndTypo.H3>
-                      </HStack>
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={() => {
-                          navigate(
-                            `/camps/CampProfileView/${id}/edit_kit_details`,
-                            {
-                              state: {
-                                academic_year_id:
-                                  location.state?.academic_year_id,
-                                program_id: location.state?.program_id,
-                                user_id: location.state?.user_id,
-                              },
-                            }
-                          );
-                        }}
-                        color="maroon.400"
-                      />
+                  </HStack>
+                  <Divider
+                    orientation="horizontal"
+                    bg="btnGray.100"
+                    thickness="1"
+                  />
+                  <HStack alignItems="Center" justifyContent="space-between">
+                    <HStack space="md" alignItems="Center">
+                      <FrontEndTypo.H3>{t("KIT_DETAILS")}</FrontEndTypo.H3>
                     </HStack>
+                    <IconByName
+                      name="ArrowRightSFillIcon"
+                      onPress={() =>
+                        navigateOnClick(
+                          `/camps/CampProfileView/${id}/edit_kit_details`,
+                        )
+                      }
+                      color="maroon.400"
+                    />
+                  </HStack>
 
-                    <Divider
-                      orientation="horizontal"
-                      bg="btnGray.100"
-                      thickness="1"
-                    />
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack space="md" alignItems="Center">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-                        <FrontEndTypo.H3>
-                          {t("CAMP_FACILITIES")}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={() => {
-                          navigate(
-                            `/camps/CampProfileView/${id}/edit_property_facilities`,
-                            {
-                              state: {
-                                academic_year_id:
-                                  location.state?.academic_year_id,
-                                program_id: location.state?.program_id,
-                                user_id: location.state?.user_id,
-                              },
-                            }
-                          );
-                        }}
-                        color="maroon.400"
-                      />
+                  <Divider
+                    orientation="horizontal"
+                    bg="btnGray.100"
+                    thickness="1"
+                  />
+                  <HStack alignItems="Center" justifyContent="space-between">
+                    <HStack space="md" alignItems="Center">
+                      <FrontEndTypo.H3>{t("CAMP_FACILITIES")}</FrontEndTypo.H3>
                     </HStack>
-                  </VStack>
+                    <IconByName
+                      name="ArrowRightSFillIcon"
+                      onPress={() =>
+                        navigateOnClick(
+                          `/camps/CampProfileView/${id}/edit_property_facilities`,
+                        )
+                      }
+                      color="maroon.400"
+                    />
+                  </HStack>
                 </VStack>
               </Box>
               <FrontEndTypo.H3 bold color="textGreyColor.800">
@@ -245,66 +229,51 @@ export default function CampProfileView({ userTokenInfo }) {
                 borderColor="btnGray.100"
                 borderRadius="10px"
                 borderWidth="1px"
-                pb="6"
+                p="4"
               >
-                <VStack
-                  paddingLeft="16px"
-                  paddingRight="16px"
-                  paddingTop="16px"
-                >
-                  <VStack space="2" paddingTop="5">
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack space="md" alignItems="Center">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-                        <FrontEndTypo.H3>
-                          {t("LEARNERS_DETAILS")}
-                        </FrontEndTypo.H3>
-                      </HStack>
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={() => {
-                          navigate(`/camps/CampLearnerList/${id}`, {
-                            state: {
-                              academic_year_id:
-                                location.state?.academic_year_id,
-                              program_id: location.state?.program_id,
-                              user_id: location.state?.user_id,
-                            },
-                          });
-                        }}
-                        color="maroon.400"
-                      />
+                <VStack space="2">
+                  <HStack alignItems="Center" justifyContent="space-between">
+                    <HStack space="md" alignItems="Center">
+                      <FrontEndTypo.H3>{t("LEARNERS_DETAILS")}</FrontEndTypo.H3>
                     </HStack>
-                    <Divider
-                      orientation="horizontal"
-                      bg="btnGray.100"
-                      thickness="1"
+                    <IconByName
+                      name="ArrowRightSFillIcon"
+                      onPress={() =>
+                        navigateOnClick(`/camps/CampLearnerList/${id}`)
+                      }
+                      color="maroon.400"
                     />
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack alignItems="Center" space="md">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                        <FrontEndTypo.H3 color="textGreyColor.800">
-                          {t("CAMP_ATTENDANCE")}
-                        </FrontEndTypo.H3>
-                      </HStack>
+                  </HStack>
+                  <Divider
+                    orientation="horizontal"
+                    bg="btnGray.100"
+                    thickness="1"
+                  />
+                  <HStack alignItems="Center" justifyContent="space-between">
+                    <HStack space="md" alignItems="Center">
+                      <FrontEndTypo.H3>{t("CAMP_ATTENDANCE")}</FrontEndTypo.H3>
                     </HStack>
-
-                    <Divider
-                      orientation="horizontal"
-                      bg="btnGray.100"
-                      thickness="1"
+                    <IconByName
+                      name="ArrowRightSFillIcon"
+                      onPress={() => {}}
+                      color="maroon.400"
                     />
-                    <HStack alignItems="Center" justifyContent="space-between">
-                      <HStack alignItems="Center" space="md">
-                        <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                        <FrontEndTypo.H3 color="textGreyColor.800">
-                          {t("CAMP_PROGRESS")}
-                        </FrontEndTypo.H3>
-                      </HStack>
+                  </HStack>
+                  <Divider
+                    orientation="horizontal"
+                    bg="btnGray.100"
+                    thickness="1"
+                  />
+                  <HStack alignItems="Center" justifyContent="space-between">
+                    <HStack space="md" alignItems="Center">
+                      <FrontEndTypo.H3>{t("CAMP_PROGRESS")}</FrontEndTypo.H3>
                     </HStack>
-                  </VStack>
+                    <IconByName
+                      name="ArrowRightSFillIcon"
+                      onPress={() => {}}
+                      color="maroon.400"
+                    />
+                  </HStack>
                 </VStack>
               </Box>
             </VStack>
@@ -314,3 +283,7 @@ export default function CampProfileView({ userTokenInfo }) {
     </Layout>
   );
 }
+
+CampProfileView.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
