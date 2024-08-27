@@ -1,15 +1,14 @@
 import {
-  IconByName,
-  facilitatorRegistryService,
   AdminTypo,
+  IconByName,
   ImageView,
+  facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import DataTable from "react-data-table-component";
 import { ChipStatus } from "component/Chip";
-import { HStack, Text, Avatar, Modal, Switch } from "native-base";
+import { HStack, Modal, Text } from "native-base";
 import React from "react";
+import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
-let switchAttendance = false;
 
 const stylesheet = {
   modalxxl: {
@@ -40,7 +39,7 @@ export default function OrientationScreen({
   setUserIds,
 }) {
   const [data, setData] = React.useState([]);
-  const [limit, setLimit] = React.useState(100);
+  const [limit] = React.useState(100);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
@@ -104,62 +103,6 @@ export default function OrientationScreen({
     },
   ];
 
-  const scheduleCandidates = (e) => [
-    {
-      name: t("NAME"),
-      selector: (row) => (
-        <HStack alignItems={"center"} space="2">
-          {row?.profile_url ? (
-            <Avatar
-              source={{
-                uri: row?.profile_url,
-              }}
-              // alt="Alternate Text"
-              width={"35px"}
-              height={"35px"}
-            />
-          ) : (
-            <IconByName
-              isDisabled
-              name="AccountCircleLineIcon"
-              color="gray.300"
-              _icon={{ size: "35" }}
-            />
-          )}
-          <Text>{row?.first_name + " " + row.last_name}</Text>
-        </HStack>
-      ),
-      sortable: false,
-      attr: "name",
-    },
-    {
-      name: t("INVITE_STATUS"),
-      selector: (row) => <Text color={"#00D790"}>Accepted</Text>,
-      sortable: false,
-      attr: "email",
-    },
-    {
-      name: t("MARK_ATTENDANCE"),
-      selector: (row) => (
-        <>
-          <HStack space={"2"}>
-            <Text>Present</Text>
-            <Switch
-              offTrackColor="#00D790"
-              onTrackColor="#DC2626"
-              onThumbColor="#E0E0E0"
-              offThumbColor="#E0E0E0"
-              value={switchAttendance}
-              onValueChange={!switchAttendance}
-            />
-          </HStack>
-        </>
-      ),
-      sortable: false,
-      attr: "email",
-    },
-  ];
-
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -191,7 +134,8 @@ export default function OrientationScreen({
     <Modal
       isOpen={isOpen}
       onClose={(e) => {
-        setIsOpen(false), setUserIds({});
+        setIsOpen(false);
+        setUserIds({});
       }}
       safeAreaTop={true}
     >
@@ -218,7 +162,7 @@ export default function OrientationScreen({
             paginationTotalRows={paginationTotalRows}
             onChangePage={handlePageChange}
             onSelectedRowsChange={handleSelectRow}
-            clearSelectedRows={Object.keys(userIds).length === 0 ? true : false}
+            clearSelectedRows={Object.keys(userIds).length === 0}
             // onChangeRowsPerPage={(e) => setLimit(e)}
             // onChangePage={(e) => setPage(e)}
           />
@@ -230,7 +174,8 @@ export default function OrientationScreen({
             py="1"
             shadow="BlueOutlineShadow"
             onPress={(e) => {
-              setIsOpen(false), setUserIds({});
+              setIsOpen(false);
+              setUserIds({});
             }}
           >
             {t("CANCEL")}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { ScrollView, Stack } from "native-base";
+import { HStack, ScrollView, Stack } from "native-base";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
-import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import { AdminTypo, FrontEndTypo, IconByName } from "@shiksha/common-lib";
 function DatePicker({
   subjectArr,
   examType,
@@ -27,7 +27,7 @@ function DatePicker({
 
       oldSelectedData.forEach((subject) => {
         const hasDraftEvent = subject.events.some(
-          (event) => event.type === examType && event.status === "draft"
+          (event) => event.type === examType && event.status === "draft",
         );
         if (hasDraftEvent) {
           draftSubjects.push({ id: subject.id, type: subject.type });
@@ -59,34 +59,36 @@ function DatePicker({
     const subjectExists =
       Array.isArray(selectedDates) &&
       selectedDates.some(
-        (existingSubject) => existingSubject.subject_id === id
+        (existingSubject) => existingSubject.subject_id === id,
       );
 
+    const updatedSelectedDates = {
+      ...selectedDates,
+      [id]: date,
+    };
+
+    const updatedSelectedDate = [
+      ...(Array.isArray(selectedDate) ? selectedDate : []),
+      { subject_id: id, exam_date: date, type: examType, status },
+    ];
+
     if (subjectExists) {
-      setSelectedDates((prevState) => ({
-        ...prevState,
-        [id]: date,
-      }));
-
-      setSelectedDate((prevState) => [
-        ...(Array.isArray(prevState) ? prevState : []),
-        { subject_id: id, exam_date: date, type: examType, status },
-      ]);
+      setSelectedDates(updatedSelectedDates);
+      setSelectedDate((prevState) =>
+        prevState.map((existingSubject) =>
+          existingSubject.subject_id === id
+            ? updatedSelectedDate[0]
+            : existingSubject,
+        ),
+      );
     } else {
-      setSelectedDates((prevState) => ({
-        ...prevState,
-        [id]: date,
-      }));
-
-      setSelectedDate((prevState) => [
-        ...(Array.isArray(prevState) ? prevState : []),
-        { subject_id: id, exam_date: date, type: examType, status },
-      ]);
+      setSelectedDates(updatedSelectedDates);
+      setSelectedDate(updatedSelectedDate);
     }
   };
 
   return (
-    <Stack>
+    <Stack space="4">
       {subjectArr?.map((subject) => {
         let minDate = moment().subtract(2, "months").format("YYYY-MM-DD");
         let maxDate = moment().add(2, "months").format("YYYY-MM-DD");
@@ -98,54 +100,47 @@ function DatePicker({
 
         return (
           <ScrollView key={subject.id}>
-            <table cellSpacing={"5px"} cellPadding={"5px"}>
-              <tbody>
-                <tr>
-                  <td style={{ width: "120px" }}>{subject.name}</td>
-                  <td style={{ width: "100px" }}>
-                    <input
-                      type="date"
-                      style={{
-                        borderWidth: "1px",
-                        borderColor: "textGreyColor.50",
-                        backgroundColor: "#f0f0f0",
-                        padding: "5px 10px",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        fontSize: "16px",
-                      }}
-                      value={selectedDates[subject?.id] || ""}
-                      min={minDate}
-                      max={maxDate}
-                      disabled={
-                        disableDates?.[subject?.id] &&
-                        !(isVisibleEdit && isEditableDates[subject?.id])
-                      }
-                      onChange={(e) =>
-                        handleDateChange(subject, subject?.id, e.target.value)
-                      }
-                    />
-                  </td>
-                  <td style={{ width: "120px" }}>
-                    {draftSubjects?.some(
-                      (draftSubject) =>
-                        draftSubject?.id === subject.id &&
-                        draftSubject.type === subject.type
-                    ) && (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <IconByName
-                          color="#484848"
-                          name="InformationLineIcon"
-                        />
-                        <FrontEndTypo.H3 color="#484848">
-                          {t("SCHEDULE_BANNER")}
-                        </FrontEndTypo.H3>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <HStack justifyContent={"space-between"} alignItems={"center"}>
+              <AdminTypo.H3 flex="1">{subject.name}</AdminTypo.H3>
+              <HStack justifyContent={"center"} flex={2}>
+                <input
+                  type="date"
+                  style={{
+                    borderWidth: "1px",
+                    borderColor: "textGreyColor.50",
+                    backgroundColor: "#f0f0f0",
+                    padding: "5px 10px",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                  value={selectedDates[subject?.id] || ""}
+                  min={minDate}
+                  max={maxDate}
+                  disabled={
+                    disableDates?.[subject?.id] &&
+                    !(isVisibleEdit && isEditableDates[subject?.id])
+                  }
+                  onChange={(e) =>
+                    handleDateChange(subject, subject?.id, e.target.value)
+                  }
+                />
+              </HStack>
+              <HStack alignItems={"center"} flex={1}>
+                {draftSubjects?.some(
+                  (draftSubject) =>
+                    draftSubject?.id === subject.id &&
+                    draftSubject.type === subject.type,
+                ) && (
+                  <HStack alignItems={"center"}>
+                    <IconByName color="#484848" name="InformationLineIcon" />
+                    <FrontEndTypo.H3 color="#484848">
+                      {t("SCHEDULE_BANNER")}
+                    </FrontEndTypo.H3>
+                  </HStack>
+                )}
+              </HStack>
+            </HStack>
           </ScrollView>
         );
       })}

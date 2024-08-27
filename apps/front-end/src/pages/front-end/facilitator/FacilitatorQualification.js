@@ -1,18 +1,13 @@
-import React from "react";
-import { HStack, VStack, Box, Progress, Divider, Alert } from "native-base";
 import {
-  arrList,
-  FrontEndTypo,
-  IconByName,
-  facilitatorRegistryService,
-  t,
-  Layout,
-  ImageView,
-  enumRegistryService,
-  GetEnumValue,
   BodyMedium,
   CardComponent,
+  FrontEndTypo,
+  GetEnumValue,
+  ImageView,
+  Layout,
 } from "@shiksha/common-lib";
+import { Alert, HStack, VStack } from "native-base";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
@@ -23,6 +18,7 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
     <VStack>
       {getUniqueArray(array)?.map((item, index) => (
         <Text
+          key={item}
           fontSize="14px"
           fontWeight="400"
           lineHeight="24px"
@@ -30,7 +26,6 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
         >
           <GetEnumValue
             fontSize="14px"
-            key={index}
             t={t}
             enumOptionValue={item}
             {...{ enumType, enumApiData }}
@@ -42,17 +37,19 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
 };
 
 export default function FacilitatorQualification({ userTokenInfo }) {
-  const [facilitator, setfacilitator] = React.useState();
+  const [facilitator, setFacilitator] = React.useState();
   const [qualifications, setQualifications] = React.useState();
   const [qualification, setQualification] = React.useState();
   const navigate = useNavigate();
   const [enumOptions, setEnumOptions] = React.useState({});
   const [qua, setQua] = React.useState();
+  const { t } = useTranslation();
 
   React.useEffect(async () => {
-    const { id } = userTokenInfo?.authUser;
+    const { authUser } = userTokenInfo || {};
+    const { id } = authUser || {};
     const result = await getOnboardingData(id);
-    setfacilitator(result);
+    setFacilitator(result);
     setQualification(result?.qualifications ? result?.qualifications : {});
   }, []);
 
@@ -77,7 +74,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
 
   React.useEffect(async () => {
     const ids = JSON.parse(
-      facilitator?.qualification_ids ? facilitator?.qualification_ids : "[]"
+      facilitator?.qualification_ids ? facilitator?.qualification_ids : "[]",
     );
     if (Array.isArray(qua) && Array.isArray(ids)) {
       const arr = qua.filter((item) => ids.includes(item.id));

@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
-  const { id } = userTokenInfo?.authUser;
+  const { authUser } = userTokenInfo || {};
+  const { id } = authUser || {};
   const [facilitator, setFacilitator] = React.useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
           ...res,
           qua_name: facilitator?.qualifications?.qualification_master?.name,
         },
-        ["qualification_ids", "qua_name"]
+        ["qualification_ids", "qua_name"],
       ) +
       arrList(res, [
         "aadhar_no",
@@ -148,7 +149,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
                       qua_name:
                         facilitator?.qualifications?.qualification_master?.name,
                     },
-                    ["qualification_ids", "qua_name"]
+                    ["qualification_ids", "qua_name"],
                   )}
                   size="xs"
                   colorScheme="red"
