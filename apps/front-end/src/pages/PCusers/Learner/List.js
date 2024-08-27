@@ -317,7 +317,7 @@ export default function LearnerList() {
               >
                 <Pressable
                   onPress={() =>
-                    navigate(`/learner/learnerListView/${item?.user_id}`, {
+                    navigate(`/learners/list-view/${item?.user_id}`, {
                       state: {
                         location: {
                           academic: {
@@ -413,7 +413,7 @@ export default function LearnerList() {
                         <IconByName
                           name="ArrowRightSLineIcon"
                           onPress={() => {
-                            navigate(`/learner/LearnerListView`, {
+                            navigate(`/learners/list-view`, {
                               state: {
                                 filter: location?.state,
                                 prerak_id: item?.user_id,

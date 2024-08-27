@@ -62,7 +62,7 @@ export default function BenificiaryEducation() {
         name: t("EDUCATION_DETAILS"),
         onlyIconsShow: ["langBtn", "backBtn"],
         onPressBackButton: (e) => {
-          navigate(`/learner/learnerListView/${id}`);
+          navigate(`/learners/list-view/${id}`);
         },
       }}
       analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
@@ -137,7 +137,7 @@ export default function BenificiaryEducation() {
                 </FrontEndTypo.H3>
               </HStack>
               {["school_dropout", "already_enrolled_in_open_school"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
+                benificiary?.core_beneficiaries?.type_of_learner,
               ) && (
                 <HStack
                   space={2}
@@ -178,7 +178,7 @@ export default function BenificiaryEducation() {
               )}
 
               {["school_dropout", "already_enrolled_in_open_school"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
+                benificiary?.core_beneficiaries?.type_of_learner,
               ) && (
                 <HStack
                   space={2}
@@ -275,7 +275,7 @@ export default function BenificiaryEducation() {
               </HStack>
 
               {["already_open_school_syc"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
+                benificiary?.core_beneficiaries?.type_of_learner,
               ) && (
                 <HStack space={2} alignItems="Center">
                   <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
@@ -295,7 +295,7 @@ export default function BenificiaryEducation() {
               )}
 
               {["stream_2_mainstream_syc"].includes(
-                benificiary?.core_beneficiaries?.type_of_learner
+                benificiary?.core_beneficiaries?.type_of_learner,
               ) && (
                 <HStack space={2} alignItems="Center">
                   <FrontEndTypo.H3 color="textGreyColor.50" flex="3">
