@@ -1594,6 +1594,7 @@
   "SELECT_MIN_MAX_ERROR": "कृपया न्युनतम 1 और अधिकतम 3 विकल्पो का चयन करे",
   "SELECT_MINIMUM": "कमसे कम {0} {1} चुनें",
   "SELECT_PRERAK": "प्रेरक चुने",
+  "SELECTED_PRERAKS": "चुने गए प्रेरक",
   "SELECT_A_PRERAK": "एक प्रेरक का चयन करें!",
   "SELECT_AT_LEAST_ONE_PRERAK": " शिक्षार्थियों की सूची देखने के लिए कम से कम एक प्रेरक का चयन करें",
   "SELECT_AT_LEAST_ONE_PRERAK_TO_VIEW_A_LIST_OF_CAMPS": "शिविरों की सूची देखने के लिए कम से कम एक प्रेरक का चयन करें",

@@ -1618,6 +1618,7 @@
   "SELECT_MIN_MAX_ERROR": "Please select minimum 1 and maximum 3 options",
   "SELECT_MINIMUM": "Select minimum {0} {1}",
   "SELECT_PRERAK": "Select prerak",
+  "SELECTED_PRERAKS": "Selected prerak(s)",
   "SELECT_STATUS": "Select Status",
   "SELECT_SUBJECTS": "Select Subjects",
   "SELECT_TIME": "select time",
