@@ -76,10 +76,10 @@ export default function CampList() {
           localStorage.getItem("camp_prerak_selected_ids"),
         );
         if (camp_prerak_selected_ids) {
-          // Ensure prerakList is set before calling handleContinueBtn
+          // Ensure prerakList is set before calling searchSelectedPrerakCamps
           if (result?.facilitator_data) {
             setSelectedPrerakIds(camp_prerak_selected_ids);
-            handleContinueBtn(
+            searchSelectedPrerakCamps(
               camp_prerak_selected_ids,
               result.facilitator_data,
             ); // Pass the prerakList directly
@@ -93,7 +93,7 @@ export default function CampList() {
     getPrerakCampList();
   }, [localStorage.getItem("camp_prerak_selected_ids")]);
 
-  const handleContinueBtn = async (selectedPrerakIds, prerakList) => {
+  const searchSelectedPrerakCamps = async (selectedPrerakIds, prerakList) => {
     setSelectedPrerakIds(selectedPrerakIds);
     localStorage.setItem(
       "camp_prerak_selected_ids",
@@ -202,36 +202,6 @@ export default function CampList() {
         )}
       </VStack>
       <VStack space={4} px={4}>
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          safeAreaTop={true}
-          size="xl"
-        >
-          <Modal.Content>
-            <Modal.Header p="5" borderBottomWidth="0">
-              <AdminTypo.H3 textAlign="center" color="black">
-                {t("SELECT_PRERAK")}
-              </AdminTypo.H3>
-
-              <IconButton
-                icon={<IconByName name="CloseCircleLineIcon" size="4" />}
-                onPress={() => setIsModalOpen(false)}
-                position="absolute"
-                right="3"
-                top="3"
-              />
-            </Modal.Header>
-
-            <Modal.Body p="5" pb="10">
-              <FacilitatorForm
-                data={prerakList}
-                handleContinueBtn={handleContinueBtn}
-                selectedPrerakIds={selectedPrerakIds}
-              />
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
         <VStack space={2} py={4} ml="2">
           {selectedPrerak &&
             selectedPrerak?.map((item) => (
@@ -265,16 +235,20 @@ export default function CampList() {
                         justifyContent={"space-between"}
                       >
                         <VStack flex={"0.9"}>
-                          <FrontEndTypo.H3 color="textMaroonColor.400">
-                            {`${camp?.camp_id} ${camp?.camp_type}`}
-                          </FrontEndTypo.H3>
+                          <FrontEndTypo.H2>
+                            {`${t("CAMP_ID")}: ${camp?.camp_id}`}
+                          </FrontEndTypo.H2>
+                          <FrontEndTypo.H4>
+                            {camp?.camp_type == "pcr"
+                              ? t("PCR_CAMP")
+                              : t("MAIN_CAMP")}
+                          </FrontEndTypo.H4>
                         </VStack>
                         <HStack alignItems={"center"}>
                           <IconByName
                             isDisabled
-                            name={"ErrorWarningLineIcon"}
-                            color={"textMaroonColor.400"}
-                            _icon={{ size: "20px" }}
+                            name={"ArrowRightSFillIcon"}
+                            _icon={{ size: "30px" }}
                           />
                         </HStack>
                       </HStack>
@@ -285,11 +259,47 @@ export default function CampList() {
             ))}
         </VStack>
       </VStack>
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          safeAreaTop={true}
+          size="xl"
+        >
+          <Modal.Content>
+            <Modal.Header p="5" borderBottomWidth="0">
+              <AdminTypo.H3 textAlign="center" color="black">
+                {t("SELECT_PRERAK")}
+              </AdminTypo.H3>
+
+              <IconButton
+                icon={<IconByName name="CloseCircleLineIcon" size="4" />}
+                onPress={() => setIsModalOpen(false)}
+                position="absolute"
+                right="3"
+                top="3"
+              />
+            </Modal.Header>
+
+            <Modal.Body p="5" pb="10">
+              <FacilitatorForm
+                data={prerakList}
+                searchSelectedPrerakCamps={searchSelectedPrerakCamps}
+                selectedPrerakIds={selectedPrerakIds}
+              />
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      )}
     </Layout>
   );
 }
 
-const FacilitatorForm = ({ data, handleContinueBtn, selectedPrerakIds }) => {
+const FacilitatorForm = ({
+  data,
+  searchSelectedPrerakCamps,
+  selectedPrerakIds,
+}) => {
   // State to keep track of checked facilitators' ids
   const [selectedFacilitators, setSelectedFacilitators] = useState([]);
   const { t } = useTranslation();
@@ -311,7 +321,7 @@ const FacilitatorForm = ({ data, handleContinueBtn, selectedPrerakIds }) => {
   // Function to handle form submission
   const handleSubmit = () => {
     // You can return or use the selectedFacilitators array as needed
-    handleContinueBtn(selectedFacilitators);
+    searchSelectedPrerakCamps(selectedFacilitators);
   };
 
   return (
@@ -330,8 +340,11 @@ const FacilitatorForm = ({ data, handleContinueBtn, selectedPrerakIds }) => {
           </Checkbox>
         ))}
         <HStack justifyContent={"center"} space={4}>
-          <FrontEndTypo.Primarybutton onPress={handleSubmit}>
-            {t("SUBMIT")}
+          <FrontEndTypo.Primarybutton
+            onPress={handleSubmit}
+            isDisabled={selectedFacilitators.length == 0}
+          >
+            {t("VIEW_CAMPS")}
           </FrontEndTypo.Primarybutton>
         </HStack>
       </VStack>
@@ -341,6 +354,6 @@ const FacilitatorForm = ({ data, handleContinueBtn, selectedPrerakIds }) => {
 
 FacilitatorForm.propTypes = {
   data: PropTypes.array,
-  handleContinueBtn: PropTypes.func,
+  searchSelectedPrerakCamps: PropTypes.func,
   selectedPrerakIds: PropTypes.array,
 };
