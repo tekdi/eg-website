@@ -34,7 +34,6 @@ export default function CampProfileView({ userTokenInfo }) {
         user_id: location.state?.user_id,
       };
       const result = await campService.getPrerakCampProfile(id, payload);
-      console.log("getPrerakCampProfile", result);
       setPrerakProfile(result?.faciltator[0]);
       setLoading(false);
     } catch (error) {
@@ -44,7 +43,6 @@ export default function CampProfileView({ userTokenInfo }) {
   };
 
   const navigateOnClick = (path) => {
-    console.log("navigateOnClick", path);
     if (path) {
       navigate(path, {
         state: {
