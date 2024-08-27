@@ -18,12 +18,10 @@ import PropTypes from "prop-types";
 export default function App() {
   const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
-  const [enumOptions, setEnumOptions] = useState({});
-  const [boardName, setBoardName] = useState({});
-  const [stateName, setStateName] = useState({});
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [cardData, setCardData] = useState([]);
 
   const location = useLocation();
 
@@ -36,15 +34,154 @@ export default function App() {
   };
 
   const agDetails = async () => {
-    const value = location?.state?.program_beneficiaries?.enrolled_for_board;
+    const learnerData = location?.state;
+    const value = learnerData.program_beneficiaries?.enrolled_for_board;
+    let boardName = "-";
     if (value) {
-      const boardName = await PcuserService.boardName(value);
-      setBoardName(boardName?.name);
+      const { name } = await PcuserService.boardName(value);
+      boardName = name;
     }
+
     const data = await enumRegistryService.listOfEnum();
-    setEnumOptions(data?.data ? data?.data : {});
-    setBenificiary(location?.state);
-    setStateName(location?.state?.state);
+    const enumOptions = data?.data ? data?.data : {};
+    setBenificiary(learnerData);
+    const stateName = learnerData?.state;
+    let cardArr = [];
+    if (
+      ![
+        "not_enrolled",
+        "applied_but_pending",
+        "enrollment_rejected",
+        "enrollment_awaited",
+      ].includes(learnerData?.program_beneficiaries?.enrollment_status)
+    ) {
+      cardArr = [
+        ...cardArr,
+        {
+          title: "ENROLLMENT_DETAILS",
+          arr: ["not_enrolled"].includes(
+            learnerData?.program_beneficiaries?.enrollment_status,
+          )
+            ? ["enrollment_status"]
+            : [
+                  "identified",
+                  "applied_but_pending",
+                  "enrollment_rejected",
+                  "enrollment_awaited",
+                ].includes(
+                  learnerData?.program_beneficiaries?.enrollment_status,
+                )
+              ? ["enrollment_status", "enrolled_for_board"]
+              : [
+                  "enrollment_status",
+                  "type_of_enrollement",
+                  "enrolled_for_board",
+                  ...(stateName === "RAJASTHAN" ? ["sso_id"] : []),
+                  "enrollment_number",
+                  "enrollment_mobile_no",
+                  "enrollment_date",
+                  "enrollment_first_name",
+                  "enrollment_middle_name",
+                  "enrollment_last_name",
+                  "enrollment_dob",
+                ],
+
+          label: [
+            "ENROLLMENT_STATUS",
+            "ENROLLMENT_TYPE",
+            "BOARD_OF_ENROLLMENT",
+            ...(stateName === "RAJASTHAN" ? ["SSO_ID"] : []),
+            stateName == "BIHAR"
+              ? "APPLICATION_ID"
+              : stateName == "MADHYA PRADESH"
+                ? "ROLL_NUMBER"
+                : "ENROLLMENT_NO",
+            "MOBILE_NUMBER",
+            stateName != "RAJASTHAN" ? "APPLICATION_DATE" : "ENROLLMENT_DATE",
+            "FIRST_NAME",
+            "MIDDLE_NAME",
+            "LAST_NAME",
+            "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
+          ],
+          item: {
+            ...learnerData?.program_beneficiaries,
+            enrollment_dob: learnerData?.program_beneficiaries?.enrollment_dob
+              ? moment(
+                  learnerData?.program_beneficiaries?.enrollment_dob,
+                ).format("DD-MM-YYYY")
+              : "-",
+            enrollment_date: learnerData?.program_beneficiaries?.enrollment_date
+              ? moment(
+                  learnerData?.program_beneficiaries?.enrollment_date,
+                ).format("DD-MM-YYYY")
+              : "-",
+            enrollment_status: learnerData?.program_beneficiaries
+              ?.enrollment_status ? (
+              <GetEnumValue
+                enumType="ENROLLEMENT_STATUS"
+                enumOptionValue={
+                  learnerData?.program_beneficiaries?.enrollment_status
+                }
+                enumApiData={enumOptions}
+                t={t}
+              />
+            ) : (
+              "-"
+            ),
+            enrolled_for_board: boardName,
+          },
+        },
+      ];
+    }
+
+    if (
+      [
+        "identified",
+        "ready_to_enroll",
+        "enrolled",
+        "not_enrolled",
+        "enrollment_awaited",
+        "enrollment_rejected",
+      ].includes(
+        learnerData?.program_beneficiaries?.enrollment_status ||
+          learnerData?.program_beneficiaries?.status,
+      )
+    ) {
+      cardArr = [
+        ...cardArr,
+        {
+          title: "ENROLLMENT_RECEIPT",
+          arr: ["subjects", "payment_receipt_document_id"],
+          label: ["SUBJECTS", "RECEIPT_UPLOAD"],
+          item: {
+            ...learnerData?.program_beneficiaries,
+            ...getEnrollmentIds(
+              learnerData?.program_beneficiaries?.payment_receipt_document_id,
+              stateName,
+            ),
+            subjects:
+              learnerData?.program_beneficiaries?.subjects &&
+              learnerData.program_beneficiaries.subjects.length > 0 ? (
+                <SubjectsList
+                  boardId={
+                    learnerData?.program_beneficiaries?.enrolled_for_board
+                  }
+                  subjectIds={JSON.parse(
+                    learnerData?.program_beneficiaries?.subjects,
+                  )}
+                />
+              ) : (
+                "-"
+              ),
+          },
+          format: {
+            payment_receipt_document_id: "file",
+          },
+        },
+      ];
+    }
+    setCardData(cardArr);
+
     setLoading(false);
   };
 
@@ -68,139 +205,15 @@ export default function App() {
           }
           status={benificiary?.program_beneficiaries?.status}
         />
-
-        {[
-          "identified",
-          "ready_to_enroll",
-          "enrolled",
-          "not_enrolled",
-          "enrollment_awaited",
-          "enrollment_rejected",
-        ].includes(
-          benificiary?.program_beneficiaries?.enrollment_status ||
-            benificiary?.program_beneficiaries?.status,
-        ) && (
+        {cardData?.map((data, index) => (
           <CardComponent
+            key={data?.title + index}
             _vstack={{ space: 0 }}
             _hstack={{ borderBottomWidth: 0 }}
-            title={t("ENROLLMENT_DETAILS")}
-            label={[
-              "ENROLLMENT_STATUS",
-              "ENROLLMENT_TYPE",
-              "BOARD_OF_ENROLLMENT",
-              ...(stateName === "RAJASTHAN" ? ["SSO_ID"] : []),
-              stateName == "BIHAR"
-                ? "APPLICATION_ID"
-                : stateName == "MADHYA PRADESH"
-                  ? "ROLL_NUMBER"
-                  : "ENROLLMENT_NO",
-              "MOBILE_NUMBER",
-              stateName != "RAJASTHAN" ? "APPLICATION_DATE" : "ENROLLMENT_DATE",
-              "FIRST_NAME",
-              "MIDDLE_NAME",
-              "LAST_NAME",
-              "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
-            ]}
-            item={{
-              ...benificiary?.program_beneficiaries,
-              enrollment_dob: benificiary?.program_beneficiaries?.enrollment_dob
-                ? moment(
-                    benificiary?.program_beneficiaries?.enrollment_dob,
-                  ).format("DD-MM-YYYY")
-                : "-",
-              enrollment_date: benificiary?.program_beneficiaries
-                ?.enrollment_date
-                ? moment(
-                    benificiary?.program_beneficiaries?.enrollment_date,
-                  ).format("DD-MM-YYYY")
-                : "-",
-              enrollment_status: benificiary?.program_beneficiaries
-                ?.enrollment_status ? (
-                <GetEnumValue
-                  enumType="ENROLLEMENT_STATUS"
-                  enumOptionValue={
-                    benificiary?.program_beneficiaries?.enrollment_status
-                  }
-                  enumApiData={enumOptions}
-                  t={t}
-                />
-              ) : (
-                "-"
-              ),
-              enrolled_for_board: boardName || "-",
-            }}
-            {...(["not_enrolled"].includes(
-              benificiary?.program_beneficiaries?.enrollment_status,
-            )
-              ? {
-                  arr: ["enrollment_status"],
-                }
-              : [
-                    "identified",
-                    "applied_but_pending",
-                    "enrollment_rejected",
-                    "enrollment_awaited",
-                  ].includes(
-                    benificiary?.program_beneficiaries?.enrollment_status,
-                  )
-                ? {
-                    arr: ["enrollment_status", "enrolled_for_board"],
-                  }
-                : {
-                    arr: [
-                      "enrollment_status",
-                      "type_of_enrollement",
-                      "enrolled_for_board",
-                      ...(stateName === "RAJASTHAN" ? ["sso_id"] : []),
-                      "enrollment_number",
-                      "enrollment_mobile_no",
-                      "enrollment_date",
-                      "enrollment_first_name",
-                      "enrollment_middle_name",
-                      "enrollment_last_name",
-                      "enrollment_dob",
-                    ],
-                  })}
+            {...data}
+            title={t(data?.title)}
           />
-        )}
-        {![
-          "not_enrolled",
-          "applied_but_pending",
-          "enrollment_rejected",
-          "enrollment_awaited",
-        ].includes(benificiary?.program_beneficiaries?.enrollment_status) && (
-          <CardComponent
-            _vstack={{ space: 0 }}
-            _hstack={{ borderBottomWidth: 0 }}
-            title={t("ENROLLMENT_RECEIPT")}
-            label={["SUBJECTS", "RECEIPT_UPLOAD"]}
-            item={{
-              ...benificiary?.program_beneficiaries,
-              ...getEnrollmentIds(
-                benificiary?.program_beneficiaries?.payment_receipt_document_id,
-                stateName,
-              ),
-              subjects:
-                benificiary?.program_beneficiaries?.subjects &&
-                benificiary.program_beneficiaries.subjects.length > 0 ? (
-                  <SubjectsList
-                    boardId={
-                      benificiary?.program_beneficiaries?.enrolled_for_board
-                    }
-                    subjectIds={JSON.parse(
-                      benificiary?.program_beneficiaries?.subjects,
-                    )}
-                  />
-                ) : (
-                  "-"
-                ),
-            }}
-            format={{
-              payment_receipt_document_id: "file",
-            }}
-            arr={["subjects", "payment_receipt_document_id"]}
-          />
-        )}
+        ))}
       </VStack>
     </Layout>
   );
