@@ -48,17 +48,17 @@ export default function BenificiaryJourney({ userTokenInfo }) {
       const uniqueDates = result.reduce(
         (acc, item) => {
           const parsedDate = moment(item?.created_at);
-          const date = parsedDate.format("DD");
-          const month = parsedDate.format("MMMM");
           const year = parsedDate.format("YYYY");
+          const month = parsedDate.format("MMMM");
+          const date = parsedDate.format("DD");
           setAuditLogs((prevState) => [
             ...prevState,
             {
+              date: date,
               status: JSON.parse(item?.new_data),
               first_name: item?.user?.first_name,
               middle_name: item?.user?.middle_name,
               last_name: item.user?.last_name,
-              date: date,
             },
           ]);
 
