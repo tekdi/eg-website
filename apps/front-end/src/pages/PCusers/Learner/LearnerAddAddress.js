@@ -237,6 +237,6 @@ export default function BenificiaryAddress({ userTokenInfo }) {
   );
 }
 
-LearnerAddAddress.propTypes = {
+BenificiaryAddress.propTypes = {
   userTokenInfo: PropTypes.any,
 };

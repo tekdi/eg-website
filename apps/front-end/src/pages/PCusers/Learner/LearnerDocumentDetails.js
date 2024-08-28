@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from "react";
 import {
   PCusers_layout as Layout,
   t,
   FrontEndTypo,
   jsonParse,
 } from "@shiksha/common-lib";
-import React, { Fragment, useEffect, useState } from "react";
 import { VStack, HStack } from "native-base";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";

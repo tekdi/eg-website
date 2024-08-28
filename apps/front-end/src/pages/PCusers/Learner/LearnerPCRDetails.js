@@ -76,16 +76,16 @@ const PcrDetails = ({ userTokenInfo }) => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [selectBaselineData, setselectBaselineData] = useState();
-  const [selectRapidData, setselectRapidData] = useState();
+  const [selectBaselineData, setSelectBaselineData] = useState();
+  const [selectRapidData, setSelectRapidData] = useState();
   const [pcrCreated, setPcrCreated] = useState();
   const [data, setData] = React.useState({});
   const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
-    setselectBaselineData(result?.data?.PCR_SCORES_BASELINE_AND_ENDLINE);
-    setselectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
+    setSelectBaselineData(result?.data?.PCR_SCORES_BASELINE_AND_ENDLINE);
+    setSelectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
   }, []);
 
   React.useEffect(async () => {

@@ -17,12 +17,12 @@ import PropTypes from "prop-types";
 export default function BenificiaryJourney({ userTokenInfo }) {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [benificiary, setbenificiary] = React.useState();
+  const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [contextId, setcontextId] = React.useState();
-  const [auditLogs, setauditLogs] = React.useState([]);
-  const [auditMonth, setauditMonth] = React.useState([]);
-  const [auditYear, setauditYear] = React.useState([]);
+  const [contextId, setContextId] = React.useState();
+  const [auditLogs, setAuditLogs] = React.useState([]);
+  const [auditMonth, setAuditMonth] = React.useState([]);
+  const [auditYear, setAuditYear] = React.useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,8 +38,8 @@ export default function BenificiaryJourney({ userTokenInfo }) {
   };
 
   const agDetails = async () => {
-    setbenificiary(location?.state);
-    setcontextId(location?.state?.program_beneficiaries?.id);
+    setBenificiary(location?.state);
+    setContextId(location?.state?.program_beneficiaries?.id);
   };
 
   const getAuditData = async () => {
@@ -51,7 +51,7 @@ export default function BenificiaryJourney({ userTokenInfo }) {
           const date = parsedDate.format("DD");
           const month = parsedDate.format("MMMM");
           const year = parsedDate.format("YYYY");
-          setauditLogs((prevState) => [
+          setAuditLogs((prevState) => [
             ...prevState,
             {
               status: JSON.parse(item?.new_data),
@@ -74,8 +74,8 @@ export default function BenificiaryJourney({ userTokenInfo }) {
         },
         { dates: [], months: [], years: [] },
       );
-      setauditMonth(uniqueDates.months);
-      setauditYear(uniqueDates.years);
+      setAuditMonth(uniqueDates.months);
+      setAuditYear(uniqueDates.years);
     }
   };
 

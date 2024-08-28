@@ -12,7 +12,6 @@ import {
 } from "@shiksha/common-lib";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
-import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto";
 import PropTypes from "prop-types";
 
 export default function LearnerBasicDetails({ userTokenInfo }) {

@@ -2,9 +2,7 @@ import React from "react";
 import { HStack, VStack, Box, Progress } from "native-base";
 import {
   arrList,
-  IconByName,
   FrontEndTypo,
-  benificiaryRegistoryService,
   PCusers_layout as Layout,
   enumRegistryService,
   GetEnumValue,
@@ -25,7 +23,7 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
           textAlign="center"
           lineHeight="14px"
           bg="gray.100"
-          key={index}
+          key={index + 1}
           label={
             <GetEnumValue
               fontSize="14px"
@@ -489,6 +487,6 @@ export default function BenificiaryEducation({ userTokenInfo }) {
   );
 }
 
-LearnerEducationDetails.propTypes = {
+BenificiaryEducation.propTypes = {
   userTokenInfo: PropTypes.any,
 };
