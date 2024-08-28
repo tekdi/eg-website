@@ -166,10 +166,6 @@ export default [
     component: LearnerEnrollMentDetails,
   },
   {
-    path: "/learners/list-view/:id/learnerPCRDetails",
-    component: LearnerPCRDetails,
-  },
-  {
     path: "/learners/list-view/:id/learnerJourneyDetails",
     component: LearnerJourneyDetails,
   },
