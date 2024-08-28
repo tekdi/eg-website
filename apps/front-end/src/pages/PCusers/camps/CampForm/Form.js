@@ -10,6 +10,7 @@ import {
   validation,
   campService,
   jsonParse,
+  useLocationData,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
@@ -41,6 +42,7 @@ export default function App() {
   const [enumOptions, setEnumOptions] = useState({});
   const programSelected = jsonParse(localStorage.getItem("program"));
   const location = useLocation();
+  const [lat, long] = useLocationData();
 
   const getCampKitDetails = async () => {
     setLoading(true);
@@ -229,6 +231,23 @@ export default function App() {
       }
     }
   }, [step, formData]);
+
+  if (!(lat && long)) {
+    return (
+      <Layout
+        _page={{ _scollView: { bg: "formBg.500" } }}
+        loading={loading || !campDetails?.group?.status}
+        analyticsPageTitle={"CAMP"}
+        pageTitle={t("CAMP_FORM")}
+        isCenter
+      >
+        <FrontEndTypo.H3>
+          {lat}
+          {long}
+        </FrontEndTypo.H3>
+      </Layout>
+    );
+  }
 
   return (
     <Layout

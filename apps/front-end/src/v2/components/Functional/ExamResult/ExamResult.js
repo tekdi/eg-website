@@ -62,18 +62,6 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     uplodInputRef.current.click();
   };
 
-  const statusUpdate = async (selectedRow) => {
-    const obj = {
-      learner_id: selectedRow?.beneficiary_user?.beneficiary_id,
-      status: !selectedRow?.result_upload_status
-        ? "first_time_upload_failed"
-        : selectedRow?.result_upload_status === "first_time_upload_failed" &&
-          "assign_to_ip",
-    };
-    await organisationService.examResultStatusUpdate(obj);
-    learnerList(boardId);
-  };
-
   const uploadProfile = async (resultfile) => {
     setLoading(true);
     const form_data = new FormData();
@@ -97,7 +85,6 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     );
     if (!result?.data) {
       setErrorMsg(result?.message);
-      statusUpdate(selectedRow);
     } else {
       learnerList(boardId);
     }
@@ -209,20 +196,30 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                         </Pressable>
                       </HStack>
                     ) : (
-                      <Pressable
-                        onPress={() => {
-                          openFileUploadDialog(item);
-                        }}
-                      >
-                        <FrontEndTypo.H3
-                          style={{
-                            textDecoration: "underline",
-                            color: "#0500FF",
+                      <HStack alignItems={"center"} space={4}>
+                        {item?.result_upload_status && (
+                          <Chip
+                            m="0"
+                            label={item?.result_upload_status}
+                            alignItems="center"
+                            _text={{ fontSize: "10px" }}
+                          />
+                        )}
+                        <Pressable
+                          onPress={() => {
+                            openFileUploadDialog(item);
                           }}
                         >
-                          {t("UPLOAD")}
-                        </FrontEndTypo.H3>
-                      </Pressable>
+                          <FrontEndTypo.H3
+                            style={{
+                              textDecoration: "underline",
+                              color: "#0500FF",
+                            }}
+                          >
+                            {t("UPLOAD")}
+                          </FrontEndTypo.H3>
+                        </Pressable>
+                      </HStack>
                     )}
                   </HStack>
                 );
