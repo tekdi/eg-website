@@ -166,7 +166,7 @@ const List = ({ data }) => {
                 </Pressable>
               )}
               {["duplicated", "enrolled_ip_verified"]?.includes(
-                item?.program_beneficiaries[0]?.status
+                item?.program_beneficiaries[0]?.status,
               ) && (
                 <HStack color="blueText.450" alignItems="center" mb="2">
                   <FrontEndTypo.H4 color="blueText.450">
@@ -194,6 +194,10 @@ const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
 ];
+
+List.propTypes = {
+  data: PropTypes.array,
+};
 
 const styles = {
   inforBox: {

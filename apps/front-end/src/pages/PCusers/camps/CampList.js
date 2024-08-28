@@ -258,36 +258,12 @@ export default function CampList() {
         </VStack>
       </VStack>
       {isModalOpen && (
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          safeAreaTop={true}
-          size="xl"
-        >
-          <Modal.Content>
-            <Modal.Header p="5" borderBottomWidth="0">
-              <AdminTypo.H3 textAlign="center" color="black">
-                {t("SELECT_PRERAK")}
-              </AdminTypo.H3>
-
-              <IconButton
-                icon={<IconByName name="CloseCircleLineIcon" size="4" />}
-                onPress={() => setIsModalOpen(false)}
-                position="absolute"
-                right="3"
-                top="3"
-              />
-            </Modal.Header>
-
-            <Modal.Body p="5" pb="10">
-              <FacilitatorForm
-                data={prerakList}
-                searchSelectedPrerakCamps={searchSelectedPrerakCamps}
-                selectedPrerakIds={selectedPrerakIds}
-              />
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
+        <FacilitatorForm
+          data={prerakList}
+          searchSelectedPrerakCamps={searchSelectedPrerakCamps}
+          selectedPrerakIds={selectedPrerakIds}
+          setIsModalOpen={setIsModalOpen}
+        />
       )}
     </Layout>
   );
@@ -297,6 +273,7 @@ const FacilitatorForm = ({
   data,
   searchSelectedPrerakCamps,
   selectedPrerakIds,
+  setIsModalOpen,
 }) => {
   // State to keep track of checked facilitators' ids
   const [selectedFacilitators, setSelectedFacilitators] = useState([]);
@@ -323,30 +300,74 @@ const FacilitatorForm = ({
   };
 
   return (
-    <Box p={4}>
-      <VStack space={4}>
-        {data?.map((item) => (
+    <Modal
+      isOpen={true}
+      onClose={() => setIsModalOpen(false)}
+      safeAreaTop={true}
+      size="xl"
+    >
+      <Modal.Content>
+        <Modal.Header p="5" borderBottomWidth="0">
           <Checkbox
-            key={item.user_id}
-            isChecked={selectedFacilitators.includes(item.user_id)}
-            onChange={() => handleCheckboxChange(item.user_id)}
-            value={item.user_id.toString()}
+            colorScheme="red"
+            position="absolute"
+            left="0"
+            top="1"
+            isChecked={data?.length <= selectedFacilitators?.length}
+            onChange={(e) => {
+              if (e) {
+                setSelectedFacilitators(data.map((i) => i.user_id));
+              } else {
+                setSelectedFacilitators([]);
+              }
+            }}
           >
-            {[item.user.first_name, item.user.middle_name, item.user.last_name]
-              .filter(Boolean)
-              .join(" ")}
+            {t("SELECT_ALL")}
           </Checkbox>
-        ))}
-        <HStack justifyContent={"center"} space={4}>
+          <AdminTypo.H3 textAlign="center" color="black">
+            {t("SELECT_PRERAK")}
+          </AdminTypo.H3>
+          <IconButton
+            icon={<IconByName name="CloseCircleLineIcon" size="4" />}
+            onPress={() => setIsModalOpen(false)}
+            position="absolute"
+            right="3"
+            top="3"
+          />
+        </Modal.Header>
+        <Modal.Body p="5" pb="10">
+          <VStack space={4}>
+            {data?.map((item) => (
+              <Checkbox
+                key={item.user_id}
+                isChecked={selectedFacilitators.includes(item.user_id)}
+                onChange={() => handleCheckboxChange(item.user_id)}
+                value={item.user_id.toString()}
+              >
+                {[
+                  item.user.first_name,
+                  item.user.middle_name,
+                  item.user.last_name,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              </Checkbox>
+            ))}
+          </VStack>
+        </Modal.Body>
+        <Modal.Footer justifyContent="space-between" alignItems="center">
+          <FrontEndTypo.Secondarybutton onPress={(e) => setIsModalOpen(false)}>
+            {t("GO_BACK")}
+          </FrontEndTypo.Secondarybutton>
           <FrontEndTypo.Primarybutton
             onPress={handleSubmit}
             isDisabled={selectedFacilitators.length == 0}
           >
             {t("VIEW_CAMPS")}
           </FrontEndTypo.Primarybutton>
-        </HStack>
-      </VStack>
-    </Box>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
   );
 };
 
@@ -354,4 +375,5 @@ FacilitatorForm.propTypes = {
   data: PropTypes.array,
   searchSelectedPrerakCamps: PropTypes.func,
   selectedPrerakIds: PropTypes.array,
+  setIsModalOpen: PropTypes.func,
 };

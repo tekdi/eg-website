@@ -19,6 +19,7 @@ export default function CampProfileView({ userTokenInfo }) {
   const navigate = useNavigate();
   const [prerakProfile, setPrerakProfile] = useState();
   const location = useLocation();
+  const [campData, setCampData] = useState({});
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function CampProfileView({ userTokenInfo }) {
       };
       const result = await campService.getPrerakCampProfile(id, payload);
       setPrerakProfile(result?.faciltator[0]);
+      setCampData(result);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -80,6 +82,8 @@ export default function CampProfileView({ userTokenInfo }) {
               {t("CAMP")}&nbsp;
               {id}
             </AdminTypo.H3>
+            <ChipStatus mx="4" status={campData?.group?.status} />
+
             <HStack flex="0.5" justifyContent="center" m="4">
               {prerakProfile?.profile_photo_1?.name ? (
                 <ImageView
@@ -102,12 +106,13 @@ export default function CampProfileView({ userTokenInfo }) {
             <VStack space="4" flexWrap="wrap">
               <VStack space="4" alignItems={"Center"}>
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {prerakProfile?.first_name} {" " + prerakProfile?.last_name}
+                  {[prerakProfile?.first_name, prerakProfile?.last_name]
+                    .filter(Boolean)
+                    .join(" ")}
                 </FrontEndTypo.H2>
 
                 <FrontEndTypo.H3 color="textMaroonColor.400">
                   <IconByName
-                    isDisabled
                     _icon={{ size: "20px" }}
                     name="CellphoneLineIcon"
                     color="textMaroonColor.400"
@@ -115,7 +120,6 @@ export default function CampProfileView({ userTokenInfo }) {
                   {prerakProfile?.mobile}
                 </FrontEndTypo.H3>
                 <ChipStatus
-                  w="fit-content"
                   status={prerakProfile?.program_faciltators?.status}
                   is_duplicate={prerakProfile?.is_duplicate}
                   is_deactivated={prerakProfile?.is_deactivated}
@@ -128,7 +132,7 @@ export default function CampProfileView({ userTokenInfo }) {
                     name="MapPinLineIcon"
                     color="textMaroonColor.400"
                   />
-                  <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                  <FrontEndTypo.H3 color="textMaroonColor.400">
                     {[
                       prerakProfile?.state,
                       prerakProfile?.district,
@@ -138,7 +142,7 @@ export default function CampProfileView({ userTokenInfo }) {
                     ]
                       .filter((e) => e)
                       .join(",")}
-                  </FrontEndTypo.H2>
+                  </FrontEndTypo.H3>
                 </HStack>
               </VStack>
             </VStack>
@@ -208,7 +212,7 @@ export default function CampProfileView({ userTokenInfo }) {
                   t={t}
                   id={id}
                 />
-                <Divider
+                {/* <Divider
                   orientation="horizontal"
                   bg="btnGray.100"
                   thickness="1"
@@ -231,7 +235,7 @@ export default function CampProfileView({ userTokenInfo }) {
                   navigateOnClick={navigateOnClick}
                   t={t}
                   id={id}
-                />
+                /> */}
               </VStack>
             </Box>
           </VStack>
