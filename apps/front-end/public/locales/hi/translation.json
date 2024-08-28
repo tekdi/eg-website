@@ -1590,6 +1590,7 @@
   "SELECT_CANDIDATE": "उम्मीदवार चुनें",
   "SELECT_CANDIDATES": "कृपया इवेंट के लिए उम्मीदवारों का चयन करें",
   "SELECT_COHORT_INFO": "Cohort चुनें",
+  "COHORT_ALL": "सबका Cohort",
   "SELECT_COHORT_NEXT": "आगे बढ़ें",
   "SELECT_DATE": "तिथि चुनें",
   "SELECT_DATE_ERROR_MESSAGE": "आप अधिकतम पांच दिनों का चयन नहीं कर सकते।",
