@@ -12,8 +12,9 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
-export default function BenificiaryJourney() {
+export default function BenificiaryJourney({ userTokenInfo }) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [benificiary, setbenificiary] = React.useState();
@@ -88,6 +89,7 @@ export default function BenificiaryJourney() {
       analyticsPageTitle={"BENEFICIARY_JOURNEY"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("JOURNEY")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <HStack alignItems={"center"} mt={5} ml={5}>
         {benificiary?.profile_photo_1?.id ? (
@@ -189,3 +191,7 @@ export default function BenificiaryJourney() {
     </Layout>
   );
 }
+
+BenificiaryJourney.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

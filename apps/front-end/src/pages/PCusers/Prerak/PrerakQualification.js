@@ -12,8 +12,9 @@ import {
   PcuserService,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export default function PrerakQualification() {
+export default function PrerakQualification({ userTokenInfo }) {
   const [loading, setLoading] = React.useState(true);
   const [prerakProfile, setPrerakProfile] = React.useState();
   const [qualifications, setQualifications] = React.useState();
@@ -33,7 +34,7 @@ export default function PrerakQualification() {
 
       setPrerakProfile(result?.data);
       setQualification(
-        result?.data?.qualifications ? result?.data?.qualifications : {}
+        result?.data?.qualifications ? result?.data?.qualifications : {},
       );
       const data = await enumRegistryService.listOfEnum();
       setEnumOptions(data?.data || {});
@@ -55,7 +56,7 @@ export default function PrerakQualification() {
     const ids = JSON.parse(
       prerakProfile?.program_faciltators?.qualification_ids
         ? prerakProfile?.program_faciltators?.qualification_ids
-        : "[]"
+        : "[]",
     );
     if (Array.isArray(qua) && Array.isArray(ids)) {
       const arr = qua.filter((item) => ids.includes(item.id));
@@ -79,6 +80,7 @@ export default function PrerakQualification() {
         onPressBackButton,
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack>
         <VStack px="5" pt="3">
@@ -205,3 +207,7 @@ export default function PrerakQualification() {
     </Layout>
   );
 }
+
+PrerakQualification.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

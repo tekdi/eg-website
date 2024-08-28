@@ -94,7 +94,7 @@ const select2 = [
   { label: "SORT_DESC", value: "desc" },
 ];
 
-export default function LearnerListView() {
+export default function LearnerListView({ userTokenInfo }) {
   const [filter, setFilter] = useState();
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
@@ -165,6 +165,7 @@ export default function LearnerListView() {
         onPressBackButton: handleBack,
       }}
       loading={loadingList}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack ref={ref}>
         <HStack
@@ -248,3 +249,7 @@ export default function LearnerListView() {
     </Layout>
   );
 }
+
+LearnerListView.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

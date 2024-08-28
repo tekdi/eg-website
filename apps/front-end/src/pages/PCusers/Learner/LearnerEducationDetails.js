@@ -13,6 +13,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const GetOptions = ({ array, enumType, enumApiData }) => {
   const { t } = useTranslation();
@@ -24,10 +25,10 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
           textAlign="center"
           lineHeight="14px"
           bg="gray.100"
+          key={index}
           label={
             <GetEnumValue
               fontSize="14px"
-              key={index}
               t={t}
               enumOptionValue={item}
               {...{ enumType, enumApiData }}
@@ -39,7 +40,13 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
   );
 };
 
-export default function BenificiaryEducation() {
+GetOptions.propTypes = {
+  array: PropTypes.array,
+  enumType: PropTypes.string,
+  enumApiData: PropTypes.object,
+};
+
+export default function BenificiaryEducation({ userTokenInfo }) {
   const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
@@ -68,6 +75,7 @@ export default function BenificiaryEducation() {
       analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("EDUCATION_DETAILS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
@@ -480,3 +488,7 @@ export default function BenificiaryEducation() {
     </Layout>
   );
 }
+
+LearnerEducationDetails.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { VStack, Select, CheckIcon, Box, ScrollView } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const isDisabledSelect = ({ pcrCreated, attr }) => {
   const data = pcrCreated;
@@ -71,7 +72,7 @@ const isHideSelect = ({ pcrCreated, attr }) => {
   return result;
 };
 
-const PcrDetails = () => {
+const PcrDetails = ({ userTokenInfo }) => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -130,6 +131,7 @@ const PcrDetails = () => {
       analyticsPageTitle={"BENEFICIARY_PCR_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("PCR_DETAILS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <ScrollView>
         <VStack p="4">
@@ -179,3 +181,7 @@ const PcrDetails = () => {
 };
 
 export default PcrDetails;
+
+PcrDetails.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

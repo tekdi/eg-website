@@ -7,8 +7,9 @@ import {
 import React, { Fragment, useEffect, useState } from "react";
 import { VStack, HStack } from "native-base";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const LearnerDocsChecklist = ({ footerLinks }) => {
+const LearnerDocsChecklist = ({ userTokenInfo, footerLinks }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const [benificiary, setBenificiary] = useState({});
@@ -40,6 +41,7 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
       analyticsPageTitle={"BENEFICIARY_DOCUMENT_CHECKLIST"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("DOCUMENTS_CHECKLIST")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       {Object.keys(benificiary)?.length > 0 ? (
         <VStack width={"90%"} margin={"auto"} mt={3}>
@@ -47,6 +49,7 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
             return (
               <HStack
                 space={4}
+                key={key}
                 alignItems={"center"}
                 justifyContent={"space-between"}
                 mx={4}
@@ -68,3 +71,8 @@ const LearnerDocsChecklist = ({ footerLinks }) => {
 };
 
 export default LearnerDocsChecklist;
+
+LearnerDocsChecklist.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};

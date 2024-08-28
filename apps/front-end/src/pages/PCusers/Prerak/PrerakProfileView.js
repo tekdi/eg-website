@@ -9,11 +9,11 @@ import {
   ImageView,
   enumRegistryService,
   PcuserService,
-  AdminTypo,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
+import PropTypes from "prop-types";
 
-export default function PrerakProfileView() {
+export default function PrerakProfileView({ userTokenInfo }) {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const { id } = useParams();
@@ -56,6 +56,7 @@ export default function PrerakProfileView() {
       loading={loading}
       analyticsPageTitle={"PRERAK_PROFILE"}
       pageTitle={t("PRERAK_PROFILE")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       {beneficiary?.is_deactivated ? (
         <Alert status="warning" alignItems="start" mb="3" mt="4">
@@ -127,7 +128,7 @@ export default function PrerakProfileView() {
                       name="ArrowRightSLineIcon"
                       onPress={() => {
                         navigate(
-                          `/prerak/PrerakProfileView/${id}/basicdetails`
+                          `/prerak/PrerakProfileView/${id}/basicdetails`,
                         );
                       }}
                       color="maroon.400"
@@ -148,7 +149,7 @@ export default function PrerakProfileView() {
                       name="ArrowRightSLineIcon"
                       onPress={() => {
                         navigate(
-                          `/prerak/PrerakProfileView/${id}/educationdetails`
+                          `/prerak/PrerakProfileView/${id}/educationdetails`,
                         );
                       }}
                       color="maroon.400"
@@ -156,23 +157,6 @@ export default function PrerakProfileView() {
                   </HStack>
                   <Divider orientation="horizontal" />
                 </VStack>
-                {/* <VStack space="2" paddingTop="5">
-                  <HStack alignItems="center" justifyContent="space-between">
-                    <HStack space="md" alignItems="center">
-                      <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-                      <FrontEndTypo.H3>{t("OTHER_FACILITIES")}</FrontEndTypo.H3>
-                    </HStack>
-
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={() => {
-                        navigate(`/beneficiary/${id}/basicdetails`);
-                      }}
-                      color="maroon.400"
-                    />
-                  </HStack>
-                  <Divider orientation="horizontal" />
-                </VStack> */}
               </VStack>
             </Box>
             {/* <Box
@@ -214,3 +198,7 @@ export default function PrerakProfileView() {
     </Layout>
   );
 }
+
+PrerakProfileView.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

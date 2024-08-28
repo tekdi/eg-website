@@ -7,8 +7,9 @@ import {
 } from "@shiksha/common-lib";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
-export default function BenificiaryAddress() {
+export default function BenificiaryAddress({ userTokenInfo }) {
   const params = useParams();
   const [benificiary, setBenificiary] = useState();
   const [userId] = useState(params?.id);
@@ -30,6 +31,7 @@ export default function BenificiaryAddress() {
       analyticsPageTitle={"BENEFICIARY_ADDRESS_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("ADDRESS_DETAILS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack bg="bgGreyColor.200">
         <VStack px="5" pt="3">
@@ -234,3 +236,7 @@ export default function BenificiaryAddress() {
     </Layout>
   );
 }
+
+LearnerAddAddress.propTypes = {
+  userTokenInfo: PropTypes.any,
+};
