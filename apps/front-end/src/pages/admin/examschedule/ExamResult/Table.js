@@ -4,6 +4,7 @@ import {
   tableCustomStyles,
   enumRegistryService,
   uploadRegistryService,
+  ImageView,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { ExamChipStatus } from "component/Chip";
@@ -24,7 +25,20 @@ import { useNavigate } from "react-router-dom";
 const dropDown = (triggerProps, t) => {
   return (
     <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
+      <HStack
+        space={1}
+        alignItems={"center"}
+        divider={<div style={{ background: "#333", padding: "0.5px" }} />}
+        my="1"
+        h="8"
+        p={2}
+        rounded={"full"}
+        shadow="BlueOutlineShadow"
+        borderWidth="1px"
+      >
+        {t("ACTION")}
+        <IconByName name="ArrowDownSLineIcon" isDisabled={true} />
+      </HStack>
     </Pressable>
   );
 };
@@ -47,6 +61,7 @@ function Table({
   const [selectedRow, setSelectedRow] = useState();
   const navigate = useNavigate();
   const uplodInputRef = useRef();
+  const [openView, setOpenView] = useState();
 
   const handleFileInputChange = (e) => {
     const resultfile = e.target.files[0];
@@ -75,14 +90,7 @@ function Table({
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadExamResult(
-      form_data,
-      {},
-      (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        let percent = Math.floor((loaded * 100) / total);
-      }
-    );
+    const result = await uploadRegistryService.uploadExamResult(form_data);
     if (!result?.data) {
       setErrorMsg("ENROLLMENT_NOT_MATCH");
     }
@@ -168,64 +176,63 @@ function Table({
       minWidth: "140px",
       name: t("ACTION"),
       selector: (row) => (
-        <Button.Group
-          isAttached
-          divider={<div style={{ background: "#333", padding: "0.5px" }} />}
-          my="1"
-          h="6"
-          p={4}
-          alignItems={"center"}
-          rounded={"full"}
-          shadow="BlueOutlineShadow"
-          borderWidth="1px"
+        <Menu
+          w="190"
+          placement="bottom right"
+          trigger={(triggerProps) => dropDown(triggerProps, t)}
         >
-          {row?.beneficiary_user?.exam_results.length > 0 ? (
+          {row?.beneficiary_user?.exam_results?.[0]?.length > 0 && (
+            <Menu.Item>
+              <Pressable
+                px="20px"
+                _text={{
+                  color: "blueText.400",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                }}
+                onPress={() => {
+                  navigate(
+                    `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
+                    { state: { row } },
+                  );
+                }}
+              >
+                <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
+              </Pressable>
+            </Menu.Item>
+          )}
+          <Menu.Item>
             <Pressable
-              px="20px"
-              _text={{
-                color: "blueText.400",
-                fontSize: "12px",
-                fontWeight: "700",
-              }}
               onPress={() => {
-                navigate(
-                  `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
-                  { state: { row } }
-                );
+                openFileUploadDialog(row);
               }}
             >
-              <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
+              <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
             </Pressable>
-          ) : (
-            <Button.Group>
-              <AdminTypo.H5>{t("UPLOAD")}</AdminTypo.H5>
-              <Menu
-                w="190"
-                placement="bottom right"
-                trigger={(triggerProps) => dropDown(triggerProps, t)}
-              >
-                <Menu.Item>
-                  <Pressable
-                    onPress={() => {
-                      openFileUploadDialog(row);
-                    }}
-                  >
-                    <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
-                  </Pressable>
-                </Menu.Item>
-                <Menu.Item
-                  onPress={() => {
-                    navigate(
-                      `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
-                    );
-                  }}
-                >
-                  <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
-                </Menu.Item>
-              </Menu>
-            </Button.Group>
+          </Menu.Item>
+          <Menu.Item
+            onPress={() => {
+              navigate(
+                `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`,
+              );
+            }}
+          >
+            <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
+          </Menu.Item>
+          {(row?.beneficiary_user?.exam_results?.[0]?.document_id ||
+            row?.beneficiary_user?.exam_result_document?.[0]?.id) && (
+            <Menu.Item
+              onPress={() =>
+                setOpenView(
+                  row?.beneficiary_user?.exam_results?.[0] ||
+                    row?.beneficiary_user?.exam_result_document?.[0],
+                )
+              }
+            >
+              {t("VIEW_DOCUMENT")}
+            </Menu.Item>
           )}
-        </Button.Group>
+        </Menu>
       ),
       center: true,
     },
@@ -261,7 +268,7 @@ function Table({
                     selectedData
                       ? selectedData?.find((e) => item === e.status)?.count
                       : 0
-                  })`
+                  })`,
               )
               .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
               .join(" , ")
@@ -302,15 +309,34 @@ function Table({
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
       />
+
+      <Modal isOpen={openView} size="xl" onClose={() => setOpenView()}>
+        <Modal.Content>
+          <Modal.CloseButton />
+
+          <Modal.Body>
+            <ImageView
+              source={{ document_id: openView?.document_id || openView?.id }}
+              alt="Result"
+              width="100%"
+              height="300"
+              borderRadius="5px"
+              borderWidth="1px"
+              borderColor="worksheetBoxText.100"
+              alignSelf="Center"
+            />
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </VStack>
   );
 }

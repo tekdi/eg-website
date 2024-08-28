@@ -75,19 +75,11 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadExamResult(
-      form_data,
-      // {},
-      // (progressEvent) => {
-      //   const { loaded, total } = progressEvent;
-      //   const percent = Math.floor((loaded * 100) / total);
-      // },
-    );
+    const result = await uploadRegistryService.uploadExamResult(form_data);
     if (!result?.data) {
       setErrorMsg(result?.message);
-    } else {
-      learnerList(boardId);
     }
+    learnerList(boardId);
     setLoading(false);
   };
   return (
@@ -183,15 +175,22 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                               ?.final_result || ""
                           }
                         />
-                        <Pressable
-                          onPress={() => {
-                            setOpenView(
-                              item?.beneficiary_user?.exam_results?.[0],
-                            );
-                          }}
-                        >
-                          <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
-                        </Pressable>
+                        {(item?.beneficiary_user?.exam_results?.[0]
+                          ?.document_id ||
+                          item?.beneficiary_user?.exam_result_document?.[0]
+                            ?.id) && (
+                          <Pressable
+                            onPress={() => {
+                              setOpenView(
+                                item?.beneficiary_user?.exam_results?.[0] ||
+                                  item?.beneficiary_user
+                                    ?.exam_result_document?.[0],
+                              );
+                            }}
+                          >
+                            <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                          </Pressable>
+                        )}
                       </HStack>
                     ) : (
                       <HStack alignItems={"center"} space={4}>
@@ -228,18 +227,20 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                               {t("UPLOAD")}
                             </FrontEndTypo.H3>
                           </Pressable>
-                          {item?.result_upload_status && (
-                            <Pressable
-                              onPress={() => {
-                                setOpenView(
-                                  item?.beneficiary_user
-                                    ?.exam_result_document?.[0],
-                                );
-                              }}
-                            >
-                              <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
-                            </Pressable>
-                          )}
+                          {item?.result_upload_status &&
+                            item?.beneficiary_user?.exam_result_document?.[0]
+                              ?.id && (
+                              <Pressable
+                                onPress={() => {
+                                  setOpenView(
+                                    item?.beneficiary_user
+                                      ?.exam_result_document?.[0],
+                                  );
+                                }}
+                              >
+                                <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                              </Pressable>
+                            )}
                         </VStack>
                       </HStack>
                     )}
