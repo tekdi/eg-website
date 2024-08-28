@@ -967,7 +967,7 @@
   "GROUPS_STATUS_APPROVED": "सत्यापित",
   "VOLUNTEER_STATUS_APPROVED": "सत्यापित",
   "VOLUNTEER_MESSAGE_NOT_APPROVED": "अनुमति मिलनेमें इंतज़ार है। जानकारी के लिए एडमिन से संपर्क करें।",
-  "APPROVED": "सत्यापित",
+  "APPROVE": "सत्यापित",
   "VOLUNTEER_CONFIRM_STATUS": "क्या आप वाकई आगे बढ़ना चाहते हैं?",
   "GRAMPANCHAYAT_CD": "ग्रामपंचायत सी.डी",
   "GRAMPANCHAYAT_NAME": "ग्रामपंचायत का नाम",
