@@ -62,18 +62,6 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     uplodInputRef.current.click();
   };
 
-  const statusUpdate = async (selectedRow) => {
-    const obj = {
-      learner_id: selectedRow?.beneficiary_user?.beneficiary_id,
-      status: !selectedRow?.result_upload_status
-        ? "first_time_upload_failed"
-        : selectedRow?.result_upload_status === "first_time_upload_failed" &&
-          "assign_to_ip",
-    };
-    await organisationService.examResultStatusUpdate(obj);
-    learnerList(boardId);
-  };
-
   const uploadProfile = async (resultfile) => {
     setLoading(true);
     const form_data = new FormData();
@@ -87,20 +75,11 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadExamResult(
-      form_data,
-      // {},
-      // (progressEvent) => {
-      //   const { loaded, total } = progressEvent;
-      //   const percent = Math.floor((loaded * 100) / total);
-      // },
-    );
+    const result = await uploadRegistryService.uploadExamResult(form_data);
     if (!result?.data) {
       setErrorMsg(result?.message);
-      statusUpdate(selectedRow);
-    } else {
-      learnerList(boardId);
     }
+    learnerList(boardId);
     setLoading(false);
   };
   return (
@@ -150,6 +129,15 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                 {t("STUDENT_LIST")}
               </FrontEndTypo.H3>
               {data?.map((item) => {
+                let statusMessage = "";
+
+                if (item?.result_upload_status === "first_time_upload_failed") {
+                  statusMessage = t("FIRST_ATTEMPT_FAILED");
+                } else if (
+                  item?.result_upload_status === "second_time_upload_failed"
+                ) {
+                  statusMessage = t("SECOND_ATTEMPT_FAILED");
+                }
                 return (
                   <HStack
                     key={item?.enrollment_number}
@@ -196,33 +184,66 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                               ?.final_result || ""
                           }
                         />
-                        <Pressable
-                          onPress={() => {
-                            setOpenView(
-                              item?.beneficiary_user?.exam_results?.[0],
-                            );
-                          }}
-                        >
-                          <FrontEndTypo.H3 color={"blueText.800"}>
-                            {t("VIEW")}
-                          </FrontEndTypo.H3>
-                        </Pressable>
+                        {(item?.beneficiary_user?.exam_results?.[0]
+                          ?.document_id ||
+                          item?.beneficiary_user?.exam_result_document?.[0]
+                            ?.id) && (
+                          <Pressable
+                            onPress={() => {
+                              setOpenView(
+                                item?.beneficiary_user?.exam_results?.[0] ||
+                                  item?.beneficiary_user
+                                    ?.exam_result_document?.[0],
+                              );
+                            }}
+                          >
+                            <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                          </Pressable>
+                        )}
                       </HStack>
                     ) : (
-                      <Pressable
-                        onPress={() => {
-                          openFileUploadDialog(item);
-                        }}
-                      >
-                        <FrontEndTypo.H3
-                          style={{
-                            textDecoration: "underline",
-                            color: "#0500FF",
-                          }}
-                        >
-                          {t("UPLOAD")}
-                        </FrontEndTypo.H3>
-                      </Pressable>
+                      <HStack alignItems={"center"} space={4}>
+                        {item?.result_upload_status && (
+                          <Chip
+                            m="0"
+                            label={statusMessage}
+                            alignItems="center"
+                            rounded="sm"
+                            bg={"gray.300"}
+                            _text={{ fontSize: "10px" }}
+                          />
+                        )}
+                        <VStack space={2} alignItems={"center"}>
+                          <Pressable
+                            onPress={() => {
+                              openFileUploadDialog(item);
+                            }}
+                          >
+                            <FrontEndTypo.H3
+                              style={{
+                                textDecoration: "underline",
+                                color: "#0500FF",
+                              }}
+                            >
+                              {t("UPLOAD")}
+                            </FrontEndTypo.H3>
+                          </Pressable>
+                          {item?.result_upload_status &&
+                            item?.beneficiary_user?.exam_result_document?.[0]
+                              ?.id && (
+                              <Pressable
+                                onPress={() => {
+                                  setOpenView(
+                                    item?.beneficiary_user
+                                      ?.exam_result_document?.[0],
+                                  );
+                                }}
+                              >
+                                <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                              </Pressable>
+                            )}
+                        </VStack>
+                      </HStack>
                     )}
                   </HStack>
                 );
@@ -257,7 +278,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 
             <Modal.Body>
               <ImageView
-                source={{ document_id: openView?.document_id }}
+                source={{ document_id: openView?.document_id || openView?.id }}
                 alt="Result"
                 width="100%"
                 height="300"

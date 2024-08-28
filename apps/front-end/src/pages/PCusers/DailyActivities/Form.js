@@ -4,9 +4,11 @@ import {
   Breadcrumb,
   FrontEndTypo,
   getOptions,
+  IconByName,
   jsonParse,
   PCusers_layout as Layout,
   PcuserService,
+  useLocationData,
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
@@ -76,6 +78,7 @@ const DailyActivities = () => {
   const [errors, setErrors] = useState({});
   const [isDisable, setIsDisable] = useState(false);
   const { id, category, activity } = useParams();
+  const [lat, long, locationMessage, locationLoding] = useLocationData();
 
   useEffect(() => {
     const activityAddress = jsonParse(localStorage.getItem("activityAddress"));
@@ -195,6 +198,8 @@ const DailyActivities = () => {
         date: moment().format("YYYY-MM-DD"),
         hours: parseInt(newFormData.hours),
         minutes: parseInt(newFormData.minutes),
+        lat,
+        long,
         id: id,
         categories: category?.replace("_ACTIVITY", "")?.toLowerCase(),
       };
@@ -225,9 +230,50 @@ const DailyActivities = () => {
     }
   };
 
+  if (!(lat && long)) {
+    return (
+      <Layout
+        loading={loading || locationLoding}
+        isCenter
+        _appBar={{
+          lang,
+          setLang,
+          onPressBackButton: (e) => {
+            checkActivites();
+          },
+          onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
+        }}
+      >
+        <VStack space={4} alignItems="center">
+          <IconByName
+            name="MapPinLineIcon"
+            _icon={{ size: "100px" }}
+            color="blue.500"
+          />
+          <FrontEndTypo.H3 fontSize="lg" textAlign="center">
+            {t("ALLOW_LOCATION_ACCESS")}
+          </FrontEndTypo.H3>
+          <FrontEndTypo.H3 fontSize="lg" textAlign="center">
+            ({t(locationMessage)})
+          </FrontEndTypo.H3>
+          <FrontEndTypo.H3 fontSize="sm" textAlign="center" color="gray.500">
+            {t("LOCATION_SERVICES_DESCRIPTION")}
+          </FrontEndTypo.H3>
+          <FrontEndTypo.Primarybutton
+            onPress={(e) => window.location.reload()}
+            mt="4"
+            colorScheme="blue"
+          >
+            {t("ALLOW_LOCATION_BUTTON")}
+          </FrontEndTypo.Primarybutton>
+        </VStack>
+      </Layout>
+    );
+  }
+
   return (
     <Layout
-      loading={loading}
+      loading={loading || locationLoding}
       _appBar={{
         lang,
         setLang,
