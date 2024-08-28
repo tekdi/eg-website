@@ -38,40 +38,6 @@ const isDisabledSelect = ({ pcrCreated, attr }) => {
   return result;
 };
 
-const isHideSelect = ({ pcrCreated, attr }) => {
-  const data = pcrCreated;
-  let result = false;
-  switch (attr) {
-    case "rapid_assessment_first_learning_level":
-      if (
-        data?.baseline_learning_level ||
-        data?.rapid_assessment_first_learning_level ||
-        data?.rapid_assessment_second_learning_level ||
-        data?.endline_learning_level
-      )
-        result = true;
-      break;
-    case "rapid_assessment_second_learning_level":
-      if (
-        data?.rapid_assessment_first_learning_level ||
-        data?.rapid_assessment_second_learning_level ||
-        data?.endline_learning_level
-      )
-        result = true;
-      break;
-    case "endline_learning_level":
-      if (
-        data?.rapid_assessment_second_learning_level ||
-        data?.endline_learning_level
-      )
-        result = true;
-      break;
-    default:
-      break;
-  }
-  return result;
-};
-
 const PcrDetails = ({ userTokenInfo }) => {
   const { id } = useParams();
   const { t } = useTranslation();
