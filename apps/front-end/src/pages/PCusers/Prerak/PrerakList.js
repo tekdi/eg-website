@@ -1,5 +1,4 @@
 import {
-  t,
   IconByName,
   PCusers_layout as Layout,
   FrontEndTypo,
@@ -8,8 +7,8 @@ import {
   enumRegistryService,
   PcuserService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable, Input } from "native-base";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import { HStack, VStack, Box, Select, Pressable } from "native-base";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Chip from "component/BeneficiaryStatus";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -26,25 +25,23 @@ const List = ({ data }) => {
     <VStack space="4" p="4" alignContent="center">
       {Array.isArray(data) && data.length > 0 ? (
         data.map((item) => (
-          <CardComponent
+          <Pressable
+            onPress={() =>
+              navigate(`/prerak/PrerakProfileView/${item?.user_id}`)
+            }
             key={item?.user_id}
-            _body={{ px: "3", py: "3" }}
-            _vstack={{ p: 0, space: 0, flex: 1 }}
           >
-            <Pressable
-              onPress={() =>
-                navigate(`/prerak/PrerakProfileView/${item?.user_id}`)
-              }
+            <CardComponent
+              _body={{ px: "3", pt: "3", pb: 3 }}
+              _vstack={{ p: 0, space: 0, flex: 1 }}
             >
               <HStack justifyContent="space-between" space={1}>
-                <HStack alignItems="center" flex={[1, 2, 4]}>
-                  <VStack alignItems="center" p="1">
-                    <Chip>
-                      <Clipboard text={item?.user_id}>
-                        <FrontEndTypo.H2 bold>{item?.user_id}</FrontEndTypo.H2>
-                      </Clipboard>
-                    </Chip>
-                  </VStack>
+                <HStack alignItems="center" flex={[4, 2, 1]}>
+                  <Chip>
+                    <Clipboard text={item?.user_id}>
+                      <FrontEndTypo.H2 bold>{item?.user_id}</FrontEndTypo.H2>
+                    </Clipboard>
+                  </Chip>
                   <VStack
                     pl="2"
                     flex="1"
@@ -54,21 +51,27 @@ const List = ({ data }) => {
                     textOverflow="ellipsis"
                   >
                     <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.user?.first_name}
-                      {item?.user?.middle_name &&
-                        item?.user?.middle_name !== "null" &&
-                        ` ${item.user?.middle_name}`}
-                      {item?.user?.last_name &&
-                        item?.user?.last_name !== "null" &&
-                        ` ${item.user?.last_name}`}
+                      {[
+                        item?.user?.first_name,
+                        item?.user?.middle_name,
+                        item?.user?.last_name,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
                     </FrontEndTypo.H3>
                     <FrontEndTypo.H5 color="textGreyColor.800">
                       {item?.user?.mobile}
                     </FrontEndTypo.H5>
+
+                    <FrontEndTypo.H5 color="textGreyColor.800">
+                      {item?.academic_year?.name}
+                    </FrontEndTypo.H5>
                   </VStack>
                 </HStack>
-                <VStack alignItems="end" flex={[1]}>
+                <VStack alignItems="end" flex={[2, 1, 1]}>
                   <ChipStatus
+                    py="1"
+                    px="1"
                     w="fit-content"
                     status={item?.status}
                     is_duplicate={item?.is_duplicate}
@@ -77,8 +80,8 @@ const List = ({ data }) => {
                   />
                 </VStack>
               </HStack>
-            </Pressable>
-          </CardComponent>
+            </CardComponent>
+          </Pressable>
         ))
       ) : (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
@@ -98,7 +101,6 @@ const select2 = [
 
 export default function PrerakList({ userTokenInfo }) {
   const [filter, setFilter] = useState({ limit: 6 });
-  const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loadingList, setLoadingList] = useState(false);
@@ -106,12 +108,19 @@ export default function PrerakList({ userTokenInfo }) {
   const ref = useRef(null);
   const { t } = useTranslation();
   const [prerakList, setPrerakList] = React.useState();
+  const [cohorts, setCohorts] = React.useState();
 
   useEffect(() => {
     const getPrerakList = async () => {
       setLoadingList(true);
       try {
         const result = await PcuserService.getPrerakList();
+        const program_id =
+          userTokenInfo?.authUser?.program_users?.[0]?.program_id;
+        const cohortResult = await PcuserService.getAcademicYear({
+          program_id,
+        });
+        setCohorts(cohortResult);
         setPrerakList(result?.facilitator_data);
 
         const data = await enumRegistryService.listOfEnum();
@@ -132,11 +141,13 @@ export default function PrerakList({ userTokenInfo }) {
       setLoadingList(true);
       try {
         const result = await PcuserService.getPrerakList(filter);
+        if (result?.facilitator_data?.length == 0) {
+          setHasMore(false);
+        }
         setPrerakList(result?.facilitator_data);
         setLoadingList(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-
         setLoadingList(false);
       }
     };
@@ -145,6 +156,7 @@ export default function PrerakList({ userTokenInfo }) {
 
   return (
     <Layout
+      getBodyHeight={(e) => setLoadingHeight(e)}
       analyticsPageTitle={"PRERAK_LIST"}
       _footer={{ menues: true }}
       pageTitle={t("PRERAK_LIST")}
@@ -195,6 +207,40 @@ export default function PrerakList({ userTokenInfo }) {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
+              selectedValue={filter?.academic_year_id}
+              placeholder={t("SELECT_COHORT_INFO")}
+              onValueChange={(nextValue) => {
+                if (nextValue == "") {
+                  const { academic_year_id, ...otherFilter } = filter;
+                  setFilter({ ...otherFilter, page: 1 });
+                } else {
+                  setFilter({
+                    ...filter,
+                    academic_year_id: nextValue,
+                    page: 1,
+                  });
+                }
+              }}
+              _selectedItem={{
+                bg: "cyan.600",
+                endIcon: <IconByName name="ArrowDownSLineIcon" />,
+              }}
+              accessibilityLabel="Select a position for Menu"
+            >
+              <Select.Item key={0} label={t("COHORT_ALL")} value={""} />
+              {Array.isArray(cohorts) &&
+                cohorts.map((option, index) => (
+                  <Select.Item
+                    key={index || ""}
+                    label={t(option.name)}
+                    value={option.academic_year_id}
+                  />
+                ))}
+            </SelectStyle>
+          </Box>
+          <Box flex="2">
+            <SelectStyle
+              overflowX="hidden"
               selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}
               onValueChange={(nextValue) => {
@@ -219,7 +265,7 @@ export default function PrerakList({ userTokenInfo }) {
       </VStack>
       {!loadingList ? (
         <InfiniteScroll
-          dataLength={data?.length}
+          dataLength={prerakList?.length || 0}
           next={() =>
             setFilter({
               ...filter,

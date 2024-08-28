@@ -1611,6 +1611,7 @@
   "SELECT_CANDIDATE": "Select Candidate",
   "SELECT_CANDIDATES": "Please select Candidates for Event",
   "SELECT_COHORT_INFO": "Select Cohort",
+  "COHORT_ALL": "Cohort All",
   "SELECT_COHORT_NEXT": "Next",
   "SELECT_DATE": "Select Date",
   "SELECT_DATE_ERROR_MESSAGE": "You can only choose a maximum of five days.",
