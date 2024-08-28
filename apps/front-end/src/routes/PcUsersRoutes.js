@@ -56,9 +56,6 @@ const LearnerEducationDetails = lazy(
 const LearnerEnrollMentDetails = lazy(
   () => import("pages/PCusers/Learner/LearnerEnrollMentDetails"),
 );
-const LearnerPCRDetails = lazy(
-  () => import("pages/PCusers/Learner/LearnerPCRDetails"),
-);
 const LearnerJourneyDetails = lazy(
   () => import("pages/PCusers/Learner/LearnerJourneyDetails"),
 );
