@@ -945,6 +945,8 @@
   "FIRST_NAME": "First Name",
   "FIRST_NAME_AS_PER_ENROLLMENT": "First Name (As per Enrollment)",
   "FIRST_TIME_REGISTRATION": "first-time-registration",
+  "FIRST_ATTEMPT_FAILED": "First attempt failed",
+  "SECOND_ATTEMPT_FAILED": "Second attempt failed",
   "FOLLOW_UP_WITH_IP": "Follow up with IP for verification",
   "FOLLOW_UP_WITH_IP_ASSIGNMENT": "Follow up with IP for correct assignment",
   "FORGOT_PASSWORD": "Forgot Password?",

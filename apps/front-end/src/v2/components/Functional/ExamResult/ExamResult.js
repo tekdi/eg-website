@@ -190,9 +190,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                             );
                           }}
                         >
-                          <FrontEndTypo.H3 color={"blueText.800"}>
-                            {t("VIEW")}
-                          </FrontEndTypo.H3>
+                          <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
                         </Pressable>
                       </HStack>
                     ) : (
@@ -200,25 +198,49 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                         {item?.result_upload_status && (
                           <Chip
                             m="0"
-                            label={item?.result_upload_status}
+                            label={
+                              item?.result_upload_status ===
+                              "first_time_upload_failed"
+                                ? t("FIRST_ATTEMPT_FAILED")
+                                : item?.result_upload_status ===
+                                    "second_time_upload_failed"
+                                  ? t("SECOND_ATTEMPT_FAILED")
+                                  : ""
+                            }
                             alignItems="center"
+                            rounded="sm"
+                            bg={"gray.300"}
                             _text={{ fontSize: "10px" }}
                           />
                         )}
-                        <Pressable
-                          onPress={() => {
-                            openFileUploadDialog(item);
-                          }}
-                        >
-                          <FrontEndTypo.H3
-                            style={{
-                              textDecoration: "underline",
-                              color: "#0500FF",
+                        <VStack space={2} alignItems={"center"}>
+                          <Pressable
+                            onPress={() => {
+                              openFileUploadDialog(item);
                             }}
                           >
-                            {t("UPLOAD")}
-                          </FrontEndTypo.H3>
-                        </Pressable>
+                            <FrontEndTypo.H3
+                              style={{
+                                textDecoration: "underline",
+                                color: "#0500FF",
+                              }}
+                            >
+                              {t("UPLOAD")}
+                            </FrontEndTypo.H3>
+                          </Pressable>
+                          {item?.result_upload_status && (
+                            <Pressable
+                              onPress={() => {
+                                setOpenView(
+                                  item?.beneficiary_user
+                                    ?.exam_result_document?.[0],
+                                );
+                              }}
+                            >
+                              <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                            </Pressable>
+                          )}
+                        </VStack>
                       </HStack>
                     )}
                   </HStack>
@@ -254,7 +276,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 
             <Modal.Body>
               <ImageView
-                source={{ document_id: openView?.document_id }}
+                source={{ document_id: openView?.document_id || openView?.id }}
                 alt="Result"
                 width="100%"
                 height="300"

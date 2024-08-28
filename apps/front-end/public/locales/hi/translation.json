@@ -944,6 +944,8 @@
   "FIRST_NAME": "पहला नाम",
   "FIRST_NAME_AS_PER_ENROLLMENT": "पहला नाम (नामांकन के अनुसार)",
   "FIRST_TIME_REGISTRATION": "पहली बार रजिस्ट्रेशन",
+  "FIRST_ATTEMPT_FAILED": "पहला प्रयास असफल रहा",
+  "SECOND_ATTEMPT_FAILED": "दूसरा प्रयास असफल रहा",
   "FOLLOW_UP_WITH_IP": "IP से जांच के लिये फॉलो-अप करे",
   "FOLLOW_UP_WITH_IP_ASSIGNMENT": "IP से सही असाइनमेंट के लिये फॉलो-अप करे",
   "FORGOT_PASSWORD": "पासवर्ड भूल गए?",
