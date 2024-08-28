@@ -31,7 +31,7 @@ const List = ({ data }) => {
           >
             <Pressable
               onPress={() =>
-                navigate(`/learner/learnerListView/${item?.user_id}`, {
+                navigate(`/learners/list-view/${item?.user_id}`, {
                   state: { filter: location?.state },
                 })
               }
