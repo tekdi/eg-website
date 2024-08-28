@@ -105,7 +105,10 @@ export default function LearnerProfileView({ userTokenInfo }) {
             <FrontEndTypo.H1 bold>{beneficiary?.id}</FrontEndTypo.H1>
           </Clipboard>
           <ChipStatus
+            width="fit-content"
             status={beneficiary?.program_beneficiaries?.status}
+            is_duplicate={beneficiary?.is_duplicate}
+            is_deactivated={beneficiary?.is_deactivated}
             rounded={"sm"}
           />
         </Stack>
@@ -146,6 +149,13 @@ export default function LearnerProfileView({ userTokenInfo }) {
               title: "EDUCATION_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerEducationDetails`, {
+                  state: beneficiary,
+                }),
+            },
+            {
+              title: "BENEFICIARY_DISABILITY_DETAILS",
+              onPress: () =>
+                navigate(`/learners/list-view/${id}/disability-details`, {
                   state: beneficiary,
                 }),
             },

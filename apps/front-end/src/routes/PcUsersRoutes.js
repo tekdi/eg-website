@@ -35,6 +35,7 @@ const PrerakProfileView = lazy(
 );
 const PrerakProfile = lazy(() => import("pages/PCusers/Prerak/PrerakProfile"));
 const LearnerList = lazy(() => import("pages/PCusers/Learner/List"));
+const Disability = lazy(() => import("pages/PCusers/Learner/Disability"));
 const LearnerProfileView = lazy(
   () => import("pages/PCusers/Learner/LearnerProfileView"),
 );
@@ -141,6 +142,10 @@ export default [
   {
     path: "/learners/list-view/:id",
     component: LearnerProfileView,
+  },
+  {
+    path: "/learners/list-view/:id/disability-details",
+    component: Disability,
   },
   {
     path: "/learners/list-view/:id/learnerBasicDetails",
