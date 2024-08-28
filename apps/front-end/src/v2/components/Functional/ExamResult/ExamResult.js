@@ -129,6 +129,15 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                 {t("STUDENT_LIST")}
               </FrontEndTypo.H3>
               {data?.map((item) => {
+                let statusMessage = "";
+
+                if (item?.result_upload_status === "first_time_upload_failed") {
+                  statusMessage = t("FIRST_ATTEMPT_FAILED");
+                } else if (
+                  item?.result_upload_status === "second_time_upload_failed"
+                ) {
+                  statusMessage = t("SECOND_ATTEMPT_FAILED");
+                }
                 return (
                   <HStack
                     key={item?.enrollment_number}
@@ -197,15 +206,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                         {item?.result_upload_status && (
                           <Chip
                             m="0"
-                            label={
-                              item?.result_upload_status ===
-                              "first_time_upload_failed"
-                                ? t("FIRST_ATTEMPT_FAILED")
-                                : item?.result_upload_status ===
-                                    "second_time_upload_failed"
-                                  ? t("SECOND_ATTEMPT_FAILED")
-                                  : ""
-                            }
+                            label={statusMessage}
                             alignItems="center"
                             rounded="sm"
                             bg={"gray.300"}
