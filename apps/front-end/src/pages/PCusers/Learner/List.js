@@ -365,9 +365,11 @@ export default function LearnerList() {
                     </HStack>
                     <VStack alignItems="end" flex={[1]}>
                       <ChipStatus
-                        rounded={"sm"}
+                        width="fit-content"
                         status={item?.status}
-                        w="fit-content"
+                        is_duplicate={item?.is_duplicate}
+                        is_deactivated={item?.is_deactivated}
+                        rounded={"sm"}
                       />
                     </VStack>
                   </HStack>
