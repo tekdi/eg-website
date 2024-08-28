@@ -294,7 +294,7 @@ export default function App(footerLinks) {
         };
       } else if (!(age.diff >= 14 && age.diff <= 29)) {
         error = {
-          [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
+          [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_14_TO_30_YEARS"),
           age,
         };
       } else {
