@@ -4,7 +4,6 @@ import {
   Button,
   HStack,
   Heading,
-  IconButton,
   Image,
   Input,
   Modal,
@@ -26,26 +25,17 @@ const limit = 6;
 const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
-  const [filterData, setfilterData] = useState();
+  const [filterData, setFilterData] = useState();
   const [config, setConfig] = useState();
   const { type } = useParams();
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [filter, setFilter] = useState();
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  // const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
-  const [bodyHeight, setBodyHeight] = useState(0);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  // useEffect(() => {
-  //   if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
-  //     setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
-  //   } else {
-  //     setLoadingHeight(bodyHeight);
-  //   }
-  // }, [bodyHeight, ref]);
 
   useEffect(() => {
     const fetchJobsData = async () => {
@@ -57,7 +47,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
         response = await axios.post(
           configData?.apiLink_API_LIST_URL ||
             `${configData?.apiLink_API_BASE_URL}/content/search`,
-          configData?.payload || {}
+          configData?.payload || {},
         );
         if (configData.apiResponse) {
           response = configData.apiResponse(response);
@@ -68,9 +58,9 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
             paginateArray({
               data: response,
               filter: { page, limit, ...filter },
-            })
+            }),
           );
-          setfilterData(filterToData(configData?.filters, response));
+          setFilterData(filterToData(configData?.filters, response));
         } else {
           console.error("Failed to fetch data");
         }
@@ -87,7 +77,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   useEffect(() => {
     const fethcData = () => {
       setFilterCardData(
-        paginateArray({ data: cardData, filter: { page, limit, ...filter } })
+        paginateArray({ data: cardData, filter: { page, limit, ...filter } }),
       );
     };
     fethcData();
@@ -140,8 +130,9 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   };
 
   const removeFilter = (val) => {
-    const { [val]: _, ...otherData } = filter;
-    setFilter(otherData);
+    const updatedFilters = { ...filter };
+    delete updatedFilters[val];
+    setFilter(updatedFilters);
   };
 
   const handleBack = () => {
@@ -171,7 +162,6 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
         ...authUser,
         program_faciltators: authUser?.user_roles?.[0],
       }}
-      getBodyHeight={(e) => setBodyHeight(e)}
       _appBar={{
         onPressBackButton: handleBack,
       }}
@@ -228,7 +218,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
                                 label={option}
                                 _text={{ fontSize: 12, fontWeight: 500 }}
                               />
-                            )
+                            ),
                         )}
                       </Select>
                     )}
@@ -325,10 +315,8 @@ const RenderCards = ({ obj, config }) => {
       onPress={(e) => {
         if (obj?.detailLink) {
           navigate(replaceUrlParam(config?.detailLink, obj));
-        } else {
-          if (obj?.id) {
-            navigate(`/${config?.listLink}/${obj?.item_id}`);
-          }
+        } else if (obj?.id) {
+          navigate(`/${config?.listLink}/${obj?.item_id}`);
         }
       }}
     >
@@ -370,8 +358,8 @@ const RenderCards = ({ obj, config }) => {
                 __html: obj.shortDescription
                   ? obj.shortDescription
                   : obj.description
-                  ? obj.description.substring(0, 100) + "..."
-                  : "",
+                    ? obj.description.substring(0, 100) + "..."
+                    : "",
               }}
             />
           </Text>
@@ -420,10 +408,6 @@ const paginateArray = ({ data, filter }) => {
 
   const currentPageNumber = Math.min(Math.max(1, page), paginatedArrays.length);
   return paginatedArrays[currentPageNumber - 1] || [];
-  return {
-    currentPage: currentPageNumber,
-    paginatedArray: paginatedArrays[currentPageNumber - 1],
-  };
 };
 
 const filterData = ({ data, filter }) => {
