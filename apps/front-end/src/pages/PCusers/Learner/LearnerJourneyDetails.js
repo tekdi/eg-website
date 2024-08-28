@@ -12,16 +12,17 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
-export default function BenificiaryJourney() {
+export default function BenificiaryJourney({ userTokenInfo }) {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [benificiary, setbenificiary] = React.useState();
+  const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
-  const [contextId, setcontextId] = React.useState();
-  const [auditLogs, setauditLogs] = React.useState([]);
-  const [auditMonth, setauditMonth] = React.useState([]);
-  const [auditYear, setauditYear] = React.useState([]);
+  const [contextId, setContextId] = React.useState();
+  const [auditLogs, setAuditLogs] = React.useState([]);
+  const [auditMonth, setAuditMonth] = React.useState([]);
+  const [auditYear, setAuditYear] = React.useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,8 +38,8 @@ export default function BenificiaryJourney() {
   };
 
   const agDetails = async () => {
-    setbenificiary(location?.state);
-    setcontextId(location?.state?.program_beneficiaries?.id);
+    setBenificiary(location?.state);
+    setContextId(location?.state?.program_beneficiaries?.id);
   };
 
   const getAuditData = async () => {
@@ -47,17 +48,17 @@ export default function BenificiaryJourney() {
       const uniqueDates = result.reduce(
         (acc, item) => {
           const parsedDate = moment(item?.created_at);
-          const date = parsedDate.format("DD");
-          const month = parsedDate.format("MMMM");
           const year = parsedDate.format("YYYY");
-          setauditLogs((prevState) => [
+          const month = parsedDate.format("MMMM");
+          const date = parsedDate.format("DD");
+          setAuditLogs((prevState) => [
             ...prevState,
             {
+              date: date,
               status: JSON.parse(item?.new_data),
               first_name: item?.user?.first_name,
               middle_name: item?.user?.middle_name,
               last_name: item.user?.last_name,
-              date: date,
             },
           ]);
 
@@ -73,8 +74,8 @@ export default function BenificiaryJourney() {
         },
         { dates: [], months: [], years: [] },
       );
-      setauditMonth(uniqueDates.months);
-      setauditYear(uniqueDates.years);
+      setAuditMonth(uniqueDates.months);
+      setAuditYear(uniqueDates.years);
     }
   };
 
@@ -88,6 +89,7 @@ export default function BenificiaryJourney() {
       analyticsPageTitle={"BENEFICIARY_JOURNEY"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("JOURNEY")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <HStack alignItems={"center"} mt={5} ml={5}>
         {benificiary?.profile_photo_1?.id ? (
@@ -189,3 +191,7 @@ export default function BenificiaryJourney() {
     </Layout>
   );
 }
+
+BenificiaryJourney.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

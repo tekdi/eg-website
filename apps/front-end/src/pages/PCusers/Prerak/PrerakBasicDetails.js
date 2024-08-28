@@ -11,8 +11,9 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export default function PrerakBasicDetails() {
+export default function PrerakBasicDetails({ userTokenInfo }) {
   const [prerakProfile, setPrerakProfile] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const { id } = useParams();
@@ -49,6 +50,7 @@ export default function PrerakBasicDetails() {
         name: t("BASIC_DETAILS"),
         onPressBackButton: (e) => navigate(`/prerak/PrerakProfileView/${id}`),
       }}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack p="4" space="24px">
@@ -161,3 +163,7 @@ export default function PrerakBasicDetails() {
     </Layout>
   );
 }
+
+PrerakBasicDetails.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

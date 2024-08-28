@@ -16,7 +16,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { debounce } from "lodash";
 import { ChipStatus } from "component/Chip";
 
 const List = ({ data }) => {
@@ -88,12 +87,16 @@ const List = ({ data }) => {
   );
 };
 
+List.propTypes = {
+  data: PropTypes.array,
+};
+
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
 ];
 
-export default function PrerakList() {
+export default function PrerakList({ userTokenInfo }) {
   const [filter, setFilter] = useState({ limit: 6 });
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
@@ -101,7 +104,6 @@ export default function PrerakList() {
   const [loadingList, setLoadingList] = useState(false);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const ref = useRef(null);
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [prerakList, setPrerakList] = React.useState();
 
@@ -141,19 +143,6 @@ export default function PrerakList() {
     getPrerakList();
   }, [filter]);
 
-  const handlePrerakChange = (values) => {
-    setIsDisable(values.length === 0);
-    setSelectedPrerak(values);
-  };
-
-  const handleSearch = useCallback(
-    (e) => {
-      setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-    },
-    [filter]
-  );
-  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
-
   return (
     <Layout
       analyticsPageTitle={"PRERAK_LIST"}
@@ -169,6 +158,7 @@ export default function PrerakList() {
           });
         },
       }}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack ref={ref}>
         <HStack
@@ -258,5 +248,4 @@ export default function PrerakList() {
 
 PrerakList.propTypes = {
   userTokenInfo: PropTypes.any,
-  footerLinks: PropTypes.any,
 };

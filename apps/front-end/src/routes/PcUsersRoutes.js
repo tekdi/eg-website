@@ -56,9 +56,6 @@ const LearnerEducationDetails = lazy(
 const LearnerEnrollMentDetails = lazy(
   () => import("pages/PCusers/Learner/LearnerEnrollMentDetails"),
 );
-const LearnerPCRDetails = lazy(
-  () => import("pages/PCusers/Learner/LearnerPCRDetails"),
-);
 const LearnerJourneyDetails = lazy(
   () => import("pages/PCusers/Learner/LearnerJourneyDetails"),
 );
@@ -164,10 +161,6 @@ export default [
   {
     path: "/learners/list-view/:id/learnerEnrollMentDetails",
     component: LearnerEnrollMentDetails,
-  },
-  {
-    path: "/learners/list-view/:id/learnerPCRDetails",
-    component: LearnerPCRDetails,
   },
   {
     path: "/learners/list-view/:id/learnerJourneyDetails",

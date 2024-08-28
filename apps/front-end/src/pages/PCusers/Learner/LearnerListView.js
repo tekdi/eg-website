@@ -94,7 +94,7 @@ const select2 = [
   { label: "SORT_DESC", value: "desc" },
 ];
 
-export default function LearnerListView() {
+export default function LearnerListView({ userTokenInfo }) {
   const [filter, setFilter] = useState();
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
@@ -165,19 +165,21 @@ export default function LearnerListView() {
         onPressBackButton: handleBack,
       }}
       loading={loadingList}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack ref={ref}>
         <HStack
-          justifyContent="space-between"
           space="2"
-          alignItems="center"
           p="4"
+          justifyContent="space-between"
+          alignItems="center"
         >
           <Box flex="2">
             <SelectStyle
-              overflowX="hidden"
-              selectedValue={filter?.status}
               placeholder={t("STATUS_ALL")}
+              selectedValue={filter?.status}
+              overflowX="hidden"
+              accessibilityLabel="Select a position for Menu"
               onValueChange={(nextValue) => {
                 setFilter({ ...filter, status: nextValue, page: 1 });
               }}
@@ -185,15 +187,14 @@ export default function LearnerListView() {
                 bg: "cyan.600",
                 endIcon: <IconByName name="ArrowDownSLineIcon" />,
               }}
-              accessibilityLabel="Select a position for Menu"
             >
-              <Select.Item key={0} label={t("ALL")} value={""} />
+              <Select.Item label={t("ALL")} value={""} key={0} />
               {Array.isArray(selectStatus) &&
                 selectStatus.map((option, index) => (
                   <Select.Item
-                    key={index || ""}
-                    label={t(option.title)}
                     value={option.value}
+                    label={t(option.title)}
+                    key={index || ""}
                   />
                 ))}
             </SelectStyle>
@@ -201,22 +202,22 @@ export default function LearnerListView() {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
-              selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}
+              accessibilityLabel="Select a position for Menu"
+              selectedValue={filter?.sortType ? filter?.sortType : ""}
               onValueChange={(nextValue) => {
                 setFilter({ ...filter, sortType: nextValue, page: 1 });
               }}
               _selectedItem={{
                 bg: "secondary.700",
               }}
-              accessibilityLabel="Select a position for Menu"
             >
               {select2.map((option, index) => (
                 <Select.Item
+                  p="5"
                   key={index || ""}
                   label={t(option.label)}
                   value={option.value}
-                  p="5"
                 />
               ))}
             </SelectStyle>
@@ -248,3 +249,7 @@ export default function LearnerListView() {
     </Layout>
   );
 }
+
+LearnerListView.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

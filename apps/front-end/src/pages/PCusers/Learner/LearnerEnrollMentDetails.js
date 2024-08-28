@@ -15,7 +15,7 @@ import EnrollmentMessage from "component/EnrollmentMessage";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-export default function App() {
+export default function App({ userTokenInfo }) {
   const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
   const [loading, setLoading] = useState(true);
@@ -197,6 +197,7 @@ export default function App() {
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("ENROLLMENT_DETAILS")}
       analyticsPageTitle={"BENEFICIARY_ENROLLMENT_DETAILS"}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack p="5" space={4}>
         <EnrollmentMessage
@@ -219,7 +220,7 @@ export default function App() {
   );
 }
 
-App.PropTypes = {
+App.propTypes = {
   userTokenInfo: PropTypes.any,
 };
 
@@ -251,7 +252,7 @@ const SubjectsList = ({ boardId, subjectIds }) => {
   );
 };
 
-SubjectsList.PropTypes = {
+SubjectsList.propTypes = {
   boardId: PropTypes.string,
   subjectIds: PropTypes.any,
 };

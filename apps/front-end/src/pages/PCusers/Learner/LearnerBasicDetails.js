@@ -12,9 +12,9 @@ import {
 } from "@shiksha/common-lib";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
-import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto";
+import PropTypes from "prop-types";
 
-export default function LearnerBasicDetails() {
+export default function LearnerBasicDetails({ userTokenInfo }) {
   const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = React.useState({});
@@ -37,6 +37,7 @@ export default function LearnerBasicDetails() {
       analyticsPageTitle={"BENEFICIARY_BASIC_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("BASIC_DETAILS")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack paddingBottom="64px" bg="bgGreyColor.200">
         <VStack px="16px" space="24px">
@@ -140,3 +141,7 @@ export default function LearnerBasicDetails() {
     </Layout>
   );
 }
+
+LearnerBasicDetails.propTypes = {
+  userTokenInfo: PropTypes.any,
+};
