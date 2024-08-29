@@ -18,13 +18,6 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
   const renderOnboardStep = () => {
     switch (type) {
-      case "2":
-        return (
-          <LearnerFormUpdate
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
-        );
       // case "3":
       //   return (
       //     <LearnerAdhaar
@@ -107,13 +100,14 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
         return (
           <PsycCycle userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
         );
-      default:
+      default: {
         return (
           <LearnerFormUpdate
             userTokenInfo={userTokenInfo}
             footerLinks={footerLinks}
           />
         );
+      }
     }
   };
 

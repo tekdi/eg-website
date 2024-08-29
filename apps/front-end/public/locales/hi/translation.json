@@ -2239,5 +2239,6 @@
   "SELECT_VILLAGE": "गांव चुनें",
   "SELECT_CATEGORY": "चुनें श्रेणी",
   "RECEIPT_OF_EXAM_FEES_PAYMENT": "परीक्षा शुल्क भुगतान की रसीद",
-  "RECEIPT_OF_EXAM_FEES_PAYMENT_DESCRIPTION": "कृपया परीक्षा शुल्क भुगतान रसीद की एक स्पष्ट तस्वीर या पीडीएफ अपलोड करें।"
+  "RECEIPT_OF_EXAM_FEES_PAYMENT_DESCRIPTION": "कृपया परीक्षा शुल्क भुगतान रसीद की एक स्पष्ट तस्वीर या पीडीएफ अपलोड करें।",
+  "PSYC_DETAILS": "PSYC विवरण"
 }

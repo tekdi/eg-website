@@ -156,6 +156,10 @@ export function PressableOnPress({ children, ...props }) {
   }
 }
 
+PressableOnPress.propTypes = {
+  program_beneficiaries: PropTypes.object,
+};
+
 export const LearnerMessage = ({ program_beneficiaries }) => {
   const [reason, setReason] = useState({});
   const { t } = useTranslation();

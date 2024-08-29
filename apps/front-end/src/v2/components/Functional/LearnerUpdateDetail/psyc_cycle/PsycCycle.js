@@ -37,7 +37,7 @@ export default function PsycCycle() {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
-  const [psyc, setPsyc] = React.useState();
+  const [psyc, setPsyc] = useState();
 
   const uiSchema = {
     syc_subjects: {
@@ -69,14 +69,11 @@ export default function PsycCycle() {
 
   const validate = (data, key) => {
     let error = {};
-    switch (key) {
-      case "exam_fee_date":
-        if (moment.utc(data?.exam_fee_date) > moment.utc()) {
-          error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
-        }
-        break;
-      default:
-        break;
+    if (
+      key == "exam_fee_date" &&
+      moment.utc(data?.exam_fee_date) > moment.utc()
+    ) {
+      error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
     }
     return error;
   };
@@ -125,7 +122,7 @@ export default function PsycCycle() {
         ...formData,
         exam_fee_date: data?.exam_fee_date,
         exam_fee_document_id: data?.exam_fee_document_id,
-        syc_subjects: JSON.parse(data?.syc_subjects),
+        syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
       });
       setPsyc(data?.is_continued);
     };
@@ -157,21 +154,19 @@ export default function PsycCycle() {
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
-    switch (id) {
-      case "root_exam_fee_date":
-        let { exam_fee_date, ...otherErrore } = errors || {};
-        setErrors(otherErrore);
-        const resultDate = validate(data, "exam_fee_date");
+    if (id == "root_exam_fee_date") {
+      let { exam_fee_date, ...otherErrore } = errors || {};
+      setErrors(otherErrore);
+      const resultDate = validate(data, "exam_fee_date");
 
-        if (resultDate?.exam_fee_date) {
-          setErrors({
-            ...errors,
-            exam_fee_date: {
-              __errors: [resultDate?.exam_fee_date],
-            },
-          });
-        }
-        break;
+      if (resultDate?.exam_fee_date) {
+        setErrors({
+          ...errors,
+          exam_fee_date: {
+            __errors: [resultDate?.exam_fee_date],
+          },
+        });
+      }
     }
     setFormData(newData);
   };
@@ -179,10 +174,11 @@ export default function PsycCycle() {
   // form submit
   const onSubmit = async () => {
     setBtnLoading(true);
+    console.log("asd");
     const newFormData = { ...formData, is_continued: true, user_id: userId };
     const data = await organisationService.psycStatus(newFormData);
     if (data?.success) {
-      navigate("/beneficiary/list");
+      navigate(`/beneficiary/${userId}`);
     }
     setBtnLoading(false);
   };

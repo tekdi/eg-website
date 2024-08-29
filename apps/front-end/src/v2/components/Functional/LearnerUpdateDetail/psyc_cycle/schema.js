@@ -1,7 +1,3 @@
-import { jsonParse } from "@shiksha/common-lib";
-
-let state = jsonParse(localStorage.getItem("program"));
-
 export default {
   description: "1.AG Enrollment Details",
   type: "step",

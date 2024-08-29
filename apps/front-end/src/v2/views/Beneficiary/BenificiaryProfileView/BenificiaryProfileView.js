@@ -29,6 +29,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import PropType from "prop-types";
+import Menu from "component/Beneficiary/Menu";
 
 export default function BenificiaryProfileView({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -118,7 +119,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       ["enrolled_ip_verified", "registered_in_camp", "10th_passed"].includes(
         result?.result?.program_beneficiaries?.status,
       ) &&
-      orgResult?.data?.name.toLowerCase() == "tekdi"
+      orgResult?.data?.name?.toLowerCase() == "tekdi"
     ) {
       setIsDisableOpportunity(true);
     } else {
@@ -132,12 +133,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     switch (status) {
       case "identified":
       case "ready_to_enroll":
-      // case "enrolled":
-      // case "approved_ip":
-      // case "registered_in_camp":
-      // case "pragati_syc":
-      // case "activate":
-      // case "enrolled_ip_verified":
       case null:
         return (
           <Box
@@ -199,12 +194,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     switch (status) {
       case "identified":
       case "ready_to_enroll":
-      // case "enrolled":
-      // case "approved_ip":
-      // case "registered_in_camp":
-      // case "pragati_syc":
-      // case "activate":
-      // case "enrolled_ip_verified":
       case null:
         return (
           <Box bg="white">
@@ -233,11 +222,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     )}
                 </HStack>
               </VStack>
-              {/* <Divider
-                orientation="horizontal"
-                bg="btnGray.100"
-                thickness="1"
-              /> */}
             </VStack>
           </Box>
         );
@@ -256,6 +240,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       navigate("/beneficiary/list");
     }
   };
+
   return (
     <Layout
       _appBar={{
@@ -263,7 +248,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
         onPressBackButton: (e) => {
           navigate("/beneficiary/list");
         },
-
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={userTokenInfo?.authUser || {}}
@@ -490,307 +474,102 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("PROFILE_DETAILS")}
             </FrontEndTypo.H3>
-            <Box
-              bg="boxBackgroundColour.100"
-              borderColor="garyTitleCardBorder"
-              borderRadius="5px"
-              borderWidth="1px"
-              shadow={"LearnerProfileViewShadow"}
-              pb="4"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <VStack space="2">
-                  <HStack alignItems="Center" justifyContent="space-between">
-                    <HStack space="md" alignItems="Center">
-                      <FrontEndTypo.H3
-                        fontWeight={"600"}
-                        color="floatingLabelColor.500"
-                      >
-                        {t("BASIC_DETAILS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
-
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
+            <Menu
+              menus={[
+                {
+                  title: "BASIC_DETAILS",
+                  onPress: () => navigate(`/beneficiary/${id}/basicdetails`),
+                },
+                {
+                  title: "ADD_YOUR_ADDRESS",
+                  onPress: (e) => {
+                    if (
                       benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/basicdetails`);
-                          }}
-                          color="floatingLabelColor.500"
-                          _icon={{ size: "20" }}
-                        />
-                      )}
-                  </HStack>
-                  <Divider
-                    orientation="horizontal"
-                    bg="btnGray.100"
-                    thickness="1"
-                  />
-                  <HStack alignItems="Center" justifyContent="space-between">
-                    <HStack alignItems="Center" space="md">
-                      {/* <IconByName
-                        name="MapPinLineIcon"
-                        _icon={{ size: "20" }}
-                      /> */}
-
-                      <FrontEndTypo.H3
-                        fontWeight={"600"}
-                        color="floatingLabelColor.500"
-                      >
-                        {t("ADD_YOUR_ADDRESS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/addressdetails`);
-                          }}
-                          color="floatingLabelColor.500"
-                          _icon={{ size: "20" }}
-                        />
-                      )}
-                  </HStack>
-                  {/*
-                  <Divider
-                    orientation="horizontal"
-                    bg="btnGray.100"
-                    thickness="1"
-                  />
-                   <HStack alignItems="Center" justifyContent="space-between">
-                    <HStack alignItems="Center" space="md">
-                      <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                      <FrontEndTypo.H3 color="textGreyColor.800">
-                        {t("AADHAAR_DETAILS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/aadhaardetails`);
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      )}
-                  </HStack> */}
-                </VStack>
-              </VStack>
-            </Box>
+                        "dropout" &&
+                      benificiary?.program_beneficiaries?.status !== "rejected"
+                    ) {
+                      navigate(`/beneficiary/${id}/addressdetails`);
+                    }
+                  },
+                },
+              ]}
+            />
 
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("OTHER_DETAILS")}
             </FrontEndTypo.H3>
-            <VStack
-              shadow={"LearnerProfileViewShadow"}
-              bg="boxBackgroundColour.100"
-              borderColor="garyTitleCardBorder"
-              borderRadius="5px"
-              borderWidth="1px"
-              px="4"
-              p="2"
-              pb="3"
-              divider={
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-              }
-            >
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="0"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("DOCUMENT_CHECKLIST")}
-                </FrontEndTypo.H3>
-                {![
-                  "enrolled",
-                  "dropout",
-                  "rejected",
-                  "ready_to_enroll",
-                  "enrolled_ip_verified",
-                ].includes(benificiary?.program_beneficiaries?.status) && (
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={(e) => {
+            <Menu
+              menus={[
+                {
+                  title: "DOCUMENT_CHECKLIST",
+                  onPress: () => {
+                    if (
+                      ![
+                        "enrolled",
+                        "dropout",
+                        "rejected",
+                        "ready_to_enroll",
+                        "enrolled_ip_verified",
+                      ].includes(benificiary?.program_beneficiaries?.status)
+                    ) {
                       navigate(`/beneficiary/${id}/docschecklist`);
-                    }}
-                    color="floatingLabelColor.500"
-                    _icon={{ size: "20" }}
-                  />
-                )}
-              </HStack>
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                pr="0"
-                p="3"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("EDUCATION_DETAILS")}
-                </FrontEndTypo.H3>
-                {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                  benificiary?.program_beneficiaries?.status !== "rejected" && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/educationdetails`);
-                      }}
-                      color="floatingLabelColor.500"
-                      _icon={{ size: "20" }}
-                    />
-                  )}
-              </HStack>
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="0"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("BENEFICIARY_DISABILITY_DETAILS")}
-                </FrontEndTypo.H3>
-
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  onPress={(e) =>
-                    navigate(`/beneficiary/${id}/disability-details`)
-                  }
-                  color="floatingLabelColor.500"
-                  _icon={{ size: "20" }}
-                />
-              </HStack>
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="0"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("ENROLLMENT_DETAILS")}
-                </FrontEndTypo.H3>
-
-                {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                  benificiary?.program_beneficiaries?.status !== "rejected" && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      color="floatingLabelColor.500"
-                      _icon={{ size: "20" }}
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/enrollmentdetails`);
-                      }}
-                    />
-                  )}
-              </HStack>
-
-              {benificiary?.program_beneficiaries?.status ===
-                "registered_in_camp" && (
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="Center"
-                  p="3"
-                  pr="1"
-                >
-                  <FrontEndTypo.H3
-                    color="floatingLabelColor.500"
-                    fontWeight={"600"}
-                  >
-                    {t("PCR_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="floatingLabelColor.500"
-                    size="sm"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/pcrview`);
-                    }}
-                    _icon={{ size: "20" }}
-                  />
-                </HStack>
-              )}
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="1"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("PCR_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="#790000"
-                  size="sm"
-                  onPress={(e) => {
+                    }
+                  },
+                },
+                {
+                  title: "EDUCATION_DETAILS",
+                  onPress: (e) => {
+                    if (
+                      benificiary?.program_beneficiaries?.status !==
+                        "dropout" &&
+                      benificiary?.program_beneficiaries?.status !== "rejected"
+                    ) {
+                      navigate(`/beneficiary/${id}/educationdetails`);
+                    }
+                  },
+                },
+                {
+                  title: "BENEFICIARY_DISABILITY_DETAILS",
+                  onPress: (e) => {
+                    navigate(`/beneficiary/${id}/disability-details`);
+                  },
+                },
+                {
+                  title: "ENROLLMENT_DETAILS",
+                  onPress: (e) => {
+                    if (
+                      benificiary?.program_beneficiaries?.status !==
+                        "dropout" &&
+                      benificiary?.program_beneficiaries?.status !== "rejected"
+                    ) {
+                      navigate(`/beneficiary/${id}/enrollmentdetails`);
+                    }
+                  },
+                },
+                {
+                  title: "PCR_DETAILS",
+                  onPress: (e) => {
                     navigate(`/beneficiary/${id}/pcrview`);
-                  }}
-                />
-              </HStack>
-
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="1"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("PSYC_DETAILS")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  color="#790000"
-                  size="sm"
-                  onPress={(e) => {
+                  },
+                },
+                {
+                  title: "PSYC_DETAILS",
+                  onPress: (e) => {
                     navigate(`/beneficiary/${id}/psyc`, {
                       state:
                         benificiary?.program_beneficiaries?.enrolled_for_board,
                     });
-                  }}
-                />
-              </HStack>
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="1"
-              >
-                <FrontEndTypo.H3 color="textGreyColor.800" bold>
-                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  size="sm"
-                  onPress={(e) => {
+                  },
+                },
+
+                {
+                  title: "JOURNEY_IN_PROJECT_PRAGATI",
+                  onPress: (e) => {
                     navigate(`/beneficiary/${id}/benificiaryJourney`);
-                  }}
-                  color="floatingLabelColor.500"
-                  _icon={{ size: "20" }}
-                />
-              </HStack>
-            </VStack>
+                  },
+                },
+              ]}
+            />
 
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("LEARNER_ACTIONS")}
