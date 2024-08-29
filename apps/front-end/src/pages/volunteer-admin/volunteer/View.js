@@ -248,7 +248,7 @@ const ApproveButton = memo(({ id, data, setData }) => {
     <VStack>
       {data?.user_roles?.[0]?.status === "applied" && (
         <AdminTypo.Secondarybutton onPress={(e) => setModalVisible(true)}>
-          {t("APPROVED")}
+          {t("APPROVE")}
         </AdminTypo.Secondarybutton>
       )}
       <Modal
