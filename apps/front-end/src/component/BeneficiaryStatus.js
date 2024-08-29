@@ -58,150 +58,133 @@ export function ChipStatus({
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Define a function to set status and colors to avoid repetition
-    function setStatusAndColors(newStatus, textColor, color) {
+    const setStatusAndColors = (newStatus, textColor, color) => {
       setNewStatus(newStatus);
       setTextColor(textColor);
       setColor(color);
-    }
+    };
 
     const statusKey = status
       ? status.toLowerCase()
       : statusCount?.toLowerCase();
 
-    switch (statusKey) {
-      case "rejected":
-        setStatusAndColors(t("REJECTED"), "#fff", "textRed.400");
-        break;
-      case "is_deactivated":
-        setStatusAndColors(t("DEACTIVATE"), "white", "textRed.100");
-        break;
-      case "dropout":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_DROPOUT"),
-          "white",
-          "textRed.200",
-        );
-        break;
-      case "is_duplicated":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_DUPLICATED"),
-          "textMaroonColor.400",
-          "textMaroonColor.100",
-        );
-        break;
-      case "ineligible_for_pragati_camp":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_INELIGIBLE_FOR_PRAGATI_CAMP"),
-          "textMaroonColor.400",
-          "textMaroonColor.100",
-        );
-        break;
-      case "ready_to_enroll":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_READY_TO_ENROLL"),
-          "badgeColor.600",
-          "badgeColor.50",
-        );
-        break;
-      case "enrollment_pending":
-        setStatusAndColors(
-          t("ENROLLMENT_PENDING"),
-          "textMaroonColor.500",
-          "textMaroonColor.50",
-        );
-        break;
-      case "pragati_syc":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_PRAGATI_SYC"),
-          "textMaroonColor.500",
-          "textMaroonColor.50",
-        );
-        break;
-      case "sso_id_enrolled":
-        setStatusAndColors(t("SSO_ID_ENROLLED"), "black", "textBlue.100");
-        break;
-      case "sso_id_verified":
-        setStatusAndColors(
-          t("ENROLLMENT_SSO_ID_VERIFIED"),
-          "#fff",
-          "textBlue.200",
-        );
-        break;
-      case "enrolled":
-        setStatusAndColors(t("ENROLLED"), "#fff", "textGreen.100");
-        break;
-      case "activate":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_ACTIVATE"),
-          "textGreen.700",
-          "textGreen.300",
-        );
-        break;
-      case "registered_in_neev_camp":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_REGISTERED_IN_NEEV_CAMP"),
-          "textGreen.900",
-          "textGreen.300",
-        );
-        break;
-      case "registered_in_camp":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP"),
-          "textGreen.900",
-          "textGreen.300",
-        );
-        break;
-      case "approved_ip":
-      case "enrolled_ip_verified":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_APPROVED_IP"),
-          "textGreen.400",
-          "textGreen.50",
-        );
-        break;
-      case "enrollment_awaited":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_ENROLLMENT_AWAITED"),
-          "textMaroonColor.400",
-          "textBlue.100",
-        );
-        break;
-      case "enrollment_rejected":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_ENROLLMENT_REJECTED"),
-          "#fff",
-          "textRed.400",
-        );
-        break;
-      case "10th_passed":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_10TH_PASSED"),
-          "#fff",
-          "textGreen.600",
-        );
-        break;
-      case "identified_ready_to_enroll":
-        setStatusAndColors(
-          t("IDENTIFIED_READY_TO_ENROLL"),
-          "textGreyColor.800",
-          "identifiedColor",
-        );
-        break;
-      case "deactivated":
-        setStatusAndColors(
-          t("BENEFICIARY_STATUS_DEACTIVATED"),
-          "textGreyColor.800",
-          "textMaroonColor.100",
-        );
-        break;
-      default:
-        setStatusAndColors(
-          t("IDENTIFIED"),
-          "textGreyColor.800",
-          "identifiedColor",
-        );
-    }
+    const statusMap = {
+      rejected: {
+        newStatus: t("REJECTED"),
+        textColor: "#fff",
+        color: "textRed.400",
+      },
+      is_deactivated: {
+        newStatus: t("DEACTIVATE"),
+        textColor: "white",
+        color: "textRed.100",
+      },
+      dropout: {
+        newStatus: t("BENEFICIARY_STATUS_DROPOUT"),
+        textColor: "white",
+        color: "textRed.200",
+      },
+      is_duplicated: {
+        newStatus: t("BENEFICIARY_STATUS_DUPLICATED"),
+        textColor: "textMaroonColor.400",
+        color: "textMaroonColor.100",
+      },
+      ineligible_for_pragati_camp: {
+        newStatus: t("BENEFICIARY_STATUS_INELIGIBLE_FOR_PRAGATI_CAMP"),
+        textColor: "textMaroonColor.400",
+        color: "textMaroonColor.100",
+      },
+      ready_to_enroll: {
+        newStatus: t("BENEFICIARY_STATUS_READY_TO_ENROLL"),
+        textColor: "badgeColor.600",
+        color: "badgeColor.50",
+      },
+      enrollment_pending: {
+        newStatus: t("ENROLLMENT_PENDING"),
+        textColor: "textMaroonColor.500",
+        color: "textMaroonColor.50",
+      },
+      pragati_syc: {
+        newStatus: t("BENEFICIARY_STATUS_PRAGATI_SYC"),
+        textColor: "textMaroonColor.500",
+        color: "textMaroonColor.50",
+      },
+      sso_id_enrolled: {
+        newStatus: t("SSO_ID_ENROLLED"),
+        textColor: "black",
+        color: "textBlue.100",
+      },
+      sso_id_verified: {
+        newStatus: t("ENROLLMENT_SSO_ID_VERIFIED"),
+        textColor: "#fff",
+        color: "textBlue.200",
+      },
+      enrolled: {
+        newStatus: t("ENROLLED"),
+        textColor: "#fff",
+        color: "textGreen.100",
+      },
+      activate: {
+        newStatus: t("BENEFICIARY_STATUS_ACTIVATE"),
+        textColor: "textGreen.700",
+        color: "textGreen.300",
+      },
+      registered_in_neev_camp: {
+        newStatus: t("BENEFICIARY_STATUS_REGISTERED_IN_NEEV_CAMP"),
+        textColor: "textGreen.900",
+        color: "textGreen.300",
+      },
+      registered_in_camp: {
+        newStatus: t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP"),
+        textColor: "textGreen.900",
+        color: "textGreen.300",
+      },
+      approved_ip: {
+        newStatus: t("BENEFICIARY_STATUS_APPROVED_IP"),
+        textColor: "textGreen.400",
+        color: "textGreen.50",
+      },
+      enrolled_ip_verified: {
+        newStatus: t("BENEFICIARY_STATUS_APPROVED_IP"),
+        textColor: "textGreen.400",
+        color: "textGreen.50",
+      },
+      enrollment_awaited: {
+        newStatus: t("BENEFICIARY_STATUS_ENROLLMENT_AWAITED"),
+        textColor: "textMaroonColor.400",
+        color: "textBlue.100",
+      },
+      enrollment_rejected: {
+        newStatus: t("BENEFICIARY_STATUS_ENROLLMENT_REJECTED"),
+        textColor: "#fff",
+        color: "textRed.400",
+      },
+      "10th_passed": {
+        newStatus: t("BENEFICIARY_STATUS_10TH_PASSED"),
+        textColor: "#fff",
+        color: "textGreen.600",
+      },
+      identified_ready_to_enroll: {
+        newStatus: t("IDENTIFIED_READY_TO_ENROLL"),
+        textColor: "textGreyColor.800",
+        color: "identifiedColor",
+      },
+      deactivated: {
+        newStatus: t("BENEFICIARY_STATUS_DEACTIVATED"),
+        textColor: "textGreyColor.800",
+        color: "textMaroonColor.100",
+      },
+      default: {
+        newStatus: t("IDENTIFIED"),
+        textColor: "textGreyColor.800",
+        color: "identifiedColor",
+      },
+    };
+
+    // Apply the corresponding settings from the map or use default
+    const { newStatus, textColor, color } =
+      statusMap[statusKey] || statusMap["default"];
+    setStatusAndColors(newStatus, textColor, color);
   }, [status]);
 
   return (
