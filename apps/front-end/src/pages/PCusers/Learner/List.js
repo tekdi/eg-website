@@ -486,7 +486,9 @@ export default function LearnerList() {
                 }
               }}
             >
-              {t("SELECT_ALL")}
+              <FrontEndTypo.H3 color="gray.800">
+                {t("SELECT_ALL")}
+              </FrontEndTypo.H3>
             </Checkbox>
             <FrontEndTypo.H3 textAlign="center" color="black">
               {t("SELECT_PRERAK")}
@@ -509,13 +511,15 @@ export default function LearnerList() {
               >
                 {prerakList?.map((item) => (
                   <Checkbox key={item.user_id} value={item.user_id} mb="1">
-                    {[
-                      item?.user.first_name,
-                      item?.user.middle_name,
-                      item?.user.last_name,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                    <FrontEndTypo.H3 color="gray.800">
+                      {[
+                        item?.user.first_name,
+                        item?.user.middle_name,
+                        item?.user.last_name,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </FrontEndTypo.H3>
                   </Checkbox>
                 ))}
               </Checkbox.Group>
