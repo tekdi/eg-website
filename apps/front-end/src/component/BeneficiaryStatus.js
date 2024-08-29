@@ -115,9 +115,9 @@ export function ChipStatus({
         setColor("textGreen.300");
         break;
       case "registered_in_neev_camp":
-        setNewStatus(t("BENEFICIARY_STATUS_REGISTERED_IN_NEEV_CAMP"));
         setTextColor("textGreen.800");
         setColor("textGreen.300");
+        setNewStatus(t("BENEFICIARY_STATUS_REGISTERED_IN_NEEV_CAMP"));
         break;
       case "registered_in_camp":
         setNewStatus(t("BENEFICIARY_STATUS_REGISTERED_IN_CAMP"));
