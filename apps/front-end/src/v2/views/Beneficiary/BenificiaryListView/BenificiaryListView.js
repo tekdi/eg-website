@@ -101,18 +101,21 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 500), []);
 
-  const checkStateAndYear = (state_name, academic_year_name) => {
-    if (
-      state_name === "RAJASTHAN" &&
-      (academic_year_name.includes("2023-2024") ||
-        academic_year_name.includes("2023-24"))
-    ) {
-      return true;
-    }
-    return false;
+  const showAddLearner = () => {
+    return (
+      !(
+        state_name === "RAJASTHAN" &&
+        (academic_year_name.includes("2023-2024") ||
+          academic_year_name.includes("2023-24"))
+      ) &&
+      [
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(localStorage.getItem("status"))
+    );
   };
-
-  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
 
   return (
     <Layout
@@ -276,7 +279,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
         />
       )}
 
-      {!hideAddLearner && (
+      {showAddLearner() && (
         <HStack
           ref={refButton}
           width={"100%"}
@@ -288,20 +291,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           zIndex={"9999999"}
         >
           <FrontEndTypo.Secondarybutton
-            onPress={(e) => {
-              if (
-                [
-                  "pragati_mobilizer",
-                  "selected_prerak",
-                  "selected_for_training",
-                  "selected_for_onboarding",
-                ].includes(facilitator.status)
-              ) {
-                navigate(`/beneficiary`);
-              } else {
-                navigate("/beneficiary");
-              }
-            }}
+            onPress={(e) => navigate(`/beneficiary`)}
             mx="auto"
             my="2"
           >
