@@ -38,8 +38,9 @@ export default function LearnerBasicDetails({ userTokenInfo }) {
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("BASIC_DETAILS")}
       facilitator={userTokenInfo?.authUser || {}}
+      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
     >
-      <VStack paddingBottom="64px" bg="bgGreyColor.200">
+      <VStack paddingBottom="64px">
         <VStack px="16px" space="24px">
           <VStack alignItems={"center"}>
             {benificiary?.profile_photo_1?.id ? (

@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
 import {
-  AdminTypo,
   Breadcrumb,
   FrontEndTypo,
   IconByName,
@@ -8,12 +6,13 @@ import {
   PCusers_layout as Layout,
   campService,
 } from "@shiksha/common-lib";
-import Chip, { CampChipStatus, ChipStatus } from "component/Chip";
-import { Box, Divider, HStack, VStack } from "native-base";
-import PropTypes from "prop-types";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import Menu from "component/Beneficiary/Menu";
+import Chip, { CampChipStatus, ChipStatus } from "component/Chip";
+import { HStack, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function CampProfileView({ userTokenInfo }) {
   const [loading, setLoading] = useState(true);
@@ -173,11 +172,6 @@ export default function CampProfileView({ userTokenInfo }) {
               {
                 title: "KIT_DETAILS",
                 onPress: () => navigateOnClick(`/camps/${id}/edit_kit_details`),
-              },
-              {
-                title: "CAMP_FACILITIES",
-                onPress: () =>
-                  navigateOnClick(`/camps/${id}/edit_property_facilities`),
               },
               {
                 title: "CAMP_FACILITIES",

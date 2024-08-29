@@ -117,7 +117,7 @@ export default function LearnerListView({ userTokenInfo }) {
   };
 
   useEffect(() => {
-    getLearner(filter);
+    if (filter) getLearner(filter);
   }, [filter]);
 
   return (

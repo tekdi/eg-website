@@ -116,15 +116,15 @@ export default [
     component: PcDashboard,
   },
   {
-    path: "/prerak/prerakList",
+    path: "/preraks",
     component: PrerakList,
   },
   {
-    path: "/prerak/prerakProfileView/:id",
+    path: "/preraks/:id",
     component: PrerakProfileView,
   },
   {
-    path: "/prerak/prerakProfileView/:id/:type",
+    path: "/preraks/:id/:type",
     component: PrerakProfile,
   },
   {
