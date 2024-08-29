@@ -220,15 +220,15 @@ export function ExamChipStatus({ width, status, ...props }) {
 
   return (
     <Chip
-      px="4"
-      py="2"
+      px="2"
+      py="1"
       width={width || "100px"}
       bg={color}
       label={newStatus}
       _text={{
         textTransform: "capitalize",
         fontSize: "10px",
-        fontWeight: "500",
+        fontWeight: "400",
         textAlign: "center",
       }}
       rounded="sm"

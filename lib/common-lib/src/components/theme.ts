@@ -882,7 +882,8 @@ const DEFAULT_THEME = {
     zambezi: '#5A5A5A',
     timeLineBg: '#FFE0E1',
     greenIconColor: '#008C0E',
-    whiteSomke: '#F9F9F9'
+    whiteSomke: '#F9F9F9',
+    profileColor: '#D9D9D9'
   }
 }
 

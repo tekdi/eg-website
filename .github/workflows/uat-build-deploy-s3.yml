@@ -1,15 +1,12 @@
 name: Deploy to UAT S3 Bucket
 on: 
+  workflow_dispatch:
   push: 
     tags:
        - v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+             
        - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
        - 'v[0-9]+.[0-9]+.[0-9]+beta.[0-9]+'           
        - 'v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+'
-# on:
-#   push:
-#     branches:
-#       - release-1.8.0
 
 defaults:
   run:
@@ -38,10 +35,10 @@ jobs:
           
       - name: Install deps, and build
         run: |
-          yarn install
+          yarn install --legacy-peer-deps
           yarn workspace @shiksha/common-lib build
-          yarn install
-
+          yarn install --legacy-peer-deps
+     
       - name: Set CI environment variable to false
         run: echo "CI=false" >> $GITHUB_ENV
 

@@ -17,6 +17,7 @@ import routes from "./routes/routes";
 import volunteerAdmin from "./routes/volunteerAdmin";
 import adminRoutes from "./routes/admin";
 import PoAdminRoutes from "./routes/PoAdminRoutes";
+import PcUsersRoutes from "./routes/PcUsersRoutes";
 import { getIndexedDBItem, getUserId } from "v2/utils/Helper/JSHelper";
 import ReactGA from "react-ga4";
 
@@ -116,6 +117,9 @@ function App() {
         setAccessRoutes(PoAdminRoutes);
       } else if (hasura?.roles?.includes("staff")) {
         setAccessRoutes(adminRoutes);
+      } else if (hasura?.roles?.includes("program_coordinator")) {
+        // for program_coordinator role user
+        setAccessRoutes(PcUsersRoutes);
       } else if (hasura?.roles?.includes("volunteer_admin")) {
         setAccessRoutes(volunteerAdmin);
       } else if (

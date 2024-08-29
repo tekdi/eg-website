@@ -99,7 +99,7 @@ export const fetchFileUrlAsBlob = async (url) => {
 
 export async function base64toBlob(
   base64Data,
-  contentType = "application/pdf"
+  contentType = "application/pdf",
 ) {
   const byteCharacters = atob(base64Data.split(",")[1]);
   const byteArrays = [];
@@ -214,4 +214,27 @@ export function convertToTitleCase(inputString) {
   let outputString = capitalizedWords.join(" ");
 
   return outputString;
+}
+
+export function changePasswordValidation(credentials, t) {
+  let arr = {};
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  const { password, confirmPassword } = credentials || {};
+
+  if (!password) {
+    arr.password = t("PASSWORD_IS_REQUIRED");
+  } else if (!regex.test(password)) {
+    arr.password = t("PASSWORD_REQUIREMENTS_NOTMATCH");
+  }
+
+  if (!confirmPassword) {
+    arr.confirmPassword = t("USER_CONFIRM_PASSWORD_IS_REQUIRED");
+  } else if (!regex.test(confirmPassword)) {
+    arr.confirmPassword = t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH");
+  } else if (confirmPassword !== password) {
+    arr.confirmPassword = t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION");
+  }
+
+  return arr;
 }
