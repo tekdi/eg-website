@@ -190,15 +190,15 @@ export default function LearnerListView({ userTokenInfo }) {
         </HStack>
       </VStack>
       <InfiniteScroll
-        dataLength={data?.length}
+        height={loadingHeight}
         next={(e) =>
           setFilter({
             ...filter,
             page: (filter?.page ? filter?.page : 1) + 1,
           })
         }
+        dataLength={data?.length}
         hasMore={hasMore}
-        height={loadingHeight}
         loader={
           <Spinner
             accessibilityLabel="Loading posts"
