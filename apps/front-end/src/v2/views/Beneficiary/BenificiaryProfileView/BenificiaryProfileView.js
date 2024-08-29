@@ -58,17 +58,17 @@ export default function BenificiaryProfileView(userTokenInfo) {
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
   const fa_id = localStorage.getItem("id");
   const [countLoad, setCountLoad] = useState(0);
-  const [programData, setProgramData] = useState(null);
-  const [cohortData, setCohortData] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [selectedCohortData, setSelectedCohortData] = useState(null);
+  const [cohortData, setCohortData] = useState(null);
+  const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
-  const [selectCohortForm, setSelectCohortForm] = useState(false);
+  const [selectedCohortData, setSelectedCohortData] = useState(null);
   const [selectedProgramData, setSelectedProgramData] = useState(null);
-  const [academicData, setAcademicData] = useState([]);
+  const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
-  const [certificateData, setCertificateData] = useState({});
+  const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
+  const [certificateData, setCertificateData] = useState({});
   const [isOnline, setIsOnline] = useState(
     window ? window.navigator.onLine : false,
   );
@@ -96,6 +96,34 @@ export default function BenificiaryProfileView(userTokenInfo) {
       console.error("Error saving data to IndexedDB:", error);
     }
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      // ...async operation
+      if (countLoad == 0) {
+        setCountLoad(1);
+      }
+      if (countLoad == 1) {
+        //do page load first operation
+        //get user info
+        if (userTokenInfo) {
+          const IpUserInfo = await getIpUserInfo(fa_id);
+          let ipUserData = IpUserInfo;
+          if (isOnline && !IpUserInfo) {
+            ipUserData = await setIpUserInfo(fa_id);
+          }
+
+          setFacilitator(ipUserData);
+        }
+        setLoading(false);
+        //end do page load first operation
+        setCountLoad(2);
+      } else if (countLoad == 2) {
+        setCountLoad(3);
+      }
+    }
+    fetchData();
+  }, [countLoad]);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -146,31 +174,19 @@ export default function BenificiaryProfileView(userTokenInfo) {
 
   useEffect(() => {
     async function fetchData() {
-      // ...async operation
-      if (countLoad == 0) {
-        setCountLoad(1);
-      }
-      if (countLoad == 1) {
-        //do page load first operation
-        //get user info
-        if (userTokenInfo) {
-          const IpUserInfo = await getIpUserInfo(fa_id);
-          let ipUserData = IpUserInfo;
-          if (isOnline && !IpUserInfo) {
-            ipUserData = await setIpUserInfo(fa_id);
-          }
-
-          setFacilitator(ipUserData);
-        }
-        setLoading(false);
-        //end do page load first operation
-        setCountLoad(2);
-      } else if (countLoad == 2) {
-        setCountLoad(3);
+      // ...async operations
+      if (academicYear != null) {
+        //get cohort id and store in localstorage
+        const user_cohort_id = academicYear;
+        const cohort_data = await facilitatorRegistryService.getCohort({
+          cohortId: user_cohort_id,
+        });
+        setSelectedCohortData(cohort_data);
+        await setSelectedAcademicYear(cohort_data);
       }
     }
     fetchData();
-  }, [countLoad]);
+  }, [academicYear]);
 
   useEffect(() => {
     async function fetchData() {
@@ -243,22 +259,29 @@ export default function BenificiaryProfileView(userTokenInfo) {
     fetchData();
   }, [facilitator]);
 
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      if (academicYear != null) {
-        //get cohort id and store in localstorage
-        const user_cohort_id = academicYear;
-        const cohort_data = await facilitatorRegistryService.getCohort({
-          cohortId: user_cohort_id,
-        });
-        setSelectedCohortData(cohort_data);
-        await setSelectedAcademicYear(cohort_data);
+  const showSelectCohort = async () => {
+    let loadCohort = null;
+    try {
+      loadCohort = localStorage.getItem("loadCohort");
+    } catch (e) {}
+    if (loadCohort == null || loadCohort == "no") {
+      const user_cohort_list =
+        await facilitatorRegistryService.GetFacilatorCohortList();
+      let stored_response = await setSelectedAcademicYear(
+        user_cohort_list?.data[0],
+      );
+      setAcademicData(user_cohort_list?.data);
+      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
+      localStorage.setItem("loadCohort", "yes");
+      if (user_cohort_list?.data.length == 1) {
+        setSelectCohortForm(false);
+        await checkDataToIndex();
+        await checkUserToIndex();
+      } else {
+        setSelectCohortForm(true);
       }
     }
-    fetchData();
-  }, [academicYear]);
-
+  };
   const checkDataToIndex = async () => {
     // Online Data Fetch Time Interval
     const timeInterval = 30;
@@ -288,31 +311,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
     }
   };
 
-  const showSelectCohort = async () => {
-    let loadCohort = null;
-    try {
-      loadCohort = localStorage.getItem("loadCohort");
-    } catch (e) {}
-    if (loadCohort == null || loadCohort == "no") {
-      const user_cohort_list =
-        await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0],
-      );
-      setAcademicData(user_cohort_list?.data);
-      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
-      localStorage.setItem("loadCohort", "yes");
-      if (user_cohort_list?.data.length == 1) {
-        setSelectCohortForm(false);
-        await checkDataToIndex();
-        await checkUserToIndex();
-      } else {
-        setSelectCohortForm(true);
-      }
-    }
-  };
-
-  useEffect(async () => {
+  React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBenificiaryDropoutReasons(
       result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS,
@@ -377,7 +376,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
       setIsOpenReject(false);
     }
   };
-  useEffect(async () => {
+  React.useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
     setLoading(false);
@@ -433,6 +432,22 @@ export default function BenificiaryProfileView(userTokenInfo) {
         return <React.Fragment></React.Fragment>;
     }
   }
+  function renderReactivateButton() {
+    const status = benificiary?.program_beneficiaries?.status;
+    switch (status) {
+      case "rejected":
+      case "dropout":
+        return (
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => setIsOpenReactive(true)}
+          >
+            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
+          </FrontEndTypo.Secondarybutton>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
+  }
 
   function renderRejectButton() {
     const status = benificiary?.program_beneficiaries?.status;
@@ -480,23 +495,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
               /> */}
             </VStack>
           </Box>
-        );
-      default:
-        return <React.Fragment></React.Fragment>;
-    }
-  }
-
-  function renderReactivateButton() {
-    const status = benificiary?.program_beneficiaries?.status;
-    switch (status) {
-      case "rejected":
-      case "dropout":
-        return (
-          <FrontEndTypo.Secondarybutton
-            onPress={(e) => setIsOpenReactive(true)}
-          >
-            {t("AG_PROFILE_REACTIVATE_AG_LEARNER")}
-          </FrontEndTypo.Secondarybutton>
         );
       default:
         return <React.Fragment></React.Fragment>;
