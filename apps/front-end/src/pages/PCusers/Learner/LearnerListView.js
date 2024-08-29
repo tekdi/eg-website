@@ -50,6 +50,7 @@ const List = ({ data, location }) => {
 
 List.propTypes = {
   data: PropTypes.array,
+  location: PropTypes.any,
 };
 
 const select2 = [

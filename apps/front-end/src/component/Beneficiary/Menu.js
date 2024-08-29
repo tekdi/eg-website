@@ -1,8 +1,7 @@
-import { Divider, HStack, VStack } from "native-base";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
 import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
+import { Divider, HStack, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 export default function Menu({ menus }) {
   const { t } = useTranslation();

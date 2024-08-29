@@ -4,11 +4,13 @@ import Clipboard from "component/Clipboard";
 import { HStack, Pressable, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 export default function BeneficiaryCard({
   item,
   onPress,
   onPressDocCheckList,
+  onPressRnroll,
 }) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -189,4 +191,15 @@ export const LearnerMessage = ({ program_beneficiaries }) => {
       </FrontEndTypo.H4>
     </HStack>
   );
+};
+
+BeneficiaryCard.propTypes = {
+  item: PropTypes.object,
+  onPress: PropTypes.func,
+  onPressDocCheckList: PropTypes.func,
+  onPressRnroll: PropTypes.func,
+};
+
+LearnerMessage.propTypes = {
+  program_beneficiaries: PropTypes.object,
 };
