@@ -978,12 +978,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
               </FrontEndTypo.Primarybutton>
-              <DashboardCard
+              {/* <DashboardCard
                 title={"LEARNER_EXAM_RESULTS"}
                 titleDetail={"LEARNER_EXAMINATION_DETAILS"}
                 primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
                 navigation={"/examresult"}
-              />
+              /> */}
             </Stack>
           )}
           {/* Temp Comment  End*/}

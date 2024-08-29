@@ -19,6 +19,8 @@ export default function BeneficiaryCard({
     if (
       [
         "enrolled_ip_verified",
+        "sso_id_verified",
+        "registered_in_neev_camp",
         "registered_in_camp",
         "ineligible_for_pragati_camp",
         "10th_passed",

@@ -36,6 +36,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const state_name =
     JSON.parse(localStorage.getItem("program"))?.state_name || "";
 
+  const academic_year_name =
+    JSON.parse(localStorage.getItem("academic_year"))?.academic_year_name || "";
+
   useEffect(async () => {
     let data = await benificiaryRegistoryService.getStatusList();
     if (data.length > 0) {
@@ -97,6 +100,22 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 500), []);
+
+  const showAddLearner = () => {
+    return (
+      !(
+        state_name === "RAJASTHAN" &&
+        (academic_year_name.includes("2023-2024") ||
+          academic_year_name.includes("2023-24"))
+      ) &&
+      [
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(localStorage.getItem("status"))
+    );
+  };
 
   return (
     <Layout
@@ -260,42 +279,31 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
         />
       )}
 
-      <HStack
-        ref={refButton}
-        width={"100%"}
-        bg={"white"}
-        flex={1}
-        safeAreaTop
-        position="fixed"
-        bottom="70px"
-        zIndex={"9999999"}
-      >
-        <FrontEndTypo.Secondarybutton
-          onPress={(e) => {
-            if (
-              [
-                "pragati_mobilizer",
-                "selected_prerak",
-                "selected_for_training",
-                "selected_for_onboarding",
-              ].includes(facilitator.status)
-            ) {
-              navigate(`/beneficiary`);
-            } else {
-              navigate("/beneficiary");
-            }
-          }}
-          mx="auto"
-          my="2"
+      {showAddLearner() && (
+        <HStack
+          ref={refButton}
+          width={"100%"}
+          bg={"white"}
+          flex={1}
+          safeAreaTop
+          position="fixed"
+          bottom="70px"
+          zIndex={"9999999"}
         >
-          {t("ADD_MORE_AG")}
-        </FrontEndTypo.Secondarybutton>
-      </HStack>
+          <FrontEndTypo.Secondarybutton
+            onPress={(e) => navigate(`/beneficiary`)}
+            mx="auto"
+            my="2"
+          >
+            {t("ADD_MORE_AG")}
+          </FrontEndTypo.Secondarybutton>
+        </HStack>
+      )}
     </Layout>
   );
 }
 
-BenificiaryListView.PropTypes = {
+BenificiaryListView.propTypes = {
   userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,
 };

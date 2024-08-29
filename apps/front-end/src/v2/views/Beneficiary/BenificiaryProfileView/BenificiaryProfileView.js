@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   BodyMedium,
   CustomRadio,
@@ -8,16 +9,12 @@ import {
   arrList,
   benificiaryRegistoryService,
   enumRegistryService,
-  facilitatorRegistryService,
-  getOnboardingMobile,
-  getSelectedProgramId,
   objProps,
   organisationService,
   jsonParse,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
-import moment from "moment";
 import {
   Actionsheet,
   Alert,
@@ -29,29 +26,25 @@ import {
   Stack,
   VStack,
 } from "native-base";
-import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import PropType from "prop-types";
 
-export default function BenificiaryProfileView(userTokenInfo) {
+export default function BenificiaryProfileView({ userTokenInfo }) {
   const { t } = useTranslation();
-  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
-  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
-  const [isOpenReject, setIsOpenReject] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [isOpenDropOut, setIsOpenDropOut] = useState(false);
+  const [isOpenReactive, setIsOpenReactive] = useState(false);
+  const [isOpenReject, setIsOpenReject] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState({});
-  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
-    React.useState();
-  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
-    React.useState();
+  const [benificiary, setBenificiary] = useState({});
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] = useState();
+  const [benificiaryRejectReasons, setBenificiaryRejectReasons] = useState();
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
-    React.useState();
-  const [reasonValue, setReasonValue] = React.useState("");
-  const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
-  const [alert, setAlert] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
+    useState();
+  const [reasonValue, setReasonValue] = useState("");
+  const [reactivateReasonValue, setReactivateReasonValue] = useState("");
+  const [isDisable, setIsDisable] = useState(false);
   const navigate = useNavigate();
   const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
   const [psyc, setPsyc] = React.useState();
@@ -115,7 +108,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
       setIsOpenReject(false);
     }
   };
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
     const orgResult = await benificiaryRegistoryService.getOrganisation({
@@ -132,7 +125,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
       setIsDisableOpportunity(false);
     }
     setPsyc(result?.result?.program_beneficiaries?.status);
-    setloading(false);
   }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
@@ -182,7 +174,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
           </Box>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
   function renderReactivateButton() {
@@ -198,7 +190,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
           </FrontEndTypo.Secondarybutton>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
 
@@ -250,12 +242,11 @@ export default function BenificiaryProfileView(userTokenInfo) {
           </Box>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
 
   const handlePsyc = async () => {
-    setloading(true);
     const newFormData = {
       is_continued: false,
       user_id: jsonParse(id),
@@ -263,7 +254,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
     const data = await organisationService.psycStatus(newFormData);
     if (data?.success) {
       navigate("/beneficiary/list");
-      setloading(false);
     }
   };
   return (
@@ -273,11 +263,10 @@ export default function BenificiaryProfileView(userTokenInfo) {
         onPressBackButton: (e) => {
           navigate("/beneficiary/list");
         },
-        profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
+
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
-      facilitator={facilitator}
+      facilitator={userTokenInfo?.authUser || {}}
       loading={loading}
       analyticsPageTitle={"BENEFICIARY_PROFILE"}
       pageTitle={t("BENEFICIARY_PROFILE")}
@@ -317,6 +306,8 @@ export default function BenificiaryProfileView(userTokenInfo) {
               </HStack>
               {![
                 "enrolled_ip_verified",
+                "sso_id_verified",
+                "registered_in_neev_camp",
                 "registered_in_camp",
                 "ineligible_for_pragati_camp",
                 "10th_passed",
@@ -451,6 +442,54 @@ export default function BenificiaryProfileView(userTokenInfo) {
                   </VStack>
                 </Box>
               )}
+            <Box>
+              <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+                {t("PROFILE_PROGRESS")}
+              </FrontEndTypo.H3>
+              <Box mt={3}>
+                <Progress
+                  value={arrList(
+                    {
+                      ...res,
+                      ...(res?.references?.[0] ? res?.references?.[0] : {}),
+                    },
+                    [
+                      "email_id",
+                      "mobile",
+                      "alternative_mobile_number",
+                      "device_type",
+                      "device_ownership",
+                      "mark_as_whatsapp_number",
+                      "father_first_name",
+                      "father_middle_name",
+                      "father_last_name",
+                      "mother_first_name",
+                      "mother_middle_name",
+                      "mother_last_name",
+                      "social_category",
+                      "marital_status",
+                      "first_name",
+                      "middle_name",
+                      "last_name",
+                      "relation",
+                      "contact_number",
+                      "district",
+                      "state",
+                      "block",
+                      "village",
+                      "aadhar_no",
+                      "aadhaar_verification_mode",
+                      "aadhar_verified",
+                    ],
+                  )}
+                  size="xs"
+                  colorScheme="danger"
+                />
+              </Box>
+            </Box>
+            <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
+              {t("PROFILE_DETAILS")}
+            </FrontEndTypo.H3>
             <Box
               bg="boxBackgroundColour.100"
               borderColor="garyTitleCardBorder"
@@ -619,14 +658,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
                     />
                   )}
               </HStack>
-              {alert && (
-                <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{alert}</BodyMedium>
-                  </HStack>
-                </Alert>
-              )}
               <HStack
                 justifyContent="space-between"
                 alignItems="Center"
@@ -959,3 +990,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
     </Layout>
   );
 }
+
+BenificiaryProfileView.propTypes = {
+  userTokenInfo: PropType.object,
+};
