@@ -313,7 +313,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   );
 }
 
-BenificiaryListView.PropTypes = {
+BenificiaryListView.propTypes = {
   userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,
 };
