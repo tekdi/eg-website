@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  AdminTypo,
   campService,
   FrontEndTypo,
   IconByName,
@@ -189,12 +188,12 @@ export default function CampList() {
                   />
                 </VStack>
               </VStack>
-              <AdminTypo.H4 textAlign="center" color="black">
+              <FrontEndTypo.H4 textAlign="center" color="black">
                 {t("SELECT_A_PRERAK")}
-              </AdminTypo.H4>
-              <AdminTypo.H6 textAlign="center" color="black">
+              </FrontEndTypo.H4>
+              <FrontEndTypo.H6 textAlign="center" color="black">
                 {t("SELECT_AT_LEAST_ONE_PRERAK_TO_VIEW_A_LIST_OF_CAMPS")}
-              </AdminTypo.H6>
+              </FrontEndTypo.H6>
             </VStack>
           </Box>
         )}
@@ -218,7 +217,7 @@ export default function CampList() {
                     p="4"
                     mb={2}
                     onPress={() => {
-                      navigate(`/camps/CampProfileView/${camp?.camp_id}`, {
+                      navigate(`/camps/${camp?.camp_id}`, {
                         state: {
                           academic_year_id: item?.academic_year_id,
                           program_id: item?.program_id,
@@ -307,7 +306,7 @@ const FacilitatorForm = ({
       size="xl"
     >
       <Modal.Content>
-        <Modal.Header p="5" borderBottomWidth="0">
+        <Modal.Header p="4">
           <Checkbox
             colorScheme="red"
             position="absolute"
@@ -322,11 +321,13 @@ const FacilitatorForm = ({
               }
             }}
           >
-            {t("SELECT_ALL")}
+            <FrontEndTypo.H3 color="gray.800">
+              {t("SELECT_ALL")}
+            </FrontEndTypo.H3>
           </Checkbox>
-          <AdminTypo.H3 textAlign="center" color="black">
+          <FrontEndTypo.H3 textAlign="center" color="black">
             {t("SELECT_PRERAK")}
-          </AdminTypo.H3>
+          </FrontEndTypo.H3>
           <IconButton
             icon={<IconByName name="CloseCircleLineIcon" size="4" />}
             onPress={() => setIsModalOpen(false)}
@@ -335,22 +336,26 @@ const FacilitatorForm = ({
             top="3"
           />
         </Modal.Header>
-        <Modal.Body p="5" pb="10">
-          <VStack space={4}>
+        <Modal.Body p="4">
+          <VStack space="0">
             {data?.map((item) => (
               <Checkbox
+                colorScheme="red"
                 key={item.user_id}
                 isChecked={selectedFacilitators.includes(item.user_id)}
                 onChange={() => handleCheckboxChange(item.user_id)}
                 value={item.user_id.toString()}
+                mb="1"
               >
-                {[
-                  item.user.first_name,
-                  item.user.middle_name,
-                  item.user.last_name,
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
+                <FrontEndTypo.H3 color="gray.800">
+                  {[
+                    item?.user.first_name,
+                    item?.user.middle_name,
+                    item?.user.last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                </FrontEndTypo.H3>
               </Checkbox>
             ))}
           </VStack>

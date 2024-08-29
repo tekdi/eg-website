@@ -27,7 +27,13 @@ const List = ({ data }) => {
         data.map((item) => (
           <Pressable
             onPress={() =>
-              navigate(`/prerak/PrerakProfileView/${item?.user_id}`)
+              navigate(`/preraks/${item?.user_id}`, {
+                state: {
+                  academic_year_id: item?.academic_year_id,
+                  program_id: item?.program_id,
+                  user_id: item?.user_id,
+                },
+              })
             }
             key={item?.user_id}
           >

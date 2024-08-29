@@ -472,11 +472,10 @@ export default function LearnerList() {
         <Modal.Content>
           <Modal.Header p="4">
             <Checkbox
-              colorScheme="red"
               position="absolute"
-              left="0"
+              colorScheme="red"
               top="1"
-              isChecked={prerakList?.length <= selectedPrerak?.length}
+              left="0"
               onChange={(e) => {
                 setIsDisable(false);
                 if (e) {
@@ -485,17 +484,20 @@ export default function LearnerList() {
                   setSelectedPrerak([]);
                 }
               }}
+              isChecked={prerakList?.length <= selectedPrerak?.length}
             >
-              {t("SELECT_ALL")}
+              <FrontEndTypo.H3 color="gray.800">
+                {t("SELECT_ALL")}
+              </FrontEndTypo.H3>
             </Checkbox>
             <FrontEndTypo.H3 textAlign="center" color="black">
               {t("SELECT_PRERAK")}
             </FrontEndTypo.H3>
             <IconButton
-              icon={<IconByName name="CloseCircleLineIcon" size="4" />}
-              onPress={() => setIsModalOpen(false)}
               position="absolute"
               right="3"
+              onPress={() => setIsModalOpen(false)}
+              icon={<IconByName name="CloseCircleLineIcon" size="4" />}
               top="3"
             />
           </Modal.Header>
@@ -503,19 +505,21 @@ export default function LearnerList() {
           <Modal.Body p="4">
             <VStack space="5">
               <Checkbox.Group
+                onChange={handlePrerakChange}
                 colorScheme="red"
                 value={selectedPrerak}
-                onChange={handlePrerakChange}
               >
                 {prerakList?.map((item) => (
                   <Checkbox key={item.user_id} value={item.user_id} mb="1">
-                    {[
-                      item?.user.first_name,
-                      item?.user.middle_name,
-                      item?.user.last_name,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                    <FrontEndTypo.H3 color="gray.800">
+                      {[
+                        item?.user.first_name,
+                        item?.user.middle_name,
+                        item?.user.last_name,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </FrontEndTypo.H3>
                   </Checkbox>
                 ))}
               </Checkbox.Group>
@@ -528,8 +532,8 @@ export default function LearnerList() {
               {t("GO_BACK")}
             </FrontEndTypo.Secondarybutton>
             <FrontEndTypo.Primarybutton
-              colorScheme="red"
               onPress={handleContinueBtn}
+              colorScheme="red"
               isDisabled={isDisable}
             >
               {t("VIEW_LEARNERS")}

@@ -1,270 +1,27 @@
 import {
-  CardComponent,
   FrontEndTypo,
   IconByName,
   Layout,
   SelectStyle,
-  arrList,
   benificiaryRegistoryService,
-  enumRegistryService,
-  facilitatorRegistryService,
-  getOnboardingMobile,
-  getSelectedProgramId,
-  objProps,
-  setSelectedAcademicYear,
-  setSelectedProgramId,
-  t,
 } from "@shiksha/common-lib";
-import { ChipStatus } from "component/BeneficiaryStatus";
-import Clipboard from "component/Clipboard";
-import {
-  Box,
-  HStack,
-  Input,
-  Pressable,
-  Select,
-  VStack,
-  Spinner,
-} from "native-base";
+import BeneficiaryCard from "component/Beneficiary/BeneficiaryCard";
+import { debounce } from "lodash";
+import { Box, HStack, Input, Select, Spinner, VStack } from "native-base";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
-import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
-import { debounce } from "lodash";
-import moment from "moment";
 
-const LearnerMessage = ({ program_beneficiaries }) => {
-  const [reason, setReason] = useState({});
-  useEffect(() => {
-    if (
-      program_beneficiaries?.enrollment_verification_status ===
-      "change_required"
-    ) {
-      setReason(
-        JSON.parse(program_beneficiaries?.enrollment_verification_reason)
-      );
-    }
-  }, []);
-
-  const getTitle = () => {
-    if (
-      reason?.learner_enrollment_details === "no" &&
-      reason?.enrollment_details === "no"
-    ) {
-      return t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH");
-    } else if (reason?.learner_enrollment_details === "no") {
-      return t("CORRECT_ENROLLMENT_DETAILS");
-    } else if (reason?.enrollment_details === "no") {
-      return t("CORRECT_ENROLLMENT_LEARNER_DETAILS");
-    } else {
-      return t("FOLLOW_UP_WITH_IP");
-    }
-  };
-
-  return (
-    <HStack color="LearnerListCardLink.500" alignItems="center">
-      <FrontEndTypo.H4 color="LearnerListCardLink.500">
-        {getTitle()}
-      </FrontEndTypo.H4>
-    </HStack>
-  );
-};
-
-const List = ({ data }) => {
-  const navigate = useNavigate();
-
-  return (
-    <VStack
-      space="4"
-      p="4"
-      alignContent="center"
-      // overflowY={"scroll"}
-      // h={"50vh"}
-      // css={{
-      //   "&::-webkit-scrollbar": {
-      //     display: "none", // Hide the scrollbar in WebKit browsers
-      //   },
-      // }}
-    >
-      {(data && data?.length > 0) || data?.constructor?.name === "Array" ? (
-        data &&
-        data?.constructor?.name === "Array" &&
-        data?.map((item) => (
-          <CardComponent
-            key={item?.id}
-            _body={{ px: "0", py: "2" }}
-            _vstack={{ p: 0, space: 0, flex: 1 }}
-          >
-            <Pressable
-              onPress={async () => {
-                navigate(`/beneficiary/${item?.id}`);
-              }}
-              flex={1}
-            >
-              <VStack
-                alignItems="center"
-                p="1"
-                borderBottomColor={"LeanerListCardIDBorder.500"}
-                borderStyle={"dotted"}
-                borderBottomWidth={"1px"}
-              >
-                <Clipboard text={item?.id}>
-                  <FrontEndTypo.H4
-                    color="floatingLabelColor.500"
-                    fontWeight={"600"}
-                  >
-                    {item?.id}
-                  </FrontEndTypo.H4>
-                </Clipboard>
-              </VStack>
-              <HStack pt={2} px={3} justifyContent="space-between" space={1}>
-                <HStack alignItems="Center" flex={[1, 2, 4]}>
-                  <VStack
-                    pl="2"
-                    flex="1"
-                    wordWrap="break-word"
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    {[
-                      "enrolled_ip_verified",
-                      "registered_in_camp",
-                      "ineligible_for_pragati_camp",
-                      "10th_passed",
-                      "pragati_syc",
-                    ].includes(item?.program_beneficiaries?.status) ? (
-                      <FrontEndTypo.H3 bold color="textGreyColor.800">
-                        {item?.program_beneficiaries?.enrollment_first_name}
-                        {item?.program_beneficiaries?.enrollment_middle_name &&
-                          item?.program_beneficiaries
-                            ?.enrollment_middle_name !== "null" &&
-                          ` ${item?.program_beneficiaries?.enrollment_middle_name}`}
-                        {item?.program_beneficiaries?.enrollment_last_name &&
-                          item?.program_beneficiaries?.enrollment_last_name !==
-                            "null" &&
-                          ` ${item?.program_beneficiaries?.enrollment_last_name}`}
-                      </FrontEndTypo.H3>
-                    ) : (
-                      <FrontEndTypo.H4 fontWeight={"600"} color="grayTitleCard">
-                        {item?.first_name}
-                        {item?.middle_name &&
-                          item?.middle_name !== "null" &&
-                          ` ${item.middle_name}`}
-                        {item?.last_name &&
-                          item?.last_name !== "null" &&
-                          ` ${item.last_name}`}
-                      </FrontEndTypo.H4>
-                    )}
-
-                    <FrontEndTypo.H5 color="LearnerListCardNumber.500">
-                      {item?.mobile}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-                <VStack alignItems="end" flex={[1]}>
-                  <ChipStatus
-                    w="fit-content"
-                    status={item?.program_beneficiaries?.status}
-                    is_duplicate={item?.is_duplicate}
-                    is_deactivated={item?.is_deactivated}
-                    rounded={"sm"}
-                  />
-                </VStack>
-              </HStack>
-            </Pressable>
-            <VStack px={2} bg="white" alignItems={"end"}>
-              {item?.program_beneficiaries?.status === "identified" && (
-                <Pressable
-                  onPress={() => {
-                    navigate(`/beneficiary/${item?.id}/docschecklist`);
-                  }}
-                >
-                  <HStack color="LearnerListCardLink.500" alignItems="center">
-                    <FrontEndTypo.H4 color="LearnerListCardLink.500">
-                      {t("COMPLETE_THE_DOCUMENTATION")}
-                    </FrontEndTypo.H4>
-                    <IconByName
-                      color="LearnerListCardLink.500"
-                      name="ArrowRightSLineIcon"
-                      py="0"
-                    />
-                  </HStack>
-                </Pressable>
-              )}
-              {item?.program_beneficiaries?.status === "enrollment_pending" && (
-                <Pressable
-                  onPress={() => {
-                    navigate(`/beneficiary/${item?.id}/docschecklist`);
-                  }}
-                >
-                  <HStack color="LearnerListCardLink.500" alignItems="center">
-                    <FrontEndTypo.H4 color="blueText.450">
-                      {t("CONTINUE_ENROLLMENT")}
-                    </FrontEndTypo.H4>
-                    <IconByName name="ArrowRightSLineIcon" />
-                  </HStack>
-                </Pressable>
-              )}
-              {item?.program_beneficiaries?.status === "ready_to_enroll" && (
-                <Pressable
-                  onPress={() => {
-                    navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
-                  }}
-                >
-                  <HStack color="LearnerListCardLink.500" alignItems="center">
-                    <FrontEndTypo.H4 color="blueText.450">
-                      {t("ENTER_THE_ENROLLMENT_DETAILS")}
-                    </FrontEndTypo.H4>
-                    <IconByName name="ArrowRightSLineIcon" />
-                  </HStack>
-                </Pressable>
-              )}
-              {["duplicated", "enrolled_ip_verified"]?.includes(
-                item?.program_beneficiaries?.status
-              ) && (
-                <HStack
-                  color="LearnerListCardLink.500"
-                  alignItems="center"
-                  mb="2"
-                >
-                  <FrontEndTypo.H4 color="blueText.450">
-                    {item?.program_beneficiaries?.status === "duplicated"
-                      ? t("FOLLOW_UP_WITH_IP_ASSIGNMENT")
-                      : t("TO_BE_REGISTERED_IN_CAMP")}
-                  </FrontEndTypo.H4>
-                </HStack>
-              )}
-              {item?.program_beneficiaries?.status === "enrolled" && (
-                <LearnerMessage
-                  program_beneficiaries={item?.program_beneficiaries}
-                />
-              )}
-            </VStack>
-          </CardComponent>
-        ))
-      ) : (
-        <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
-      )}
-    </VStack>
-  );
-};
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
 ];
 
-const styles = {
-  inforBox: {
-    style: {
-      background: "textMaroonColor.50",
-    },
-  },
-};
-
 export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [filter, setFilter] = useState({ limit: 6 });
   const [data, setData] = useState([]);
   const [selectStatus, setSelectStatus] = useState([]);
@@ -275,284 +32,12 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [search, setSearch] = useState("");
   const ref = useRef(null);
   const refButton = useRef(null);
-  const [certificateData, setCertificateData] = useState({});
-
-  // PROFILE DATA IMPORTS
-  const [facilitator, setFacilitator] = useState({ notLoaded: true });
-  const fa_id = localStorage.getItem("id");
-  const [loading, setLoading] = useState(true);
-  const [countLoad, setCountLoad] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [cohortData, setCohortData] = useState(null);
-  const [programData, setProgramData] = useState(null);
-  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
-  const [selectedCohortData, setSelectedCohortData] = useState(null);
-  const [selectedProgramData, setSelectedProgramData] = useState(null);
-  const [selectCohortForm, setSelectCohortForm] = useState(false);
-  const [academicYear, setAcademicYear] = useState(null);
-  const [academicData, setAcademicData] = useState([]);
-  const [isTodayAttendace, setIsTodayAttendace] = useState();
-  const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
-  );
 
   const state_name =
     JSON.parse(localStorage.getItem("program"))?.state_name || "";
 
   const academic_year_name =
     JSON.parse(localStorage.getItem("academic_year"))?.academic_year_name || "";
-
-  const checkStateAndYear = (state_name, academic_year_name) => {
-    if (
-      state_name === "RAJASTHAN" &&
-      (academic_year_name.includes("2023-2024") ||
-        academic_year_name.includes("2023-24"))
-    ) {
-      return true;
-    }
-    return false;
-  };
-
-  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
-
-  const saveDataToIndexedDB = async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
-    try {
-      const [ListOfEnum, qualification, editRequest] = await Promise.all([
-        enumRegistryService.listOfEnum(),
-        enumRegistryService.getQualificationAll(),
-        facilitatorRegistryService.getEditRequests(obj),
-        // enumRegistryService.userInfo(),
-      ]);
-      const currentTime = moment().toString();
-      await Promise.all([
-        setIndexedDBItem("enums", ListOfEnum.data),
-        setIndexedDBItem("qualification", qualification),
-        setIndexedDBItem("lastFetchTime", currentTime),
-        setIndexedDBItem("editRequest", editRequest),
-      ]);
-    } catch (error) {
-      console.error("Error saving data to IndexedDB:", error);
-    }
-  };
-
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operation
-      if (countLoad == 0) {
-        setCountLoad(1);
-      }
-      if (countLoad == 1) {
-        //do page load first operation
-        //get user info
-        if (userTokenInfo) {
-          const IpUserInfo = await getIpUserInfo(fa_id);
-          let ipUserData = IpUserInfo;
-          if (isOnline && !IpUserInfo) {
-            ipUserData = await setIpUserInfo(fa_id);
-          }
-
-          setFacilitator(ipUserData);
-        }
-        setLoading(false);
-        //end do page load first operation
-        setCountLoad(2);
-      } else if (countLoad == 2) {
-        setCountLoad(3);
-      }
-    }
-    fetchData();
-  }, [countLoad]);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const programId = await getSelectedProgramId();
-      if (programId) {
-        try {
-          const c_data =
-            await facilitatorRegistryService.getPrerakCertificateDetails({
-              id: fa_id,
-            });
-          const data =
-            c_data?.data?.filter(
-              (eventItem) =>
-                eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
-            )?.[0] || {};
-          if (data) {
-            setIsTodayAttendace(
-              data?.attendances?.filter(
-                (attendance) =>
-                  attendance.user_id == fa_id &&
-                  attendance.status == "present" &&
-                  data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
-            );
-
-            setCertificateData(data);
-            if (data?.lms_test_tracking?.length > 0) {
-              setLmsDetails(data?.lms_test_tracking?.[0]);
-            }
-            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-            const format = "HH:mm:ss";
-            const time = moment(moment().format(format), format);
-            const beforeTime = moment.utc(data?.start_time, format).local();
-            const afterTime = moment.utc(data?.end_time, format).local();
-            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-              setIsEventActive(true);
-            }
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    fetchdata();
-  }, [selectedCohortData]);
-
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      if (academicYear != null) {
-        //get cohort id and store in localstorage
-        const user_cohort_id = academicYear;
-        const cohort_data = await facilitatorRegistryService.getCohort({
-          cohortId: user_cohort_id,
-        });
-        setSelectedCohortData(cohort_data);
-        await setSelectedAcademicYear(cohort_data);
-      }
-    }
-    fetchData();
-  }, [academicYear]);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!facilitator?.notLoaded === true) {
-        // ...async operations
-        const res = objProps(facilitator);
-        setProgress(
-          arrList(
-            {
-              ...res,
-              qua_name: facilitator?.qualifications?.qualification_master?.name,
-            },
-            [
-              "device_ownership",
-              "mobile",
-              "device_type",
-              "gender",
-              "marital_status",
-              "social_category",
-              "name",
-              "contact_number",
-              "availability",
-              "aadhar_no",
-              "aadhaar_verification_mode",
-              "aadhar_verified",
-              "qualification_ids",
-              "qua_name",
-            ]
-          )
-        );
-        //check exist user registered
-        try {
-          let onboardingURLData = await getOnboardingURLData();
-          setCohortData(onboardingURLData?.cohortData);
-          setProgramData(onboardingURLData?.programData);
-          //get program id and store in localstorage
-
-          const user_program_id = facilitator?.program_faciltators?.program_id;
-          const program_data = await facilitatorRegistryService.getProgram({
-            programId: user_program_id,
-          });
-          setSelectedProgramData(program_data[0]);
-          await setSelectedProgramId(program_data[0]);
-          //check mobile number with localstorage mobile no
-          let mobile_no = facilitator?.mobile;
-          let mobile_no_onboarding = await getOnboardingMobile();
-          if (
-            mobile_no != null &&
-            mobile_no_onboarding != null &&
-            mobile_no == mobile_no_onboarding &&
-            onboardingURLData?.cohortData
-          ) {
-            //get cohort id and store in localstorage
-            const user_cohort_id =
-              onboardingURLData?.cohortData?.academic_year_id;
-            const cohort_data = await facilitatorRegistryService.getCohort({
-              cohortId: user_cohort_id,
-            });
-            setSelectedCohortData(cohort_data);
-            await setSelectedAcademicYear(cohort_data);
-            localStorage.setItem("loadCohort", "yes");
-            setIsUserRegisterExist(true);
-          } else {
-            setIsUserRegisterExist(false);
-            await showSelectCohort();
-          }
-        } catch (e) {}
-      }
-    }
-    fetchData();
-  }, [facilitator]);
-
-  const showSelectCohort = async () => {
-    let loadCohort = null;
-    try {
-      loadCohort = localStorage.getItem("loadCohort");
-    } catch (e) {}
-    if (loadCohort == null || loadCohort == "no") {
-      const user_cohort_list =
-        await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
-      );
-      setAcademicData(user_cohort_list?.data);
-      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
-      localStorage.setItem("loadCohort", "yes");
-      if (user_cohort_list?.data.length == 1) {
-        setSelectCohortForm(false);
-        await checkDataToIndex();
-        await checkUserToIndex();
-      } else {
-        setSelectCohortForm(true);
-      }
-    }
-  };
-  const checkDataToIndex = async () => {
-    // Online Data Fetch Time Interval
-    const timeInterval = 30;
-    const enums = await getIndexedDBItem("enums");
-    const qualification = await getIndexedDBItem("qualification");
-    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
-    const editRequest = await getIndexedDBItem("editRequest");
-    let timeExpired = false;
-    if (lastFetchTime) {
-      const timeDiff = moment
-        .duration(moment().diff(lastFetchTime))
-        .asMinutes();
-      if (timeDiff >= timeInterval) {
-        timeExpired = true;
-      }
-    }
-    if (
-      isOnline &&
-      (!enums ||
-        !qualification ||
-        !editRequest ||
-        timeExpired ||
-        !lastFetchTime ||
-        editRequest?.status === 400)
-    ) {
-      await saveDataToIndexedDB();
-    }
-  };
-  const prerak_status = localStorage.getItem("status");
 
   useEffect(async () => {
     let data = await benificiaryRegistoryService.getStatusList();
@@ -565,7 +50,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
               "sso_id_enrolled",
               "sso_id_verified",
               "registered_in_neev_camp",
-            ].includes(e.value)
+            ].includes(e.value),
         );
       }
       setSelectStatus(data);
@@ -581,7 +66,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       setLoadingHeight(
         bodyHeight -
           ref?.current?.clientHeight -
-          refButton?.current?.clientHeight
+          refButton?.current?.clientHeight,
       );
     } else {
       setLoadingHeight(bodyHeight);
@@ -609,19 +94,28 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
     setLoadingList(false);
   }, [filter]);
 
-  useEffect(async () => {
-    if (userTokenInfo) {
-      const fa_data = await facilitatorRegistryService.getOne({ id: fa_id });
-      setFacilitator(fa_data);
-    }
-  }, []);
-
   const handleSearch = (value) => {
     setSearch(value);
     setFilter({ ...filter, search: value, page: 1 });
   };
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 500), []);
+
+  const showAddLearner = () => {
+    return (
+      !(
+        state_name === "RAJASTHAN" &&
+        (academic_year_name.includes("2023-2024") ||
+          academic_year_name.includes("2023-24"))
+      ) &&
+      [
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(localStorage.getItem("status"))
+    );
+  };
 
   return (
     <Layout
@@ -633,11 +127,9 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           setFilter({ ...filter, search: value, page: 1 });
         },
         _box: { bg: "white", shadow: "appBarShadow" },
-        profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
-      facilitator={facilitator}
+      facilitator={userTokenInfo?.authUser || {}}
       _footer={{ menues: footerLinks }}
       analyticsPageTitle={"BENEFICIARY_LIST"}
       pageTitle={t("BENEFICIARY_LIST")}
@@ -754,7 +246,30 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           // below props only if you need pull down functionality
           pullDownToRefreshThreshold={50}
         >
-          <List data={data} />
+          <VStack space="4" p="4" alignContent="center">
+            {(data && data?.length > 0) ||
+            data?.constructor?.name === "Array" ? (
+              data &&
+              data?.constructor?.name === "Array" &&
+              data?.map((item) => (
+                <BeneficiaryCard
+                  key={item?.id}
+                  item={item}
+                  onPress={async () => {
+                    navigate(`/beneficiary/${item?.id}`);
+                  }}
+                  onPressDocCheckList={() => {
+                    navigate(`/beneficiary/${item?.id}/docschecklist`);
+                  }}
+                  onPressRnroll={() => {
+                    navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
+                  }}
+                />
+              ))
+            ) : (
+              <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
+            )}
+          </VStack>
         </InfiniteScroll>
       ) : (
         <Spinner
@@ -764,7 +279,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
         />
       )}
 
-      {!hideAddLearner && (
+      {showAddLearner() && (
         <HStack
           ref={refButton}
           width={"100%"}
@@ -776,20 +291,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
           zIndex={"9999999"}
         >
           <FrontEndTypo.Secondarybutton
-            onPress={(e) => {
-              if (
-                [
-                  "pragati_mobilizer",
-                  "selected_prerak",
-                  "selected_for_training",
-                  "selected_for_onboarding",
-                ].includes(facilitator.status)
-              ) {
-                navigate(`/beneficiary`);
-              } else {
-                navigate("/beneficiary");
-              }
-            }}
+            onPress={(e) => navigate(`/beneficiary`)}
             mx="auto"
             my="2"
           >
@@ -801,7 +303,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   );
 }
 
-BenificiaryListView.PropTypes = {
+BenificiaryListView.propTypes = {
   userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,
 };
