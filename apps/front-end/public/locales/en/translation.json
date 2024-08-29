@@ -302,6 +302,7 @@
   "BLOCK_NAME": "Block name",
   "BLOCKS": "Blocks",
   "BOARD_OF_ENROLLMENT": "Board Of Enrollment",
+  "BOARD_EXAM_DETAILS": "Board Exam Details",
   "BUILDING_VIEW": "Building/House Entry View",
   "CALL_MY_IP": "Call My IP",
   "CALL_SUPPORT": "Call Support",
@@ -568,6 +569,7 @@
   "DONT_ALLOW_MOBILE": "This mobile number is already in use for a learner, you cannot proceed",
   "DONT_CLOSE_SCREEN": "Don't close this screen. Be sure to share today's experience with us at the end of camp.",
   "DONT_HAVE_AN_ACCOUNT": "Don't have an account?",
+  "DONT_KNOW": "Don't know",
   "DONTS": "Don'ts",
   "DOWNLOAD": "Download",
   "DOWNLOAD_CERTIFICATE": "Download certificate",
@@ -662,6 +664,7 @@
   "ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE": "Enter the Username and Password sent on your Mobile Number",
   "ENTER_YOUR_AADHAAR_NUMBER": "Enter Your Aadhaar Number",
   "ENTERED_AADHAR_NOT_EDITABLE": "Entered Aadhaar card number is not editable. Please verify before entering",
+  "EXAM_FEE_DATE": "Date of Exam Fees Payment",
   "SELECT_SUBJECT_INFO": "Select the subjects that the student has appeared for. This can be updated afterwards if they haven’t appeared for all the subjects.",
   "EPCP": {
     "HAS_LOGGED_RSOS_APP": {
@@ -1720,6 +1723,7 @@
   "SUPPORT_IN_PROBLEM_SOLVING": "Support in problem solving",
   "SUPPORT_IN_READING_WRITING": "Support in reading writing",
   "SUPPORT_TO_STUDY_ONLINE": "Support to study online",
+  "SYC_QUESTION": "This learner is a SYC. Is she going to apply for the next exam?",
   "SYLLABUS_COMPLETED": "Session completed",
   "SYLLABUS_INCOMPLETED": "Session incompleted",
   "TAKE_A_PHOTO": "Take a Photo",
@@ -2254,5 +2258,7 @@
   "GROUP_A_GROUP_B_MAX_SUBJECTS": "You should select maximum of 3 subjects from Group A and 4 subjects from Group B",
   "MISSING_DATA": "Missing Data",
   "SELECT_VILLAGE": "Select Village",
-  "SELECT_CATEGORY": "Select Category"
+  "SELECT_CATEGORY": "Select Category",
+  "RECEIPT_OF_EXAM_FEES_PAYMENT": "Receipt of Exam Fees Payment",
+  "RECEIPT_OF_EXAM_FEES_PAYMENT_DESCRIPTION": "Please upload a clear photo or PDF of the exam fees payment receipt."
 }
