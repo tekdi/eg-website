@@ -120,7 +120,8 @@ export default function CampProfileView({ userTokenInfo }) {
                   {prerakProfile?.mobile}
                 </FrontEndTypo.H3>
                 <ChipStatus
-                  status={prerakProfile?.program_faciltators?.status}
+                  w="fit-content"
+                  status={prerakProfile?.program_faciltators?.[0]?.status}
                   is_duplicate={prerakProfile?.is_duplicate}
                   is_deactivated={prerakProfile?.is_deactivated}
                   rounded={"sm"}

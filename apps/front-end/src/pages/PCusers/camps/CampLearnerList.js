@@ -234,7 +234,6 @@ export default function CampLearnerList({ userTokenInfo, footerLinks }) {
         user_id: location.state?.user_id,
       };
       const result = await campService.getPrerakCampProfile(id, payload);
-      console.log("result", result);
       setCampLearners(result?.group_users);
       setLoadingList(false);
     } catch (error) {
