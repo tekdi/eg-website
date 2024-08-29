@@ -1,43 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { HStack, VStack, Box, Progress, Divider, Alert } from "native-base";
 import {
   FrontEndTypo,
   IconByName,
   PCusers_layout as Layout,
-  t,
   ImageView,
-  enumRegistryService,
   PcuserService,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+import Menu from "component/Beneficiary/Menu";
 
 export default function PrerakProfileView({ userTokenInfo }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const { id } = useParams();
-  const [beneficiary, setBeneficiary] = React.useState({});
-  const [enumOptions, setEnumOptions] = useState({});
   const [prerakProfile, setPrerakProfile] = React.useState();
-  const [loadingList, setLoadingList] = useState(false);
 
   const getPrerakProfile = async () => {
-    setLoadingList(true);
+    setLoading(true);
     try {
       const payload = {
         id: id,
+        academic_year_id: location?.state?.academic_year_id,
       };
       const result = await PcuserService.getPrerakProfile(payload);
-
       setPrerakProfile(result?.data);
-      const data = await enumRegistryService.listOfEnum();
-      setEnumOptions(data?.data ? data?.data?.FACILITATOR_STATUS : {});
-      setLoadingList(false);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-
-      setLoadingList(false);
+      setLoading(false);
     }
   };
 
@@ -50,7 +46,7 @@ export default function PrerakProfileView({ userTokenInfo }) {
       _appBar={{
         name: t("PRERAK_PROFILE"),
         onPressBackButton: () => {
-          navigate("/prerak/PrerakList");
+          navigate("/preraks");
         },
       }}
       loading={loading}
@@ -58,143 +54,62 @@ export default function PrerakProfileView({ userTokenInfo }) {
       pageTitle={t("PRERAK_PROFILE")}
       facilitator={userTokenInfo?.authUser || {}}
     >
-      {beneficiary?.is_deactivated ? (
-        <Alert status="warning" alignItems="start" mb="3" mt="4">
-          <HStack alignItems="center" space="2" color="black">
-            <Alert.Icon />
-          </HStack>
-        </Alert>
-      ) : (
-        <VStack paddingBottom="64px" bg="gray.200">
-          <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-            <Box justifyContent={"space-between"} flexWrap="wrap">
-              <HStack flex="0.5" justifyContent="center" m="4">
-                {prerakProfile?.profile_photo_1?.name ? (
-                  <ImageView
-                    source={{
-                      uri: prerakProfile?.profile_photo_1?.name,
-                    }}
-                    alt="profile photo"
-                    width={"180px"}
-                    height={"180px"}
-                  />
-                ) : (
-                  <IconByName
-                    isDisabled
-                    name="AccountCircleLineIcon"
-                    color="textGreyColor.300"
-                    _icon={{ size: "190px" }}
-                  />
-                )}
-              </HStack>
-              <VStack space="4" alignItems={"Center"}>
-                <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {prerakProfile?.first_name} {" " + prerakProfile?.last_name}
-                </FrontEndTypo.H2>
-
-                <FrontEndTypo.H3>{prerakProfile?.mobile}</FrontEndTypo.H3>
-                <ChipStatus
-                  w="fit-content"
-                  status={prerakProfile?.program_faciltators?.status}
-                  is_duplicate={prerakProfile?.is_duplicate}
-                  is_deactivated={prerakProfile?.is_deactivated}
-                  rounded={"sm"}
+      <VStack paddingBottom="64px">
+        <VStack paddingLeft="16px" paddingRight="16px" space="24px">
+          <Box justifyContent={"space-between"} flexWrap="wrap">
+            <HStack flex="0.5" justifyContent="center" m="4">
+              {prerakProfile?.profile_photo_1?.name ? (
+                <ImageView
+                  source={{
+                    uri: prerakProfile?.profile_photo_1?.name,
+                  }}
+                  alt="profile photo"
+                  width={"180px"}
+                  height={"180px"}
                 />
-              </VStack>
-            </Box>
+              ) : (
+                <IconByName
+                  isDisabled
+                  name="AccountCircleLineIcon"
+                  color="textGreyColor.300"
+                  _icon={{ size: "190px" }}
+                />
+              )}
+            </HStack>
+            <VStack space="4" alignItems={"Center"}>
+              <FrontEndTypo.H2 bold color="textMaroonColor.400">
+                {prerakProfile?.first_name} {" " + prerakProfile?.last_name}
+              </FrontEndTypo.H2>
 
-            <Box
-              bg="gray.100"
-              borderColor="gray.300"
-              borderRadius="10px"
-              borderWidth="1px"
-              pb="6"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <FrontEndTypo.H3 bold color="gray.800">
-                  {t("PROFILE_DETAILS")}
-                </FrontEndTypo.H3>
-                <Box paddingTop="2">
-                  <Progress size="xs" colorScheme="danger" />
-                </Box>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="center" justifyContent="space-between">
-                    <HStack space="md" alignItems="center">
-                      <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-                      <FrontEndTypo.H3>{t("BASIC_DETAILS")}</FrontEndTypo.H3>
-                    </HStack>
+              <FrontEndTypo.H3>{prerakProfile?.mobile}</FrontEndTypo.H3>
+              <ChipStatus
+                w="fit-content"
+                status={prerakProfile?.program_faciltators?.status}
+                is_duplicate={prerakProfile?.is_duplicate}
+                is_deactivated={prerakProfile?.is_deactivated}
+                rounded={"sm"}
+              />
+            </VStack>
+          </Box>
 
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={() => {
-                        navigate(
-                          `/prerak/PrerakProfileView/${id}/basicdetails`,
-                        );
-                      }}
-                      color="maroon.400"
-                    />
-                  </HStack>
-                  <Divider orientation="horizontal" />
-                </VStack>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="center" justifyContent="space-between">
-                    <HStack space="md" alignItems="center">
-                      <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-                      <FrontEndTypo.H3>
-                        {t("EDUCATION_DETAILS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
+          <FrontEndTypo.H3 bold color="gray.800">
+            {t("PROFILE_DETAILS")}
+          </FrontEndTypo.H3>
 
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={() => {
-                        navigate(
-                          `/prerak/PrerakProfileView/${id}/educationdetails`,
-                        );
-                      }}
-                      color="maroon.400"
-                    />
-                  </HStack>
-                  <Divider orientation="horizontal" />
-                </VStack>
-              </VStack>
-            </Box>
-            {/* <Box
-              bg="gray.100"
-              borderColor="gray.300"
-              borderRadius="10px"
-              borderWidth="1px"
-              pb="6"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <FrontEndTypo.H3 bold color="gray.800">
-                  {t("CERTIFICATION_DETAILS")}
-                </FrontEndTypo.H3>
-                <Box paddingTop="2">
-                  <Progress size="xs" colorScheme="danger" />
-                </Box>
-                <VStack space="2" paddingTop="5">
-                  <HStack alignItems="center" justifyContent="space-between">
-                    <HStack space="md" alignItems="center">
-                      <IconByName name="UserLineIcon" _icon={{ size: "20" }} />
-                      <FrontEndTypo.H3>{t("VIEW_&_DOWNLOAD")}</FrontEndTypo.H3>
-                    </HStack>
-
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={() => {
-                        // navigate(`/beneficiary/${id}/basicdetails`);
-                      }}
-                      color="maroon.400"
-                    />
-                  </HStack>
-                  <Divider orientation="horizontal" />
-                </VStack>
-              </VStack>
-            </Box> */}
-          </VStack>
+          <Menu
+            menus={[
+              {
+                title: "BASIC_DETAILS",
+                onPress: () => navigate(`/preraks/${id}/basicdetails`),
+              },
+              {
+                title: "EDUCATION_DETAILS",
+                onPress: () => navigate(`/preraks/${id}/educationdetails`),
+              },
+            ]}
+          />
         </VStack>
-      )}
+      </VStack>
     </Layout>
   );
 }

@@ -34,8 +34,9 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
       analyticsPageTitle={"PC_BASIC_DETAILS"}
       pageTitle={t("PC_BASIC_DETAILS")}
       facilitator={userTokenInfo?.authUser || {}}
+      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
     >
-      <VStack paddingBottom="64px" bg="bgGreyColor.200">
+      <VStack paddingBottom="64px">
         <VStack p="4" space="24px">
           <HStack
             flex="0.5"

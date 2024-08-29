@@ -1,22 +1,20 @@
 import {
+  FrontEndTypo,
   IconByName,
   PCusers_layout as Layout,
-  FrontEndTypo,
-  SelectStyle,
-  CardComponent,
   PcuserService,
+  SelectStyle,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable } from "native-base";
-import React, { useEffect, useState, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Chip, { ChipStatus } from "component/BeneficiaryStatus";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Clipboard from "component/Clipboard";
+import BeneficiaryCard from "component/Beneficiary/BeneficiaryCard";
+import { Box, HStack, Select, Spinner, VStack } from "native-base";
 import PropTypes from "prop-types";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const List = ({ data }) => {
+const List = ({ data, location }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -24,59 +22,24 @@ const List = ({ data }) => {
     <VStack space="4" p="4" alignContent="center">
       {Array.isArray(data) && data?.length > 0 ? (
         data?.map((item) => (
-          <CardComponent
+          <BeneficiaryCard
             key={item?.id}
-            _body={{ px: "3", py: "3" }}
-            _vstack={{ p: 0, space: 0, flex: 1 }}
-          >
-            <Pressable
-              onPress={() =>
-                navigate(`/learners/list-view/${item?.user_id}`, {
-                  state: { filter: location?.state },
-                })
-              }
-            >
-              <HStack justifyContent="space-between" space={1}>
-                <HStack alignItems="center" flex={[1, 2, 4]}>
-                  <VStack alignItems="center" p="1">
-                    <Chip>
-                      <Clipboard text={item?.id}>
-                        <FrontEndTypo.H2 bold>{item?.user_id}</FrontEndTypo.H2>
-                      </Clipboard>
-                    </Chip>
-                  </VStack>
-                  <VStack
-                    pl="2"
-                    flex="1"
-                    wordWrap="break-word"
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.first_name}
-                      {item?.middle_name &&
-                        item?.middle_name !== "null" &&
-                        ` ${item.middle_name}`}
-                      {item?.last_name &&
-                        item?.last_name !== "null" &&
-                        ` ${item.last_name}`}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H5 color="textGreyColor.800">
-                      {item?.enrollment_number}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-                <VStack alignItems="end" flex={[1]}>
-                  <ChipStatus
-                    w="fit-content"
-                    status={item?.status}
-                    rounded={"sm"}
-                  />
-                </VStack>
-              </HStack>
-            </Pressable>
-          </CardComponent>
+            item={{
+              ...item,
+              id: item?.user_id,
+              program_beneficiaries: {
+                status: item?.status,
+                enrollment_first_name: item?.first_name,
+                enrollment_middle_name: item?.middle_name,
+                enrollment_last_name: item?.last_name,
+              },
+            }}
+            onPress={() =>
+              navigate(`/learners/list-view/${item?.user_id}`, {
+                state: { filter: location?.state },
+              })
+            }
+          />
         ))
       ) : (
         <FrontEndTypo.H3>{t("DATA_NOT_FOUND")}</FrontEndTypo.H3>
@@ -87,6 +50,7 @@ const List = ({ data }) => {
 
 List.propTypes = {
   data: PropTypes.array,
+  location: PropTypes.any,
 };
 
 const select2 = [
@@ -147,13 +111,14 @@ export default function LearnerListView({ userTokenInfo }) {
 
   const getLearner = async (filters) => {
     if (filters) {
-      const data = await PcuserService.getLearnerList(filters);
-      setData(data);
+      const result = await PcuserService.getLearnerList(filters);
+      setHasMore(result?.length > 0);
+      setData((data) => [...data, ...result]);
     }
   };
 
   useEffect(() => {
-    getLearner(filter);
+    if (filter) getLearner(filter);
   }, [filter]);
 
   return (
@@ -224,28 +189,39 @@ export default function LearnerListView({ userTokenInfo }) {
           </Box>
         </HStack>
       </VStack>
-      {!loadingList && (
-        <InfiniteScroll
-          dataLength={data?.length}
-          // next={() =>
-          //   setFilter({
-          //     ...filter,
-          //     page: (filter?.page ? filter?.page : 1) + 1,
-          //   })
-          // }
-          hasMore={hasMore}
-          height={loadingHeight}
-          endMessage={
-            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
-              {data?.length > 0
-                ? t("COMMON_NO_MORE_RECORDS")
-                : t("DATA_NOT_FOUND")}
-            </FrontEndTypo.H3>
-          }
-        >
-          <List data={data} location={location} />
-        </InfiniteScroll>
-      )}
+      <InfiniteScroll
+        height={loadingHeight}
+        next={(e) =>
+          setFilter({
+            ...filter,
+            page: (filter?.page ? filter?.page : 1) + 1,
+          })
+        }
+        dataLength={data?.length}
+        hasMore={hasMore}
+        loader={
+          <Spinner
+            accessibilityLabel="Loading posts"
+            color="bgRed.500"
+            size="lg"
+          />
+        }
+        endMessage={
+          <FrontEndTypo.H3
+            fontWeight={"600"}
+            display="inherit"
+            textAlign="center"
+          >
+            {data?.length > 0
+              ? t("COMMON_NO_MORE_RECORDS")
+              : t("DATA_NOT_FOUND")}
+          </FrontEndTypo.H3>
+        }
+        // below props only if you need pull down functionality
+        pullDownToRefreshThreshold={50}
+      >
+        <List data={data} location={location} />
+      </InfiniteScroll>
     </Layout>
   );
 }

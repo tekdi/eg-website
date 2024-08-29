@@ -118,7 +118,7 @@ export default function App() {
       console.log({ location });
       if (pageStape === "p") {
         const campId = parseInt(id);
-        navigate(`/camps/CampProfileView/${campId}`, {
+        navigate(`/camps/${campId}`, {
           state: location?.state,
         });
       } else if (nextIndex !== undefined) {

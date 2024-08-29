@@ -65,7 +65,7 @@ export default function PrerakQualification({ userTokenInfo }) {
   }, [qua, prerakProfile]);
 
   const onPressBackButton = () => {
-    navigate(`/prerak/PrerakProfileView/${id}`);
+    navigate(`/preraks/${id}`);
   };
 
   return (

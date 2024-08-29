@@ -41,18 +41,17 @@ export default function PrerakBasicDetails({ userTokenInfo }) {
     getPrerakProfile();
   }, []);
 
-  console.log({ prerakProfile });
-
   return (
     <Layout
       loading={loading}
       _appBar={{
         name: t("BASIC_DETAILS"),
-        onPressBackButton: (e) => navigate(`/prerak/PrerakProfileView/${id}`),
+        onPressBackButton: (e) => navigate(`/preraks/${id}`),
       }}
       facilitator={userTokenInfo?.authUser || {}}
+      _page={{ _scollView: { bg: "bgGreyColor.200" } }}
     >
-      <VStack paddingBottom="64px" bg="bgGreyColor.200">
+      <VStack paddingBottom="64px">
         <VStack p="4" space="24px">
           <HStack flex="0.5" justifyContent="center" m="4">
             {prerakProfile?.profile_photo_1?.name ? (

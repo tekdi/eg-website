@@ -18,13 +18,9 @@ const SelectVillage = lazy(
 const DailyActivitiesView = lazy(
   () => import("pages/PCusers/DailyActivities/View"),
 );
-const CampList = lazy(() => import("pages/PCusers/camps/CampList"));
-const CampProfileView = lazy(
-  () => import("pages/PCusers/camps/CampProfileView"),
-);
-const CampLearnerList = lazy(
-  () => import("pages/PCusers/camps/CampLearnerList"),
-);
+const CampList = lazy(() => import("pages/PCusers/camps/List"));
+const CampProfileView = lazy(() => import("pages/PCusers/camps/View"));
+const CampLearnerList = lazy(() => import("pages/PCusers/camps/Learners"));
 const CampForm = lazy(() => import("pages/PCusers/camps/CampForm/Form"));
 const PcProfileDetails = lazy(() => import("pages/PCusers/Profile/Details"));
 const EditProfile = lazy(() => import("pages/PCusers/Profile/EditProfile"));
@@ -96,15 +92,15 @@ export default [
     component: CampList,
   },
   {
-    path: "/camps/CampProfileView/:id",
+    path: "/camps/:id",
     component: CampProfileView,
   },
   {
-    path: "/camps/CampLearnerList/:id",
+    path: "/camps/learners/:id",
     component: CampLearnerList,
   },
   {
-    path: "/camps/CampProfileView/:id/:step",
+    path: "/camps/:id/:step",
     component: CampForm,
   },
   {
@@ -120,15 +116,15 @@ export default [
     component: PcDashboard,
   },
   {
-    path: "/prerak/prerakList",
+    path: "/preraks",
     component: PrerakList,
   },
   {
-    path: "/prerak/prerakProfileView/:id",
+    path: "/preraks/:id",
     component: PrerakProfileView,
   },
   {
-    path: "/prerak/prerakProfileView/:id/:type",
+    path: "/preraks/:id/:type",
     component: PrerakProfile,
   },
   {
