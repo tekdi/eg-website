@@ -60,8 +60,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" &&
       benificiary?.program_beneficiaries?.status !== "registered_in_camp" &&
-      benificiary?.program_beneficiaries?.status !== "sso_id_verified" &&
-      benificiary?.program_beneficiaries?.status !== "registered_in_neev_camp"
+      benificiary?.program_beneficiaries?.status !== "sso_id_verified"
     );
   };
 
@@ -253,7 +252,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
   );
 }
 
-BenificiaryEnrollment.PropTypes = {
+BenificiaryEnrollment.propTypes = {
   userTokenInfo: PropTypes.any,
 };
 
@@ -283,7 +282,7 @@ const SubjectsList = ({ boardId, subjectIds }) => {
   );
 };
 
-SubjectsList.PropTypes = {
+SubjectsList.propTypes = {
   boardId: PropTypes.string,
   subjectIds: PropTypes.any,
 };
