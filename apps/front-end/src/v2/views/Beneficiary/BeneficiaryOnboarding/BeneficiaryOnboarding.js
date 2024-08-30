@@ -12,18 +12,12 @@ import LearnerDocsChecklist from "v2/components/Functional/LearnerOnboardingDeta
 import LearnerFormUpdate from "v2/components/Functional/LearnerOnboardingDetails/LearnerFormUpdate";
 import PcrDetails from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrDetails";
 import PcrView from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrView";
+import PsycCycle from "v2/components/Functional/LearnerUpdateDetail/psyc_cycle/PsycCycle";
 
 export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
   const renderOnboardStep = () => {
     switch (type) {
-      case "2":
-        return (
-          <LearnerFormUpdate
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
-        );
       // case "3":
       //   return (
       //     <LearnerAdhaar
@@ -102,13 +96,18 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
         return (
           <PcrView userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
         );
-      default:
+      case "psyc":
+        return (
+          <PsycCycle userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
+        );
+      default: {
         return (
           <LearnerFormUpdate
             userTokenInfo={userTokenInfo}
             footerLinks={footerLinks}
           />
         );
+      }
     }
   };
 
