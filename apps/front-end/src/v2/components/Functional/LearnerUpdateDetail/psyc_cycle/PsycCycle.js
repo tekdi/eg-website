@@ -60,11 +60,7 @@ export default function PsycCycle() {
   };
 
   const onPressBackButton = async () => {
-    if (page === "edit_enrollement_details") {
-      await nextPreviewStep("p");
-    } else {
-      navigate(`/beneficiary/${userId}`);
-    }
+    navigate(`/beneficiary/${userId}`);
   };
 
   const validate = (data, key) => {
@@ -89,29 +85,6 @@ export default function PsycCycle() {
     });
 
     return err;
-  };
-
-  const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
-    const index = pages.indexOf(page);
-    const properties = schema1.properties;
-    if (index !== undefined) {
-      let nextIndex = "";
-      if (pageStape.toLowerCase() === "n") {
-        nextIndex = pages[index + 1];
-      } else {
-        nextIndex = pages[index - 1];
-      }
-      if (nextIndex !== undefined) {
-        setPage(nextIndex);
-        setSchema(properties[nextIndex]);
-      } else if (pageStape.toLowerCase() === "n") {
-        await formSubmitUpdate({ ...formData, form_step_number: "6" });
-        setPage("SAVE");
-      } else {
-        return true;
-      }
-    }
   };
 
   useEffect(() => {
