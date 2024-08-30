@@ -741,48 +741,11 @@ export function PsycContinue({ id, benificiary }) {
           },
         ]}
       />
-      {/* <VStack space="2" paddingTop="5">
-          <HStack alignItems="Center" justifyContent="space-between">
-            <FrontEndTypo.H3>{t("YES")}</FrontEndTypo.H3>
-            <IconByName
-              name="ArrowRightSLineIcon"
-              onPress={(e) => {
-                navigate(`/beneficiary/${id}/psyc`, {
-                  state: benificiary?.program_beneficiaries?.enrolled_for_board,
-                });
-              }}
-              color="textMaroonColor.400"
-            />
-          </HStack>
-          <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
-          <HStack alignItems="Center" justifyContent="space-between">
-            <FrontEndTypo.H3 color="textGreyColor.800">
-              {t("NO")}
-            </FrontEndTypo.H3>
-
-            <IconByName
-              name="ArrowRightSLineIcon"
-              onPress={(e) => {
-                handlePsyc();
-              }}
-              color="textMaroonColor.400"
-            />
-          </HStack>
-          <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
-          <HStack alignItems="Center" justifyContent="space-between">
-            <FrontEndTypo.H3 color="textGreyColor.800">
-              {t("DONT_KNOW")}
-            </FrontEndTypo.H3>
-
-            <IconByName
-              name="ArrowRightSLineIcon"
-              onPress={(e) => {
-                navigate("/beneficiary/list");
-              }}
-              color="textMaroonColor.400"
-            />
-          </HStack>
-        </VStack> */}
     </VStack>
   );
 }
+
+PsycContinue.propTypes = {
+  id: PropType.string,
+  benificiary: PropType.object,
+};

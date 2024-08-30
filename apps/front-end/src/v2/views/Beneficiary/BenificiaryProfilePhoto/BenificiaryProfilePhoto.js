@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, HStack, Image, VStack } from "native-base";
+import { Image, VStack } from "native-base";
 import {
   Layout,
   H2,
@@ -56,6 +56,7 @@ export default function BenificiaryProfilePhoto() {
   return (
     <Layout
       isPageAccess={!canAccess}
+      loading={loading}
       _appBar={{
         onPressBackButton,
         leftIcon: <FrontEndTypo.H2>{t("PHOTOS")}</FrontEndTypo.H2>,
