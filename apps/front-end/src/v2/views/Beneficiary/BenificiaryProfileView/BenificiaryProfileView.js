@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BodyMedium,
   CustomRadio,
@@ -9,27 +9,26 @@ import {
   arrList,
   benificiaryRegistoryService,
   enumRegistryService,
+  jsonParse,
   objProps,
   organisationService,
-  jsonParse,
 } from "@shiksha/common-lib";
+import Menu from "component/Beneficiary/Menu";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
 import {
   Actionsheet,
   Alert,
   Box,
-  Divider,
   HStack,
   Progress,
   ScrollView,
   Stack,
   VStack,
 } from "native-base";
+import PropType from "prop-types";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import PropType from "prop-types";
-import Menu from "component/Beneficiary/Menu";
 
 export default function BenificiaryProfileView({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -45,7 +44,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     useState();
   const [reasonValue, setReasonValue] = useState("");
   const [reactivateReasonValue, setReactivateReasonValue] = useState("");
-  const [isDisable, setIsDisable] = useState(false);
+  const [isDisable, setIsDisable] = useState(true);
   const navigate = useNavigate();
   const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
   const [psyc, setPsyc] = React.useState();
@@ -109,6 +108,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       setIsOpenReject(false);
     }
   };
+
   useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
@@ -126,6 +126,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       setIsDisableOpportunity(false);
     }
     setPsyc(result?.result?.program_beneficiaries?.status);
+    setLoading(false);
   }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
@@ -230,16 +231,17 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     }
   }
 
-  const handlePsyc = async () => {
-    const newFormData = {
-      is_continued: false,
-      user_id: jsonParse(id),
-    };
-    const data = await organisationService.psycStatus(newFormData);
-    if (data?.success) {
-      navigate("/beneficiary/list");
-    }
-  };
+  if (
+    psyc === "pragati_syc" &&
+    state_name === "RAJASTHAN" &&
+    !benificiary?.program_beneficiaries?.is_continued
+  ) {
+    return (
+      <Layout isCenter={true}>
+        <PsycContinue {...{ id, benificiary }} />
+      </Layout>
+    );
+  }
 
   return (
     <Layout
@@ -322,6 +324,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
               <Clipboard text={benificiary?.id}>
                 <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
               </Clipboard>
+              {isDisableOpportunity && <></>}
               <ChipStatus
                 width="fit-content"
                 status={benificiary?.program_beneficiaries?.status}
@@ -344,88 +347,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
               </Alert>
             )}
 
-            {psyc === "pragati_syc" &&
-              state_name === "RAJASTHAN" &&
-              !benificiary?.program_beneficiaries?.is_continued && (
-                <Box
-                  bg="boxBackgroundColour.100"
-                  borderColor="btnGray.100"
-                  borderRadius="10px"
-                  borderWidth="1px"
-                  pb="6"
-                >
-                  <VStack
-                    paddingLeft="16px"
-                    paddingRight="16px"
-                    paddingTop="16px"
-                  >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {t("SYC_QUESTION")}
-                    </FrontEndTypo.H3>
-                    <VStack space="2" paddingTop="5">
-                      <HStack
-                        alignItems="Center"
-                        justifyContent="space-between"
-                      >
-                        <FrontEndTypo.H3>{t("YES")}</FrontEndTypo.H3>
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/psyc`, {
-                              state:
-                                benificiary?.program_beneficiaries
-                                  ?.enrolled_for_board,
-                            });
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      </HStack>
-                      <Divider
-                        orientation="horizontal"
-                        bg="btnGray.100"
-                        thickness="1"
-                      />
-                      <HStack
-                        alignItems="Center"
-                        justifyContent="space-between"
-                      >
-                        <FrontEndTypo.H3 color="textGreyColor.800">
-                          {t("NO")}
-                        </FrontEndTypo.H3>
-
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            handlePsyc();
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      </HStack>
-                      <Divider
-                        orientation="horizontal"
-                        bg="btnGray.100"
-                        thickness="1"
-                      />
-                      <HStack
-                        alignItems="Center"
-                        justifyContent="space-between"
-                      >
-                        <FrontEndTypo.H3 color="textGreyColor.800">
-                          {t("DONT_KNOW")}
-                        </FrontEndTypo.H3>
-
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate("/beneficiary/list");
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      </HStack>
-                    </VStack>
-                  </VStack>
-                </Box>
-              )}
             <Box>
               <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
                 {t("PROFILE_PROGRESS")}
@@ -512,7 +433,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                         "enrolled_ip_verified",
                       ].includes(benificiary?.program_beneficiaries?.status)
                     ) {
-                      navigate(`/beneficiary/${id}/docschecklist`);
+                      navigate(`/beneficiary/edit/${id}/docschecklist`);
                     }
                   },
                 },
@@ -552,16 +473,15 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     navigate(`/beneficiary/${id}/pcrview`);
                   },
                 },
-                {
-                  title: "PSYC_DETAILS",
-                  onPress: (e) => {
-                    navigate(`/beneficiary/${id}/psyc`, {
-                      state:
-                        benificiary?.program_beneficiaries?.enrolled_for_board,
-                    });
-                  },
-                },
-
+                // {
+                //   title: "PSYC_DETAILS",
+                //   onPress: (e) => {
+                //     navigate(`/beneficiary/${id}/psyc`, {
+                //       state:
+                //         benificiary?.program_beneficiaries?.enrolled_for_board,
+                //     });
+                //   },
+                // },
                 {
                   title: "JOURNEY_IN_PROJECT_PRAGATI",
                   onPress: (e) => {
@@ -570,7 +490,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 },
               ]}
             />
-
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("LEARNER_ACTIONS")}
             </FrontEndTypo.H3>
@@ -773,3 +692,97 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
 BenificiaryProfileView.propTypes = {
   userTokenInfo: PropType.object,
 };
+
+export function PsycContinue({ id, benificiary }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const handlePsyc = async (value = "no") => {
+    if (value == "yes") {
+      navigate(`/beneficiary/${id}/psyc`, {
+        state: benificiary?.program_beneficiaries?.enrolled_for_board,
+      });
+    } else if (value == "no") {
+      const newFormData = {
+        is_continued: false,
+        user_id: jsonParse(id),
+      };
+      const data = await organisationService.psycStatus(newFormData);
+      if (data?.success) {
+        navigate("/beneficiary/list");
+      }
+    } else {
+      navigate("/beneficiary/list");
+    }
+  };
+  return (
+    <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
+      <FrontEndTypo.H3 bold color="textGreyColor.800">
+        {t("SYC_QUESTION")}
+      </FrontEndTypo.H3>
+      <Menu
+        menus={[
+          {
+            title: "YES",
+            onPress: (e) => {
+              handlePsyc("yes");
+            },
+          },
+          {
+            title: "NO",
+            onPress: (e) => {
+              handlePsyc();
+            },
+          },
+          {
+            title: "DONT_KNOW",
+            onPress: (e) => {
+              handlePsyc("dont_know");
+            },
+          },
+        ]}
+      />
+      {/* <VStack space="2" paddingTop="5">
+          <HStack alignItems="Center" justifyContent="space-between">
+            <FrontEndTypo.H3>{t("YES")}</FrontEndTypo.H3>
+            <IconByName
+              name="ArrowRightSLineIcon"
+              onPress={(e) => {
+                navigate(`/beneficiary/${id}/psyc`, {
+                  state: benificiary?.program_beneficiaries?.enrolled_for_board,
+                });
+              }}
+              color="textMaroonColor.400"
+            />
+          </HStack>
+          <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
+          <HStack alignItems="Center" justifyContent="space-between">
+            <FrontEndTypo.H3 color="textGreyColor.800">
+              {t("NO")}
+            </FrontEndTypo.H3>
+
+            <IconByName
+              name="ArrowRightSLineIcon"
+              onPress={(e) => {
+                handlePsyc();
+              }}
+              color="textMaroonColor.400"
+            />
+          </HStack>
+          <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
+          <HStack alignItems="Center" justifyContent="space-between">
+            <FrontEndTypo.H3 color="textGreyColor.800">
+              {t("DONT_KNOW")}
+            </FrontEndTypo.H3>
+
+            <IconByName
+              name="ArrowRightSLineIcon"
+              onPress={(e) => {
+                navigate("/beneficiary/list");
+              }}
+              color="textMaroonColor.400"
+            />
+          </HStack>
+        </VStack> */}
+    </VStack>
+  );
+}

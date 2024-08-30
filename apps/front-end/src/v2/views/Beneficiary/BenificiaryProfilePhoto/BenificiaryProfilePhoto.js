@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, VStack } from "native-base";
+import { Alert, HStack, Image, VStack } from "native-base";
 import {
   Layout,
   H2,
@@ -10,6 +10,12 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
 
+const editAccessNotForStatus = [
+  "10th_passed",
+  "pragati_syc",
+  "pragati_syc_reattempt",
+  "pragati_syc_reattempt_ip_verified",
+];
 export default function BenificiaryProfilePhoto() {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -19,6 +25,8 @@ export default function BenificiaryProfilePhoto() {
   const [benificiary, setBenificiary] = useState({});
   const [searchParams] = useSearchParams();
   const redirectLink = searchParams.get("redirectLink");
+  const [canAccess, setCanAccess] = useState(false);
+  const [loading, setLoading] = useState(true);
   const onPressBackButton = () => {
     if (page === 1) {
       navigate(`/beneficiary/${id}/basicdetails`);
@@ -27,20 +35,27 @@ export default function BenificiaryProfilePhoto() {
     }
   };
 
-  useEffect(async () => {
-    const result = await benificiaryRegistoryService.getOne(id);
-    setBenificiary(result?.result);
-  }, [id, photoNo]);
-
   useEffect(() => {
-    if (!(page < 4)) {
+    if (page >= 4) {
       navigate(`/beneficiary/${id}/basicdetails`);
     }
     setFile(benificiary?.[`profile_photo_${page}`]);
   }, [page, benificiary]);
 
+  useEffect(() => {
+    const init = async () => {
+      let data = await benificiaryRegistoryService.getOne(id);
+      setBenificiary(data?.result);
+      const status = data?.result?.program_beneficiaries?.status;
+      setCanAccess(!editAccessNotForStatus.includes(status));
+      setLoading(false);
+    };
+    init();
+  }, [id, photoNo]);
+
   return (
     <Layout
+      isPageAccess={!canAccess}
       _appBar={{
         onPressBackButton,
         leftIcon: <FrontEndTypo.H2>{t("PHOTOS")}</FrontEndTypo.H2>,
