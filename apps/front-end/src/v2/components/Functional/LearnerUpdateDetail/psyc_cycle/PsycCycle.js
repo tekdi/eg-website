@@ -28,8 +28,6 @@ export default function PsycCycle() {
   const { id } = useParams();
   const board_id = useLocation().state;
   const userId = id;
-  const [page, setPage] = useState();
-  const [pages, setPages] = useState();
   const [schema, setSchema] = useState({});
   const formRef = useRef();
   const [formData, setFormData] = useState({});
@@ -59,9 +57,21 @@ export default function PsycCycle() {
     },
   };
 
-  const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}`);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await benificiaryRegistoryService.getOne(id);
+      const data = result?.result?.program_beneficiaries;
+      setFormData({
+        ...formData,
+        exam_fee_date: data?.exam_fee_date,
+        exam_fee_document_id: data?.exam_fee_document_id,
+        syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
+      });
+      setPsyc(data?.is_continued);
+    };
+
+    fetchData();
+  }, []);
 
   const validate = (data, key) => {
     let error = {};
@@ -87,21 +97,9 @@ export default function PsycCycle() {
     return err;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await benificiaryRegistoryService.getOne(id);
-      const data = result?.result?.program_beneficiaries;
-      setFormData({
-        ...formData,
-        exam_fee_date: data?.exam_fee_date,
-        exam_fee_document_id: data?.exam_fee_document_id,
-        syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
-      });
-      setPsyc(data?.is_continued);
-    };
-
-    fetchData();
-  }, []);
+  const onPressBackButton = async () => {
+    navigate(`/beneficiary/${userId}`);
+  };
 
   const getSubjects = async (schemaData) => {
     let subjectList = await enumRegistryService.subjectsList(board_id);
@@ -118,9 +116,7 @@ export default function PsycCycle() {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
-      setPage(newSteps[0]);
       getSubjects(properties[newSteps[0]]);
-      setPages(newSteps);
     }
   }, []);
 
