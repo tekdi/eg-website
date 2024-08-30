@@ -94,14 +94,14 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         newSchema = {
           ...constantSchema,
           properties: {
-            enrollment_status,
             enrolled_for_board: efd,
+            enrollment_status,
           },
           required: ["enrollment_status", "enrolled_for_board"],
         };
         newData = {
-          enrollment_status: data?.enrollment_status,
           enrolled_for_board: `${data?.enrolled_for_board}`,
+          enrollment_status: data?.enrollment_status,
         };
       }
       break;
@@ -118,13 +118,13 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         const {
           enrollment_status,
           type_of_enrollement,
-          enrolled_for_board,
           sso_id,
+          enrolled_for_board,
           enrollment_mobile_no,
-          enrollment_date,
           enrollment_first_name,
-          enrollment_middle_name,
+          enrollment_date,
           enrollment_last_name,
+          enrollment_middle_name,
           enrollment_dob,
         } = newSchema?.properties || {};
 
@@ -133,14 +133,14 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
           ...constantSchema,
           properties: {
             enrollment_status,
-            type_of_enrollement,
             enrolled_for_board,
-            sso_id,
+            type_of_enrollement,
             enrollment_mobile_no,
-            enrollment_date,
+            sso_id,
             enrollment_first_name,
-            enrollment_middle_name,
+            enrollment_date,
             enrollment_last_name,
+            enrollment_middle_name,
             enrollment_dob,
           },
           required: constantSchema?.required?.filter(
