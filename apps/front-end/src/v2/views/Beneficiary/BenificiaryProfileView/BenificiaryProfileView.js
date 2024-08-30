@@ -125,6 +125,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     } else {
       setIsDisableOpportunity(false);
     }
+    // set status
     setStatus(result?.result?.program_beneficiaries?.status);
     setLoading(false);
   }, [reactivateReasonValue, reasonValue]);
