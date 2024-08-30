@@ -47,7 +47,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
   const [isDisable, setIsDisable] = useState(true);
   const navigate = useNavigate();
   const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
-  const [psyc, setPsyc] = React.useState();
+  const [status, setStatus] = React.useState();
 
   const state_name = jsonParse(localStorage.getItem("program"))?.state_name;
 
@@ -125,12 +125,11 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     } else {
       setIsDisableOpportunity(false);
     }
-    setPsyc(result?.result?.program_beneficiaries?.status);
+    setStatus(result?.result?.program_beneficiaries?.status);
     setLoading(false);
   }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
-    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
       case "ready_to_enroll":
@@ -155,15 +154,13 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={(e) => setIsOpenDropOut(true)}
-                        _icon={{ size: "20", color: "#D53546" }}
-                      />
-                    )}
+                  {!["dropout", "rejected"].includes(status) && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => setIsOpenDropOut(true)}
+                      _icon={{ size: "20", color: "#D53546" }}
+                    />
+                  )}
                 </HStack>
               </VStack>
             </VStack>
@@ -174,7 +171,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
     }
   }
   function renderReactivateButton() {
-    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "rejected":
       case "dropout":
@@ -191,7 +187,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
   }
 
   function renderRejectButton() {
-    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
       case "ready_to_enroll":
@@ -212,15 +207,13 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={(e) => setIsOpenReject(true)}
-                        _icon={{ size: "20", color: "#D53546" }}
-                      />
-                    )}
+                  {!["dropout", "rejected"].includes(status) && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => setIsOpenReject(true)}
+                      _icon={{ size: "20", color: "#D53546" }}
+                    />
+                  )}
                 </HStack>
               </VStack>
             </VStack>
@@ -232,7 +225,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
   }
 
   if (
-    psyc === "pragati_syc" &&
+    status === "pragati_syc" &&
     state_name === "RAJASTHAN" &&
     !benificiary?.program_beneficiaries?.is_continued
   ) {
@@ -298,27 +291,25 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 "ineligible_for_pragati_camp",
                 "10th_passed",
                 "pragati_syc",
-              ].includes(benificiary?.program_beneficiaries?.status) ? (
+              ].includes(status) ? (
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.first_name}
-                  {benificiary?.middle_name &&
-                    benificiary?.middle_name !== "null" &&
-                    ` ${benificiary.middle_name}`}
-                  {benificiary?.last_name &&
-                    benificiary?.last_name !== "null" &&
-                    ` ${benificiary?.last_name}`}
+                  {[
+                    benificiary?.first_name,
+                    benificiary?.middle_name,
+                    benificiary?.last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 </FrontEndTypo.H2>
               ) : (
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.program_beneficiaries?.enrollment_first_name}
-                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
-                    benificiary?.program_beneficiaries
-                      ?.enrollment_middle_name !== "null" &&
-                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
-                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
-                    benificiary?.program_beneficiaries?.enrollment_last_name !==
-                      "null" &&
-                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                  {[
+                    benificiary?.program_beneficiaries?.enrollment_first_name,
+                    benificiary?.program_beneficiaries?.enrollment_middle_name,
+                    benificiary?.program_beneficiaries?.enrollment_last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 </FrontEndTypo.H2>
               )}
               <Clipboard text={benificiary?.id}>
@@ -327,14 +318,13 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
               {isDisableOpportunity && <></>}
               <ChipStatus
                 width="fit-content"
-                status={benificiary?.program_beneficiaries?.status}
+                status={status}
                 is_duplicate={benificiary?.is_duplicate}
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
             </VStack>
-            {(benificiary?.program_beneficiaries?.status == "dropout" ||
-              benificiary?.program_beneficiaries?.status == "rejected") && (
+            {["dropout", "rejected"].includes(status) && (
               <Alert status="warning" alignItems={"start"} mb="3" mt="4">
                 <HStack alignItems="center" space="2" color>
                   <Alert.Icon />
@@ -404,11 +394,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 {
                   title: "ADD_YOUR_ADDRESS",
                   onPress: (e) => {
-                    if (
-                      benificiary?.program_beneficiaries?.status !==
-                        "dropout" &&
-                      benificiary?.program_beneficiaries?.status !== "rejected"
-                    ) {
+                    if (!["dropout", "rejected"].includes(status)) {
                       navigate(`/beneficiary/${id}/addressdetails`);
                     }
                   },
@@ -431,7 +417,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                         "rejected",
                         "ready_to_enroll",
                         "enrolled_ip_verified",
-                      ].includes(benificiary?.program_beneficiaries?.status)
+                      ].includes(status)
                     ) {
                       navigate(`/beneficiary/edit/${id}/docschecklist`);
                     }
@@ -440,11 +426,7 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 {
                   title: "EDUCATION_DETAILS",
                   onPress: (e) => {
-                    if (
-                      benificiary?.program_beneficiaries?.status !==
-                        "dropout" &&
-                      benificiary?.program_beneficiaries?.status !== "rejected"
-                    ) {
+                    if (!["dropout", "rejected"].includes(status)) {
                       navigate(`/beneficiary/${id}/educationdetails`);
                     }
                   },
@@ -458,30 +440,23 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                 {
                   title: "ENROLLMENT_DETAILS",
                   onPress: (e) => {
-                    if (
-                      benificiary?.program_beneficiaries?.status !==
-                        "dropout" &&
-                      benificiary?.program_beneficiaries?.status !== "rejected"
-                    ) {
+                    if (!["dropout", "rejected"].includes(status)) {
                       navigate(`/beneficiary/${id}/enrollmentdetails`);
                     }
                   },
                 },
-                {
-                  title: "PCR_DETAILS",
-                  onPress: (e) => {
-                    navigate(`/beneficiary/${id}/pcrview`);
-                  },
-                },
-                // {
-                //   title: "PSYC_DETAILS",
-                //   onPress: (e) => {
-                //     navigate(`/beneficiary/${id}/psyc`, {
-                //       state:
-                //         benificiary?.program_beneficiaries?.enrolled_for_board,
-                //     });
-                //   },
-                // },
+                ...(["registered_in_neev_camp", "registered_in_camp"].includes(
+                  status,
+                )
+                  ? [
+                      {
+                        title: "PCR_DETAILS",
+                        onPress: (e) => {
+                          navigate(`/beneficiary/${id}/pcrview`);
+                        },
+                      },
+                    ]
+                  : []),
                 {
                   title: "JOURNEY_IN_PROJECT_PRAGATI",
                   onPress: (e) => {

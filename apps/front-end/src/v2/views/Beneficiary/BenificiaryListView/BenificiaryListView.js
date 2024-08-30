@@ -259,7 +259,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
                     navigate(`/beneficiary/${item?.id}`);
                   }}
                   onPressDocCheckList={() => {
-                    navigate(`/beneficiary/${item?.id}/docschecklist`);
+                    navigate(`/beneficiary/edit/${item?.id}/docschecklist`);
                   }}
                   onPressRnroll={() => {
                     navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
