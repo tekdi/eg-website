@@ -19,22 +19,21 @@ export default function CampBasicDetails({ userTokenInfo }) {
   const { t } = useTranslation();
 
   useEffect(() => {
-    getPrerakCampProfile();
+    getCampData();
   }, []);
 
-  const getPrerakCampProfile = async () => {
+  const getCampData = async () => {
     setLoading(true);
     try {
-      const payload = {
-        academic_year_id: location.state?.academic_year_id,
-        program_id: location.state?.program_id,
+      const res = await campService.getPrerakCampProfile(id, {
         user_id: location.state?.user_id,
-      };
-      const result = await campService.getPrerakCampProfile(id, payload);
-      setCampData(result);
-      setLoading(false);
+        program_id: location.state?.program_id,
+        academic_year_id: location.state?.academic_year_id,
+      });
+      setCampData(res);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching camp data:", error);
+    } finally {
       setLoading(false);
     }
   };
