@@ -21,6 +21,8 @@ export default {
             type: ["string", "number"],
           },
           uniqueItems: true,
+          grid: 2,
+          format: "MultiCheckSubject",
         },
         exam_fee_document_id: {
           label: "RECEIPT_OF_EXAM_FEES_PAYMENT",

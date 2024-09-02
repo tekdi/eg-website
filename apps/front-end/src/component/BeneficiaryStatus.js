@@ -109,6 +109,12 @@ export function ChipStatus({
         textColor: "textMaroonColor.500",
         color: "textMaroonColor.50",
       },
+
+      pragati_syc_reattempt: {
+        newStatus: t("BENEFICIARY_STATUS_PRAGATI_SYC_REATTEMPT"),
+        textColor: "black",
+        color: "warning.400",
+      },
       sso_id_enrolled: {
         newStatus: t("SSO_ID_ENROLLED"),
         textColor: "black",

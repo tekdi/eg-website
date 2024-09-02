@@ -226,6 +226,7 @@
   "BENEFICIARY_STATUS_INELIGIBLE_FOR_PRAGATI_CAMP": "Ineligible for pragati camp",
   "BENEFICIARY_STATUS_NOT_ENROLLED": "Not Enrolled",
   "BENEFICIARY_STATUS_PRAGATI_SYC": "Pragati Syc",
+  "BENEFICIARY_STATUS_PRAGATI_SYC_REATTEMPT": "Pragati Syc Reattempt",
   "BENEFICIARY_STATUS_READY_TO_ENROLL": "Ready To Enroll",
   "BENEFICIARY_STATUS_REGISTERED_IN_CAMP": "Registered In Camp",
   "BENEFICIARY_STATUS_REJECTED": "Rejected",
@@ -2261,5 +2262,7 @@
   "SELECT_CATEGORY": "Select Category",
   "RECEIPT_OF_EXAM_FEES_PAYMENT": "Receipt of Exam Fees Payment",
   "RECEIPT_OF_EXAM_FEES_PAYMENT_DESCRIPTION": "Please upload a clear photo or PDF of the exam fees payment receipt.",
-  "PSYC_DETAILS": "PSYC Details"
+  "PSYC_DETAILS": "PSYC Details",
+  "FUTUTRE_DATES_NOT_ALLOWED": "Fututre Dates Not Allowed",
+  "DATES_NOT_ALLOWED": "Dates Not Allowed"
 }

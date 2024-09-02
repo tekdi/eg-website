@@ -21,6 +21,7 @@ import {
   Alert,
   Box,
   HStack,
+  Modal,
   Progress,
   ScrollView,
   Stack,
@@ -229,18 +230,6 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
       default:
         return null;
     }
-  }
-
-  if (
-    psyc === "pragati_syc" &&
-    state_name === "RAJASTHAN" &&
-    !benificiary?.program_beneficiaries?.is_continued
-  ) {
-    return (
-      <Layout isCenter={true}>
-        <PsycContinue {...{ id, benificiary }} />
-      </Layout>
-    );
   }
 
   return (
@@ -473,15 +462,19 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     navigate(`/beneficiary/${id}/pcrview`);
                   },
                 },
-                // {
-                //   title: "PSYC_DETAILS",
-                //   onPress: (e) => {
-                //     navigate(`/beneficiary/${id}/psyc`, {
-                //       state:
-                //         benificiary?.program_beneficiaries?.enrolled_for_board,
-                //     });
-                //   },
-                // },
+                ...(benificiary?.program_beneficiaries?.is_continued ===
+                  false && [
+                  {
+                    title: "PSYC_DETAILS",
+                    onPress: (e) => {
+                      navigate(`/beneficiary/${id}/psyc`, {
+                        state:
+                          benificiary?.program_beneficiaries
+                            ?.enrolled_for_board,
+                      });
+                    },
+                  },
+                ]),
                 {
                   title: "JOURNEY_IN_PROJECT_PRAGATI",
                   onPress: (e) => {
@@ -685,6 +678,17 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
           </VStack>
         </Actionsheet.Content>
       </Actionsheet>
+
+      <PsycContinue
+        {...{ id, benificiary }}
+        isOpen={
+          psyc === "pragati_syc" &&
+          state_name === "RAJASTHAN" &&
+          ![true, false].includes(
+            benificiary?.program_beneficiaries?.is_continued,
+          )
+        }
+      />
     </Layout>
   );
 }
@@ -693,7 +697,7 @@ BenificiaryProfileView.propTypes = {
   userTokenInfo: PropType.object,
 };
 
-export function PsycContinue({ id, benificiary }) {
+export function PsycContinue({ id, benificiary, isOpen }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handlePsyc = async (value = "no") => {
@@ -715,33 +719,43 @@ export function PsycContinue({ id, benificiary }) {
     }
   };
   return (
-    <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-      <FrontEndTypo.H3 bold color="textGreyColor.800">
-        {t("SYC_QUESTION")}
-      </FrontEndTypo.H3>
-      <Menu
-        menus={[
-          {
-            title: "YES",
-            onPress: (e) => {
-              handlePsyc("yes");
-            },
-          },
-          {
-            title: "NO",
-            onPress: (e) => {
-              handlePsyc();
-            },
-          },
-          {
-            title: "DONT_KNOW",
-            onPress: (e) => {
-              handlePsyc("dont_know");
-            },
-          },
-        ]}
-      />
-    </VStack>
+    <Modal isOpen={isOpen} size="lg">
+      <Modal.Content>
+        <Modal.Header>
+          <FrontEndTypo.H1>{t("SYC_QUESTION")}</FrontEndTypo.H1>
+        </Modal.Header>
+        <Modal.Body>
+          <Menu
+            _vstack={{
+              shadow: "",
+              bg: "transparent",
+              borderWidth: "0",
+              borderRadius: "0",
+            }}
+            menus={[
+              {
+                title: "YES",
+                onPress: (e) => {
+                  handlePsyc("yes");
+                },
+              },
+              {
+                title: "NO",
+                onPress: (e) => {
+                  handlePsyc();
+                },
+              },
+              {
+                title: "DONT_KNOW",
+                onPress: (e) => {
+                  handlePsyc("dont_know");
+                },
+              },
+            ]}
+          />
+        </Modal.Body>
+      </Modal.Content>
+    </Modal>
   );
 }
 
