@@ -16,12 +16,21 @@ import validator from "@rjsf/validator-ajv8";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   widgets,
+  MultiCheckSubject,
   templates,
   onError,
   transformErrors,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 
+// function getFormattedDateRange() {
+//   const currentYear = moment().format("YYYY");
+
+//   const startOfRange = moment(`${currentYear}-09-01`).format("DD-MM-YYYY");
+//   const endOfRange = moment(`${currentYear}-12-31`).format("DD-MM-YYYY");
+
+//   return `${startOfRange} to ${endOfRange}`;
+// }
 // App
 export default function PsycCycle() {
   const { t } = useTranslation();
@@ -39,7 +48,7 @@ export default function PsycCycle() {
 
   const uiSchema = {
     syc_subjects: {
-      "ui:widget": "checkboxes",
+      "ui:widget": "MultiCheckSubject",
       "ui:readonly": psyc || false,
     },
     exam_fee_date: {
@@ -47,8 +56,9 @@ export default function PsycCycle() {
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
-        yearsRange: [2023, moment().format("YYYY")],
+        yearsRange: [moment().format("YYYY"), moment().format("YYYY")],
         format: "DMY",
+        // help: `date bitween ${getFormattedDateRange()}`,
       },
       "ui:readonly": psyc || false,
     },
@@ -75,11 +85,32 @@ export default function PsycCycle() {
 
   const validate = (data, key) => {
     let error = {};
-    if (
-      key == "exam_fee_date" &&
-      moment.utc(data?.exam_fee_date) > moment.utc()
-    ) {
-      error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+
+    if (key == "exam_fee_date") {
+      // Define your date
+      const dateToCheck = moment(data?.exam_fee_date); // Replace with your date
+
+      // Define the start and end of the range
+      const startOfRange = moment().startOf("year").month(8); // September (month index starts from 0)
+      const endOfRange = moment().startOf("year").month(11).endOf("month"); // December
+      // Check if the date is between the range and not in the future
+      const isBetweenDateValid = dateToCheck.isBetween(
+        startOfRange,
+        endOfRange,
+        null,
+        "[]",
+      );
+      const isDateValid = dateToCheck.isSameOrBefore(moment(), "day");
+
+      console.log(
+        dateToCheck.isBetween(startOfRange, endOfRange, null, "[]"),
+        dateToCheck.isSameOrBefore(moment(), "day"),
+      );
+      if (!isBetweenDateValid) {
+        error = { [key]: t("DATES_NOT_ALLOWED") };
+      } else if (!isDateValid) {
+        error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+      }
     }
     return error;
   };
@@ -108,6 +139,7 @@ export default function PsycCycle() {
       arr: subjectList?.subjects,
       title: "name",
       value: "subject_id",
+      extra: { enumOptions: subjectList?.subjects },
     });
     setSchema(newSchema);
   };
@@ -172,7 +204,7 @@ export default function PsycCycle() {
           showErrorList={false}
           noHtml5Validate={true}
           {...{
-            widgets,
+            widgets: { ...widgets, MultiCheckSubject },
             templates,
             validator,
             schema: schema || {},
