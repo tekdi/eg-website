@@ -110,19 +110,9 @@ export default function PrerakBasicDetails({ userTokenInfo }) {
             _vstack={{ space: 0 }}
             _hstack={{ borderBottomWidth: 0 }}
             title={t("ADDRESS_DETAILS")}
-            label={["HOME"]}
-            item={{
-              home: [
-                prerakProfile?.state,
-                prerakProfile?.district,
-                prerakProfile?.block,
-                prerakProfile?.village,
-                prerakProfile?.grampanchayat,
-              ]
-                .filter((e) => e)
-                .join(", "),
-            }}
-            arr={["home"]}
+            label={["STATE", "DISTRICT", "BLOCK", "VILLAGE", "GRAMPANCHAYAT"]}
+            arr={["state", "district", "block", "village", "grampanchayat"]}
+            item={prerakProfile}
           />
           <CardComponent
             _vstack={{ space: 0 }}
