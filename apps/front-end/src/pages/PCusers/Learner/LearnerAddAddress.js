@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { HStack, VStack, Box, Progress, Text } from "native-base";
-import {
-  arrList,
-  CardComponent,
-  FrontEndTypo,
-  PCusers_layout as Layout,
-} from "@shiksha/common-lib";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { CardComponent, PCusers_layout as Layout } from "@shiksha/common-lib";
+import { VStack } from "native-base";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function BenificiaryAddress({ userTokenInfo }) {
-  const params = useParams();
+  const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
-  const [userId] = useState(params?.id);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const location = useLocation();
@@ -23,7 +17,7 @@ export default function BenificiaryAddress({ userTokenInfo }) {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${userId}`);
+    navigate(`/learners/list-view/${id}`);
   };
 
   return (
