@@ -4,6 +4,8 @@ import {
   FrontEndTypo,
   PCusers_layout as Layout,
   campService,
+  enumRegistryService,
+  GetEnumValue,
 } from "@shiksha/common-lib";
 import { VStack } from "native-base";
 import PropTypes from "prop-types";
@@ -16,11 +18,25 @@ export default function CampBasicDetails({ userTokenInfo }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [campData, setCampData] = useState({});
+  const [enumOptions, setEnumOptions] = useState({});
   const { t } = useTranslation();
 
   useEffect(() => {
     getCampData();
+    getEnumData();
   }, []);
+
+  const getEnumData = async () => {
+    setLoading(true);
+    try {
+      const data = await enumRegistryService.listOfEnum();
+      setEnumOptions(data?.data ? data?.data : {});
+    } catch (error) {
+      console.error("Error fetching enum data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getCampData = async () => {
     setLoading(true);
@@ -73,8 +89,8 @@ export default function CampBasicDetails({ userTokenInfo }) {
             "STREET_ADDRESS",
             "DISTRICT",
             "BLOCK",
-            "GRAMPANCHAYAT",
             "VILLAGE_WARD",
+            "GRAMPANCHAYAT",
           ]}
           arr={[
             "lat",
@@ -83,10 +99,22 @@ export default function CampBasicDetails({ userTokenInfo }) {
             "street",
             "district",
             "block",
-            "grampanchayat",
             "village",
+            "grampanchayat",
           ]}
-          item={campData?.properties}
+          item={{
+            ...campData?.properties,
+            property_type: campData?.properties?.property_type ? (
+              <GetEnumValue
+                t={t}
+                enumType={"CAMP_PROPERTY_TYPE"}
+                enumOptionValue={campData?.properties.property_type}
+                enumApiData={enumOptions}
+              />
+            ) : (
+              "-"
+            ),
+          }}
         />
         <CardComponent
           _vstack={{ space: 0 }}
