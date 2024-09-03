@@ -74,6 +74,12 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         });
         const { enrolled_for_board: efd, enrollment_status } =
           newSchema?.properties || {};
+
+        newData = {
+          enrollment_status: data?.enrollment_status,
+          enrolled_for_board: `${data?.enrolled_for_board}`,
+        };
+
         newSchema = {
           ...constantSchema,
           properties: {
@@ -81,10 +87,6 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
             enrolled_for_board: efd,
           },
           required: ["enrollment_status", "enrolled_for_board"],
-        };
-        newData = {
-          enrollment_status: data?.enrollment_status,
-          enrolled_for_board: `${data?.enrolled_for_board}`,
         };
       }
       break;
@@ -153,17 +155,19 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
       {
         const { sso_id: sso_id_1, ...properties } =
           constantSchema?.properties || {};
-        newSchema = {
-          ...constantSchema,
-          properties,
-          required: constantSchema?.required?.filter((e) => e != "sso_id"),
-        };
-        newSchema = getOptions(newSchema, {
-          key: "enrolled_for_board",
-          arr: boards || [],
-          title: "name",
-          value: "id",
-        });
+        newSchema = getOptions(
+          {
+            ...constantSchema,
+            properties,
+            required: constantSchema?.required?.filter((e) => e != "sso_id"),
+          },
+          {
+            key: "enrolled_for_board",
+            arr: boards || [],
+            title: "name",
+            value: "id",
+          },
+        );
       }
       break;
   }
@@ -348,6 +352,19 @@ export default function EnrollmentForm() {
     });
   };
 
+  const customValidate = (data, err) => {
+    const arr = Object.keys(err);
+    arr.forEach((key) => {
+      const isValid = validate(data, key);
+      if (isValid?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValid[key]))
+          err?.[key]?.addError(isValid[key]);
+      }
+    });
+
+    return err;
+  };
+
   const validate = (data, key) => {
     let error = {};
     switch (key) {
@@ -404,19 +421,6 @@ export default function EnrollmentForm() {
         break;
     }
     return error;
-  };
-
-  const customValidate = (data, err) => {
-    const arr = Object.keys(err);
-    arr.forEach((key) => {
-      const isValid = validate(data, key);
-      if (isValid?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValid[key]))
-          err?.[key]?.addError(isValid[key]);
-      }
-    });
-
-    return err;
   };
 
   // set form data page, pages and benificiary
