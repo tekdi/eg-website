@@ -44,16 +44,16 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
     return acc;
   }, []);
   [...keys, "is_eligible"].forEach((e) => {
-    if (e === "subjects") {
-      newData = { ...newData, [e]: getArray(data?.[e]) };
-    } else if (e === "enrolled_for_board") {
+    if (e === "enrolled_for_board") {
       newData = { ...newData, [e]: data?.[e] ? `${data?.[e]}` : undefined };
+    } else if (e === "subjects") {
+      newData = { ...newData, [e]: getArray(data?.[e]) };
     } else if (e === "payment_receipt_document_id") {
       if (Array.isArray(data?.[e])) {
         const idDoc = data?.[e]?.find((ie) =>
           ie?.id && (ie?.key == data?.enrollment_status) === "sso_id_enrolled"
             ? "sso_id_receipt_document_id"
-            : "payment_receipt_document_id"
+            : "payment_receipt_document_id",
         );
         newData = { ...newData, [e]: `${idDoc?.id}` };
       } else {
@@ -63,6 +63,33 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   });
 
   switch (data?.enrollment_status) {
+    case "enrollment_awaited":
+    case "enrollment_rejected":
+      {
+        newSchema = getOptions(constantSchema, {
+          key: "enrolled_for_board",
+          arr: boards || [],
+          title: "name",
+          value: "id",
+        });
+        const { enrolled_for_board: efd, enrollment_status } =
+          newSchema?.properties || {};
+
+        newData = {
+          enrollment_status: data?.enrollment_status,
+          enrolled_for_board: `${data?.enrolled_for_board}`,
+        };
+
+        newSchema = {
+          ...constantSchema,
+          properties: {
+            enrollment_status,
+            enrolled_for_board: efd,
+          },
+          required: ["enrollment_status", "enrolled_for_board"],
+        };
+      }
+      break;
     case "ready_to_enroll":
       {
         const { enrollment_status } = constantSchema?.properties || {};
@@ -76,31 +103,6 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         newData = {
           enrollment_status: data?.enrollment_status,
           subjects: [],
-        };
-      }
-      break;
-    case "enrollment_awaited":
-    case "enrollment_rejected":
-      {
-        newSchema = getOptions(constantSchema, {
-          key: "enrolled_for_board",
-          arr: boards || [],
-          title: "name",
-          value: "id",
-        });
-        const { enrolled_for_board: efd, enrollment_status } =
-          newSchema?.properties || {};
-        newSchema = {
-          ...constantSchema,
-          properties: {
-            enrollment_status,
-            enrolled_for_board: efd,
-          },
-          required: ["enrollment_status", "enrolled_for_board"],
-        };
-        newData = {
-          enrollment_status: data?.enrollment_status,
-          enrolled_for_board: `${data?.enrolled_for_board}`,
         };
       }
       break;
@@ -143,7 +145,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
             enrollment_dob,
           },
           required: constantSchema?.required?.filter(
-            (e) => e != "enrollment_number"
+            (e) => e != "enrollment_number",
           ),
         };
       }
@@ -153,17 +155,19 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
       {
         const { sso_id: sso_id_1, ...properties } =
           constantSchema?.properties || {};
-        newSchema = {
-          ...constantSchema,
-          properties,
-          required: constantSchema?.required?.filter((e) => e != "sso_id"),
-        };
-        newSchema = getOptions(newSchema, {
-          key: "enrolled_for_board",
-          arr: boards || [],
-          title: "name",
-          value: "id",
-        });
+        newSchema = getOptions(
+          {
+            ...constantSchema,
+            properties,
+            required: constantSchema?.required?.filter((e) => e != "sso_id"),
+          },
+          {
+            key: "enrolled_for_board",
+            arr: boards || [],
+            title: "name",
+            value: "id",
+          },
+        );
       }
       break;
   }
@@ -174,7 +178,14 @@ const getSubjects = async (schemaData, value) => {
   let { state_name } = await getSelectedProgramId();
   if (value) {
     let data = await enumRegistryService.subjectsList(value);
-    let newSchema = getOptions(schemaData, {
+    let newSchema = getOptions(newSchema, {
+      key: "subjects",
+      arr: data?.subjects || [],
+      title: "name",
+      value: "subject_id",
+      extra: { enumOptions: data?.subjects },
+    });
+    newSchema = getOptions(schemaData, {
       key: "payment_receipt_document_id",
       extra: {
         document_type: "enrollment_receipt",
@@ -185,8 +196,8 @@ const getSubjects = async (schemaData, value) => {
                 state_name === "RAJASTHAN"
                   ? "/enrollment-receipt.jpeg"
                   : state_name === "BIHAR"
-                  ? "/application_receipt_bihar.jpg"
-                  : "/enrollment_receipt_mp.jpg",
+                    ? "/application_receipt_bihar.jpg"
+                    : "/enrollment_receipt_mp.jpg",
             }}
             height={"200px"}
             width={"124px"}
@@ -196,13 +207,7 @@ const getSubjects = async (schemaData, value) => {
         ),
       },
     });
-    newSchema = getOptions(newSchema, {
-      key: "subjects",
-      arr: data?.subjects || [],
-      title: "name",
-      value: "subject_id",
-      extra: { enumOptions: data?.subjects },
-    });
+
     return newSchema;
   } else {
     return schemaData;
@@ -281,7 +286,7 @@ export default function EnrollmentForm() {
     if (data?.enrollment_dob) {
       const age = enrollmentDateOfBirth(
         data?.enrollment_date,
-        data?.enrollment_dob
+        data?.enrollment_dob,
       );
       const { enrollment_date } = data || {};
 
@@ -315,6 +320,13 @@ export default function EnrollmentForm() {
     let list = ListofEnum?.data?.ENROLLEMENT_STATUS;
     let { state_name } = await getSelectedProgramId();
 
+    let newSchema = getOptions(schemaData, {
+      key: "type_of_enrollement",
+      arr: ListofEnum?.data?.ENROLLEMENT_VERIFICATION_TYPE,
+      title: "title",
+      value: "value",
+    });
+
     // filter by sso_id_enrolled if state id not RAJASTHAN
 
     if (
@@ -332,19 +344,25 @@ export default function EnrollmentForm() {
       list = list.filter((e) => e.value != "sso_id_enrolled");
     }
 
-    let newSchema = getOptions(schemaData, {
-      key: "type_of_enrollement",
-      arr: ListofEnum?.data?.ENROLLEMENT_VERIFICATION_TYPE,
-      title: "title",
-      value: "value",
-    });
-
     return getOptions(newSchema, {
       key: "enrollment_status",
       arr: list,
       title: "title",
       value: "value",
     });
+  };
+
+  const customValidate = (data, err) => {
+    const arr = Object.keys(err);
+    arr.forEach((key) => {
+      const isValid = validate(data, key);
+      if (isValid?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValid[key]))
+          err?.[key]?.addError(isValid[key]);
+      }
+    });
+
+    return err;
   };
 
   const validate = (data, key) => {
@@ -378,23 +396,23 @@ export default function EnrollmentForm() {
             const languageSubjects = subjectsArr?.filter(
               (subject) =>
                 subject.subject_type === "language" &&
-                subjectsSet.has(String(subject.subject_id))
+                subjectsSet.has(String(subject.subject_id)),
             );
             // Return the count of filtered objects
             return languageSubjects.length;
           };
           const langCount = countLanguageSubjects(
             schema?.properties?.subjects?.enumOptions,
-            data?.subjects
+            data?.subjects,
           );
           const nonLangCount = data?.subjects?.length - langCount;
           if (langCount === 0 && nonLangCount === 0) {
             error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
-          } else if (langCount > 3 && nonLangCount > 4) {
+          } else if (langCount + nonLangCount > 7) {
             error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
           } else if (langCount > 3) {
             error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
-          } else if (nonLangCount > 4) {
+          } else if (nonLangCount > 5) {
             error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
           }
         }
@@ -405,27 +423,9 @@ export default function EnrollmentForm() {
     return error;
   };
 
-  const customValidate = (data, err) => {
-    const arr = Object.keys(err);
-    arr.forEach((key) => {
-      const isValid = validate(data, key);
-      if (isValid?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValid[key]))
-          err?.[key]?.addError(isValid[key]);
-      }
-    });
-
-    return err;
-  };
-
   // set form data page, pages and benificiary
   useEffect(() => {
-    const init = async () => {
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      const newStep = newSteps[0];
-      setPage(newStep);
-      setPages(newSteps);
+    const init1 = async () => {
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
       setMissingData(await learnerDetailsCheck({ id, benificiary: result }));
@@ -434,8 +434,13 @@ export default function EnrollmentForm() {
       setFormData(updatedSchema?.newData || {});
       let resultBoards = await enumRegistryService.boardList();
       setBoards(resultBoards?.boards || []);
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      const newStep = newSteps[0];
+      setPage(newStep);
+      setPages(newSteps);
     };
-    init();
+    init1();
   }, []);
 
   // set fixedSchema, setSchema as per statue and state, dependacy on page
@@ -446,13 +451,13 @@ export default function EnrollmentForm() {
         if (page === "edit_enrollement") {
           const newSchema = await getEnrollmentStatus(
             constantSchema,
-            benificiary?.program_beneficiaries.status
+            benificiary?.program_beneficiaries.status,
           );
           setFixedSchema(newSchema);
           const updatedSchema = await setSchemaByStatus(
             formData,
             newSchema,
-            boards
+            boards,
           );
           let { state_name } = await getSelectedProgramId();
 
@@ -472,11 +477,11 @@ export default function EnrollmentForm() {
         } else {
           if (
             ["enrolled", "sso_id_enrolled"].includes(
-              formData?.enrollment_status
+              formData?.enrollment_status,
             )
           ) {
             setSchema(
-              await getSubjects(constantSchema, formData?.enrolled_for_board)
+              await getSubjects(constantSchema, formData?.enrolled_for_board),
             );
           } else {
             setSchema(constantSchema);
@@ -492,15 +497,15 @@ export default function EnrollmentForm() {
     let { state_name } = await getSelectedProgramId();
     let error = {};
     if (
-      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
       (state_name === "MADHYA PRADESH" && enrollment_number.length === 12) ||
+      (state_name === "RAJASTHAN" && enrollment_number.length === 11) ||
       (state_name === "BIHAR" && enrollment_number.length === 9)
     ) {
       const result = await benificiaryRegistoryService.isExistEnrollment(
         userId,
         {
           enrollment_number: enrollment_number,
-        }
+        },
       );
       if (result.error) {
         error = {
@@ -511,7 +516,7 @@ export default function EnrollmentForm() {
               t(
                 state_name === "RAJASTHAN"
                   ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
-                  : "APPLICATION_ID_ALREADY_EXISTS"
+                  : "APPLICATION_ID_ALREADY_EXISTS",
               ),
             ],
           },
@@ -587,6 +592,7 @@ export default function EnrollmentForm() {
   const onChange = async (e, id) => {
     const data = e.formData;
     let newData = { ...formData, ...data };
+
     switch (id) {
       case "root_enrollment_number":
         let { enrollment_number, ...otherError } = errors || {};
@@ -629,7 +635,7 @@ export default function EnrollmentForm() {
                     </VStack>
                   ),
                 },
-              })
+              }),
             );
             setFormData({ ...formData, is_eligible: "no" });
           } else {
@@ -639,7 +645,7 @@ export default function EnrollmentForm() {
                 extra: {
                   "ui:help": ageDate?.age?.message,
                 },
-              })
+              }),
             );
             setFormData({ ...formData, is_eligible: "yes" });
           }
@@ -650,12 +656,27 @@ export default function EnrollmentForm() {
         const updatedSchema = await setSchemaByStatus(
           data,
           fixedSchema,
-          boards
+          boards,
         );
         newData = updatedSchema?.newData ? updatedSchema?.newData : {};
         setSchema(updatedSchema?.newSchema);
         setErrors();
         break;
+
+      case "root_subjects": {
+        let { subjects, ...otherErrore } = errors || {};
+        setErrors(otherErrore);
+        const resultDate = validate(data, "subjects");
+        if (resultDate?.subjects) {
+          setErrors({
+            ...errors,
+            subjects: {
+              __errors: [resultDate?.subjects],
+            },
+          });
+        }
+        break;
+      }
 
       //   break;
       case "root_enrollment_dob":
@@ -671,7 +692,7 @@ export default function EnrollmentForm() {
                   </VStack>
                 ),
               },
-            })
+            }),
           );
           newData = { ...newData, is_eligible: "no" };
         } else {
@@ -682,7 +703,7 @@ export default function EnrollmentForm() {
               extra: {
                 "ui:help": age?.age?.message,
               },
-            })
+            }),
           );
         }
         break;
@@ -705,7 +726,7 @@ export default function EnrollmentForm() {
     ) {
       const resulten = await enrollmentNumberExist(
         formData?.enrollment_number,
-        true
+        true,
       );
       if (Object.keys(resulten).includes("enrollment_number")) {
         if (resulten?.enrollment_number?.isNotMatched) {
@@ -727,8 +748,8 @@ export default function EnrollmentForm() {
             t(
               state_name === "RAJASTHAN"
                 ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
-                : "APPLICATION_ID_ALREADY_EXISTS"
-            )
+                : "APPLICATION_ID_ALREADY_EXISTS",
+            ),
           )
         ) {
           setNotMatched(errorData.filter((e) => e !== "enrollment_number"));
@@ -777,7 +798,7 @@ export default function EnrollmentForm() {
               edit_page_type: "edit_enrollement",
               is_eligible: newFormData?.is_eligible,
             },
-            userId
+            userId,
           );
         if (isUserExist) {
           setNotMatched(["enrollment_number"]);
@@ -817,7 +838,7 @@ export default function EnrollmentForm() {
 
   if (
     ["enrolled_ip_verified", "registered_in_camp"].includes(
-      benificiary?.program_beneficiaries?.status
+      benificiary?.program_beneficiaries?.status,
     )
   ) {
     return (
@@ -978,7 +999,7 @@ const learnerDetailsCheck = async ({ id, benificiary }) => {
   if (searchKeys?.length > 0) {
     return LABEL_NAMES.map((label) => {
       const matchedKeys = Object.keys(label.keys).filter((key) =>
-        searchKeys.includes(key)
+        searchKeys.includes(key),
       );
 
       if (matchedKeys.length > 0) {
@@ -999,11 +1020,11 @@ const learnerDetailsCheck = async ({ id, benificiary }) => {
   } else {
     const lastStandard = parseInt(
       benificiary?.core_beneficiaries?.last_standard_of_education ?? "",
-      10
+      10,
     );
     const hasWarning = isNaN(lastStandard) || lastStandard < 5;
     const checkNeeded = ["identified", "ready_to_enroll"].includes(
-      benificiary?.program_beneficiaries?.status
+      benificiary?.program_beneficiaries?.status,
     );
 
     if (hasWarning && checkNeeded) {
@@ -1050,13 +1071,13 @@ const UserDataCheck = ({ missingData, setMissingData, id }) => {
                             "upload_no",
                             Object.keys(item?.keys || {})?.[0]?.replace(
                               "profile_photo_",
-                              ""
-                            )
-                          )}?${searchParams}`
+                              "",
+                            ),
+                          )}?${searchParams}`,
                       );
                     } else {
                       navigate(
-                        `${item?.path?.replace(":id", id)}?${searchParams}`
+                        `${item?.path?.replace(":id", id)}?${searchParams}`,
                       );
                     }
                   }}
