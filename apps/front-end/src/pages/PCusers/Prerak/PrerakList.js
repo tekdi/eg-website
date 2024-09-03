@@ -7,7 +7,7 @@ import {
   enumRegistryService,
   PcuserService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable } from "native-base";
+import { HStack, VStack, Box, Select, Pressable, Spinner } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Chip from "component/BeneficiaryStatus";
@@ -293,6 +293,13 @@ export default function PrerakList({ userTokenInfo }) {
             ...filter,
             page: (filter?.page ? filter?.page : 1) + 1,
           })
+        }
+        loader={
+          <Spinner
+            accessibilityLabel="Loading posts"
+            color="bgRed.500"
+            size="lg"
+          />
         }
         hasMore={hasMore}
         height={loadingHeight}
