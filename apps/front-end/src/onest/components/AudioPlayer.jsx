@@ -1,5 +1,6 @@
 import { Box, Center } from "native-base";
 import React from "react";
+import PropTypes from "prop-types";
 
 const AudioPlayer = ({ mediaUrl }) => {
   return (
@@ -15,3 +16,6 @@ const AudioPlayer = ({ mediaUrl }) => {
 };
 
 export default AudioPlayer;
+AudioPlayer.propTypes = {
+  mediaUrl: PropTypes.any,
+};

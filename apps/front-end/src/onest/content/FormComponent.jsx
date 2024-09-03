@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+
 const inputStyle = {
   width: "100%",
   border: "1px solid grey",
@@ -124,3 +126,6 @@ const FormComponent = ({ submitUserForm }) => {
 };
 
 export default FormComponent;
+FormComponent.propTypes = {
+  submitUserForm: PropTypes.any,
+};

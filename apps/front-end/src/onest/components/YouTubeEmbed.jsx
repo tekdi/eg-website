@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const YouTubeEmbed = ({ url }) => {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ const YouTubeEmbed = ({ url }) => {
         height="438"
         src={embedUrl}
         title="Artificial intelligence comes to farming in India | BBC News"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
       ></iframe>
@@ -23,3 +24,6 @@ const YouTubeEmbed = ({ url }) => {
 };
 
 export default YouTubeEmbed;
+YouTubeEmbed.propTypes = {
+  url: PropTypes.any,
+};

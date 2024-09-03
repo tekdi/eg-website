@@ -1,6 +1,7 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const VideoPlayer = ({ url }) => {
   const { t } = useTranslation();
@@ -27,3 +28,6 @@ const VideoPlayer = ({ url }) => {
 };
 
 export default VideoPlayer;
+VideoPlayer.propTypes = {
+  url: PropTypes.any,
+};

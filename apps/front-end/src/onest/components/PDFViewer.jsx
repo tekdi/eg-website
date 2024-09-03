@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const PDFViewer = ({ src }) => {
   return (
@@ -14,3 +15,6 @@ const PDFViewer = ({ src }) => {
 };
 
 export default PDFViewer;
+PDFViewer.propTypes = {
+  src: PropTypes.any,
+};
