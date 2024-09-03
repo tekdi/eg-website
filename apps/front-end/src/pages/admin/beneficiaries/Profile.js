@@ -372,7 +372,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
 
   const handleAadhaarUpdate = useCallback((event) => {
     const inputValue = event.target.value;
-    const numericValue = inputValue.replace(/[^0-9]/g, "");
+    const numericValue = inputValue.replace(/\D/g, "");
     const maxLength = 12;
     const truncatedValue = numericValue.slice(0, maxLength);
     setAadhaarValue(truncatedValue);
@@ -2168,7 +2168,26 @@ const TitleComponent = (props) => {
   return <AdminTypo.H5 {...props} bold color="textGreyColor.550" />;
 };
 
-AgAdminProfile.PropTypes = {
+AgAdminProfile.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
+};
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.any,
+  title: PropTypes.any,
+  setCheckedFields: PropTypes.any,
+  checkedFields: PropTypes.any,
+};
+BeneficiaryJourney.propTypes = {
+  data: PropTypes.any,
+  enumOptions: PropTypes.any,
+  t: PropTypes.any,
+  auditLogs: PropTypes.any,
+  auditMonth: PropTypes.any,
+  auditYear: PropTypes.any,
+};
+GetOptions.propTypes = {
+  array: PropTypes.any,
+  enumType: PropTypes.any,
+  enumApiData: PropTypes.any,
 };
