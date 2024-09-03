@@ -4,7 +4,6 @@ import {
   AdminTypo,
   enumRegistryService,
   tableCustomStyles,
-  getSelectedProgramId,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
@@ -268,7 +267,7 @@ function Table({
   );
 }
 
-Table.PropTypes = {
+Table.propTypes = {
   filter: PropTypes.any,
   setFilter: PropTypes.func,
   paginationTotalRows: PropTypes.any,
