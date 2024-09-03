@@ -239,4 +239,5 @@ GetEnumValueLocal.propTypes = {
 
 BenificiaryDisability.propTypes = {
   userTokenInfo: PropTypes.any,
+  _layout: PropTypes.any,
 };

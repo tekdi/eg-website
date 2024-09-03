@@ -337,7 +337,7 @@ function View() {
                       return (
                         <tr
                           style={{ textAlign: "center", margin: "10px 0 " }}
-                          key={index}
+                          key={index + 1}
                         >
                           <td>{t(item?.type)}</td>
                           <td>{item?.description}</td>

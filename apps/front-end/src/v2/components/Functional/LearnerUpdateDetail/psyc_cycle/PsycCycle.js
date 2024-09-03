@@ -23,14 +23,6 @@ import {
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 
-// function getFormattedDateRange() {
-//   const currentYear = moment().format("YYYY");
-
-//   const startOfRange = moment(`${currentYear}-09-01`).format("DD-MM-YYYY");
-//   const endOfRange = moment(`${currentYear}-12-31`).format("DD-MM-YYYY");
-
-//   return `${startOfRange} to ${endOfRange}`;
-// }
 // App
 export default function PsycCycle() {
   const { t } = useTranslation();

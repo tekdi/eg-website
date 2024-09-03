@@ -899,42 +899,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.H5>
                 </VStack>
               </HStack>
-              {/* {isDocumentUpload("experience") && (
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
-                      {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
-                      {t("THIS_CAN_BE_LETTER_OF")}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              )} */}
-              {/* {isDocumentUpload("vo_experience") && (
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
-                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
-                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              )} */}
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"

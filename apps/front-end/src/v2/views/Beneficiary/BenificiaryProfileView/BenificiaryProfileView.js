@@ -752,4 +752,5 @@ export function PsycContinue({ id, benificiary, isOpen }) {
 PsycContinue.propTypes = {
   id: PropType.string,
   benificiary: PropType.object,
+  isOpen: PropType.bool,
 };

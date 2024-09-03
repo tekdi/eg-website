@@ -16,21 +16,11 @@ export const schema1 = {
       title: "FULL_NAME",
       regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
     },
-    // middle_name: {
-    //   type: "string",
-    //   title: "MIDDLE_NAME",
-    //   regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-    // },
-    // last_name: {
-    //   type: "string",
-    //   title: "LAST_NAME",
-    //   regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
-    // },
     mobile: {
       type: "number",
       title: "MOBILE_NUMBER",
       format: "MobileNumber",
-      regex: /^[0-9]{0,10}$/,
+      regex: /^\d{0,10}$/,
     },
     email_id: {
       type: "string",

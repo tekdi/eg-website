@@ -13,6 +13,7 @@ import moment from "moment";
 import { HStack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function BenificiaryBasicDetails({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -307,3 +308,7 @@ export default function BenificiaryBasicDetails({ userTokenInfo }) {
     </Layout>
   );
 }
+
+BenificiaryBasicDetails.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
