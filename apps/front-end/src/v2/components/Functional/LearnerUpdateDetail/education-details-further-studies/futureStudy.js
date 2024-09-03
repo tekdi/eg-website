@@ -177,6 +177,7 @@ export default function FutureStudy({ userTokenInfo }) {
   const onChange = (e) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
+    setErrors();
     setFormData(newData);
   };
 
@@ -289,19 +290,19 @@ export default function FutureStudy({ userTokenInfo }) {
           >
             {redirectLink && (
               <FrontEndTypo.Primarybutton
-                p="4"
-                mt="4"
                 isDisabled={isDisable}
+                mt={4}
+                p={4}
                 onPress={() => formRef?.current?.submit()}
               >
                 {t("SAVE_AND_ENROLLMENT")}
               </FrontEndTypo.Primarybutton>
             )}
             <FrontEndTypo.Primarybutton
-              isDisabled={isDisable}
-              mt="3"
               type="submit"
+              mt={3}
               onPress={() => formRef?.current?.submit()}
+              isDisabled={isDisable}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
