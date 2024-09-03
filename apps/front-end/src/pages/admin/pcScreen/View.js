@@ -21,7 +21,7 @@ import {
   VStack,
 } from "native-base";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AssignedList from "./AssignedList";
 
 import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
@@ -32,8 +32,11 @@ function View() {
   const toast = useToast();
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
+  const [assignPrerak, setassignPrerak] = useState();
+  const [assignPrerakCount, setassignPrerakCount] = useState();
   const [dailyActivities, setDailyActivities] = useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [filter, setFilter] = useState();
@@ -195,6 +198,7 @@ function View() {
             </HStack>
             <HStack space={4}>
               <AdminTypo.Secondarybutton
+                // onPress={() => navigate("/admin/addpcuser")}
                 onPress={() => setIsModalOpen(true)}
                 rightIcon={
                   <IconByName
