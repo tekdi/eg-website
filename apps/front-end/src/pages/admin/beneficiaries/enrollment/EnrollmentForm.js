@@ -10,7 +10,6 @@ import {
   enumRegistryService,
   filterObject,
   getArray,
-  getEnrollmentIds,
   getOptions,
   getSelectedProgramId,
   getUiSchema,
@@ -40,7 +39,6 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   let newData = {};
   const keys = Object.keys(schema1?.properties || {}).reduce((acc, key) => {
     if (schema1.properties[key].properties) {
-      // acc = [...acc, ...Object.keys(schema1.properties[key].properties)];
       acc.push(...Object.keys(schema1.properties[key].properties));
     }
     return acc;
@@ -216,10 +214,10 @@ const getSubjects = async (schemaData, value) => {
 // App
 export default function App(footerLinks) {
   const [RefAppBar, setRefAppBar] = useState();
-  const { step, id } = useParams();
+  const { id } = useParams();
   const userId = id;
   const [page, setPage] = useState();
-  const [pages, setPages] = useState();
+  const [setPages] = useState();
   const [schema, setSchema] = useState({});
   const [fixedSchema, setFixedSchema] = useState({});
   const [benificiary, setBenificiary] = useState({});
@@ -232,7 +230,7 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [setIsButtonLoading] = useState(false);
   const [boards, setBoards] = useState();
 
   const [uiSchema, setUiSchema] = useState({
@@ -256,25 +254,6 @@ export default function App(footerLinks) {
       },
     },
   });
-
-  // const nextPreviewStep = async (pageStape = "n") => {
-  //   const index = pages.indexOf(page);
-  //   if (index !== undefined) {
-  //     let nextIndex = "";
-  //     if (pageStape.toLowerCase() === "n") {
-  //       nextIndex = pages[index + 1];
-  //     } else {
-  //       nextIndex = pages[index - 1];
-  //     }
-  //     if (nextIndex !== undefined) {
-  //       setPage(nextIndex);
-  //     } else if (pageStape === "p") {
-  //       navigate(`/beneficiary/${userId}/enrollmentdetails`);
-  //     } else {
-  //       navigate(`/beneficiary/${userId}`);
-  //     }
-  //   }
-  // };
 
   const checkEnrollmentDobAndDate = (data, key) => {
     let error = {};
