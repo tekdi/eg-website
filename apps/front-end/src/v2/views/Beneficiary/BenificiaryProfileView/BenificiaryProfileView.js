@@ -31,6 +31,7 @@ import PropType from "prop-types";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
+// BenificiaryProfileView
 export default function BenificiaryProfileView({ userTokenInfo }) {
   const { t } = useTranslation();
   const [isOpenDropOut, setIsOpenDropOut] = useState(false);
@@ -434,13 +435,23 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     }
                   },
                 },
-                {
-                  title: "PCR_DETAILS",
-                  onPress: (e) => {
-                    navigate(`/beneficiary/${id}/pcrview`);
-                  },
-                },
-                ...(benificiary?.program_beneficiaries?.is_continued === false
+                ...(["registered_in_neev_camp", "registered_in_camp"].includes(
+                  status,
+                )
+                  ? [
+                      {
+                        title: "PCR_DETAILS",
+                        onPress: (e) => {
+                          navigate(`/beneficiary/${id}/pcrview`);
+                        },
+                      },
+                    ]
+                  : []),
+                ...(["pragati_syc", "pragati_syc_reattempt"].includes(status) &&
+                state_name === "RAJASTHAN" &&
+                [true, false].includes(
+                  benificiary?.program_beneficiaries?.is_continued,
+                )
                   ? [
                       {
                         title: "PSYC_DETAILS",
