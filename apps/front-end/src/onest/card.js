@@ -127,7 +127,7 @@ export const dataConfig = {
     render: (obj) => {
       const getSalaryInfo = (data) => {
         // Find the object with descriptor.code === "salary-info"
-        const salaryInfo = data.find(
+        const salaryInfo = data?.find(
           (item) => item.descriptor.code === "salary-info",
         );
         // If the object is found, proceed to return the values of list[0] and list[1]

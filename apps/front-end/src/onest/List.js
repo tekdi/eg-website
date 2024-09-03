@@ -130,8 +130,9 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   };
 
   const removeFilter = (val) => {
-    const { [val]: _, ...otherData } = filter;
-    setFilter(otherData);
+    const updatedFilters = { ...filter };
+    delete updatedFilters[val];
+    setFilter(updatedFilters);
   };
 
   const handleBack = () => {

@@ -24,6 +24,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import NotFound from "../../NotFound";
 import { ChipStatus } from "./list/ChipStatus";
 import Chip from "component/Chip";
+import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
 
 export default function FacilitatorView({ footerLinks }) {
   const { t } = useTranslation();
@@ -247,7 +248,7 @@ const ApproveButton = memo(({ id, data, setData }) => {
     <VStack>
       {data?.user_roles?.[0]?.status === "applied" && (
         <AdminTypo.Secondarybutton onPress={(e) => setModalVisible(true)}>
-          {t("APPROVED")}
+          {t("APPROVE")}
         </AdminTypo.Secondarybutton>
       )}
       <Modal
@@ -311,77 +312,42 @@ const ResetPassword = memo(({ data, id }) => {
   }, []);
 
   const validate = useCallback(() => {
-    let arr = {};
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (
-      typeof credentials?.password === "undefined" ||
-      credentials?.password === ""
-    ) {
-      arr = { ...arr, password: t("PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.password)) {
-      arr = { ...arr, password: t("PASSWORD_REQUIREMENTS_NOTMATCH") };
-    }
-
-    if (
-      typeof credentials?.confirmPassword === "undefined" ||
-      credentials?.confirmPassword === ""
-    ) {
-      arr = { ...arr, confirmPassword: t("USER_CONFIRM_PASSWORD_IS_REQUIRED") };
-    } else if (!regex.test(credentials?.confirmPassword)) {
-      arr = {
-        ...arr,
-        confirmPassword: t("CONFIRM_PASSWORD_REQUIREMENTS_NOTMATCH"),
-      };
-    } else if (credentials?.confirmPassword !== credentials?.password) {
-      arr = {
-        ...arr,
-        confirmPassword: t("USER_CONFIRM_PASSWORD_AND_PASSWORD_VALIDATION"),
-      };
-    }
-
+    const arr = changePasswordValidation(credentials, t);
     setErrors(arr);
     return !(arr.password || arr.confirmPassword);
   }, [credentials, t]);
 
-  const handleResetPassword = async (password, confirm_password) => {
+  const handleResetPassword = async () => {
     setIsButtonLoading(true);
     if (validate()) {
-      if (password === confirm_password) {
-        const bodyData = {
-          id: id.toString(),
-          password: password,
-        };
-        const resetPassword =
-          await authRegistryService.resetPasswordVolunteerAdmin(bodyData);
+      const bodyData = {
+        id: id.toString(),
+        password: credentials?.password,
+      };
+      const resetPassword =
+        await authRegistryService.resetPasswordVolunteerAdmin(bodyData);
 
-        if (resetPassword.success === true) {
-          setCredentials();
-          setModalVisible(false);
-          toast.show({
-            title: "Success",
-            variant: "solid",
-            description: resetPassword?.message,
-          });
-          setModalVisible(false);
-          setIsButtonLoading(false);
-          return { status: true };
-        } else if (
-          resetPassword.success === false ||
-          resetPassword.status == "403"
-        ) {
-          setErrors((arr) => ({
-            ...(arr || {}),
-            password: resetPassword.message || resetPassword.error,
-          }));
-          setIsButtonLoading(false);
-          setCredentials();
-          return { status: false };
-        }
-      } else if (password !== confirm_password) {
-        setIsButtonLoading(false);
+      if (resetPassword.success === true) {
         setCredentials();
         setModalVisible(false);
+        toast.show({
+          title: "Success",
+          variant: "solid",
+          description: resetPassword?.message,
+        });
+        setModalVisible(false);
+        setIsButtonLoading(false);
+        return { status: true };
+      } else if (
+        resetPassword.success === false ||
+        resetPassword.status == "403"
+      ) {
+        setErrors((arr) => ({
+          ...(arr || {}),
+          password: resetPassword.message || resetPassword.error,
+        }));
+        setIsButtonLoading(false);
+        setCredentials();
         return { status: false };
       }
     } else {
@@ -532,10 +498,7 @@ const ResetPassword = memo(({ data, id }) => {
               <AdminTypo.PrimaryButton
                 isLoading={isButtonLoading}
                 onPress={() => {
-                  handleResetPassword(
-                    credentials?.password,
-                    credentials?.confirmPassword
-                  );
+                  handleResetPassword();
                 }}
               >
                 {t("USER_SET_NEW_PASSWORD")}

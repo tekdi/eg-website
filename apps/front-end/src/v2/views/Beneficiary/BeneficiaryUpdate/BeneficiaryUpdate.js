@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AddressEdit from "v2/components/Functional/LearnerUpdateDetail/address/addressEdit";
 import BasicDetails from "v2/components/Functional/LearnerUpdateDetail/basicDetails/basicDetails";
@@ -9,15 +10,48 @@ import EnrollmentForm from "v2/components/Functional/LearnerUpdateDetail/enrollm
 import FamilyDetails from "v2/components/Functional/LearnerUpdateDetail/family-details/familydetails";
 import PersonalDetails from "v2/components/Functional/LearnerUpdateDetail/personal-details/personaldetails";
 import ReferenceDetails from "v2/components/Functional/LearnerUpdateDetail/reference-details/referencedetails";
+import LearnerDocsChecklist from "v2/components/Functional/LearnerOnboardingDetails/LearnerDocsChecklist";
+import { Layout, benificiaryRegistoryService } from "@shiksha/common-lib";
 
-export default function BeneficiaryUpdate({ userTokenInfo, footerLinks }) {
-  const { type } = useParams();
+const editAccessNotForStatus = [
+  "10th_passed",
+  "pragati_syc",
+  "pragati_syc_reattempt",
+  "pragati_syc_reattempt_ip_verified",
+];
+export default function BeneficiaryUpdate(props) {
+  const { type, id } = useParams();
+  const [canAccess, setCanAccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const init = async () => {
+      let data = await benificiaryRegistoryService.getOne(id);
+      const status = data?.result?.program_beneficiaries?.status;
+      setCanAccess(true);
+
+      if (
+        (["pragati_syc", "pragati_syc_reattempt"].includes(status) &&
+          type == "psyc") ||
+        ["basicdetails"].includes(type)
+      ) {
+        setCanAccess(true);
+      } else {
+        setCanAccess(!editAccessNotForStatus.includes(status));
+      }
+      setLoading(false);
+    };
+    init();
+  }, []);
+
+  if (!canAccess) {
+    return <Layout isPageAccess={true} loading={loading} />;
+  }
   const renderUpdateStep = () => {
     switch (type) {
       case "basic-info":
         return <BasicDetails />;
       case "contact-info":
-        return <ContactDetailsEdit />;
+        return <ContactDetailsEdit {...props} />;
       case "address":
         return <AddressEdit />;
       case "personal-details":
@@ -27,13 +61,15 @@ export default function BeneficiaryUpdate({ userTokenInfo, footerLinks }) {
       case "education":
         return <EducationDetails />;
       case "future-education":
-        return <FutureStudy userTokenInfo={userTokenInfo} />;
+        return <FutureStudy {...props} />;
       case "disability-details":
         return <DisabilityForm />;
       case "enrollment-details":
         return <EnrollmentForm />;
       case "reference-details":
         return <ReferenceDetails />;
+      case "docschecklist":
+        return <LearnerDocsChecklist {...props} />;
       default:
         return <BasicDetails />;
     }
