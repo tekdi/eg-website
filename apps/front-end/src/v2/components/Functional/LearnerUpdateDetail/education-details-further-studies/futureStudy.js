@@ -19,6 +19,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   widgets,
   templates,
+  transformErrors,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
@@ -173,25 +174,6 @@ export default function FutureStudy({ userTokenInfo }) {
     }
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      } else if (["minItems", "maxItems"].includes(error.name)) {
-        error.message = `${t("SELECT_MIN_MAX_ERROR")}`;
-      }
-      return error;
-    });
-  };
-
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -315,7 +297,7 @@ export default function FutureStudy({ userTokenInfo }) {
               formData,
               onChange,
               onError,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
               onSubmit,
             }}
           >

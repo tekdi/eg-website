@@ -1148,7 +1148,7 @@ const transformErrors = (errors, schema, t) => {
             .replace("{0}", error?.params?.limit)
             .replace("{1}", t(title)),
         };
-      case "format":
+      case "format": {
         const { format } = error?.params || {};
         const messageKey =
           {
@@ -1160,6 +1160,7 @@ const transformErrors = (errors, schema, t) => {
           ...error,
           message: t(messageKey, title ? t(title) : ""),
         };
+      }
       default:
         return error;
     }
