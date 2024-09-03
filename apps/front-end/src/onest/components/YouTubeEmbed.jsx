@@ -25,5 +25,5 @@ const YouTubeEmbed = ({ url }) => {
 
 export default YouTubeEmbed;
 YouTubeEmbed.propTypes = {
-  url: PropTypes.any,
+  url: PropTypes.string,
 };

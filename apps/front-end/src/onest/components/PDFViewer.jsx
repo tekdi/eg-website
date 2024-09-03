@@ -16,5 +16,5 @@ const PDFViewer = ({ src }) => {
 
 export default PDFViewer;
 PDFViewer.propTypes = {
-  src: PropTypes.any,
+  src: PropTypes.string,
 };

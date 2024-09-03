@@ -109,7 +109,7 @@ function CampList({ userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = useState([]);
   const [enumOptions, setEnumOptions] = useState({});
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
-  const [cohortValue, setCohortValue] = useState();
+  const [setCohortValue] = useState();
 
   useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
@@ -263,7 +263,6 @@ function CampList({ userTokenInfo }) {
 
 CampList.propTypes = {
   userTokenInfo: PropTypes.any,
-  _layout: PropTypes.any,
 };
 
 export const Filter = ({ filter, setFilter }) => {

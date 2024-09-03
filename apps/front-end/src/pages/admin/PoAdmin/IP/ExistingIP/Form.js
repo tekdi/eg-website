@@ -58,7 +58,6 @@ function ExistingIpForm() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { id } = useParams();
   const { t } = useTranslation();
   const [formData, setFormData] = useState();
 

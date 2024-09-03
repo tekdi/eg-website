@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconByName,
   AdminTypo,
@@ -10,14 +10,13 @@ import {
   enumRegistryService,
   jsonParse,
   ImageView,
-  BodyMedium,
   GetEnumValue,
   mapDistance,
   FrontEndTypo,
   PoAdminLayout,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Alert, Stack, ScrollView } from "native-base";
+import { HStack, VStack, Stack, ScrollView } from "native-base";
 import { useTranslation } from "react-i18next";
 import Chip, { CampChipStatus } from "component/Chip";
 import { StarRating } from "component/BaseInput";
@@ -454,8 +453,15 @@ export default function View({ footerLinks }) {
   );
 }
 
-View.PropTypes = {
+View.propTypes = {
   footerLinks: PropTypes.any,
+};
+ConsentForm.propTypes = {
+  consentData: PropTypes.any,
+  row: PropTypes.any,
+  t: PropTypes.any,
+};
+ActionButton.propTypes = {
   row: PropTypes.any,
   t: PropTypes.any,
 };

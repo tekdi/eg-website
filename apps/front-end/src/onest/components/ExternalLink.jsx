@@ -40,5 +40,5 @@ const ExternalLink = ({ url }) => {
 
 export default ExternalLink;
 ExternalLink.propTypes = {
-  url: PropTypes.any,
+  url: PropTypes.string,
 };

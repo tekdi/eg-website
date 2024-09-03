@@ -38,7 +38,7 @@ import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation
 
 function LearnerList({ userTokenInfo }) {
   const { t } = useTranslation();
-  const [Width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
   const refSubHeader = useRef(null);

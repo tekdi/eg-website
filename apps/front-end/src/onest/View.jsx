@@ -47,6 +47,8 @@ function View({ userTokenInfo: { authUser }, footerLinks }) {
 
 export default View;
 View.propTypes = {
-  userTokenInfo: PropTypes.any,
-  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.shape({
+    authUser: PropTypes.object,
+  }),
+  footerLinks: PropTypes.arrayOf(PropTypes.object),
 };

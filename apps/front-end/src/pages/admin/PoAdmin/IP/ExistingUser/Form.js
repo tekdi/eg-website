@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
+
 import {
   AdminTypo,
   Breadcrumb,
@@ -12,12 +12,7 @@ import {
 import { Button, HStack, VStack } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-  widgets,
-  templates,
-  FileUpload,
-  transformErrors,
-} from "component/BaseInput";
+import { widgets, templates, transformErrors } from "component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import Chip from "component/Chip";

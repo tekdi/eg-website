@@ -17,5 +17,5 @@ const AudioPlayer = ({ mediaUrl }) => {
 
 export default AudioPlayer;
 AudioPlayer.propTypes = {
-  mediaUrl: PropTypes.any,
+  mediaUrl: PropTypes.string,
 };

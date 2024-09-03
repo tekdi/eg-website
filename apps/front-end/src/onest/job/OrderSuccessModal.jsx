@@ -33,8 +33,8 @@ const OrderSuccessModal = ({ isOpen, onClose, orderId, applied = false }) => {
 
 export default OrderSuccessModal;
 OrderSuccessModal.propTypes = {
-  isOpen: PropTypes.any,
-  onClose: PropTypes.any,
-  orderId: PropTypes.any,
-  applied: PropTypes.any,
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  orderId: PropTypes.string,
+  applied: PropTypes.bool,
 };

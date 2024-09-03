@@ -32,7 +32,7 @@ export default function AddEditForm() {
   const { id } = useParams();
   const [schema, setSchema] = useState(Schema);
   const [formData, setFormData] = useState({});
-  const [doId, setDoId] = useState();
+  const [setDoId] = useState();
 
   useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();

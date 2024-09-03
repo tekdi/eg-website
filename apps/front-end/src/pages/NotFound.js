@@ -2,6 +2,7 @@ import { H1, IconByName, Loading, t } from "@shiksha/common-lib";
 import { Button, VStack } from "native-base";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function NotFound({ goBack, message, _message }) {
   const navigator = useNavigate();
@@ -29,3 +30,8 @@ export default function NotFound({ goBack, message, _message }) {
     />
   );
 }
+NotFound.propTypes = {
+  goBack: PropTypes.any,
+  message: PropTypes.any,
+  _message: PropTypes.any,
+};
