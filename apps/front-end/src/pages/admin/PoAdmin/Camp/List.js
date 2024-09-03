@@ -109,7 +109,7 @@ function CampList({ userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = useState([]);
   const [enumOptions, setEnumOptions] = useState({});
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
-  const [setCohortValue] = useState();
+  const [cohortValue, setCohortValue] = useState();
 
   useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
