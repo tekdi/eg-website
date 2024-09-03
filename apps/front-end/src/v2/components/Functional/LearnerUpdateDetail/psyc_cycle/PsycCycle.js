@@ -43,6 +43,7 @@ export default function PsycCycle() {
   const [errors, setErrors] = useState({});
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [btnLoading, setBtnLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [psyc, setPsyc] = useState();
 
@@ -56,7 +57,10 @@ export default function PsycCycle() {
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
-        yearsRange: [moment().format("YYYY"), moment().format("YYYY")],
+        yearsRange: [
+          moment().subtract(1, "years").format("YYYY"),
+          moment().format("YYYY"),
+        ],
         format: "DMY",
         // help: `date bitween ${getFormattedDateRange()}`,
       },
@@ -78,6 +82,7 @@ export default function PsycCycle() {
         syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
       });
       setPsyc(data?.is_continued);
+      setLoading(false);
     };
 
     fetchData();
@@ -186,6 +191,7 @@ export default function PsycCycle() {
 
   return (
     <Layout
+      loading={loading}
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],

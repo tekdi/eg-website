@@ -77,11 +77,9 @@ export function LabelMobileWidget() {
 export function LabelTimeWidget() {
   const { t } = useTranslation();
   return (
-    <>
-      <Heading size="sm" mb={1} color="textMaroonColor.400">
-        {t("TIME_SPENT_IN_HOURS")}
-      </Heading>
-    </>
+    <Heading size="sm" mb={1} color="textMaroonColor.400">
+      {t("TIME_SPENT_IN_HOURS")}
+    </Heading>
   );
 }
 export function EnrollmentLabelMobileWidget() {
@@ -320,46 +318,43 @@ export const FieldTemplate = ({
   schema,
   ...props
 }) => {
-  const { type } = schema;
   const { t } = useTranslation();
+  const showTitle =
+    !schema?.format || !["hidden", "CheckUncheck"].includes(schema?.format);
+  const showLabel = label || schema?.label;
+
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
     >
-      {(!schema?.format ||
-        !["hidden", "CheckUncheck"].includes(schema?.format)) &&
-        (label || schema?.label) && (
-          <Box>
-            {(id === "root" || schema?.label) && (
-              <label htmlFor={id}>
-                <HStack space="1" alignItems="center">
-                  {schema?.label ? (
-                    <FrontEndTypo.H3
-                      color="textGreyColor.900"
-                      fontWeight="600"
-                      lineHeight="30px"
-                    >
-                      {t(schema?.label ? schema?.label : label)}
-                    </FrontEndTypo.H3>
-                  ) : (
-                    label && (
-                      <FrontEndTypo.H1
-                        color="textGreyColor.900"
-                        fontWeight="600"
-                        lineHeight="30px"
-                      >
-                        {t(schema?.label ? schema?.label : label)}
-                      </FrontEndTypo.H1>
-                    )
-                  )}
-                  <H3 color="textRed.400">{required ? "*" : null}</H3>
-                </HStack>
-              </label>
-            )}
-            {description?.props?.description !== "" && description}
-          </Box>
-        )}
+      {showTitle && showLabel && (
+        <Box>
+          <label htmlFor={id}>
+            <HStack space="1" alignItems="center">
+              {schema?.label ? (
+                <FrontEndTypo.H3
+                  color="textGreyColor.900"
+                  fontWeight="600"
+                  lineHeight="30px"
+                >
+                  {t(schema?.label)}
+                </FrontEndTypo.H3>
+              ) : (
+                <FrontEndTypo.H1
+                  color="textGreyColor.900"
+                  fontWeight="600"
+                  lineHeight="30px"
+                >
+                  {t(label)}
+                </FrontEndTypo.H1>
+              )}
+              <H3 color="textRed.400">{required ? "*" : null}</H3>
+            </HStack>
+          </label>
+          {description?.props?.description !== "" && description}
+        </Box>
+      )}
       <Box>
         {children}
         {errors}
@@ -387,7 +382,7 @@ export const ObjectFieldTemplate = (props) => {
 };
 
 export const ArrayFieldTitleTemplate = (props) => {
-  return <React.Fragment />;
+  return <div />;
 };
 
 // rjsf custom CustomRadioBtn as CustomR field
@@ -421,7 +416,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, _stack } = schema || {};
+  const { label, format } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -528,19 +523,10 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value || true
-              ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
-              : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+            top: "0",
+            opacity: 1,
+            zIndex: 5,
+            transition: "all 0.3s ease",
           }}
         >
           <Text
@@ -820,6 +806,7 @@ export const MultiCheckSubject = ({
   onChange,
   schema,
   required,
+  uiSchema,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -847,14 +834,13 @@ export const MultiCheckSubject = ({
     }
 
     let updatedList = [...newValue];
-    if (event.target.checked) {
-      updatedList = [...newValue, `${event.target.value}`];
+    if (event.checked) {
+      updatedList = [...newValue, `${event.value}`];
     } else {
-      updatedList.splice(newValue.indexOf(`${event.target.value}`), 1);
+      updatedList.splice(newValue.indexOf(`${event.value}`), 1);
     }
     onChange(updatedList);
   };
-
   const Item = ({ items, title }) => {
     return (
       <VStack
@@ -880,10 +866,9 @@ export const MultiCheckSubject = ({
                 <label>
                   <HStack alignItems="center" space="3" flex="1">
                     <Checkbox
+                      isDisabled={uiSchema?.["ui:readonly"]}
                       onChange={(e) =>
-                        handleCheck({
-                          target: { checked: e, value: item?.subject_id },
-                        })
+                        handleCheck({ checked: e, value: item?.subject_id })
                       }
                       value={item?.subject_id}
                       size="sm"
@@ -966,7 +951,7 @@ const Textarea = ({
   required,
   isInvalid,
 }) => {
-  const [isFocus, setIsfocus] = React.useState(false);
+  const [isFocus, setIsFocus] = React.useState(false);
   const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
   return (
@@ -1006,8 +991,8 @@ const Textarea = ({
       <TextArea
         totalLines={rows || 3}
         key={title}
-        onFocus={(e) => setIsfocus(true)}
-        onBlur={(e) => setIsfocus(false)}
+        onFocus={(e) => setIsFocus(true)}
+        onBlur={(e) => setIsFocus(false)}
         onChange={(e) => onChange(e.target.value)}
         value={value}
         placeholder={t(label || schema?.label)}
@@ -1120,15 +1105,14 @@ const transformErrors = (errors, schema, t) => {
             .replace("{0}", error?.params?.limit)
             .replace("{1}", t(title)),
         };
-      case "enum":
+      case "enum": {
         let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
-        {
-          const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
-          if (enumSchemaItem) {
-            error.key_name = name;
-          }
+        const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
+        if (enumSchemaItem) {
+          error.key_name = name;
         }
         return error;
+      }
       case "type":
         return {
           ...error,
@@ -1148,7 +1132,7 @@ const transformErrors = (errors, schema, t) => {
             .replace("{0}", error?.params?.limit)
             .replace("{1}", t(title)),
         };
-      case "format":
+      case "format": {
         const { format } = error?.params || {};
         const messageKey =
           {
@@ -1160,6 +1144,7 @@ const transformErrors = (errors, schema, t) => {
           ...error,
           message: t(messageKey, title ? t(title) : ""),
         };
+      }
       default:
         return error;
     }
