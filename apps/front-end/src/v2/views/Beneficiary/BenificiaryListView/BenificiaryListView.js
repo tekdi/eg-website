@@ -59,14 +59,14 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     if (
-      ref?.current?.clientHeight >= 0 &&
-      refButton?.current?.clientHeight >= 0 &&
+      (ref?.current?.clientHeight >= 0 ||
+        refButton?.current?.clientHeight >= 0) &&
       bodyHeight >= 0
     ) {
       setLoadingHeight(
-        bodyHeight -
-          ref?.current?.clientHeight -
-          refButton?.current?.clientHeight,
+        parseInt(bodyHeight || 0) -
+          parseInt(ref?.current?.clientHeight || 0) -
+          parseInt(refButton?.current?.clientHeight || 0),
       );
     } else {
       setLoadingHeight(bodyHeight);
