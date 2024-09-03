@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css";
+import PropTypes from "prop-types";
 
 const formate = (value) => {
   const data = JSON.parse(value || "{}");
@@ -47,3 +48,9 @@ function CalenderInput({ schema, value, onChange }) {
 }
 
 export default CalenderInput;
+
+CalenderInput.propTypes = {
+  schema: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+};

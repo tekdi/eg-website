@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { FrontEndTypo } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 const AadhaarNumberOKYC = ({ user, _button }) => {
   const { t } = useTranslation();
@@ -105,3 +106,8 @@ const AadhaarNumberOKYC = ({ user, _button }) => {
   );
 };
 export default React.memo(AadhaarNumberOKYC);
+
+AadhaarNumberOKYC.propTypes = {
+  user: PropTypes.any,
+  _button: PropTypes.any,
+};

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
 import Layout from "./Layout";
+import PropTypes from "prop-types";
 
 export default function ProfilePhoto({ userTokenInfo: { authUser } }) {
   const navigate = useNavigate();
@@ -82,3 +83,6 @@ export default function ProfilePhoto({ userTokenInfo: { authUser } }) {
     </Layout>
   );
 }
+ProfilePhoto.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

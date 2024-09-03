@@ -2,6 +2,7 @@ import { FrontEndTypo } from "@shiksha/common-lib";
 import { Alert } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 export default function EnrollmentMessage({ status, enrollment_status }) {
   const { t } = useTranslation();
@@ -15,3 +16,7 @@ export default function EnrollmentMessage({ status, enrollment_status }) {
     )
   );
 }
+EnrollmentMessage.propTypes = {
+  status: PropTypes.any,
+  enrollment_status: PropTypes.any,
+};

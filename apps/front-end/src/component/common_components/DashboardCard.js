@@ -53,7 +53,7 @@ const DashboardCard = ({ title, titleDetail, primaryBtn, navigation }) => {
   );
 };
 
-DashboardCard.PropTypes = {
+DashboardCard.propTypes = {
   title: PropTypes.string,
   titleDetail: PropTypes.string,
   primaryBtn: PropTypes.string,
