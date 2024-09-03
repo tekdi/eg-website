@@ -158,7 +158,7 @@ export default function Profile({ footerLinks, userTokenInfo }) {
   );
 }
 
-Profile.PropTypes = {
+Profile.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };

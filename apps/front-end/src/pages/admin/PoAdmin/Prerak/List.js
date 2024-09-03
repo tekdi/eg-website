@@ -102,7 +102,7 @@ const schemat = {
 
 function PrerakList({ userTokenInfo }) {
   const { t } = useTranslation();
-  const [width, Height] = useWindowSize();
+  const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
   const [schema, setSchema] = useState();

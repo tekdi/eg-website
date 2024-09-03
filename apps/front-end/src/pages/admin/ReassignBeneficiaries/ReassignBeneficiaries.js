@@ -29,6 +29,7 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import { MultiCheck, RadioBtn } from "../../../component/BaseInput.js";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 function CustomFieldTemplate({ id, schema, label, required, children }) {
   const { t } = useTranslation();
@@ -58,7 +59,13 @@ function CustomFieldTemplate({ id, schema, label, required, children }) {
     </VStack>
   );
 }
-
+CustomFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  schema: PropTypes.any,
+  label: PropTypes.any,
+  required: PropTypes.any,
+  children: PropTypes.any,
+};
 const Name = (row) => {
   return (
     <VStack alignItems={"center"} space="2">
@@ -651,4 +658,16 @@ export const Filter = ({
       </HStack>
     </VStack>
   );
+};
+Filter.propTypes = {
+  filterfunction: PropTypes.any,
+  setFilterfunction: PropTypes.any,
+  clearvalue: PropTypes.any,
+  setclearvalue: PropTypes.any,
+  getDistrictsAll: PropTypes.any,
+  setFacilitatorFilter: PropTypes.any,
+  facilitatorFilter: PropTypes.any,
+  isMore: PropTypes.any,
+  facilitator: PropTypes.any,
+  debouncedHandleSearch: PropTypes.any,
 };
