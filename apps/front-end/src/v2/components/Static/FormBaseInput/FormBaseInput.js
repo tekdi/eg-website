@@ -392,7 +392,9 @@ export const ObjectFieldTemplate = (props) => {
     </VStack>
   );
 };
-
+FieldTemplate.propTypes = {
+  props: PropTypes.any,
+};
 export const ArrayFieldTitleTemplate = (props) => {
   return <div />;
 };
@@ -819,7 +821,6 @@ export const MultiCheckSubject = ({
   schema,
   required,
   uiSchema,
-  ...props
 }) => {
   const { t } = useTranslation();
   const { _subHstack, grid, label, format, enumOptions } = schema || {};
@@ -921,6 +922,15 @@ export const MultiCheckSubject = ({
       </Stack>
     </FormControl>
   );
+};
+
+MultiCheckSubject.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  schema: PropTypes.any,
+  required: PropTypes.any,
+  uiSchema: PropTypes.any,
 };
 
 // select between 2 values radio button (yes or no)
