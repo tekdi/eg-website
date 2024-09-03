@@ -7,7 +7,6 @@ import {
   FrontEndTypo,
   enumRegistryService,
   getOptions,
-  validation,
   campService,
   jsonParse,
 } from "@shiksha/common-lib";
@@ -36,7 +35,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isEdit] = useState(true);
   const [campDetails, setCampDetails] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const programSelected = jsonParse(localStorage.getItem("program"));
@@ -52,17 +50,15 @@ export default function App() {
         camp_id: parseInt(id),
       };
       const result = await campService.getCampKitDetails(payload);
-      console.log("result", result);
       setCampDetails(result?.data);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-
+    } finally {
       setLoading(false);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getCampKitDetails();
   }, []);
 
@@ -98,38 +94,6 @@ export default function App() {
     setLoading(false);
   }, [campDetails, step]);
 
-  const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
-    if (data && onClick) {
-      onClick("SplashScreen");
-    }
-  };
-
-  const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
-    const index = pages.indexOf(page);
-    if (index !== undefined) {
-      let nextIndex = "";
-      if (pageStape.toLowerCase() === "n") {
-        nextIndex = pages[index + 1];
-      } else {
-        nextIndex = pages[index - 1];
-      }
-      console.log({ location });
-      if (pageStape === "p") {
-        const campId = parseInt(id);
-        navigate(`/camps/${campId}`, {
-          state: location?.state,
-        });
-      } else if (nextIndex !== undefined) {
-        if (step === "edit_kit_details") {
-        } else {
-          // navigate(`/camps/${id}/${nextIndex}`);
-        }
-      }
-    }
-  };
-
   const fetchData = async () => {
     try {
       const data = await enumRegistryService.listOfEnum();
@@ -141,12 +105,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    let isMounted = true;
     fetchData();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   useEffect(async () => {
@@ -233,7 +192,11 @@ export default function App() {
   return (
     <Layout
       _appBar={{
-        onPressBackButton,
+        onPressBackButton: () => {
+          navigate(`/camps/${id}`, {
+            state: location?.state,
+          });
+        },
         onlyIconsShow: ["backBtn", "langBtn"],
         leftIcon: <FrontEndTypo.H2>{t(schema?.step_name)}</FrontEndTypo.H2>,
         lang,

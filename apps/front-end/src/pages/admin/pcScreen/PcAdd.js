@@ -4,8 +4,6 @@ import {
   FrontEndTypo,
   IconByName,
   AdminLayout as Layout,
-  geolocationRegistryService,
-  getOptions,
   PcuserService,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
@@ -211,7 +209,6 @@ const PcAdd = ({ footerLinks }) => {
           noHtml5Validate={true}
           widgets={widgets}
           {...{
-            //widgets,
             templates,
             validator,
             schema: schema,
@@ -219,7 +216,6 @@ const PcAdd = ({ footerLinks }) => {
             formData,
             customValidate,
             onChange,
-            //onError,
             onSubmit,
             transformErrors: (errors) => transformErrors(errors, schema, t),
           }}

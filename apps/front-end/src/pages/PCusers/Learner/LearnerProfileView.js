@@ -181,6 +181,6 @@ export default function LearnerProfileView({ userTokenInfo }) {
   );
 }
 
-LearnerProfileView.PropTypes = {
+LearnerProfileView.propTypes = {
   userTokenInfo: PropTypes.any,
 };

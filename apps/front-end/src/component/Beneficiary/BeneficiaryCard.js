@@ -158,6 +158,8 @@ export function PressableOnPress({ children, ...props }) {
 
 PressableOnPress.propTypes = {
   program_beneficiaries: PropTypes.object,
+  onPress: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export const LearnerMessage = ({ program_beneficiaries }) => {

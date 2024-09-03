@@ -239,7 +239,7 @@ const SubjectsList = ({ boardId, subjectIds }) => {
       getSubjects();
     }
   }, [boardId]);
-  // return subjectNames.length ? subjectNames.join(", ") : "-";
+
   return (
     <VStack pl="2">
       {subjectList?.map((subject, i) => (

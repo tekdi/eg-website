@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { HStack, VStack, Box, Progress, Divider, Alert } from "native-base";
+import { HStack, VStack, Box } from "native-base";
 import {
   FrontEndTypo,
   IconByName,
@@ -17,9 +17,9 @@ export default function PrerakProfileView({ userTokenInfo }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [prerakProfile, setPrerakProfile] = React.useState();
+  const [prerakProfile, setPrerakProfile] = useState();
 
   const getPrerakProfile = async () => {
     setLoading(true);

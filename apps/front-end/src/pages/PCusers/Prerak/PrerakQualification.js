@@ -3,7 +3,6 @@ import { HStack, VStack, Box, Progress, Divider } from "native-base";
 import {
   arrList,
   FrontEndTypo,
-  IconByName,
   t,
   PCusers_layout as Layout,
   ImageView,

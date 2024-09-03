@@ -1,5 +1,4 @@
 import React, {
-  memo,
   useCallback,
   useState,
   useMemo,
@@ -104,8 +103,6 @@ export default function List({ footerLinks, userTokenInfo }) {
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [enumOptions, setEnumOptions] = useState({});
-  const [program, setProgram] = useState();
-  const [academicYear, setAcademicYear] = useState();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [urlFilterApply, setUrlFilterApply] = useState(false);
   const navigate = useNavigate();
@@ -117,9 +114,6 @@ export default function List({ footerLinks, userTokenInfo }) {
   useEffect(() => {
     const fetchData = async () => {
       const programResult = await getSelectedProgramId();
-      let academic_Id = await getSelectedAcademicYear();
-      setAcademicYear(academic_Id);
-      setProgram(programResult);
       let name = programResult?.state_name;
       const getDistricts = await geolocationRegistryService.getDistricts({
         name,
@@ -199,7 +193,7 @@ export default function List({ footerLinks, userTokenInfo }) {
       });
       setQueryParameters(data);
     },
-    [setFilter, setQueryParameters]
+    [setFilter, setQueryParameters],
   );
 
   useEffect(() => {
@@ -221,11 +215,10 @@ export default function List({ footerLinks, userTokenInfo }) {
               ...(newBlock?.length > 0 ? { block: newBlock } : {}),
             }
           : {}),
-        // ...(newStatus && newStatus?.length > 0 ? { status: newStatus } : {}),
       };
       setFilterObject(finalFilter);
     },
-    [filter]
+    [filter],
   );
 
   const clearFilter = useCallback(() => {
@@ -237,7 +230,7 @@ export default function List({ footerLinks, userTokenInfo }) {
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
-    [filter]
+    [filter],
   );
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
@@ -300,21 +293,6 @@ export default function List({ footerLinks, userTokenInfo }) {
             {t("ADD_PC")}
           </AdminTypo.Secondarybutton>
         </HStack>
-        {/*  <HStack height={"5vh"} space={2}>
-          <AdminTypo.Secondarybutton
-            onPress={() => navigate("/admin/addpcuser")}
-            rightIcon={
-              <IconByName
-                color="#084B82"
-                _icon={{}}
-                size="15px"
-                name="ShareLineIcon"
-              />
-            }
-          >
-            {t("PASSWORD_RESET")}
-          </AdminTypo.Secondarybutton>
-        </HStack> */}
       </HStack>
       <HStack ml="-1">
         <Stack style={{ position: "relative", overflowX: "hidden" }}>
@@ -360,7 +338,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                         {t("CLEAR_FILTER")}(
                         {
                           Object.keys(filter || {}).filter(
-                            (e) => !["limit", "page"].includes(e)
+                            (e) => !["limit", "page"].includes(e),
                           ).length
                         }
                         )
@@ -438,14 +416,6 @@ export default function List({ footerLinks, userTokenInfo }) {
 }
 
 List.propTypes = { footerLinks: PropTypes.any, userTokenInfo: PropTypes.any };
-
-const dropDown = (triggerProps, t) => {
-  return (
-    <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-      <IconByName name="ArrowDownSLineIcon" isDisabled={true} px="1.5" />
-    </Pressable>
-  );
-};
 
 const pagination = [10, 15, 25, 50, 100];
 
@@ -532,7 +502,7 @@ function Table({
     (row) => {
       navigate(`/admin/pc/${row?.user_id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
@@ -556,16 +526,25 @@ function Table({
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onRowClicked={handleRowClick}
       />
     </VStack>
   );
 }
+
+Table.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.func,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+  height: PropTypes.any,
+};

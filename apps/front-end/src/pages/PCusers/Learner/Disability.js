@@ -54,4 +54,5 @@ export default function Disability(props) {
 
 Disability.propTypes = {
   props: PropTypes.any,
+  userTokenInfo: PropTypes.any,
 };

@@ -6,7 +6,6 @@ import {
   getSelectedProgramId,
   getOptions,
   tableCustomStyles,
-  cohortService,
   PcuserService,
 } from "@shiksha/common-lib";
 import {
@@ -20,12 +19,12 @@ import {
 } from "native-base";
 import { ChipStatus } from "component/Chip";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
-import { debounce } from "lodash";
 import { MultiCheck } from "../../../component/BaseInput";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
+import PropTypes from "prop-types";
 
 const AssignedList = ({ setPcData, setassignPrerak }) => {
   const { t } = useTranslation();
@@ -33,7 +32,6 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
   const { id } = useParams();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isSelectable, setIsSelectable] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -152,7 +150,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
     });
 
     setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
     );
     setData(Apidata?.data?.facilitators);
     setPcData(Apidata?.data?.users?.[0]);
@@ -165,7 +163,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
       ...filter,
     });
     setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
     );
     setData(Apidata?.data?.program_facilitator_data);
   };
@@ -200,7 +198,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
 
   const AddRemovePrerak = async (action) => {
     const userIds = selectedRows.map(
-      (item) => item.user_id || item.facilitator_id
+      (item) => item.user_id || item.facilitator_id,
     );
     const Apidata = await PcuserService.AddRemovePrerak({
       id: id,
@@ -272,14 +270,12 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
         setIsDisable(true);
       }
     },
-    [isAddingPrerak]
+    [isAddingPrerak],
   );
 
   const handleSearch = (e) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
-
-  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   const setBlock = async ({ district }) => {
     let newSchema = schema;
@@ -303,7 +299,6 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
 
   const onChange = async (e, id) => {
     const data = e.formData;
-    const newData = { ...formData, ...data };
     setFormData(data);
     if (id === "root_district") {
       setFilter({ ...filter, district: data?.district });
@@ -379,16 +374,11 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
             <VStack space={2}>
               <Form
                 {...{
-                  //widgets,
-                  //templates,
                   validator,
                   schema: schema,
                   uiSchema,
                   formData,
-                  validator,
                   onChange,
-                  //onSubmit,
-                  //transformErrors,
                 }}
               >
                 <Button display={"none"} type="submit"></Button>
@@ -470,13 +460,13 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
               setAddPrerakCount(0);
               setRemovePrerakCount(0);
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
         />
       </VStack>
@@ -485,3 +475,8 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
 };
 
 export default AssignedList;
+
+AssignedList.propTypes = {
+  setPcData: PropTypes.func,
+  setassignPrerak: PropTypes.func,
+};

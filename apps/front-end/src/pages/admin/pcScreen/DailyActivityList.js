@@ -2,38 +2,24 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   AdminTypo,
   geolocationRegistryService,
-  getSelectedProgramId,
   getOptions,
-  tableCustomStyles,
-  cohortService,
+  getSelectedProgramId,
   PcuserService,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
-import { HStack, Stack, VStack, Input, Box } from "native-base";
-import Chip, { ChipStatus } from "component/Chip";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { ChipStatus } from "component/Chip";
+import { HStack, Stack, VStack } from "native-base";
 import DataTable from "react-data-table-component";
-import { debounce } from "lodash";
-import { MultiCheck } from "../../../component/BaseInput";
-
+import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 const DailyActivityList = ({ setPcData, setassignPrerak }) => {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
-  const { id } = useParams();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
-  //   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [isSelectable, setIsSelectable] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [addPrerakCount, setAddPrerakCount] = useState(0);
-  const [removePrerakCount, setRemovePrerakCount] = useState(0);
-  const [isAddingPrerak, setIsAddingPrerak] = useState(true);
   const [isDisable, setIsDisable] = useState(false);
-  const [isRemovePrerak, setIsRemovePrerak] = useState(true);
-  const [isCancelVisible, setIsCancelVisible] = useState(false);
   const [schema, setSchema] = useState();
-  const [formData, setFormData] = useState({});
 
   const columns = (t) => [
     {
@@ -67,17 +53,6 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
   ];
 
   const pagination = [10, 15, 25, 50, 100];
-
-  const uiSchema = {
-    district: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-    block: {
-      "ui:widget": MultiCheck,
-      "ui:options": {},
-    },
-  };
 
   const schemat = {
     type: "object",
@@ -123,30 +98,15 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
     });
 
     setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
     );
     setData(Apidata?.data?.facilitators);
     setPcData(Apidata?.data?.users?.[0]);
     setassignPrerak(Apidata?.data?.preraks_assigned);
   };
 
-  const fetchPrerakList = async () => {
-    const Apidata = await cohortService.PcAvailableFacilitator({
-      id: 21540,
-      ...filter,
-    });
-    setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
-    );
-    setData(Apidata?.data?.program_facilitator_data);
-  };
-
   useEffect(() => {
-    if (!isSelectable) {
-      fetchUserList();
-    } else if (isSelectable) {
-      fetchPrerakList();
-    }
+    fetchUserList();
   }, [filter]);
 
   useEffect(() => {
@@ -169,28 +129,14 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
     setLoading(false);
   };
 
-  const handleRowSelected = useCallback(
-    (state) => {
-      const selected = state?.selectedRows;
-      setSelectedRows(selected);
+  const handleRowSelected = useCallback((state) => {
+    const selected = state?.selectedRows;
 
-      if (isAddingPrerak) {
-        setIsDisable(false);
-        setAddPrerakCount(selected?.length);
-      } else {
-        setRemovePrerakCount(selected?.length);
-        setIsDisable(false);
-      }
-      if (selected?.length === 0) {
-        setIsDisable(true);
-      }
-    },
-    [isAddingPrerak]
-  );
-
-  const handleSearch = (e) => {
-    setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
-  };
+    setIsDisable(false);
+    if (selected?.length === 0) {
+      setIsDisable(true);
+    }
+  }, []);
 
   return (
     <Stack backgroundColor={"identifiedColor"} alignContent={"center"}>
@@ -213,8 +159,7 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
           paginationRowsPerPageOptions={pagination}
           paginationServer
           paginationTotalRows={paginationTotalRows}
-          selectableRows={isSelectable}
-          clearSelectedRows={isCancelVisible}
+          clearSelectedRows={false}
           onSelectedRowsChange={handleRowSelected}
           paginationDefaultPage={filter?.page || 1}
           highlightOnHover
@@ -223,13 +168,13 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
             (e) => {
               setFilter({ ...filter, limit: e, page: 1 });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
         />
       </VStack>
@@ -238,3 +183,8 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
 };
 
 export default DailyActivityList;
+
+DailyActivityList.propTypes = {
+  setPcData: PropTypes.func,
+  setassignPrerak: PropTypes.func,
+};

@@ -139,6 +139,6 @@ export default function CampLearnerList({ userTokenInfo }) {
   );
 }
 
-CampLearnerList.PropTypes = {
+CampLearnerList.propTypes = {
   userTokenInfo: PropTypes.object,
 };

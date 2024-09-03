@@ -46,6 +46,8 @@ export default function Menu({ menus, _vstack, _menu }) {
   );
 }
 
-Menu.PropTypes = {
+Menu.propTypes = {
   menus: PropTypes.array,
+  _vstack: PropTypes.any,
+  _menu: PropTypes.any,
 };
