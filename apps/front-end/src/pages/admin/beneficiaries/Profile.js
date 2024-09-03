@@ -2130,6 +2130,15 @@ const BeneficiaryJourney = ({
   );
 };
 
+BeneficiaryJourney.propTypes = {
+  data: PropTypes.any,
+  enumOptions: PropTypes.any,
+  t: PropTypes.any,
+  auditLogs: PropTypes.any,
+  auditMonth: PropTypes.any,
+  auditYear: PropTypes.any,
+};
+
 const SelectAllCheckBox = ({
   fields,
   title,
@@ -2156,11 +2165,18 @@ const SelectAllCheckBox = ({
   return <Checkbox onChange={handleCheckboxChange}>{title}</Checkbox>;
 };
 
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.any,
+  title: PropTypes.any,
+  setCheckedFields: PropTypes.any,
+  checkedFields: PropTypes.any,
+};
+
 const TitleComponent = (props) => {
   return <AdminTypo.H5 {...props} bold color="textGreyColor.550" />;
 };
 
-AgAdminProfile.PropTypes = {
+AgAdminProfile.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };
