@@ -377,10 +377,10 @@ FieldTemplate.propTypes = {
 };
 
 // rjsf custom ObjectFieldTemplate object field layout Template use in all form
-export const ObjectFieldTemplate = (props) => {
+export const ObjectFieldTemplate = ({ properties }) => {
   return (
     <VStack alignItems="center" space="6">
-      {props.properties.map((element) => (
+      {properties.map((element) => (
         <div
           style={{ width: "100%" }}
           id={`element_${element.name}`}
@@ -393,7 +393,7 @@ export const ObjectFieldTemplate = (props) => {
   );
 };
 FieldTemplate.propTypes = {
-  props: PropTypes.any,
+  properties: PropTypes.array,
 };
 export const ArrayFieldTitleTemplate = (props) => {
   return <div />;
