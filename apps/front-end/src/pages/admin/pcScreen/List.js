@@ -19,7 +19,6 @@ import {
   Pressable,
 } from "native-base";
 import {
-  getSelectedAcademicYear,
   IconByName,
   AdminLayout as Layout,
   useWindowSize,

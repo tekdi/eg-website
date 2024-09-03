@@ -26,7 +26,7 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import PropTypes from "prop-types";
 
-const AssignedList = ({ setPcData, setassignPrerak }) => {
+const AssignedList = ({ setPcData, setAssignPrerak }) => {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
   const { id } = useParams();
@@ -154,7 +154,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
     );
     setData(Apidata?.data?.facilitators);
     setPcData(Apidata?.data?.users?.[0]);
-    setassignPrerak(Apidata?.data?.preraks_assigned);
+    setAssignPrerak(Apidata?.data?.preraks_assigned);
   };
 
   const fetchPrerakList = async () => {
@@ -478,5 +478,5 @@ export default AssignedList;
 
 AssignedList.propTypes = {
   setPcData: PropTypes.func,
-  setassignPrerak: PropTypes.func,
+  setAssignPrerak: PropTypes.func,
 };

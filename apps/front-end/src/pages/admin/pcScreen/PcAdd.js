@@ -69,15 +69,12 @@ const PcAdd = ({ footerLinks }) => {
 
   const validate = (data, key) => {
     let error = {};
-    switch (key) {
-      case "mobile":
-        if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
-          error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
-          setErrors(error);
-        }
-        break;
-      default:
-        break;
+    if (
+      key === "mobile" &&
+      (data.mobile < 6000000000 || data.mobile > 9999999999)
+    ) {
+      error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+      setErrors(error);
     }
     return error;
   };
@@ -131,7 +128,6 @@ const PcAdd = ({ footerLinks }) => {
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
-    let error = {};
     setFormData(newData);
 
     if (id === "root_mobile") {
