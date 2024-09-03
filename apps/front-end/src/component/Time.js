@@ -27,5 +27,5 @@ export default function Time({ value, onChange }) {
 
 Time.propTypes = {
   value: PropTypes.any,
-  onChange: PropTypes.any,
+  onChange: PropTypes.func,
 };
