@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./futureStudySchema.js";
@@ -15,40 +15,37 @@ import {
   getUniqueArray,
   Loading,
 } from "@shiksha/common-lib";
-import moment from "moment";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   widgets,
   templates,
+  transformErrors,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
-
+import PropTypes from "prop-types";
 // App
 
 export default function FutureStudy({ userTokenInfo }) {
-  const { authUser } = userTokenInfo;
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [submitBtn, setSubmitBtn] = useState();
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [userId, setuserId] = React.useState(id);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(true);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isDisable, setIsDisable] = useState(false);
   const [searchParams] = useSearchParams();
   const redirectLink = searchParams.get("redirectLink");
 
   const onPressBackButton = async () => {
-    navigate(`/beneficiary/${userId}/educationdetails`);
+    navigate(`/beneficiary/${id}/educationdetails`);
   };
-  const ref = React.createRef(null);
 
   const nextPreviewStep = async (pageStape = "n") => {
     setAlert();
@@ -59,7 +56,7 @@ export default function FutureStudy({ userTokenInfo }) {
       if (pageStape.toLowerCase() === "n") {
         nextIndex = pages[index + 1];
       } else if (page == "1") {
-        navigate("/beneficiary", { state: { id: userId } });
+        navigate("/beneficiary", { state: { id } });
       } else {
         nextIndex = pages[index - 1];
       }
@@ -74,7 +71,7 @@ export default function FutureStudy({ userTokenInfo }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     setLoading(false);
@@ -96,7 +93,7 @@ export default function FutureStudy({ userTokenInfo }) {
 
   // Type Of Student
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     if (schema1.type === "step") {
       const properties = schema1.properties;
@@ -145,7 +142,7 @@ export default function FutureStudy({ userTokenInfo }) {
 
       setSchema(newSchema);
     }
-    const { result } = await benificiaryRegistoryService.getOne(userId);
+    const { result } = await benificiaryRegistoryService.getOne(id);
     if (result) {
       setFormData({
         ...formData,
@@ -177,43 +174,11 @@ export default function FutureStudy({ userTokenInfo }) {
     }
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      } else if (["minItems", "maxItems"].includes(error.name)) {
-        error.message = `${t("SELECT_MIN_MAX_ERROR")}`;
-      }
-      return error;
-    });
-  };
-
-  const onChange = async (e, id) => {
+  const onChange = (e) => {
     const data = e.formData;
-    setErrors();
     const newData = { ...formData, ...data };
+    setErrors();
     setFormData(newData);
-    if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
   };
 
   const onError = (data) => {
@@ -248,11 +213,11 @@ export default function FutureStudy({ userTokenInfo }) {
     let newFormData = data.formData;
     const newdata = filterObject(newFormData, Object.keys(schema?.properties));
     const mainPayload = transformData(newdata);
-    const updateDetails = await AgRegistryService.updateAg(mainPayload, userId);
+    const updateDetails = await AgRegistryService.updateAg(mainPayload, id);
     if (updateDetails) {
       if (redirectLink) {
         navigate(redirectLink);
-      } else navigate(`/beneficiary/${userId}/educationdetails`);
+      } else navigate(`/beneficiary/${id}/educationdetails`);
     }
   };
 
@@ -274,6 +239,7 @@ export default function FutureStudy({ userTokenInfo }) {
       analyticsPageTitle={"BENEFICIARY_FUTURE_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("LEARNER_ASPIRATION")}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <Box py={6} px={4} mb={5}>
         {alert ? (
@@ -284,7 +250,7 @@ export default function FutureStudy({ userTokenInfo }) {
             </HStack>
           </Alert>
         ) : (
-          <React.Fragment />
+          <></>
         )}
 
         {page && page !== "" ? (
@@ -318,33 +284,37 @@ export default function FutureStudy({ userTokenInfo }) {
               formData,
               onChange,
               onError,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
               onSubmit,
             }}
           >
             {redirectLink && (
               <FrontEndTypo.Primarybutton
-                p="4"
-                mt="4"
                 isDisabled={isDisable}
+                mt={4}
+                p={4}
                 onPress={() => formRef?.current?.submit()}
               >
                 {t("SAVE_AND_ENROLLMENT")}
               </FrontEndTypo.Primarybutton>
             )}
             <FrontEndTypo.Primarybutton
-              isDisabled={isDisable}
-              mt="3"
               type="submit"
+              mt={3}
               onPress={() => formRef?.current?.submit()}
+              isDisabled={isDisable}
             >
               {pages[pages?.length - 1] === page ? t("SAVE") : submitBtn}
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
-          <React.Fragment />
+          <></>
         )}
       </Box>
     </Layout>
   );
 }
+
+FutureStudy.propTypes = {
+  userTokenInfo: PropTypes.any,
+};
