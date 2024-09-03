@@ -229,14 +229,6 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   return (
     <Box>
       <RadioBtn
-        key={items}
-        value={items?.length > 0 ? "yes" : isShow !== "" ? "no" : ""}
-        options={{
-          enumOptions: [
-            { label: t("YES"), value: "yes" },
-            { label: t("NO"), value: "no" },
-          ],
-        }}
         onChange={(e) => {
           setIsShow(e);
           if (e === "yes" && items.length === 0) {
@@ -245,7 +237,15 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
             items?.map((item, index) => item.onDropIndexClick(index)());
           }
         }}
+        options={{
+          enumOptions: [
+            { label: t("YES"), value: "yes" },
+            { label: t("NO"), value: "no" },
+          ],
+        }}
         schema={{ label: t(title) }}
+        value={items?.length > 0 ? "yes" : isShow !== "" ? "no" : ""}
+        key={items}
       />
       {items?.length > 0 && (
         <VStack space="6">
@@ -253,11 +253,10 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
             ({
               onDropIndexClick,
               children,
-              hasRemove,
-              disabled,
               readonly,
-              Location,
+              hasRemove,
               schema,
+              disabled,
               index,
             }) => {
               addBtn = schema?.title;
@@ -366,13 +365,13 @@ export const FieldTemplate = ({
 };
 
 FieldTemplate.propTypes = {
-  id: PropTypes.any,
   style: PropTypes.any,
+  id: PropTypes.any,
   label: PropTypes.any,
-  help: PropTypes.any,
-  required: PropTypes.bool,
   description: PropTypes.any,
+  help: PropTypes.any,
   errors: PropTypes.any,
+  required: PropTypes.bool,
   children: PropTypes.node,
   schema: PropTypes.any,
 };
@@ -490,10 +489,10 @@ export const Aadhaar = (props) => {
   return (
     <VStack space="10">
       <FrontEndTypo.H3
-        ml="90px"
         textAlign="center"
-        bold
         color="textMaroonColor.400"
+        ml="90px"
+        bold
       >
         {t("ENTERED_AADHAR_NOT_EDITABLE")}
       </FrontEndTypo.H3>
