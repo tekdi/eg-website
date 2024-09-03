@@ -434,13 +434,21 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                     }
                   },
                 },
-                {
-                  title: "PCR_DETAILS",
-                  onPress: (e) => {
-                    navigate(`/beneficiary/${id}/pcrview`);
-                  },
-                },
-                ...(benificiary?.program_beneficiaries?.is_continued === false
+                ...(["registered_in_neev_camp", "registered_in_camp"].includes(
+                  status,
+                )
+                  ? [
+                      {
+                        title: "PCR_DETAILS",
+                        onPress: (e) => {
+                          navigate(`/beneficiary/${id}/pcrview`);
+                        },
+                      },
+                    ]
+                  : []),
+                ...(status === "pragati_syc" &&
+                state_name === "RAJASTHAN" &&
+                benificiary?.program_beneficiaries?.is_continued === false
                   ? [
                       {
                         title: "PSYC_DETAILS",
