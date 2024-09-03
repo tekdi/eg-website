@@ -392,7 +392,7 @@ export const ObjectFieldTemplate = ({ properties }) => {
     </VStack>
   );
 };
-FieldTemplate.propTypes = {
+ObjectFieldTemplate.propTypes = {
   properties: PropTypes.array,
 };
 export const ArrayFieldTitleTemplate = (props) => {
