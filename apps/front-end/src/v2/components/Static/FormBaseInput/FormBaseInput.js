@@ -1,3 +1,4 @@
+import React from "react";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 import {
   AdminTypo,
@@ -30,11 +31,11 @@ import {
   TextArea,
   VStack,
 } from "native-base";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import OfflineFileUpload from "./formCustomeInputs/OfflineFileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
+import PropTypes from "prop-types";
 
 export function LabelNameWidget() {
   const { t } = useTranslation();
@@ -364,15 +365,27 @@ export const FieldTemplate = ({
   );
 };
 
+FieldTemplate.propTypes = {
+  id: PropTypes.any,
+  style: PropTypes.any,
+  label: PropTypes.any,
+  help: PropTypes.any,
+  required: PropTypes.bool,
+  description: PropTypes.any,
+  errors: PropTypes.any,
+  children: PropTypes.node,
+  schema: PropTypes.any,
+};
+
 // rjsf custom ObjectFieldTemplate object field layout Template use in all form
 export const ObjectFieldTemplate = (props) => {
   return (
     <VStack alignItems="center" space="6">
-      {props.properties.map((element, index) => (
+      {props.properties.map((element) => (
         <div
-          key={`element${element.name}`}
-          id={`element_${element.name}`}
           style={{ width: "100%" }}
+          id={`element_${element.name}`}
+          key={`element${element.name}`}
         >
           <VStack w="100%">{element.content}</VStack>
         </div>
