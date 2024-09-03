@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import Chip from "component/Chip";
-
+import PropTypes from "prop-types";
 const PRESENT = "present";
 
 const RenderAttendee = ({ row, t }) => (
@@ -23,8 +23,8 @@ const RenderAttendee = ({ row, t }) => (
         {row?.fa_is_processed === null
           ? t("NO")
           : row?.fa_is_processed === true
-            ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
-            : t("NO")}
+          ? t("YES") + " " + row?.fa_similarity_percentage?.toFixed(2) + "%"
+          : t("NO")}
       </AdminTypo.H6>
     }
     rounded="lg"
@@ -132,7 +132,7 @@ function Table() {
         setPaginationTotalRows(
           resultAttendance?.data?.totalCount
             ? resultAttendance?.data?.totalCount
-            : 0,
+            : 0
         );
       }
     }
@@ -179,5 +179,8 @@ function Table() {
     </Layout>
   );
 }
-
+RenderAttendee.propTypes = {
+  row: PropTypes.any,
+  t: PropTypes.any,
+};
 export default Table;

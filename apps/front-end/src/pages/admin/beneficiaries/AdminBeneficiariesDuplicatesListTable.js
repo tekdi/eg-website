@@ -1,5 +1,5 @@
 import { IconByName, AdminTypo } from "@shiksha/common-lib";
-import { HStack, VStack, Image, Text } from "native-base";
+import { HStack, VStack, Image } from "native-base";
 import React, { memo, useCallback, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -180,7 +180,7 @@ function Table({
   );
 }
 
-Table.PropTypes = {
+Table.propTypes = {
   filter: PropTypes.any,
   setFilter: PropTypes.func,
   paginationTotalRows: PropTypes.any,

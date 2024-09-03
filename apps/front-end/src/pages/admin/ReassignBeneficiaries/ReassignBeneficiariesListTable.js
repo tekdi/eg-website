@@ -156,5 +156,17 @@ Table.propTypes = {
   data: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
 };
-
+PrerakName.propTypes = {
+  first_name: PropTypes.any,
+  last_name: PropTypes.any,
+  status: PropTypes.any,
+};
+PrerakStatus.propTypes = {
+  status: PropTypes.any,
+};
+Action.propTypes = {
+  id: PropTypes.any,
+  t: PropTypes.any,
+  navigate: PropTypes.any,
+};
 export default Table;

@@ -271,3 +271,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+CustomFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  classNames: PropTypes.any,
+  label: PropTypes.any,
+  required: PropTypes.any,
+  children: PropTypes.any,
+};
+AdminHome.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};
