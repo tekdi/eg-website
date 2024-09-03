@@ -31,6 +31,7 @@ import PropType from "prop-types";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
+// BenificiaryProfileView
 export default function BenificiaryProfileView({ userTokenInfo }) {
   const { t } = useTranslation();
   const [isOpenDropOut, setIsOpenDropOut] = useState(false);
