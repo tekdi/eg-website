@@ -174,24 +174,10 @@ export default function FutureStudy({ userTokenInfo }) {
     }
   };
 
-  const onChange = async (e, id) => {
+  const onChange = (e) => {
     const data = e.formData;
-    setErrors();
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_mobile") {
-      if (data?.mobile?.toString()?.length === 10) {
-        const result = await userExist({ mobile: data?.mobile });
-        if (result.isUserExist) {
-          const newErrors = {
-            mobile: {
-              __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-            },
-          };
-          setErrors(newErrors);
-        }
-      }
-    }
   };
 
   const onError = (data) => {
