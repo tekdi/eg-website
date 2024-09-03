@@ -17,6 +17,6 @@ export default function EnrollmentMessage({ status, enrollment_status }) {
   );
 }
 EnrollmentMessage.propTypes = {
-  status: PropTypes.any,
+  status: PropTypes.string,
   enrollment_status: PropTypes.any,
 };

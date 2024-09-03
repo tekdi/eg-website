@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Layout from "./Layout";
+import PropTypes from "prop-types";
 
 export default function VolunteerHome({
   userTokenInfo: { authUser },
@@ -75,3 +76,8 @@ export default function VolunteerHome({
     </Layout>
   );
 }
+
+VolunteerHome.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};

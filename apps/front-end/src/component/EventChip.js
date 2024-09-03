@@ -22,9 +22,9 @@ export default function Chip({ label, children, isActive, ...props }) {
 }
 
 Chip.propTypes = {
-  label: PropTypes.any,
-  children: PropTypes.any,
-  isActive: PropTypes.any,
+  label: PropTypes.string,
+  children: PropTypes.node,
+  isActive: PropTypes.bool,
 };
 // ChipStatus
 export function EventChip({ status, ...props }) {
@@ -60,5 +60,5 @@ export function EventChip({ status, ...props }) {
   );
 }
 EventChip.propTypes = {
-  status: PropTypes.any,
+  status: PropTypes.string,
 };

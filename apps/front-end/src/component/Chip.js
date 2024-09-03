@@ -235,6 +235,6 @@ export function ExamChipStatus({ width, status, ...props }) {
   );
 }
 ExamChipStatus.propTypes = {
-  width: PropTypes.any,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   status: PropTypes.string,
 };
