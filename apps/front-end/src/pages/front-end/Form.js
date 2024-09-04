@@ -96,7 +96,7 @@ export default function App({ facilitator, ip, onClick }) {
   }
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    const data = await nextPrevStep("p");
     if (data && onClick) {
       onClick("SplashScreen");
     }
@@ -126,10 +126,10 @@ export default function App({ facilitator, ip, onClick }) {
     },
   };
 
-  const nextPreviewStep = async (pageStape = "n") => {
-    setAlert();
+  const nextPrevStep = async (pageStape = "n") => {
     const index = pages.indexOf(page);
     const properties = schema1.properties;
+    setAlert();
     if (index !== undefined) {
       let nextIndex = "";
       if (pageStape.toLowerCase() === "n") {
@@ -138,8 +138,8 @@ export default function App({ facilitator, ip, onClick }) {
         nextIndex = pages[index - 1];
       }
       if (nextIndex !== undefined) {
-        setPage(nextIndex);
         setSchema(properties[nextIndex]);
+        setPage(nextIndex);
       } else if (pageStape.toLowerCase() === "n") {
         await formSubmitUpdate({ ...formData, form_step_number: "10" });
         setPage("upload");
@@ -157,7 +157,7 @@ export default function App({ facilitator, ip, onClick }) {
           setSchema(properties[pageNumber]);
         }
       } else {
-        nextPreviewStep();
+        nextPrevStep();
       }
     }
   };

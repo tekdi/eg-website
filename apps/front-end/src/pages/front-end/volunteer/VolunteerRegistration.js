@@ -189,9 +189,16 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  const validate = (data, key) => {
+  const validateFn = (data, key) => {
     let error = {};
     switch (key) {
+      case "dob": {
+        const years = moment().diff(data?.dob, "years");
+        if (years < 18) {
+          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
+        }
+        break;
+      }
       case "mobile":
         if (data?.mobile?.toString()?.length !== 10) {
           error = { mobile: t("MINIMUM_LENGTH_IS_10") };
@@ -200,18 +207,6 @@ export default function App({ facilitator, ip, onClick }) {
           error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
         }
         break;
-      // case "state":
-      //   if (isNaN(data?.mobile)) {
-      //     error = { mobile: t("PLEASE_ENTER_VALID_STATE") };
-      //   }
-      //   break;
-      case "dob": {
-        const years = moment().diff(data?.dob, "years");
-        if (years < 18) {
-          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
-        }
-        break;
-      }
       default:
         break;
     }
@@ -221,7 +216,7 @@ export default function App({ facilitator, ip, onClick }) {
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
     for (const key of arr) {
-      const isValid = validate(data, key);
+      const isValid = validateFn(data, key);
       if (isValid?.[key]) {
         if (!errors?.[key]?.__errors.includes(isValid[key]))
           err?.[key]?.addError(isValid[key]);
