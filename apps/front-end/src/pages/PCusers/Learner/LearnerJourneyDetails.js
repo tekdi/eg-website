@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { HStack, VStack, Text } from "native-base";
 import {
   IconByName,
@@ -17,17 +17,17 @@ import PropTypes from "prop-types";
 export default function BenificiaryJourney({ userTokenInfo }) {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState();
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [contextId, setContextId] = React.useState();
-  const [auditLogs, setAuditLogs] = React.useState([]);
-  const [auditMonth, setAuditMonth] = React.useState([]);
-  const [auditYear, setAuditYear] = React.useState([]);
+  const [benificiary, setBenificiary] = useState();
+  const [enumOptions, setEnumOptions] = useState({});
+  const [contextId, setContextId] = useState();
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditMonth, setAuditMonth] = useState([]);
+  const [auditYear, setAuditYear] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const data = await enumRegistryService.listOfEnum();
     setEnumOptions(data?.data ? data?.data : {});
     agDetails();
@@ -79,7 +79,7 @@ export default function BenificiaryJourney({ userTokenInfo }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getAuditData();
   }, [contextId]);
 
@@ -91,82 +91,82 @@ export default function BenificiaryJourney({ userTokenInfo }) {
       stepTitle={t("JOURNEY")}
       facilitator={userTokenInfo?.authUser || {}}
     >
-      <HStack alignItems={"center"} mt={5} ml={5}>
+      <HStack mt={5} ml={5} alignItems={"center"}>
         {benificiary?.profile_photo_1?.id ? (
           <ImageView
+            height={"80px"}
+            width={"80px"}
             source={{
               document_id: benificiary?.profile_photo_1?.id,
             }}
-            width={"80px"}
-            height={"80px"}
           />
         ) : (
           <IconByName
-            isDisabled
             name="AccountCircleLineIcon"
             color="gray.300"
+            isDisabled
             _icon={{ size: "80px" }}
           />
         )}
-        <FrontEndTypo.H2 bold color="textMaroonColor.400" marginLeft={"5px"}>
+        <FrontEndTypo.H2 color="textMaroonColor.400" bold marginLeft={"5px"}>
           {t("STATUS_FLOW_OF")}
         </FrontEndTypo.H2>
-        <HStack marginLeft={"5px"}>
+        <HStack ml={5}>
           <FrontEndTypo.H2 bold color="textMaroonColor.400">
-            {benificiary?.first_name}
-            {benificiary?.middle_name &&
-              benificiary?.middle_name !== "null" &&
-              ` ${benificiary.middle_name}`}
-            {benificiary?.last_name &&
-              benificiary?.last_name !== "null" &&
-              ` ${benificiary?.last_name}`}
+            {[
+              benificiary?.first_name,
+              benificiary?.middle_name,
+              benificiary?.last_name,
+            ]
+              .filter(Boolean)
+              .join(" ")}
           </FrontEndTypo.H2>
         </HStack>
       </HStack>
-      <HStack mt={5} left={"30px"}>
+      <HStack left={"30px"} mt={5}>
         <VStack width={"100%"}>
           {auditYear.map((item, i) => {
             return (
-              <React.Fragment key={item}>
+              <React.Fragment key={i + 1}>
                 <HStack alignItems={"center"}>
                   <Text width={"50px"}>{JSON.parse(item)}</Text>
                   <HStack
-                    height="50px"
                     borderColor="Disablecolor.400"
                     borderLeftWidth="2px"
-                    mr="5"
+                    height="50px"
                     alignItems="center"
+                    mr="5"
                   ></HStack>
                 </HStack>
-                {auditMonth.map((month, i) => {
+                {auditMonth.map((month, j) => {
                   return (
-                    <React.Fragment key={month}>
+                    <React.Fragment key={j + 1}>
                       <HStack alignItems={"center"}>
                         <Text width={"50px"}>{month}</Text>
                         <HStack
-                          height="25px"
                           borderColor="Disablecolor.400"
-                          borderLeftWidth="2px"
+                          height="25px"
                           mr="5"
                           alignItems="center"
+                          borderLeftWidth="2px"
                         ></HStack>
                       </HStack>
-                      {auditLogs.map((logs, i) => {
+                      {auditLogs.map((logs, k) => {
                         return (
-                          <React.Fragment key={logs}>
+                          <React.Fragment key={k + 1}>
                             <HStack alignItems={"center"}>
                               <Text width={"50px"}>{logs?.date}</Text>;
                               <FrontEndTypo.Timeline
                                 status={logs?.status?.status}
                               >
                                 <FrontEndTypo.H2
-                                  color="blueText.400"
                                   bold
+                                  color="blueText.400"
                                 ></FrontEndTypo.H2>
                                 <GetEnumValue
+                                  enumOptionValue={logs?.status?.status}
                                   t={t}
                                   enumType={"BENEFICIARY_STATUS"}
-                                  enumOptionValue={logs?.status?.status}
                                   enumApiData={enumOptions}
                                 />
                                 <FrontEndTypo.H4>
