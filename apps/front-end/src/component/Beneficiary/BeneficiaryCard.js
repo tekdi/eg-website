@@ -140,7 +140,9 @@ export default function BeneficiaryCard({
             </FrontEndTypo.H4>
           </HStack>
         )}
-        {item?.program_beneficiaries?.status === "enrolled" && (
+        {["enrolled", "sso_id_enrolled"]?.includes(
+          item?.program_beneficiaries?.status,
+        ) && (
           <LearnerMessage program_beneficiaries={item?.program_beneficiaries} />
         )}
       </VStack>
