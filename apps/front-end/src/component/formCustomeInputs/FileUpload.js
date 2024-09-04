@@ -52,7 +52,7 @@ const FileUpload = ({ value, onChange, schema }) => {
         const { loaded, total } = progressEvent;
         let percent = Math.floor((loaded * 100) / total);
         setProgress(percent);
-      }
+      },
     );
     setLoading(false);
     const document_id = result?.data?.insert_documents?.returning?.[0]?.id;
@@ -93,8 +93,8 @@ const FileUpload = ({ value, onChange, schema }) => {
             ) {
               setErrors(
                 ` ${imageWidth} X ${imageHeight} ${t(
-                  "IMAGE_DIMENSIONS_MESSAGE"
-                )}`
+                  "IMAGE_DIMENSIONS_MESSAGE",
+                )}`,
               );
             } else {
               uplaodFile(file);
@@ -234,7 +234,7 @@ const FileUpload = ({ value, onChange, schema }) => {
   );
 };
 
-FileUpload.PropTypes = {
+FileUpload.propTypes = {
   value: PropTypes.any,
   schema: PropTypes.any,
   onChange: PropTypes.func,

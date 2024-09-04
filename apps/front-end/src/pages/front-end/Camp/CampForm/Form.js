@@ -95,7 +95,7 @@ export default function App({ footerLinks }) {
       if (campDetails?.kit_received === null) {
         const { kit_received } = schemaData.properties;
         const required = schemaData?.required.filter((item) =>
-          ["kit_received"].includes(item)
+          ["kit_received"].includes(item),
         );
         const newSchema = {
           ...schemaData,
@@ -184,7 +184,7 @@ export default function App({ footerLinks }) {
 
       const facilities = {
         property_facilities: jsonParse(
-          campDetails?.properties?.property_facilities || "{}"
+          campDetails?.properties?.property_facilities || "{}",
         ),
       };
       setFormData(facilities);
@@ -229,7 +229,7 @@ export default function App({ footerLinks }) {
         } else if (formData?.kit_received === "no") {
           const { kit_received } = schemaData.properties;
           const required = schemaData?.required.filter((item) =>
-            ["kit_received"].includes(item)
+            ["kit_received"].includes(item),
           );
           const newSchema = {
             ...schemaData,
@@ -339,28 +339,14 @@ export default function App({ footerLinks }) {
           value: "block_name",
         });
       }
-      if (
-        schema?.["properties"]?.["grampanchayat"] &&
-        ["BIHAR"].includes(state)
-      ) {
-        newSchema = await setGramp({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      } else {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          gramp: "null",
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
+      newSchema = await setVilage({
+        state,
+        district,
+        block,
+        gramp: "null",
+        schemaData: newSchema,
+      });
+      setSchema(newSchema);
     } else {
       newSchema = getOptions(newSchema, { key: "block", arr: [] });
       if (schema?.["properties"]?.["village"]) {
@@ -368,43 +354,6 @@ export default function App({ footerLinks }) {
       }
       setSchema(newSchema);
     }
-    return newSchema;
-  };
-
-  const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getGrampanchyat({
-        block: block,
-        state: state,
-        district: district,
-      });
-      if (schema?.["properties"]?.["grampanchayat"]) {
-        newSchema = getOptions(newSchema, {
-          key: "grampanchayat",
-          arr: qData?.gramPanchayat,
-          title: "grampanchayat_name",
-          value: "grampanchayat_name",
-          format: "select",
-        });
-      }
-      setSchema(newSchema);
-
-      if (schema?.["properties"]?.["village"] && gramp) {
-        newSchema = await setVilage({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-      setSchema(newSchema);
-    }
-    setLoading(false);
     return newSchema;
   };
 
@@ -470,7 +419,7 @@ export default function App({ footerLinks }) {
         let schemaData = properties[newStep];
         const { kit_received } = schemaData.properties;
         const required = schemaData?.required.filter((item) =>
-          ["kit_received"].includes(item)
+          ["kit_received"].includes(item),
         );
         const newSchema = {
           ...schemaData,
@@ -496,7 +445,7 @@ export default function App({ footerLinks }) {
         newFormData,
         Object.keys(schema?.properties),
         {},
-        step === "edit_photo_details" ? null : ""
+        step === "edit_photo_details" ? null : "",
       );
       await formSubmitUpdate(newdata);
       if (localStorage.getItem("backToProfile") === "false") {
@@ -602,6 +551,6 @@ export default function App({ footerLinks }) {
     </Layout>
   );
 }
-Form.PropTypes = {
+App.propTypes = {
   footerLinks: PropTypes.any,
 };

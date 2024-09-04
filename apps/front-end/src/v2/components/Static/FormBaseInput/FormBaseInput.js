@@ -1,3 +1,4 @@
+import React from "react";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 import {
   AdminTypo,
@@ -30,11 +31,11 @@ import {
   TextArea,
   VStack,
 } from "native-base";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import FileUpload from "./formCustomeInputs/FileUpload";
 import OfflineFileUpload from "./formCustomeInputs/OfflineFileUpload";
 import StarRating from "./formCustomeInputs/StarRating";
+import PropTypes from "prop-types";
 
 export function LabelNameWidget() {
   const { t } = useTranslation();
@@ -72,6 +73,14 @@ export function LabelMobileWidget() {
         {t("PLEASE_MOBILE_NUMBER")}
       </Text>
     </>
+  );
+}
+export function LabelTimeWidget() {
+  const { t } = useTranslation();
+  return (
+    <Heading size="sm" mb={1} color="textMaroonColor.400">
+      {t("TIME_SPENT_IN_HOURS")}
+    </Heading>
   );
 }
 export function EnrollmentLabelMobileWidget() {
@@ -220,14 +229,6 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   return (
     <Box>
       <RadioBtn
-        key={items}
-        value={items?.length > 0 ? "yes" : isShow !== "" ? "no" : ""}
-        options={{
-          enumOptions: [
-            { label: t("YES"), value: "yes" },
-            { label: t("NO"), value: "no" },
-          ],
-        }}
         onChange={(e) => {
           setIsShow(e);
           if (e === "yes" && items.length === 0) {
@@ -236,7 +237,15 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
             items?.map((item, index) => item.onDropIndexClick(index)());
           }
         }}
+        options={{
+          enumOptions: [
+            { label: t("YES"), value: "yes" },
+            { label: t("NO"), value: "no" },
+          ],
+        }}
         schema={{ label: t(title) }}
+        value={items?.length > 0 ? "yes" : isShow !== "" ? "no" : ""}
+        key={items}
       />
       {items?.length > 0 && (
         <VStack space="6">
@@ -244,11 +253,10 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
             ({
               onDropIndexClick,
               children,
-              hasRemove,
-              disabled,
               readonly,
-              Location,
+              hasRemove,
               schema,
+              disabled,
               index,
             }) => {
               addBtn = schema?.title;
@@ -310,46 +318,43 @@ export const FieldTemplate = ({
   schema,
   ...props
 }) => {
-  const { type } = schema;
   const { t } = useTranslation();
+  const showTitle =
+    !schema?.format || !["hidden", "CheckUncheck"].includes(schema?.format);
+  const showLabel = label || schema?.label;
+
   return (
     <VStack
       style={style}
       space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
     >
-      {(!schema?.format ||
-        !["hidden", "CheckUncheck"].includes(schema?.format)) &&
-        (label || schema?.label) && (
-          <Box>
-            {(id === "root" || schema?.label) && (
-              <label htmlFor={id}>
-                <HStack space="1" alignItems="center">
-                  {schema?.label ? (
-                    <FrontEndTypo.H3
-                      color="textGreyColor.900"
-                      fontWeight="600"
-                      lineHeight="30px"
-                    >
-                      {t(schema?.label ? schema?.label : label)}
-                    </FrontEndTypo.H3>
-                  ) : (
-                    label && (
-                      <FrontEndTypo.H1
-                        color="textGreyColor.900"
-                        fontWeight="600"
-                        lineHeight="30px"
-                      >
-                        {t(schema?.label ? schema?.label : label)}
-                      </FrontEndTypo.H1>
-                    )
-                  )}
-                  <H3 color="textRed.400">{required ? "*" : null}</H3>
-                </HStack>
-              </label>
-            )}
-            {description?.props?.description !== "" && description}
-          </Box>
-        )}
+      {showTitle && showLabel && (
+        <Box>
+          <label htmlFor={id}>
+            <HStack space="1" alignItems="center">
+              {schema?.label ? (
+                <FrontEndTypo.H3
+                  color="textGreyColor.900"
+                  fontWeight="600"
+                  lineHeight="30px"
+                >
+                  {t(schema?.label)}
+                </FrontEndTypo.H3>
+              ) : (
+                <FrontEndTypo.H1
+                  color="textGreyColor.900"
+                  fontWeight="600"
+                  lineHeight="30px"
+                >
+                  {t(label)}
+                </FrontEndTypo.H1>
+              )}
+              <H3 color="textRed.400">{required ? "*" : null}</H3>
+            </HStack>
+          </label>
+          {description?.props?.description !== "" && description}
+        </Box>
+      )}
       <Box>
         {children}
         {errors}
@@ -359,15 +364,27 @@ export const FieldTemplate = ({
   );
 };
 
+FieldTemplate.propTypes = {
+  style: PropTypes.any,
+  id: PropTypes.any,
+  label: PropTypes.any,
+  description: PropTypes.any,
+  help: PropTypes.any,
+  errors: PropTypes.any,
+  required: PropTypes.bool,
+  children: PropTypes.node,
+  schema: PropTypes.any,
+};
+
 // rjsf custom ObjectFieldTemplate object field layout Template use in all form
-export const ObjectFieldTemplate = (props) => {
+export const ObjectFieldTemplate = ({ properties }) => {
   return (
     <VStack alignItems="center" space="6">
-      {props.properties.map((element, index) => (
+      {properties.map((element) => (
         <div
-          key={`element${element.name}`}
-          id={`element_${element.name}`}
           style={{ width: "100%" }}
+          id={`element_${element.name}`}
+          key={`element${element.name}`}
         >
           <VStack w="100%">{element.content}</VStack>
         </div>
@@ -375,9 +392,11 @@ export const ObjectFieldTemplate = (props) => {
     </VStack>
   );
 };
-
+ObjectFieldTemplate.propTypes = {
+  properties: PropTypes.array,
+};
 export const ArrayFieldTitleTemplate = (props) => {
-  return <React.Fragment />;
+  return <div />;
 };
 
 // rjsf custom CustomRadioBtn as CustomR field
@@ -411,7 +430,7 @@ export const RadioBtn = ({
   directionColumn,
 }) => {
   const items = options?.enumOptions;
-  const { label, format, readOnly, _stack } = schema || {};
+  const { label, format } = schema || {};
 
   const { t } = useTranslation();
   return (
@@ -472,10 +491,10 @@ export const Aadhaar = (props) => {
   return (
     <VStack space="10">
       <FrontEndTypo.H3
-        ml="90px"
         textAlign="center"
-        bold
         color="textMaroonColor.400"
+        ml="90px"
+        bold
       >
         {t("ENTERED_AADHAR_NOT_EDITABLE")}
       </FrontEndTypo.H3>
@@ -518,19 +537,10 @@ export const select = ({ options, value, onChange, required, schema }) => {
           height={"1px"}
           alignItems="center"
           style={{
-            ...(value || true
-              ? {
-                  top: "0",
-                  opacity: 1,
-                  zIndex: 5,
-                  transition: "all 0.3s ease",
-                }
-              : {
-                  top: "0.5rem",
-                  zIndex: -2,
-                  opacity: 0,
-                  transition: "all 0.2s ease-in-out",
-                }),
+            top: "0",
+            opacity: 1,
+            zIndex: 5,
+            transition: "all 0.3s ease",
           }}
         >
           <Text
@@ -810,7 +820,7 @@ export const MultiCheckSubject = ({
   onChange,
   schema,
   required,
-  ...props
+  uiSchema,
 }) => {
   const { t } = useTranslation();
   const { _subHstack, grid, label, format, enumOptions } = schema || {};
@@ -837,14 +847,13 @@ export const MultiCheckSubject = ({
     }
 
     let updatedList = [...newValue];
-    if (event.target.checked) {
-      updatedList = [...newValue, `${event.target.value}`];
+    if (event.checked) {
+      updatedList = [...newValue, `${event.value}`];
     } else {
-      updatedList.splice(newValue.indexOf(`${event.target.value}`), 1);
+      updatedList.splice(newValue.indexOf(`${event.value}`), 1);
     }
     onChange(updatedList);
   };
-
   const Item = ({ items, title }) => {
     return (
       <VStack
@@ -870,10 +879,9 @@ export const MultiCheckSubject = ({
                 <label>
                   <HStack alignItems="center" space="3" flex="1">
                     <Checkbox
+                      isDisabled={uiSchema?.["ui:readonly"]}
                       onChange={(e) =>
-                        handleCheck({
-                          target: { checked: e, value: item?.subject_id },
-                        })
+                        handleCheck({ checked: e, value: item?.subject_id })
                       }
                       value={item?.subject_id}
                       size="sm"
@@ -916,6 +924,15 @@ export const MultiCheckSubject = ({
   );
 };
 
+MultiCheckSubject.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  schema: PropTypes.any,
+  required: PropTypes.any,
+  uiSchema: PropTypes.any,
+};
+
 // select between 2 values radio button (yes or no)
 const CheckUncheck = ({ required, schema, value, onChange }) => {
   const { label } = schema || {};
@@ -956,7 +973,7 @@ const Textarea = ({
   required,
   isInvalid,
 }) => {
-  const [isFocus, setIsfocus] = React.useState(false);
+  const [isFocus, setIsFocus] = React.useState(false);
   const { label, title, help, rows } = schema || {};
   const { t } = useTranslation();
   return (
@@ -996,8 +1013,8 @@ const Textarea = ({
       <TextArea
         totalLines={rows || 3}
         key={title}
-        onFocus={(e) => setIsfocus(true)}
-        onBlur={(e) => setIsfocus(false)}
+        onFocus={(e) => setIsFocus(true)}
+        onBlur={(e) => setIsFocus(false)}
         onChange={(e) => onChange(e.target.value)}
         value={value}
         placeholder={t(label || schema?.label)}
@@ -1037,6 +1054,7 @@ const widgets = {
   selectSubjectWidget,
   LabelMobileWidget,
   EnrollmentLabelMobileWidget,
+  LabelTimeWidget,
   AlreadyOpenLabelWidget,
   LabelAddressWidget,
   LabelVerifyNameWidget,
@@ -1109,15 +1127,14 @@ const transformErrors = (errors, schema, t) => {
             .replace("{0}", error?.params?.limit)
             .replace("{1}", t(title)),
         };
-      case "enum":
+      case "enum": {
         let name = error?.property?.replace(/\.\d+/g, "").replace(".", "");
-        {
-          const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
-          if (enumSchemaItem) {
-            error.key_name = name;
-          }
+        const enumSchemaItem = schema?.properties?.[name]; // Rename to enumSchemaItem
+        if (enumSchemaItem) {
+          error.key_name = name;
         }
         return error;
+      }
       case "type":
         return {
           ...error,
@@ -1137,7 +1154,7 @@ const transformErrors = (errors, schema, t) => {
             .replace("{0}", error?.params?.limit)
             .replace("{1}", t(title)),
         };
-      case "format":
+      case "format": {
         const { format } = error?.params || {};
         const messageKey =
           {
@@ -1149,6 +1166,7 @@ const transformErrors = (errors, schema, t) => {
           ...error,
           message: t(messageKey, title ? t(title) : ""),
         };
+      }
       default:
         return error;
     }

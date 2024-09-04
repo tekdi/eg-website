@@ -7,23 +7,17 @@ import BenificiaryEnrollment from "v2/components/Functional/LearnerOnboardingDet
 import BenificiaryDisability from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryDisability";
 import BenificiaryJourney from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryJourney";
 // import LearnerAdhaar from "v2/components/Functional/LearnerOnboardingDetails/LearnerAdhaar";
-import LearnerDocsChecklist from "v2/components/Functional/LearnerOnboardingDetails/LearnerDocsChecklist";
 // import LearnerDuplicate from "v2/components/Functional/LearnerOnboardingDetails/LearnerDuplicate";
 import LearnerFormUpdate from "v2/components/Functional/LearnerOnboardingDetails/LearnerFormUpdate";
 import PcrDetails from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrDetails";
 import PcrView from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrView";
+import PsycCycle from "v2/components/Functional/LearnerUpdateDetail/psyc_cycle/PsycCycle";
 
 export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
+
   const renderOnboardStep = () => {
     switch (type) {
-      case "2":
-        return (
-          <LearnerFormUpdate
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
-        );
       // case "3":
       //   return (
       //     <LearnerAdhaar
@@ -38,13 +32,6 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
       //       footerLinks={footerLinks}
       //     />
       //   );
-      case "docschecklist":
-        return (
-          <LearnerDocsChecklist
-            userTokenInfo={userTokenInfo}
-            footerLinks={footerLinks}
-          />
-        );
       case "basicdetails":
         return (
           <BenificiaryBasicDetails
@@ -102,13 +89,18 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
         return (
           <PcrView userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
         );
-      default:
+      case "psyc":
+        return (
+          <PsycCycle userTokenInfo={userTokenInfo} footerLinks={footerLinks} />
+        );
+      default: {
         return (
           <LearnerFormUpdate
             userTokenInfo={userTokenInfo}
             footerLinks={footerLinks}
           />
         );
+      }
     }
   };
 

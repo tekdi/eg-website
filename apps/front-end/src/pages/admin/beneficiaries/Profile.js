@@ -1518,7 +1518,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "registered_in_camp",
                     "sso_id_verified",
                   ].includes(data?.program_beneficiaries?.status) &&
-                    publishEvent && (
+                    !publishEvent && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
@@ -1582,9 +1582,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "enrolled_for_board",
                     "enrollment_number",
                     "payment_receipt_document_id",
-                    ...(localData !== "RAJASTHAN"
-                      ? ["application_form", "application_login_id"]
-                      : ["sso_id"]),
+                    ...(localData === "RAJASTHAN" ? ["sso_id"] : []),
                   ]}
                   labels={{
                     enrollment_status: "ENROLLMENT_STATUS",
@@ -1592,18 +1590,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     enrollment_number:
                       localData === "RAJASTHAN"
                         ? "ENROLLMENT_NO"
-                        : "APPLICATION_ID",
-                    payment_receipt_document_id:
-                      localData === "RAJASTHAN"
-                        ? "ENROLLMENT_RECEIPT"
-                        : "PAYMENT_RECEIPTS",
-                    ...(localData !== "RAJASTHAN"
-                      ? {
-                          application_form: "APPLICATION_FORM",
-                          application_login_id:
-                            "APPLICATION_LOGIN_ID_SCREENSHOT",
-                        }
-                      : { sso_id: "SSO_ID" }),
+                        : localData === "BIHAR"
+                        ? "APPLICATION_ID"
+                        : "ROLL_NUMBER",
+                    payment_receipt_document_id: [
+                      "RAJASTHAN",
+                      "MADHYA PRADESH",
+                    ].includes(localData)
+                      ? "ENROLLMENT_RECEIPT"
+                      : "PAYMENT_RECEIPTS",
+                    ...(localData === "RAJASTHAN" ? { sso_id: "SSO_ID" } : {}),
                   }}
                   formats={{
                     payment_receipt_document_id: "FileUpload",
@@ -1611,7 +1607,6 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     application_login_id: "FileUpload",
                   }}
                 />
-
                 <VStack
                   space={"5"}
                   w="100%"
@@ -2138,6 +2133,15 @@ const BeneficiaryJourney = ({
   );
 };
 
+BeneficiaryJourney.propTypes = {
+  data: PropTypes.any,
+  enumOptions: PropTypes.any,
+  t: PropTypes.any,
+  auditLogs: PropTypes.any,
+  auditMonth: PropTypes.any,
+  auditYear: PropTypes.any,
+};
+
 const SelectAllCheckBox = ({
   fields,
   title,
@@ -2164,6 +2168,13 @@ const SelectAllCheckBox = ({
   return <Checkbox onChange={handleCheckboxChange}>{title}</Checkbox>;
 };
 
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.any,
+  title: PropTypes.any,
+  setCheckedFields: PropTypes.any,
+  checkedFields: PropTypes.any,
+};
+
 const TitleComponent = (props) => {
   return <AdminTypo.H5 {...props} bold color="textGreyColor.550" />;
 };
@@ -2187,7 +2198,7 @@ BeneficiaryJourney.propTypes = {
   auditYear: PropTypes.any,
 };
 GetOptions.propTypes = {
-  array: PropTypes.any,
-  enumType: PropTypes.any,
-  enumApiData: PropTypes.any,
+  array: PropTypes.array,
+  enumType: PropTypes.string,
+  enumApiData: PropTypes.object,
 };

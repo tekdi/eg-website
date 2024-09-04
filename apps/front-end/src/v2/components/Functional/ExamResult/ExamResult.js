@@ -8,19 +8,11 @@ import {
   ImageView,
   CustomAlert,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  VStack,
-  Radio,
-  Alert,
-  Modal,
-  Pressable,
-  Stack,
-} from "native-base";
+import { HStack, VStack, Radio, Alert, Modal, Pressable } from "native-base";
 import { useTranslation } from "react-i18next";
-import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
-import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
 import { ExamChipStatus } from "component/Chip";
+import Chip from "component/BeneficiaryStatus";
+import PropTypes from "prop-types";
 
 const ExamResult = ({ userTokenInfo, footerLinks }) => {
   const { t } = useTranslation();
@@ -70,18 +62,6 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     uplodInputRef.current.click();
   };
 
-  const statusUpdate = async (selectedRow) => {
-    const obj = {
-      learner_id: selectedRow?.beneficiary_user?.beneficiary_id,
-      status: !selectedRow?.result_upload_status
-        ? "first_time_upload_failed"
-        : selectedRow?.result_upload_status === "first_time_upload_failed" &&
-          "assign_to_ip",
-    };
-    const data = await organisationService.examResultStatusUpdate(obj);
-    learnerList(boardId);
-  };
-
   const uploadProfile = async (resultfile) => {
     setLoading(true);
     const form_data = new FormData();
@@ -95,28 +75,23 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
     for (let key in item) {
       form_data.append(key, item[key]);
     }
-    const result = await uploadRegistryService.uploadExamResult(
-      form_data,
-      {},
-      (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percent = Math.floor((loaded * 100) / total);
-      }
-    );
+    const result = await uploadRegistryService.uploadExamResult(form_data);
     if (!result?.data) {
       setErrorMsg(result?.message);
-      statusUpdate(selectedRow);
-    } else {
-      learnerList(boardId);
     }
+    learnerList(boardId);
     setLoading(false);
   };
   return (
-    <Layout loading={loading} _footer={{ menues: footerLinks }}>
-      <VStack p="5" minHeight={"500px"} space={4} style={{ zIndex: -1 }}>
+    <Layout
+      loading={loading}
+      _footer={{ menues: footerLinks }}
+      facilitator={userTokenInfo?.authUser}
+    >
+      <VStack py="6" px="4" space={4}>
         <FrontEndTypo.H1>{t("UPDATE_LEARNER_EXAM_RESULTS")}</FrontEndTypo.H1>
-        <VStack space={4}>
-          <FrontEndTypo.H3 bold color="textGreyColor.500">
+        <VStack space={5}>
+          <FrontEndTypo.H3 fontWeight={600} color="textGreyColor.500">
             {t("SELECT_BOARD")}
           </FrontEndTypo.H3>
 
@@ -127,8 +102,10 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                 onChange={(nextValue) => handleSelect(nextValue)}
                 value={filter?.selectedId}
               >
-                <Radio colorScheme="red" value={board.id}>
-                  {board.name}
+                <Radio size="16px" p="2px" colorScheme="red" value={board.id}>
+                  <FrontEndTypo.H4 fontWeight={600} color="textGreyColor.500">
+                    {board.name}
+                  </FrontEndTypo.H4>
                 </Radio>
               </Radio.Group>
             ))}
@@ -147,11 +124,20 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
           />
 
           {data.length > 0 && (
-            <>
+            <VStack space={4}>
               <FrontEndTypo.H3 bold color="textGreyColor.500">
                 {t("STUDENT_LIST")}
               </FrontEndTypo.H3>
-              {data?.map((item, index) => {
+              {data?.map((item) => {
+                let statusMessage = "";
+
+                if (item?.result_upload_status === "first_time_upload_failed") {
+                  statusMessage = t("FIRST_ATTEMPT_FAILED");
+                } else if (
+                  item?.result_upload_status === "second_time_upload_failed"
+                ) {
+                  statusMessage = t("SECOND_ATTEMPT_FAILED");
+                }
                 return (
                   <HStack
                     key={item?.enrollment_number}
@@ -160,17 +146,34 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                     pb={"10px"}
                     borderColor={"grayColor"}
                   >
-                    <VStack space={2}>
-                      <FrontEndTypo.H3>
+                    <VStack space={1}>
+                      <FrontEndTypo.H4
+                        fontWeight={400}
+                        color="inputValueColor.500"
+                      >
                         {t("ENR_NO")}
                         {item?.enrollment_number}
+                      </FrontEndTypo.H4>
+                      <FrontEndTypo.H3
+                        fontWeight={400}
+                        color="inputValueColor.500"
+                      >
+                        {[
+                          item?.enrollment_first_name,
+                          item?.enrollment_middle_name,
+                          item?.enrollment_last_name,
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                       </FrontEndTypo.H3>
-                      <FrontEndTypo.H3>
-                        {/* {t("NAME")}:{" "} */}
-                        {`${item?.beneficiary_user?.first_name} ${
-                          item?.beneficiary_user?.middle_name || ""
-                        } ${item?.beneficiary_user?.last_name || ""}`}
-                      </FrontEndTypo.H3>
+                      <HStack>
+                        <Chip
+                          m="0"
+                          label={item?.user_id}
+                          alignItems="center"
+                          _text={{ fontSize: "10px" }}
+                        />
+                      </HStack>
                     </VStack>
                     {item?.result_upload_status === "uploaded" ||
                     item?.result_upload_status === "assign_to_ip" ? (
@@ -181,38 +184,71 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
                               ?.final_result || ""
                           }
                         />
-                        <Pressable
-                          onPress={() => {
-                            setOpenView(
-                              item?.beneficiary_user?.exam_results?.[0]
-                            );
-                          }}
-                        >
-                          <FrontEndTypo.H3 color={"blueText.800"}>
-                            {t("VIEW")}
-                          </FrontEndTypo.H3>
-                        </Pressable>
+                        {(item?.beneficiary_user?.exam_results?.[0]
+                          ?.document_id ||
+                          item?.beneficiary_user?.exam_result_document?.[0]
+                            ?.id) && (
+                          <Pressable
+                            onPress={() => {
+                              setOpenView(
+                                item?.beneficiary_user?.exam_results?.[0] ||
+                                  item?.beneficiary_user
+                                    ?.exam_result_document?.[0],
+                              );
+                            }}
+                          >
+                            <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                          </Pressable>
+                        )}
                       </HStack>
                     ) : (
-                      <Pressable
-                        onPress={() => {
-                          openFileUploadDialog(item);
-                        }}
-                      >
-                        <FrontEndTypo.H3
-                          style={{
-                            textDecoration: "underline",
-                            color: "#0500FF",
-                          }}
-                        >
-                          {t("UPLOAD")}
-                        </FrontEndTypo.H3>
-                      </Pressable>
+                      <HStack alignItems={"center"} space={4}>
+                        {item?.result_upload_status && (
+                          <Chip
+                            m="0"
+                            label={statusMessage}
+                            alignItems="center"
+                            rounded="sm"
+                            bg={"gray.300"}
+                            _text={{ fontSize: "10px" }}
+                          />
+                        )}
+                        <VStack space={2} alignItems={"center"}>
+                          <Pressable
+                            onPress={() => {
+                              openFileUploadDialog(item);
+                            }}
+                          >
+                            <FrontEndTypo.H3
+                              style={{
+                                textDecoration: "underline",
+                                color: "#0500FF",
+                              }}
+                            >
+                              {t("UPLOAD")}
+                            </FrontEndTypo.H3>
+                          </Pressable>
+                          {item?.result_upload_status &&
+                            item?.beneficiary_user?.exam_result_document?.[0]
+                              ?.id && (
+                              <Pressable
+                                onPress={() => {
+                                  setOpenView(
+                                    item?.beneficiary_user
+                                      ?.exam_result_document?.[0],
+                                  );
+                                }}
+                              >
+                                <FrontEndTypo.H3>{t("VIEW")}</FrontEndTypo.H3>
+                              </Pressable>
+                            )}
+                        </VStack>
+                      </HStack>
                     )}
                   </HStack>
                 );
               })}
-            </>
+            </VStack>
           )}
         </VStack>
         <input
@@ -242,7 +278,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 
             <Modal.Body>
               <ImageView
-                source={{ document_id: openView?.document_id }}
+                source={{ document_id: openView?.document_id || openView?.id }}
                 alt="Result"
                 width="100%"
                 height="300"
@@ -260,3 +296,7 @@ const ExamResult = ({ userTokenInfo, footerLinks }) => {
 };
 
 export default ExamResult;
+
+ExamResult.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

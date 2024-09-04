@@ -63,6 +63,8 @@ function Table({
                 )}
                 {[
                   "enrolled_ip_verified",
+                  "sso_id_verified",
+                  "registered_in_neev_camp",
                   "registered_in_camp",
                   "ineligible_for_pragati_camp",
                   "10th_passed",
@@ -95,7 +97,7 @@ function Table({
             if (row?.program_beneficiaries?.enrollment_dob) {
               return moment().diff(
                 row?.program_beneficiaries.enrollment_dob,
-                "years"
+                "years",
               );
             } else {
               return "-";
@@ -160,7 +162,7 @@ function Table({
         wrap: true,
       },
     ],
-    []
+    [],
   );
 
   const fetchEnumRegistry = useCallback(async () => {
@@ -174,7 +176,7 @@ function Table({
               "sso_id_enrolled",
               "sso_id_verified",
               "registered_in_neev_camp",
-            ].includes(e.value)
+            ].includes(e.value),
         );
       }
       setBeneficiaryStatus(list);
@@ -189,7 +191,7 @@ function Table({
     (row) => {
       navigate(`/admin/beneficiary/${row?.id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   const filteredStatusText = useMemo(() => {
@@ -253,13 +255,13 @@ function Table({
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onRowClicked={handleRowClick}
         highlightOnHover

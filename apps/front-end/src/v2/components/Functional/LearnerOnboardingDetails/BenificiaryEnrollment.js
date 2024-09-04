@@ -14,10 +14,11 @@ import { HStack, VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function BenificiaryEnrollment({ userTokenInfo }) {
   const { id } = useParams();
-  const [benificiary, setbenificiary] = useState();
+  const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = useState({});
   const [boardName, setBoardName] = useState({});
   const [stateName, setStateName] = useState({});
@@ -42,7 +43,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
       const boardName = await enumRegistryService.boardName(value);
       setBoardName(boardName?.name);
     }
-    setbenificiary(result?.result);
+    setBenificiary(result?.result);
     setLoading(false);
   };
   useEffect(() => {
@@ -59,7 +60,8 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
     return !!(
       benificiary?.program_beneficiaries?.status !== "enrolled_ip_verified" &&
       benificiary?.program_beneficiaries?.status !== "registered_in_camp" &&
-      benificiary?.program_beneficiaries?.status !== "sso_id_verified"
+      benificiary?.program_beneficiaries?.status !== "sso_id_verified" &&
+      benificiary?.program_beneficiaries?.status !== "registered_in_neev_camp"
     );
   };
 
@@ -71,8 +73,6 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
         name: t("ENROLLMENT_DETAILS"),
         onPressBackButton,
         _box: { bg: "white" },
-        profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
@@ -98,7 +98,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
           "enrollment_rejected",
         ].includes(
           benificiary?.program_beneficiaries?.enrollment_status ||
-            benificiary?.program_beneficiaries?.status
+            benificiary?.program_beneficiaries?.status,
         ) && (
           <VStack>
             <FrontEndTypo.H1 fontWeight="600" mb="3">
@@ -116,8 +116,8 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                 stateName == "BIHAR"
                   ? "APPLICATION_ID"
                   : stateName == "MADHYA PRADESH"
-                  ? "ROLL_NUMBER"
-                  : "ENROLLMENT_NO",
+                    ? "ROLL_NUMBER"
+                    : "ENROLLMENT_NO",
                 "MOBILE_NUMBER",
                 stateName != "RAJASTHAN"
                   ? "APPLICATION_DATE"
@@ -132,13 +132,13 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                 enrollment_dob: benificiary?.program_beneficiaries
                   ?.enrollment_dob
                   ? moment(
-                      benificiary?.program_beneficiaries?.enrollment_dob
+                      benificiary?.program_beneficiaries?.enrollment_dob,
                     ).format("DD-MM-YYYY")
                   : "-",
                 enrollment_date: benificiary?.program_beneficiaries
                   ?.enrollment_date
                   ? moment(
-                      benificiary?.program_beneficiaries?.enrollment_date
+                      benificiary?.program_beneficiaries?.enrollment_date,
                     ).format("DD-MM-YYYY")
                   : "-",
                 enrollment_status: benificiary?.program_beneficiaries
@@ -167,37 +167,37 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                 ),
               }}
               {...(["not_enrolled"].includes(
-                benificiary?.program_beneficiaries?.enrollment_status
+                benificiary?.program_beneficiaries?.enrollment_status,
               )
                 ? {
                     arr: ["enrollment_status"],
                   }
                 : [
-                    "identified",
-                    "applied_but_pending",
-                    "enrollment_rejected",
-                    "enrollment_awaited",
-                  ].includes(
-                    benificiary?.program_beneficiaries?.enrollment_status
-                  )
-                ? {
-                    arr: ["enrollment_status", "enrolled_for_board"],
-                  }
-                : {
-                    arr: [
-                      "enrollment_status",
-                      "type_of_enrollement",
-                      "enrolled_for_board",
-                      ...(stateName === "RAJASTHAN" ? ["sso_id"] : []),
-                      "enrollment_number",
-                      "enrollment_mobile_no",
-                      "enrollment_date",
-                      "enrollment_first_name",
-                      "enrollment_middle_name",
-                      "enrollment_last_name",
-                      "enrollment_dob",
-                    ],
-                  })}
+                      "identified",
+                      "applied_but_pending",
+                      "enrollment_rejected",
+                      "enrollment_awaited",
+                    ].includes(
+                      benificiary?.program_beneficiaries?.enrollment_status,
+                    )
+                  ? {
+                      arr: ["enrollment_status", "enrolled_for_board"],
+                    }
+                  : {
+                      arr: [
+                        "enrollment_status",
+                        "type_of_enrollement",
+                        "enrolled_for_board",
+                        ...(stateName === "RAJASTHAN" ? ["sso_id"] : []),
+                        "enrollment_number",
+                        "enrollment_mobile_no",
+                        "enrollment_date",
+                        "enrollment_first_name",
+                        "enrollment_middle_name",
+                        "enrollment_last_name",
+                        "enrollment_dob",
+                      ],
+                    })}
               onEdit={
                 onEditFunc()
                   ? (e) =>
@@ -224,7 +224,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                 ...getEnrollmentIds(
                   benificiary?.program_beneficiaries
                     ?.payment_receipt_document_id,
-                  stateName
+                  stateName,
                 ),
                 subjects:
                   benificiary?.program_beneficiaries?.subjects &&
@@ -234,7 +234,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
                         benificiary?.program_beneficiaries?.enrolled_for_board
                       }
                       subjectIds={JSON.parse(
-                        benificiary?.program_beneficiaries?.subjects
+                        benificiary?.program_beneficiaries?.subjects,
                       )}
                     />
                   ) : (
@@ -252,6 +252,10 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
     </Layout>
   );
 }
+
+BenificiaryEnrollment.PropTypes = {
+  userTokenInfo: PropTypes.any,
+};
 
 const SubjectsList = ({ boardId, subjectIds }) => {
   const [subjectList, setSubjectList] = useState([]);
@@ -277,4 +281,9 @@ const SubjectsList = ({ boardId, subjectIds }) => {
         ))}
     </VStack>
   );
+};
+
+SubjectsList.PropTypes = {
+  boardId: PropTypes.string,
+  subjectIds: PropTypes.any,
 };
