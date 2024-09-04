@@ -1515,7 +1515,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "registered_in_camp",
                     "sso_id_verified",
                   ].includes(data?.program_beneficiaries?.status) &&
-                    publishEvent && (
+                    !publishEvent && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
@@ -2179,4 +2179,10 @@ const TitleComponent = (props) => {
 AgAdminProfile.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
+};
+
+GetOptions.propTypes = {
+  array: PropTypes.array,
+  enumType: PropTypes.string,
+  enumApiData: PropTypes.object,
 };
