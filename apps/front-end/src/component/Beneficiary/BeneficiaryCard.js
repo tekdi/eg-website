@@ -178,7 +178,6 @@ export const LearnerMessage = ({ program_beneficiaries }) => {
   }, []);
 
   const getTitle = () => {
-    console.log("reason", reason);
     if (
       reason?.learner_enrollment_details === "no" &&
       reason?.enrollment_details === "no"

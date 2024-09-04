@@ -287,6 +287,7 @@ export default function PrerakList({ userTokenInfo }) {
         </HStack>
       </VStack>
       <InfiniteScroll
+        key={loadingHeight}
         dataLength={prerakList?.length || 0}
         next={() =>
           setFilter({

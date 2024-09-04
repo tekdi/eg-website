@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const List = ({ data, location }) => {
+export const List = ({ data, location }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -110,10 +110,15 @@ export default function LearnerListView({ userTokenInfo }) {
   }, []);
 
   const getLearner = async (filters) => {
-    if (filters) {
-      const result = await PcuserService.getLearnerList(filters);
-      setHasMore(result?.length > 0);
-      setData((data) => [...data, ...result]);
+    const { currentPage, totalPages, error, ...result } =
+      await PcuserService.getLearnerList(filters);
+    if (!error) {
+      setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+      if (filters.page <= 1) {
+        setData(result?.data);
+      } else {
+        setData([...(data || []), ...(result?.data || [])]);
+      }
     }
   };
 
@@ -190,6 +195,7 @@ export default function LearnerListView({ userTokenInfo }) {
         </HStack>
       </VStack>
       <InfiniteScroll
+        key={loadingHeight}
         height={loadingHeight}
         next={(e) =>
           setFilter({

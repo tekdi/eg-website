@@ -216,6 +216,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
 
       {!loadingList ? (
         <InfiniteScroll
+          key={loadingHeight}
           dataLength={data?.length}
           next={(e) =>
             setFilter({
