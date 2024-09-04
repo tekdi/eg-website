@@ -18,6 +18,7 @@ import Clipboard from "component/Clipboard";
 import { useTranslation } from "react-i18next";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import PropTypes from "prop-types";
 
 export default function Certification({ footerLinks }) {
   const { t } = useTranslation();
@@ -288,3 +289,6 @@ export default function Certification({ footerLinks }) {
     </Layout>
   );
 }
+Certification.propTypes = {
+  footerLinks: PropTypes.any,
+};
