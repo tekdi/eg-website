@@ -217,7 +217,7 @@ export default function App(footerLinks) {
   const { id } = useParams();
   const userId = id;
   const [page, setPage] = useState();
-  const [setPages] = useState();
+  const [pages, setPages] = useState([]);
   const [schema, setSchema] = useState({});
   const [fixedSchema, setFixedSchema] = useState({});
   const [benificiary, setBenificiary] = useState({});
@@ -230,7 +230,7 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [setIsButtonLoading] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [boards, setBoards] = useState();
 
   const [uiSchema, setUiSchema] = useState({
