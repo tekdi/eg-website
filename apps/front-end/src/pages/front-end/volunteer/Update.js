@@ -15,7 +15,11 @@ import NotFound from "pages/NotFound";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { templates, widgets } from "../../../component/BaseInput";
+import {
+  templates,
+  widgets,
+  transformErrors,
+} from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
 
 const uiSchema = {
@@ -202,23 +206,6 @@ export default function App() {
     return err;
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
-
   const checkMobileExist = async (mobile) => {
     const result = await volunteerRegistryService.isUserExist({ mobile });
     if (result?.data) {
@@ -243,6 +230,18 @@ export default function App() {
     // update setFormData onchange
     const newData = { ...formData, ...data };
     setFormData(newData);
+    if (id === "root_pincode") {
+      const regex = /^\d{0,6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
@@ -256,18 +255,6 @@ export default function App() {
         const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
-      }
-    }
-
-    if (id === "root_pincode") {
-      const regex = /^\d{0,6}$/;
-      if (data?.pincode && !regex.test(data.pincode)) {
-        const newErrors = {
-          pincode: {
-            __errors: [t("PINCODE_ERROR")],
-          },
-        };
-        setErrors(newErrors);
       }
     }
 
@@ -466,7 +453,7 @@ export default function App() {
               onChange,
               onError,
               onSubmit,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
             {mobileConditon && page === "4" ? (

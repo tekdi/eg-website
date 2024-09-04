@@ -15,30 +15,35 @@ import {
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
 import { Box, HStack, Modal, VStack } from "native-base";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useScreenshot } from "use-screenshot-hook";
 import ChooseLanguage from "v2/components/Functional/ChooseLanguage/ChooseLanguage";
 import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout";
-import { templates, widgets } from "../../../component/BaseInput";
+import {
+  templates,
+  widgets,
+  onError,
+  transformErrors,
+} from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
 import PropTypes from "prop-types";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
-  const [page, setPage] = React.useState("logoScreen");
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
+  const [page, setPage] = useState("logoScreen");
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [credentials, setCredentials] = useState();
+  const [submitBtn, setSubmitBtn] = useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
-  const [errors, setErrors] = React.useState({});
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = React.useState(false);
+  const [formData, setFormData] = useState(facilitator);
+  const [errors, setErrors] = useState({});
+  const [yearsRange, setYearsRange] = useState([1980, 2030]);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -138,7 +143,6 @@ export default function App({ facilitator, ip, onClick }) {
             arr: data,
           });
         }
-        console.log(newSchema, data);
         setSchema(newSchema);
         setLoading(false);
       }
@@ -227,23 +231,6 @@ export default function App({ facilitator, ip, onClick }) {
     return err;
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
-
   const checkMobileExist = async (mobile) => {
     const result = await volunteerRegistryService.isUserExist({ mobile });
     if (result?.data) {
@@ -266,6 +253,23 @@ export default function App({ facilitator, ip, onClick }) {
     // update setFormData onchange
     const newData = { ...formData, ...data };
     setFormData(newData);
+    if (id === "root_pincode") {
+      const regex = /^\d{6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+    if (id === "root_otp") {
+      if (errors?.otp) {
+        const newErrors = {};
+        setErrors(newErrors);
+      }
+    }
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
@@ -278,32 +282,6 @@ export default function App({ facilitator, ip, onClick }) {
         setSchema({ ...schema, properties, required });
       }
     }
-
-    if (id === "root_pincode") {
-      const regex = /^\d{6}$/;
-      if (data?.pincode && !regex.test(data.pincode)) {
-        const newErrors = {
-          pincode: {
-            __errors: [t("PINCODE_ERROR")],
-          },
-        };
-        setErrors(newErrors);
-      }
-    }
-
-    if (id === "root_otp") {
-      if (errors?.otp) {
-        const newErrors = {};
-        setErrors(newErrors);
-      }
-    }
-  };
-
-  const onError = (data) => {
-    if (data[0]) {
-      const key = data[0]?.property?.slice(1);
-      goErrorPage(key);
-    }
   };
 
   const onSubmit = async (data) => {
@@ -315,18 +293,15 @@ export default function App({ facilitator, ip, onClick }) {
         ["first_name"]: newFormData?.first_name?.replaceAll(" ", ""),
       };
     }
-
     if (schema?.properties?.last_name && newFormData?.last_name) {
       newFormData = {
         ...newFormData,
         ["last_name"]: newFormData?.last_name?.replaceAll(" ", ""),
       };
     }
-
     const newData = {
       ...formData,
       ...newFormData,
-      // ["form_step_number"]: parseInt(page) + 1,
     };
     setFormData(newData);
 
@@ -340,9 +315,9 @@ export default function App({ facilitator, ip, onClick }) {
         if (!resultCheck) {
           if (!schema?.properties?.otp) {
             const { otp: data, ...allData } = newFormData || {};
+            let { mobile, otp, ...otherError } = errors || {};
             setFormData(allData);
             newFormData = allData;
-            let { mobile, otp, ...otherError } = errors || {};
             setErrors(otherError);
           }
           const { status, newSchema } = await sendAndVerifyOtp(schema, {
@@ -364,7 +339,6 @@ export default function App({ facilitator, ip, onClick }) {
               };
               setErrors(newErrors);
             } else {
-              console.log(data);
               if (data?.username && data?.password) {
                 await removeOnboardingURLData();
                 await removeOnboardingMobile();
@@ -453,7 +427,7 @@ export default function App({ facilitator, ip, onClick }) {
               onChange,
               onError,
               onSubmit,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
             {page === "4" ? (

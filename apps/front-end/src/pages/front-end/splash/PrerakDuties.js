@@ -78,68 +78,85 @@ function PrerakDuties(props) {
 
 export default function SwiperFile({ onClick }) {
   const [page, setPage] = useState("1");
+  const { t } = useTranslation();
   const getPageView = () => {
+    const prerakDutiesProps = (
+      page,
+      titleKey,
+      imgUrl,
+      buttonLabel,
+      nextPage,
+    ) => ({
+      title: t(titleKey),
+      imgUrl: `/images/facilitator-duties/${imgUrl}`,
+      processedButton: t(buttonLabel),
+      onPress: nextPage ? () => setPage(nextPage) : onClick,
+      page,
+      setPage,
+      onSkipPress: onClick,
+    });
+
     switch (page) {
       case "0":
         return <Home pageInfo={"SplashScreen"} />;
       case "1":
         return (
           <PrerakDuties
-            title={t("PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS")}
-            imgUrl={`/images/facilitator-duties/img1.png`}
-            processedButton={t("PRERAK_PROCEED_BTN")}
-            onPress={(e) => setPage("2")}
-            setPage={setPage}
-            page={page}
-            onSkipPress={onClick}
+            {...prerakDutiesProps(
+              "1",
+              "PRERAK_IDENTIFY_OUT_OF_SCHOOL_GIRLS",
+              "img1.png",
+              "PRERAK_PROCEED_BTN",
+              "2",
+            )}
           />
         );
       case "2":
         return (
           <PrerakDuties
-            title={t("PRERAK_COUNSEL_PARENTS")}
-            imgUrl={`/images/facilitator-duties/img2.png`}
-            processedButton={t("PRERAK_PROCEED_BTN")}
-            onPress={(e) => setPage("3")}
-            page={page}
-            setPage={setPage}
-            onSkipPress={onClick}
+            {...prerakDutiesProps(
+              "2",
+              "PRERAK_COUNSEL_PARENTS",
+              "img2.png",
+              "PRERAK_PROCEED_BTN",
+              "3",
+            )}
           />
         );
       case "3":
         return (
           <PrerakDuties
-            title={t("PRERAK_REGISTER_GIRLS_FOR_EXAMS")}
-            imgUrl={`/images/facilitator-duties/img3.png`}
-            processedButton={t("PRERAK_PROCEED_BTN")}
-            onPress={(e) => setPage("4")}
-            page={page}
-            setPage={setPage}
-            onSkipPress={onClick}
+            {...prerakDutiesProps(
+              "3",
+              "PRERAK_REGISTER_GIRLS_FOR_EXAMS",
+              "img3.png",
+              "PRERAK_PROCEED_BTN",
+              "4",
+            )}
           />
         );
       case "4":
         return (
           <PrerakDuties
-            title={t("PRERAK_CONDUCT_CAMPS")}
-            imgUrl={`/images/facilitator-duties/img4.png`}
-            processedButton={t("PRERAK_PROCEED_BTN")}
-            onPress={(e) => setPage("5")}
-            page={page}
-            setPage={setPage}
-            onSkipPress={onClick}
+            {...prerakDutiesProps(
+              "4",
+              "PRERAK_CONDUCT_CAMPS",
+              "img4.png",
+              "PRERAK_PROCEED_BTN",
+              "5",
+            )}
           />
         );
       case "5":
         return (
           <PrerakDuties
-            title={t("PRERAK_HELP_GIRLS_ATTEND_EXAMS")}
-            imgUrl={`/images/facilitator-duties/img5.png`}
-            processedButton={t("PRERAK_PROCEED_BTN")}
-            onPress={(e) => setPage("6")}
-            page={page}
-            setPage={setPage}
-            onSkipPress={onClick}
+            {...prerakDutiesProps(
+              "5",
+              "PRERAK_HELP_GIRLS_ATTEND_EXAMS",
+              "img5.png",
+              "PRERAK_PROCEED_BTN",
+              "6",
+            )}
           />
         );
       case "6":
@@ -157,6 +174,7 @@ export default function SwiperFile({ onClick }) {
         return <></>;
     }
   };
+
   return <Stack>{getPageView()}</Stack>;
 }
 

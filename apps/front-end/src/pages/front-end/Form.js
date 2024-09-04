@@ -43,28 +43,27 @@ import { setBlock, setDistrict, setVillage } from "utils/localHelper.js";
 // App
 export default function App({ facilitator, ip, onClick }) {
   //fetch URL data and store fix for 2 times render useEffect call
+  const [programData, setProgramData] = useState(null);
   const [countLoad, setCountLoad] = useState(0);
   const [cohortData, setCohortData] = useState(null);
-  const [programData, setProgramData] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchCurrentData = async () => {
       // ...async operations
       if (countLoad == 0) {
         setCountLoad(1);
       }
       if (countLoad == 1) {
-        //do page load first operation
+        setProgramData(onboardingURLData?.programData);
         let onboardingURLData = await getOnboardingURLData();
         setCohortData(onboardingURLData?.cohortData);
-        setProgramData(onboardingURLData?.programData);
         //end do page load first operation
         setCountLoad(2);
       } else if (countLoad == 2) {
         setCountLoad(3);
       }
-    }
-    fetchData();
+    };
+    fetchCurrentData();
   }, [countLoad]);
 
   //already registred modals
