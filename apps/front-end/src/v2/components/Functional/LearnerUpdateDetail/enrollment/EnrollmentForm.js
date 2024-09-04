@@ -178,14 +178,14 @@ const getSubjects = async (schemaData, value) => {
   let { state_name } = await getSelectedProgramId();
   if (value) {
     let data = await enumRegistryService.subjectsList(value);
-    let newSchema = getOptions(newSchema, {
+    let newSchema = getOptions(schemaData, {
       key: "subjects",
       arr: data?.subjects || [],
       title: "name",
       value: "subject_id",
       extra: { enumOptions: data?.subjects },
     });
-    newSchema = getOptions(schemaData, {
+    newSchema = getOptions(newSchema, {
       key: "payment_receipt_document_id",
       extra: {
         document_type: "enrollment_receipt",
