@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   AdminTypo,
   CardComponent,
@@ -19,19 +20,18 @@ import {
   setSelectedAcademicYear,
   setSelectedProgramId,
 } from "@shiksha/common-lib";
+import DashboardCard from "component/common_components/DashboardCard";
 import moment from "moment";
 import {
   CheckIcon,
   CloseIcon,
   HStack,
-  Image,
   Modal,
   Select,
   Stack,
   VStack,
 } from "native-base";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SyncOfflineData } from "v2/utils/OfflineHelper/OfflineHelper";
@@ -46,7 +46,6 @@ import {
   getIndexedDBItem,
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
-import DashboardCard from "component/common_components/DashboardCard";
 
 const styles = {
   inforBox: {
@@ -65,6 +64,23 @@ const styles = {
   },
 };
 
+const fieldsArr = [
+  "device_ownership",
+  "mobile",
+  "device_type",
+  "gender",
+  "marital_status",
+  "social_category",
+  "name",
+  "contact_number",
+  "availability",
+  "aadhar_no",
+  "aadhaar_verification_mode",
+  "aadhar_verified",
+  "qualification_ids",
+  "qua_name",
+];
+
 export default function Dashboard({ userTokenInfo, footerLinks }) {
   const { t } = useTranslation();
   const [facilitator, setFacilitator] = useState({ notLoaded: true });
@@ -77,7 +93,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = useState();
   const { id } = userTokenInfo?.authUser || {};
   const [examButtonText, setExamButtonText] = useState("");
-  const [prerak_status, SetPrerak_status] = useState("");
+  const [prerak_status, setPrerak_status] = useState("");
   const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -88,14 +104,11 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
   const [selectedCohortData, setSelectedCohortData] = useState(null);
-  const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
   const [disable, setDisable] = useState(false);
-
-  const [env_name] = useState(process.env.NODE_ENV);
 
   const state_name =
     JSON.parse(localStorage.getItem("program"))?.state_name || "";
@@ -105,31 +118,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   //store common api indexed db based on internet connection - start
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(() => {
-    SetPrerak_status(localStorage.getItem("status"));
+    setPrerak_status(localStorage.getItem("status"));
   }, [localStorage.getItem("status")]);
 
-  const saveDataToIndexedDB = async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
+  const saveToIndexDB = async () => {
     try {
       const [ListOfEnum, qualification, editRequest] = await Promise.all([
         enumRegistryService.listOfEnum(),
         enumRegistryService.getQualificationAll(),
-        facilitatorRegistryService.getEditRequests(obj),
-        // enumRegistryService.userInfo(),
+        facilitatorRegistryService.getEditRequests({
+          edit_req_for_context: "users",
+          edit_req_for_context_id: id,
+        }),
       ]);
       const currentTime = moment().toString();
       await Promise.all([
-        setIndexedDBItem("enums", ListOfEnum.data),
         setIndexedDBItem("qualification", qualification),
-        setIndexedDBItem("lastFetchTime", currentTime),
         setIndexedDBItem("editRequest", editRequest),
+        setIndexedDBItem("enums", ListOfEnum.data),
+        setIndexedDBItem("lastFetchTime", currentTime),
       ]);
     } catch (error) {
       console.error("Error saving data to IndexedDB:", error);
@@ -186,7 +197,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     ) {
       await setIpUserInfo(fa_id);
       const data = await setPrerakOfflineInfo(fa_id);
-      SetPrerak_status(data?.program_faciltators?.status);
+      setPrerak_status(data?.program_faciltators?.status);
     }
   };
 
@@ -202,19 +213,19 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      await checkDataToIndex();
+      await checkToIndex();
     };
 
     fetchData();
   }, [isOnline]);
 
-  const checkDataToIndex = async () => {
+  const checkToIndex = async () => {
     // Online Data Fetch Time Interval
     const timeInterval = 30;
-    const enums = await getIndexedDBItem("enums");
     const qualification = await getIndexedDBItem("qualification");
-    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
     const editRequest = await getIndexedDBItem("editRequest");
+    const enums = await getIndexedDBItem("enums");
+    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
     let timeExpired = false;
     if (lastFetchTime) {
       const timeDiff = moment
@@ -227,20 +238,20 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     if (
       isOnline &&
       (!enums ||
-        !qualification ||
         !editRequest ||
+        !qualification ||
         timeExpired ||
         !lastFetchTime ||
         editRequest?.status === 400)
     ) {
-      await saveDataToIndexedDB();
+      await saveToIndexDB();
     }
   };
 
   //end
 
   useEffect(() => {
-    async function fetchData() {
+    const getData = async () => {
       // ...async operation
       if (countLoad == 0) {
         setCountLoad(1);
@@ -263,8 +274,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       } else if (countLoad == 2) {
         setCountLoad(3);
       }
-    }
-    fetchData();
+    };
+    getData();
   }, [countLoad]);
 
   useEffect(() => {
@@ -277,7 +288,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               id: fa_id,
             });
           const data = c_data?.data?.filter(
-            (eventItem) => eventItem?.params?.do_id?.length
+            (eventItem) => eventItem?.params?.do_id?.length,
           );
           setEvents(data);
         } catch (error) {
@@ -295,7 +306,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         (attendance) =>
           attendance.user_id == fa_id &&
           attendance.status == "present" &&
-          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD")
+          data.end_date == moment(attendance.date_time).format("YYYY-MM-DD"),
       );
 
       if (data?.lms_test_tracking?.length > 0) {
@@ -316,8 +327,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       } else if (!newData?.event_started) {
         setExamButtonText(
           `${t("EVENT_NOT_IN_DURATION")} ${t("START_TIME")} ${beforeTime.format(
-            "hh:mm a"
-          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`
+            "hh:mm a",
+          )} ${t("END_TIME")} ${afterTime.format("hh:mm a")}`,
         );
       } else if (isTodayAttendace?.length < 1) {
         setExamButtonText(t("TODAYS_ATTENDANCE_MISSING"));
@@ -330,6 +341,66 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
       setIsEventActive(newData);
     }
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!facilitator?.notLoaded === true) {
+        // ...async operations
+        const resp = objProps(facilitator);
+        setProgress(
+          arrList(
+            {
+              ...resp,
+              qua_name: facilitator?.qualifications?.qualification_master?.name,
+            },
+            fieldsArr,
+          ),
+        );
+        //Checking if current user registered
+        setLoading(true);
+        try {
+          //get program id and store in localstorage
+          const user_program_id = facilitator?.program_faciltators?.program_id;
+          const program_data = await facilitatorRegistryService.getProgram({
+            programId: user_program_id,
+          });
+          await setSelectedProgramId(program_data[0]);
+          //set program data and cohort data
+          let onboardingURLData = await getOnboardingURLData();
+          setProgramData(onboardingURLData?.programData);
+          setCohortData(onboardingURLData?.cohortData);
+          //check mobile number with localstorage mobile no
+          let mobile_no = facilitator?.mobile;
+          let mobile_no_onboarding = await getOnboardingMobile();
+          if (
+            mobile_no_onboarding != null &&
+            mobile_no != null &&
+            mobile_no == mobile_no_onboarding &&
+            onboardingURLData?.cohortData
+          ) {
+            //get cohort id and store in localstorage
+            const user_cohort_id =
+              onboardingURLData?.cohortData?.academic_year_id;
+            const cohort_data = await facilitatorRegistryService.getCohort({
+              cohortId: user_cohort_id,
+            });
+            setSelectedCohortData(cohort_data);
+            await setSelectedAcademicYear(cohort_data);
+            setIsUserRegisterExist(true);
+            localStorage.setItem("loadCohort", "yes");
+          } else {
+            setIsUserRegisterExist(false);
+            await showSelectCohort();
+          }
+        } catch (e) {
+          console.log("Error ::", e);
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+    fetchData();
+  }, [facilitator]);
 
   useEffect(() => {
     async function fetchData() {
@@ -346,92 +417,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     }
     fetchData();
   }, [academicYear]);
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // ...async operations
-  //     const getCertificate = await testRegistryService.getCertificate({
-  //       id,
-  //     });
-  //     if (getCertificate?.data?.length > 0) {
-  //       setCertificateData(getCertificate?.data?.[0]);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!facilitator?.notLoaded === true) {
-        // ...async operations
-        const res = objProps(facilitator);
-        setProgress(
-          arrList(
-            {
-              ...res,
-              qua_name: facilitator?.qualifications?.qualification_master?.name,
-            },
-            [
-              "device_ownership",
-              "mobile",
-              "device_type",
-              "gender",
-              "marital_status",
-              "social_category",
-              "name",
-              "contact_number",
-              "availability",
-              "aadhar_no",
-              "aadhaar_verification_mode",
-              "aadhar_verified",
-              "qualification_ids",
-              "qua_name",
-            ]
-          )
-        );
-        //check exist user registered
-        try {
-          setLoading(true);
-          let onboardingURLData = await getOnboardingURLData();
-          setCohortData(onboardingURLData?.cohortData);
-          setProgramData(onboardingURLData?.programData);
-          //get program id and store in localstorage
-
-          const user_program_id = facilitator?.program_faciltators?.program_id;
-          const program_data = await facilitatorRegistryService.getProgram({
-            programId: user_program_id,
-          });
-          setSelectedProgramData(program_data[0]);
-          await setSelectedProgramId(program_data[0]);
-          //check mobile number with localstorage mobile no
-          let mobile_no = facilitator?.mobile;
-          let mobile_no_onboarding = await getOnboardingMobile();
-          if (
-            mobile_no != null &&
-            mobile_no_onboarding != null &&
-            mobile_no == mobile_no_onboarding &&
-            onboardingURLData?.cohortData
-          ) {
-            //get cohort id and store in localstorage
-            const user_cohort_id =
-              onboardingURLData?.cohortData?.academic_year_id;
-            const cohort_data = await facilitatorRegistryService.getCohort({
-              cohortId: user_cohort_id,
-            });
-            setSelectedCohortData(cohort_data);
-            await setSelectedAcademicYear(cohort_data);
-            localStorage.setItem("loadCohort", "yes");
-            setIsUserRegisterExist(true);
-          } else {
-            setIsUserRegisterExist(false);
-            await showSelectCohort();
-          }
-          setLoading(false);
-        } catch (e) {}
-      }
-    }
-    fetchData();
-  }, [facilitator]);
 
   const handleRandomise = async () => {
     const doIdArray = isEventActive?.params?.do_id;
@@ -471,7 +456,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
     if (key === "" || key === "vo_experience") {
       const expData = facilitator?.vo_experience?.filter(
-        (e) => e?.reference?.document_id
+        (e) => e?.reference?.document_id,
       );
       if (expData?.length > 0) {
         isAllow++;
@@ -498,7 +483,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
   const selectAcademicYear = async () => {
     setSelectCohortForm(false);
-    await checkDataToIndex();
+    await checkToIndex();
     await checkUserToIndex();
   };
 
@@ -524,7 +509,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         academic_year_id: parseInt(onboardingURLData?.cohortId),
         parent_ip: onboardingURLData?.id,
       });
-    if (register_exist_user?.success == true) {
+    if (register_exist_user?.success) {
       try {
         await removeOnboardingURLData();
         await removeOnboardingMobile();
@@ -544,15 +529,13 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     if (loadCohort == null || loadCohort == "no") {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
-      );
+      await setSelectedAcademicYear(user_cohort_list?.data[0]);
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
       localStorage.setItem("loadCohort", "yes");
       if (user_cohort_list?.data.length == 1) {
         setSelectCohortForm(false);
-        await checkDataToIndex();
+        await checkToIndex();
         await checkUserToIndex();
       } else {
         setSelectCohortForm(true);
@@ -561,12 +544,10 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   };
 
   const handleAcademicYear = async (item) => {
-    console.log("hiiii");
     if (item !== "__NativebasePlaceholder__") {
       setAcademicYear(item);
       setDisable(false);
     } else {
-      console.log({ item });
       setAcademicYear(item);
       setDisable(true);
     }
@@ -580,18 +561,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [isOnline]);
 
-  const checkStateAndYear = (state_name, academic_year_name) => {
-    if (
-      state_name === "RAJASTHAN" &&
-      (academic_year_name.includes("2023-2024") ||
-        academic_year_name.includes("2023-24"))
-    ) {
-      return true;
-    }
-    return false;
+  const showAddLearner = () => {
+    return (
+      !(
+        state_name === "RAJASTHAN" &&
+        (academic_year_name.includes("2023-2024") ||
+          academic_year_name.includes("2023-24"))
+      ) &&
+      [
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(prerak_status)
+    );
   };
 
-  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
   return (
     <Layout
       loading={loading}
@@ -621,14 +606,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </VStack>
               )}
             <HStack py="4" flex="1" px="4" pb={0}>
-              {/* <Image
-                source={{
-                  uri: "/hello.svg",
-                }}
-                alt="Add AG"
-                size={"30px"}
-                resizeMode="contain"
-              /> */}
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
                 {t("HELLO")} {facilitator?.first_name},
               </FrontEndTypo.H1>
@@ -724,8 +701,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                                     attendance.status == "present" &&
                                     row.end_date ==
                                       moment(attendance.date_time).format(
-                                        "YYYY-MM-DD"
-                                      )
+                                        "YYYY-MM-DD",
+                                      ),
                                 );
                                 return attData.length > 0 ? "yes" : "no";
                               },
@@ -795,57 +772,48 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Modal.Content>
             </Modal>
           </Stack>
-          {[
-            "pragati_mobilizer",
-            "selected_prerak",
-            "selected_for_training",
-            "selected_for_onboarding",
-          ].includes(prerak_status) &&
-            !hideAddLearner && (
-              <Stack
-                py={0}
-                px={4}
-                pb={"7"}
-                mx={"2"}
-                borderBottomRadius={"10px"}
-                borderBottomColor={"dashboardCardBorder"}
-                borderBottomWidth={"1px"}
-                borderBottomStyle={"solid"}
+          {showAddLearner() && (
+            <Stack
+              py={0}
+              px={4}
+              pb={"7"}
+              mx={"2"}
+              borderBottomRadius={"10px"}
+              borderBottomColor={"dashboardCardBorder"}
+              borderBottomWidth={"1px"}
+              borderBottomStyle={"solid"}
+            >
+              <TitleCard
+                _icon=""
+                icon={
+                  <IconByName
+                    _icon={{ color: "white" }}
+                    name="UserAddLineIcon"
+                  />
+                }
+                onPress={(e) => navigate("/beneficiary")}
               >
-                <TitleCard
-                  _icon=""
-                  icon={
-                    <IconByName
-                      _icon={{ color: "white" }}
-                      name="UserAddLineIcon"
-                    />
-                  }
-                  onPress={(e) => navigate("/beneficiary")}
-                >
-                  <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
-                </TitleCard>
-                <Stack px="3">
-                  {facilitator?.program_faciltators?.status ===
-                    "pragati_mobilizer" && (
-                    <FrontEndTypo.H3
-                      bold
-                      color="textGreyColor.750"
-                      pb="5px"
-                      pt="10"
-                    >
-                      {t("ITS_TIME_TO_START_MOBILIZING")}
-                    </FrontEndTypo.H3>
-                  )}
-                </Stack>
+                <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
+              </TitleCard>
+              <Stack px="3">
+                {facilitator?.program_faciltators?.status ===
+                  "pragati_mobilizer" && (
+                  <FrontEndTypo.H3
+                    bold
+                    color="textGreyColor.750"
+                    pb="5px"
+                    pt="10"
+                  >
+                    {t("ITS_TIME_TO_START_MOBILIZING")}
+                  </FrontEndTypo.H3>
+                )}
               </Stack>
-            )}
+            </Stack>
+          )}
           {["applied", ""]?.includes(prerak_status) && progress !== 100 && (
             <Stack>
               <VStack p="5" pt={1}>
                 <FrontEndTypo.Primarybutton
-                  //old route for complete profile
-                  //onPress={(e) => navigate("/profile/edit/basic_details")}
-                  //old route for complete profile
                   onPress={(e) => navigate("/profile/edit/basic_details")}
                   bold
                   flex="1"
@@ -871,7 +839,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Stack>
               )}
               {["upload", ""].includes(
-                facilitator?.aadhaar_verification_mode
+                facilitator?.aadhaar_verification_mode,
               ) && (
                 <Stack space="3">
                   <CustomAlert
@@ -925,42 +893,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                   </FrontEndTypo.H5>
                 </VStack>
               </HStack>
-              {/* {isDocumentUpload("experience") && (
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
-                      {t("WORK_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
-                      {t("THIS_CAN_BE_LETTER_OF")}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              )} */}
-              {/* {isDocumentUpload("vo_experience") && (
-                <HStack space="2">
-                  <IconByName
-                    isDisabled
-                    name="CheckboxCircleLineIcon"
-                    _icon={{ size: "15px" }}
-                    color="floatingLabelColor.500"
-                  />
-                  <VStack width="99%">
-                    <FrontEndTypo.H4 bold color="textGreyColor.750">
-                      {t("VOLUNTEER_EXPERIENCE_PROOF")}
-                    </FrontEndTypo.H4>
-                    <FrontEndTypo.H5 color="grayTitleCard">
-                      {t("THIS_CAN_BE_REFERENCE_OR_LETTER_OF")}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              )} */}
               <HStack>
                 <FrontEndTypo.Secondarybutton
                   width="100%"
@@ -973,33 +905,29 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {/* Temp Comment */}
 
-          {
-            state_name === "RAJASTHAN" && (
-              <Stack bg="bgYellowColor.400" space="6" p={4}>
-                <FrontEndTypo.H2 color="textMaroonColor.400">
-                  {t("LEARNER_EXAMINATION")}
-                </FrontEndTypo.H2>
-                <FrontEndTypo.H3>
-                  {t("LEARNER_EXAMINATION_DETAILS")}
-                </FrontEndTypo.H3>
+          {state_name === "RAJASTHAN" && (
+            <Stack bg="bgYellowColor.400" space="6" p={4}>
+              <FrontEndTypo.H2 color="textMaroonColor.400">
+                {t("LEARNER_EXAMINATION")}
+              </FrontEndTypo.H2>
+              <FrontEndTypo.H3>
+                {t("LEARNER_EXAMINATION_DETAILS")}
+              </FrontEndTypo.H3>
 
-                <FrontEndTypo.Primarybutton
-                  width="100%"
-                  // onPress={(e) => navigate("/examattendance")}
-                  onPress={(e) => navigate("/examschedule")}
-                >
-                  {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
-                </FrontEndTypo.Primarybutton>
-              </Stack>
-            )
-            /* 
-          <DashboardCard
-            title={"LEARNER_EXAM_RESULTS"}
-            titleDetail={"LEARNER_EXAMINATION_DETAILS"}
-            primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
-            navigation={"/examresult"}
-          /> */
-          }
+              <FrontEndTypo.Primarybutton
+                width="100%"
+                onPress={(e) => navigate("/examschedule")}
+              >
+                {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
+              </FrontEndTypo.Primarybutton>
+              <DashboardCard
+                title={"LEARNER_EXAM_RESULTS"}
+                titleDetail={"LEARNER_EXAMINATION_DETAILS"}
+                primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
+                navigation={"/examresult"}
+              />
+            </Stack>
+          )}
           {/* Temp Comment  End*/}
         </VStack>
       </VStack>
@@ -1201,7 +1129,6 @@ const InfoBox = ({ status, progress }) => {
     case "on_hold":
       infoBox = (
         <HStack
-          // {...styles.inforBox}
           bg="red.600"
           p="5"
           borderBottomWidth="1"
@@ -1303,6 +1230,13 @@ const TableCard = ({ data, columns, setExamEvent }) => {
     </VStack>
   );
 };
+
+TableCard.propTypes = {
+  data: PropTypes.any,
+  columns: PropTypes.any,
+  setExamEvent: PropTypes.any,
+};
+
 Dashboard.propTypes = {
   userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,

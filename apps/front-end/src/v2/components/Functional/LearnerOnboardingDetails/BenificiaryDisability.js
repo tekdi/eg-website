@@ -43,7 +43,9 @@ const GetEnumValueLocal = ({ keyName, value, enums }) => {
 
           break;
         case "govt_advantages":
-          setEnumType(`BENEFICIARY_DISABILITY_${state_name.replace(" ", "_")}`);
+          setEnumType(
+            `BENEFICIARY_DISABILITY_${state_name?.replace(" ", "_")}`,
+          );
 
           break;
         case "support_for_exam":
@@ -92,7 +94,7 @@ const setSchemaByDependency = async (item) => {
   let cardData = {};
   const data = await enumRegistryService.listOfEnum();
   const enumOptions = data?.data ? data?.data : {};
-  const getData = ({ only, except }) => {
+  const getData = ({ only, except } = {}) => {
     return Object.keys(schema1?.properties || {}).reduce((acc, key) => {
       if (schema1.properties[key].properties) {
         const keysArr = Object.keys(schema1.properties[key].properties);
@@ -138,26 +140,28 @@ const setSchemaByDependency = async (item) => {
     }, {});
   };
 
-  switch (item?.has_disability) {
-    case "yes":
-      {
-        if (data?.has_govt_advantage == "yes") {
-          cardData = getData();
-        } else {
-          cardData = getData({ except: ["govt_advantages"] });
-        }
-      }
-      break;
-    default:
-      {
-        cardData = getData({ only: ["has_disability"] });
-      }
-      break;
+  const hasDisability = item?.has_disability;
+  const hasDisabilityCertificate = item?.has_disability_certificate;
+  const hasGovtAdvantage = item?.has_govt_advantage;
+  if (hasDisability === "yes") {
+    if (hasDisabilityCertificate === "no" && hasGovtAdvantage === "no") {
+      cardData = getData({
+        except: ["govt_advantages", "disability_percentage"],
+      });
+    } else if (hasGovtAdvantage === "no") {
+      cardData = getData({ except: ["govt_advantages"] });
+    } else if (hasDisabilityCertificate === "no") {
+      cardData = getData({ except: ["disability_percentage"] });
+    } else {
+      cardData = getData();
+    }
+  } else {
+    cardData = getData({ only: ["has_disability"] });
   }
   return cardData;
 };
 
-export default function BenificiaryDisability({ userTokenInfo }) {
+export default function BenificiaryDisability({ userTokenInfo, _layout }) {
   const { id } = useParams();
   const [item, setItem] = useState();
   const [label, setLabel] = useState();
@@ -172,8 +176,13 @@ export default function BenificiaryDisability({ userTokenInfo }) {
 
   useEffect(() => {
     const init = async () => {
-      const { result } = await benificiaryRegistoryService.getOne(id);
-      const { extended_users } = result || {};
+      let extended_users = {};
+      if (!_layout?.item) {
+        const { result } = await benificiaryRegistoryService.getOne(id);
+        extended_users = result?.extended_users || {};
+      } else {
+        extended_users = _layout?.item || {};
+      }
       const cardData = await setSchemaByDependency(extended_users);
       setItem(cardData?.item);
       setLabel(cardData?.labels);
@@ -197,6 +206,7 @@ export default function BenificiaryDisability({ userTokenInfo }) {
       analyticsPageTitle={"BENEFICIARY_DISABILITY_DETAILS"}
       pageTitle={t("BENEFICIARY")}
       stepTitle={t("BENEFICIARY_DISABILITY_DETAILS")}
+      {..._layout}
     >
       <VStack p="5" pt="0" space={4}>
         <VStack>
@@ -208,9 +218,12 @@ export default function BenificiaryDisability({ userTokenInfo }) {
             _hstack={{ borderBottomWidth: 0 }}
             title={t("BENEFICIARY_DISABILITY_DETAILS")}
             {...{ label, item, arr }}
-            onEdit={(e) =>
-              navigate(`/beneficiary/edit/${id}/disability-details`)
-            }
+            {...(_layout?.allowRoles?.includes("program_coordinator")
+              ? {}
+              : {
+                  onEdit: (e) =>
+                    navigate(`/beneficiary/edit/${id}/disability-details`),
+                })}
           />
         </VStack>
       </VStack>
@@ -226,4 +239,5 @@ GetEnumValueLocal.propTypes = {
 
 BenificiaryDisability.propTypes = {
   userTokenInfo: PropTypes.any,
+  _layout: PropTypes.any,
 };
