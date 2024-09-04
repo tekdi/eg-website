@@ -121,6 +121,7 @@ export default function CampLearnerList({ userTokenInfo }) {
           })
         }
         hasMore={hasMore}
+        key={loadingHeight}
         height={loadingHeight}
         // loader={<Loading height="100" />}
         endMessage={

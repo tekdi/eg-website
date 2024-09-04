@@ -37,12 +37,10 @@ export default function PsycCycle() {
   const [btnLoading, setBtnLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [psyc, setPsyc] = useState();
 
   const uiSchema = {
     syc_subjects: {
       "ui:widget": "MultiCheckSubject",
-      "ui:readonly": psyc || false,
     },
     exam_fee_date: {
       "ui:widget": "alt-date",
@@ -56,10 +54,6 @@ export default function PsycCycle() {
         format: "DMY",
         // help: `date bitween ${getFormattedDateRange()}`,
       },
-      "ui:readonly": psyc || false,
-    },
-    exam_fee_document_id: {
-      readonly: psyc || false,
     },
   };
 
@@ -73,7 +67,6 @@ export default function PsycCycle() {
         exam_fee_document_id: data?.exam_fee_document_id,
         syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
       });
-      setPsyc(data?.is_continued);
       setLoading(false);
     };
 
@@ -98,15 +91,37 @@ export default function PsycCycle() {
         "[]",
       );
       const isDateValid = dateToCheck.isSameOrBefore(moment(), "day");
-
-      console.log(
-        dateToCheck.isBetween(startOfRange, endOfRange, null, "[]"),
-        dateToCheck.isSameOrBefore(moment(), "day"),
-      );
       if (!isBetweenDateValid) {
         error = { [key]: t("DATES_NOT_ALLOWED") };
       } else if (!isDateValid) {
         error = { [key]: t("FUTUTRE_DATES_NOT_ALLOWED") };
+      }
+    } else if (key == "syc_subjects") {
+      const countLanguageSubjects = (subjectsArr, subjects) => {
+        // Convert the subjects array to a Set for faster lookups
+        const subjectsSet = new Set(subjects);
+        // Filter the array for objects with "language" subject_type and a subject_id in the subjects array
+        const languageSubjects = subjectsArr?.filter(
+          (subject) =>
+            subject.subject_type === "language" &&
+            subjectsSet.has(String(subject.subject_id)),
+        );
+        // Return the count of filtered objects
+        return languageSubjects.length;
+      };
+      const langCount = countLanguageSubjects(
+        schema?.properties?.syc_subjects?.enumOptions,
+        data?.syc_subjects,
+      );
+      const nonLangCount = data?.syc_subjects?.length - langCount;
+      if (langCount === 0 && nonLangCount === 0) {
+        error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
+      } else if (langCount + nonLangCount > 7) {
+        error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
+      } else if (langCount > 3) {
+        error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
+      } else if (nonLangCount > 5) {
+        error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
       }
     }
     return error;
@@ -165,7 +180,20 @@ export default function PsycCycle() {
           },
         });
       }
+    } else if (id == "root_syc_subjects") {
+      let { syc_subjects, ...otherErrore } = errors || {};
+      setErrors(otherErrore);
+      const resultDate = validate(data, "syc_subjects");
+      if (resultDate?.syc_subjects) {
+        setErrors({
+          ...errors,
+          syc_subjects: {
+            __errors: [resultDate?.syc_subjects],
+          },
+        });
+      }
     }
+
     setFormData(newData);
   };
 
@@ -224,7 +252,6 @@ export default function PsycCycle() {
                 formRef?.current?.submit();
               }
             }}
-            isDisabled={psyc}
           >
             {t("SAVE")}
           </FrontEndTypo.Primarybutton>

@@ -1,5 +1,4 @@
 import {
-  CardComponent,
   FrontEndTypo,
   IconByName,
   PCusers_layout as Layout,
@@ -8,93 +7,30 @@ import {
   benificiaryRegistoryService,
   jsonParse,
 } from "@shiksha/common-lib";
-import Chip, { ChipStatus } from "component/BeneficiaryStatus";
-import Clipboard from "component/Clipboard";
 import {
   Box,
   Checkbox,
   HStack,
   IconButton,
   Modal,
-  Pressable,
   Select,
+  Spinner,
   Stack,
   VStack,
 } from "native-base";
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
-
-const List = ({ data }) => {
-  const navigate = useNavigate();
-
-  return (
-    <VStack space="4" p="4" alignContent="center">
-      {Array.isArray(data) && data.length > 0 ? (
-        data.map((item) => (
-          <CardComponent
-            key={item?.id}
-            _body={{ px: "3", py: "3" }}
-            _vstack={{ p: 0, space: 0, flex: 1 }}
-          >
-            <Pressable
-              onPress={() =>
-                navigate(`/learner/learverProfileView/${item?.id}`)
-              }
-            >
-              <HStack justifyContent="space-between" space={1}>
-                <HStack alignItems="center" flex={[1, 2, 4]}>
-                  <VStack alignItems="center" p="1">
-                    <Chip>
-                      <Clipboard text={item?.id}>
-                        <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
-                      </Clipboard>
-                    </Chip>
-                  </VStack>
-                  <VStack
-                    pl="2"
-                    flex="1"
-                    wordWrap="break-word"
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.first_name}
-                      {item?.middle_name &&
-                        item?.middle_name !== "null" &&
-                        ` ${item.middle_name}`}
-                      {item?.last_name &&
-                        item?.last_name !== "null" &&
-                        ` ${item.last_name}`}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H5 color="textGreyColor.800">
-                      {item?.mobile}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              </HStack>
-            </Pressable>
-          </CardComponent>
-        ))
-      ) : (
-        <></>
-      )}
-    </VStack>
-  );
-};
-
-List.propTypes = {
-  data: PropTypes.object,
-};
+import { List } from "./LearnerListView";
 
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
 ];
 
-export default function LearnerList() {
+export default function LearnerList({ userTokenInfo }) {
   const [filter, setFilter] = useState({});
   const [selectStatus, setSelectStatus] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -107,6 +43,17 @@ export default function LearnerList() {
   const [filteredData, setFilteredData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [beneficiary, setBeneficiary] = useState(true);
+  const [loadingHeight, setLoadingHeight] = useState(0);
+  const [bodyHeight, setBodyHeight] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
 
   useEffect(() => {
     const init = async () => {
@@ -185,12 +132,21 @@ export default function LearnerList() {
   };
 
   const getLearner = async (filters) => {
-    const data = await PcuserService.getLearnerList(filters);
-    setBeneficiary(data);
+    const { currentPage, totalPages, error, ...result } =
+      await PcuserService.getLearnerList(filters);
+    if (!error) {
+      setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+      if (filters.page <= 1) {
+        setBeneficiary(result?.data);
+      } else {
+        setBeneficiary([...(beneficiary || []), ...(result?.data || [])]);
+      }
+    }
   };
 
   useEffect(() => {
-    getLearner(filter);
+    if (filter?.search || filter?.status || filter?.sortType)
+      getLearner(filter);
   }, [filter]);
 
   const getView = () => {
@@ -283,6 +239,8 @@ export default function LearnerList() {
 
   return (
     <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
+      facilitator={userTokenInfo?.authUser || {}}
       _appBar={{
         name: t("LEARNER_PROFILE"),
         onPressBackButton: () => {
@@ -549,4 +507,6 @@ export default function LearnerList() {
   );
 }
 
-LearnerList.propTypes = {};
+LearnerList.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

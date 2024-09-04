@@ -7,7 +7,7 @@ import {
   enumRegistryService,
   PcuserService,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Box, Select, Pressable } from "native-base";
+import { HStack, VStack, Box, Select, Pressable, Spinner } from "native-base";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Chip from "component/BeneficiaryStatus";
@@ -16,6 +16,7 @@ import Clipboard from "component/Clipboard";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { ChipStatus } from "component/Chip";
+import _ from "lodash";
 
 const List = ({ data }) => {
   const navigate = useNavigate();
@@ -109,8 +110,9 @@ export default function PrerakList({ userTokenInfo }) {
   const [filter, setFilter] = useState({ limit: 6 });
   const [selectStatus, setSelectStatus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingList, setLoadingList] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loadingHeight, setLoadingHeight] = useState(0);
+  const [bodyHeight, setBodyHeight] = useState(0);
   const ref = useRef(null);
   const { t } = useTranslation();
   const [prerakList, setPrerakList] = React.useState();
@@ -118,51 +120,66 @@ export default function PrerakList({ userTokenInfo }) {
 
   useEffect(() => {
     const getPrerakList = async () => {
-      setLoadingList(true);
+      setLoading(true);
       try {
-        const result = await PcuserService.getPrerakList();
         const program_id =
           userTokenInfo?.authUser?.program_users?.[0]?.program_id;
         const cohortResult = await PcuserService.getAcademicYear({
           program_id,
         });
         setCohorts(cohortResult);
-        setPrerakList(result?.facilitator_data);
 
         const data = await enumRegistryService.listOfEnum();
-        setSelectStatus(data?.data ? data?.data?.FACILITATOR_STATUS : {});
+        setSelectStatus(data?.data?.FACILITATOR_STATUS || {});
 
-        setLoadingList(false);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-
-        setLoadingList(false);
+        setLoading(false);
       }
     };
     getPrerakList();
   }, []);
 
   useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(
+        parseInt(bodyHeight || 0) - parseInt(ref?.current?.clientHeight || 0),
+      );
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
+
+  useEffect(() => {
     const getPrerakList = async () => {
-      setLoadingList(true);
       try {
-        const result = await PcuserService.getPrerakList(filter);
-        if (result?.facilitator_data?.length == 0) {
-          setHasMore(false);
+        const { currentPage, totalPages, error, ...result } =
+          await PcuserService.getPrerakList(filter);
+        if (!error) {
+          setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+          if (filter.page <= 1) {
+            setPrerakList(result?.facilitator_data);
+          } else {
+            setPrerakList([
+              ...(prerakList || []),
+              ...(result?.facilitator_data || []),
+            ]);
+          }
         }
-        setPrerakList(result?.facilitator_data);
-        setLoadingList(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoadingList(false);
       }
     };
-    getPrerakList();
+    if (!_.isEmpty(filter)) {
+      getPrerakList();
+    }
   }, [filter]);
 
   return (
     <Layout
-      getBodyHeight={(e) => setLoadingHeight(e)}
+      loading={loading}
+      getBodyHeight={(e) => setBodyHeight(e)}
       analyticsPageTitle={"PRERAK_LIST"}
       _footer={{ menues: true }}
       pageTitle={t("PRERAK_LIST")}
@@ -203,7 +220,7 @@ export default function PrerakList({ userTokenInfo }) {
               {Array.isArray(selectStatus) &&
                 selectStatus.map((option, index) => (
                   <Select.Item
-                    key={index || ""}
+                    key={option.value + index}
                     label={t(option.title)}
                     value={option.value}
                   />
@@ -269,31 +286,34 @@ export default function PrerakList({ userTokenInfo }) {
           </Box>
         </HStack>
       </VStack>
-      {!loadingList ? (
-        <InfiniteScroll
-          dataLength={prerakList?.length || 0}
-          next={() =>
-            setFilter({
-              ...filter,
-              page: (filter?.page ? filter?.page : 1) + 1,
-            })
-          }
-          hasMore={hasMore}
-          height={loadingHeight}
-          endMessage={
-            <FrontEndTypo.H3 bold display="inherit" textAlign="center">
-              {prerakList?.length > 0
-                ? t("COMMON_NO_MORE_RECORDS")
-                : t("DATA_NOT_FOUND")}
-            </FrontEndTypo.H3>
-          }
-        >
-          <List data={prerakList} />
-        </InfiniteScroll>
-      ) : (
-        // Loading component here if needed
-        <></>
-      )}
+      <InfiniteScroll
+        key={loadingHeight}
+        dataLength={prerakList?.length || 0}
+        next={() =>
+          setFilter({
+            ...filter,
+            page: (filter?.page ? filter?.page : 1) + 1,
+          })
+        }
+        loader={
+          <Spinner
+            accessibilityLabel="Loading posts"
+            color="bgRed.500"
+            size="lg"
+          />
+        }
+        hasMore={hasMore}
+        height={loadingHeight}
+        endMessage={
+          <FrontEndTypo.H3 bold display="inherit" textAlign="center">
+            {prerakList?.length > 0
+              ? t("COMMON_NO_MORE_RECORDS")
+              : t("DATA_NOT_FOUND")}
+          </FrontEndTypo.H3>
+        }
+      >
+        <List data={prerakList} />
+      </InfiniteScroll>
     </Layout>
   );
 }
