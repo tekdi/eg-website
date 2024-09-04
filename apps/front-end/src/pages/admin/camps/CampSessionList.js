@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import SessionActions, { SessionList } from "./CampSessionModal";
+import PropTypes from "prop-types";
 
 export default function CampSessionList({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
@@ -578,4 +579,15 @@ const getIncompletLeaner = (data, type) => {
   });
 
   return result;
+};
+CampSessionList.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};
+SessionErrorMessage.propTypes = {
+  message: PropTypes.any,
+  data: PropTypes.any,
+  navigate: PropTypes.any,
+  show: PropTypes.any,
+  t: PropTypes.any,
 };

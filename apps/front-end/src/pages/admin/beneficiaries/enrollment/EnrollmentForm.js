@@ -789,7 +789,7 @@ export default function App(footerLinks) {
         ],
       };
     }
-    const { success, isUserExist } = await benificiaryRegistoryService.updateAg(
+    const { isUserExist } = await benificiaryRegistoryService.updateAg(
       {
         ...newdata,
         edit_page_type: page,
@@ -981,4 +981,7 @@ const AlertCustom = ({ alert }) => (
 
 App.PropTypes = {
   footerLinks: PropTypes.any,
+};
+AlertCustom.propTypes = {
+  alert: PropTypes.any,
 };
