@@ -24,6 +24,7 @@ import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout";
 import { templates, widgets } from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
+import PropTypes from "prop-types";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
@@ -40,7 +41,6 @@ export default function App({ facilitator, ip, onClick }) {
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const {id} = useParams();
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -90,9 +90,6 @@ export default function App({ facilitator, ip, onClick }) {
       if (nextIndex !== undefined) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
-      } else if (pageStape.toLowerCase() === "n") {
-        // await formSubmitUpdate({ ...formData, form_step_number: "10" });
-        // setPage("upload");
       } else {
         return true;
       }
@@ -176,10 +173,6 @@ export default function App({ facilitator, ip, onClick }) {
     };
     init();
   }, [page]);
-
-  // const userExist = async (filters) => {
-  //   return await facilitatorRegistryService.isExist(filters);
-  // };
 
   const goErrorPage = (key) => {
     if (key) {
@@ -341,10 +334,7 @@ export default function App({ facilitator, ip, onClick }) {
       const { id } = {};
       let success = false;
       if (id) {
-        // const data = await formSubmitUpdate(newData);
-        // if (!_.isEmpty(data)) {
         success = true;
-        // }
       } else if (page === "4") {
         const resultCheck = await checkMobileExist(newFormData?.mobile);
         if (!resultCheck) {
@@ -591,3 +581,9 @@ export default function App({ facilitator, ip, onClick }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  facilitator: PropTypes.object,
+  ip: PropTypes.any,
+  onClick: PropTypes.func,
+};

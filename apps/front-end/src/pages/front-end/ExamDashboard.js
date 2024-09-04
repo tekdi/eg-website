@@ -1,20 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Layout,
-  FrontEndTypo,
-  enumRegistryService,
-  facilitatorRegistryService,
-  getOnboardingMobile,
-  getSelectedProgramId,
-  objProps,
-  arrList,
-  setSelectedAcademicYear,
-  setSelectedProgramId,
-} from "@shiksha/common-lib";
+import { Layout, FrontEndTypo } from "@shiksha/common-lib";
 import { VStack } from "native-base";
 import DashboardCard from "component/common_components/DashboardCard";
 import { useTranslation } from "react-i18next";
-
+import PropTypes from "prop-types";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
 const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
@@ -27,13 +16,19 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
 
   useEffect(async () => {
     if (userTokenInfo) {
-      const IpUserInfo = await getIpUserInfo(fa_id);
-      let ipUserData = IpUserInfo;
-      if (!IpUserInfo) {
-        ipUserData = await setIpUserInfo(fa_id);
+      setLoading(true);
+      try {
+        const IpUserInfo = await getIpUserInfo(fa_id);
+        let ipUserData = IpUserInfo;
+        if (!IpUserInfo) {
+          ipUserData = await setIpUserInfo(fa_id);
+        }
+        setFacilitator(ipUserData);
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoading(false);
       }
-
-      setFacilitator(ipUserData);
     }
   }, []);
 
@@ -94,3 +89,8 @@ const ExamDashboard = ({ footerLinks, userTokenInfo }) => {
 };
 
 export default ExamDashboard;
+
+ExamDashboard.propTypes = {
+  footerLinks: PropTypes.array,
+  userTokenInfo: PropTypes.object,
+};

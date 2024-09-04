@@ -95,7 +95,7 @@ export default function App() {
           setSchema(properties[page]);
           const userObj = filterObject(
             user,
-            Object.keys(properties?.[page]?.properties || {})
+            Object.keys(properties?.[page]?.properties || {}),
           );
           setFormData(userObj);
         } else if (page == 2) {
@@ -176,9 +176,11 @@ export default function App() {
       //   }
       //   break;
       case "dob":
-        const years = moment().diff(data?.dob, "years");
-        if (years < 18) {
-          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
+        {
+          const years = moment().diff(data?.dob, "years");
+          if (years < 18) {
+            error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
+          }
         }
         break;
       default:
@@ -205,7 +207,7 @@ export default function App() {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -314,81 +316,85 @@ export default function App() {
           case "1":
           case "2":
           case "3":
-            let filterNewData = filterObject(
-              newFormData,
-              Object.keys(schema?.properties),
-              {},
-              ""
-            );
-            if (page === "3") {
-              filterNewData = {
-                qualification: {
-                  id: volunteer?.qualifications?.id,
-                  qualification_name: filterNewData?.qualification,
-                },
-              };
-            } else {
-              filterNewData = {
-                users: filterNewData,
-              };
-            }
-            const { data, success } = await formSubmitUpdate(filterNewData);
-            if (!success) {
-              const newErrors = {
-                mobile: {
-                  __errors:
-                    data?.message?.constructor?.name === "String"
-                      ? [data?.message]
-                      : data?.error?.constructor?.name === "Array"
-                      ? data?.error
-                      : [t("SERVER_ERROR")],
-                },
-              };
-              setErrors(newErrors);
-            } else {
-              console.log(data);
-            }
-            break;
-          case "4":
-            const resultCheck = await checkMobileExist(newFormData?.mobile);
-            if (!resultCheck) {
-              if (!schema?.properties?.otp) {
-                const { otp: data, ...allData } = newFormData || {};
-                setFormData(allData);
-                newFormData = allData;
-                let { mobile, otp, ...otherError } = errors || {};
-                setErrors(otherError);
+            {
+              let filterNewData = filterObject(
+                newFormData,
+                Object.keys(schema?.properties),
+                {},
+                "",
+              );
+              if (page === "3") {
+                filterNewData = {
+                  qualification: {
+                    id: volunteer?.qualifications?.id,
+                    qualification_name: filterNewData?.qualification,
+                  },
+                };
+              } else {
+                filterNewData = {
+                  users: filterNewData,
+                };
               }
-              const { status, newSchema } = await sendAndVerifyOtp(schema, {
-                ...newFormData,
-                hash: localStorage.getItem("hash"),
-              });
-              if (status === true) {
-                const { data, success } = await formSubmitUpdate(newFormData);
-                if (!success) {
-                  const newErrors = {
-                    mobile: {
-                      __errors:
-                        data?.message?.constructor?.name === "String"
-                          ? [data?.message]
-                          : data?.error?.constructor?.name === "Array"
-                          ? data?.error
-                          : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-                    },
-                  };
-                  setErrors(newErrors);
-                } else {
-                  console.log(data);
-                }
-              } else if (status === false) {
+              const { data, success } = await formSubmitUpdate(filterNewData);
+              if (!success) {
                 const newErrors = {
-                  otp: {
-                    __errors: [t("USER_ENTER_VALID_OTP")],
+                  mobile: {
+                    __errors:
+                      data?.message?.constructor?.name === "String"
+                        ? [data?.message]
+                        : data?.error?.constructor?.name === "Array"
+                          ? data?.error
+                          : [t("SERVER_ERROR")],
                   },
                 };
                 setErrors(newErrors);
               } else {
-                setSchema(newSchema);
+                console.log(data);
+              }
+            }
+            break;
+          case "4":
+            {
+              const resultCheck = await checkMobileExist(newFormData?.mobile);
+              if (!resultCheck) {
+                if (!schema?.properties?.otp) {
+                  const { otp: data, ...allData } = newFormData || {};
+                  setFormData(allData);
+                  newFormData = allData;
+                  let { mobile, otp, ...otherError } = errors || {};
+                  setErrors(otherError);
+                }
+                const { status, newSchema } = await sendAndVerifyOtp(schema, {
+                  ...newFormData,
+                  hash: localStorage.getItem("hash"),
+                });
+                if (status === true) {
+                  const { data, success } = await formSubmitUpdate(newFormData);
+                  if (!success) {
+                    const newErrors = {
+                      mobile: {
+                        __errors:
+                          data?.message?.constructor?.name === "String"
+                            ? [data?.message]
+                            : data?.error?.constructor?.name === "Array"
+                              ? data?.error
+                              : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                      },
+                    };
+                    setErrors(newErrors);
+                  } else {
+                    console.log(data);
+                  }
+                } else if (status === false) {
+                  const newErrors = {
+                    otp: {
+                      __errors: [t("USER_ENTER_VALID_OTP")],
+                    },
+                  };
+                  setErrors(newErrors);
+                } else {
+                  setSchema(newSchema);
+                }
               }
             }
             break;
@@ -438,10 +444,6 @@ export default function App() {
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        // onlyIconsShow: ["langAppBtn"],
-        // funLangChange: () => {
-        //   setPage("chooseLangauge");
-        // },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >

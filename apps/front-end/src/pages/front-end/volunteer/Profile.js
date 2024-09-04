@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   CardComponent,
   FrontEndTypo,
@@ -7,19 +8,18 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import Layout from "onest/Layout";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import schema from "./registration/schema";
 import moment from "moment";
 
 export default function Profile() {
-  const [volunteer, setVolunteer] = React.useState();
+  const [volunteer, setVolunteer] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const init = async () => {
       const user = await facilitatorRegistryService.getInfo();
       setVolunteer(user);
@@ -27,6 +27,21 @@ export default function Profile() {
     };
     init();
   }, []);
+
+  const getCardTitle = (item) => {
+    switch (item) {
+      case 1:
+        return t("BASIC_DETAILS");
+      case 2:
+        return t("ADDRESS_DETAILS");
+      case 3:
+        return t("QUALIFICATION");
+      case 4:
+        return t("CONTACT_DETAILS");
+      default:
+        return t("");
+    }
+  };
 
   return (
     <Layout
@@ -119,17 +134,7 @@ export default function Profile() {
           {Object.keys(schema?.properties || {})?.map((item) => (
             <CardComponent
               key={item}
-              title={
-                item == 1
-                  ? t("BASIC_DETAILS")
-                  : item == 2
-                  ? t("ADDRESS_DETAILS")
-                  : item == 3
-                  ? t("QUALIFICATION")
-                  : item == 4
-                  ? t("CONTACT_DETAILS")
-                  : ""
-              }
+              title={getCardTitle(item)}
               {...(volunteer?.user_roles?.[0]?.status !== "approved"
                 ? { onEdit: (e) => navigate(`/profile/${item}/edit`) }
                 : {})}
