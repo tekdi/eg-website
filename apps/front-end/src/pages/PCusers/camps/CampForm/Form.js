@@ -25,12 +25,10 @@ export default function App() {
   const { step } = useParams();
   const { id } = useParams();
   const [page, setPage] = useState();
-  const [pages, setPages] = useState();
   const [schema, setSchema] = useState({});
   const formRef = useRef();
   const [formData, setFormData] = useState();
   const [errors, setErrors] = useState({});
-  const [alert, setAlert] = useState();
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -166,8 +164,7 @@ export default function App() {
       let schemaData = properties[newStep];
       setPage(newStep);
       setSchema(schemaData);
-      setPages(newSteps);
-
+      setErrors();
       if (step === "edit_kit_details") {
         if (formData?.kit_received == "yes") {
           setSchema(schemaData);
@@ -218,14 +215,6 @@ export default function App() {
         </Alert>
       ) : (
         <Box py={6} px={4} mb={5}>
-          {alert && (
-            <Alert status="warning" alignItems={"start"} mb="3">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon />
-                <FrontEndTypo.H2>{alert}</FrontEndTypo.H2>
-              </HStack>
-            </Alert>
-          )}
           {page && page !== "" && (
             <Form
               key={schema}

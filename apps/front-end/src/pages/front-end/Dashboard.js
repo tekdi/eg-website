@@ -104,7 +104,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
   const [selectedCohortData, setSelectedCohortData] = useState(null);
-  // const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
@@ -135,7 +134,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           edit_req_for_context: "users",
           edit_req_for_context_id: id,
         }),
-        // enumRegistryService.userInfo(),
       ]);
       const currentTime = moment().toString();
       await Promise.all([
@@ -366,7 +364,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
           });
-          // setSelectedProgramData(program_data[0]);
           await setSelectedProgramId(program_data[0]);
           //set program data and cohort data
           let onboardingURLData = await getOnboardingURLData();
@@ -817,9 +814,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
             <Stack>
               <VStack p="5" pt={1}>
                 <FrontEndTypo.Primarybutton
-                  //old route for complete profile
-                  //onPress={(e) => navigate("/profile/edit/basic_details")}
-                  //old route for complete profile
                   onPress={(e) => navigate("/profile/edit/basic_details")}
                   bold
                   flex="1"
@@ -922,7 +916,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
               <FrontEndTypo.Primarybutton
                 width="100%"
-                // onPress={(e) => navigate("/examattendance")}
                 onPress={(e) => navigate("/examschedule")}
               >
                 {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
@@ -1136,7 +1129,6 @@ const InfoBox = ({ status, progress }) => {
     case "on_hold":
       infoBox = (
         <HStack
-          // {...styles.inforBox}
           bg="red.600"
           p="5"
           borderBottomWidth="1"
@@ -1238,6 +1230,13 @@ const TableCard = ({ data, columns, setExamEvent }) => {
     </VStack>
   );
 };
+
+TableCard.propTypes = {
+  data: PropTypes.any,
+  columns: PropTypes.any,
+  setExamEvent: PropTypes.any,
+};
+
 Dashboard.propTypes = {
   userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,

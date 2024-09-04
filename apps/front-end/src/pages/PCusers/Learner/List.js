@@ -193,6 +193,94 @@ export default function LearnerList() {
     getLearner(filter);
   }, [filter]);
 
+  const getView = () => {
+    return filteredData.length > 0 &&
+      !filter?.search &&
+      !filter?.status &&
+      !filter?.sortType ? (
+      filteredData.map((item) => (
+        <Box key={item.user_id}>
+          <FrontEndTypo.H3 my={"15px"}>
+            {[
+              item?.user.first_name,
+              item?.user.middle_name,
+              item?.user.last_name,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          </FrontEndTypo.H3>
+          {item?.academic_year?.map((academic) => {
+            return (
+              <HStack
+                bg="gray.100"
+                borderColor="gray.300"
+                key={academic.user_id}
+                borderWidth="1px"
+                my={2}
+                borderRadius="10px"
+                px={4}
+              >
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  width={"100%"}
+                >
+                  <Stack space="md" alignItems="center">
+                    {academic?.name}
+                  </Stack>
+                  <Stack>
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={() => {
+                        navigate(`/learners/list-view`, {
+                          state: {
+                            filter: location?.state,
+                            prerak_id: item?.user_id,
+                            academic: academic,
+                            program_id: item?.program_id,
+                          },
+                        });
+                      }}
+                      color="maroon.400"
+                    />
+                  </Stack>
+                </HStack>
+              </HStack>
+            );
+          })}
+        </Box>
+      ))
+    ) : (
+      <VStack paddingBottom="64px">
+        <VStack paddingLeft="16px" paddingRight="16px" space="24px">
+          <VStack alignItems="center" pt="20px">
+            {beneficiary?.profile_photo_1?.id ? (
+              <ImageView
+                source={{
+                  document_id: beneficiary?.profile_photo_1?.id,
+                }}
+                width="190px"
+                height="190px"
+              />
+            ) : (
+              <IconByName
+                name="AccountCircleLineIcon"
+                color="gray.300"
+                _icon={{ size: "190px" }}
+              />
+            )}
+          </VStack>
+        </VStack>
+        <FrontEndTypo.H4 textAlign="center" color="black">
+          {t("SELECT_A_PRERAK")}
+        </FrontEndTypo.H4>
+        <FrontEndTypo.H6 textAlign="center" color="black">
+          {t("SELECT_AT_LEAST_ONE_PRERAK")}
+        </FrontEndTypo.H6>
+      </VStack>
+    );
+  };
+
   return (
     <Layout
       _appBar={{
@@ -307,161 +395,77 @@ export default function LearnerList() {
       <Box p={4} flex={1}>
         {filteredData.length <= 0 &&
         beneficiary.length > 0 &&
-        (filter?.search || filter?.status || filter?.sortType) ? (
-          beneficiary?.map((item) => {
-            return (
-              <CardComponent
-                key={item?.id}
-                _body={{ px: "3", py: "3" }}
-                _vstack={{ p: 0, space: 2, flex: 1, m: 4 }}
-              >
-                <Pressable
-                  onPress={() =>
-                    navigate(`/learners/list-view/${item?.user_id}`, {
-                      state: {
-                        location: {
-                          academic: {
-                            academic_year_id: item?.academic_year_id,
-                          },
-                          prerak_id: item?.user_id,
-                          program_id: item?.program_id,
-                        },
-                      },
-                    })
-                  }
+        (filter?.search || filter?.status || filter?.sortType)
+          ? beneficiary?.map((item) => {
+              return (
+                <CardComponent
+                  key={item?.id}
+                  _body={{ px: "3", py: "3" }}
+                  _vstack={{ p: 0, space: 2, flex: 1, m: 4 }}
                 >
-                  <HStack justifyContent="space-between" space={1}>
-                    <HStack alignItems="center" flex={[1, 2, 4]}>
-                      <VStack alignItems="center" p="1">
-                        <Chip>
-                          <Clipboard text={item?.id}>
-                            <FrontEndTypo.H2 bold>
-                              {item?.user_id}
-                            </FrontEndTypo.H2>
-                          </Clipboard>
-                        </Chip>
-                      </VStack>
-                      <VStack
-                        wordWrap="break-word"
-                        flex="1"
-                        whiteSpace="nowrap"
-                        textOverflow="ellipsis"
-                        overflow="hidden"
-                        pl="2"
-                      >
-                        <FrontEndTypo.H3 bold color="textGreyColor.800">
-                          {[
-                            item?.first_name,
-                            item?.middle_name,
-                            item?.last_name,
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        </FrontEndTypo.H3>
-                        <FrontEndTypo.H5 color="textGreyColor.800">
-                          {item?.enrollment_number}
-                        </FrontEndTypo.H5>
-                      </VStack>
-                    </HStack>
-                    <VStack alignItems="end" flex={[1]}>
-                      <ChipStatus
-                        width="fit-content"
-                        status={item?.status}
-                        is_duplicate={item?.is_duplicate}
-                        is_deactivated={item?.is_deactivated}
-                        rounded={"sm"}
-                      />
-                    </VStack>
-                  </HStack>
-                </Pressable>
-              </CardComponent>
-            );
-          })
-        ) : filteredData.length > 0 &&
-          !filter?.search &&
-          !filter?.status &&
-          !filter?.sortType ? (
-          filteredData.map((item) => (
-            <Box key={item.user_id}>
-              <FrontEndTypo.H3 my={"15px"}>
-                {[
-                  item?.user.first_name,
-                  item?.user.middle_name,
-                  item?.user.last_name,
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-              </FrontEndTypo.H3>
-              {item?.academic_year?.map((academic) => {
-                return (
-                  <HStack
-                    bg="gray.100"
-                    borderColor="gray.300"
-                    key={academic.user_id}
-                    borderWidth="1px"
-                    my={2}
-                    borderRadius="10px"
-                    px={4}
+                  <Pressable
+                    onPress={() =>
+                      navigate(`/learners/list-view/${item?.user_id}`, {
+                        state: {
+                          location: {
+                            academic: {
+                              academic_year_id: item?.academic_year_id,
+                            },
+                            prerak_id: item?.user_id,
+                            program_id: item?.program_id,
+                          },
+                        },
+                      })
+                    }
                   >
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      width={"100%"}
-                    >
-                      <Stack space="md" alignItems="center">
-                        {academic?.name}
-                      </Stack>
-                      <Stack>
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={() => {
-                            navigate(`/learners/list-view`, {
-                              state: {
-                                filter: location?.state,
-                                prerak_id: item?.user_id,
-                                academic: academic,
-                                program_id: item?.program_id,
-                              },
-                            });
-                          }}
-                          color="maroon.400"
+                    <HStack justifyContent="space-between" space={1}>
+                      <HStack alignItems="center" flex={[1, 2, 4]}>
+                        <VStack alignItems="center" p="1">
+                          <Chip>
+                            <Clipboard text={item?.id}>
+                              <FrontEndTypo.H2 bold>
+                                {item?.user_id}
+                              </FrontEndTypo.H2>
+                            </Clipboard>
+                          </Chip>
+                        </VStack>
+                        <VStack
+                          wordWrap="break-word"
+                          flex="1"
+                          whiteSpace="nowrap"
+                          textOverflow="ellipsis"
+                          overflow="hidden"
+                          pl="2"
+                        >
+                          <FrontEndTypo.H3 bold color="textGreyColor.800">
+                            {[
+                              item?.first_name,
+                              item?.middle_name,
+                              item?.last_name,
+                            ]
+                              .filter(Boolean)
+                              .join(" ")}
+                          </FrontEndTypo.H3>
+                          <FrontEndTypo.H5 color="textGreyColor.800">
+                            {item?.enrollment_number}
+                          </FrontEndTypo.H5>
+                        </VStack>
+                      </HStack>
+                      <VStack alignItems="end" flex={[1]}>
+                        <ChipStatus
+                          width="fit-content"
+                          status={item?.status}
+                          is_duplicate={item?.is_duplicate}
+                          is_deactivated={item?.is_deactivated}
+                          rounded={"sm"}
                         />
-                      </Stack>
+                      </VStack>
                     </HStack>
-                  </HStack>
-                );
-              })}
-            </Box>
-          ))
-        ) : (
-          <VStack paddingBottom="64px">
-            <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-              <VStack alignItems="center" pt="20px">
-                {beneficiary?.profile_photo_1?.id ? (
-                  <ImageView
-                    source={{
-                      document_id: beneficiary?.profile_photo_1?.id,
-                    }}
-                    width="190px"
-                    height="190px"
-                  />
-                ) : (
-                  <IconByName
-                    name="AccountCircleLineIcon"
-                    color="gray.300"
-                    _icon={{ size: "190px" }}
-                  />
-                )}
-              </VStack>
-            </VStack>
-            <FrontEndTypo.H4 textAlign="center" color="black">
-              {t("SELECT_A_PRERAK")}
-            </FrontEndTypo.H4>
-            <FrontEndTypo.H6 textAlign="center" color="black">
-              {t("SELECT_AT_LEAST_ONE_PRERAK")}
-            </FrontEndTypo.H6>
-          </VStack>
-        )}
+                  </Pressable>
+                </CardComponent>
+              );
+            })
+          : getView()}
       </Box>
       <Modal
         isOpen={isModalOpen}

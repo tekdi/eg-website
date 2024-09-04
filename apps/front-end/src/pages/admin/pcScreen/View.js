@@ -33,7 +33,6 @@ function View() {
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
   const [assignPrerak, setAssignPrerak] = useState();
-  const [assignPrerakCount, setAssignPrerakCount] = useState();
   const [dailyActivities, setDailyActivities] = useState([]);
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,7 +97,6 @@ function View() {
         page: 1,
       });
       setData(result);
-      setAssignPrerakCount(result?.data);
     };
 
     fetchData();
@@ -257,7 +255,7 @@ function View() {
               }, ${pcData?.village ?? ""}${
                 pcData?.address ? `, ${pcData?.address}` : ""
               }`,
-              prerak_assigned: `${assignPrerakCount?.total_count}`,
+              prerak_assigned: `${assignPrerak}`,
               user_id: `${pcData?.user_id || ""}`,
               mobile: `${pcData?.mobile || ""}`,
               email_id: `${pcData?.email_id || ""}`,

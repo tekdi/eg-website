@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   AdminTypo,
-  geolocationRegistryService,
-  getOptions,
-  getSelectedProgramId,
   PcuserService,
   tableCustomStyles,
 } from "@shiksha/common-lib";
@@ -18,8 +15,6 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const [loading, setLoading] = useState(true);
-  const [isDisable, setIsDisable] = useState(false);
-  const [schema, setSchema] = useState();
 
   const columns = (t) => [
     {
@@ -54,89 +49,30 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
 
   const pagination = [10, 15, 25, 50, 100];
 
-  const schemat = {
-    type: "object",
-    properties: {
-      district: {
-        type: "array",
-        title: "TITLE",
-        grid: 1,
-        _hstack: {
-          maxH: 135,
-          overflowY: "scroll",
-          borderBottomColor: "bgGreyColor.200",
-          borderBottomWidth: "5px",
-        },
-        items: {
-          type: "string",
-        },
-        uniqueItems: true,
-      },
-      block: {
-        type: "array",
-        title: "DETAILS",
-        grid: 1,
-        _hstack: {
-          maxH: 130,
-          overflowY: "scroll",
-          borderBottomColor: "bgGreyColor.200",
-          borderBottomWidth: "5px",
-        },
-        items: {
-          type: "string",
-          enum: [],
-        },
-        uniqueItems: true,
-      },
-    },
-  };
-
   const fetchUserList = async () => {
-    const Apidata = await PcuserService.pcDetails({
-      id: 21540,
-      ...filter,
-    });
+    setLoading(true);
+    try {
+      const Apidata = await PcuserService.pcDetails({
+        id: 21540,
+        ...filter,
+      });
 
-    setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
-    );
-    setData(Apidata?.data?.facilitators);
-    setPcData(Apidata?.data?.users?.[0]);
-    setassignPrerak(Apidata?.data?.preraks_assigned);
+      setPaginationTotalRows(
+        Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
+      );
+      setData(Apidata?.data?.facilitators);
+      setPcData(Apidata?.data?.users?.[0]);
+      setassignPrerak(Apidata?.data?.preraks_assigned);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchUserList();
   }, [filter]);
-
-  useEffect(() => {
-    getDistrict();
-  }, []);
-
-  const getDistrict = async () => {
-    const programResult = await getSelectedProgramId();
-    let name = programResult?.state_name;
-    const getDistricts = await geolocationRegistryService.getDistricts({
-      name,
-    });
-    let newSchema = getOptions(schemat, {
-      key: "district",
-      arr: getDistricts?.districts,
-      title: "district_name",
-      value: "district_name",
-    });
-    setSchema(newSchema);
-    setLoading(false);
-  };
-
-  const handleRowSelected = useCallback((state) => {
-    const selected = state?.selectedRows;
-
-    setIsDisable(false);
-    if (selected?.length === 0) {
-      setIsDisable(true);
-    }
-  }, []);
 
   return (
     <Stack backgroundColor={"identifiedColor"} alignContent={"center"}>
@@ -160,7 +96,6 @@ const DailyActivityList = ({ setPcData, setassignPrerak }) => {
           paginationServer
           paginationTotalRows={paginationTotalRows}
           clearSelectedRows={false}
-          onSelectedRowsChange={handleRowSelected}
           paginationDefaultPage={filter?.page || 1}
           highlightOnHover
           sortServer
