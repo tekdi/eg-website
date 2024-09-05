@@ -167,7 +167,7 @@ export default function CampProfileView({ userTokenInfo }) {
             menus={[
               {
                 title: "BASIC_DETAILS",
-                onPress: () => navigateOnClick(""),
+                onPress: () => navigateOnClick(`/camps/basic-details/${id}`),
               },
               {
                 title: "KIT_DETAILS",
@@ -200,26 +200,4 @@ export default function CampProfileView({ userTokenInfo }) {
 
 CampProfileView.propTypes = {
   userTokenInfo: PropTypes.object,
-};
-
-const DetailCard = ({ title, path, navigateOnClick, t }) => {
-  return (
-    <HStack alignItems="Center" justifyContent="space-between">
-      <HStack space="md" alignItems="Center">
-        <FrontEndTypo.H3>{t(title)}</FrontEndTypo.H3>
-      </HStack>
-      <IconByName
-        name="ArrowRightSFillIcon"
-        onPress={() => navigateOnClick(path)}
-        color="maroon.400"
-      />
-    </HStack>
-  );
-};
-
-DetailCard.propTypes = {
-  title: PropTypes.string,
-  path: PropTypes.string,
-  navigateOnClick: PropTypes.func,
-  t: PropTypes.func,
 };

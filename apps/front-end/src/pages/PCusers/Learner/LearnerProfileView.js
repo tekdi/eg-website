@@ -126,7 +126,7 @@ export default function LearnerProfileView({ userTokenInfo }) {
                 }),
             },
             {
-              title: "ADD_YOUR_ADDRESS",
+              title: "ADDRESS_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerAddAddress`, {
                   state: beneficiary,

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   AdminTypo,
   CardComponent,
@@ -19,19 +20,18 @@ import {
   setSelectedAcademicYear,
   setSelectedProgramId,
 } from "@shiksha/common-lib";
+import DashboardCard from "component/common_components/DashboardCard";
 import moment from "moment";
 import {
   CheckIcon,
   CloseIcon,
   HStack,
-  Image,
   Modal,
   Select,
   Stack,
   VStack,
 } from "native-base";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SyncOfflineData } from "v2/utils/OfflineHelper/OfflineHelper";
@@ -46,7 +46,6 @@ import {
   getIndexedDBItem,
   setIndexedDBItem,
 } from "../../../src/v2/utils/Helper/JSHelper";
-import DashboardCard from "component/common_components/DashboardCard";
 
 const styles = {
   inforBox: {
@@ -94,7 +93,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [isEventActive, setIsEventActive] = useState();
   const { id } = userTokenInfo?.authUser || {};
   const [examButtonText, setExamButtonText] = useState("");
-  const [prerak_status, SetPrerak_status] = useState("");
+  const [prerak_status, setPrerak_status] = useState("");
   const [events, setEvents] = useState();
   let score = process.env.REACT_APP_SCORE || 79.5;
   let floatValue = parseFloat(score);
@@ -105,14 +104,12 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   const [programData, setProgramData] = useState(null);
   const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
   const [selectedCohortData, setSelectedCohortData] = useState(null);
-  const [selectedProgramData, setSelectedProgramData] = useState(null);
+  // const [selectedProgramData, setSelectedProgramData] = useState(null);
   const [selectCohortForm, setSelectCohortForm] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [academicYear, setAcademicYear] = useState(null);
   const [academicData, setAcademicData] = useState([]);
   const [disable, setDisable] = useState(false);
-
-  const [env_name] = useState(process.env.NODE_ENV);
 
   const state_name =
     JSON.parse(localStorage.getItem("program"))?.state_name || "";
@@ -126,7 +123,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
   );
 
   useEffect(() => {
-    SetPrerak_status(localStorage.getItem("status"));
+    setPrerak_status(localStorage.getItem("status"));
   }, [localStorage.getItem("status")]);
 
   const saveToIndexDB = async () => {
@@ -202,7 +199,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     ) {
       await setIpUserInfo(fa_id);
       const data = await setPrerakOfflineInfo(fa_id);
-      SetPrerak_status(data?.program_faciltators?.status);
+      setPrerak_status(data?.program_faciltators?.status);
     }
   };
 
@@ -369,7 +366,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           const program_data = await facilitatorRegistryService.getProgram({
             programId: user_program_id,
           });
-          setSelectedProgramData(program_data[0]);
+          // setSelectedProgramData(program_data[0]);
           await setSelectedProgramId(program_data[0]);
           //set program data and cohort data
           let onboardingURLData = await getOnboardingURLData();
@@ -515,7 +512,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
         academic_year_id: parseInt(onboardingURLData?.cohortId),
         parent_ip: onboardingURLData?.id,
       });
-    if (register_exist_user?.success == true) {
+    if (register_exist_user?.success) {
       try {
         await removeOnboardingURLData();
         await removeOnboardingMobile();
@@ -535,9 +532,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     if (loadCohort == null || loadCohort == "no") {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0],
-      );
+      await setSelectedAcademicYear(user_cohort_list?.data[0]);
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
       localStorage.setItem("loadCohort", "yes");
@@ -569,18 +564,22 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
     fetchData();
   }, [isOnline]);
 
-  const checkStateAndYear = (state_name, academic_year_name) => {
-    if (
-      state_name === "RAJASTHAN" &&
-      (academic_year_name.includes("2023-2024") ||
-        academic_year_name.includes("2023-24"))
-    ) {
-      return true;
-    }
-    return false;
+  const showAddLearner = () => {
+    return (
+      !(
+        state_name === "RAJASTHAN" &&
+        (academic_year_name.includes("2023-2024") ||
+          academic_year_name.includes("2023-24"))
+      ) &&
+      [
+        "pragati_mobilizer",
+        "selected_prerak",
+        "selected_for_training",
+        "selected_for_onboarding",
+      ].includes(prerak_status)
+    );
   };
 
-  const hideAddLearner = checkStateAndYear(state_name, academic_year_name);
   return (
     <Layout
       loading={loading}
@@ -610,14 +609,6 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </VStack>
               )}
             <HStack py="4" flex="1" px="4" pb={0}>
-              {/* <Image
-                source={{
-                  uri: "/hello.svg",
-                }}
-                alt="Add AG"
-                size={"30px"}
-                resizeMode="contain"
-              /> */}
               <FrontEndTypo.H1 color="textMaroonColor.400" pl="1">
                 {t("HELLO")} {facilitator?.first_name},
               </FrontEndTypo.H1>
@@ -784,50 +775,44 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               </Modal.Content>
             </Modal>
           </Stack>
-          {[
-            "pragati_mobilizer",
-            "selected_prerak",
-            "selected_for_training",
-            "selected_for_onboarding",
-          ].includes(prerak_status) &&
-            !hideAddLearner && (
-              <Stack
-                py={0}
-                px={4}
-                pb={"7"}
-                mx={"2"}
-                borderBottomRadius={"10px"}
-                borderBottomColor={"dashboardCardBorder"}
-                borderBottomWidth={"1px"}
-                borderBottomStyle={"solid"}
+          {showAddLearner() && (
+            <Stack
+              py={0}
+              px={4}
+              pb={"7"}
+              mx={"2"}
+              borderBottomRadius={"10px"}
+              borderBottomColor={"dashboardCardBorder"}
+              borderBottomWidth={"1px"}
+              borderBottomStyle={"solid"}
+            >
+              <TitleCard
+                _icon=""
+                icon={
+                  <IconByName
+                    _icon={{ color: "white" }}
+                    name="UserAddLineIcon"
+                  />
+                }
+                onPress={(e) => navigate("/beneficiary")}
               >
-                <TitleCard
-                  _icon=""
-                  icon={
-                    <IconByName
-                      _icon={{ color: "white" }}
-                      name="UserAddLineIcon"
-                    />
-                  }
-                  onPress={(e) => navigate("/beneficiary")}
-                >
-                  <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
-                </TitleCard>
-                <Stack px="3">
-                  {facilitator?.program_faciltators?.status ===
-                    "pragati_mobilizer" && (
-                    <FrontEndTypo.H3
-                      bold
-                      color="textGreyColor.750"
-                      pb="5px"
-                      pt="10"
-                    >
-                      {t("ITS_TIME_TO_START_MOBILIZING")}
-                    </FrontEndTypo.H3>
-                  )}
-                </Stack>
+                <FrontEndTypo.H4>{t("ADD_AN_AG")}</FrontEndTypo.H4>
+              </TitleCard>
+              <Stack px="3">
+                {facilitator?.program_faciltators?.status ===
+                  "pragati_mobilizer" && (
+                  <FrontEndTypo.H3
+                    bold
+                    color="textGreyColor.750"
+                    pb="5px"
+                    pt="10"
+                  >
+                    {t("ITS_TIME_TO_START_MOBILIZING")}
+                  </FrontEndTypo.H3>
+                )}
               </Stack>
-            )}
+            </Stack>
+          )}
           {["applied", ""]?.includes(prerak_status) && progress !== 100 && (
             <Stack>
               <VStack p="5" pt={1}>

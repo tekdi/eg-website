@@ -3,7 +3,7 @@ import { Divider, HStack, VStack } from "native-base";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-export default function Menu({ menus }) {
+export default function Menu({ menus, _vstack, _menu }) {
   const { t } = useTranslation();
   return (
     <VStack
@@ -18,6 +18,7 @@ export default function Menu({ menus }) {
       divider={
         <Divider orientation="horizontal" bg="btnGray.100" thickness="1" />
       }
+      {..._vstack}
     >
       {menus?.map((menu) => (
         <HStack
@@ -26,6 +27,7 @@ export default function Menu({ menus }) {
           justifyContent="space-between"
           p="2"
           pr="0"
+          {..._menu}
         >
           <FrontEndTypo.H3 color="floatingLabelColor.500" fontWeight={"600"}>
             {t(menu?.title)}
