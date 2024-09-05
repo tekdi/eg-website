@@ -7,7 +7,7 @@ import {
   getEnrollmentIds,
   FrontEndTypo,
 } from "@shiksha/common-lib";
-import { HStack, Modal, VStack } from "native-base";
+import { HStack, Modal, Toast, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -201,9 +201,20 @@ export default function App({ userTokenInfo }) {
       if (result?.success) {
         setOpenConfirmModal(false);
         navigate(`/learners/list-view/${id}`);
+      } else {
+        Toast.show({
+          title: "Verification failed",
+          status: "error",
+          description: result?.message || "An unexpected error occurred.",
+        });
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      Toast.show({
+        title: "Error",
+        status: "error",
+        description: "Failed to verify enrollment. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
