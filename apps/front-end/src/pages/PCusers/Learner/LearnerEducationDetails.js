@@ -8,7 +8,7 @@ import {
   GetEnumValue,
   getUniqueArray,
 } from "@shiksha/common-lib";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
@@ -45,7 +45,6 @@ GetOptions.propTypes = {
 };
 
 export default function BenificiaryEducation({ userTokenInfo }) {
-  const { id } = useParams();
   const [benificiary, setBenificiary] = React.useState();
   const [enumOptions, setEnumOptions] = React.useState({});
   const navigate = useNavigate();
@@ -61,14 +60,18 @@ export default function BenificiaryEducation({ userTokenInfo }) {
     setEnumOptions(data?.data ? data?.data : {});
   }, [benificiary]);
 
+  const onPressBackButton = async () => {
+    navigate(`/learners/list-view/${location?.state?.id}`, {
+      state: location?.state,
+    });
+  };
+
   return (
     <Layout
       _appBar={{
         name: t("EDUCATION_DETAILS"),
         onlyIconsShow: ["langBtn", "backBtn"],
-        onPressBackButton: (e) => {
-          navigate(`/learners/list-view/${id}`);
-        },
+        onPressBackButton,
       }}
       analyticsPageTitle={"BENEFICIARY_EDUCATION_DETAILS"}
       pageTitle={t("BENEFICIARY")}

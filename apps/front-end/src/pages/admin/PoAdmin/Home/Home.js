@@ -32,7 +32,7 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       let academic_Id = await getSelectedAcademicYear();
-      if (academic_Id) {
+      if (academic_Id && !_.isEmpty(academic_Id)) {
         setModal(false);
       }
     };
@@ -51,7 +51,6 @@ function Home() {
       academic_year_id: data?.id,
       academic_year_name: data?.name,
     };
-    console.log(newData);
     setCohortValue(newData);
   };
 

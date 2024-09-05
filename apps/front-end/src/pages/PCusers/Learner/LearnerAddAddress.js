@@ -3,10 +3,9 @@ import { CardComponent, PCusers_layout as Layout } from "@shiksha/common-lib";
 import { VStack } from "native-base";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BenificiaryAddress({ userTokenInfo }) {
-  const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -17,7 +16,9 @@ export default function BenificiaryAddress({ userTokenInfo }) {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${id}`);
+    navigate(`/learners/list-view/${location?.state?.id}`, {
+      state: location?.state,
+    });
   };
 
   return (
