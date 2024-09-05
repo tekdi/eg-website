@@ -217,7 +217,6 @@ export default function App(footerLinks) {
   const { id } = useParams();
   const userId = id;
   const [page, setPage] = useState();
-  const [pages, setPages] = useState([]);
   const [schema, setSchema] = useState({});
   const [fixedSchema, setFixedSchema] = useState({});
   const [benificiary, setBenificiary] = useState({});
@@ -230,7 +229,6 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [boards, setBoards] = useState();
 
   const [uiSchema, setUiSchema] = useState({
@@ -404,7 +402,6 @@ export default function App(footerLinks) {
       const newSteps = Object.keys(properties);
       const newStep = newSteps[0];
       setPage(newStep);
-      setPages(newSteps);
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
       const { program_beneficiaries } = result || {};
@@ -810,10 +807,8 @@ export default function App(footerLinks) {
 
   const onSubmit = async () => {
     setBtnLoading(true);
-    setIsButtonLoading(true);
     await handleValidationErrors();
     setBtnLoading(false);
-    setIsButtonLoading(false);
   };
 
   return (
