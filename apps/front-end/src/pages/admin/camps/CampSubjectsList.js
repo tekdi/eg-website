@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import PropTypes from "prop-types";
 
 export default function CampSubjectsList({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
@@ -214,4 +215,8 @@ const getIncompleteAssessments = (data, assessmentType) => {
 const calculateProgress = (completedSessions, totalSessions) => {
   if (!totalSessions || totalSessions === 0) return 100; // to avoid division by zero
   return (completedSessions / totalSessions) * 100;
+};
+CampSubjectsList.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
 };

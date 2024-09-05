@@ -1,6 +1,7 @@
 import { FrontEndTypo } from "@shiksha/common-lib";
 import { Box, Center, Text, Stack } from "native-base";
 import React from "react";
+import PropTypes from "prop-types";
 
 const ExternalLink = ({ url }) => {
   return (
@@ -38,3 +39,6 @@ const ExternalLink = ({ url }) => {
 };
 
 export default ExternalLink;
+ExternalLink.propTypes = {
+  url: PropTypes.string,
+};

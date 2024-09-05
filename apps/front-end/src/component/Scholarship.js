@@ -9,6 +9,7 @@ import { HStack, Modal, Stack } from "native-base";
 import { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native-web";
+import PropTypes from "prop-types";
 
 const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
   const { t } = useTranslation();
@@ -77,8 +78,8 @@ const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
                   ]
                     .filter((e) => e)
                     .join(", "),
-                }),
-              ),
+                })
+              )
             );
           }}
         >
@@ -124,3 +125,11 @@ const Scholarship = ({ user_id, item, setItem, jsonData, setJsonData }) => {
 };
 
 export default memo(Scholarship);
+
+Scholarship.propTypes = {
+  user_id: PropTypes.any,
+  item: PropTypes.any,
+  setItem: PropTypes.any,
+  jsonData: PropTypes.any,
+  setJsonData: PropTypes.any,
+};

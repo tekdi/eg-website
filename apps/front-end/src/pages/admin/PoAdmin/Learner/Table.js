@@ -242,7 +242,7 @@ function Table({ filter, setFilter, paginationTotalRows, data, loading }) {
   );
 }
 
-Table.PropTypes = {
+Table.propTypes = {
   filter: PropTypes.any,
   setFilter: PropTypes.any,
   paginationTotalRows: PropTypes.any,

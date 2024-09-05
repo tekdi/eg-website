@@ -1,6 +1,7 @@
 import { Box } from "native-base";
 import React from "react";
 import { t } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 export default function Chip({ label, children, isActive, ...props }) {
   return (
@@ -20,6 +21,11 @@ export default function Chip({ label, children, isActive, ...props }) {
   );
 }
 
+Chip.propTypes = {
+  label: PropTypes.string,
+  children: PropTypes.node,
+  isActive: PropTypes.bool,
+};
 // ChipStatus
 export function EventChip({ status, ...props }) {
   const [color, setColor] = React.useState("gray.300");
@@ -53,3 +59,6 @@ export function EventChip({ status, ...props }) {
     />
   );
 }
+EventChip.propTypes = {
+  status: PropTypes.string,
+};

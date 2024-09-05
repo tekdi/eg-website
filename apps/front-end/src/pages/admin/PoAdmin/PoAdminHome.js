@@ -51,7 +51,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   );
 }
 
-AdminHome.PropTypes = {
+AdminHome.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };

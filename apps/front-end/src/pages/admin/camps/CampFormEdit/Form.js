@@ -25,6 +25,7 @@ import {
 } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 import ConsentForm from "./ConsentForm.js";
+import PropTypes from "prop-types";
 
 // App
 export default function App({ userTokenInfo, footerLinks }) {
@@ -484,3 +485,7 @@ export default function App({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+App.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};

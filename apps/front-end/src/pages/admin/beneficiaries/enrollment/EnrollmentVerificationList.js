@@ -16,7 +16,6 @@ import moment from "moment";
 import {
   HStack,
   VStack,
-  Image,
   Text,
   ScrollView,
   Input,
@@ -446,7 +445,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   );
 }
 
-EnrollmentVerificationList.PropTypes = {
+EnrollmentVerificationList.propTypes = {
   footerLinks: PropTypes.any,
 };
 

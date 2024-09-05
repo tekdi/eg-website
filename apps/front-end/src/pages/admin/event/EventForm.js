@@ -833,3 +833,8 @@ const LocationFilters = ({ filter, setFilter }) => {
 EventHome.propTypes = {
   footerLinks: PropTypes.any,
 };
+
+LocationFilters.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+};

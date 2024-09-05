@@ -35,6 +35,7 @@ import DataTable from "react-data-table-component";
 import { MultiCheck } from "component/BaseInput";
 import validator from "@rjsf/validator-ajv8";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 const columns = (navigate, t, setModal) => [
   {
@@ -568,3 +569,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+AgAdminProfile.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

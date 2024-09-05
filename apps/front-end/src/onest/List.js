@@ -21,6 +21,8 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 // import InfiniteScroll from "react-infinite-scroll-component";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
+
 const limit = 6;
 const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
@@ -47,7 +49,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
         response = await axios.post(
           configData?.apiLink_API_LIST_URL ||
             `${configData?.apiLink_API_BASE_URL}/content/search`,
-          configData?.payload || {},
+          configData?.payload || {}
         );
         if (configData.apiResponse) {
           response = configData.apiResponse(response);
@@ -58,7 +60,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
             paginateArray({
               data: response,
               filter: { page, limit, ...filter },
-            }),
+            })
           );
           setFilterData(filterToData(configData?.filters, response));
         } else {
@@ -77,7 +79,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   useEffect(() => {
     const fethcData = () => {
       setFilterCardData(
-        paginateArray({ data: cardData, filter: { page, limit, ...filter } }),
+        paginateArray({ data: cardData, filter: { page, limit, ...filter } })
       );
     };
     fethcData();
@@ -218,7 +220,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
                                 label={option}
                                 _text={{ fontSize: 12, fontWeight: 500 }}
                               />
-                            ),
+                            )
                         )}
                       </Select>
                     )}
@@ -358,8 +360,8 @@ const RenderCards = ({ obj, config }) => {
                 __html: obj.shortDescription
                   ? obj.shortDescription
                   : obj.description
-                    ? obj.description.substring(0, 100) + "..."
-                    : "",
+                  ? obj.description.substring(0, 100) + "..."
+                  : "",
               }}
             />
           </Text>
@@ -430,3 +432,12 @@ const filterData = ({ data, filter }) => {
 };
 
 export default List;
+
+List.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};
+RenderCards.propTypes = {
+  obj: PropTypes.any,
+  config: PropTypes.any,
+};

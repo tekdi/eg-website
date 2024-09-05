@@ -1,13 +1,13 @@
 import { AdminTypo, useWindowSize } from "@shiksha/common-lib";
-import { Box, HStack, ScrollView, VStack, Stack } from "native-base";
+import { HStack, ScrollView, VStack, Stack } from "native-base";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 
 const ManualResultView = ({ data }) => {
   const { t } = useTranslation();
-  const [Width, Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = useState();
+  const [width, Height] = useWindowSize();
+  const [refAppBar] = useState();
 
   const customStyles = {
     rows: {
@@ -81,7 +81,7 @@ const ManualResultView = ({ data }) => {
   ];
 
   return (
-    <VStack space={4}>
+    <VStack space={4} customWidth={width}>
       <ScrollView
         maxH={Height - refAppBar?.clientHeight}
         minH={Height - refAppBar?.clientHeight}
@@ -125,3 +125,7 @@ const ManualResultView = ({ data }) => {
 };
 
 export default ManualResultView;
+
+ManualResultView.propTypes = {
+  data: PropTypes.any,
+};

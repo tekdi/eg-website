@@ -10,7 +10,6 @@ import {
   enumRegistryService,
   filterObject,
   getArray,
-  getEnrollmentIds,
   getOptions,
   getSelectedProgramId,
   getUiSchema,
@@ -40,7 +39,6 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   let newData = {};
   const keys = Object.keys(schema1?.properties || {}).reduce((acc, key) => {
     if (schema1.properties[key].properties) {
-      // acc = [...acc, ...Object.keys(schema1.properties[key].properties)];
       acc.push(...Object.keys(schema1.properties[key].properties));
     }
     return acc;
@@ -216,10 +214,9 @@ const getSubjects = async (schemaData, value) => {
 // App
 export default function App(footerLinks) {
   const [RefAppBar, setRefAppBar] = useState();
-  const { step, id } = useParams();
+  const { id } = useParams();
   const userId = id;
   const [page, setPage] = useState();
-  const [pages, setPages] = useState();
   const [schema, setSchema] = useState({});
   const [fixedSchema, setFixedSchema] = useState({});
   const [benificiary, setBenificiary] = useState({});
@@ -232,7 +229,6 @@ export default function App(footerLinks) {
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [boards, setBoards] = useState();
 
   const [uiSchema, setUiSchema] = useState({
@@ -256,25 +252,6 @@ export default function App(footerLinks) {
       },
     },
   });
-
-  // const nextPreviewStep = async (pageStape = "n") => {
-  //   const index = pages.indexOf(page);
-  //   if (index !== undefined) {
-  //     let nextIndex = "";
-  //     if (pageStape.toLowerCase() === "n") {
-  //       nextIndex = pages[index + 1];
-  //     } else {
-  //       nextIndex = pages[index - 1];
-  //     }
-  //     if (nextIndex !== undefined) {
-  //       setPage(nextIndex);
-  //     } else if (pageStape === "p") {
-  //       navigate(`/beneficiary/${userId}/enrollmentdetails`);
-  //     } else {
-  //       navigate(`/beneficiary/${userId}`);
-  //     }
-  //   }
-  // };
 
   const checkEnrollmentDobAndDate = (data, key) => {
     let error = {};
@@ -345,7 +322,7 @@ export default function App(footerLinks) {
       case "enrollment_mobile_no":
         {
           const mobile = data?.enrollment_mobile_no;
-          const regex = /^[1-9][0-9]{0,9}$/;
+          const regex = /^[1-9]\D{0,9}$/;
           if (
             !mobile ||
             !mobile?.match(regex) ||
@@ -358,48 +335,48 @@ export default function App(footerLinks) {
           }
         }
         break;
-      case "enrollment_date":
-        {
-          if (moment.utc(data?.enrollment_date) > moment.utc()) {
-            error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
-          }
+      case "enrollment_date": {
+        if (moment.utc(data?.enrollment_date) > moment.utc()) {
+          error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
         }
         break;
-      case "subjects":
-        {
-          if (
-            page === "edit_enrollement" &&
-            ["enrolled", "sso_id_enrolled"].includes(data?.enrollment_status)
-          ) {
-            const countLanguageSubjects = (subjectsArr, subjects) => {
-              // Convert the subjects array to a Set for faster lookups
-              const subjectsSet = new Set(subjects);
-              // Filter the array for objects with "language" subject_type and a subject_id in the subjects array
-              const languageSubjects = subjectsArr?.filter(
-                (subject) =>
-                  subject.subject_type === "language" &&
-                  subjectsSet.has(String(subject.subject_id))
-              );
-              // Return the count of filtered objects
-              return languageSubjects.length;
-            };
-            const langCount = countLanguageSubjects(
-              schema?.properties?.subjects?.enumOptions,
-              data?.subjects
+      }
+
+      case "subjects": {
+        if (
+          page === "edit_enrollement" &&
+          ["enrolled", "sso_id_enrolled"].includes(data?.enrollment_status)
+        ) {
+          const countLanguageSubjects = (subjectsArr, subjects) => {
+            // Convert the subjects array to a Set for faster lookups
+            const subjectsSet = new Set(subjects);
+            // Filter the array for objects with "language" subject_type and a subject_id in the subjects array
+            const languageSubjects = subjectsArr?.filter(
+              (subject) =>
+                subject.subject_type === "language" &&
+                subjectsSet.has(String(subject.subject_id))
             );
-            const nonLangCount = data?.subjects?.length - langCount;
-            if (langCount === 0 && nonLangCount === 0) {
-              error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
-            } else if (langCount > 3 && nonLangCount > 4) {
-              error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
-            } else if (langCount > 3) {
-              error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
-            } else if (nonLangCount > 4) {
-              error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
-            }
+            // Return the count of filtered objects
+            return languageSubjects.length;
+          };
+          const langCount = countLanguageSubjects(
+            schema?.properties?.subjects?.enumOptions,
+            data?.subjects
+          );
+          const nonLangCount = data?.subjects?.length - langCount;
+          if (langCount === 0 && nonLangCount === 0) {
+            error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
+          } else if (langCount > 3 && nonLangCount > 4) {
+            error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
+          } else if (langCount > 3) {
+            error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
+          } else if (nonLangCount > 4) {
+            error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
           }
         }
         break;
+      }
+
       default:
         break;
     }
@@ -425,7 +402,6 @@ export default function App(footerLinks) {
       const newSteps = Object.keys(properties);
       const newStep = newSteps[0];
       setPage(newStep);
-      setPages(newSteps);
       const { result } = await benificiaryRegistoryService.getOne(userId);
       setBenificiary(result);
       const { program_beneficiaries } = result || {};
@@ -478,18 +454,14 @@ export default function App(footerLinks) {
               subjectsEnum?.properties?.subjects;
           }
           setSchema(updatedSchema?.newSchema);
+        } else if (
+          ["enrolled", "sso_id_enrolled"].includes(formData?.enrollment_status)
+        ) {
+          setSchema(
+            await getSubjects(constantSchema, formData?.enrolled_for_board)
+          );
         } else {
-          if (
-            ["enrolled", "sso_id_enrolled"].includes(
-              formData?.enrollment_status
-            )
-          ) {
-            setSchema(
-              await getSubjects(constantSchema, formData?.enrolled_for_board)
-            );
-          } else {
-            setSchema(constantSchema);
-          }
+          setSchema(constantSchema);
         }
         setLoading(false);
       }
@@ -528,45 +500,42 @@ export default function App(footerLinks) {
         if (!re) {
           setErrors(error);
         }
-      } else {
-        if (!re) {
-          const { enrollment_number, ...otherErrors } = errors ?? {};
-          setErrors(otherErrors);
-        }
+      } else if (!re) {
+        const { enrollment_number, ...otherErrors } = errors ?? {};
+        setErrors(otherErrors);
+      }
+    } else if (state_name === "RAJASTHAN") {
+      error = {
+        ...errors,
+        enrollment_number: {
+          __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
+        },
+      };
+      if (!re) {
+        setErrors(error);
+      }
+    } else if (state_name === "MADHYA PRADESH") {
+      error = {
+        ...errors,
+        enrollment_number: {
+          __errors: [t("ROLL_NUMBER_SHOULD_BE_OF_12_DIGIT")],
+        },
+      };
+      if (!re) {
+        setErrors(error);
       }
     } else {
-      if (state_name === "RAJASTHAN") {
-        error = {
-          ...errors,
-          enrollment_number: {
-            __errors: [t("ENROLLMENT_NUMBER_SHOULD_BE_OF_11_DIGIT")],
-          },
-        };
-        if (!re) {
-          setErrors(error);
-        }
-      } else if (state_name === "MADHYA PRADESH") {
-        error = {
-          ...errors,
-          enrollment_number: {
-            __errors: [t("ROLL_NUMBER_SHOULD_BE_OF_12_DIGIT")],
-          },
-        };
-        if (!re) {
-          setErrors(error);
-        }
-      } else {
-        error = {
-          ...errors,
-          enrollment_number: {
-            __errors: [t("APPLICATION_ID_SHOULD_BE_OF_9_DIGIT")],
-          },
-        };
-        if (!re) {
-          setErrors(error);
-        }
+      error = {
+        ...errors,
+        enrollment_number: {
+          __errors: [t("APPLICATION_ID_SHOULD_BE_OF_9_DIGIT")],
+        },
+      };
+      if (!re) {
+        setErrors(error);
       }
     }
+
     if (re) {
       return error;
     }
@@ -810,7 +779,7 @@ export default function App(footerLinks) {
         ],
       };
     }
-    const { success, isUserExist } = await benificiaryRegistoryService.updateAg(
+    const { isUserExist } = await benificiaryRegistoryService.updateAg(
       {
         ...newdata,
         edit_page_type: page,
@@ -831,10 +800,8 @@ export default function App(footerLinks) {
 
   const onSubmit = async () => {
     setBtnLoading(true);
-    setIsButtonLoading(true);
     await handleValidationErrors();
     setBtnLoading(false);
-    setIsButtonLoading(false);
   };
 
   return (
@@ -1002,4 +969,7 @@ const AlertCustom = ({ alert }) => (
 
 App.PropTypes = {
   footerLinks: PropTypes.any,
+};
+AlertCustom.propTypes = {
+  alert: PropTypes.any,
 };

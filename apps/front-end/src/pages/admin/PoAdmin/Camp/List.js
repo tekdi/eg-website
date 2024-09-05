@@ -263,7 +263,6 @@ function CampList({ userTokenInfo }) {
 
 CampList.propTypes = {
   userTokenInfo: PropTypes.any,
-  _layout: PropTypes.any,
 };
 
 export const Filter = ({ filter, setFilter }) => {

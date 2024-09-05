@@ -168,11 +168,15 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
     </Layout>
   );
 };
-
-LandingPage.PropTypes = {
+FeatureCard.propTypes = {
   title: PropTypes.string,
   onClick: PropTypes.func,
   imageUrl: PropTypes.any,
+};
+
+LandingPage.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
 };
 
 export default LandingPage;

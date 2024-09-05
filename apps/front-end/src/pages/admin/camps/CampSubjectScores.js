@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import PropTypes from "prop-types";
 
 export default function CampSubjectScores({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -296,4 +297,14 @@ const StudentCard = ({
       isIdtag={data?.user_id}
     />
   );
+};
+CampSubjectScores.propTypes = {
+  userTokenInfo: PropTypes.any,
+};
+StudentCard.propTypes = {
+  student: PropTypes.any,
+  updateScore: PropTypes.any,
+  scoresArray: PropTypes.any,
+  subject: PropTypes.any,
+  program_id: PropTypes.any,
 };

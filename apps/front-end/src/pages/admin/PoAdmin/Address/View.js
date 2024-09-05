@@ -7,10 +7,10 @@ import {
   eventService,
   Breadcrumb,
 } from "@shiksha/common-lib";
-import { Box, Button, HStack, Menu, Stack, VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 
 export const CustomStyles = {

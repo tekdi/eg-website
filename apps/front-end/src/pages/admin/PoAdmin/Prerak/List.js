@@ -256,7 +256,11 @@ function PrerakList({ userTokenInfo }) {
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
-    <PoAdminLayout _sidebar={setRefAppBar} loading={loading}>
+    <PoAdminLayout
+      _sidebar={setRefAppBar}
+      loading={loading}
+      customwidth={width}
+    >
       <HStack p="4" space={4} justifyContent={"space-between"}>
         <HStack justifyContent="start" alignItems="center" space="2">
           <IconByName name="GroupLineIcon" size="md" />

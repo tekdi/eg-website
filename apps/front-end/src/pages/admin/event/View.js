@@ -40,6 +40,7 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native-web";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const customStyles = {
   headCells: {
@@ -754,3 +755,10 @@ export default function Attendence({ footerLinks }) {
     </Layout>
   );
 }
+memo.propTypes = {
+  row: PropTypes.any,
+  event: PropTypes.any,
+};
+Attendence.propTypes = {
+  footerLinks: PropTypes.any,
+};

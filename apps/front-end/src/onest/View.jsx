@@ -5,6 +5,7 @@ import JobDetails from "./job/JobDetails";
 import Details from "./content/Details";
 import Layout from "./Layout";
 import { dataConfig } from "./card";
+import PropTypes from "prop-types";
 
 const componentMap = {
   jobs: JobDetails,
@@ -45,3 +46,9 @@ function View({ userTokenInfo: { authUser }, footerLinks }) {
 }
 
 export default View;
+View.propTypes = {
+  userTokenInfo: PropTypes.shape({
+    authUser: PropTypes.object,
+  }),
+  footerLinks: PropTypes.arrayOf(PropTypes.object),
+};

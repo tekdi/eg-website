@@ -25,6 +25,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import Clipboard from "component/Clipboard";
+import PropTypes from "prop-types";
 
 export default function View({ footerLinks }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -155,9 +156,7 @@ export default function View({ footerLinks }) {
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
       };
-      const resule = await facilitatorRegistryService?.getEditRequestDetails(
-        obj
-      );
+      await facilitatorRegistryService?.getEditRequestDetails(obj);
     } catch (error) {
       console.error("Error fetching beneficiary data:", error);
     } finally {
@@ -1052,4 +1051,21 @@ const BeneficiaryJourney = ({
       <VStack width={"100%"}>{renderLogs}</VStack>
     </Stack>
   );
+};
+
+View.propTypes = {
+  footerLinks: PropTypes.any,
+};
+GetOptions.propTypes = {
+  array: PropTypes.any,
+  enumType: PropTypes.any,
+  enumApiData: PropTypes.any,
+};
+BeneficiaryJourney.propTypes = {
+  data: PropTypes.any,
+  enumOptions: PropTypes.any,
+  t: PropTypes.any,
+  auditLogs: PropTypes.any,
+  auditMonth: PropTypes.any,
+  auditYear: PropTypes.any,
 };
