@@ -34,7 +34,9 @@ export default function BenificiaryJourney({ userTokenInfo }) {
   }, [id]);
 
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${id}`);
+    navigate(`/learners/list-view/${id}`, {
+      state: location?.state,
+    });
   };
 
   const agDetails = async () => {
