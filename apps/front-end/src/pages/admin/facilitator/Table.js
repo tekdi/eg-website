@@ -11,6 +11,7 @@ import React, { memo, useCallback, useState, useMemo, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const dropDown = (triggerProps, t) => {
   return (
@@ -268,3 +269,11 @@ function Table({
 }
 
 export default memo(Table);
+Table.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.any,
+  height: PropTypes.any,
+};

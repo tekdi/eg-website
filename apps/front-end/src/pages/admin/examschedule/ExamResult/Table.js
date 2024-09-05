@@ -9,7 +9,7 @@ import {
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { ExamChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Button, Menu, Modal } from "native-base";
-
+import PropTypes from "prop-types";
 import React, {
   memo,
   useCallback,
@@ -193,7 +193,7 @@ function Table({
                 onPress={() => {
                   navigate(
                     `/admin/exams/list/result/${row?.beneficiary_user?.beneficiary_id}`,
-                    { state: { row } },
+                    { state: { row } }
                   );
                 }}
               >
@@ -213,7 +213,7 @@ function Table({
           <Menu.Item
             onPress={() => {
               navigate(
-                `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`,
+                `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`
               );
             }}
           >
@@ -225,7 +225,7 @@ function Table({
               onPress={() =>
                 setOpenView(
                   row?.beneficiary_user?.exam_results?.[0] ||
-                    row?.beneficiary_user?.exam_result_document?.[0],
+                    row?.beneficiary_user?.exam_result_document?.[0]
                 )
               }
             >
@@ -268,7 +268,7 @@ function Table({
                     selectedData
                       ? selectedData?.find((e) => item === e.status)?.count
                       : 0
-                  })`,
+                  })`
               )
               .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
               .join(" , ")
@@ -309,13 +309,13 @@ function Table({
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
-          [setFilter, filter],
+          [setFilter, filter]
         )}
         onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
-          [setFilter, filter],
+          [setFilter, filter]
         )}
       />
 
@@ -342,3 +342,14 @@ function Table({
 }
 
 export default memo(Table);
+Table.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.any,
+  setLoading: PropTypes.any,
+  height: PropTypes.any,
+  setErrorMsg: PropTypes.any,
+  errorMsg: PropTypes.any,
+};
