@@ -115,7 +115,7 @@ function SelectProgramOrganisation({ _hstack, getValue }) {
   );
 }
 
-SelectProgramOrganisation.PropTypes = {
+SelectProgramOrganisation.propTypes = {
   _hstack: PropTypes.any,
   getValue: PropTypes.any,
 };

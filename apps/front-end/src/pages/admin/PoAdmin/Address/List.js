@@ -4,7 +4,7 @@ import {
   PoAdminLayout,
   eventService,
 } from "@shiksha/common-lib";
-import { Button, HStack, Input, VStack, Menu } from "native-base";
+import { HStack, Input, VStack } from "native-base";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import DataTable from "react-data-table-component";

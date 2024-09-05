@@ -414,6 +414,6 @@ export default function PoDuplicateView({ footerLinks }) {
   );
 }
 
-PoDuplicateView.PropTypes = {
+PoDuplicateView.propTypes = {
   footerLinks: PropTypes.any,
 };

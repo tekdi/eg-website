@@ -11,7 +11,7 @@ import {
 import { VStack, HStack } from "native-base";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { widgets, templates, transformErrors } from "component/BaseInput";
 import { useTranslation } from "react-i18next";
 
@@ -58,7 +58,6 @@ function ExistingIpForm() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { id } = useParams();
   const { t } = useTranslation();
   const [formData, setFormData] = useState();
 

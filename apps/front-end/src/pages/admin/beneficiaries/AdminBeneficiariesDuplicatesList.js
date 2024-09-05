@@ -6,6 +6,7 @@ import {
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
 import Table from "./AdminBeneficiariesDuplicatesListTable";
+import PropTypes from "prop-types";
 
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [Height] = useWindowSize();
@@ -69,3 +70,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+AdminHome.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
-
+import PropTypes from "prop-types";
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
     <VStack
@@ -271,3 +271,14 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+CustomFieldTemplate.propTypes = {
+  id: PropTypes.any,
+  classNames: PropTypes.any,
+  label: PropTypes.any,
+  required: PropTypes.any,
+  children: PropTypes.any,
+};
+AdminHome.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

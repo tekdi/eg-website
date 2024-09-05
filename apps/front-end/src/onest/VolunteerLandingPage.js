@@ -11,9 +11,9 @@ import slide2 from "./assets/images/slide-2.png";
 import slide3 from "./assets/images/slide-3.png";
 import slide4 from "./assets/images/slide-4.png";
 import slide5 from "./assets/images/slide-5.png";
-
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import PropTypes from "prop-types";
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -94,6 +94,10 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
     };
     fetchData();
   }, []);
+  VolunteerLandingPage.propTypes = {
+    userTokenInfo: PropTypes.any,
+    footerLinks: PropTypes.any,
+  };
 
   const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
     return (
@@ -212,3 +216,8 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
 };
 
 export default VolunteerLandingPage;
+FeatureCard.propTypes = {
+  title: PropTypes.any,
+  onClick: PropTypes.any,
+  imageUrl: PropTypes.any,
+};

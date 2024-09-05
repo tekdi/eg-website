@@ -97,7 +97,7 @@ function Table({
   );
 }
 
-Table.PropTypes = {
+Table.propTypes = {
   filter: PropTypes.any,
   setFilter: PropTypes.func,
   paginationTotalRows: PropTypes.any,

@@ -60,4 +60,7 @@ export default function App({
 
 App.propTypes = {
   children: PropTypes.node,
+  checkUserAccess: PropTypes.any,
+  _appBar: PropTypes.any,
+  _drawer: PropTypes.any,
 };
