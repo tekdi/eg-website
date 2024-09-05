@@ -280,22 +280,22 @@ export default function App({ facilitator, ip, onClick }) {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    let newFormData = data.formData;
+    let updatedFormData = data.formData;
     if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name?.replaceAll(" ", ""),
+      updatedFormData = {
+        ...updatedFormData,
+        ["first_name"]: updatedFormData?.first_name?.replaceAll(" ", ""),
       };
     }
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name?.replaceAll(" ", ""),
+    if (schema?.properties?.last_name && updatedFormData?.last_name) {
+      updatedFormData = {
+        ...updatedFormData,
+        ["last_name"]: updatedFormData?.last_name?.replaceAll(" ", ""),
       };
     }
     const newData = {
       ...formData,
-      ...newFormData,
+      ...updatedFormData,
     };
     setFormData(newData);
 
@@ -305,17 +305,19 @@ export default function App({ facilitator, ip, onClick }) {
       if (id) {
         success = true;
       } else if (page === "4") {
-        const resultCheck = await checkMobileNumberExist(newFormData?.mobile);
+        const resultCheck = await checkMobileNumberExist(
+          updatedFormData?.mobile,
+        );
         if (!resultCheck) {
           if (!schema?.properties?.otp) {
-            const { otp: data, ...allData } = newFormData || {};
+            const { otp: data, ...allData } = updatedFormData || {};
             let { mobile, otp, ...otherError } = errors || {};
             setFormData(allData);
-            newFormData = allData;
+            updatedFormData = allData;
             setErrors(otherError);
           }
           const { status, newSchema } = await sendAndVerifyOtp(schema, {
-            ...newFormData,
+            ...updatedFormData,
             hash: localStorage.getItem("hash"),
           });
           if (status === true) {
