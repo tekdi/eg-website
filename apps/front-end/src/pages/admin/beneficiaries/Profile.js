@@ -2180,9 +2180,3 @@ AgAdminProfile.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };
-
-GetOptions.propTypes = {
-  array: PropTypes.array,
-  enumType: PropTypes.string,
-  enumApiData: PropTypes.object,
-};
