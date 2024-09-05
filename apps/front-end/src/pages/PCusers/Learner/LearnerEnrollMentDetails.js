@@ -143,6 +143,7 @@ export default function App({ userTokenInfo }) {
         "not_enrolled",
         "enrollment_awaited",
         "enrollment_rejected",
+        "sso_id_enrolled",
       ].includes(
         learnerData?.program_beneficiaries?.enrollment_status ||
           learnerData?.program_beneficiaries?.status,
@@ -185,8 +186,38 @@ export default function App({ userTokenInfo }) {
 
     setLoading(false);
   };
-  const showVerifyButton = () => {};
-  console.log("learnerData", benificiary);
+
+  const onSubmit = async () => {
+    setLoading(true);
+    try {
+      const { program_id, academic_year_id } =
+        benificiary?.program_beneficiaries || {};
+      const result = await PcuserService.verifyEnrollmentPC({
+        user_id: parseInt(id),
+        enrollment_verification_status: "pc_verified",
+        program_id,
+        academic_year_id,
+      });
+      if (result?.success) {
+        setOpenConfirmModal(false);
+        navigate(`/learners/list-view/${id}`);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const shouldShowVerifyButton = () => {
+    const learnerStatus = benificiary?.program_beneficiaries?.status;
+    const learnerState = benificiary?.state;
+    return (
+      (learnerState === "RAJASTHAN" && learnerStatus === "sso_id_enrolled") ||
+      (learnerState !== "RAJASTHAN" && learnerStatus === "enrolled")
+    );
+  };
+
   return (
     <Layout
       loading={loading}
@@ -217,7 +248,7 @@ export default function App({ userTokenInfo }) {
             title={t(data?.title)}
           />
         ))}
-        {showVerifyButton() && (
+        {shouldShowVerifyButton() && (
           <FrontEndTypo.Primarybutton onPress={() => setOpenConfirmModal(true)}>
             {t("VERIFY")}
           </FrontEndTypo.Primarybutton>
@@ -250,7 +281,7 @@ export default function App({ userTokenInfo }) {
             >
               {t("CLOSE")}
             </FrontEndTypo.Secondarybutton>
-            <FrontEndTypo.Primarybutton>
+            <FrontEndTypo.Primarybutton onPress={() => onSubmit()}>
               {t("CONFIRM")}
             </FrontEndTypo.Primarybutton>
           </Modal.Footer>
