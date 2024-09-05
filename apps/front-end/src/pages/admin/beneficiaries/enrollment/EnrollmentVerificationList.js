@@ -7,8 +7,8 @@ import {
   tableCustomStyles,
   useWindowSize,
   AdminLayout as Layout,
-  urlData,
-  setQueryParameters,
+  getFilterLocalStorage,
+  setFilterLocalStorage,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
@@ -16,7 +16,6 @@ import moment from "moment";
 import {
   HStack,
   VStack,
-  Image,
   Text,
   ScrollView,
   Input,
@@ -31,8 +30,9 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
+const filterName = "leaner_enrollment_filter";
 
-const columns = (t, navigate, filter) => [
+const columns = (t, navigate) => [
   {
     name: t("LEARNERS_ID"),
     selector: (row) => row?.id,
@@ -91,7 +91,7 @@ const columns = (t, navigate, filter) => [
         if (row?.program_beneficiaries_enrollment_dob) {
           return moment().diff(
             row?.program_beneficiaries.enrollment_dob,
-            "years"
+            "years",
           );
         } else {
           return "-";
@@ -143,15 +143,13 @@ const columns = (t, navigate, filter) => [
     name: t("ACTION"),
     selector: (row) =>
       ["enrolled", "sso_id_enrolled"].includes(
-        row?.program_beneficiaries?.status
+        row?.program_beneficiaries?.status,
       ) &&
       !(row?.is_duplicate === "yes" && row?.is_deactivated === null) && (
         <AdminTypo.Secondarybutton
           my="3"
           onPress={() => {
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
-              state: filter,
-            });
+            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
           }}
         >
           {t("VIEW")}
@@ -176,13 +174,10 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [stateName, setStateName] = useState();
   const [filter, setFilter] = useState({ limit: 10 });
   const [loading, setLoading] = useState(true);
-
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const handleRowClick = (row) => {
-    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`, {
-      state: filter,
-    });
+    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
   };
 
   const handleOpenButtonClick = () => {
@@ -202,7 +197,7 @@ function EnrollmentVerificationList({ footerLinks }) {
         });
         setData(result.data?.data);
         setPaginationTotalRows(
-          result?.data?.totalCount ? result?.data?.totalCount : 0
+          result?.data?.totalCount ? result?.data?.totalCount : 0,
         );
         setLoading(false);
       }
@@ -211,7 +206,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   }, [filter, stateName]);
 
   useEffect(() => {
-    const urlFilter = urlData(["district", "facilitator", "block"]);
+    const urlFilter = getFilterLocalStorage(filterName);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
@@ -223,7 +218,7 @@ function EnrollmentVerificationList({ footerLinks }) {
     let list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS;
     if (state_name !== "RAJASTHAN") {
       list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS?.filter(
-        (e) => e.value != "sso_id_verified"
+        (e) => e.value != "sso_id_verified",
       );
     }
     setBeneficiaryStatus(list);
@@ -231,7 +226,7 @@ function EnrollmentVerificationList({ footerLinks }) {
 
   const setFilterObject = (data) => {
     setFilter(data);
-    setQueryParameters(data);
+    setFilterLocalStorage(filterName, data);
     return data;
   };
 
@@ -260,7 +255,7 @@ function EnrollmentVerificationList({ footerLinks }) {
             {t(
               type === "SSOID"
                 ? "SSOID_VERIFICATION"
-                : "ENROLLMENT_VERIFICATION"
+                : "ENROLLMENT_VERIFICATION",
             )}
           </AdminTypo.H4>
         </HStack>
@@ -282,47 +277,57 @@ function EnrollmentVerificationList({ footerLinks }) {
         />
       </HStack>
       <HStack>
-        <Stack style={{ position: "relative", overflowX: "hidden" }}>
-          <Stack
+        <VStack style={{ position: "relative", overflowX: "hidden" }}>
+          <VStack
             style={{
-              position: "absolute",
               top: 0,
-              left: "0",
               transition: "left 0.3s ease",
+              left: "0",
+              position: "absolute",
               width: "250px",
-              height: "100%",
               background: "white",
               zIndex: 1,
+              height: "100%",
             }}
           >
             <Box
               flex={[2, 2, 1]}
               style={{
-                borderRightColor: "dividerColor",
                 borderRightWidth: "2px",
+                borderRightColor: "dividerColor",
               }}
             >
               <ScrollView
+                pr="2"
                 maxH={
                   Height -
                   (refAppBar?.clientHeight +
                     ref?.current?.clientHeight +
                     refSubHeader?.current?.clientHeight)
                 }
-                pr="2"
               >
-                {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+                {urlFilterApply && (
+                  <Filter
+                    {...{
+                      filter,
+                      setFilter: (fdata) => {
+                        setFilterLocalStorage(filterName, fdata);
+                        setFilter(fdata);
+                      },
+                    }}
+                  />
+                )}
               </ScrollView>
             </Box>
-          </Stack>
+          </VStack>
 
-          <Stack
+          <VStack
             style={{
-              marginLeft: isDrawerOpen ? "250px" : "0",
               transition: "margin-left 0.3s ease",
+              marginLeft: isDrawerOpen ? "250px" : "0",
             }}
           />
-        </Stack>
+        </VStack>
         <VStack
           ml={"-1"}
           rounded={"xs"}
@@ -423,7 +428,7 @@ function EnrollmentVerificationList({ footerLinks }) {
               </ScrollView>
               <DataTable
                 customStyles={tableCustomStyles}
-                columns={[...columns(t, navigate, filter)]}
+                columns={[...columns(t, navigate)]}
                 data={data}
                 persistTableHead
                 progressPending={loading}

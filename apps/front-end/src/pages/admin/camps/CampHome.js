@@ -169,7 +169,7 @@ const errorPcrColuman = (t) => [
       row?.users?.length > 0 ? (
         <HStack flexWrap={"wrap"}>
           {row?.users?.map((item) => (
-            <Chip label={item?.id} />
+            <Chip label={item?.id} key={item?.id} />
           ))}
         </HStack>
       ) : (
@@ -286,22 +286,20 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
           </Alert>
         ),
       });
+    } else if (result?.data?.length > 0) {
+      setErrors(result?.data);
     } else {
-      if (result?.data?.length > 0) {
-        setErrors(result?.data);
-      } else {
-        setModalVisible(false);
-        showToast({
-          render: () => (
-            <Alert status="warning" alignItems="start" mb="3" mt="4">
-              <HStack alignItems="center" space="2" color>
-                <Alert.Icon size={"lg"} />
-                <AdminTypo.H4>{result?.message}</AdminTypo.H4>
-              </HStack>
-            </Alert>
-          ),
-        });
-      }
+      setModalVisible(false);
+      showToast({
+        render: () => (
+          <Alert status="warning" alignItems="start" mb="3" mt="4">
+            <HStack alignItems="center" space="2" color>
+              <Alert.Icon size={"lg"} />
+              <AdminTypo.H4>{result?.message}</AdminTypo.H4>
+            </HStack>
+          </Alert>
+        ),
+      });
     }
     setIsButtonLoading(false);
   };
@@ -530,15 +528,15 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   (e) => {
                     setFilter({ ...filter, limit: e, page: 1 });
                   },
-                  [setFilter, filter]
+                  [setFilter, filter],
                 )}
                 onChangePage={useCallback(
                   (e) => {
                     setFilter({ ...filter, page: e });
                   },
-                  [setFilter, filter]
+                  [setFilter, filter],
                 )}
-                selectableRows={filter?.pcr_type === "ready_to_close" && true}
+                selectableRows={filter?.pcr_type === "ready_to_close"}
                 onSelectedRowsChange={handleRowCheck}
                 onRowClicked={handleRowClick}
                 dense
@@ -747,7 +745,7 @@ export const Filter = ({ filter, setFilter }) => {
           : {}),
       });
     },
-    [filter, setFilterObject]
+    [filter, setFilterObject],
   );
   const clearFilter = () => {
     setFilter({});
@@ -755,9 +753,8 @@ export const Filter = ({ filter, setFilter }) => {
     setFacilitatorFilter({});
   };
   useEffect(async () => {
-    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
-      facilitatorFilter
-    );
+    const { error, ...result } =
+      await facilitatorRegistryService.searchByCamp(facilitatorFilter);
 
     if (!error) {
       let newData;
@@ -790,7 +787,7 @@ export const Filter = ({ filter, setFilter }) => {
             {t("CLEAR_FILTER")}(
             {
               Object.keys(filter || {}).filter(
-                (e) => !["limit", "page"].includes(e)
+                (e) => !["limit", "page"].includes(e),
               ).length
             }
             )

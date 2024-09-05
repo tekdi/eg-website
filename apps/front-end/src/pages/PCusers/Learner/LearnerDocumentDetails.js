@@ -6,12 +6,11 @@ import {
   jsonParse,
 } from "@shiksha/common-lib";
 import { VStack, HStack } from "native-base";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const LearnerDocsChecklist = ({ userTokenInfo, footerLinks }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
-  const { id } = useParams();
   const [benificiary, setBenificiary] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -24,7 +23,11 @@ const LearnerDocsChecklist = ({ userTokenInfo, footerLinks }) => {
     );
     setLoading(false);
   }, []);
-
+  const onPressBackButton = async () => {
+    navigate(`/learners/list-view/${location?.state?.id}`, {
+      state: location?.state,
+    });
+  };
   return (
     <Layout
       loading={loading}
@@ -32,9 +35,7 @@ const LearnerDocsChecklist = ({ userTokenInfo, footerLinks }) => {
         name: t("DOCUMENTS_CHECKLIST"),
         lang,
         setLang,
-        onPressBackButton: (e) => {
-          navigate(`/learners/list-view/${id}`);
-        },
+        onPressBackButton,
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
       }}
       _footer={{ menues: footerLinks }}

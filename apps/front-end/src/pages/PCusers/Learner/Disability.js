@@ -1,7 +1,7 @@
 import { PCusers_layout as Layout, PcuserService } from "@shiksha/common-lib";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BenificiaryDisability from "v2/components/Functional/LearnerOnboardingDetails/BenificiaryDisability";
 import PropTypes from "prop-types";
 
@@ -11,6 +11,7 @@ export default function Disability(props) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const init = async () => {
@@ -23,8 +24,11 @@ export default function Disability(props) {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${id}`);
+    navigate(`/learners/list-view/${id}`, {
+      state: location?.state,
+    });
   };
+
   return (
     <Layout
       loading={loading}
