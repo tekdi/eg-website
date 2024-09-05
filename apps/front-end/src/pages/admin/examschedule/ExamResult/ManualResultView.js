@@ -6,8 +6,8 @@ import DataTable from "react-data-table-component";
 
 const ManualResultView = ({ data }) => {
   const { t } = useTranslation();
-  const [Height] = useWindowSize();
-  const [refAppBar, setRefAppBar] = useState();
+  const [width, Height] = useWindowSize();
+  const [refAppBar] = useState();
 
   const customStyles = {
     rows: {
@@ -81,7 +81,7 @@ const ManualResultView = ({ data }) => {
   ];
 
   return (
-    <VStack space={4}>
+    <VStack space={4} customWidth={width}>
       <ScrollView
         maxH={Height - refAppBar?.clientHeight}
         minH={Height - refAppBar?.clientHeight}
