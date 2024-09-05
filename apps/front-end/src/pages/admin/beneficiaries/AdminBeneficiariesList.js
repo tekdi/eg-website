@@ -379,7 +379,7 @@ export const Filter = ({ filter, setFilter }) => {
       }
       setFilter({ ...otherData, ...facilitator });
     },
-    [facilitatorFilter],
+    [setFacilitatorFilter, setFilter],
   );
 
   const schema = useMemo(() => {

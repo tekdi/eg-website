@@ -277,57 +277,57 @@ function EnrollmentVerificationList({ footerLinks }) {
         />
       </HStack>
       <HStack>
-        <Stack style={{ position: "relative", overflowX: "hidden" }}>
-          <Stack
+        <VStack style={{ position: "relative", overflowX: "hidden" }}>
+          <VStack
             style={{
-              position: "absolute",
               top: 0,
-              left: "0",
               transition: "left 0.3s ease",
+              left: "0",
+              position: "absolute",
               width: "250px",
-              height: "100%",
               background: "white",
               zIndex: 1,
+              height: "100%",
             }}
           >
             <Box
               flex={[2, 2, 1]}
               style={{
-                borderRightColor: "dividerColor",
                 borderRightWidth: "2px",
+                borderRightColor: "dividerColor",
               }}
             >
               <ScrollView
+                pr="2"
                 maxH={
                   Height -
                   (refAppBar?.clientHeight +
                     ref?.current?.clientHeight +
                     refSubHeader?.current?.clientHeight)
                 }
-                pr="2"
               >
                 {urlFilterApply && (
                   <Filter
                     {...{
                       filter,
                       setFilter: (fdata) => {
-                        setFilter(fdata);
                         setFilterLocalStorage(filterName, fdata);
+                        setFilter(fdata);
                       },
                     }}
                   />
                 )}
               </ScrollView>
             </Box>
-          </Stack>
+          </VStack>
 
-          <Stack
+          <VStack
             style={{
-              marginLeft: isDrawerOpen ? "250px" : "0",
               transition: "margin-left 0.3s ease",
+              marginLeft: isDrawerOpen ? "250px" : "0",
             }}
           />
-        </Stack>
+        </VStack>
         <VStack
           ml={"-1"}
           rounded={"xs"}
