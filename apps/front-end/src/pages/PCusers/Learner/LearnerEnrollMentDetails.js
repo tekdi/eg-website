@@ -7,7 +7,7 @@ import {
   getEnrollmentIds,
   FrontEndTypo,
 } from "@shiksha/common-lib";
-import { HStack, VStack } from "native-base";
+import { HStack, Modal, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -22,6 +22,7 @@ export default function App({ userTokenInfo }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [cardData, setCardData] = useState([]);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const location = useLocation();
 
@@ -184,7 +185,8 @@ export default function App({ userTokenInfo }) {
 
     setLoading(false);
   };
-
+  const showVerifyButton = () => {};
+  console.log("learnerData", benificiary);
   return (
     <Layout
       loading={loading}
@@ -215,7 +217,45 @@ export default function App({ userTokenInfo }) {
             title={t(data?.title)}
           />
         ))}
+        {showVerifyButton() && (
+          <FrontEndTypo.Primarybutton onPress={() => setOpenConfirmModal(true)}>
+            {t("VERIFY")}
+          </FrontEndTypo.Primarybutton>
+        )}
       </VStack>
+      <Modal
+        isOpen={openConfirmModal}
+        onClose={() => setOpenConfirmModal(false)}
+      >
+        <Modal.Content>
+          <Modal.Header>
+            <FrontEndTypo.H1 textAlign={"center"}>
+              {t("CONFIRM")}
+            </FrontEndTypo.H1>
+          </Modal.Header>
+          <Modal.Body p="5">
+            <VStack space="4">
+              <VStack>
+                <HStack space="4" alignItems={"center"}>
+                  <FrontEndTypo.H2 bold color="textGreyColor.550">
+                    {t("VOLUNTEER_CONFIRM_STATUS")}
+                  </FrontEndTypo.H2>
+                </HStack>
+              </VStack>
+            </VStack>
+          </Modal.Body>
+          <Modal.Footer justifyContent={"space-between"}>
+            <FrontEndTypo.Secondarybutton
+              onPress={() => setOpenConfirmModal(false)}
+            >
+              {t("CLOSE")}
+            </FrontEndTypo.Secondarybutton>
+            <FrontEndTypo.Primarybutton>
+              {t("CONFIRM")}
+            </FrontEndTypo.Primarybutton>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Layout>
   );
 }
