@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Modal, Text } from "native-base";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const OrderSuccessModal = ({ isOpen, onClose, orderId, applied = false }) => {
   const { t } = useTranslation();
@@ -28,3 +29,9 @@ const OrderSuccessModal = ({ isOpen, onClose, orderId, applied = false }) => {
 };
 
 export default OrderSuccessModal;
+OrderSuccessModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  orderId: PropTypes.string,
+  applied: PropTypes.bool,
+};
