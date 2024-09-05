@@ -34,6 +34,7 @@ import {
   widgets,
   transformErrors,
   onError,
+  customValidate,
 } from "../../component/BaseInput";
 import { useScreenshot } from "use-screenshot-hook";
 import { useTranslation } from "react-i18next";
@@ -324,83 +325,6 @@ export default function App({ facilitator, ip, onClick }) {
         }
       });
     }
-  };
-
-  const validate = (data, key) => {
-    let error = {};
-    switch (key) {
-      case "mobile":
-        if (data?.mobile?.toString()?.length !== 10) {
-          error = { mobile: t("MINIMUM_LENGTH_IS_10") };
-        }
-        if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
-          error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
-        }
-        break;
-      case "aadhar_no":
-        if (
-          data?.aadhar_no &&
-          !`${data?.aadhar_no}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
-        ) {
-          error = { aadhar_no: t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER") };
-        }
-        break;
-      case "dob":
-        const years = moment().diff(data?.dob, "years");
-        if (years < 18) {
-          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
-        }
-        break;
-      case "grampanchayat":
-      case "first_name":
-      case "last_name":
-      case "middle_name":
-        // do some thing
-        break;
-      case "vo_experience":
-      case "experience":
-        ["vo_experience", "experience"].forEach((keyex) => {
-          data?.[keyex]?.map((item, index) => {
-            ["role_title", "organization", "description"].forEach((key) => {
-              if (item?.[key]) {
-                if (
-                  !item?.[key]?.match(/^[a-zA-Z ]*$/g) ||
-                  item?.[key]?.replaceAll(" ", "") === ""
-                ) {
-                  errors[keyex][index]?.[key]?.addError(
-                    `${t("REQUIRED_MESSAGE")} ${t(
-                      schema?.properties?.[key]?.title,
-                    )}`,
-                  );
-                } else if (key === "description" && item?.[key].length > 200) {
-                  errors[keyex][index]?.[key]?.addError(
-                    `${t("MAX_LENGHT_200")} ${t(
-                      schema?.properties?.[key]?.title,
-                    )}`,
-                  );
-                }
-              }
-            });
-          });
-        });
-        break;
-      default:
-        break;
-    }
-    return error;
-  };
-
-  const customValidate = (data, err) => {
-    const arr = Object.keys(err);
-    arr.forEach((key) => {
-      const isValid = validate(data, key);
-      if (isValid?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValid[key]))
-          err?.[key]?.addError(isValid[key]);
-      }
-    });
-
-    return err;
   };
 
   const checkMobileExist = async (mobile) => {

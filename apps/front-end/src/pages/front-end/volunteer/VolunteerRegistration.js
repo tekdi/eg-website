@@ -27,6 +27,7 @@ import {
   widgets,
   onError,
   transformErrors,
+  customValidate,
 } from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
 import PropTypes from "prop-types";
@@ -187,42 +188,6 @@ export default function App({ facilitator, ip, onClick }) {
         }
       }
     }
-  };
-
-  const validateFn = (data, key) => {
-    let error = {};
-    switch (key) {
-      case "dob": {
-        const years = moment().diff(data?.dob, "years");
-        if (years < 18) {
-          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
-        }
-        break;
-      }
-      case "mobile":
-        if (data?.mobile?.toString()?.length !== 10) {
-          error = { mobile: t("MINIMUM_LENGTH_IS_10") };
-        }
-        if (!(data?.mobile > 6000000000 && data?.mobile < 9999999999)) {
-          error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
-        }
-        break;
-      default:
-        break;
-    }
-    return error;
-  };
-
-  const customValidate = (data, err) => {
-    const arr = Object.keys(err);
-    for (const key of arr) {
-      const isValidKey = validateFn(data, key);
-      if (isValidKey?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValidKey[key]))
-          err?.[key]?.addError(isValidKey[key]);
-      }
-    }
-    return err;
   };
 
   const checkMobileNumberExist = async (mobile) => {
