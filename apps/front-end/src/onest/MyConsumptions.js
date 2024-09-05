@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "./Layout";
 import { dataConfig } from "./card";
+import PropTypes from "prop-types";
 
 const consumptionTypes = [
   { label: "JOB_APPLICATIONS", value: "jobs" },
@@ -271,4 +272,12 @@ const RenderCards = ({ obj, config }) => {
       )}
     </Box>
   );
+};
+MyConsumptions.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};
+RenderCards.propTypes = {
+  obj: PropTypes.any,
+  config: PropTypes.any,
 };

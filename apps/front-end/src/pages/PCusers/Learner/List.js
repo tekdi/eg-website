@@ -14,7 +14,6 @@ import {
   IconButton,
   Modal,
   Select,
-  Spinner,
   Stack,
   VStack,
 } from "native-base";
@@ -66,11 +65,11 @@ export default function LearnerList({ userTokenInfo }) {
         setPrerakList(apiData);
         const getSelectedPrerakList = jsonParse(
           localStorage.getItem("pc_user_prerak_filter_for_leaner"),
-          [],
+          []
         );
         if (getSelectedPrerakList?.length > 0) {
           const filteredUsers = apiData?.filter((item) =>
-            getSelectedPrerakList?.includes(item.user_id),
+            getSelectedPrerakList?.includes(item.user_id)
           );
           setFilteredData(filteredUsers);
           setSelectedPrerak(getSelectedPrerakList);
@@ -121,11 +120,11 @@ export default function LearnerList({ userTokenInfo }) {
 
   const handleContinueBtn = () => {
     const filteredUsers = prerakList?.filter((item) =>
-      selectedPrerak?.includes(item.user_id),
+      selectedPrerak?.includes(item.user_id)
     );
     localStorage.setItem(
       "pc_user_prerak_filter_for_leaner",
-      JSON.stringify(selectedPrerak),
+      JSON.stringify(selectedPrerak)
     );
     setFilteredData(filteredUsers);
     setIsModalOpen(false);

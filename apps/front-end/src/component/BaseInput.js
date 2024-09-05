@@ -157,7 +157,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                 <VStack key={index} space="4">
                   <HStack alignItems="center" justifyContent="space-between">
                     <H2 color="textMaroonColor.400">{`${index + 1}. ${t(
-                      schema?.title,
+                      schema?.title
                     )}`}</H2>
                     {hasRemove && (
                       <IconByName
@@ -177,7 +177,7 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
                   {children}
                 </VStack>
               );
-            },
+            }
           )}
           {props.canAdd && (
             <Button
@@ -350,7 +350,7 @@ export const RadioBtn = ({ options, value, onChange, required, schema }) => {
                   mx: 2,
                   borderWidth: 0,
                   color: "#333",
-                },
+                }
           ),
           // _box: { gap: "0", width: "auto" },
           // _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
@@ -485,6 +485,7 @@ export const SelectApp = ({
 };
 SelectApp.propTypes = {
   options: PropTypes.any,
+  isDisabled: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
   required: PropTypes.bool,
@@ -829,13 +830,13 @@ const templates = {
 export const scrollToField = ({ property } = {}) => {
   if (property) {
     const element = document.getElementById(
-      `element_${property.replace(".", "")}`,
+      `element_${property.replace(".", "")}`
     );
     if (element) {
       element?.scrollIntoView();
     } else {
       const element1 = document.getElementById(
-        `root_${property.replace(".", "")}__error`,
+        `root_${property.replace(".", "")}__error`
       );
       if (element1) {
         element1?.scrollIntoView();
@@ -863,7 +864,7 @@ const transformErrors = (errors, schema, t) => {
         return `${t(
           schemaItem?.format === "FileUpload"
             ? "REQUIRED_MESSAGE_UPLOAD"
-            : "REQUIRED_MESSAGE",
+            : "REQUIRED_MESSAGE"
         )} "${t(title)}"`;
       case "minItems":
         return t("SELECT_MINIMUM")
