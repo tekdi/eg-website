@@ -216,20 +216,19 @@ export default function App({ facilitator, ip, onClick }) {
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
     for (const key of arr) {
-      const isValid = validateFn(data, key);
-      if (isValid?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValid[key]))
-          err?.[key]?.addError(isValid[key]);
+      const isValidKey = validateFn(data, key);
+      if (isValidKey?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValidKey[key]))
+          err?.[key]?.addError(isValidKey[key]);
       }
     }
-
     return err;
   };
 
-  const checkMobileExist = async (mobile) => {
-    const result = await volunteerRegistryService.isUserExist({ mobile });
-    if (result?.data) {
-      let response_isUserExist = result?.data?.user_roles || [];
+  const checkMobileNumberExist = async (mobile) => {
+    const response = await volunteerRegistryService.isUserExist({ mobile });
+    if (response?.data) {
+      const response_isUserExist = response?.data?.user_roles || [];
       if (response_isUserExist?.length > 0) {
         const newErrors = {
           mobile: {
@@ -269,7 +268,7 @@ export default function App({ facilitator, ip, onClick }) {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
       if (data?.mobile?.toString()?.length === 10) {
-        await checkMobileExist(data?.mobile);
+        await checkMobileNumberExist(data?.mobile);
       }
       if (schema?.properties?.otp) {
         const { otp, ...properties } = schema?.properties || {};
@@ -306,7 +305,7 @@ export default function App({ facilitator, ip, onClick }) {
       if (id) {
         success = true;
       } else if (page === "4") {
-        const resultCheck = await checkMobileExist(newFormData?.mobile);
+        const resultCheck = await checkMobileNumberExist(newFormData?.mobile);
         if (!resultCheck) {
           if (!schema?.properties?.otp) {
             const { otp: data, ...allData } = newFormData || {};
@@ -333,12 +332,10 @@ export default function App({ facilitator, ip, onClick }) {
                 },
               };
               setErrors(newErrors);
-            } else {
-              if (data?.username && data?.password) {
-                await removeOnboardingURLData();
-                await removeOnboardingMobile();
-                setCredentials(data);
-              }
+            } else if (data?.username && data?.password) {
+              await removeOnboardingURLData();
+              await removeOnboardingMobile();
+              setCredentials(data);
             }
           } else if (status === false) {
             const newErrors = {
