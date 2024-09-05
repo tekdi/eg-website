@@ -73,16 +73,6 @@ export default function CampSetting({ footerLinks }) {
       navigate("/camps");
     }
   };
-  console.log({ selectedStartTime, selectedEndTime });
-  const setStartEndTime = (e) => {
-    if (e) {
-      const startTime = e._d;
-      const endTime = new Date(startTime.getTime() + 3 * 60 * 60 * 1000); // Add 3 hours (in milliseconds)
-
-      setSelectedStartTime(startTime);
-      setSelectedEndTime(endTime);
-    }
-  };
 
   return (
     <Layout
@@ -122,7 +112,7 @@ export default function CampSetting({ footerLinks }) {
               showSecond={false}
               focusOnOpen={true}
               format="hh:mm A"
-              onChange={(e) => setStartEndTime(e)}
+              onChange={(e) => setSelectedStartTime(e?._d)}
             />
             <FrontEndTypo.H4>{t("END_TIME")}:</FrontEndTypo.H4>
 
@@ -131,9 +121,9 @@ export default function CampSetting({ footerLinks }) {
               use12Hours
               value={selectedEndTime ? moment(selectedEndTime) : ""}
               showSecond={false}
-              focusOnOpen={false}
+              focusOnOpen={true}
               format="hh:mm A"
-              disabled={true}
+              onChange={(e) => setSelectedEndTime(e?._d)}
             />
           </HStack>
           {error && (
