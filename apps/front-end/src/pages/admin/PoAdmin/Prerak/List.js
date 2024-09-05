@@ -102,7 +102,7 @@ const schemat = {
 
 function PrerakList({ userTokenInfo }) {
   const { t } = useTranslation();
-  const [Height] = useWindowSize();
+  const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
   const [schema, setSchema] = useState();
@@ -256,7 +256,11 @@ function PrerakList({ userTokenInfo }) {
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
-    <PoAdminLayout _sidebar={setRefAppBar} loading={loading}>
+    <PoAdminLayout
+      _sidebar={setRefAppBar}
+      loading={loading}
+      customwidth={width}
+    >
       <HStack p="4" space={4} justifyContent={"space-between"}>
         <HStack justifyContent="start" alignItems="center" space="2">
           <IconByName name="GroupLineIcon" size="md" />

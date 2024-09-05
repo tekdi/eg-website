@@ -25,6 +25,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import Clipboard from "component/Clipboard";
+import PropTypes from "prop-types";
 
 export default function View({ footerLinks }) {
   const [modalVisible, setModalVisible] = useState(false);

@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
-
+import PropTypes from "prop-types";
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
     <VStack
