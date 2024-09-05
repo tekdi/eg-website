@@ -12,6 +12,7 @@ import { Alert, HStack, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function CampSession({ footerLinks }) {
   const { id } = useParams();
@@ -329,3 +330,15 @@ export function SessionCard({
     </VStack>
   );
 }
+CampSession.propTypes = {
+  footerLinks: PropTypes.any,
+};
+SessionCard.propTypes = {
+  enumOptions: PropTypes.any,
+  startSession: PropTypes.any,
+  partiallyDoneSession: PropTypes.any,
+  item: PropTypes.any,
+  previusItem: PropTypes.any,
+  index: PropTypes.any,
+  t: PropTypes.any,
+};

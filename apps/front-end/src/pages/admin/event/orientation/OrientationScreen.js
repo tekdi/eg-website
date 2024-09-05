@@ -9,6 +9,7 @@ import { HStack, Modal, Text } from "native-base";
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const stylesheet = {
   modalxxl: {
@@ -200,3 +201,9 @@ export default function OrientationScreen({
     </Modal>
   );
 }
+OrientationScreen.propTypes = {
+  isOpen: PropTypes.any,
+  setIsOpen: PropTypes.any,
+  userIds: PropTypes.any,
+  setUserIds: PropTypes.any,
+};

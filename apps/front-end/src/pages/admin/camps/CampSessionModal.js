@@ -7,6 +7,7 @@ import {
 } from "@shiksha/common-lib";
 import { Alert, HStack, Pressable, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // const StartSessionButton = ({ onPress, isDisabled, t }) => (
 //   <FrontEndTypo.DefaultButton
@@ -377,3 +378,31 @@ export const SessionList = React.memo(
     );
   }
 );
+CompleteButton.propTypes = {
+  onPress: PropTypes.any,
+  t: PropTypes.any,
+};
+IncompleteButton.propTypes = {
+  onPress: PropTypes.any,
+  t: PropTypes.any,
+};
+SessionActions.propTypes = {
+  enumOptions: PropTypes.any,
+  isDisable: PropTypes.any,
+  sessionActive: PropTypes.any,
+  handlePartiallyDone: PropTypes.any,
+  setSubmitStatus: PropTypes.any,
+  handleCancel: PropTypes.any,
+  submitStatus: PropTypes.any,
+  error: PropTypes.any,
+};
+SessionFeedback.propTypes = {
+  enumOptions: PropTypes.any,
+  isDisable: PropTypes.any,
+  t: PropTypes.any,
+  handlePartiallyDone: PropTypes.any,
+  setSubmitStatus: PropTypes.any,
+  handleCancel: PropTypes.any,
+  submitStatus: PropTypes.any,
+  error: PropTypes.any,
+};

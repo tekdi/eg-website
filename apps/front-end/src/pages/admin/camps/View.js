@@ -699,9 +699,17 @@ export default function View({ footerLinks }) {
   );
 }
 
-View.PropTypes = {
+View.propTypes = {
   footerLinks: PropTypes.any,
   row: PropTypes.any,
   t: PropTypes.any,
   consentData: PropTypes.any,
+};
+ConsentForm.propTypes = {
+  row: PropTypes.any,
+  consentData: PropTypes.any,
+};
+ActionButton.propTypes = {
+  row: PropTypes.any,
+  t: PropTypes.any,
 };
