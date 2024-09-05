@@ -175,7 +175,7 @@ const addressFieldsArray = [
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [EditButton, setEditButton] = useState(false);
-  const [selectData, setselectData] = useState([]);
+  const [selectData, setSelectData] = useState([]);
   const [status, setStatus] = useState({});
   const { id } = useParams();
   const [data, setData] = useState();
@@ -206,30 +206,24 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
-  const [boardName, setBoardName] = useState({});
-  const [boardId, setBoardId] = useState({});
+  const [boardName, setBoardName] = useState();
   const [jsonData, setJsonData] = useState();
   const [programUser, setProgramUser] = useState();
   const [localData, setLocalData] = useState();
-  const [publishEvent, setPublishEvent] = useState();
+  const [publishEvent, setPublishEvent] = useState(false);
   const [openWarningModal, setOpenWarningModal] = useState(false);
 
-  useEffect(() => {
-    const getSubjectList = async () => {
-      const id = boardId;
-      const subjectData = await organisationService.getSubjectList({ id });
-
-      if (Array.isArray(subjectData?.data)) {
-        const hasDraftEvent = subjectData?.data.some((subject) => {
-          return subject.events.some((event) => {
-            return event.status === "publish";
-          });
+  const getSubjectList = async (id) => {
+    const subjectData = await organisationService.getSubjectList({ id });
+    if (Array.isArray(subjectData?.data)) {
+      const hasDraftEvent = subjectData?.data.some((subject) => {
+        return subject.events.some((event) => {
+          return event.status === "publish";
         });
-        setPublishEvent(hasDraftEvent);
-      }
-    };
-    getSubjectList();
-  }, [boardId]);
+      });
+      setPublishEvent(hasDraftEvent);
+    }
+  };
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -315,9 +309,11 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       setLoading(true);
       let newData = await benificiaryRegistoryService.getOne(id);
       const value = newData?.result?.program_beneficiaries?.enrolled_for_board;
-      const boardName = await enumRegistryService.boardName(value);
-      setBoardName(boardName?.name);
-      setBoardId(boardName?.id);
+      if (value) {
+        const board_name = await enumRegistryService.boardName(value);
+        setBoardName(board_name?.name);
+        getSubjectList(board_name?.id);
+      }
       setData(newData?.result);
       setAadhaarValue(newData?.result?.aadhar_no);
       const subjectId = jsonParse(
@@ -341,7 +337,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         );
       }
       let data = await benificiaryRegistoryService.getDocumentStatus();
-      setselectData(data);
+      setSelectData(data);
       const enumData = await enumRegistryService.listOfEnum();
       setEnumOptions(enumData?.data ? enumData?.data : {});
       setBenificiaryDropoutReasons(
