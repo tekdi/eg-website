@@ -25,7 +25,7 @@ function ManualExamResult(footerLinks) {
   const [subjects, setSubjects] = useState([]);
   const [data, setData] = useState();
   const [finalResult, setFinalResult] = useState();
-  const [year, setYear] = useState("2024");
+  const [year, setYear] = useState();
   const [error, setError] = useState();
   const [subjectCodeError, setSubjectCodeError] = useState(false);
   const [enumOptions, setEnumOptions] = useState({});
@@ -33,9 +33,7 @@ function ManualExamResult(footerLinks) {
   // Update the subjects if practical is present or not for that subject.
 
   useEffect(() => {
-    if (!year) {
-      setYear("2024");
-    }
+    setYear(new Date().getFullYear());
   }, []);
 
   useEffect(() => {
