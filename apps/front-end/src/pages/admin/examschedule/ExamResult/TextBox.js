@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 function TextBox({ value, onChange, placeholder, maxlength }) {
   const { t } = useTranslation();
@@ -15,6 +16,7 @@ function TextBox({ value, onChange, placeholder, maxlength }) {
           borderRadius: "10px",
           background: "transparent",
           width: "100px",
+          height: "40px",
         }}
         maxLength={maxlength || "3"}
         value={value || ""}
@@ -25,3 +27,10 @@ function TextBox({ value, onChange, placeholder, maxlength }) {
 }
 
 export default TextBox;
+
+TextBox.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  maxlength: PropTypes.any,
+};

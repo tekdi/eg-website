@@ -7,11 +7,13 @@ import {
   CardComponent,
   IconByName,
   organisationService,
+  enumRegistryService,
 } from "@shiksha/common-lib";
 import { Alert, HStack, ScrollView, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import TextBox from "./TextBox";
+import SelectBox from "./SelectBox";
 
 function ManualExamResult(footerLinks) {
   const { t } = useTranslation();
@@ -23,11 +25,24 @@ function ManualExamResult(footerLinks) {
   const [subjects, setSubjects] = useState([]);
   const [data, setData] = useState();
   const [finalResult, setFinalResult] = useState();
-  const [year, setYear] = useState();
+  const [year, setYear] = useState("2024");
   const [error, setError] = useState();
   const [subjectCodeError, setSubjectCodeError] = useState(false);
+  const [enumOptions, setEnumOptions] = useState({});
 
   // Update the subjects if practical is present or not for that subject.
+
+  useEffect(() => {
+    const fetchEnumOptions = async () => {
+      try {
+        const data = await enumRegistryService.listOfEnum();
+        setEnumOptions(data?.data ? data?.data : {});
+      } catch (error) {
+        console.log("Error fetching enum data:", error);
+      }
+    };
+    fetchEnumOptions();
+  }, []);
   const updateSubjects = (subjects) => {
     return subjects.map((subject) => {
       if (subject.practical_marks === null) {
@@ -191,9 +206,6 @@ function ManualExamResult(footerLinks) {
     };
     fetchData();
   };
-  const handleYearChange = (value) => {
-    setYear(value);
-  };
 
   return (
     <Layout
@@ -267,12 +279,7 @@ function ManualExamResult(footerLinks) {
                     </AdminTypo.H6>
                     <TextBox
                       value={year}
-                      onChange={(e) =>
-                        handleYearChange(
-                          e.target.value.toUpperCase().replace(/[^0-9-]/g, "")
-                        )
-                      }
-                      maxlength={4}
+                      isDisabled={true}
                       placeholder={"ENTER_EXAM_YEAR"}
                     />
                   </HStack>
@@ -323,7 +330,7 @@ function ManualExamResult(footerLinks) {
                                         e.target.value
                                           .toUpperCase()
                                           .replace(/[^0-9AB-]/g, ""),
-                                        item?.theory_marks
+                                        item?.theory_marks,
                                       )
                                     }
                                     placeholder={"ENTER_THEORY_MARKS"}
@@ -340,7 +347,7 @@ function ManualExamResult(footerLinks) {
                                           e.target.value
                                             .toUpperCase()
                                             .replace(/[^0-9AB-]/g, ""),
-                                          item?.practical_marks
+                                          item?.practical_marks,
                                         )
                                       }
                                       placeholder={"ENTER_PRACTICAL_MARKS"}
@@ -359,7 +366,7 @@ function ManualExamResult(footerLinks) {
                                         e.target.value
                                           .toUpperCase()
                                           .replace(/[^0-9AB-]/g, ""),
-                                        item?.sessional_marks
+                                        item?.sessional_marks,
                                       )
                                     }
                                     placeholder={"ENTER_SESSIONAL_MARKS"}
@@ -369,19 +376,15 @@ function ManualExamResult(footerLinks) {
                                   <HStack>{item?.marks?.total || "-"}</HStack>
                                 </td>
                                 <td>
-                                  <TextBox
+                                  <SelectBox
                                     value={item?.marks?.result}
                                     onChange={(e) =>
-                                      handleMarksChange(
-                                        index,
-                                        "result",
-                                        e.target.value
-                                          .toUpperCase()
-                                          .replace(/[^A-Z]/g, "")
-                                      )
+                                      handleMarksChange(index, "result", e, "")
                                     }
-                                    maxlength="4"
                                     placeholder={"RESULT"}
+                                    optionsArr={
+                                      enumOptions?.EXAM_SUBJECT_RESULT_STATUS
+                                    }
                                   />
                                 </td>
                               </tr>
@@ -399,19 +402,17 @@ function ManualExamResult(footerLinks) {
                           <AdminTypo.H4>{t("TOTAL")}</AdminTypo.H4>
                           <AdminTypo.H4>{finalMarks()}</AdminTypo.H4>
                         </HStack>
-                        <HStack width={"40%"} justifyContent={"space-between"}>
+                        <HStack
+                          width={"40%"}
+                          justifyContent={"space-between"}
+                          alignItems={"center"}
+                        >
                           <AdminTypo.H4>{t("RESULT")}</AdminTypo.H4>
-                          <TextBox
+                          <SelectBox
                             value={finalResult}
-                            onChange={(e) =>
-                              handleFinalResult(
-                                e.target.value
-                                  .toUpperCase()
-                                  .replace(/[^A-Z]/g, "")
-                              )
-                            }
-                            maxlength="4"
+                            onChange={(e) => handleFinalResult(e)}
                             placeholder={"RESULT"}
+                            optionsArr={enumOptions?.EXAM_FINAL_RESULT_STATUS}
                           />
                         </HStack>
                       </HStack>
@@ -429,12 +430,24 @@ function ManualExamResult(footerLinks) {
               </HStack>
             </VStack>
             <VStack>
-              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_P")}</AdminTypo.H4>
-              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYC")}</AdminTypo.H4>
-              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCT")}</AdminTypo.H4>
-              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCP")}</AdminTypo.H4>
-              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_RWH")}</AdminTypo.H4>
-              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_XXXX")}</AdminTypo.H4>
+              <AdminTypo.H4>
+                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_P")}
+              </AdminTypo.H4>
+              <AdminTypo.H4>
+                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYC")}
+              </AdminTypo.H4>
+              <AdminTypo.H4>
+                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCT")}
+              </AdminTypo.H4>
+              <AdminTypo.H4>
+                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCP")}
+              </AdminTypo.H4>
+              <AdminTypo.H4>
+                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_RWH")}
+              </AdminTypo.H4>
+              <AdminTypo.H4>
+                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_XXXX")}
+              </AdminTypo.H4>
             </VStack>
             <HStack space={4} alignSelf={"center"}>
               <AdminTypo.Secondarybutton

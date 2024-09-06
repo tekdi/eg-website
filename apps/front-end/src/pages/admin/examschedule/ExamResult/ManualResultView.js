@@ -1,8 +1,9 @@
 import { AdminTypo, useWindowSize } from "@shiksha/common-lib";
-import { Box, HStack, ScrollView, VStack, Stack } from "native-base";
+import { HStack, ScrollView, VStack, Stack } from "native-base";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import PropTypes from "prop-types";
 
 const ManualResultView = ({ data }) => {
   const { t } = useTranslation();
@@ -113,15 +114,31 @@ const ManualResultView = ({ data }) => {
         </HStack>
       </HStack>
       <VStack>
-        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_P")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYC")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCT")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCP")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_RWH")}</AdminTypo.H4>
-        <AdminTypo.H4>{t("EXAM_RESULT_STATUS_XXXX")}</AdminTypo.H4>
+        <AdminTypo.H4>
+          {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_P")}
+        </AdminTypo.H4>
+        <AdminTypo.H4>
+          {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYC")}
+        </AdminTypo.H4>
+        <AdminTypo.H4>
+          {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCT")}
+        </AdminTypo.H4>
+        <AdminTypo.H4>
+          {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCP")}
+        </AdminTypo.H4>
+        <AdminTypo.H4>
+          {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_RWH")}
+        </AdminTypo.H4>
+        <AdminTypo.H4>
+          {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_XXXX")}
+        </AdminTypo.H4>
       </VStack>
     </VStack>
   );
 };
 
 export default ManualResultView;
+
+ManualResultView.propTypes = {
+  data: PropTypes.any,
+};
