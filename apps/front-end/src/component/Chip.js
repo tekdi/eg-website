@@ -182,26 +182,26 @@ export function ExamChipStatus({ width, status, ...props }) {
       case "P":
       case "PASS":
         setColor("screenedColor");
-        setNewStatus(t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_P"));
+        setNewStatus(t("EXAM_RESULT_STATUS_P"));
         break;
       case "SYC":
-        setNewStatus(t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYC"));
+        setNewStatus(t("EXAM_RESULT_STATUS_SYC"));
         setColor("rejectedColor");
         break;
       case "SYCT":
-        setNewStatus(t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCT"));
+        setNewStatus(t("EXAM_RESULT_STATUS_SYCT"));
         setColor("shortlistedColor");
         break;
       case "SYCP":
-        setNewStatus(t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCP"));
+        setNewStatus(t("EXAM_RESULT_STATUS_SYCP"));
         setColor("potentialColor");
         break;
       case "RWH":
-        setNewStatus(t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_RWH"));
+        setNewStatus(t("EXAM_RESULT_STATUS_RWH"));
         setColor("selectedColor");
         break;
       case "XXXX":
-        setNewStatus(t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_XXXX"));
+        setNewStatus(t("EXAM_RESULT_STATUS_XXXX"));
         setColor("selectedColor");
         break;
       case "yet_to_upload":

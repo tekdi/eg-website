@@ -35,7 +35,7 @@ function SelectBox({ value, onChange, placeholder, optionsArr }) {
           return (
             <Select.Item
               key={index + 1}
-              label={t(option?.title || option?.label)}
+              label={t(`RESULT_DESCRIPTIONS.${option?.title}`)}
               value={option.value}
             />
           );

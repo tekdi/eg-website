@@ -430,24 +430,12 @@ function ManualExamResult(footerLinks) {
               </HStack>
             </VStack>
             <VStack>
-              <AdminTypo.H4>
-                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_P")}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYC")}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCT")}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_SYCP")}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_RWH")}
-              </AdminTypo.H4>
-              <AdminTypo.H4>
-                {t("RESULT_DESCRIPTIONS.EXAM_RESULT_STATUS_XXXX")}
-              </AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_P")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYC")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCT")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_SYCP")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_RWH")}</AdminTypo.H4>
+              <AdminTypo.H4>{t("EXAM_RESULT_STATUS_XXXX")}</AdminTypo.H4>
             </VStack>
             <HStack space={4} alignSelf={"center"}>
               <AdminTypo.Secondarybutton
