@@ -33,6 +33,12 @@ function ManualExamResult(footerLinks) {
   // Update the subjects if practical is present or not for that subject.
 
   useEffect(() => {
+    if (!year) {
+      setYear("2024");
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchEnumOptions = async () => {
       try {
         const data = await enumRegistryService.listOfEnum();
