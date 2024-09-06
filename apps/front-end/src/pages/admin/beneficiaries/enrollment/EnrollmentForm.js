@@ -722,8 +722,13 @@ export default function App(footerLinks) {
         }
         break;
       default:
-        let { [id?.replace("root_", "")]: undefined, ...other } = errors || {};
-        setErrors(other);
+        const fieldId = id?.replace("root_", "");
+
+        // Remove the dynamic key from the errors object
+        const { [fieldId]: _, ...otherErrors } = errors || {};
+        
+        // Update the errors object with the remaining keys
+        setErrors(otherErrors);
         break;
     }
     setFormData(newData);
