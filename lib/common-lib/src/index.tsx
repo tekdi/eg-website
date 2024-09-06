@@ -3,6 +3,8 @@ import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import Layout from './components/layout/Layout'
 import AdminLayout from './components/admin_layout/Layout'
+// pc user
+import PCusers_layout from './components/PCusers_layout/Layout'
 import VolunteerAdminLayout from './components/volunteer-admin/Layout'
 import SearchLayout from './components/SearchLayout'
 import IconByName from './components/IconByName'
@@ -25,6 +27,7 @@ import * as ObservationService from './services/ObservationService'
 import * as campService from './services/campService'
 import * as organisationService from './services/organisationService'
 import * as cohortService from './services/cohortService'
+import * as PcuserService from './services/PcuserService'
 import * as attendanceService from './services/attendanceService'
 import * as ConsentService from './services/ConsentService'
 import * as AgRegistryService from './services/AgRegistryService'
@@ -67,6 +70,7 @@ export {
   Layout,
   AdminLayout,
   PoAdminLayout,
+  PCusers_layout,
   SearchLayout,
   IconByName,
   Widget,
@@ -93,6 +97,7 @@ export {
   ObservationService,
   campService,
   cohortService,
+  PcuserService,
   organisationService,
   attendanceService,
   ConsentService,

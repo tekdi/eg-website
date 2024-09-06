@@ -294,7 +294,7 @@ export default function App(footerLinks) {
         };
       } else if (!(age.diff >= 14 && age.diff <= 29)) {
         error = {
-          [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_15_TO_29_YEARS"),
+          [key]: t("THE_AGE_OF_THE_LEARNER_SHOULD_BE_14_TO_30_YEARS"),
           age,
         };
       } else {
@@ -312,7 +312,13 @@ export default function App(footerLinks) {
     // filter by sso_id_enrolled if state id not RAJASTHAN
     if (
       state_name === "RAJASTHAN" &&
-      ["identified", "ready_to_enroll", "sso_id_enrolled"].includes(status)
+      [
+        "identified",
+        "ready_to_enroll",
+        "sso_id_enrolled",
+        "enrollment_awaited",
+        "enrollment_rejected",
+      ].includes(status)
     ) {
       list = list.filter((e) => e.value != "enrolled");
     } else if (state_name !== "RAJASTHAN") {

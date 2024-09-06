@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   BodyMedium,
   CustomRadio,
@@ -8,327 +9,60 @@ import {
   arrList,
   benificiaryRegistoryService,
   enumRegistryService,
-  facilitatorRegistryService,
-  getOnboardingMobile,
-  getSelectedProgramId,
+  jsonParse,
   objProps,
-  setSelectedAcademicYear,
-  setSelectedProgramId,
+  organisationService,
 } from "@shiksha/common-lib";
+import Menu from "component/Beneficiary/Menu";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import Clipboard from "component/Clipboard";
-import moment from "moment";
 import {
   Actionsheet,
   Alert,
   Box,
-  Divider,
   HStack,
+  Modal,
   Progress,
   ScrollView,
   Stack,
   VStack,
 } from "native-base";
-import React, { useEffect, useState } from "react";
+import PropType from "prop-types";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 
-export default function BenificiaryProfileView(userTokenInfo) {
+// BenificiaryProfileView
+export default function BenificiaryProfileView({ userTokenInfo }) {
   const { t } = useTranslation();
-  const [isOpenDropOut, setIsOpenDropOut] = React.useState(false);
-  const [isOpenReactive, setIsOpenReactive] = React.useState(false);
-  const [isOpenReject, setIsOpenReject] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [isOpenDropOut, setIsOpenDropOut] = useState(false);
+  const [isOpenReactive, setIsOpenReactive] = useState(false);
+  const [isOpenReject, setIsOpenReject] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [benificiary, setBenificiary] = React.useState({});
-  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] =
-    React.useState();
-  const [benificiaryRejectReasons, setBenificiaryRejectReasons] =
-    React.useState();
+  const [benificiary, setBenificiary] = useState({});
+  const [benificiaryDropoutReasons, setBenificiaryDropoutReasons] = useState();
+  const [benificiaryRejectReasons, setBenificiaryRejectReasons] = useState();
   const [benificiaryReactivateReasons, setBenificiaryReactivateReasons] =
-    React.useState();
-  const [reasonValue, setReasonValue] = React.useState("");
-  const [reactivateReasonValue, setReactivateReasonValue] = React.useState("");
-  const [alert, setAlert] = React.useState();
-  const [isDisable, setIsDisable] = React.useState(false);
+    useState();
+  const [reasonValue, setReasonValue] = useState("");
+  const [reactivateReasonValue, setReactivateReasonValue] = useState("");
+  const [isDisable, setIsDisable] = useState(true);
   const navigate = useNavigate();
+  const [isDisableOpportunity, setIsDisableOpportunity] = React.useState(false);
+  const [status, setStatus] = React.useState();
 
-  // PROFILE DATA IMPORTS conflicts
-  const [facilitator, setFacilitator] = useState({ notLoaded: true });
-  const fa_id = localStorage.getItem("id");
-  const [countLoad, setCountLoad] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [cohortData, setCohortData] = useState(null);
-  const [programData, setProgramData] = useState(null);
-  const [isUserRegisterExist, setIsUserRegisterExist] = useState(false);
-  const [selectedCohortData, setSelectedCohortData] = useState(null);
-  const [selectedProgramData, setSelectedProgramData] = useState(null);
-  const [selectCohortForm, setSelectCohortForm] = useState(false);
-  const [academicYear, setAcademicYear] = useState(null);
-  const [academicData, setAcademicData] = useState([]);
-  const [isTodayAttendace, setIsTodayAttendace] = useState();
-  const [certificateData, setCertificateData] = useState({});
-  const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
-  );
-
-  const saveDataToIndexedDB = async () => {
-    const obj = {
-      edit_req_for_context: "users",
-      edit_req_for_context_id: id,
-    };
-    try {
-      const [ListOfEnum, qualification, editRequest] = await Promise.all([
-        enumRegistryService.listOfEnum(),
-        enumRegistryService.getQualificationAll(),
-        facilitatorRegistryService.getEditRequests(obj),
-        // enumRegistryService.userInfo(),
-      ]);
-      const currentTime = moment().toString();
-      await Promise.all([
-        setIndexedDBItem("enums", ListOfEnum.data),
-        setIndexedDBItem("qualification", qualification),
-        setIndexedDBItem("lastFetchTime", currentTime),
-        setIndexedDBItem("editRequest", editRequest),
-      ]);
-    } catch (error) {
-      console.error("Error saving data to IndexedDB:", error);
-    }
-  };
-
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operation
-      if (countLoad == 0) {
-        setCountLoad(1);
-      }
-      if (countLoad == 1) {
-        //do page load first operation
-        //get user info
-        if (userTokenInfo) {
-          const IpUserInfo = await getIpUserInfo(fa_id);
-          let ipUserData = IpUserInfo;
-          if (isOnline && !IpUserInfo) {
-            ipUserData = await setIpUserInfo(fa_id);
-          }
-
-          setFacilitator(ipUserData);
-        }
-        setLoading(false);
-        //end do page load first operation
-        setCountLoad(2);
-      } else if (countLoad == 2) {
-        setCountLoad(3);
-      }
-    }
-    fetchData();
-  }, [countLoad]);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      const programId = await getSelectedProgramId();
-      if (programId) {
-        try {
-          const c_data =
-            await facilitatorRegistryService.getPrerakCertificateDetails({
-              id: fa_id,
-            });
-          const data =
-            c_data?.data?.filter(
-              (eventItem) =>
-                eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
-            )?.[0] || {};
-          if (data) {
-            setIsTodayAttendace(
-              data?.attendances?.filter(
-                (attendance) =>
-                  attendance.user_id == fa_id &&
-                  attendance.status == "present" &&
-                  data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
-            );
-
-            setCertificateData(data);
-            if (data?.lms_test_tracking?.length > 0) {
-              setLmsDetails(data?.lms_test_tracking?.[0]);
-            }
-            const dataDay = moment.utc(data?.end_date).isSame(moment(), "day");
-            const format = "HH:mm:ss";
-            const time = moment(moment().format(format), format);
-            const beforeTime = moment.utc(data?.start_time, format).local();
-            const afterTime = moment.utc(data?.end_time, format).local();
-            if (time?.isBetween(beforeTime, afterTime) && dataDay) {
-              setIsEventActive(true);
-            }
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    fetchdata();
-  }, [selectedCohortData]);
-
-  useEffect(() => {
-    async function fetchData() {
-      // ...async operations
-      if (academicYear != null) {
-        //get cohort id and store in localstorage
-        const user_cohort_id = academicYear;
-        const cohort_data = await facilitatorRegistryService.getCohort({
-          cohortId: user_cohort_id,
-        });
-        setSelectedCohortData(cohort_data);
-        await setSelectedAcademicYear(cohort_data);
-      }
-    }
-    fetchData();
-  }, [academicYear]);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!facilitator?.notLoaded === true) {
-        // ...async operations
-        const res = objProps(facilitator);
-        setProgress(
-          arrList(
-            {
-              ...res,
-              qua_name: facilitator?.qualifications?.qualification_master?.name,
-            },
-            [
-              "device_ownership",
-              "mobile",
-              "device_type",
-              "gender",
-              "marital_status",
-              "social_category",
-              "name",
-              "contact_number",
-              "availability",
-              "aadhar_no",
-              "aadhaar_verification_mode",
-              "aadhar_verified",
-              "qualification_ids",
-              "qua_name",
-            ]
-          )
-        );
-        //check exist user registered
-        try {
-          let onboardingURLData = await getOnboardingURLData();
-          setCohortData(onboardingURLData?.cohortData);
-          setProgramData(onboardingURLData?.programData);
-          //get program id and store in localstorage
-
-          const user_program_id = facilitator?.program_faciltators?.program_id;
-          const program_data = await facilitatorRegistryService.getProgram({
-            programId: user_program_id,
-          });
-          setSelectedProgramData(program_data[0]);
-          await setSelectedProgramId(program_data[0]);
-          //check mobile number with localstorage mobile no
-          let mobile_no = facilitator?.mobile;
-          let mobile_no_onboarding = await getOnboardingMobile();
-          if (
-            mobile_no != null &&
-            mobile_no_onboarding != null &&
-            mobile_no == mobile_no_onboarding &&
-            onboardingURLData?.cohortData
-          ) {
-            //get cohort id and store in localstorage
-            const user_cohort_id =
-              onboardingURLData?.cohortData?.academic_year_id;
-            const cohort_data = await facilitatorRegistryService.getCohort({
-              cohortId: user_cohort_id,
-            });
-            setSelectedCohortData(cohort_data);
-            await setSelectedAcademicYear(cohort_data);
-            localStorage.setItem("loadCohort", "yes");
-            setIsUserRegisterExist(true);
-          } else {
-            setIsUserRegisterExist(false);
-            await showSelectCohort();
-          }
-        } catch (e) {}
-      }
-    }
-    fetchData();
-  }, [facilitator]);
-
-  const showSelectCohort = async () => {
-    let loadCohort = null;
-    try {
-      loadCohort = localStorage.getItem("loadCohort");
-    } catch (e) {}
-    if (loadCohort == null || loadCohort == "no") {
-      const user_cohort_list =
-        await facilitatorRegistryService.GetFacilatorCohortList();
-      let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
-      );
-      setAcademicData(user_cohort_list?.data);
-      setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
-      localStorage.setItem("loadCohort", "yes");
-      if (user_cohort_list?.data.length == 1) {
-        setSelectCohortForm(false);
-        await checkDataToIndex();
-        await checkUserToIndex();
-      } else {
-        setSelectCohortForm(true);
-      }
-    }
-  };
-  const checkDataToIndex = async () => {
-    // Online Data Fetch Time Interval
-    const timeInterval = 30;
-    const enums = await getIndexedDBItem("enums");
-    const qualification = await getIndexedDBItem("qualification");
-    const lastFetchTime = await getIndexedDBItem("lastFetchTime");
-    const editRequest = await getIndexedDBItem("editRequest");
-    let timeExpired = false;
-    if (lastFetchTime) {
-      const timeDiff = moment
-        .duration(moment().diff(lastFetchTime))
-        .asMinutes();
-      if (timeDiff >= timeInterval) {
-        timeExpired = true;
-      }
-    }
-    if (
-      isOnline &&
-      (!enums ||
-        !qualification ||
-        !editRequest ||
-        timeExpired ||
-        !lastFetchTime ||
-        editRequest?.status === 400)
-    ) {
-      await saveDataToIndexedDB();
-    }
-  };
+  const state_name = jsonParse(localStorage.getItem("program"))?.state_name;
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setBenificiaryDropoutReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+      result?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS,
     );
     setBenificiaryReactivateReasons(result?.data?.REACTIVATE_REASONS);
     setBenificiaryRejectReasons(
-      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+      result?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER,
     );
   }, []);
-
-  // React.useEffect(() => {
-  //   if (benificiary?.aadhar_no === null) {
-  //     setAlert(t("AADHAAR_REQUIRED_MESSAGE"));
-  //   } else {
-  //     setAlert();
-  //   }
-  // }, [benificiary]);
 
   const res = objProps(benificiary);
 
@@ -376,23 +110,32 @@ export default function BenificiaryProfileView(userTokenInfo) {
       setIsOpenReject(false);
     }
   };
-  React.useEffect(async () => {
+
+  useEffect(async () => {
     const result = await benificiaryRegistoryService.getOne(id);
     setBenificiary(result?.result);
+    const orgResult = await benificiaryRegistoryService.getOrganisation({
+      id: userTokenInfo?.authUser?.program_faciltators?.parent_ip,
+    });
+    if (
+      ["enrolled_ip_verified", "registered_in_camp", "10th_passed"].includes(
+        result?.result?.program_beneficiaries?.status,
+      ) &&
+      orgResult?.data?.name?.toLowerCase() == "tekdi"
+    ) {
+      setIsDisableOpportunity(true);
+    } else {
+      setIsDisableOpportunity(false);
+    }
+    // set status
+    setStatus(result?.result?.program_beneficiaries?.status);
     setLoading(false);
   }, [reactivateReasonValue, reasonValue]);
 
   function renderDropoutButton() {
-    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
       case "ready_to_enroll":
-      // case "enrolled":
-      // case "approved_ip":
-      // case "registered_in_camp":
-      // case "pragati_syc":
-      // case "activate":
-      // case "enrolled_ip_verified":
       case null:
         return (
           <Box
@@ -414,26 +157,23 @@ export default function BenificiaryProfileView(userTokenInfo) {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={(e) => setIsOpenDropOut(true)}
-                        _icon={{ size: "20", color: "#D53546" }}
-                      />
-                    )}
+                  {!["dropout", "rejected"].includes(status) && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => setIsOpenDropOut(true)}
+                      _icon={{ size: "20", color: "#D53546" }}
+                    />
+                  )}
                 </HStack>
               </VStack>
             </VStack>
           </Box>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
   function renderReactivateButton() {
-    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "rejected":
       case "dropout":
@@ -445,21 +185,14 @@ export default function BenificiaryProfileView(userTokenInfo) {
           </FrontEndTypo.Secondarybutton>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
 
   function renderRejectButton() {
-    const status = benificiary?.program_beneficiaries?.status;
     switch (status) {
       case "identified":
       case "ready_to_enroll":
-      // case "enrolled":
-      // case "approved_ip":
-      // case "registered_in_camp":
-      // case "pragati_syc":
-      // case "activate":
-      // case "enrolled_ip_verified":
       case null:
         return (
           <Box bg="white">
@@ -467,7 +200,6 @@ export default function BenificiaryProfileView(userTokenInfo) {
               <VStack space="2">
                 <HStack alignItems="Center" justifyContent="space-between">
                   <HStack space="md" alignItems="Center">
-                    {/* <IconByName name="UserLineIcon" _icon={{ size: "20" }} /> */}
                     <FrontEndTypo.H3
                       onPress={(e) => setIsOpenReject(true)}
                       fontWeight={"600"}
@@ -477,27 +209,20 @@ export default function BenificiaryProfileView(userTokenInfo) {
                     </FrontEndTypo.H3>
                   </HStack>
 
-                  {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                    benificiary?.program_beneficiaries?.status !==
-                      "rejected" && (
-                      <IconByName
-                        name="ArrowRightSLineIcon"
-                        onPress={(e) => setIsOpenReject(true)}
-                        _icon={{ size: "20", color: "#D53546" }}
-                      />
-                    )}
+                  {!["dropout", "rejected"].includes(status) && (
+                    <IconByName
+                      name="ArrowRightSLineIcon"
+                      onPress={(e) => setIsOpenReject(true)}
+                      _icon={{ size: "20", color: "#D53546" }}
+                    />
+                  )}
                 </HStack>
               </VStack>
-              {/* <Divider
-                orientation="horizontal"
-                bg="btnGray.100"
-                thickness="1"
-              /> */}
             </VStack>
           </Box>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return null;
     }
   }
 
@@ -508,11 +233,9 @@ export default function BenificiaryProfileView(userTokenInfo) {
         onPressBackButton: (e) => {
           navigate("/beneficiary/list");
         },
-        profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
-      facilitator={facilitator}
+      facilitator={userTokenInfo?.authUser || {}}
       loading={loading}
       analyticsPageTitle={"BENEFICIARY_PROFILE"}
       pageTitle={t("BENEFICIARY_PROFILE")}
@@ -552,57 +275,58 @@ export default function BenificiaryProfileView(userTokenInfo) {
               </HStack>
               {![
                 "enrolled_ip_verified",
+                "sso_id_verified",
+                "registered_in_neev_camp",
                 "registered_in_camp",
                 "ineligible_for_pragati_camp",
                 "10th_passed",
                 "pragati_syc",
-              ].includes(benificiary?.program_beneficiaries?.status) ? (
+              ].includes(status) ? (
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.first_name}
-                  {benificiary?.middle_name &&
-                    benificiary?.middle_name !== "null" &&
-                    ` ${benificiary.middle_name}`}
-                  {benificiary?.last_name &&
-                    benificiary?.last_name !== "null" &&
-                    ` ${benificiary?.last_name}`}
+                  {[
+                    benificiary?.first_name,
+                    benificiary?.middle_name,
+                    benificiary?.last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 </FrontEndTypo.H2>
               ) : (
                 <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                  {benificiary?.program_beneficiaries?.enrollment_first_name}
-                  {benificiary?.program_beneficiaries?.enrollment_middle_name &&
-                    benificiary?.program_beneficiaries
-                      ?.enrollment_middle_name !== "null" &&
-                    ` ${benificiary.program_beneficiaries.enrollment_middle_name}`}
-                  {benificiary?.program_beneficiaries?.enrollment_last_name &&
-                    benificiary?.program_beneficiaries?.enrollment_last_name !==
-                      "null" &&
-                    ` ${benificiary?.program_beneficiaries?.enrollment_last_name}`}
+                  {[
+                    benificiary?.program_beneficiaries?.enrollment_first_name,
+                    benificiary?.program_beneficiaries?.enrollment_middle_name,
+                    benificiary?.program_beneficiaries?.enrollment_last_name,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 </FrontEndTypo.H2>
               )}
               <Clipboard text={benificiary?.id}>
                 <FrontEndTypo.H1 bold>{benificiary?.id}</FrontEndTypo.H1>
               </Clipboard>
+              {isDisableOpportunity && <></>}
               <ChipStatus
                 width="fit-content"
-                status={benificiary?.program_beneficiaries?.status}
+                status={status}
                 is_duplicate={benificiary?.is_duplicate}
                 is_deactivated={benificiary?.is_deactivated}
                 rounded={"sm"}
               />
             </VStack>
-            {(benificiary?.program_beneficiaries?.status == "dropout" ||
-              benificiary?.program_beneficiaries?.status == "rejected") && (
+            {["dropout", "rejected"].includes(status) && (
               <Alert status="warning" alignItems={"start"} mb="3" mt="4">
                 <HStack alignItems="center" space="2" color>
                   <Alert.Icon />
                   <BodyMedium>
                     {t(
-                      "PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB"
+                      "PLEASE_REACTIVATE_THE_LEARNER_TO_ACCESS_THE_DETAILS_TAB",
                     )}
                   </BodyMedium>
                 </HStack>
               </Alert>
             )}
+
             <Box>
               <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
                 {t("PROFILE_PROGRESS")}
@@ -641,7 +365,7 @@ export default function BenificiaryProfileView(userTokenInfo) {
                       "aadhar_no",
                       "aadhaar_verification_mode",
                       "aadhar_verified",
-                    ]
+                    ],
                   )}
                   size="xs"
                   colorScheme="danger"
@@ -651,279 +375,104 @@ export default function BenificiaryProfileView(userTokenInfo) {
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("PROFILE_DETAILS")}
             </FrontEndTypo.H3>
-            <Box
-              bg="boxBackgroundColour.100"
-              borderColor="garyTitleCardBorder"
-              borderRadius="5px"
-              borderWidth="1px"
-              shadow={"LearnerProfileViewShadow"}
-              pb="4"
-            >
-              <VStack paddingLeft="16px" paddingRight="16px" paddingTop="16px">
-                <VStack space="2">
-                  <HStack alignItems="Center" justifyContent="space-between">
-                    <HStack space="md" alignItems="Center">
-                      <FrontEndTypo.H3
-                        fontWeight={"600"}
-                        color="floatingLabelColor.500"
-                      >
-                        {t("BASIC_DETAILS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
-
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/basicdetails`);
-                          }}
-                          color="floatingLabelColor.500"
-                          _icon={{ size: "20" }}
-                        />
-                      )}
-                  </HStack>
-                  <Divider
-                    orientation="horizontal"
-                    bg="btnGray.100"
-                    thickness="1"
-                  />
-                  <HStack alignItems="Center" justifyContent="space-between">
-                    <HStack alignItems="Center" space="md">
-                      {/* <IconByName
-                        name="MapPinLineIcon"
-                        _icon={{ size: "20" }}
-                      /> */}
-
-                      <FrontEndTypo.H3
-                        fontWeight={"600"}
-                        color="floatingLabelColor.500"
-                      >
-                        {t("ADD_YOUR_ADDRESS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/addressdetails`);
-                          }}
-                          color="floatingLabelColor.500"
-                          _icon={{ size: "20" }}
-                        />
-                      )}
-                  </HStack>
-                  {/*
-                  <Divider
-                    orientation="horizontal"
-                    bg="btnGray.100"
-                    thickness="1"
-                  />
-                   <HStack alignItems="Center" justifyContent="space-between">
-                    <HStack alignItems="Center" space="md">
-                      <IconByName name="AddLineIcon" _icon={{ size: "20" }} />
-
-                      <FrontEndTypo.H3 color="textGreyColor.800">
-                        {t("AADHAAR_DETAILS")}
-                      </FrontEndTypo.H3>
-                    </HStack>
-                    {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                      benificiary?.program_beneficiaries?.status !==
-                        "rejected" && (
-                        <IconByName
-                          name="ArrowRightSLineIcon"
-                          onPress={(e) => {
-                            navigate(`/beneficiary/${id}/aadhaardetails`);
-                          }}
-                          color="textMaroonColor.400"
-                        />
-                      )}
-                  </HStack> */}
-                </VStack>
-              </VStack>
-            </Box>
+            <Menu
+              menus={[
+                {
+                  title: "BASIC_DETAILS",
+                  onPress: () => navigate(`/beneficiary/${id}/basicdetails`),
+                },
+                {
+                  title: "ADD_YOUR_ADDRESS",
+                  onPress: (e) => {
+                    if (!["dropout", "rejected"].includes(status)) {
+                      navigate(`/beneficiary/${id}/addressdetails`);
+                    }
+                  },
+                },
+              ]}
+            />
 
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("OTHER_DETAILS")}
             </FrontEndTypo.H3>
-            <VStack
-              shadow={"LearnerProfileViewShadow"}
-              bg="boxBackgroundColour.100"
-              borderColor="garyTitleCardBorder"
-              borderRadius="5px"
-              borderWidth="1px"
-              px="4"
-              p="2"
-              pb="3"
-              divider={
-                <Divider
-                  orientation="horizontal"
-                  bg="btnGray.100"
-                  thickness="1"
-                />
-              }
-            >
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="0"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("DOCUMENT_CHECKLIST")}
-                </FrontEndTypo.H3>
-                {![
-                  "enrolled",
-                  "dropout",
-                  "rejected",
-                  "ready_to_enroll",
-                  "enrolled_ip_verified",
-                ].includes(benificiary?.program_beneficiaries?.status) && (
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/docschecklist`);
-                    }}
-                    color="floatingLabelColor.500"
-                    _icon={{ size: "20" }}
-                  />
-                )}
-              </HStack>
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                pr="0"
-                p="3"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("EDUCATION_DETAILS")}
-                </FrontEndTypo.H3>
-                {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                  benificiary?.program_beneficiaries?.status !== "rejected" && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/educationdetails`);
-                      }}
-                      color="floatingLabelColor.500"
-                      _icon={{ size: "20" }}
-                    />
-                  )}
-              </HStack>
-              {alert && (
-                <Alert status="warning" alignItems={"start"} mb="3" mt="4">
-                  <HStack alignItems="center" space="2" color>
-                    <Alert.Icon />
-                    <BodyMedium>{alert}</BodyMedium>
-                  </HStack>
-                </Alert>
-              )}
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="0"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("BENEFICIARY_DISABILITY_DETAILS")}
-                </FrontEndTypo.H3>
-
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  onPress={(e) =>
-                    navigate(`/beneficiary/${id}/disability-details`)
-                  }
-                  color="floatingLabelColor.500"
-                  _icon={{ size: "20" }}
-                />
-              </HStack>
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="0"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("ENROLLMENT_DETAILS")}
-                </FrontEndTypo.H3>
-
-                {benificiary?.program_beneficiaries?.status !== "dropout" &&
-                  benificiary?.program_beneficiaries?.status !== "rejected" && (
-                    <IconByName
-                      name="ArrowRightSLineIcon"
-                      color="floatingLabelColor.500"
-                      _icon={{ size: "20" }}
-                      onPress={(e) => {
-                        navigate(`/beneficiary/${id}/enrollmentdetails`);
-                      }}
-                    />
-                  )}
-              </HStack>
-
-              {benificiary?.program_beneficiaries?.status ===
-                "registered_in_camp" && (
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="Center"
-                  p="3"
-                  pr="1"
-                >
-                  <FrontEndTypo.H3
-                    color="floatingLabelColor.500"
-                    fontWeight={"600"}
-                  >
-                    {t("PCR_DETAILS")}
-                  </FrontEndTypo.H3>
-                  <IconByName
-                    name="ArrowRightSLineIcon"
-                    color="floatingLabelColor.500"
-                    size="sm"
-                    onPress={(e) => {
-                      navigate(`/beneficiary/${id}/pcrview`);
-                    }}
-                    _icon={{ size: "20" }}
-                  />
-                </HStack>
-              )}
-              <HStack
-                justifyContent="space-between"
-                alignItems="Center"
-                p="3"
-                pr="1"
-              >
-                <FrontEndTypo.H3
-                  color="floatingLabelColor.500"
-                  fontWeight={"600"}
-                >
-                  {t("JOURNEY_IN_PROJECT_PRAGATI")}
-                </FrontEndTypo.H3>
-                <IconByName
-                  name="ArrowRightSLineIcon"
-                  size="sm"
-                  onPress={(e) => {
+            <Menu
+              menus={[
+                {
+                  title: "DOCUMENT_CHECKLIST",
+                  onPress: () => {
+                    if (
+                      ![
+                        "enrolled",
+                        "dropout",
+                        "rejected",
+                        "ready_to_enroll",
+                        "enrolled_ip_verified",
+                      ].includes(status)
+                    ) {
+                      navigate(`/beneficiary/edit/${id}/docschecklist`);
+                    }
+                  },
+                },
+                {
+                  title: "EDUCATION_DETAILS",
+                  onPress: (e) => {
+                    if (!["dropout", "rejected"].includes(status)) {
+                      navigate(`/beneficiary/${id}/educationdetails`);
+                    }
+                  },
+                },
+                {
+                  title: "BENEFICIARY_DISABILITY_DETAILS",
+                  onPress: (e) => {
+                    navigate(`/beneficiary/${id}/disability-details`);
+                  },
+                },
+                {
+                  title: "ENROLLMENT_DETAILS",
+                  onPress: (e) => {
+                    if (!["dropout", "rejected"].includes(status)) {
+                      navigate(`/beneficiary/${id}/enrollmentdetails`);
+                    }
+                  },
+                },
+                ...(["registered_in_neev_camp", "registered_in_camp"].includes(
+                  status,
+                )
+                  ? [
+                      {
+                        title: "PCR_DETAILS",
+                        onPress: (e) => {
+                          navigate(`/beneficiary/${id}/pcrview`);
+                        },
+                      },
+                    ]
+                  : []),
+                // ...(["pragati_syc", "pragati_syc_reattempt"].includes(status) &&
+                // state_name === "RAJASTHAN" &&
+                // [true, false].includes(
+                //   benificiary?.program_beneficiaries?.is_continued,
+                // )
+                //   ? [
+                //       {
+                //         title: "PSYC_DETAILS",
+                //         onPress: (e) => {
+                //           navigate(`/beneficiary/${id}/psyc`, {
+                //             state:
+                //               benificiary?.program_beneficiaries
+                //                 ?.enrolled_for_board,
+                //           });
+                //         },
+                //       },
+                //     ]
+                //   : []),
+                {
+                  title: "JOURNEY_IN_PROJECT_PRAGATI",
+                  onPress: (e) => {
                     navigate(`/beneficiary/${id}/benificiaryJourney`);
-                  }}
-                  color="floatingLabelColor.500"
-                  _icon={{ size: "20" }}
-                />
-              </HStack>
-            </VStack>
-
+                  },
+                },
+              ]}
+            />
             <FrontEndTypo.H3 fontWeight={"600"} color="textGreyColor.750">
               {t("LEARNER_ACTIONS")}
             </FrontEndTypo.H3>
@@ -1119,6 +668,89 @@ export default function BenificiaryProfileView(userTokenInfo) {
           </VStack>
         </Actionsheet.Content>
       </Actionsheet>
+
+      <PsycContinue
+        {...{ id, benificiary }}
+        isOpen={false}
+        // isOpen={
+        //   status === "pragati_syc" &&
+        //   state_name === "RAJASTHAN" &&
+        //   ![true, false].includes(
+        //     benificiary?.program_beneficiaries?.is_continued,
+        //   )
+        // }
+      />
     </Layout>
   );
 }
+
+BenificiaryProfileView.propTypes = {
+  userTokenInfo: PropType.object,
+};
+
+export function PsycContinue({ id, benificiary, isOpen }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const handlePsyc = async (value = "no") => {
+    if (value == "yes") {
+      navigate(`/beneficiary/${id}/psyc`, {
+        state: benificiary?.program_beneficiaries?.enrolled_for_board,
+      });
+    } else if (value == "no") {
+      const newFormData = {
+        is_continued: false,
+        user_id: jsonParse(id),
+      };
+      const data = await organisationService.psycStatus(newFormData);
+      if (data?.success) {
+        navigate("/beneficiary/list");
+      }
+    } else {
+      navigate("/beneficiary/list");
+    }
+  };
+  return (
+    <Modal isOpen={isOpen} size="lg">
+      <Modal.Content>
+        <Modal.Header>
+          <FrontEndTypo.H1>{t("SYC_QUESTION")}</FrontEndTypo.H1>
+        </Modal.Header>
+        <Modal.Body>
+          <Menu
+            _vstack={{
+              shadow: "",
+              bg: "transparent",
+              borderWidth: "0",
+              borderRadius: "0",
+            }}
+            menus={[
+              {
+                title: "YES",
+                onPress: (e) => {
+                  handlePsyc("yes");
+                },
+              },
+              {
+                title: "NO",
+                onPress: (e) => {
+                  handlePsyc();
+                },
+              },
+              {
+                title: "DONT_KNOW",
+                onPress: (e) => {
+                  handlePsyc("dont_know");
+                },
+              },
+            ]}
+          />
+        </Modal.Body>
+      </Modal.Content>
+    </Modal>
+  );
+}
+
+PsycContinue.propTypes = {
+  id: PropType.string,
+  benificiary: PropType.object,
+};

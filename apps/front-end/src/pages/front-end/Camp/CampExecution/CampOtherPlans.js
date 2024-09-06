@@ -32,7 +32,6 @@ const CampOtherPlans = memo(({ footerLinks, userTokenInfo }) => {
 
         const listOfEnum = await enumRegistryService.listOfEnum();
         let absentReasons = listOfEnum?.data?.CAMP_ABSENT_REASONS;
-        console.log(response?.data?.type);
         if (response?.data?.type == "pcr") {
           absentReasons = listOfEnum?.data?.NEEV_CAMP_ABSENT_REASONS;
         }
@@ -70,8 +69,8 @@ const CampOtherPlans = memo(({ footerLinks, userTokenInfo }) => {
     };
     setLoading(true);
     try {
-      // await campService.campActivity(payLoad);
-      // navigate(`/camps`);
+      await campService.campActivity(payLoad);
+      navigate(`/camps`);
     } catch (error) {
       setError(true);
       setLoading(false);
