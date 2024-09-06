@@ -56,6 +56,7 @@ export default function CampList() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState({
     search: "",
+    limit: 100,
   });
   const [loadingList, setLoadingList] = useState(true);
   const [prerakList, setPrerakList] = React.useState([]);
