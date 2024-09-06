@@ -61,7 +61,10 @@ export default function LearnerList({ userTokenInfo }) {
       try {
         const status = await benificiaryRegistoryService.getStatusList();
         setSelectStatus(status);
-        const result = await PcuserService.getPrerakList(filter);
+        const result = await PcuserService.getPrerakList({
+          ...filter,
+          limit: 100,
+        });
         const apiData = transformData(result?.facilitator_data);
         setPrerakList(apiData);
         const getSelectedPrerakList = jsonParse(

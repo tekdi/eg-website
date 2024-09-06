@@ -212,6 +212,7 @@
   "BENEFICIARY_SOCIAL_STATUS_ST": "ST",
   "BENEFICIARY_STATUS_SSO_ID_ENROLLED": "SSOID Enrolled",
   "BENEFICIARY_STATUS_SSO_ID_VERIFIED": "SSOID Verified",
+  "ENROLLMENT_PC_VERIFIED_LIST": "PC verified",
   "BENEFICIARY_STATUS_10TH_PASSED": "10th pass",
   "BENEFICIARY_STATUS_ACTIVATE": "Activate",
   "BENEFICIARY_STATUS_APPROVED_IP": "Enrolled IP Verified",
@@ -779,6 +780,7 @@
   "EVENT_SCHEDULED": "Event Scheduled",
   "EVENT_TYPE": "Event Type",
   "EXAM": "Exam",
+  "EXAMS": "Exams",
   "EXAM_ALREADY_TAKEN": "Exam already attempted",
   "EXAM_START_STATUS": "Exam Start Status",
   "EXAM_SCHEDULE": "Exam Schedule",
@@ -2189,6 +2191,7 @@
     "TRAINING_AND_MEETING_ACTIVITY_STAFF_MEETING": "Staff Meeting"
   },
   "VIEW_DAILY_ACTVITIES": "View Daily Actvities",
+  "VIEW_DOCUMENT": "View Document",
   "LEARNER_DEATH": "Learner's death",
   "LEARNER_MIGRATION": "Learner's Migration",
   "SUDDEN_INCIDENT": "Sudden Incident",
