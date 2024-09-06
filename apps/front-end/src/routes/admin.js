@@ -42,6 +42,10 @@ const EnrollmentReceiptView = React.lazy(() =>
   import("pages/admin/beneficiaries/EnrollmentReceiptView")
 );
 
+const SYCVerification = React.lazy(() =>
+  import("pages/admin/beneficiaries/SYCVerification")
+);
+
 const BeneficiaryAdminProfile = React.lazy(() =>
   import("pages/admin/beneficiaries/Profile")
 );
@@ -120,6 +124,10 @@ export default [
   {
     path: "/admin/learners/enrollmentReceipt/:id",
     component: EnrollmentReceiptView,
+  },
+  {
+    path: "/admin/learners/syc/:id",
+    component: SYCVerification,
   },
   {
     path: "/admin/learners/duplicates",
