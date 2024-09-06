@@ -29,9 +29,12 @@ export const List = ({ data, location }) => {
               id: item?.user_id,
               program_beneficiaries: {
                 status: item?.status,
-                enrollment_first_name: item?.first_name,
-                enrollment_middle_name: item?.middle_name,
-                enrollment_last_name: item?.last_name,
+                enrollment_first_name: item?.enrollment_first_name,
+                enrollment_middle_name: item?.enrollment_middle_name,
+                enrollment_last_name: item?.enrollment_last_name,
+                first_name: item?.first_name,
+                middle_name: item?.middle_name,
+                last_name: item?.last_name,
               },
             }}
             onPress={() =>
