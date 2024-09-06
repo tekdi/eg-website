@@ -242,6 +242,7 @@ export default function App(footerLinks) {
         hideNowButton: true,
         hideClearButton: true,
         yearsRange: [2023, moment().format("YYYY")],
+        format: "DMY",
       },
     },
     enrollment_dob: {
@@ -250,6 +251,7 @@ export default function App(footerLinks) {
         hideNowButton: true,
         hideClearButton: true,
         yearsRange: [1980, moment().format("YYYY")],
+        format: "DMY",
       },
     },
   });
@@ -335,14 +337,14 @@ export default function App(footerLinks) {
       value: "value",
     });
   };
-
+  console.log(errors);
   const validate = (data, key) => {
     let error = {};
     switch (key) {
       case "enrollment_mobile_no":
         {
           const mobile = data?.enrollment_mobile_no;
-          const regex = /^[1-9]\D{0,9}$/;
+          const regex = /^[1-9]\d{0,9}$/;
           if (
             !mobile ||
             !mobile?.match(regex) ||
@@ -720,6 +722,8 @@ export default function App(footerLinks) {
         }
         break;
       default:
+        let { [id?.replace("root_", "")]: undefined, ...other } = errors || {};
+        setErrors(other);
         break;
     }
     setFormData(newData);
