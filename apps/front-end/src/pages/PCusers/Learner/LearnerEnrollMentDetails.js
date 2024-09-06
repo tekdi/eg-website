@@ -10,20 +10,18 @@ import {
 import { HStack, Modal, Toast, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import EnrollmentMessage from "component/EnrollmentMessage";
 import moment from "moment";
 import PropTypes from "prop-types";
 
 export default function App({ userTokenInfo }) {
-  const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [cardData, setCardData] = useState([]);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
-
+  const [cardData, setCardData] = useState([]);
   const location = useLocation();
 
   React.useEffect(() => {
@@ -31,7 +29,9 @@ export default function App({ userTokenInfo }) {
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${id}`);
+    navigate(`/learners/list-view/${location?.state?.id}`, {
+      state: location?.state,
+    });
   };
 
   const agDetails = async () => {
