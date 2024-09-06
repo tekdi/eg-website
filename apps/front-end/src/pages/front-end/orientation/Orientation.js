@@ -1,62 +1,59 @@
-import React, { useRef, useState, Suspense } from "react";
+import React, { Suspense, useRef, useState } from "react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import Fullcalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
 import {
+  AdminTypo,
+  BoxBlue,
+  EVENTS_COLORS,
   IconByName,
   AdminLayout as Layout,
-  BoxBlue,
-  AdminTypo,
-  eventService,
   Loading,
-  enumRegistryService,
-  getOptions,
-  EVENTS_COLORS,
   cohortService,
+  enumRegistryService,
+  eventService,
+  getOptions,
+  getSelectedAcademicYear,
+  jsonParse,
   setSelectedAcademicYear,
   setSelectedProgramId,
-  jsonParse,
-  getSelectedAcademicYear,
 } from "@shiksha/common-lib";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 import { Calendar as Cal } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import Fullcalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import Form from "@rjsf/core";
-import orientationPopupSchema from "./orientationPopupSchema";
-import validator from "@rjsf/validator-ajv8";
-import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   HFieldTemplate,
   templates,
   widgets,
+  transformErrors,
 } from "../../../component/BaseInput";
+import orientationPopupSchema from "./orientationPopupSchema";
 
-import {
-  HStack,
-  VStack,
-  Box,
-  Modal,
-  CheckCircleIcon,
-  Image,
-  Pressable,
-  Text,
-  Select,
-  CheckIcon,
-} from "native-base";
 import moment from "moment";
+import {
+  Box,
+  CheckCircleIcon,
+  CheckIcon,
+  HStack,
+  Modal,
+  Pressable,
+  Select,
+  Text,
+  VStack,
+} from "native-base";
 import OrientationScreen from "./OrientationScreen";
 
 export default function Orientation({ footerLinks }) {
   const { t } = useTranslation();
   const formRef = React.useRef();
   const calendarRef = useRef(null);
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [modal, setModal] = React.useState(true);
   const [formData, setFormData] = React.useState({});
   const [schema, setSchema] = React.useState({});
-  const [eventList, setEventList] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = useState({});
   const [reminders, setReminders] = useState();
@@ -65,22 +62,14 @@ export default function Orientation({ footerLinks }) {
   const [userIds, setUserIds] = React.useState({});
   const nowDate = new Date();
   const [goToDate, setGoToDate] = React.useState(moment().toDate());
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedAcademic, setSelectedAcademic] = React.useState();
+  const [modal, setModal] = React.useState(true);
   const [academicYear, setAcademicYear] = React.useState();
   const [academicData, setAcademicData] = React.useState();
+  const [eventList, setEventList] = React.useState();
   const [programID, setProgramID] = React.useState();
   const [programData, setProgramData] = React.useState([]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      let academic_Id = await getSelectedAcademicYear();
-      if (academic_Id) {
-        setModal(false);
-      }
-    };
-    fetchData();
-    getEventLists();
-  }, []);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -102,6 +91,17 @@ export default function Orientation({ footerLinks }) {
       value: "value",
     });
     setSchema(newSchema);
+  }, []);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      let academic_Id = await getSelectedAcademicYear();
+      if (academic_Id && !_.isEmpty(academic_Id)) {
+        setModal(false);
+      }
+    };
+    getEventLists();
+    fetchData();
   }, []);
 
   React.useEffect(() => {
@@ -240,42 +240,6 @@ export default function Orientation({ footerLinks }) {
     setFormData();
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      } else if (error.name === "format") {
-        const { format } = error?.params || {};
-        let message = "REQUIRED_MESSAGE";
-        if (format === "email") {
-          message = "PLEASE_ENTER_VALID_EMAIL";
-        }
-        if (format === "string") {
-          message = "PLEASE_ENTER_VALID_STREING";
-        } else if (format === "number") {
-          message = "PLEASE_ENTER_VALID_NUMBER";
-        }
-
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t(message)} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t(message)}`;
-        }
-      }
-      return error;
-    });
-  };
-
   const onSubmit = async (data) => {
     let newFormData = data?.formData;
     if (orientationPopupSchema?.properties?.type) {
@@ -342,7 +306,7 @@ export default function Orientation({ footerLinks }) {
     if (data?.data?.length < 2) {
       setModal(false);
       const programData = await cohortService.getPrograms(
-        academicYearparseData?.academic_year_id
+        academicYearparseData?.academic_year_id,
       );
       const parseData = programData?.data?.[0];
       setSelectedAcademicYear(academicYearparseData);
@@ -653,7 +617,8 @@ export default function Orientation({ footerLinks }) {
           <Modal
             isOpen={modalVisible}
             onClose={() => {
-              setModalVisible(false), clearForm();
+              setModalVisible(false);
+              clearForm();
             }}
             avoidKeyboard
           >
@@ -685,7 +650,8 @@ export default function Orientation({ footerLinks }) {
                       uiSchema,
                       onChange,
                       onSubmit,
-                      transformErrors,
+                      transformErrors: (errors) =>
+                        transformErrors(errors, schema, t),
                     }}
                   >
                     <button style={{ display: "none" }} />

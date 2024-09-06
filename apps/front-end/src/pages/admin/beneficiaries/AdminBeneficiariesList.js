@@ -28,8 +28,8 @@ import {
   AdminTypo,
   geolocationRegistryService,
   facilitatorRegistryService,
-  setQueryParameters,
-  urlData,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
   tableCustomStyles,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
@@ -38,6 +38,7 @@ import { MultiCheck } from "../../../component/BaseInput";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
+const filterName = "leaner_filter";
 
 export default function AdminHome({ footerLinks }) {
   const navigate = useNavigate();
@@ -102,12 +103,11 @@ export default function AdminHome({ footerLinks }) {
     const init = async () => {
       if (urlFilterApply) {
         setLoading(true);
-        const result = await benificiaryRegistoryService.beneficiariesFilter(
-          filter
-        );
+        const result =
+          await benificiaryRegistoryService.beneficiariesFilter(filter);
         setData(result.data?.data);
         setPaginationTotalRows(
-          result?.data?.totalCount ? result?.data?.totalCount : 0
+          result?.data?.totalCount ? result?.data?.totalCount : 0,
         );
 
         let { state_name } = await getSelectedProgramId();
@@ -118,11 +118,15 @@ export default function AdminHome({ footerLinks }) {
     init();
   }, [filter]);
 
-  useEffect(() => {
-    const urlFilter = urlData(["district", "facilitator", "block"]);
-    setFilter({ ...filter, ...urlFilter });
+  const init = useCallback(() => {
+    const urlFilter = getFilterLocalStorage(filterName);
+    setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
     setUrlFilterApply(true);
   }, []);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   const exportBeneficiaryCSV = useCallback(async () => {
     await benificiaryRegistoryService.exportBeneficiariesCsv(filter);
@@ -140,7 +144,7 @@ export default function AdminHome({ footerLinks }) {
         exportBeneficiaryCSV();
       }
     },
-    [exportBeneficiaryCSV, exportSubjectCSV]
+    [exportBeneficiaryCSV, exportSubjectCSV],
   );
 
   const handleSearch = (e) => {
@@ -212,7 +216,7 @@ export default function AdminHome({ footerLinks }) {
                 <Menu.Item
                   onPress={() => {
                     navigate(
-                      "/admin/learners/enrollmentVerificationList/SSOID"
+                      "/admin/learners/enrollmentVerificationList/SSOID",
                     );
                   }}
                 >
@@ -274,7 +278,17 @@ export default function AdminHome({ footerLinks }) {
                 }
                 pr="2"
               >
-                {urlFilterApply && <Filter {...{ filter, setFilter }} />}
+                {urlFilterApply && (
+                  <Filter
+                    {...{
+                      filter,
+                      setFilter: (fdata) => {
+                        setFilter(fdata);
+                        setFilterLocalStorage(filterName, fdata);
+                      },
+                    }}
+                  />
+                )}
               </ScrollView>
             </Box>
           </Stack>
@@ -330,7 +344,7 @@ export default function AdminHome({ footerLinks }) {
                 filter={filter}
                 setFilter={(e) => {
                   setFilter(e);
-                  setQueryParameters(e);
+                  setFilterLocalStorage(filterName, e);
                 }}
                 paginationTotalRows={paginationTotalRows}
                 data={data}
@@ -364,9 +378,8 @@ export const Filter = ({ filter, setFilter }) => {
         setFacilitatorFilter({ ...facilitatorFilter, district });
       }
       setFilter({ ...otherData, ...facilitator });
-      setQueryParameters(data);
     },
-    [facilitatorFilter]
+    [setFacilitatorFilter, setFilter],
   );
 
   const schema = useMemo(() => {
@@ -466,7 +479,7 @@ export const Filter = ({ filter, setFilter }) => {
       if (!error) {
         setIsMore(
           parseInt(`${result?.data?.currentPage}`) <
-            parseInt(`${result?.data?.totalPages}`)
+            parseInt(`${result?.data?.totalPages}`),
         );
         const newFilterData = result?.data?.data?.map((e) => ({
           value: e?.id,
@@ -499,7 +512,7 @@ export const Filter = ({ filter, setFilter }) => {
           : {}),
       });
     },
-    [filter, setFilterObject]
+    [filter, setFilterObject],
   );
 
   const clearFilter = useCallback(() => {
@@ -517,7 +530,7 @@ export const Filter = ({ filter, setFilter }) => {
 
   const debouncedHandlePrerakSearch = useCallback(
     debounce(handlePrerakSearch, 1000),
-    []
+    [],
   );
 
   return (
@@ -533,7 +546,7 @@ export const Filter = ({ filter, setFilter }) => {
               {t("CLEAR_FILTER")}(
               {
                 Object.keys(filter || {}).filter(
-                  (e) => !["limit", "page"].includes(e)
+                  (e) => !["limit", "page"].includes(e),
                 ).length
               }
               )
