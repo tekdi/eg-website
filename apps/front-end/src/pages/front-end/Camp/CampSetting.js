@@ -81,7 +81,7 @@ export default function CampSetting({ footerLinks }) {
       analyticsPageTitle={"CAMP_SETTINGS"}
       pageTitle={t("CAMP")}
       stepTitle={`${selectedCampType === "main" ? "Main" : "Pcr"}/${t(
-        "SETTINGS"
+        "SETTINGS",
       )}`}
     >
       <VStack space={4} p={4}>
