@@ -238,7 +238,7 @@ function Table({
   ];
 
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
-  console.log(filter?.status);
+
   return (
     <VStack>
       <VStack p={2} pt="0">
