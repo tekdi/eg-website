@@ -28,6 +28,14 @@ import { v4 as uuidv4 } from "uuid";
 // import { registerTelementry } from "../api/Apicall";
 import moment from "moment";
 
+function calculateAge(dob) {
+  const birthDate = moment(dob, "YYYY-MM-DD");
+  const currentDate = moment();
+  const age = currentDate.diff(birthDate, "years");
+  // Returns age in years
+  return age;
+}
+
 const AutomatedForm = () => {
   const { jobId, transactionId, type } = useParams();
   const { t } = useTranslation();
@@ -185,7 +193,7 @@ const AutomatedForm = () => {
   const hasErrors = (errors) => {
     // Check if there are any validation errors
     return Object.values(errors).some((sectionErrors) =>
-      Object.values(sectionErrors).some((error) => Boolean(error))
+      Object.values(sectionErrors).some((error) => Boolean(error)),
     );
   };
 
@@ -280,7 +288,7 @@ const AutomatedForm = () => {
       } else {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
     } catch (error) {
@@ -330,7 +338,7 @@ const AutomatedForm = () => {
       if (!data?.responses?.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
@@ -401,6 +409,46 @@ const AutomatedForm = () => {
 
       initReqBody.message = jobDetails?.message;
 
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (userData) {
+        // Ensure the "order" object exists
+        if (!initReqBody.message.order) {
+          initReqBody.message.order = {};
+        }
+
+        // Ensure the "fulfillments" array exists and has at least one object
+        if (!initReqBody.message.order.fulfillments) {
+          initReqBody.message.order.fulfillments = [{}];
+        }
+
+        // Ensure the "customer" object exists in the first fulfillment
+        if (!initReqBody.message.order.fulfillments[0].customer) {
+          initReqBody.message.order.fulfillments[0].customer = {};
+        }
+
+        // Ensure the "person" object exists in the "customer"
+        if (!initReqBody.message.order.fulfillments[0].customer.person) {
+          initReqBody.message.order.fulfillments[0].customer.person = {};
+        }
+
+        // Assign values to the "person" object
+        initReqBody.message.order.fulfillments[0].customer.person.name =
+          userData?.name;
+        initReqBody.message.order.fulfillments[0].customer.person.gender =
+          userData?.gender;
+        initReqBody.message.order.fulfillments[0].customer.person.age = `${calculateAge(userData?.birth_date)}`;
+
+        // Ensure the "contact" object exists in the "customer"
+        if (!initReqBody.message.order.fulfillments[0].customer.contact) {
+          initReqBody.message.order.fulfillments[0].customer.contact = {};
+        }
+
+        // Assign values to the "contact" object
+        initReqBody.message.order.fulfillments[0].customer.contact.email =
+          userData?.email;
+        initReqBody.message.order.fulfillments[0].customer.contact.phone = `${userData?.phone || userData?.contact || userData?.["mobile number"]}`;
+      }
+
       /* if(localStorage.getItem('submissionId'))
        {
  
@@ -431,7 +479,7 @@ const AutomatedForm = () => {
       if (!data || !data?.responses.length) {
         setLoading(false);
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         localStorage.setItem("initRes", JSON.stringify(data));
@@ -440,7 +488,7 @@ const AutomatedForm = () => {
         } else {
           if (
             data?.responses[0]?.message?.order?.items[0].hasOwnProperty(
-              "xinput"
+              "xinput",
             )
           ) {
             //   const curr = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.cur;
@@ -463,7 +511,7 @@ const AutomatedForm = () => {
     } catch (error) {
       setLoading(false);
       errorMessage(
-        t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+        t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
       );
       console.error("Error submitting form:", error);
     } finally {
@@ -491,7 +539,7 @@ const AutomatedForm = () => {
           setJobInfo(result?.data[db_cache][0]);
           localStorage.setItem(
             "unique_id",
-            result?.data[db_cache][0]?.unique_id
+            result?.data[db_cache][0]?.unique_id,
           );
         })
         .catch((error) => console.log("error", error));
@@ -519,7 +567,7 @@ const AutomatedForm = () => {
       };
       fetchData();
     },
-    [jobInfo]
+    [jobInfo],
   );
   const trackReactGA = () => {
     ReactGA.event({
@@ -579,10 +627,9 @@ const AutomatedForm = () => {
 
   // Function to add submit button dynamically
   function addSubmitButton() {
-    var form = document.querySelector("form");
-
+    let form = document.querySelector("form");
     // Create submit button
-    var submitBtn = document.createElement("input");
+    let submitBtn = document.createElement("input");
     submitBtn.type = "submit";
     submitBtn.value = "Submit";
     submitBtn.id = "submitBtn";
@@ -594,135 +641,85 @@ const AutomatedForm = () => {
 
   const searchForm = async (url) => {
     try {
-      await fetch(url, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.text();
-        })
-        .then((htmlContent) => {
-          const container = document.getElementById("formContainer");
-          if (container) {
-            container.innerHTML = htmlContent;
+      const response = await fetch(url);
 
-            if (!hasSubmitButton()) {
-              addSubmitButton();
-            }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-            setIsAutoForm(true);
-            const form = document.getElementsByTagName("form")[0];
-            const inputFields = form.querySelectorAll("input");
-            const btnField = form.querySelector("button");
+      const htmlContent = await response.text();
 
-            if (btnField) {
-              btnField.classList.add("autosubmit");
-            }
+      const container = document.getElementById("formContainer");
+      if (container) {
+        container.innerHTML = htmlContent;
 
-            // Add a CSS class to each input field
-            inputFields.forEach((input) => {
-              input.classList.add("autoInputField");
-              //input.style.border = "1px solid #000"; // Replace 'your-css-class' with the desired class name
-            });
+        if (!hasSubmitButton()) {
+          addSubmitButton();
+        }
 
-            const selectFields = form.querySelectorAll("select");
-            selectFields.forEach((select) => {
-              select.classList.add("selectField");
-            });
+        setIsAutoForm(true);
+        const form = document.getElementsByTagName("form")[0];
+        const inputFields = form.querySelectorAll("input");
+        const btnField = form.querySelector("button");
 
-            const userDataString = localStorage.getItem("userData");
-            const userData = JSON.parse(userDataString);
-            const createdDateTime = moment(
-              userData.createdAt,
-              "YYYY-MM-DD HH:mm"
-            );
-            const currentDateTime = moment();
-            const timeDiff = moment.duration(
-              currentDateTime.diff(createdDateTime)
-            );
-            if (timeDiff.asSeconds() > envConfig.expiryLimit) {
-              setOpenModal(true);
-            } else {
-              if (userData !== null) {
-                // Get all input elements in the HTML content
-                const inputElements = form.querySelectorAll("input");
+        if (btnField) {
+          btnField.classList.add("autosubmit");
+        }
 
-                // Loop through each input element
-                inputElements.forEach((input) => {
-                  // Get the name attribute of the input element
-                  const inputName = input.getAttribute("name");
-                  // Check if the input name exists in the userData
-                  if (
-                    userData &&
-                    userData[inputName] !== undefined &&
-                    input.type !== "file" &&
-                    input.type !== "radio"
-                  ) {
-                    // Set the value of the input element to the corresponding value from the userData
-                    input.value = userData[inputName];
-                  }
-
-                  if (
-                    input.type === "checkbox" &&
-                    userData[inputName] === true
-                  ) {
-                    input.checked = true;
-                  }
-
-                  if (
-                    input.type === "radio" &&
-                    userData[inputName] === input.value
-                  ) {
-                    input.checked = true;
-                  }
-                });
-
-                const selectElements = form.querySelectorAll("select");
-                // Loop through each select element
-                selectElements.forEach((select) => {
-                  // Get the name attribute of the select element
-                  const selectName = select.getAttribute("name");
-
-                  // Check if the select name exists in the userData
-                  if (userData && userData[selectName] !== undefined) {
-                    // Find the option with the corresponding value
-                    const optionToSelect = select.querySelector(
-                      `option[value="${userData[selectName]}"]`
-                    );
-
-                    // If the option is found, set its selected attribute to true
-                    if (optionToSelect) {
-                      optionToSelect.selected = true;
-                    }
-                  }
-                });
-              }
-
-              form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const formDataTmp = new FormData(form);
-                var urlencoded = new URLSearchParams();
-
-                let formDataObject = {};
-
-                formDataTmp.forEach(function (value, key) {
-                  formDataObject[key] = value;
-                  urlencoded.append(key, value.toString());
-                });
-
-                localStorage.setItem(
-                  "autoFormData",
-                  JSON.stringify(formDataObject)
-                );
-                // setFormData({...formData['person'] , ...localStorage.getItem('autoFormData')})
-
-                submitFormDetail(form.action, formDataTmp);
-              });
-            }
-          }
+        inputFields.forEach((input) => {
+          input.classList.add("autoInputField");
         });
+
+        const selectFields = form.querySelectorAll("select");
+        selectFields.forEach((select) => {
+          select.classList.add("selectField");
+        });
+
+        const userDataString = localStorage.getItem("userData");
+        const userData = JSON.parse(userDataString);
+        const createdDateTime = moment(userData.createdAt, "YYYY-MM-DD HH:mm");
+        const currentDateTime = moment();
+        const timeDiff = moment.duration(currentDateTime.diff(createdDateTime));
+        if (timeDiff.asSeconds() > envConfig.expiryLimit) {
+          setOpenModal(true);
+        } else if (userData !== null) {
+          const inputElements = form.querySelectorAll("input");
+          const selectElements = form.querySelectorAll("select");
+
+          const formValues = Array.from(inputElements).reduce((acc, input) => {
+            acc[input.name] =
+              input.type === "checkbox" ? input.checked : input.value;
+            return acc;
+          }, {});
+
+          const selectValues = Array.from(selectElements).reduce(
+            (acc, select) => {
+              acc[select.name] = select.value;
+              return acc;
+            },
+            {},
+          );
+
+          const formDataObject = {
+            ...formValues,
+            ...selectValues,
+          };
+
+          localStorage.setItem("autoFormData", JSON.stringify(formDataObject));
+
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const formDataTmp = new FormData(form);
+            const urlencoded = new URLSearchParams();
+
+            formDataTmp.forEach(function (value, key) {
+              urlencoded.append(key, value.toString());
+            });
+
+            submitFormDetail(form.action, formDataTmp);
+          });
+        }
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     }

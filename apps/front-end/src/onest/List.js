@@ -21,7 +21,9 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 // import InfiniteScroll from "react-infinite-scroll-component";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 const limit = 6;
+
 const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
@@ -300,6 +302,11 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   );
 };
 
+List.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};
+
 const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
   return (
@@ -367,6 +374,11 @@ const RenderCards = ({ obj, config }) => {
       )}
     </Pressable>
   );
+};
+
+RenderCards.propTypes = {
+  obj: PropTypes.any,
+  config: PropTypes.any,
 };
 
 const replaceUrlParam = (url, object) => {
