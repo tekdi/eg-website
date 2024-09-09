@@ -8,7 +8,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { ExamChipStatus } from "component/Chip";
-import { HStack, VStack, Pressable, Button, Menu, Modal } from "native-base";
+import { HStack, VStack, Pressable, Menu, Modal } from "native-base";
 
 import React, {
   memo,
@@ -57,7 +57,6 @@ function Table({
   errorMsg,
 }) {
   const { t } = useTranslation();
-  const [selectedData, setSelectedData] = useState();
   const [selectedRow, setSelectedRow] = useState();
   const navigate = useNavigate();
   const uplodInputRef = useRef();
@@ -238,41 +237,13 @@ function Table({
     },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      const result = await enumRegistryService.statuswiseCount();
-      setSelectedData(result);
-    };
-    getData();
-  }, []);
-
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
-
+  console.log(filter?.status);
   return (
     <VStack>
       <VStack p={2} pt="0">
         <AdminTypo.H5 underline bold color="textMaroonColor.600">
-          {filter?.status === undefined || filter?.status?.length === 0 ? (
-            t("ALL") + `(${paginationTotalRows})`
-          ) : filter?.status?.[0] === "all" ? (
-            <AdminTypo.H4 bold>
-              {t("ALL") + `(${paginationTotalRows})`}
-            </AdminTypo.H4>
-          ) : (
-            filter?.status
-              ?.filter((item) => item)
-              .map(
-                (item) =>
-                  t(item).toLowerCase() +
-                  `(${
-                    selectedData
-                      ? selectedData?.find((e) => item === e.status)?.count
-                      : 0
-                  })`,
-              )
-              .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
-              .join(" , ")
-          )}
+          {t("ALL") + `(${paginationTotalRows})`}
         </AdminTypo.H5>
         <input
           accept="application/pdf"
