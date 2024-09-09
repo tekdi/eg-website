@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { Layout, changeLanguage, FrontEndTypo } from "@shiksha/common-lib";
 import {
   Box,
@@ -10,9 +11,9 @@ import {
   Text,
   Pressable,
 } from "native-base";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const stylesheet = {
   mainBox: {
@@ -78,11 +79,11 @@ export default function SplashScreen({
   onClickPrerakDuties,
   isBackButton,
 }) {
-  const [page, setPage] = React.useState("screen1");
-  const [code, setCode] = React.useState("en");
-  const [refAppBar, RefAppBar] = React.useState();
+  const [page, setPage] = useState("screen1");
+  const [code, setCode] = useState("en");
+  const [refAppBar, setRefAppBar] = useState();
 
-  React.useEffect(() => {
+  useEffect(() => {
     //if location is pressed directly setpage screen2
     if (isBackButton === "SplashScreen") {
       isBackButton = "";
@@ -103,27 +104,38 @@ export default function SplashScreen({
     setCode(code);
     setPage("screen3");
   };
+
+  const getPageView = () => {
+    switch (page) {
+      case "screen1":
+        return <Page1 />;
+      case "screen3":
+        return <Page2 {...{ onClick, onClickPrerakDuties, refAppBar, code }} />;
+      case "screen2":
+        return <Page3 onShowScreen={onShowScreen} />;
+      default:
+        return <></>;
+    }
+  };
   return (
     <Layout
-      getRefAppBar={(e) => RefAppBar(e)}
+      getRefAppBar={(e) => setRefAppBar(e)}
       isDisabledAppBar={page === "screen1"}
       isCenter={true}
       key={code}
       _appBar={{ onlyIconsShow: ["langBtn"] }}
       _page={{ _scollView: { bg: "white" } }}
     >
-      {page === "screen1" ? (
-        <Page1 />
-      ) : page === "screen3" ? (
-        <Page2 {...{ onClick, onClickPrerakDuties, refAppBar, code }} />
-      ) : page === "screen2" ? (
-        <Page3 onShowScreen={onShowScreen} />
-      ) : (
-        <React.Fragment />
-      )}
+      {getPageView()}
     </Layout>
   );
 }
+
+SplashScreen.propTypes = {
+  onClick: PropTypes.func,
+  onClickPrerakDuties: PropTypes.func,
+  isBackButton: PropTypes.string,
+};
 
 const Page1 = () => {
   return (
@@ -144,7 +156,7 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     const getData = () => {
       if (isMounted) changeLanguage(localStorage.getItem("lang"));
@@ -219,8 +231,13 @@ const Page2 = ({ onClick, onClickPrerakDuties }) => {
   );
 };
 
+Page2.propTypes = {
+  onClick: PropTypes.func,
+  onClickPrerakDuties: PropTypes.func,
+};
+
 const Page3 = ({ onShowScreen }) => {
-  const [code, setCode] = React.useState("hi");
+  const [code, setCode] = useState("hi");
   const { t } = useTranslation();
 
   React.useEffect(() => {
@@ -277,4 +294,8 @@ const Page3 = ({ onShowScreen }) => {
       </Box>
     </Stack>
   );
+};
+
+Page3.propTypes = {
+  onShowScreen: PropTypes.func,
 };

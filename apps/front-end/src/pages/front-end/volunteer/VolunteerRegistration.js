@@ -15,32 +15,37 @@ import {
 import Clipboard from "component/Clipboard.js";
 import moment from "moment";
 import { Box, HStack, Modal, VStack } from "native-base";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useScreenshot } from "use-screenshot-hook";
 import ChooseLanguage from "v2/components/Functional/ChooseLanguage/ChooseLanguage";
 import LogoScreen from "v2/components/Static/LogoScreen/LogoScreen";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout";
-import { templates, widgets } from "../../../component/BaseInput";
+import {
+  templates,
+  widgets,
+  onError,
+  transformErrors,
+} from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
+import PropTypes from "prop-types";
 
 // App
 export default function App({ facilitator, ip, onClick }) {
-  const [page, setPage] = React.useState("logoScreen");
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [credentials, setCredentials] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
+  const [page, setPage] = useState("logoScreen");
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [credentials, setCredentials] = useState();
+  const [submitBtn, setSubmitBtn] = useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState(facilitator);
-  const [errors, setErrors] = React.useState({});
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [loading, setLoading] = React.useState(false);
+  const [formData, setFormData] = useState(facilitator);
+  const [errors, setErrors] = useState({});
+  const [yearsRange, setYearsRange] = useState([1980, 2030]);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const {id} = useParams();
 
   const onPressBackButton = async () => {
     const data = await nextPreviewStep("p");
@@ -90,9 +95,6 @@ export default function App({ facilitator, ip, onClick }) {
       if (nextIndex !== undefined) {
         setPage(nextIndex);
         setSchema(properties[nextIndex]);
-      } else if (pageStape.toLowerCase() === "n") {
-        // await formSubmitUpdate({ ...formData, form_step_number: "10" });
-        // setPage("upload");
       } else {
         return true;
       }
@@ -141,7 +143,6 @@ export default function App({ facilitator, ip, onClick }) {
             arr: data,
           });
         }
-        console.log(newSchema, data);
         setSchema(newSchema);
         setLoading(false);
       }
@@ -177,10 +178,6 @@ export default function App({ facilitator, ip, onClick }) {
     init();
   }, [page]);
 
-  // const userExist = async (filters) => {
-  //   return await facilitatorRegistryService.isExist(filters);
-  // };
-
   const goErrorPage = (key) => {
     if (key) {
       for (const e of pages) {
@@ -192,9 +189,16 @@ export default function App({ facilitator, ip, onClick }) {
     }
   };
 
-  const validate = (data, key) => {
+  const validateFn = (data, key) => {
     let error = {};
     switch (key) {
+      case "dob": {
+        const years = moment().diff(data?.dob, "years");
+        if (years < 18) {
+          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
+        }
+        break;
+      }
       case "mobile":
         if (data?.mobile?.toString()?.length !== 10) {
           error = { mobile: t("MINIMUM_LENGTH_IS_10") };
@@ -203,18 +207,6 @@ export default function App({ facilitator, ip, onClick }) {
           error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
         }
         break;
-      // case "state":
-      //   if (isNaN(data?.mobile)) {
-      //     error = { mobile: t("PLEASE_ENTER_VALID_STATE") };
-      //   }
-      //   break;
-      case "dob": {
-        const years = moment().diff(data?.dob, "years");
-        if (years < 18) {
-          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
-        }
-        break;
-      }
       default:
         break;
     }
@@ -224,37 +216,19 @@ export default function App({ facilitator, ip, onClick }) {
   const customValidate = (data, err) => {
     const arr = Object.keys(err);
     for (const key of arr) {
-      const isValid = validate(data, key);
-      if (isValid?.[key]) {
-        if (!errors?.[key]?.__errors.includes(isValid[key]))
-          err?.[key]?.addError(isValid[key]);
+      const isValidKey = validateFn(data, key);
+      if (isValidKey?.[key]) {
+        if (!errors?.[key]?.__errors.includes(isValidKey[key]))
+          err?.[key]?.addError(isValidKey[key]);
       }
     }
-
     return err;
   };
 
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title,
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
-  };
-
-  const checkMobileExist = async (mobile) => {
-    const result = await volunteerRegistryService.isUserExist({ mobile });
-    if (result?.data) {
-      let response_isUserExist = result?.data?.user_roles || [];
+  const checkMobileNumberExist = async (mobile) => {
+    const response = await volunteerRegistryService.isUserExist({ mobile });
+    if (response?.data) {
+      const response_isUserExist = response?.data?.user_roles || [];
       if (response_isUserExist?.length > 0) {
         const newErrors = {
           mobile: {
@@ -273,19 +247,6 @@ export default function App({ facilitator, ip, onClick }) {
     // update setFormData onchange
     const newData = { ...formData, ...data };
     setFormData(newData);
-    if (id === "root_mobile") {
-      let { mobile, otp, ...otherError } = errors || {};
-      setErrors(otherError);
-      if (data?.mobile?.toString()?.length === 10) {
-        await checkMobileExist(data?.mobile);
-      }
-      if (schema?.properties?.otp) {
-        const { otp, ...properties } = schema?.properties || {};
-        const required = schema?.required.filter((item) => item !== "otp");
-        setSchema({ ...schema, properties, required });
-      }
-    }
-
     if (id === "root_pincode") {
       const regex = /^\d{6}$/;
       if (data?.pincode && !regex.test(data.pincode)) {
@@ -297,43 +258,44 @@ export default function App({ facilitator, ip, onClick }) {
         setErrors(newErrors);
       }
     }
-
     if (id === "root_otp") {
       if (errors?.otp) {
         const newErrors = {};
         setErrors(newErrors);
       }
     }
-  };
-
-  const onError = (data) => {
-    if (data[0]) {
-      const key = data[0]?.property?.slice(1);
-      goErrorPage(key);
+    if (id === "root_mobile") {
+      let { mobile, otp, ...otherError } = errors || {};
+      setErrors(otherError);
+      if (data?.mobile?.toString()?.length === 10) {
+        await checkMobileNumberExist(data?.mobile);
+      }
+      if (schema?.properties?.otp) {
+        const { otp, ...properties } = schema?.properties || {};
+        const required = schema?.required.filter((item) => item !== "otp");
+        setSchema({ ...schema, properties, required });
+      }
     }
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
-    let newFormData = data.formData;
+    let updatedFormData = data.formData;
     if (schema?.properties?.first_name) {
-      newFormData = {
-        ...newFormData,
-        ["first_name"]: newFormData?.first_name?.replaceAll(" ", ""),
+      updatedFormData = {
+        ...updatedFormData,
+        ["first_name"]: updatedFormData?.first_name?.replaceAll(" ", ""),
       };
     }
-
-    if (schema?.properties?.last_name && newFormData?.last_name) {
-      newFormData = {
-        ...newFormData,
-        ["last_name"]: newFormData?.last_name?.replaceAll(" ", ""),
+    if (schema?.properties?.last_name && updatedFormData?.last_name) {
+      updatedFormData = {
+        ...updatedFormData,
+        ["last_name"]: updatedFormData?.last_name?.replaceAll(" ", ""),
       };
     }
-
     const newData = {
       ...formData,
-      ...newFormData,
-      // ["form_step_number"]: parseInt(page) + 1,
+      ...updatedFormData,
     };
     setFormData(newData);
 
@@ -341,22 +303,21 @@ export default function App({ facilitator, ip, onClick }) {
       const { id } = {};
       let success = false;
       if (id) {
-        // const data = await formSubmitUpdate(newData);
-        // if (!_.isEmpty(data)) {
         success = true;
-        // }
       } else if (page === "4") {
-        const resultCheck = await checkMobileExist(newFormData?.mobile);
+        const resultCheck = await checkMobileNumberExist(
+          updatedFormData?.mobile,
+        );
         if (!resultCheck) {
           if (!schema?.properties?.otp) {
-            const { otp: data, ...allData } = newFormData || {};
-            setFormData(allData);
-            newFormData = allData;
+            const { otp: data, ...allData } = updatedFormData || {};
             let { mobile, otp, ...otherError } = errors || {};
+            setFormData(allData);
+            updatedFormData = allData;
             setErrors(otherError);
           }
           const { status, newSchema } = await sendAndVerifyOtp(schema, {
-            ...newFormData,
+            ...updatedFormData,
             hash: localStorage.getItem("hash"),
           });
           if (status === true) {
@@ -373,13 +334,10 @@ export default function App({ facilitator, ip, onClick }) {
                 },
               };
               setErrors(newErrors);
-            } else {
-              console.log(data);
-              if (data?.username && data?.password) {
-                await removeOnboardingURLData();
-                await removeOnboardingMobile();
-                setCredentials(data);
-              }
+            } else if (data?.username && data?.password) {
+              await removeOnboardingURLData();
+              await removeOnboardingMobile();
+              setCredentials(data);
             }
           } else if (status === false) {
             const newErrors = {
@@ -463,7 +421,7 @@ export default function App({ facilitator, ip, onClick }) {
               onChange,
               onError,
               onSubmit,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
             {page === "4" ? (
@@ -591,3 +549,9 @@ export default function App({ facilitator, ip, onClick }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  facilitator: PropTypes.object,
+  ip: PropTypes.any,
+  onClick: PropTypes.func,
+};

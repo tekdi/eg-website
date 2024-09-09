@@ -11,6 +11,7 @@ import {
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function Home({ userTokenInfo, pageInfo }) {
   const [page, setPage] = React.useState("SplashScreen");
@@ -165,26 +166,42 @@ function Home({ userTokenInfo, pageInfo }) {
     return <Loading />;
   }
 
-  return page == "login" ? (
-    <Loading
-      customComponent={
-        <FrontEndTypo.H1>{t("INVALID_INVITATION_URL")}</FrontEndTypo.H1>
-      }
-    />
-  ) : page === "success" ? (
-    <Success {...{ facilitator }} />
-  ) : page === "SplashScreen" ? (
-    <SplashScreen
-      page={page}
-      onClick={() => setPage("Form")}
-      onClickPrerakDuties={() => setPage("Prerak_Duties")}
-      onPreferedLanguage={() => setPage("Prerak_Duties")}
-      isBackButton={pageInfo ? pageInfo : ""}
-    />
-  ) : page === "Prerak_Duties" ? (
-    <PrerakDuties page={page} onClick={() => setPage("Form")} />
-  ) : (
-    <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />
-  );
+  const getRenderView = () => {
+    switch (page) {
+      case "Form":
+        return <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />;
+      case "Prerak_Duties":
+        return <PrerakDuties page={page} onClick={() => setPage("Form")} />;
+      case "SplashScreen":
+        return (
+          <SplashScreen
+            page={page}
+            onClick={() => setPage("Form")}
+            onClickPrerakDuties={() => setPage("Prerak_Duties")}
+            onPreferedLanguage={() => setPage("Prerak_Duties")}
+            isBackButton={pageInfo ? pageInfo : ""}
+          />
+        );
+      case "login":
+        return (
+          <Loading
+            customComponent={
+              <FrontEndTypo.H1>{t("INVALID_INVITATION_URL")}</FrontEndTypo.H1>
+            }
+          />
+        );
+      case "Success":
+        return <Success {...{ facilitator }} />;
+      default:
+        return <Form {...{ ip, facilitator }} onClick={(e) => setPage(e)} />;
+    }
+  };
+
+  return getRenderView();
 }
 export default Home;
+
+Home.propTypes = {
+  userTokenInfo: PropTypes.object,
+  pageInfo: PropTypes.any,
+};

@@ -15,7 +15,11 @@ import NotFound from "pages/NotFound";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { templates, widgets } from "../../../component/BaseInput";
+import {
+  templates,
+  widgets,
+  transformErrors,
+} from "../../../component/BaseInput";
 import schema1 from "./registration/schema";
 
 const uiSchema = {
@@ -95,7 +99,7 @@ export default function App() {
           setSchema(properties[page]);
           const userObj = filterObject(
             user,
-            Object.keys(properties?.[page]?.properties || {})
+            Object.keys(properties?.[page]?.properties || {}),
           );
           setFormData(userObj);
         } else if (page == 2) {
@@ -176,9 +180,11 @@ export default function App() {
       //   }
       //   break;
       case "dob":
-        const years = moment().diff(data?.dob, "years");
-        if (years < 18) {
-          error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
+        {
+          const years = moment().diff(data?.dob, "years");
+          if (years < 18) {
+            error = { dob: t("MINIMUM_AGE_18_YEAR_OLD") };
+          }
         }
         break;
       default:
@@ -198,23 +204,6 @@ export default function App() {
     }
 
     return err;
-  };
-
-  const transformErrors = (errors, uiSchema) => {
-    return errors.map((error) => {
-      if (error.name === "required") {
-        if (schema?.properties?.[error?.property]?.title) {
-          error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
-          )}"`;
-        } else {
-          error.message = `${t("REQUIRED_MESSAGE")}`;
-        }
-      } else if (error.name === "enum") {
-        error.message = `${t("SELECT_MESSAGE")}`;
-      }
-      return error;
-    });
   };
 
   const checkMobileExist = async (mobile) => {
@@ -241,6 +230,18 @@ export default function App() {
     // update setFormData onchange
     const newData = { ...formData, ...data };
     setFormData(newData);
+    if (id === "root_pincode") {
+      const regex = /^\d{0,6}$/;
+      if (data?.pincode && !regex.test(data.pincode)) {
+        const newErrors = {
+          pincode: {
+            __errors: [t("PINCODE_ERROR")],
+          },
+        };
+        setErrors(newErrors);
+      }
+    }
+
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
@@ -254,18 +255,6 @@ export default function App() {
         const { otp, ...properties } = schema?.properties || {};
         const required = schema?.required.filter((item) => item !== "otp");
         setSchema({ ...schema, properties, required });
-      }
-    }
-
-    if (id === "root_pincode") {
-      const regex = /^\d{0,6}$/;
-      if (data?.pincode && !regex.test(data.pincode)) {
-        const newErrors = {
-          pincode: {
-            __errors: [t("PINCODE_ERROR")],
-          },
-        };
-        setErrors(newErrors);
       }
     }
 
@@ -314,81 +303,85 @@ export default function App() {
           case "1":
           case "2":
           case "3":
-            let filterNewData = filterObject(
-              newFormData,
-              Object.keys(schema?.properties),
-              {},
-              ""
-            );
-            if (page === "3") {
-              filterNewData = {
-                qualification: {
-                  id: volunteer?.qualifications?.id,
-                  qualification_name: filterNewData?.qualification,
-                },
-              };
-            } else {
-              filterNewData = {
-                users: filterNewData,
-              };
-            }
-            const { data, success } = await formSubmitUpdate(filterNewData);
-            if (!success) {
-              const newErrors = {
-                mobile: {
-                  __errors:
-                    data?.message?.constructor?.name === "String"
-                      ? [data?.message]
-                      : data?.error?.constructor?.name === "Array"
-                      ? data?.error
-                      : [t("SERVER_ERROR")],
-                },
-              };
-              setErrors(newErrors);
-            } else {
-              console.log(data);
-            }
-            break;
-          case "4":
-            const resultCheck = await checkMobileExist(newFormData?.mobile);
-            if (!resultCheck) {
-              if (!schema?.properties?.otp) {
-                const { otp: data, ...allData } = newFormData || {};
-                setFormData(allData);
-                newFormData = allData;
-                let { mobile, otp, ...otherError } = errors || {};
-                setErrors(otherError);
+            {
+              let filterNewData = filterObject(
+                newFormData,
+                Object.keys(schema?.properties),
+                {},
+                "",
+              );
+              if (page === "3") {
+                filterNewData = {
+                  qualification: {
+                    id: volunteer?.qualifications?.id,
+                    qualification_name: filterNewData?.qualification,
+                  },
+                };
+              } else {
+                filterNewData = {
+                  users: filterNewData,
+                };
               }
-              const { status, newSchema } = await sendAndVerifyOtp(schema, {
-                ...newFormData,
-                hash: localStorage.getItem("hash"),
-              });
-              if (status === true) {
-                const { data, success } = await formSubmitUpdate(newFormData);
-                if (!success) {
-                  const newErrors = {
-                    mobile: {
-                      __errors:
-                        data?.message?.constructor?.name === "String"
-                          ? [data?.message]
-                          : data?.error?.constructor?.name === "Array"
-                          ? data?.error
-                          : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
-                    },
-                  };
-                  setErrors(newErrors);
-                } else {
-                  console.log(data);
-                }
-              } else if (status === false) {
+              const { data, success } = await formSubmitUpdate(filterNewData);
+              if (!success) {
                 const newErrors = {
-                  otp: {
-                    __errors: [t("USER_ENTER_VALID_OTP")],
+                  mobile: {
+                    __errors:
+                      data?.message?.constructor?.name === "String"
+                        ? [data?.message]
+                        : data?.error?.constructor?.name === "Array"
+                          ? data?.error
+                          : [t("SERVER_ERROR")],
                   },
                 };
                 setErrors(newErrors);
               } else {
-                setSchema(newSchema);
+                console.log(data);
+              }
+            }
+            break;
+          case "4":
+            {
+              const resultCheck = await checkMobileExist(newFormData?.mobile);
+              if (!resultCheck) {
+                if (!schema?.properties?.otp) {
+                  const { otp: data, ...allData } = newFormData || {};
+                  setFormData(allData);
+                  newFormData = allData;
+                  let { mobile, otp, ...otherError } = errors || {};
+                  setErrors(otherError);
+                }
+                const { status, newSchema } = await sendAndVerifyOtp(schema, {
+                  ...newFormData,
+                  hash: localStorage.getItem("hash"),
+                });
+                if (status === true) {
+                  const { data, success } = await formSubmitUpdate(newFormData);
+                  if (!success) {
+                    const newErrors = {
+                      mobile: {
+                        __errors:
+                          data?.message?.constructor?.name === "String"
+                            ? [data?.message]
+                            : data?.error?.constructor?.name === "Array"
+                              ? data?.error
+                              : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                      },
+                    };
+                    setErrors(newErrors);
+                  } else {
+                    console.log(data);
+                  }
+                } else if (status === false) {
+                  const newErrors = {
+                    otp: {
+                      __errors: [t("USER_ENTER_VALID_OTP")],
+                    },
+                  };
+                  setErrors(newErrors);
+                } else {
+                  setSchema(newSchema);
+                }
               }
             }
             break;
@@ -438,10 +431,6 @@ export default function App() {
         lang,
         setLang,
         _box: { bg: "white", shadow: "appBarShadow" },
-        // onlyIconsShow: ["langAppBtn"],
-        // funLangChange: () => {
-        //   setPage("chooseLangauge");
-        // },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
     >
@@ -464,7 +453,7 @@ export default function App() {
               onChange,
               onError,
               onSubmit,
-              transformErrors,
+              transformErrors: (errors) => transformErrors(errors, schema, t),
             }}
           >
             {mobileConditon && page === "4" ? (
