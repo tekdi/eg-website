@@ -114,8 +114,8 @@ const columns = (t) => [
           {row?.program_faciltators.length > 0
             ? t("PRERAK")
             : row?.program_beneficiaries.length > 0
-            ? t("LEARNER")
-            : ""}
+              ? t("LEARNER")
+              : ""}
         </AdminTypo.H5>
       </HStack>
     ),
@@ -265,9 +265,8 @@ export default function FacilitatorView({ footerLinks }) {
           id: id.toString(),
           password: password,
         };
-        const resetPassword = await authRegistryService.resetPasswordAdmin(
-          bodyData
-        );
+        const resetPassword =
+          await authRegistryService.resetPasswordAdmin(bodyData);
         if (resetPassword.success === true) {
           setCredentials();
           setModalVisible(false);
@@ -317,9 +316,8 @@ export default function FacilitatorView({ footerLinks }) {
       id: id,
       aadhar_no: aadhaarValue,
     };
-    const result = await facilitatorRegistryService.updateAadhaarNumber(
-      aadhaar_no
-    );
+    const result =
+      await facilitatorRegistryService.updateAadhaarNumber(aadhaar_no);
     if (aadhaarValue?.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
       setIsButtonLoading(false);
@@ -578,7 +576,7 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       handleResetPassword(
                         credentials?.password,
-                        credentials?.confirmPassword
+                        credentials?.confirmPassword,
                       );
                     }}
                   >
@@ -953,17 +951,17 @@ const SelectAllCheckBox = memo(
       (e) => {
         if (!e) {
           const checkedFields = fieldCheck?.filter(
-            (field) => !fields?.includes(field)
+            (field) => !fields?.includes(field),
           );
           setFieldCheck(checkedFields);
         } else {
           const checkedFields = fieldCheck?.filter(
-            (field) => !fields?.includes(field)
+            (field) => !fields?.includes(field),
           );
           setFieldCheck([...checkedFields, ...fields]);
         }
       },
-      [fields, fieldCheck, setFieldCheck]
+      [fields, fieldCheck, setFieldCheck],
     );
 
     return (
@@ -971,5 +969,5 @@ const SelectAllCheckBox = memo(
         {title}
       </Checkbox>
     );
-  }
+  },
 );
