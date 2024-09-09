@@ -115,8 +115,8 @@ export default function PrerakList({ userTokenInfo }) {
   const [bodyHeight, setBodyHeight] = useState(0);
   const ref = useRef(null);
   const { t } = useTranslation();
-  const [prerakList, setPrerakList] = React.useState();
-  const [cohorts, setCohorts] = React.useState();
+  const [prerakList, setPrerakList] = useState([]);
+  const [cohorts, setCohorts] = useState();
 
   useEffect(() => {
     const getPrerakList = async () => {
@@ -159,10 +159,10 @@ export default function PrerakList({ userTokenInfo }) {
         if (!error) {
           setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
           if (filter.page <= 1) {
-            setPrerakList(result?.facilitator_data);
+            setPrerakList(result?.facilitator_data || []);
           } else {
-            setPrerakList([
-              ...(prerakList || []),
+            setPrerakList((prevPrerakList) => [
+              ...prevPrerakList,
               ...(result?.facilitator_data || []),
             ]);
           }
@@ -312,7 +312,7 @@ export default function PrerakList({ userTokenInfo }) {
           </FrontEndTypo.H3>
         }
       >
-        <List data={prerakList} />
+        <List key={JSON.stringify(prerakList)} data={prerakList} />
       </InfiniteScroll>
     </Layout>
   );
