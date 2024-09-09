@@ -12,29 +12,7 @@ import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
-
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
+import { CustomStyles } from "../CommonStyles";
 
 const columns = (t, navigate) => [
   {
