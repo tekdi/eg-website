@@ -447,24 +447,24 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                       },
                     ]
                   : []),
-                // ...(["pragati_syc", "pragati_syc_reattempt"].includes(status) &&
-                // state_name === "RAJASTHAN" &&
-                // [true, false].includes(
-                //   benificiary?.program_beneficiaries?.is_continued,
-                // )
-                //   ? [
-                //       {
-                //         title: "PSYC_DETAILS",
-                //         onPress: (e) => {
-                //           navigate(`/beneficiary/${id}/psyc`, {
-                //             state:
-                //               benificiary?.program_beneficiaries
-                //                 ?.enrolled_for_board,
-                //           });
-                //         },
-                //       },
-                //     ]
-                //   : []),
+                ...(["pragati_syc", "pragati_syc_reattempt"].includes(status) &&
+                state_name === "RAJASTHAN" &&
+                [true, false].includes(
+                  benificiary?.program_beneficiaries?.is_continued,
+                )
+                  ? [
+                      {
+                        title: "PSYC_DETAILS",
+                        onPress: (e) => {
+                          navigate(`/beneficiary/${id}/psyc`, {
+                            state:
+                              benificiary?.program_beneficiaries
+                                ?.enrolled_for_board,
+                          });
+                        },
+                      },
+                    ]
+                  : []),
                 {
                   title: "JOURNEY_IN_PROJECT_PRAGATI",
                   onPress: (e) => {
@@ -671,14 +671,13 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
 
       <PsycContinue
         {...{ id, benificiary }}
-        isOpen={false}
-        // isOpen={
-        //   status === "pragati_syc" &&
-        //   state_name === "RAJASTHAN" &&
-        //   ![true, false].includes(
-        //     benificiary?.program_beneficiaries?.is_continued,
-        //   )
-        // }
+        isOpen={
+          status === "pragati_syc" &&
+          state_name === "RAJASTHAN" &&
+          ![true, false].includes(
+            benificiary?.program_beneficiaries?.is_continued,
+          )
+        }
       />
     </Layout>
   );
