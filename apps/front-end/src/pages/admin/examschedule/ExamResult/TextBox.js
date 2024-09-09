@@ -1,28 +1,34 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import { Input } from "native-base";
 
-function TextBox({ value, onChange, placeholder, maxlength }) {
+function TextBox({
+  value,
+  onChange,
+  placeholder,
+  maxlength,
+  isDisabled,
+  _style,
+}) {
   const { t } = useTranslation();
   return (
-    <div>
-      <input
-        type="text"
-        id="marks"
-        placeholder={t(placeholder) || t("ENTER_MARKS")}
-        style={{
-          border: "1px solid #424242",
-          padding: "5px 10px",
-          borderRadius: "10px",
-          background: "transparent",
-          width: "100px",
-          height: "40px",
-        }}
-        maxLength={maxlength || "3"}
-        value={value || ""}
-        onChange={onChange}
-      />
-    </div>
+    <Input
+      isDisabled={isDisabled}
+      title={t(placeholder) || t("ENTER_MARKS")}
+      type="text"
+      id="marks"
+      placeholder={t(placeholder) || t("ENTER_MARKS")}
+      style={{
+        width: "100%",
+        height: "52px",
+        boxSizing: "border-box",
+        ..._style,
+      }}
+      maxLength={maxlength || "3"}
+      value={value || ""}
+      onChange={onChange}
+    />
   );
 }
 
@@ -33,4 +39,5 @@ TextBox.propTypes = {
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
   maxlength: PropTypes.any,
+  _style: PropTypes.object,
 };
