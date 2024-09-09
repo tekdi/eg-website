@@ -1,9 +1,7 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 
 const YouTubeEmbed = ({ url }) => {
-  const { t } = useTranslation();
   // Extract the video ID from the YouTube URL
   const videoId = url.split("v=")[1];
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;

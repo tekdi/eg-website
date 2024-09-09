@@ -16,7 +16,7 @@ export default function Chip({ label, children, isActive, ...props }) {
       m="1"
       {...props}
     >
-      {children ? children : label}
+      {children || label}
     </Box>
   );
 }

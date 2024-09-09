@@ -90,7 +90,6 @@ function View() {
   }, []);
 
   const handleEditButton = () => {
-    const step = "edit";
     navigate(`/poadmin/ip/${id}/edit`);
   };
   return (
@@ -218,7 +217,7 @@ const DataList = memo(() => {
         ...filter,
       });
       setPaginationTotalRows(
-        data?.data?.totalCount ? data?.data?.totalCount : 0
+        data?.data?.totalCount ? data?.data?.totalCount : 0,
       );
       setData(data?.data);
       setLoading(false);
@@ -230,7 +229,7 @@ const DataList = memo(() => {
     (row) => {
       navigate(`/poadmin/ips/user/${row?.id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -297,13 +296,13 @@ const DataList = memo(() => {
             (e) => {
               setFilter({ ...filter, limit: e, page: 1 });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onRowClicked={handleRowClick}
         />

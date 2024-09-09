@@ -139,13 +139,12 @@ export default function EventHome({ footerLinks }) {
   const { t } = useTranslation();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [data, setData] = useState();
-  const [programData, setProgramData] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const [isDisabled, setIsDisabled] = useState(true);
   const toast = useToast();
   const navigate = useNavigate();
   const { step, id } = useParams();
-  const [selectedRowId, setSelectedRowIds] = useState([]);
+  const [selectedRowId, setSelectedRowId] = useState([]);
 
   const [formData, setFormData] = useState({});
 
@@ -158,8 +157,7 @@ export default function EventHome({ footerLinks }) {
       const peopleResult = await eventService.getAttendanceList({ id });
       const { event } = eventResult;
       const selectedId = peopleResult?.data?.map((e) => e?.id) || [];
-      // eventResult?.event?.attendances?.map((e) => e?.user_id) || [];
-      setSelectedRowIds(selectedId);
+      setSelectedRowId(selectedId);
       setIsListOpen(false);
       const timeFormat = "HH:mm:ss";
       const dateFormat = "YYYY-MM-DD";
@@ -186,7 +184,7 @@ export default function EventHome({ footerLinks }) {
   }, [id]);
 
   const handleCheckboxChange = (rowId) => {
-    setSelectedRowIds((prevSelectedRowIds) => {
+    setSelectedRowId((prevSelectedRowIds) => {
       const isSelected = prevSelectedRowIds?.includes(rowId);
       if (isSelected) {
         return prevSelectedRowIds.filter((id) => id !== rowId);
@@ -325,7 +323,7 @@ export default function EventHome({ footerLinks }) {
     const newData = data.formData;
     setFormData({ ...formData, ...newData });
     if (id === "root_type") {
-      setSelectedRowIds([]);
+      setSelectedRowId([]);
     }
     if (newData?.end_date) {
       if (
@@ -353,7 +351,7 @@ export default function EventHome({ footerLinks }) {
     const resultValidation = checkValidation(
       newFormData,
       ["root_date", "root_start_time", "root_end_time"],
-      true
+      true,
     );
 
     if (!resultValidation) {
@@ -378,8 +376,8 @@ export default function EventHome({ footerLinks }) {
               [["start_date", "end_date"].includes(data?.key)
                 ? "date"
                 : ["start_time", "end_time"].includes(data?.key)
-                ? data?.key
-                : "name"]: {
+                  ? data?.key
+                  : "name"]: {
                 __errors: [t(data?.message)],
               },
             };
@@ -449,7 +447,7 @@ export default function EventHome({ footerLinks }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -470,7 +468,7 @@ export default function EventHome({ footerLinks }) {
 
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t(message)} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t(message)}`;

@@ -31,7 +31,7 @@ export default function ProfilePhoto({ userTokenInfo: { authUser } }) {
   }, []);
 
   useEffect(() => {
-    if (!(page < 2)) {
+    if (page >= 2) {
       navigate(`/profile`);
     }
     setFile(volunteer?.[`profile_photo_${page}`]);

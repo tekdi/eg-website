@@ -96,7 +96,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
     setBoardName(boardName?.name);
     const documentData = getEnrollmentIds(
       result?.program_beneficiaries?.payment_receipt_document_id,
-      state_name
+      state_name,
     );
     setPaymentDocId(documentData);
     await handleSetReceiptUrl(documentData?.payment_receipt_document_id);
@@ -128,7 +128,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
 
       const lastStandard = parseInt(
         data?.core_beneficiaries?.last_standard_of_education ?? "",
-        10
+        10,
       );
       const hasWarning = isNaN(lastStandard) || lastStandard < 5;
 
@@ -161,7 +161,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
       navigate,
       reason,
       openWarningModal,
-    ]
+    ],
   );
 
   return (
@@ -199,7 +199,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
               {t(
                 localData === "BIHAR"
                   ? "ENROLLMENT_DETAILS_VERIFICATION_BIHAR"
-                  : "ENROLLMENT_DETAILS_VERIFICATION"
+                  : "ENROLLMENT_DETAILS_VERIFICATION",
               )}
             </AdminTypo.H5>
 
@@ -270,7 +270,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                   document_id: photo?.id,
                                 }}
                               />
-                            )
+                            ),
                         )
                       ) : (
                         <IconByName
@@ -313,7 +313,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                             <AdminTypo.H5>
                               {data?.program_beneficiaries?.enrollment_dob
                                 ? moment(
-                                    data?.program_beneficiaries?.enrollment_dob
+                                    data?.program_beneficiaries?.enrollment_dob,
                                   ).format("DD-MM-YYYY")
                                 : "-"}
                             </AdminTypo.H5>
@@ -369,8 +369,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                                   localData == "BIHAR"
                                     ? "APPLICATION_ID"
                                     : localData == "MADHYA PRADESH"
-                                    ? "ROLL_NUMBER"
-                                    : "ENROLLMENT_NO",
+                                      ? "ROLL_NUMBER"
+                                      : "ENROLLMENT_NO",
                                 keyArr: "enrollment_number",
                               },
                             ]
@@ -390,7 +390,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                             <AdminTypo.H5>
                               {data?.program_beneficiaries?.enrollment_date
                                 ? moment(
-                                    data?.program_beneficiaries?.enrollment_date
+                                    data?.program_beneficiaries
+                                      ?.enrollment_date,
                                   ).format("DD-MM-YYYY")
                                 : "-"}
                             </AdminTypo.H5>
@@ -410,7 +411,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       }}
                       schema={{
                         icons: checkboxIcons(
-                          reason?.learner_enrollment_details
+                          reason?.learner_enrollment_details,
                         ),
                         _box: {
                           flex: "1",
@@ -443,7 +444,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       }
                       onPress={() => {
                         handleButtonClick(
-                          paymentDocId?.payment_receipt_document_id
+                          paymentDocId?.payment_receipt_document_id,
                         );
                       }}
                     >
@@ -573,14 +574,14 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                   submit(
                     data?.program_beneficiaries?.status == "sso_id_enrolled"
                       ? "sso_id_verified"
-                      : "verified"
+                      : "verified",
                   )
                 }
               >
                 {t(
                   data?.program_beneficiaries?.status == "sso_id_enrolled"
                     ? "BENEFICIARY_STATUS_BTNTEXT_SSOID_VERIFY"
-                    : "BENEFICIARY_STATUS_BTNTEXT_VERIFY"
+                    : "BENEFICIARY_STATUS_BTNTEXT_VERIFY",
                 )}
               </AdminTypo.Successbutton>
               <AdminTypo.Secondarybutton
@@ -622,7 +623,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       submit(
                         data?.program_beneficiaries?.status == "sso_id_enrolled"
                           ? "sso_id_verified"
-                          : "verified"
+                          : "verified",
                       )
                     }
                   >
@@ -736,7 +737,7 @@ const ValidationBox = ({ children, error }) => (
 const Message = ({ status, reason }) => {
   const { t } = useTranslation();
   if (status === "pending") {
-    return <Fragment />;
+    return <></>;
   } else if (
     reason?.learner_enrollment_details === "no" &&
     reason?.enrollment_details === "no"
@@ -759,7 +760,7 @@ const Message = ({ status, reason }) => {
       </AdminTypo.H4>
     );
   }
-  return <Fragment />;
+  return <></>;
 };
 
 const LearnerInfo = ({ item, reason, status }) => {

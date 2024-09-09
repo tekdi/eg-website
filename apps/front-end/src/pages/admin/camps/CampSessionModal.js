@@ -9,25 +9,6 @@ import { Alert, HStack, Pressable, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 
-// const StartSessionButton = ({ onPress, isDisabled, t }) => (
-//   <FrontEndTypo.DefaultButton
-//     textColor={"textMaroonColor.400"}
-//     icon={
-//       <IconByName
-//         name="ArrowRightLineIcon"
-//         _icon={{
-//           color: "textMaroonColor.400",
-//           size: "25px",
-//         }}
-//       />
-//     }
-//     isDisabled={isDisabled}
-//     onPress={onPress}
-//   >
-//     {t("SESSION_STARTED")}
-//   </FrontEndTypo.DefaultButton>
-// );
-
 const CompleteButton = ({ onPress, t }) => (
   <FrontEndTypo.DefaultButton
     borderWidth="0"
@@ -103,7 +84,6 @@ const SessionFeedback = ({
 
 const SessionActions = ({
   isDisable,
-  // handleStartSession,
   sessionActive,
   handlePartiallyDone,
   setSubmitStatus,
@@ -149,15 +129,6 @@ const SessionActions = ({
 
   return (
     <VStack>
-      {/* {!["incomplete", "complete"].includes(
-        sessionDetails?.session_tracks?.[0]?.status
-      ) ? (
-        <StartSessionButton
-          onPress={() => handleStartSession(sessionDetails?.id)}
-          isDisabled={sessionDetails?.session_tracks?.[0] || isDisable}
-          t={t}
-        />
-      ) : ( */}
       <VStack space={4}>
         {buttonHide?.includes("complete") && (
           <CompleteButton
@@ -193,7 +164,7 @@ const SessionActions = ({
                     ...e,
                     label: e?.title,
                     value: e?.value,
-                  })
+                  }),
                 ),
               }}
               schema={{ grid: 1, _pressable: { p: 2 } }}
@@ -240,11 +211,11 @@ export const SessionList = React.memo(
 
     // Separate completed and incomplete sessions
     const completedSessions = sessionList?.filter(
-      (item) => item?.session_tracks?.[0]?.status === "complete"
+      (item) => item?.session_tracks?.[0]?.status === "complete",
     );
 
     const incompleteSessions = sessionList?.filter(
-      (item) => item?.session_tracks?.[0]?.status !== "complete"
+      (item) => item?.session_tracks?.[0]?.status !== "complete",
     );
 
     return (
@@ -376,8 +347,13 @@ export const SessionList = React.memo(
         ))}
       </VStack>
     );
-  }
+  },
 );
+SessionList.propTypes = {
+  sessionActive: PropTypes.any,
+  sessionList: PropTypes.any,
+  setModalVisible: PropTypes.any,
+};
 CompleteButton.propTypes = {
   onPress: PropTypes.any,
   t: PropTypes.any,

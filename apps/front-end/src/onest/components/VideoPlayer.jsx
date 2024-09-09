@@ -1,11 +1,8 @@
 import React from "react";
 import ReactPlayer from "react-player";
-import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 
 const VideoPlayer = ({ url }) => {
-  const { t } = useTranslation();
-
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <style>{`

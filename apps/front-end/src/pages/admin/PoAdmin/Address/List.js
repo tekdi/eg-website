@@ -204,7 +204,6 @@ export default function List() {
   const [loading, setLoading] = useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = useState();
   const [address, setAddress] = useState();
-  const [programList, setProgramList] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const navigate = useNavigate();
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
@@ -222,7 +221,7 @@ export default function List() {
       };
       fetch();
     },
-    [filter]
+    [filter],
   );
 
   const handleSort = (column, sort) => {
@@ -248,7 +247,7 @@ export default function List() {
     (row) => {
       navigate(`/poadmin/address/${row?.id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -348,13 +347,13 @@ export default function List() {
             (e) => {
               setFilter({ ...filter, limit: e, page: 1 });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onRowClicked={handleRowClick}
         />

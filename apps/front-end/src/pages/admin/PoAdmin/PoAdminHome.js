@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
-  const [duplicateData, setduplicateData] = useState();
+  const [duplicateData, setDuplicateData] = useState();
   const [loading, setLoading] = useState(true);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({ limit: 10 });
@@ -20,7 +20,7 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
     const dupliData =
       await benificiaryRegistoryService.getDuplicateBeneficiariesList(filter);
     setPaginationTotalRows(dupliData?.count || 0);
-    setduplicateData(dupliData?.data);
+    setDuplicateData(dupliData?.data);
     setLoading(false);
   }, [filter]);
 

@@ -151,7 +151,7 @@ const tableStyles = {
   },
 };
 export default function ReassignCamp({ footerLinks, userTokenInfo }) {
-  const { id, user_id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();

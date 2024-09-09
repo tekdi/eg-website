@@ -21,7 +21,7 @@ export default function NotFound({ goBack, message, _message }) {
             ) : (
               <H1>{t("NOT_FOUND")}</H1>
             )}
-            <Button onPress={(e) => (goBack ? goBack : navigator("/"))}>
+            <Button onPress={(e) => goBack || navigator("/")}>
               {t("GO_TO_BACK")}
             </Button>
           </VStack>
