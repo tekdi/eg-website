@@ -184,7 +184,7 @@ export default function List() {
   const [address, setAddress] = useState();
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
   const navigate = useNavigate();
-  const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
+  const columnsMemoized = useMemo(() => columns(t), [t, navigate]);
 
   useEffect(
     (e) => {
