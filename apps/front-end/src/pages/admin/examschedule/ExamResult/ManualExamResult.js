@@ -67,7 +67,7 @@ function ManualExamResult(footerLinks) {
         ...subject,
         marks: {
           ...result,
-          practical: result.practical,
+          practical: subject.practical_marks === null ? "-" : result.practical,
           result: result?.result?.toLowerCase() == "pass" ? "P" : result.result,
           theory: result.theory,
           sessional: result.tma_internal_sessional,
