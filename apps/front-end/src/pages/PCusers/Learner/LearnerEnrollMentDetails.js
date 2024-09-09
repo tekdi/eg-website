@@ -10,7 +10,7 @@ import {
 import { HStack, Modal, Toast, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import EnrollmentMessage from "component/EnrollmentMessage";
 import moment from "moment";
 import PropTypes from "prop-types";
@@ -23,13 +23,14 @@ export default function App({ userTokenInfo }) {
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [cardData, setCardData] = useState([]);
   const location = useLocation();
+  const { id } = useParams();
 
   React.useEffect(() => {
     agDetails();
   }, []);
 
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${location?.state?.id}`, {
+    navigate(`/learners/list-view/${id}`, {
       state: location?.state,
     });
   };
@@ -225,7 +226,7 @@ export default function App({ userTokenInfo }) {
     const learnerState = benificiary?.state;
     return (
       (learnerState === "RAJASTHAN" && learnerStatus === "sso_id_enrolled") ||
-      (learnerState !== "RAJASTHAN" && learnerStatus === "enrolled")
+      learnerStatus === "enrolled"
     );
   };
 
@@ -259,10 +260,19 @@ export default function App({ userTokenInfo }) {
             title={t(data?.title)}
           />
         ))}
-        {shouldShowVerifyButton() && (
-          <FrontEndTypo.Primarybutton onPress={() => setOpenConfirmModal(true)}>
-            {t("VERIFY")}
-          </FrontEndTypo.Primarybutton>
+        {benificiary?.program_beneficiaries?.enrollment_verification_status ==
+        "pc_verified" ? (
+          <FrontEndTypo.ColourPrimaryButton isDisabled>
+            {t("VERIFIED")}
+          </FrontEndTypo.ColourPrimaryButton>
+        ) : (
+          shouldShowVerifyButton() && (
+            <FrontEndTypo.Primarybutton
+              onPress={() => setOpenConfirmModal(true)}
+            >
+              {t("VERIFY")}
+            </FrontEndTypo.Primarybutton>
+          )
         )}
       </VStack>
       <Modal

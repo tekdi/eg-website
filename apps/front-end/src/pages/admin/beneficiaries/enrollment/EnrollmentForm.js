@@ -39,6 +39,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   let newData = {};
   const keys = Object.keys(schema1?.properties || {}).reduce((acc, key) => {
     if (schema1.properties[key].properties) {
+      // acc = [...acc, ...Object.keys(schema1.properties[key].properties)];
       acc.push(...Object.keys(schema1.properties[key].properties));
     }
     return acc;
@@ -53,7 +54,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         const idDoc = data?.[e]?.find((ie) =>
           ie?.id && (ie?.key == data?.enrollment_status) === "sso_id_enrolled"
             ? "sso_id_receipt_document_id"
-            : "payment_receipt_document_id"
+            : "payment_receipt_document_id",
         );
         newData = { ...newData, [e]: `${idDoc?.id}` };
       } else {
@@ -146,7 +147,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
             payment_receipt_document_id,
           },
           required: constantSchema?.required?.filter(
-            (e) => e != "enrollment_number"
+            (e) => e != "enrollment_number",
           ),
         };
       }
@@ -188,8 +189,8 @@ const getSubjects = async (schemaData, value) => {
                 state_name === "RAJASTHAN"
                   ? "/enrollment-receipt.jpeg"
                   : state_name === "BIHAR"
-                  ? "/application_receipt_bihar.jpg"
-                  : "/enrollment_receipt_mp.jpg",
+                    ? "/application_receipt_bihar.jpg"
+                    : "/enrollment_receipt_mp.jpg",
             }}
             height={"124px"}
             width={"200px"}
@@ -213,7 +214,7 @@ const getSubjects = async (schemaData, value) => {
 };
 // App
 export default function App(footerLinks) {
-  const [RefAppBar, setRefAppBar] = useState();
+  const [refAppBar, setRefAppBar] = useState();
   const { id } = useParams();
   const userId = id;
   const [page, setPage] = useState();
@@ -241,6 +242,7 @@ export default function App(footerLinks) {
         hideNowButton: true,
         hideClearButton: true,
         yearsRange: [2023, moment().format("YYYY")],
+        format: "DMY",
       },
     },
     enrollment_dob: {
@@ -249,16 +251,36 @@ export default function App(footerLinks) {
         hideNowButton: true,
         hideClearButton: true,
         yearsRange: [1980, moment().format("YYYY")],
+        format: "DMY",
       },
     },
   });
+
+  // const nextPreviewStep = async (pageStape = "n") => {
+  //   const index = pages.indexOf(page);
+  //   if (index !== undefined) {
+  //     let nextIndex = "";
+  //     if (pageStape.toLowerCase() === "n") {
+  //       nextIndex = pages[index + 1];
+  //     } else {
+  //       nextIndex = pages[index - 1];
+  //     }
+  //     if (nextIndex !== undefined) {
+  //       setPage(nextIndex);
+  //     } else if (pageStape === "p") {
+  //       navigate(`/beneficiary/${userId}/enrollmentdetails`);
+  //     } else {
+  //       navigate(`/beneficiary/${userId}`);
+  //     }
+  //   }
+  // };
 
   const checkEnrollmentDobAndDate = (data, key) => {
     let error = {};
     if (data?.enrollment_dob) {
       const age = enrollmentDateOfBirth(
         benificiary?.program_beneficiaries?.enrollment_date,
-        data?.enrollment_dob
+        data?.enrollment_dob,
       );
       const {
         program_beneficiaries: { enrollment_date },
@@ -315,14 +337,14 @@ export default function App(footerLinks) {
       value: "value",
     });
   };
-
+  console.log(errors);
   const validate = (data, key) => {
     let error = {};
     switch (key) {
       case "enrollment_mobile_no":
         {
           const mobile = data?.enrollment_mobile_no;
-          const regex = /^[1-9]\D{0,9}$/;
+          const regex = /^[1-9]\d{0,9}$/;
           if (
             !mobile ||
             !mobile?.match(regex) ||
@@ -341,7 +363,6 @@ export default function App(footerLinks) {
         }
         break;
       }
-
       case "subjects": {
         if (
           page === "edit_enrollement" &&
@@ -354,29 +375,28 @@ export default function App(footerLinks) {
             const languageSubjects = subjectsArr?.filter(
               (subject) =>
                 subject.subject_type === "language" &&
-                subjectsSet.has(String(subject.subject_id))
+                subjectsSet.has(String(subject.subject_id)),
             );
             // Return the count of filtered objects
             return languageSubjects.length;
           };
           const langCount = countLanguageSubjects(
             schema?.properties?.subjects?.enumOptions,
-            data?.subjects
+            data?.subjects,
           );
           const nonLangCount = data?.subjects?.length - langCount;
           if (langCount === 0 && nonLangCount === 0) {
             error = { [key]: t("GROUP_A_GROUP_B_MIN_SUBJECTS") };
-          } else if (langCount > 3 && nonLangCount > 4) {
+          } else if (langCount + nonLangCount > 7) {
             error = { [key]: t("GROUP_A_GROUP_B_MAX_SUBJECTS") };
           } else if (langCount > 3) {
             error = { [key]: t("GROUP_A_MAX_SUBJECTS") };
-          } else if (nonLangCount > 4) {
+          } else if (nonLangCount > 5) {
             error = { [key]: t("GROUP_B_MAX_SUBJECTS") };
           }
         }
         break;
       }
-
       default:
         break;
     }
@@ -420,13 +440,13 @@ export default function App(footerLinks) {
         if (page === "edit_enrollement") {
           const newSchema = await getEnrollmentStatus(
             constantSchema,
-            benificiary?.program_beneficiaries?.status
+            benificiary?.program_beneficiaries?.status,
           );
           setFixedSchema(newSchema);
           const updatedSchema = await setSchemaByStatus(
             benificiary?.program_beneficiaries,
             newSchema,
-            boards
+            boards,
           );
           let { state_name } = await getSelectedProgramId();
           if (updatedSchema?.newSchema?.properties?.enrollment_number?.regex) {
@@ -443,12 +463,12 @@ export default function App(footerLinks) {
           }
           if (
             ["enrolled", "sso_id_enrolled"].includes(
-              formData?.enrollment_status
+              formData?.enrollment_status,
             )
           ) {
             const subjectsEnum = await getSubjects(
               constantSchema,
-              formData?.enrolled_for_board
+              formData?.enrolled_for_board,
             );
             updatedSchema.newSchema.properties.subjects =
               subjectsEnum?.properties?.subjects;
@@ -458,11 +478,12 @@ export default function App(footerLinks) {
           ["enrolled", "sso_id_enrolled"].includes(formData?.enrollment_status)
         ) {
           setSchema(
-            await getSubjects(constantSchema, formData?.enrolled_for_board)
+            await getSubjects(constantSchema, formData?.enrolled_for_board),
           );
         } else {
           setSchema(constantSchema);
         }
+
         setLoading(false);
       }
     };
@@ -481,7 +502,7 @@ export default function App(footerLinks) {
         userId,
         {
           enrollment_number: enrollment_number,
-        }
+        },
       );
       if (result.error) {
         error = {
@@ -492,7 +513,7 @@ export default function App(footerLinks) {
               t(
                 state_name === "RAJASTHAN"
                   ? "ENROLLMENT_NUMBER_ALREADY_EXISTS"
-                  : "APPLICATION_ID_ALREADY_EXISTS"
+                  : "APPLICATION_ID_ALREADY_EXISTS",
               ),
             ],
           },
@@ -612,7 +633,7 @@ export default function App(footerLinks) {
                       </VStack>
                     ),
                   },
-                })
+                }),
               );
               setFormData({ ...formData, is_eligible: "no" });
             } else {
@@ -622,7 +643,7 @@ export default function App(footerLinks) {
                   extra: {
                     "ui:help": ageDate?.age?.message,
                   },
-                })
+                }),
               );
               setFormData({ ...formData, is_eligible: "yes" });
             }
@@ -630,12 +651,27 @@ export default function App(footerLinks) {
         }
         break;
 
+      case "root_subjects": {
+        let { subjects, ...otherErrore } = errors || {};
+        setErrors(otherErrore);
+        const resultDate = validate(data, "subjects");
+        if (resultDate?.subjects) {
+          setErrors({
+            ...errors,
+            subjects: {
+              __errors: [resultDate?.subjects],
+            },
+          });
+        }
+        break;
+      }
+
       case "root_enrollment_status":
         {
           const updatedSchema = await setSchemaByStatus(
             data,
             fixedSchema,
-            boards
+            boards,
           );
           newData = updatedSchema?.newData ? updatedSchema?.newData : {};
           if (
@@ -644,7 +680,7 @@ export default function App(footerLinks) {
             const constantSchema = schema1.properties?.[page];
             const subjectsEnum = await getSubjects(
               constantSchema,
-              formData?.enrolled_for_board
+              formData?.enrolled_for_board,
             );
             updatedSchema.newSchema.properties.subjects =
               subjectsEnum?.properties?.subjects;
@@ -669,7 +705,7 @@ export default function App(footerLinks) {
                     </VStack>
                   ),
                 },
-              })
+              }),
             );
             newData = { ...newData, is_eligible: "no" };
           } else {
@@ -680,13 +716,17 @@ export default function App(footerLinks) {
                 extra: {
                   "ui:help": age?.age?.message,
                 },
-              })
+              }),
             );
           }
         }
         break;
-      default:
+      default: {
+        const newErrors = { ...errors };
+        delete newErrors[id?.replace("root_", "")];
+        setErrors(newErrors);
         break;
+      }
     }
     setFormData(newData);
   };
@@ -702,7 +742,7 @@ export default function App(footerLinks) {
     ) {
       const resulten = await enrollmentNumberExist(
         formData?.enrollment_number,
-        true
+        true,
       );
       if (Object.keys(resulten).includes("enrollment_number")) {
         if (resulten?.enrollment_number?.isNotMatched) {
@@ -722,7 +762,7 @@ export default function App(footerLinks) {
         if (
           errorData.includes("enrollment_number") &&
           !errors.enrollment_number?.__errors?.includes(
-            t("ENROLLMENT_NUMBER_ALREADY_EXISTS")
+            t("ENROLLMENT_NUMBER_ALREADY_EXISTS"),
           )
         ) {
           setNotMatched(errorData.filter((e) => e !== "enrollment_number"));
@@ -744,7 +784,7 @@ export default function App(footerLinks) {
       newFormData,
       Object.keys(schema?.properties),
       {},
-      ""
+      "",
     );
     if (state_name === "BIHAR" && newdata?.enrollment_status === "enrolled") {
       newdata = {
@@ -785,7 +825,7 @@ export default function App(footerLinks) {
         edit_page_type: page,
         is_eligible: newFormData?.is_eligible,
       },
-      userId
+      userId,
     );
     if (isUserExist) {
       setNotMatched(["enrollment_number"]);
@@ -807,7 +847,7 @@ export default function App(footerLinks) {
   return (
     <Layout
       getRefAppBar={(e) => setRefAppBar(e)}
-      RefAppBar={RefAppBar}
+      RefAppBar={refAppBar}
       _sidebar={footerLinks}
       loading={loading}
     >
@@ -829,7 +869,7 @@ export default function App(footerLinks) {
           textOverflow="ellipsis"
         >
           {["enrolled_ip_verified", "registered_in_camp"].includes(
-            benificiary?.program_beneficiaries?.status
+            benificiary?.program_beneficiaries?.status,
           )
             ? `${
                 [
@@ -969,7 +1009,4 @@ const AlertCustom = ({ alert }) => (
 
 App.PropTypes = {
   footerLinks: PropTypes.any,
-};
-AlertCustom.propTypes = {
-  alert: PropTypes.any,
 };
