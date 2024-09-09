@@ -13,31 +13,9 @@ import { debounce } from "lodash";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { CustomStyles } from "../Common";
 
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center",
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center",
-    },
-  },
-};
-
-const columns = (t, navigate) => [
+const columns = (t) => [
   {
     name: t("ID"),
     selector: (row) => row?.id,
@@ -99,7 +77,7 @@ export default function List() {
       };
       fetch();
     },
-    [filter]
+    [filter],
   );
 
   useEffect(async () => {
@@ -143,7 +121,7 @@ export default function List() {
     (row) => {
       navigate(`/poadmin/do-ids/${row?.id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   const handleProgramChange = async (selectedItem) => {
@@ -271,13 +249,13 @@ export default function List() {
             (e) => {
               setFilter({ ...filter, limit: e, page: 1 });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onRowClicked={handleRowClick}
         />

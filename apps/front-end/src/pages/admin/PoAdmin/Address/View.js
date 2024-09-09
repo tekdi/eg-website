@@ -12,31 +12,9 @@ import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
+import { CustomStyles } from "../Common";
 
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
-
-const columns = (t, navigate) => [
+const columns = (t) => [
   {
     name: t("ID"),
     selector: (row) => row?.id,
@@ -229,7 +207,12 @@ function View() {
               icon: "GroupLineIcon",
             },
 
-            <Chip textAlign="center" lineHeight="15px" label={address?.id} />,
+            <Chip
+              key={address?.id}
+              textAlign="center"
+              lineHeight="15px"
+              label={address?.id}
+            />,
           ]}
         />
         <HStack space={4}>
@@ -296,13 +279,13 @@ function View() {
               (e) => {
                 setFilter({ ...filter, limit: e, page: 1 });
               },
-              [setFilter, filter]
+              [setFilter, filter],
             )}
             onChangePage={useCallback(
               (e) => {
                 setFilter({ ...filter, page: e });
               },
-              [setFilter, filter]
+              [setFilter, filter],
             )}
             onRowClicked={handleRowClick}
           />
