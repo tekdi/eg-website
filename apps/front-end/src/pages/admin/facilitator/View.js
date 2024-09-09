@@ -4,7 +4,6 @@ import {
   AdminLayout as Layout,
   facilitatorRegistryService,
   Loading,
-  t,
   authRegistryService,
   ImageView,
   AdminTypo,
@@ -30,6 +29,8 @@ import NotFound from "../../NotFound";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
+import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 const StatusButton = lazy(() => import("./view/StatusButton"));
 
 const checkboxoptions = [
@@ -126,14 +127,14 @@ const columns = (t) => [
 
 export default function FacilitatorView({ footerLinks }) {
   const toast = useToast();
-
+  const { t } = useTranslation();
   const { id } = useParams();
   const [data, setData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [adhaarModalVisible, setAdhaarModalVisible] = useState(false);
   const [aadhaarValue, setAadhaarValue] = useState();
   const [duplicateUserList, setDuplicateUserList] = useState();
-  const [aadhaarerror, setAadhaarError] = useState();
+  const [aadhaarError, setAadhaarError] = useState();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -797,10 +798,10 @@ export default function FacilitatorView({ footerLinks }) {
                 />
               </HStack>
               <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
-                {aadhaarerror ? t(aadhaarerror) : ""}
+                {aadhaarError ? t(aadhaarError) : ""}
               </AdminTypo.H5>
 
-              {aadhaarerror === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
+              {aadhaarError === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
                 <DataTable
                   customStyles={tableCustomStyles}
                   columns={[...columns(t)]}
@@ -971,3 +972,14 @@ const SelectAllCheckBox = memo(
     );
   },
 );
+
+FacilitatorView.propTypes = {
+  footerLinks: PropTypes.any,
+};
+
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.any,
+  title: PropTypes.any,
+  setFieldCheck: PropTypes.any,
+  fieldCheck: PropTypes.any,
+};
