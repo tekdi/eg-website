@@ -12,9 +12,31 @@ import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
-import { CustomStyles } from "../Common";
 
-const columns = (t) => [
+export const CustomStyles = {
+  rows: {
+    style: {
+      minHeight: "72px",
+    },
+  },
+  headCells: {
+    style: {
+      background: "#E0E0E0",
+      color: "#616161",
+      size: "16px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+  cells: {
+    style: {
+      color: "#616161",
+      size: "19px",
+      justifyContent: "center", // override the alignment of columns
+    },
+  },
+};
+
+const columns = (t, navigate) => [
   {
     name: t("ID"),
     selector: (row) => row?.id,
@@ -207,12 +229,7 @@ function View() {
               icon: "GroupLineIcon",
             },
 
-            <Chip
-              key={address?.id}
-              textAlign="center"
-              lineHeight="15px"
-              label={address?.id}
-            />,
+            <Chip textAlign="center" lineHeight="15px" label={address?.id} />,
           ]}
         />
         <HStack space={4}>
