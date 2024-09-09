@@ -2,7 +2,6 @@ import {
   IconByName,
   AdminTypo,
   tableCustomStyles,
-  enumRegistryService,
   uploadRegistryService,
   ImageView,
 } from "@shiksha/common-lib";
@@ -10,14 +9,7 @@ import { ChipStatus } from "component/BeneficiaryStatus";
 import { ExamChipStatus } from "component/Chip";
 import { HStack, VStack, Pressable, Menu, Modal } from "native-base";
 
-import React, {
-  memo,
-  useCallback,
-  useState,
-  useMemo,
-  useEffect,
-  useRef,
-} from "react";
+import React, { memo, useCallback, useState, useMemo, useRef } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

@@ -51,4 +51,5 @@ SelectBox.propTypes = {
   placeholder: PropTypes.string,
   optionsArr: PropTypes.array,
   _select: PropTypes.object,
+  isDisabled: PropTypes.bool,
 };

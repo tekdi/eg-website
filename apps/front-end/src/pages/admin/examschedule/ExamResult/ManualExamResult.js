@@ -53,17 +53,15 @@ function ManualExamResult(footerLinks) {
     let subjectData = [];
     subjects.forEach((subject) => {
       let result = subject.results?.[0] || {};
-      if (
-        ["p", "rwh", "xxxx"].includes(
-          result?.exam_result?.final_result?.toLowerCase(),
-        )
-      ) {
+      const finalResultLowerCase =
+        result?.exam_result?.final_result?.toLowerCase();
+      if (["p", "rwh", "xxxx"].includes(finalResultLowerCase)) {
         finalR =
-          result?.exam_result?.final_result?.toLowerCase() == "pass"
+          finalResultLowerCase == "pass"
             ? "P"
-            : result?.exam_result?.final_result?.toLowerCase() == "syc"
+            : finalResultLowerCase == "syc"
               ? "XXXX"
-              : result?.exam_result?.final_result;
+              : finalResultLowerCase;
       }
       subjectData.push({
         ...subject,

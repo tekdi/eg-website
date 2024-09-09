@@ -40,4 +40,5 @@ TextBox.propTypes = {
   placeholder: PropTypes.string,
   maxlength: PropTypes.any,
   _style: PropTypes.object,
+  isDisabled: PropTypes.bool,
 };
