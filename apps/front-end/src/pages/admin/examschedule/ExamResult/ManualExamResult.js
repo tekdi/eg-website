@@ -89,11 +89,6 @@ function ManualExamResult(footerLinks) {
       const { subjectData, finalR } = updateSubjects(
         data?.data?.subjectsArray || [],
       );
-      console.log(
-        subjectData,
-        finalR,
-        ["p", "rwh", "xxxx"].includes(finalR?.toLowerCase()),
-      );
       if (["p", "rwh", "xxxx"].includes(finalR?.toLowerCase())) {
         setReadOnly(true);
       }
@@ -108,7 +103,7 @@ function ManualExamResult(footerLinks) {
 
     fetchData();
   }, []);
-  console.log(readOnly);
+
   const handleMarksChange = (index, type, newMarks, maxValue) => {
     const updatedSubjects = [...subjects];
     const subject = { ...updatedSubjects[index] };
