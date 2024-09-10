@@ -982,3 +982,10 @@ const SelectAllCheckBox = memo(
     );
   },
 );
+
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.array,
+  title: PropTypes.string,
+  setFieldCheck: PropTypes.func,
+  fieldCheck: PropTypes.array,
+};
