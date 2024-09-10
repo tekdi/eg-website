@@ -230,7 +230,7 @@ export default function PrerakList({ userTokenInfo }) {
           <Box flex="2">
             <SelectStyle
               overflowX="hidden"
-              selectedValue={filter?.academic_year_id}
+              selectedValue={filter?.academic_year_id || ""}
               placeholder={t("SELECT_COHORT_INFO")}
               onValueChange={(nextValue) => {
                 if (nextValue == "") {
