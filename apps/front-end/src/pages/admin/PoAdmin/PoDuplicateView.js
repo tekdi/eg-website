@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconByName,
   PoAdminLayout as Layout,
@@ -7,7 +7,7 @@ import {
   BodyMedium,
   benificiaryRegistoryService,
 } from "@shiksha/common-lib";
-import { useNavigate, useParams, useState, useEffect } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack, Modal, Alert, Text } from "native-base";
 import moment from "moment";
 import DataTable from "react-data-table-component";
