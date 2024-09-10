@@ -13,6 +13,7 @@ import React, { memo, useCallback, useState, useMemo, useRef } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const dropDown = (triggerProps, t) => {
   return (
@@ -172,7 +173,7 @@ function Table({
           placement="bottom right"
           trigger={(triggerProps) => dropDown(triggerProps, t)}
         >
-          {row?.beneficiary_user?.exam_results?.[0]?.length > 0 && (
+          {row?.beneficiary_user?.exam_results?.length > 0 ? (
             <Menu.Item>
               <Pressable
                 px="20px"
@@ -191,32 +192,37 @@ function Table({
                 <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
               </Pressable>
             </Menu.Item>
+          ) : (
+            <>
+              <Menu.Item>
+                <Pressable
+                  onPress={() => {
+                    openFileUploadDialog(row);
+                  }}
+                >
+                  <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
+                </Pressable>
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate(
+                    `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`,
+                  );
+                }}
+              >
+                <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
+              </Menu.Item>
+            </>
           )}
-          <Menu.Item>
-            <Pressable
-              onPress={() => {
-                openFileUploadDialog(row);
-              }}
-            >
-              <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
-            </Pressable>
-          </Menu.Item>
-          <Menu.Item
-            onPress={() => {
-              navigate(
-                `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`,
-              );
-            }}
-          >
-            <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
-          </Menu.Item>
+
           {(row?.beneficiary_user?.exam_results?.[0]?.document_id ||
             row?.beneficiary_user?.exam_result_document?.[0]?.id) && (
             <Menu.Item
               onPress={() =>
                 setOpenView(
-                  row?.beneficiary_user?.exam_results?.[0] ||
-                    row?.beneficiary_user?.exam_result_document?.[0],
+                  row?.beneficiary_user?.exam_results?.[0]?.document_id
+                    ? row?.beneficiary_user?.exam_results?.[0]
+                    : row?.beneficiary_user?.exam_result_document?.[0],
                 )
               }
             >
@@ -285,7 +291,6 @@ function Table({
       <Modal isOpen={openView} size="xl" onClose={() => setOpenView()}>
         <Modal.Content>
           <Modal.CloseButton />
-
           <Modal.Body>
             <ImageView
               source={{ document_id: openView?.document_id || openView?.id }}
@@ -305,3 +310,15 @@ function Table({
 }
 
 export default memo(Table);
+
+Table.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+  setLoading: PropTypes.func,
+  height: PropTypes.any,
+  setErrorMsg: PropTypes.func,
+  errorMsg: PropTypes.any,
+};
