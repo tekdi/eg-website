@@ -33,7 +33,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
   const [isEditDisabled, setIsEditDisabled] = useState(true);
   const [attendanceStartTime, setAttendanceStartTime] = useState();
   const [unmarkStudents, setUnmarkStudents] = useState([]);
-  const [manifest, setManifest] = useState();
   const [lastAttedance, setLastAttedance] = useState("");
 
   useEffect(() => {
@@ -183,7 +182,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
               type={"weeks"}
               setAlert={setAlert}
               setLastAttedance={setLastAttedance}
-              manifest={manifest}
               hidePopUpButton={false}
               page={weekPage}
               student={item}
@@ -202,7 +200,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
         isWithEditButton={false}
         {...{
           id,
-          manifest,
           students,
           attendance,
           getAttendance,
