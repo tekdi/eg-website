@@ -7,10 +7,11 @@ import {
 } from "@shiksha/common-lib";
 import moment from "moment";
 import { Alert, Box, HStack, Input, Modal, Radio, VStack } from "native-base";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
+import PropTypes from "prop-types";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
@@ -30,30 +31,27 @@ const CRadio = ({ items, onChange }) => {
     </Radio.Group>
   );
 };
-const styles = {
-  modalxxl: {
-    maxWidth: "950px",
-    maxHeight: "440px",
-    width: "100%",
-    height: "100%",
-  },
+
+CRadio.propTypes = {
+  items: PropTypes.array,
+  onChange: PropTypes.func,
 };
 
 export default function StatusButton({ data, setData, updateDataCallBack }) {
-  const [showModal, setShowModal] = React.useState();
-  const [reason, setReason] = React.useState();
-  const [disabledBtn, setDisabledBtn] = React.useState([]);
-  const [statusList, setStatusList] = React.useState([]);
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [isCampList, setIsCampList] = React.useState();
-  const [okycResponse] = React.useState(
-    JSON.parse(data?.program_faciltators?.okyc_response)
+  const [showModal, setShowModal] = useState();
+  const [reason, setReason] = useState();
+  const [disabledBtn, setDisabledBtn] = useState([]);
+  const [statusList, setStatusList] = useState([]);
+  const [enumOptions, setEnumOptions] = useState({});
+  const [isCampList, setIsCampList] = useState();
+  const [okycResponse] = useState(
+    JSON.parse(data?.program_faciltators?.okyc_response),
   );
-  const [alertModal, setAlertModal] = React.useState();
+  const [alertModal, setAlertModal] = useState();
   const { t } = useTranslation();
-  const [isDisable, setIsDisable] = React.useState(false);
-  const [missingData, setMissingData] = React.useState([]);
-  const [reqDataError, setReqDataError] = React.useState(false);
+  const [isDisable, setIsDisable] = useState(false);
+  const [missingData, setMissingData] = useState([]);
+  const [reqDataError, setReqDataError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -89,7 +87,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
     await facilitatorRegistryService.updateAadhaarOkycDetails(obj);
     updateDataCallBack && updateDataCallBack();
   };
-  React.useEffect(async () => {
+  useEffect(async () => {
     const resultData = await enumRegistryService.listOfEnum();
     const statusListNew = resultData?.data.FACILITATOR_STATUS.map((item) => {
       let buttonStatus = "success";
@@ -109,7 +107,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
     setEnumOptions(resultData?.data);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     switch (data?.status?.toLowerCase()) {
       case "application_screened":
         setDisabledBtn([
@@ -200,7 +198,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
         {
           id: data?.id,
           status,
-        }
+        },
       );
       const { required } = response;
       if (required?.length > 0) {
@@ -279,12 +277,12 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                           showModal.status === "quit"
                             ? "FACILITATOR_REASONS_FOR_QUIT"
                             : showModal.status === "rusticate"
-                            ? "FACILITATOR_REASONS_FOR_RUSTICATE"
-                            : showModal.status === "rejected"
-                            ? "FACILITATOR_REASONS_FOR_REJECTED"
-                            : showModal.status === "on_hold"
-                            ? "FACILITATOR_REASONS_FOR_ON_REJECTED"
-                            : []
+                              ? "FACILITATOR_REASONS_FOR_RUSTICATE"
+                              : showModal.status === "rejected"
+                                ? "FACILITATOR_REASONS_FOR_REJECTED"
+                                : showModal.status === "on_hold"
+                                  ? "FACILITATOR_REASONS_FOR_ON_REJECTED"
+                                  : []
                         ]
                       }
                     />
@@ -355,12 +353,12 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                         user: data,
                         aadhaarCompare: checkAadhaar(
                           data,
-                          okycResponse?.aadhaar_data
+                          okycResponse?.aadhaar_data,
                         ),
                       }}
                     />
                     {!["yes", "okyc_ip_verified"].includes(
-                      data?.aadhar_verified
+                      data?.aadhar_verified,
                     ) && (
                       <Alert status="warning" alignItems={"start"}>
                         <HStack alignItems="center" space="2">
@@ -447,7 +445,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                     <AdminTypo.PrimaryButton
                       onPress={() =>
                         navigate(
-                          `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`
+                          `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`,
                         )
                       }
                     >
@@ -504,6 +502,12 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
   );
 }
 
+StatusButton.propTypes = {
+  data: PropTypes.object,
+  setData: PropTypes.func,
+  updateDataCallBack: PropTypes.func,
+};
+
 const RenderExperience = ({ experience, uniqueKey }) => {
   const { t } = useTranslation();
   return (
@@ -512,11 +516,11 @@ const RenderExperience = ({ experience, uniqueKey }) => {
         return (
           <>
             <li>{`${t(LABEL_NAMES[experience.key])}-${entry.key}  ${t(
-              "MISSING_DATA"
+              "MISSING_DATA",
             )}`}</li>
             <ol key={entry.key}>
               {entry.data.map((item, index) => (
-                <li key={index}>{t(LABEL_NAMES[item])}</li>
+                <li key={index + 1}>{t(LABEL_NAMES[item])}</li>
               ))}
             </ol>
           </>
@@ -524,6 +528,11 @@ const RenderExperience = ({ experience, uniqueKey }) => {
       })}
     </ul>
   );
+};
+
+RenderExperience.propTypes = {
+  experience: PropTypes.any,
+  uniqueKey: PropTypes.any,
 };
 
 const LABEL_NAMES = {

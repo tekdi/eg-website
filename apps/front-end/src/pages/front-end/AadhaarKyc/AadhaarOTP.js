@@ -9,7 +9,7 @@ import {
   authRegistryService,
   checkAadhaar,
 } from "@shiksha/common-lib";
-
+import PropTypes from "prop-types";
 export default function AdharOTP({
   id,
   aadhaarNumber,
@@ -168,3 +168,19 @@ export default function AdharOTP({
     </Layout>
   );
 }
+
+AdharOTP.propTypes = {
+  id: PropTypes.any,
+  aadhaarNumber: PropTypes.any,
+  setPage: PropTypes.func,
+  setLoading: PropTypes.func,
+  error: PropTypes.any,
+  setError: PropTypes.func,
+  handalBack: PropTypes.func,
+  setOtpFailedPopup: PropTypes.func,
+  sendData: PropTypes.func,
+  setAttempt: PropTypes.func,
+  footerLinks: PropTypes.any,
+  setAadhaarCompare: PropTypes.func,
+  user: PropTypes.any,
+};

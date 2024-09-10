@@ -236,7 +236,7 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
     setAttendance(
       result?.data?.attendance
         ? { ...result?.data?.attendance, status: row?.attendance_status }
-        : attendance
+        : attendance,
     );
     setIsDisabledAttBtn();
   };
@@ -247,8 +247,8 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
         {attendance?.status === "present"
           ? "Present"
           : attendance?.status === "absent"
-          ? "Absent"
-          : "Mark"}
+            ? "Absent"
+            : "Mark"}
       </AdminTypo.H7>
       <Switch
         key={attendance?.status + error}
@@ -265,7 +265,7 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
           const startDate = moment
             .utc(
               event?.start_date + " " + event?.start_time,
-              "YYYY-MM-DD HH:mm:ss"
+              "YYYY-MM-DD HH:mm:ss",
             )
             ?.local();
           const endDate = moment
@@ -274,7 +274,7 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
 
           const newPresentDate = moment(
             `${presentDate} ${moment().format("HH:mm")}`,
-            format
+            format,
           );
           if (startDate.isSameOrAfter(currentDate)) {
             setError(t("ATTENDANCE_FUTURE_DATE_ERROR_MESSAGE"));
@@ -562,7 +562,7 @@ export default function Attendence({ footerLinks }) {
                       ? moment
                           .utc(
                             event?.start_date + " " + event?.start_time,
-                            "YYYY-MM-DD HH:mm:ss"
+                            "YYYY-MM-DD HH:mm:ss",
                           )
                           ?.local()
                           ?.format("MMM DD, YYYY hh:mm A")
@@ -576,7 +576,7 @@ export default function Attendence({ footerLinks }) {
                       ? moment
                           .utc(
                             event?.end_date + " " + event?.end_time,
-                            "YYYY-MM-DD HH:mm:ss"
+                            "YYYY-MM-DD HH:mm:ss",
                           )
                           ?.local()
                           ?.format("MMM DD, YYYY hh:mm A")
@@ -686,13 +686,13 @@ export default function Attendence({ footerLinks }) {
                 (e) => {
                   setFilter({ ...filter, limit: e, page: 1 });
                 },
-                [filter]
+                [filter],
               )}
               onChangePage={useCallback(
                 (e) => {
                   setFilter({ ...filter, page: e });
                 },
-                [filter]
+                [filter],
               )}
             />
           </Stack>
@@ -755,7 +755,7 @@ export default function Attendence({ footerLinks }) {
     </Layout>
   );
 }
-memo.propTypes = {
+RenderAttendanceColumn.propTypes = {
   row: PropTypes.any,
   event: PropTypes.any,
 };

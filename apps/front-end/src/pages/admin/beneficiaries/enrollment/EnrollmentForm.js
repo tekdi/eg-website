@@ -155,8 +155,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
 
     default:
       {
-        const { sso_id: sso_id_1, ...properties } =
-          constantSchema?.properties || {};
+        const { sso_id, ...properties } = constantSchema?.properties || {};
         newSchema = {
           ...constantSchema,
           properties,
@@ -255,25 +254,6 @@ export default function App(footerLinks) {
       },
     },
   });
-
-  // const nextPreviewStep = async (pageStape = "n") => {
-  //   const index = pages.indexOf(page);
-  //   if (index !== undefined) {
-  //     let nextIndex = "";
-  //     if (pageStape.toLowerCase() === "n") {
-  //       nextIndex = pages[index + 1];
-  //     } else {
-  //       nextIndex = pages[index - 1];
-  //     }
-  //     if (nextIndex !== undefined) {
-  //       setPage(nextIndex);
-  //     } else if (pageStape === "p") {
-  //       navigate(`/beneficiary/${userId}/enrollmentdetails`);
-  //     } else {
-  //       navigate(`/beneficiary/${userId}`);
-  //     }
-  //   }
-  // };
 
   const checkEnrollmentDobAndDate = (data, key) => {
     let error = {};
@@ -961,11 +941,6 @@ export default function App(footerLinks) {
         <Modal.Content>
           <Modal.Body p="4" bg="white">
             <VStack space="2" alignItems="center">
-              {/* {notMatched?.includes("enrollment_aadhaar_no") && (
-                <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
-                  {t("ENROLLMENT_AADHAR_POPUP_MESSAGE")}
-                </FrontEndTypo.H3>
-              )} */}
               {notMatched?.includes("enrollment_number") && (
                 <FrontEndTypo.H3 textAlign="center" color="textGreyColor.500">
                   {t("ENROLLMENT_NUMBER_POPUP_MESSAGE")}
@@ -1006,6 +981,10 @@ const AlertCustom = ({ alert }) => (
     </HStack>
   </Alert>
 );
+
+AlertCustom.propTypes = {
+  alert: PropTypes.string,
+};
 
 App.PropTypes = {
   footerLinks: PropTypes.any,

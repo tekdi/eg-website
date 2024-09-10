@@ -1,28 +1,25 @@
+import React, { useEffect, useState } from "react";
 import {
-  capture,
-  telemetryFactory,
   Layout,
-  calendar,
-  overrideColorTheme,
   Loading,
+  calendar,
   campService,
-  FrontEndTypo,
+  capture,
+  overrideColorTheme,
+  telemetryFactory,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
-// import manifest1 from "../manifest.json";
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import moment from "moment";
 import { Box, FlatList, HStack, Stack } from "native-base";
-import CalendarBar from "./CalendarBar/CalendarBar";
+import { useParams } from "react-router-dom";
 import AttendanceComponent, {
   GetAttendance,
   MultipalAttendance,
 } from "./CalendarBar/AttendanceComponent";
-import moment from "moment";
+import CalendarBar from "./CalendarBar/CalendarBar";
+import PropTypes from "prop-types";
 
 const colors = overrideColorTheme();
-const PRESENT = "present";
-const ABSENT = "absent";
 
 export default function Attendance({ footerLinks, appName, setAlert }) {
   const { t } = useTranslation();
@@ -33,12 +30,11 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
   let { id } = useParams();
   const [loading, setLoading] = useState("true");
   const [attendance, setAttendance] = useState([]);
-  const [search, setSearch] = useState();
   const [isEditDisabled, setIsEditDisabled] = useState(true);
   const [attendanceStartTime, setAttendanceStartTime] = useState();
   const [unmarkStudents, setUnmarkStudents] = useState([]);
-  const [manifest, setManifest] = React.useState();
-  const [lastAttedance, setLastAttedance] = React.useState("");
+  const [manifest, setManifest] = useState();
+  const [lastAttedance, setLastAttedance] = useState("");
 
   useEffect(() => {
     if (attendance) {
@@ -51,13 +47,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
       setLastAttedance(dates.length ? moment(date).format("hh:mma") : "N/A");
     }
   }, [attendance, students]);
-
-  // useEffect(() => {
-  //   const filterStudent = students.filter((e) =>
-  //     e?.fullName?.toLowerCase().match(search?.toLowerCase())
-  //   );
-  //   setSearchStudents(filterStudent);
-  // }, [search, students]);
 
   useEffect(async () => {
     let ignore = false;
@@ -72,7 +61,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
       setSearchStudents(studentData);
       if (!ignore) {
         setClassObject([]);
-        // setClassObject(await classRegistryService.getOne({ id: classId }));
       }
     }
     await getData();
@@ -143,7 +131,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
       _appBar={{
         onlyIconsShow: ["backBtn"],
         isEnableSearchBtn: "true",
-        setSearch: setSearch,
         _box: { bg: "white", shadow: "appBarShadow" },
       }}
       _page={{ _scollView: { bg: "formBg.500" } }}
@@ -185,30 +172,6 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
                   : false
               }
             />
-
-            {/* <Button
-              variant="ghost"
-              colorScheme="button"
-              endIcon={
-                <IconByName
-                  name={isEditDisabled ? "PencilLineIcon" : "CheckLineIcon"}
-                  isDisabled
-                  _icon={{ width: "18", height: "18" }}
-                  w="18px"
-                  h="18px"
-                />
-              }
-              _text={{
-                fontSize: "14px",
-                fontWeight: "500",
-                textTransform: "capitalize",
-              }}
-              onPress={(e) => {
-                newSetIsEditDisabled(!isEditDisabled);
-              }}
-            >
-              {isEditDisabled ? t("EDIT") : t("CANCEL")}
-            </Button> */}
           </HStack>
         </Box>
       </Stack>
@@ -255,3 +218,9 @@ export default function Attendance({ footerLinks, appName, setAlert }) {
     </Layout>
   );
 }
+
+Attendance.propTypes = {
+  footerLinks: PropTypes.any,
+  appName: PropTypes.string,
+  setAlert: PropTypes.func,
+};

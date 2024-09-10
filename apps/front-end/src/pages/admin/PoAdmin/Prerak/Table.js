@@ -31,26 +31,9 @@ const columns = (t, navigate) => [
           style={{ flexDirection: "row", justifyContent: "space-between" }}
           onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
         >
-          {/* <HStack alignItems={"center"}> */}
-          {/* {row?.profile_photo_1?.name ? (
-                    <ImageView
-                      urlObject={row?.profile_photo_1}
-                      alt="Alternate Text"
-                      width={"35px"}
-                      height={"35px"}
-                    />
-                  ) : (
-                    <IconByName
-                      isDisabled
-                      name="AccountCircleLineIcon"
-                      color="gray.300"
-                      _icon={{ size: "35" }}
-                    />
-                  )} */}
           <AdminTypo.H6 bold word-wrap="break-word">
             {`${row?.first_name} ${row?.last_name || ""}`}
           </AdminTypo.H6>
-          {/* </HStack> */}
         </Pressable>
       </HStack>
     ),
@@ -101,8 +84,8 @@ const columns = (t, navigate) => [
       return row?.aadhar_verified === "okyc_ip_verified"
         ? t("OKYC_IP_VERIFIED")
         : row?.aadhar_verified === "yes"
-        ? t("YES")
-        : t("NO");
+          ? t("YES")
+          : t("NO");
     },
     compact: true,
     minWidth: "50px",
@@ -149,7 +132,7 @@ function Table({
     (row) => {
       navigate(`/poadmin/facilitators/${row?.id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
@@ -174,7 +157,7 @@ function Table({
                     selectedData
                       ? selectedData?.find((e) => item === e.status)?.count
                       : 0
-                  })`
+                  })`,
               )
               .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
               .join(" , ")
@@ -208,13 +191,13 @@ function Table({
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onRowClicked={handleRowClick}
       />
@@ -222,7 +205,7 @@ function Table({
   );
 }
 
-Table.PropTypes = {
+Table.propTypes = {
   filter: PropTypes.any,
   setFilter: PropTypes.func,
   paginationTotalRows: PropTypes.any,

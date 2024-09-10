@@ -217,7 +217,7 @@ export default function List({ footerLinks, userTokenInfo }) {
       });
       setQueryParameters(data);
     },
-    [setFilter, setQueryParameters]
+    [setFilter, setQueryParameters],
   );
 
   useEffect(() => {
@@ -247,7 +247,7 @@ export default function List({ footerLinks, userTokenInfo }) {
       };
       setFilterObject(finalFilter);
     },
-    [filter]
+    [filter],
   );
 
   const clearFilter = useCallback(() => {
@@ -255,15 +255,11 @@ export default function List({ footerLinks, userTokenInfo }) {
     setFilterObject({});
   }, [setFilterObject]);
 
-  const exportPrerakCSV = async () => {
-    await facilitatorRegistryService.exportFacilitatorsCsv(filter);
-  };
-
   const handleSearch = useCallback(
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
-    [filter]
+    [filter],
   );
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
@@ -428,7 +424,7 @@ export default function List({ footerLinks, userTokenInfo }) {
                         {t("CLEAR_FILTER")}(
                         {
                           Object.keys(filter || {}).filter(
-                            (e) => !["limit", "page"].includes(e)
+                            (e) => !["limit", "page"].includes(e),
                           ).length
                         }
                         )

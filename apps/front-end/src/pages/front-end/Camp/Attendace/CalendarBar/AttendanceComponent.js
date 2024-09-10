@@ -30,8 +30,8 @@ import {
   UserCard as Card,
   campService,
 } from "@shiksha/common-lib";
-// import ReportSummary from "./ReportSummary";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 const colors = overrideColorTheme();
 
 const PRESENT = "present";
@@ -444,6 +444,21 @@ export const MultipalAttendance = ({
   );
 };
 
+MultipalAttendance.propTypes = {
+  id: PropTypes.any,
+  students: PropTypes.any,
+  attendance: PropTypes.any,
+  getAttendance: PropTypes.func,
+  setLoading: PropTypes.func,
+  classObject: PropTypes.any,
+  isEditDisabled: PropTypes.bool,
+  setIsEditDisabled: PropTypes.func,
+  isWithEditButton: PropTypes.bool,
+  appName: PropTypes.string,
+  lastAttedance: PropTypes.any,
+  manifest: PropTypes.any,
+};
+
 export default function AttendanceComponent({
   type,
   page,
@@ -692,6 +707,20 @@ export default function AttendanceComponent({
     </Stack>
   );
 }
+
+AttendanceComponent.propTypes = {
+  type: PropTypes.string,
+  page: PropTypes.any,
+  student: PropTypes.any,
+  attendanceProp: PropTypes.any,
+  sms: PropTypes.any,
+  _card: PropTypes.any,
+  isEditDisabled: PropTypes.bool,
+  _weekBox: PropTypes.any,
+  manifest: PropTypes.any,
+  setLastAttedance: PropTypes.func,
+  setAlert: PropTypes.func,
+};
 
 const CalendarComponent = ({
   monthDays,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -19,6 +19,7 @@ import {
   authRegistryService,
   uploadRegistryService,
 } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 export default function ManualUpload({
   setLoading,
@@ -28,17 +29,17 @@ export default function ManualUpload({
   setAadhaarCompare,
 }) {
   const { id } = useParams();
-  const [image, setImage] = React.useState();
-  const [error, setError] = React.useState();
+  const [image, setImage] = useState();
+  const [error, setError] = useState();
 
-  const [isFront, setIsFront] = React.useState(true);
-  const [modal, setModal] = React.useState(false);
+  const [isFront, setIsFront] = useState(true);
+  const [modal, setModal] = useState(false);
 
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [cameraModal, setCameraModal] = React.useState(false);
+  const [cameraUrl, setCameraUrl] = useState();
+  const [cameraModal, setCameraModal] = useState(false);
 
-  const [submitted, setSubmitted] = React.useState(false);
-  const uplodInputRef = React.useRef();
+  const [submitted, setSubmitted] = useState(false);
+  const uplodInputRef = useRef();
 
   const handleFileInputChange = async (e) => {
     let file = e.target.files[0];
@@ -391,3 +392,11 @@ export default function ManualUpload({
     </Layout>
   );
 }
+
+ManualUpload.propTypes = {
+  setLoading: PropTypes.func,
+  setPage: PropTypes.func,
+  setOtpFailedPopup: PropTypes.func,
+  footerLinks: PropTypes.any,
+  setAadhaarCompare: PropTypes.func,
+};

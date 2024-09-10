@@ -23,12 +23,12 @@ import PropTypes from "prop-types";
 export default function Certification({ footerLinks }) {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [data, setData] = React.useState();
-  const [enums, setEnums] = React.useState();
+  const [data, setData] = useState();
+  const [enums, setEnums] = useState();
   const navigate = useNavigate();
-  const [certificateData, setCertificateData] = React.useState();
-  const [loading, setLoading] = React.useState(false);
-  const [downloadCertificate, setDownCertificate] = React.useState();
+  const [certificateData, setCertificateData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [downloadCertificate, setDownloadCertificate] = useState();
 
   const reportTemplateRef = React.useRef(null);
 
@@ -42,7 +42,7 @@ export default function Certification({ footerLinks }) {
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const enumApiData = await enumRegistryService.listOfEnum();
       setEnums(enumApiData?.data);
@@ -52,10 +52,10 @@ export default function Certification({ footerLinks }) {
 
   const certificateDownload = React.useCallback(async (data) => {
     const result = await testRegistryService.postCertificates(data);
-    setDownCertificate(result?.data?.[0]?.certificate_html);
+    setDownloadCertificate(result?.data?.[0]?.certificate_html);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const profileDetails = async () => {
       setLoading(true);
       const result = await facilitatorRegistryService.getOne({ id });
@@ -65,7 +65,7 @@ export default function Certification({ footerLinks }) {
     profileDetails();
   }, [id]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const result = await testRegistryService.getCertificate({ id });
       setCertificateData(result?.data);
@@ -135,7 +135,7 @@ export default function Certification({ footerLinks }) {
 
   const columnsMemoized = React.useMemo(
     () => columns(t, certificateDownload),
-    [t, certificateDownload]
+    [t, certificateDownload],
   );
 
   return (
@@ -271,7 +271,7 @@ export default function Certification({ footerLinks }) {
               </AdminTypo.Secondarybutton>
               <IconByName
                 name="CloseCircleLineIcon"
-                onPress={(e) => setDownCertificate()}
+                onPress={(e) => setDownloadCertificate()}
               />
             </HStack>
           </Modal.Header>
