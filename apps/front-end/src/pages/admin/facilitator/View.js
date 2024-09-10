@@ -30,6 +30,7 @@ import NotFound from "../../NotFound";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
+import PropTypes from "prop-types";
 const StatusButton = lazy(() => import("./view/StatusButton"));
 
 const checkboxoptions = [
@@ -114,8 +115,8 @@ const columns = (t) => [
           {row?.program_faciltators.length > 0
             ? t("PRERAK")
             : row?.program_beneficiaries.length > 0
-            ? t("LEARNER")
-            : ""}
+              ? t("LEARNER")
+              : ""}
         </AdminTypo.H5>
       </HStack>
     ),
@@ -133,7 +134,7 @@ export default function FacilitatorView({ footerLinks }) {
   const [adhaarModalVisible, setAdhaarModalVisible] = useState(false);
   const [aadhaarValue, setAadhaarValue] = useState();
   const [duplicateUserList, setDuplicateUserList] = useState();
-  const [aadhaarerror, setAadhaarError] = useState();
+  const [aadhaarError, setAadhaarError] = useState();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -186,16 +187,20 @@ export default function FacilitatorView({ footerLinks }) {
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
       };
-      const result = await benificiaryRegistoryService.getEditFields(obj);
-      if (result.data[0]) {
-        setEditData(result?.data[0]);
+      try {
+        const result = await benificiaryRegistoryService.getEditFields(obj);
+        if (result.data[0]) {
+          setEditData(result?.data[0]);
+        }
+        let field;
+        const parseField = result?.data[0]?.fields;
+        if (parseField && typeof parseField === "string") {
+          field = JSON.parse(parseField);
+        }
+        setFieldCheck(field || []);
+      } catch (error) {
+        console.error("Failed to get edit access:", error);
       }
-      let field;
-      const parseField = result?.data[0]?.fields;
-      if (parseField && typeof parseField === "string") {
-        field = JSON.parse(parseField);
-      }
-      setFieldCheck(field || []);
     };
     fetchData();
   }, []);
@@ -265,25 +270,26 @@ export default function FacilitatorView({ footerLinks }) {
           id: id.toString(),
           password: password,
         };
-        const resetPassword = await authRegistryService.resetPasswordAdmin(
-          bodyData
-        );
-        if (resetPassword.success === true) {
-          setCredentials();
-          setModalVisible(false);
-          toast.show({
-            title: "Success",
-            variant: "solid",
-            description: resetPassword?.message,
-          });
-          setModalVisible(false);
+        try {
+          const resetPassword =
+            await authRegistryService.resetPasswordAdmin(bodyData);
+          if (resetPassword.success === true) {
+            setCredentials();
+            toast.show({
+              title: "Success",
+              variant: "solid",
+              description: resetPassword?.message,
+            });
+            return { status: true };
+          } else if (resetPassword.success === false) {
+            setCredentials();
+            return { status: false };
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
           setIsButtonLoading(false);
-          return { status: true };
-        } else if (resetPassword.success === false) {
-          setIsButtonLoading(false);
-          setCredentials();
           setModalVisible(false);
-          return { status: false };
         }
       } else if (password !== confirm_password) {
         setIsButtonLoading(false);
@@ -317,9 +323,8 @@ export default function FacilitatorView({ footerLinks }) {
       id: id,
       aadhar_no: aadhaarValue,
     };
-    const result = await facilitatorRegistryService.updateAadhaarNumber(
-      aadhaar_no
-    );
+    const result =
+      await facilitatorRegistryService.updateAadhaarNumber(aadhaar_no);
     if (aadhaarValue?.length < 12) {
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
       setIsButtonLoading(false);
@@ -578,7 +583,7 @@ export default function FacilitatorView({ footerLinks }) {
                     onPress={() => {
                       handleResetPassword(
                         credentials?.password,
-                        credentials?.confirmPassword
+                        credentials?.confirmPassword,
                       );
                     }}
                   >
@@ -799,10 +804,10 @@ export default function FacilitatorView({ footerLinks }) {
                 />
               </HStack>
               <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
-                {aadhaarerror ? t(aadhaarerror) : ""}
+                {aadhaarError ? t(aadhaarError) : ""}
               </AdminTypo.H5>
 
-              {aadhaarerror === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
+              {aadhaarError === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
                 <DataTable
                   customStyles={tableCustomStyles}
                   columns={[...columns(t)]}
@@ -947,23 +952,27 @@ export default function FacilitatorView({ footerLinks }) {
   );
 }
 
+FacilitatorView.propTypes = {
+  footerLinks: PropTypes.any,
+};
+
 const SelectAllCheckBox = memo(
   ({ fields, title, setFieldCheck, fieldCheck }) => {
     const handleChange = useCallback(
       (e) => {
         if (!e) {
           const checkedFields = fieldCheck?.filter(
-            (field) => !fields?.includes(field)
+            (field) => !fields?.includes(field),
           );
           setFieldCheck(checkedFields);
         } else {
           const checkedFields = fieldCheck?.filter(
-            (field) => !fields?.includes(field)
+            (field) => !fields?.includes(field),
           );
           setFieldCheck([...checkedFields, ...fields]);
         }
       },
-      [fields, fieldCheck, setFieldCheck]
+      [fields, fieldCheck, setFieldCheck],
     );
 
     return (
@@ -971,5 +980,12 @@ const SelectAllCheckBox = memo(
         {title}
       </Checkbox>
     );
-  }
+  },
 );
+
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.array,
+  title: PropTypes.string,
+  setFieldCheck: PropTypes.func,
+  fieldCheck: PropTypes.array,
+};

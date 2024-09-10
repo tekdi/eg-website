@@ -12,29 +12,7 @@ import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
-
-export const CustomStyles = {
-  rows: {
-    style: {
-      // minHeight: "72px",
-    },
-  },
-  headCells: {
-    style: {
-      // background: "#BEBEBE",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
+import { CustomStyles } from "../CommonStyles";
 
 const columns = (t) => [
   {
@@ -90,7 +68,6 @@ function View() {
   }, []);
 
   const handleEditButton = () => {
-    const step = "edit";
     navigate(`/poadmin/ip/${id}/edit`);
   };
   return (
@@ -218,7 +195,7 @@ const DataList = memo(() => {
         ...filter,
       });
       setPaginationTotalRows(
-        data?.data?.totalCount ? data?.data?.totalCount : 0
+        data?.data?.totalCount ? data?.data?.totalCount : 0,
       );
       setData(data?.data);
       setLoading(false);
@@ -230,7 +207,7 @@ const DataList = memo(() => {
     (row) => {
       navigate(`/poadmin/ips/user/${row?.id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -297,13 +274,13 @@ const DataList = memo(() => {
             (e) => {
               setFilter({ ...filter, limit: e, page: 1 });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onRowClicked={handleRowClick}
         />

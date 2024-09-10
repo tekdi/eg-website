@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconByName,
   PoAdminLayout as Layout,
@@ -83,20 +83,20 @@ const action = (row, setViewData, setModalVisible, t) => {
 export default function PoDuplicateView({ footerLinks }) {
   const { t } = useTranslation();
   const { aadhaarNo } = useParams();
-  const [data, setData] = React.useState();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [modalConfirmVisible, setModalConfirmVisible] = React.useState(false);
-  const [errormsg, seterrormsg] = React.useState(false);
-  const [paginationTotalRows, setPaginationTotalRows] = React.useState(0);
-  const [filter, setFilter] = React.useState({
+  const [data, setData] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
+  const [errormsg, setErrormsg] = useState(false);
+  const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filter, setFilter] = useState({
     limit: 10,
     page: 1,
     aadhar_no: aadhaarNo,
   });
-  const [loading, setLoading] = React.useState(true);
-  const [viewData, setViewData] = React.useState();
+  const [loading, setLoading] = useState(true);
+  const [viewData, setViewData] = useState();
   const navigate = useNavigate();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const columns = (e) => [
     {
       name: t("LEARNERS_ID"),
@@ -158,25 +158,32 @@ export default function PoDuplicateView({ footerLinks }) {
     },
   ];
 
-  React.useEffect(async () => {
-    const result =
-      await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
-        filter
-      );
-    setPaginationTotalRows(result?.count || 0);
-    setData(result?.result);
-    setLoading(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result =
+          await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
+            filter,
+          );
+        setPaginationTotalRows(result?.count || 0);
+        setData(result?.result);
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [filter]);
 
   const assignToPrerak = async (id) => {
     setIsButtonLoading(true);
     const activeId = { activeId: id };
-    const result = await benificiaryRegistoryService?.deactivateDuplicates(
-      activeId
-    );
+    const result =
+      await benificiaryRegistoryService?.deactivateDuplicates(activeId);
     if (!result?.success) {
       setIsButtonLoading(false);
-      seterrormsg(true);
+      setErrormsg(true);
     }
     setModalVisible(false);
     setModalConfirmVisible(true);

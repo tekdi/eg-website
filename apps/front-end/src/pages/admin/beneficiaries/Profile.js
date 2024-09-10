@@ -174,7 +174,7 @@ const addressFieldsArray = [
 
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [EditButton, setEditButton] = useState(false);
+  const [editButton, setEditButton] = useState(false);
   const [selectData, setSelectData] = useState([]);
   const [status, setStatus] = useState({});
   const { id } = useParams();
@@ -183,9 +183,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [adhaarModalVisible, setAdhaarModalVisible] = useState(false);
   const [aadhaarValue, setAadhaarValue] = useState();
   const [duplicateUserList, setDuplicateUserList] = useState();
-  const [aadhaarerror, setAadhaarError] = useState();
+  const [aadhaarError, setAadhaarError] = useState();
   const [enumOptions, setEnumOptions] = useState({});
-  const [benificiary, setBeneficiary] = useState();
+  const [benificiary, setBenificiary] = useState();
   const [contextId, setContextId] = useState();
   const [auditLogs, setAuditLogs] = useState([]);
   const [auditMonth, setAuditMonth] = useState([]);
@@ -223,28 +223,6 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       });
       setPublishEvent(hasDraftEvent);
     }
-  };
-
-  const GetOptions = ({ array, enumType, enumApiData }) => {
-    return (
-      <VStack>
-        {getUniqueArray(array)?.map((item) => (
-          <Chip
-            textAlign="center"
-            key={item}
-            lineHeight="15px"
-            label={
-              <GetEnumValue
-                fontSize="14px"
-                t={t}
-                enumOptionValue={item}
-                {...{ enumType, enumApiData }}
-              />
-            }
-          />
-        ))}
-      </VStack>
-    );
   };
 
   const getAuditData = useCallback(async () => {
@@ -330,7 +308,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
         setEnrollmentSubjects(subjectNames);
       }
       setContextId(newData?.result?.program_beneficiaries?.id);
-      setBeneficiary(newData);
+      setBenificiary(newData);
       if (newData?.result?.program_beneficiaries?.documents_status) {
         setStatus(
           JSON.parse(newData?.result?.program_beneficiaries?.documents_status),
@@ -1171,7 +1149,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   <AdminTypo.H4 color="textGreyColor.800" bold>
                     {t("DOCUMENTATION_DETAILS")}
                   </AdminTypo.H4>
-                  {EditButton === true ? (
+                  {editButton === true ? (
                     <IconByName
                       name="CloseCircleLineIcon"
                       color="iconColor.200"
@@ -1207,7 +1185,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                         {t("JAN_AADHAAR_CARD")}:
                       </AdminTypo.H5>
 
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
                           selectedValue={status?.jan_aadhaar_card || ""}
                           accessibilityLabel="Select"
@@ -1250,7 +1228,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                         {t("AADHAAR_CARD")}:
                       </AdminTypo.H5>
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
                           selectedValue={status?.aadhaar_card || ""}
                           accessibilityLabel="Select"
@@ -1289,9 +1267,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                         {t("PHOTO")}:
                       </AdminTypo.H5>
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
-                          isDisabled={EditButton === false}
+                          isDisabled={editButton === false}
                           selectedValue={status?.photo || ""}
                           accessibilityLabel="Select"
                           placeholder={status?.photo || "Select"}
@@ -1329,9 +1307,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                         {t("MOBILE_NUMBER")}:
                       </AdminTypo.H5>
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
-                          isDisabled={EditButton === false}
+                          isDisabled={editButton === false}
                           selectedValue={status?.mobile_number || ""}
                           accessibilityLabel="Select"
                           placeholder={status?.mobile_number || "Select"}
@@ -1369,9 +1347,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                         {t("MARKSHEET")}:
                       </AdminTypo.H5>
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
-                          isDisabled={EditButton === false}
+                          isDisabled={editButton === false}
                           selectedValue={status?.marksheet || ""}
                           accessibilityLabel="Select"
                           placeholder={status?.marksheet || "Select"}
@@ -1409,9 +1387,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                         {t("BANK_PASSBOOK")}:
                       </AdminTypo.H5>
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
-                          isDisabled={EditButton === false}
+                          isDisabled={editButton === false}
                           selectedValue={status?.bank_passbook || ""}
                           accessibilityLabel="Select"
                           placeholder={status?.bank_passbook || "Select"}
@@ -1450,9 +1428,9 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                       <AdminTypo.H5 bold flex="1" color="textGreyColor.550">
                         {t("BIRTH_CERTIFICATE")}:
                       </AdminTypo.H5>
-                      {EditButton === true ? (
+                      {editButton === true ? (
                         <Select
-                          isDisabled={EditButton === false}
+                          isDisabled={editButton === false}
                           selectedValue={status?.birth_certificate || ""}
                           accessibilityLabel="Select"
                           placeholder={status?.birth_certificate || "Select"}
@@ -1671,10 +1649,10 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               />
             </HStack>
             <AdminTypo.H5 mt={3} ml={4} color={"textMaroonColor.400"}>
-              {aadhaarerror ? t(aadhaarerror) : ""}
+              {aadhaarError ? t(aadhaarError) : ""}
             </AdminTypo.H5>
 
-            {aadhaarerror === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
+            {aadhaarError === "AADHAAR_NUMBER_ALREADY_EXISTS" && (
               <DataTable
                 customStyles={tableCustomStyles}
                 columns={[...columns(t)]}
@@ -2047,6 +2025,34 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+const GetOptions = ({ array, enumType, enumApiData }) => {
+  return (
+    <VStack>
+      {getUniqueArray(array)?.map((item) => (
+        <Chip
+          textAlign="center"
+          key={item}
+          lineHeight="15px"
+          label={
+            <GetEnumValue
+              fontSize="14px"
+              t={t}
+              enumOptionValue={item}
+              {...{ enumType, enumApiData }}
+            />
+          }
+        />
+      ))}
+    </VStack>
+  );
+};
+
+GetOptions.propTypes = {
+  array: PropTypes.any,
+  enumType: PropTypes.any,
+  enumApiData: PropTypes.any,
+};
 
 const BeneficiaryJourney = ({
   data,

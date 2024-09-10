@@ -32,7 +32,6 @@ export default function AddEditForm() {
   const { id } = useParams();
   const [schema, setSchema] = useState(Schema);
   const [formData, setFormData] = useState({});
-  const [doId, setDoId] = useState();
 
   useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
@@ -40,7 +39,6 @@ export default function AddEditForm() {
 
     if (id) {
       const data = await eventService.getOneDoIdDetails({ id });
-      setDoId({ ...data?.data });
       newSchema = {
         ...newSchema,
         required: [...newSchema.required, "id"],

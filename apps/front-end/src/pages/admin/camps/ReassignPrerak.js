@@ -119,11 +119,11 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [modal, setModal] = useState();
   const toast = useToast();
   const [isDisable, setIsDisable] = useState(false);
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [schema, setSchema] = useState();
 
   const handleOpenButtonClick = () => {
-    setDrawerOpen((prevState) => !prevState);
+    setIsDrawerOpen((prevState) => !prevState);
   };
   const schemat = {
     type: "object",
@@ -266,7 +266,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           : {}),
       });
     },
-    [filter, setFilterObject]
+    [filter, setFilterObject],
   );
 
   const clearFilter = useCallback(() => {
@@ -278,7 +278,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
-    [filter]
+    [filter],
   );
 
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
@@ -357,7 +357,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   {data?.program_beneficiaries?.status ===
                   "enrolled_ip_verified"
                     ? data?.program_beneficiaries?.enrollment_dob
-                    : data?.dob ?? "-"}
+                    : (data?.dob ?? "-")}
                 </AdminTypo.H6>
               </HStack>
 

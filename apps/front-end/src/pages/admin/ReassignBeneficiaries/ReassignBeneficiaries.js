@@ -110,19 +110,19 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     limit: 10,
     page: 1,
   });
-  const [clearvalue, setclearvalue] = useState(false);
+  const [clearvalue, setClearvalue] = useState(false);
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [data, setData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
-  const [errormsg, seterrormsg] = useState(false);
+  const [errormsg, setErrormsg] = useState(false);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({});
   const [loading, setLoading] = useState(true);
   const [prerak, setPrerak] = useState({});
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [getDistrictsAll, setgetDistrictsAll] = useState();
+  const [getDistrictsAll, setGetDistrictsAll] = useState();
   const [facilitatorFilter, setFacilitatorFilter] = useState();
   const [facilitator, setFacilitator] = useState([]);
   const [isMore, setIsMore] = useState("");
@@ -138,7 +138,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
       }));
       setIsMore(
         parseInt(`${result?.data?.currentPage}`) <
-          parseInt(`${result?.data?.totalPages}`)
+          parseInt(`${result?.data?.totalPages}`),
       );
       setFacilitator(newData);
     };
@@ -150,11 +150,11 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     const getDistricts = await geolocationRegistryService.getDistricts({
       name,
     });
-    setgetDistrictsAll(getDistricts?.districts);
+    setGetDistrictsAll(getDistricts?.districts);
   }, []);
 
   const handleSelectRow = (state) => {
-    seterrormsg(false);
+    setErrormsg(false);
     const arr = state?.selectedRows;
     let newObj = {};
     arr.forEach((e) => {
@@ -172,7 +172,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
     if (selectedRows.length !== 0) {
       setModalVisible(true);
     } else {
-      seterrormsg(true);
+      setErrormsg(true);
     }
   };
 
@@ -216,7 +216,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   useEffect(async () => {
     const result = await facilitatorRegistryService.getPrerakLearnerList(
       prerakId,
-      filter
+      filter,
     );
     setPaginationTotalRows(result?.totalCount || 0);
     setData(result?.data);
@@ -232,13 +232,12 @@ export default function ReassignBeneficiaries({ footerLinks }) {
       beneficiaryIds: beneficiary_Ids,
       facilitatorId: filterfunction?.facilitator,
     };
-    const result = await benificiaryRegistoryService?.ReassignBeneficiaries(
-      obj
-    );
+    const result =
+      await benificiaryRegistoryService?.ReassignBeneficiaries(obj);
 
     if (!result?.success) {
       setIsButtonLoading(false);
-      seterrormsg(true);
+      setErrormsg(true);
     }
     setModalVisible(false);
     setModalConfirmVisible(true);
@@ -342,7 +341,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                   <Button
                     variant="link"
                     marginRight={10}
-                    onPress={() => setclearvalue(true)}
+                    onPress={() => setClearvalue(true)}
                   >
                     <AdminTypo.H6 color="blueText.400" underline bold>
                       {t("CLEAR_FILTER")}
@@ -395,7 +394,7 @@ export default function ReassignBeneficiaries({ footerLinks }) {
                     filterfunction,
                     setFilterfunction,
                     clearvalue,
-                    setclearvalue,
+                    setClearvalue,
                     getDistrictsAll,
                     setFacilitatorFilter,
                     facilitatorFilter,
@@ -482,11 +481,15 @@ export default function ReassignBeneficiaries({ footerLinks }) {
   );
 }
 
+ReassignBeneficiaries.propTypes = {
+  footerLinks: PropTypes.any,
+};
+
 export const Filter = ({
   filterfunction,
   setFilterfunction,
   clearvalue,
-  setclearvalue,
+  setClearvalue,
   getDistrictsAll,
   setFacilitatorFilter,
   facilitatorFilter,
@@ -584,7 +587,7 @@ export const Filter = ({
       setFacilitatorFilter({});
       setFilterfunction({});
       setFilterObject({});
-      setclearvalue(false);
+      setClearvalue(false);
     }
   }, [clearvalue]);
 
@@ -663,7 +666,7 @@ Filter.propTypes = {
   filterfunction: PropTypes.any,
   setFilterfunction: PropTypes.any,
   clearvalue: PropTypes.any,
-  setclearvalue: PropTypes.any,
+  setClearvalue: PropTypes.any,
   getDistrictsAll: PropTypes.any,
   setFacilitatorFilter: PropTypes.any,
   facilitatorFilter: PropTypes.any,

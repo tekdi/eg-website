@@ -12,193 +12,8 @@ import Chip from "component/Chip";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
-
-export const CustomStyles = {
-  rows: {
-    style: {
-      minHeight: "72px",
-    },
-  },
-  headCells: {
-    style: {
-      background: "#E0E0E0",
-      color: "#616161",
-      size: "16px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-  cells: {
-    style: {
-      color: "#616161",
-      size: "19px",
-      justifyContent: "center", // override the alignment of columns
-    },
-  },
-};
-
-const columns = (t, navigate) => [
-  {
-    name: t("ID"),
-    selector: (row) => row?.id,
-    sortable: true,
-    sortField: "id",
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("STATE_NAME"),
-    selector: (row) => row?.state_name || "-",
-    sortable: true,
-    sortField: "state_name",
-    wrap: true,
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("STATE_CD"),
-    selector: (row) => row?.state_cd || "-",
-    sortable: true,
-    sortField: "state_cd",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("DISTRICT_NAME"),
-    selector: (row) => row?.district_name || "-",
-    wrap: true,
-    left: true,
-    compact: true,
-    sortable: true,
-    sortField: "district_name",
-  },
-  {
-    name: t("DISTRICT_CD"),
-    selector: (row) => row?.district_cd || "-",
-    wrap: true,
-    left: true,
-    compact: true,
-    sortable: true,
-    sortField: "district_cd",
-  },
-
-  {
-    name: t("UDISE_BLOCK_CODE"),
-    selector: (row) => row?.udise_block_code || "-",
-    attr: "udise_block_code",
-    wrap: true,
-    compact: true,
-    sortable: true,
-    sortField: "udise_block_code",
-  },
-  {
-    name: t("BLOCK_NAME"),
-    selector: (row) => row?.block_name || "-",
-    sortable: true,
-    sortField: "block_name",
-    wrap: true,
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("GRAMPANCHAYAT_CD"),
-    selector: (row) => row?.grampanchayat_cd || "-",
-    sortable: true,
-    sortField: "grampanchayat_cd",
-    wrap: true,
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("GRAMPANCHAYAT_NAME"),
-    selector: (row) => row?.grampanchayat_name || "-",
-    sortable: true,
-    sortField: "grampanchayat_name",
-    wrap: true,
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("VILLAGE_WARD_CD"),
-    selector: (row) => row?.vill_ward_cd || "-",
-    sortable: true,
-    sortField: "vill_ward_cd",
-    wrap: true,
-    width: "100px",
-    compact: true,
-  },
-  {
-    name: t("VILLAGE_WARD_NAME"),
-    selector: (row) => row?.village_ward_name || "-",
-    sortable: true,
-    sortField: "village_ward_name",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("SCHOOL_NAME"),
-    selector: (row) => row?.school_name || "-",
-    sortable: true,
-    sortField: "school_name",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("UDISE_SCH_CODE"),
-    selector: (row) => row?.udise_sch_code || "-",
-    sortable: true,
-    sortField: "udise_sch_code",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("SCH_CATEGORY_ID"),
-    selector: (row) => row?.sch_category_id || "-",
-    sortable: true,
-    sortField: "sch_category_id",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("SCH_MANAGEMENT_ID"),
-    selector: (row) => row?.nsch_mgmt_idame || "-",
-    sortable: true,
-    sortField: "sch_mgmt_id ",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("OPEN_SCHOOL_TYPE"),
-    selector: (row) => row?.open_school_type || "-",
-    sortable: true,
-    sortField: "open_school_type",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-  {
-    name: t("NODAL_CODE"),
-    selector: (row) => row?.nodal_code || "-",
-    sortable: true,
-    sortField: "nodal_code",
-    width: "150px",
-    wrap: true,
-    left: true,
-    compact: true,
-  },
-];
+import { CustomStyles } from "../CommonStyles";
+import { columns } from "./Column";
 
 function View() {
   const { t } = useTranslation();
@@ -296,13 +111,13 @@ function View() {
               (e) => {
                 setFilter({ ...filter, limit: e, page: 1 });
               },
-              [setFilter, filter]
+              [setFilter, filter],
             )}
             onChangePage={useCallback(
               (e) => {
                 setFilter({ ...filter, page: e });
               },
-              [setFilter, filter]
+              [setFilter, filter],
             )}
             onRowClicked={handleRowClick}
           />

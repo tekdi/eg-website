@@ -1,19 +1,18 @@
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
-  IconByName,
-  ImageView,
   AdminTypo,
   enumRegistryService,
+  IconByName,
+  ImageView,
   tableCustomStyles,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import moment from "moment";
-import { HStack, VStack, Text, ScrollView, Pressable } from "native-base";
-import React, { memo, useCallback, useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { HStack, Pressable, ScrollView, Text, VStack } from "native-base";
 import PropTypes from "prop-types";
-import { useMemo } from "react";
+import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 // Table component
 function Table({
@@ -275,5 +274,6 @@ Table.propTypes = {
   paginationTotalRows: PropTypes.any,
   data: PropTypes.any,
   loading: PropTypes.bool,
+  stateName: PropTypes.string,
 };
 export default memo(Table);
