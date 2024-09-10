@@ -158,14 +158,22 @@ export default function PoDuplicateView({ footerLinks }) {
     },
   ];
 
-  useEffect(async () => {
-    const result =
-      await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
-        filter,
-      );
-    setPaginationTotalRows(result?.count || 0);
-    setData(result?.result);
-    setLoading(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result =
+          await benificiaryRegistoryService?.getDuplicateBeneficiariesListByAadhaar(
+            filter,
+          );
+        setPaginationTotalRows(result?.count || 0);
+        setData(result?.result);
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [filter]);
 
   const assignToPrerak = async (id) => {

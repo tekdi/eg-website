@@ -4,6 +4,7 @@ import {
   AdminLayout as Layout,
   facilitatorRegistryService,
   Loading,
+  t,
   authRegistryService,
   ImageView,
   AdminTypo,
@@ -29,7 +30,6 @@ import NotFound from "../../NotFound";
 import DataTable from "react-data-table-component";
 import Clipboard from "component/Clipboard";
 import { MultiCheck } from "component/BaseInput";
-import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 const StatusButton = lazy(() => import("./view/StatusButton"));
 
@@ -127,7 +127,7 @@ const columns = (t) => [
 
 export default function FacilitatorView({ footerLinks }) {
   const toast = useToast();
-  const { t } = useTranslation();
+
   const { id } = useParams();
   const [data, setData] = useState();
   const [modalVisible, setModalVisible] = useState(false);
@@ -187,16 +187,20 @@ export default function FacilitatorView({ footerLinks }) {
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
       };
-      const result = await benificiaryRegistoryService.getEditFields(obj);
-      if (result.data[0]) {
-        setEditData(result?.data[0]);
+      try {
+        const result = await benificiaryRegistoryService.getEditFields(obj);
+        if (result.data[0]) {
+          setEditData(result?.data[0]);
+        }
+        let field;
+        const parseField = result?.data[0]?.fields;
+        if (parseField && typeof parseField === "string") {
+          field = JSON.parse(parseField);
+        }
+        setFieldCheck(field || []);
+      } catch (error) {
+        console.error("Failed to get edit access:", error);
       }
-      let field;
-      const parseField = result?.data[0]?.fields;
-      if (parseField && typeof parseField === "string") {
-        field = JSON.parse(parseField);
-      }
-      setFieldCheck(field || []);
     };
     fetchData();
   }, []);
@@ -266,24 +270,26 @@ export default function FacilitatorView({ footerLinks }) {
           id: id.toString(),
           password: password,
         };
-        const resetPassword =
-          await authRegistryService.resetPasswordAdmin(bodyData);
-        if (resetPassword.success === true) {
-          setCredentials();
-          setModalVisible(false);
-          toast.show({
-            title: "Success",
-            variant: "solid",
-            description: resetPassword?.message,
-          });
-          setModalVisible(false);
+        try {
+          const resetPassword =
+            await authRegistryService.resetPasswordAdmin(bodyData);
+          if (resetPassword.success === true) {
+            setCredentials();
+            toast.show({
+              title: "Success",
+              variant: "solid",
+              description: resetPassword?.message,
+            });
+            return { status: true };
+          } else if (resetPassword.success === false) {
+            setCredentials();
+            return { status: false };
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
           setIsButtonLoading(false);
-          return { status: true };
-        } else if (resetPassword.success === false) {
-          setIsButtonLoading(false);
-          setCredentials();
           setModalVisible(false);
-          return { status: false };
         }
       } else if (password !== confirm_password) {
         setIsButtonLoading(false);
@@ -946,6 +952,10 @@ export default function FacilitatorView({ footerLinks }) {
   );
 }
 
+FacilitatorView.propTypes = {
+  footerLinks: PropTypes.any,
+};
+
 const SelectAllCheckBox = memo(
   ({ fields, title, setFieldCheck, fieldCheck }) => {
     const handleChange = useCallback(
@@ -972,14 +982,3 @@ const SelectAllCheckBox = memo(
     );
   },
 );
-
-FacilitatorView.propTypes = {
-  footerLinks: PropTypes.any,
-};
-
-SelectAllCheckBox.propTypes = {
-  fields: PropTypes.any,
-  title: PropTypes.any,
-  setFieldCheck: PropTypes.any,
-  fieldCheck: PropTypes.any,
-};
