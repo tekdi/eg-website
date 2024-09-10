@@ -269,35 +269,6 @@ export default function List() {
             variant="outline"
             onChange={debouncedHandleSearch}
           />
-          {/* <Menu
-            w="160"
-            trigger={(triggerProps) => (
-              <Button
-                {...triggerProps}
-                background="white"
-                shadow="RedOutlineShadow"
-                borderRadius="100px"
-                borderColor="textMaroonColor.400"
-                borderWidth="1"
-                py="6px"
-                rounded="full"
-                _text={{
-                  color: "textGreyColor.900",
-                  fontSize: "14px",
-                }}
-                rightIcon={
-                  <IconByName
-                    color="black"
-                    _icon={{ size: "18px" }}
-                    name="AddLineIcon"
-                  />
-                }
-                onPress={(e) => navigate("/poadmin/address/create")}
-              >
-                {t("ADD_AN_ADDRESS")}
-              </Button>
-            )}
-          ></Menu> */}
         </HStack>
         <DataTable
           customStyles={{
