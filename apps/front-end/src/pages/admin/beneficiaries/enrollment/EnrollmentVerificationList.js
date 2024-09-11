@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
-const filterName = "leaner_enrollment_filter";
+const filterNameCore = "leaner_enrollment_filter";
 
 const columns = (t, navigate) => [
   {
@@ -181,6 +181,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filterName, setFilterName] = useState();
   const handleRowClick = (row) => {
     if (row?.program_beneficiaries?.status === "pragati_syc_reattempt") {
       navigate(`/admin/learners/syc/${row?.id}`);
@@ -220,7 +221,9 @@ function EnrollmentVerificationList({ footerLinks }) {
   }, [filter, stateName]);
 
   useEffect(() => {
-    const urlFilter = getFilterLocalStorage(filterName);
+    const filterNameNew = `${type || "enrollment"}_${filterNameCore}`;
+    setFilterName(filterNameNew);
+    const urlFilter = getFilterLocalStorage(filterNameNew);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
@@ -269,7 +272,9 @@ function EnrollmentVerificationList({ footerLinks }) {
             {t(
               type === "SSOID"
                 ? "SSOID_VERIFICATION"
-                : "ENROLLMENT_VERIFICATION",
+                : type === "SYC"
+                  ? "SYC_VERIFICATION"
+                  : "ENROLLMENT_VERIFICATION",
             )}
           </AdminTypo.H4>
         </HStack>

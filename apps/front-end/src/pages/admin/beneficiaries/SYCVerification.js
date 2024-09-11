@@ -395,7 +395,7 @@ export default function SYCVerification({ footerLinks }) {
                   reason?.exam_fee_date === "no" ||
                   reason?.syc_subjects === "no"
                 }
-                onPress={(e) => submit("verified")}
+                onPress={(e) => submit("psyc_verified")}
               >
                 {t("VERIFY")}
               </AdminTypo.Successbutton>
