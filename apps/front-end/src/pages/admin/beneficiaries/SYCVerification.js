@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -9,18 +9,10 @@ import {
   jsonParse,
   uploadRegistryService,
   Breadcrumb,
-  jsonToQueryString,
   CustomRadio,
-  getSelectedProgramId,
   Loading,
-  getEnrollmentIds,
 } from "@shiksha/common-lib";
-import {
-  createSearchParams,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { HStack, VStack, Modal, Alert } from "native-base";
 import { useTranslation } from "react-i18next";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -34,14 +26,16 @@ const checkboxIcons = (value) => {
       name: "CloseCircleLineIcon",
       activeName: "CloseCircleFillIcon",
       activeColor: "#d53546",
-      style: {},
+      px: "0",
+      py: "0",
       _icon: { size: "25", activeColor: "#d53546", color: "#484848" },
     },
     {
       name: "CheckboxCircleLineIcon",
       activeName: "CheckboxCircleFillIcon",
       activeColor: "#038400",
-      style: {},
+      px: "0",
+      py: "0",
       _icon: { size: "25", activeColor: "#038400", color: "#484848" },
     },
   ];
@@ -59,8 +53,6 @@ const checkboxIcons = (value) => {
 export default function SYCVerification({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
-  const filter = jsonToQueryString(location?.state);
   const { id } = useParams();
   const [data, setData] = useState();
   const [subjects, setSubjects] = useState();
@@ -72,9 +64,6 @@ export default function SYCVerification({ footerLinks }) {
   const [openModal, setOpenModal] = useState(false);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [boardName, setBoardName] = useState({});
-  const [localData, setLocalData] = useState({});
-  const [paymentDocId, setPaymentDocId] = useState([]);
-  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const handleSetReceiptUrl = async (doc_id) => {
     setIsButtonLoading(true);
@@ -86,28 +75,19 @@ export default function SYCVerification({ footerLinks }) {
     setIsButtonLoading(false);
   };
   const profileDetails = useCallback(async () => {
-    const { state_name } = await getSelectedProgramId();
-    setLocalData(state_name);
     const { result } = await benificiaryRegistoryService.getOne(id);
     const value = result?.program_beneficiaries?.enrolled_for_board;
     setData(result);
     const { subjects } = await enumRegistryService.subjectsList(value);
     const boardName = await enumRegistryService.boardName(value);
     setBoardName(boardName?.name);
-    const documentData = getEnrollmentIds(
-      result?.program_beneficiaries?.payment_receipt_document_id,
-      state_name,
+    await handleSetReceiptUrl(
+      result?.program_beneficiaries?.exam_fee_document_id,
     );
-    setPaymentDocId(documentData);
-    await handleSetReceiptUrl(documentData?.payment_receipt_document_id);
-    const subject = jsonParse(result?.program_beneficiaries.subjects, []);
+    const subject = jsonParse(result?.program_beneficiaries.syc_subjects, []);
     setSubjects(subjects?.filter((e) => subject?.includes(`${e.subject_id}`)));
     setLoading(false);
   }, [id]);
-
-  const handleButtonClick = async (doc_id) => {
-    await handleSetReceiptUrl(doc_id);
-  };
 
   useEffect(() => {
     profileDetails();
@@ -115,7 +95,7 @@ export default function SYCVerification({ footerLinks }) {
 
   const checkValidation = useCallback(() => {
     let data = {};
-    ["learner_enrollment_details", "enrollment_details"]
+    ["exam_fee_date", "syc_subjects"]
       .filter((e) => !reason[e])
       .map((e) => (data = { ...data, [e]: t("PLEASE_SELECT") }));
     setError(data);
@@ -125,43 +105,17 @@ export default function SYCVerification({ footerLinks }) {
   const submit = useCallback(
     async (status) => {
       if (!checkValidation()) return;
-
-      const lastStandard = parseInt(
-        data?.core_beneficiaries?.last_standard_of_education ?? "",
-        10,
-      );
-      const hasWarning = isNaN(lastStandard) || lastStandard < 5;
-
-      if (hasWarning && !openWarningModal) {
-        setOpenWarningModal(true);
-        return;
-      }
-
-      const response = await benificiaryRegistoryService.verifyEnrollment({
+      const response = await benificiaryRegistoryService.verifySYC({
         user_id: id,
-        enrollment_verification_status: status,
-        enrollment_verification_reason: reason,
+        psyc_status: status,
+        syc_reason: Object.keys(reason).filter((key) => reason[key] === "no"),
       });
       if (response?.success) {
         setOpenModal(false);
-        navigate({
-          pathname:
-            data?.program_beneficiaries?.status == "sso_id_enrolled"
-              ? "/admin/learners/enrollmentVerificationList/SSOID"
-              : "/admin/learners/enrollmentVerificationList",
-          search: `?${createSearchParams(filter)}`,
-        });
+        navigate("/admin/learners/enrollmentVerificationList/SYC");
       }
     },
-    [
-      checkValidation,
-      createSearchParams,
-      filter,
-      id,
-      navigate,
-      reason,
-      openWarningModal,
-    ],
+    [checkValidation, setOpenModal, id, navigate, reason],
   );
 
   return (
@@ -190,8 +144,6 @@ export default function SYCVerification({ footerLinks }) {
               />,
             ]}
           />
-
-          {/* <AdminTypo.Secondarybutton>{t("NEXT")}</AdminTypo.Secondarybutton> */}
         </HStack>
         <Body data={data}>
           <VStack>
@@ -239,7 +191,6 @@ export default function SYCVerification({ footerLinks }) {
                   {t("LEARNER_PROFILE")}
                 </AdminTypo.PrimaryButton>
                 <ValidationBox
-                  error={error?.learner_enrollment_details}
                   data={[
                     {
                       data: {
@@ -262,11 +213,6 @@ export default function SYCVerification({ footerLinks }) {
                           label: "ENROLLMENT_BOARD",
                           keyArr: "enrolled_for_board",
                         },
-                      ],
-                    },
-                    {
-                      data: data?.program_beneficiaries,
-                      arr: [
                         {
                           label: "NAME",
                           value: (
@@ -298,21 +244,30 @@ export default function SYCVerification({ footerLinks }) {
                         },
                         {
                           label: "MOBILE_NUMBER",
-                          keyArr: "enrollment_mobile_no",
+                          value: (
+                            <AdminTypo.H5>{data?.mobile || "-"}</AdminTypo.H5>
+                          ),
                         },
                       ],
                     },
                     {
+                      _validation: {
+                        error: error?.exam_fee_date,
+                        icons: checkboxIcons(reason?.exam_fee_date),
+                        value: reason?.exam_fee_date,
+                        onChange: (e) => {
+                          setReason({ ...reason, exam_fee_date: e });
+                        },
+                      },
                       data: data?.program_beneficiaries,
                       arr: [
                         {
                           label: "DATE",
                           value: (
                             <AdminTypo.H5>
-                              {data?.program_beneficiaries?.enrollment_date
+                              {data?.program_beneficiaries?.exam_fee_date
                                 ? moment(
-                                    data?.program_beneficiaries
-                                      ?.enrollment_date,
+                                    data?.program_beneficiaries?.exam_fee_date,
                                   ).format("DD-MM-YYYY")
                                 : "-"}
                             </AdminTypo.H5>
@@ -321,6 +276,14 @@ export default function SYCVerification({ footerLinks }) {
                       ],
                     },
                     {
+                      _validation: {
+                        error: error?.syc_subjects,
+                        icons: checkboxIcons(reason?.syc_subjects),
+                        value: reason?.syc_subjects,
+                        onChange: (e) => {
+                          setReason({ ...reason, syc_subjects: e });
+                        },
+                      },
                       data: data?.program_beneficiaries,
                       arr: [
                         {
@@ -335,44 +298,6 @@ export default function SYCVerification({ footerLinks }) {
                 />
               </VStack>
               <VStack flex={["", "", "5", "5", "5"]}>
-                {localData === "BIHAR" && (
-                  <HStack m={4} space={2}>
-                    <ActiveButton
-                      isActive={
-                        receiptUrl?.doc_id ===
-                        paymentDocId?.payment_receipt_document_id
-                      }
-                      onPress={() => {
-                        handleButtonClick(
-                          paymentDocId?.payment_receipt_document_id,
-                        );
-                      }}
-                    >
-                      {t("PAYMENT_RECEIPTS")}
-                    </ActiveButton>
-                    <ActiveButton
-                      isActive={
-                        receiptUrl?.doc_id === paymentDocId?.application_form
-                      }
-                      onPress={() => {
-                        handleButtonClick(paymentDocId?.application_form);
-                      }}
-                    >
-                      {t("APPLICATION_FORM")}
-                    </ActiveButton>
-                    <ActiveButton
-                      isActive={
-                        receiptUrl?.doc_id ===
-                        paymentDocId?.application_login_id
-                      }
-                      onPress={() => {
-                        handleButtonClick(paymentDocId?.application_login_id);
-                      }}
-                    >
-                      {t("APPLICATION_LOGIN_ID_SS")}
-                    </ActiveButton>
-                  </HStack>
-                )}
                 {isButtonLoading ? (
                   <Loading />
                 ) : fileType === "pdf" ? (
@@ -467,28 +392,18 @@ export default function SYCVerification({ footerLinks }) {
               <AdminTypo.Successbutton
                 isLoading={isButtonLoading}
                 isDisabled={
-                  reason?.enrollment_details === "no" ||
-                  reason?.learner_enrollment_details === "no"
+                  reason?.exam_fee_date === "no" ||
+                  reason?.syc_subjects === "no"
                 }
-                onPress={(e) =>
-                  submit(
-                    data?.program_beneficiaries?.status == "sso_id_enrolled"
-                      ? "sso_id_verified"
-                      : "verified",
-                  )
-                }
+                onPress={(e) => submit("verified")}
               >
-                {t(
-                  data?.program_beneficiaries?.status == "sso_id_enrolled"
-                    ? "BENEFICIARY_STATUS_BTNTEXT_SSOID_VERIFY"
-                    : "BENEFICIARY_STATUS_BTNTEXT_VERIFY",
-                )}
+                {t("VERIFY")}
               </AdminTypo.Successbutton>
               <AdminTypo.Secondarybutton
                 isLoading={isButtonLoading}
                 isDisabled={
-                  reason?.enrollment_details === "yes" &&
-                  reason?.learner_enrollment_details === "yes"
+                  reason?.exam_fee_date === "yes" &&
+                  reason?.syc_subjects === "yes"
                 }
                 onPress={(e) => {
                   if (checkValidation()) {
@@ -499,44 +414,11 @@ export default function SYCVerification({ footerLinks }) {
                 {t("CHANGE_REQUIRED")}
               </AdminTypo.Secondarybutton>
             </HStack>
-            <Modal
-              isOpen={openWarningModal}
-              onClose={() => setOpenWarningModal(false)}
-            >
-              <Modal.Content>
-                <Modal.Header textAlign={"Center"}>
-                  <AdminTypo.H2 color="textGreyColor.500">
-                    {t("EXPIRY_CONTENT.HEADING")}
-                  </AdminTypo.H2>
-                </Modal.Header>
-                <Modal.Body>
-                  <VStack space={4}>
-                    {t("EDUCATION_STANDARD_IP_WARNING")}
-                  </VStack>
-                </Modal.Body>
-                <Modal.Footer justifyContent={"space-between"}>
-                  <AdminTypo.Secondarybutton onPress={() => submit("rejected")}>
-                    {t("REJECT")}
-                  </AdminTypo.Secondarybutton>
-                  <AdminTypo.Successbutton
-                    onPress={(e) =>
-                      submit(
-                        data?.program_beneficiaries?.status == "sso_id_enrolled"
-                          ? "sso_id_verified"
-                          : "verified",
-                      )
-                    }
-                  >
-                    {t("PRERAK_PROCEED_BTN")}
-                  </AdminTypo.Successbutton>
-                </Modal.Footer>
-              </Modal.Content>
-            </Modal>
             <Modal isOpen={openModal} size="xl">
               <Modal.Content>
-                <Modal.Header>{t("ARE_YOU_SURE")}</Modal.Header>
+                <Modal.Header>{t("CONFIRM")}</Modal.Header>
                 <Modal.Body p="5">
-                  <LearnerInfo item={data} reason={reason} status={openModal} />
+                  <AdminTypo.H1>{t("ARE_YOU_SURE")}</AdminTypo.H1>
                 </Modal.Body>
                 <Modal.Footer justifyContent={"space-between"}>
                   <AdminTypo.PrimaryButton onPress={(e) => setOpenModal()}>
@@ -590,166 +472,94 @@ const Body = ({ data, children }) => {
   );
 };
 
-const TextInfo = ({ data, _box, arr }) => {
+const TextInfo = ({ data, _box, _vstack, arr }) => {
   const { t } = useTranslation();
-  return arr.map((e) => (
-    <HStack
-      borderBottomWidth={1}
-      borderColor={"grayInLight"}
-      key={e.label}
-      py="2"
-      alignItems={"center"}
-      {..._box}
+  return (
+    <VStack
+      space={4}
+      divider={
+        <div
+          style={{
+            borderBottomWidth: "1px",
+            borderBottomColor: "lightGray",
+            borderBottomStyle: "solid",
+          }}
+        />
+      }
+      {..._vstack}
     >
-      <AdminTypo.H4 flex="1" color={"light.400"} bold>
-        {t(e?.label || "-")}
-      </AdminTypo.H4>
-      {e?.value ? (
-        <VStack flex="1">{e?.value} </VStack>
-      ) : (
-        <VStack>
-          <AdminTypo.H5>{data?.[e?.keyArr] || "-"}</AdminTypo.H5>
-        </VStack>
-      )}
-    </HStack>
-  ));
-};
-
-const ValidationBox = ({ data, error, _vstack }) =>
-  data?.map((item) => (
-    <VStack key={item?.item} {..._vstack}>
-      <VStack
-        space="4"
-        rounded="xl"
-        borderWidth="1px"
-        borderColor={error ? "red.200" : "light.400"}
-        p={"2"}
-      >
-        <TextInfo _box={{ space: "2", p: 4 }} {...item} />
-        <CheckButton />
-      </VStack>
-      {error && <AdminTypo.H5 color="red.500">{error}</AdminTypo.H5>}
-    </VStack>
-  ));
-
-const Message = ({ status, reason }) => {
-  const { t } = useTranslation();
-  if (
-    reason?.learner_enrollment_details === "no" &&
-    reason?.enrollment_details === "no"
-  ) {
-    return (
-      <AdminTypo.H4 color="blueText.450" underline>
-        {t("ENROLLMENT_RECEIPT_AND_DETAILS_MISMATCH")}
-      </AdminTypo.H4>
-    );
-  } else if (reason?.learner_enrollment_details === "no") {
-    return (
-      <AdminTypo.H4 color="blueText.450" underline>
-        {t("CORRECT_ENROLLMENT_DETAILS")}
-      </AdminTypo.H4>
-    );
-  } else if (reason?.enrollment_details === "no") {
-    return (
-      <AdminTypo.H4 color="blueText.450" underline>
-        {t("CORRECT_ENROLLMENT_LEARNER_DETAILS")}
-      </AdminTypo.H4>
-    );
-  }
-  return <Fragment />;
-};
-
-const LearnerInfo = ({ item, reason, status }) => {
-  const { t } = useTranslation();
-
-  return (
-    <VStack space={4}>
-      <VStack bg="white" p="2" shadow="FooterShadow" rounded="sm" space="1">
-        <HStack justifyContent="space-between">
-          <HStack alignItems="Center" flex="5">
-            {item?.profile_photo_1?.id ? (
-              <ImageView
-                source={{
-                  document_id: item?.profile_photo_1?.id,
-                }}
-                alt="Alternate Text"
-                width={"45px"}
-                height={"45px"}
-              />
-            ) : (
-              <IconByName
-                isDisabled
-                name="AccountCircleLineIcon"
-                color="gray.300"
-                _icon={{ size: "45px" }}
-              />
-            )}
-            <VStack
-              pl="2"
-              flex="1"
-              wordWrap="break-word"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-            >
-              <AdminTypo.H4 bold color="textGreyColor.800">
-                {item?.first_name}
-                {item?.middle_name &&
-                  item?.middle_name !== "null" &&
-                  ` ${item.middle_name}`}
-                {item?.last_name &&
-                  item?.last_name !== "null" &&
-                  ` ${item.last_name}`}
-              </AdminTypo.H4>
-              <AdminTypo.H5 color="textGreyColor.800">
-                {item?.mobile}
-              </AdminTypo.H5>
-            </VStack>
-          </HStack>
-          <VStack flex="2">
-            <ChipStatus
-              status={
-                status === "pending"
-                  ? "not_enrolled"
-                  : item?.program_beneficiaries?.status
-              }
-              is_duplicate={item?.is_duplicate}
-              is_deactivated={item?.is_deactivated}
-              rounded={"sm"}
-            />
-          </VStack>
-        </HStack>
-        <Message {...{ reason, status }} />
-      </VStack>
-      {status === "pending" && (
-        <Alert status="warning" py="2px" px="2" flexDirection="row" gap="2">
-          <Alert.Icon size="3" />
-          <AdminTypo.H4>
-            {t("FACILITATOR_STATUS_CANCEL_ENROLMENT_MESSAGE")}
+      {arr.map((e) => (
+        <HStack
+          key={e.label}
+          py="2"
+          alignItems="center"
+          flex={1}
+          space="2"
+          {..._box}
+          maxWidth="100%" // Ensure HStack does not exceed the container width
+        >
+          <AdminTypo.H4
+            flex={1}
+            color="light.400"
+            fontWeight="bold"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {t(e?.label || "-")}
           </AdminTypo.H4>
-        </Alert>
-      )}
+          {e?.value ? (
+            <VStack flex={1} space="2" width="100%">
+              {e.value}
+            </VStack>
+          ) : (
+            <VStack flex="1" width="100%" space="2">
+              <AdminTypo.H5>{data?.[e?.keyArr] || "-"}</AdminTypo.H5>
+            </VStack>
+          )}
+        </HStack>
+      ))}
     </VStack>
   );
 };
 
-const ActiveButton = ({ isActive, children, ...props }) => {
-  if (isActive) {
-    return (
-      <AdminTypo.PrimaryButton {...props}>{children}</AdminTypo.PrimaryButton>
-    );
-  }
-  return (
-    <AdminTypo.Secondarybutton {...props}>{children}</AdminTypo.Secondarybutton>
-  );
-};
+const ValidationBox = ({ data, _vstack }) => (
+  <VStack space={4} {..._vstack}>
+    {data?.map((item) => (
+      <VStack key={item?.item}>
+        <VStack
+          space="4"
+          rounded="xl"
+          borderWidth="1px"
+          borderColor={item?._validation?.error ? "red.200" : "light.400"}
+          p={"2"}
+          divider={
+            <div
+              style={{
+                borderBottomWidth: "1px",
+                borderBottomColor: "lightGray",
+                borderBottomStyle: "solid",
+              }}
+            />
+          }
+        >
+          <TextInfo {...item} />
+          {item?._validation && <CheckButton {...item?._validation} />}
+        </VStack>
+        {item?._validation?.error && (
+          <AdminTypo.H5 color="red.500">
+            {item?._validation?.error}
+          </AdminTypo.H5>
+        )}
+      </VStack>
+    ))}
+  </VStack>
+);
 
 SYCVerification.PropTypes = {
   footerLinks: PropTypes.any,
 };
 
 const CheckButton = ({ icons, ...props }) => {
-  console.log("hello");
   return (
     <CustomRadio
       options={{
@@ -769,8 +579,14 @@ const CheckButton = ({ icons, ...props }) => {
           justifyContent: "space-between",
         },
         _pressable: { p: 0, mb: 0, borderWidth: 0, style: {} },
+        _icon: { borderWidth: "0", style: {} },
       }}
       {...props}
     />
   );
+};
+
+CheckButton.PropTypes = {
+  icons: PropTypes.array,
+  props: PropTypes.any,
 };
