@@ -1,6 +1,6 @@
 import moment from "moment";
 
-// TODO: Remove TSignore
+// Remove TSignore
 export const FormatDate = ({ date, type }) => {
   if (!date) return "";
   if (type === "Month") {

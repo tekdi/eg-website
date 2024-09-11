@@ -1,8 +1,9 @@
 import { CardComponent, FrontEndTypo, IconByName } from "@shiksha/common-lib";
 import { HStack, Image, Pressable, Progress, VStack } from "native-base";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export const CampSessionPlan = ({
   button_list,
@@ -20,7 +21,6 @@ export const CampSessionPlan = ({
     const init = () => {
       let arr = [];
       let button_name = Object.keys(button_list || {});
-      // console.log(button_name, button_list);
       if (Array.isArray(button_name) && button_name?.includes("main")) {
         arr = [
           ...arr,
@@ -48,7 +48,7 @@ export const CampSessionPlan = ({
               type: "PCR_EVALUATION_1",
               navigatePath: getNavigatePath(
                 "formative-assessment-1",
-                "subjectslist"
+                "subjectslist",
               ),
               ...(button_list?.fa1 || {}),
             },
@@ -61,7 +61,7 @@ export const CampSessionPlan = ({
               type: "PCR_EVALUATION_2",
               navigatePath: getNavigatePath(
                 "formative-assessment-2",
-                "subjectslist"
+                "subjectslist",
               ),
               ...(button_list?.fa2 || {}),
             },
@@ -111,7 +111,7 @@ export const CampSessionPlan = ({
                 <Progress
                   value={calculateProgress(
                     card?.total_count - card.data?.length,
-                    card?.total_count
+                    card?.total_count,
                   )}
                   size="sm"
                   colorScheme="progressBarRed"
@@ -143,6 +143,12 @@ export const CampSessionPlan = ({
       ))}
     </VStack>
   );
+};
+
+CampSessionPlan.propTypes = {
+  button_list: PropTypes.any,
+  sessionList: PropTypes.any,
+  activityId: PropTypes.any,
 };
 
 const calculateProgress = (completedSessions, totalSessions) => {

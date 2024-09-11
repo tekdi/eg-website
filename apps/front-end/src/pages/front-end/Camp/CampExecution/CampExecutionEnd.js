@@ -21,7 +21,7 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [todaysActivity, setTodaysActivity] = useState();
-  const [disableTodayAct, setdisableTodayAct] = useState(true);
+  const [disableTodayAct, setDisableTodayAct] = useState(true);
 
   const navigate = useNavigate();
 
@@ -39,9 +39,9 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
     };
     const result = await campService.getCampDetailsCount(object);
     if (result?.data?.beneficairesPresentAttendaceCount?.aggregate?.count < 1) {
-      setdisableTodayAct(true);
+      setDisableTodayAct(true);
     } else {
-      setdisableTodayAct(false);
+      setDisableTodayAct(false);
     }
 
     if (
@@ -161,15 +161,15 @@ function CampExecutionEnd({ facilitator, learnerCount, campType }) {
             !disableEndCamp
               ? setOpenModal(true)
               : !disableTodayAct
-              ? navigate(`/camps/${id}/campexecution/activities`)
-              : navigate(`/camps/${id}/campexecution/attendance`);
+                ? navigate(`/camps/${id}/campexecution/activities`)
+                : navigate(`/camps/${id}/campexecution/attendance`);
           }}
         >
           {!disableEndCamp
             ? t("END_CAMP")
             : !disableTodayAct
-            ? t("TODAYS_TASKS")
-            : t("LEARNER_ATTENDANCE")}
+              ? t("TODAYS_TASKS")
+              : t("LEARNER_ATTENDANCE")}
         </FrontEndTypo.Primarybutton>
       </VStack>
       <Modal isOpen={openModal} size="xs">
@@ -221,6 +221,7 @@ export default CampExecutionEnd;
 CampExecutionEnd.propTypes = {
   facilitator: PropTypes.any,
   learnerCount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  campType: PropTypes.string,
 };
 
 const getSessionCount = (data) => {

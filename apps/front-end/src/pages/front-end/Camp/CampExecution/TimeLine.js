@@ -45,6 +45,15 @@ const TimelineItem = ({ index, title, description, isLast, space, isDone }) => {
   );
 };
 
+TimelineItem.propTypes = {
+  index: PropTypes.number,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  isLast: PropTypes.bool,
+  space: PropTypes.number,
+  isDone: PropTypes.bool,
+};
+
 const App = ({ data, _vstack }) => {
   return (
     <VStack space={6} {..._vstack}>
@@ -59,6 +68,11 @@ const App = ({ data, _vstack }) => {
       ))}
     </VStack>
   );
+};
+
+App.propTypes = {
+  data: PropTypes.array,
+  _vstack: PropTypes.any,
 };
 
 function TimeLineBtn(props) {

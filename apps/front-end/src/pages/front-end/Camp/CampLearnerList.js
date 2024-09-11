@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Box, Checkbox, HStack, Text, VStack } from "native-base";
 import {
   Layout,
@@ -12,18 +12,19 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // App
-export default function CampList({ userTokenInfo, footerLinks }) {
-  const [loading, setLoading] = React.useState(true);
-  const [alert, setAlert] = React.useState(false);
-  const [errors, setErrors] = React.useState();
+export default function CampList({ userTokenInfo }) {
+  const [loading, setLoading] = useState(true);
+  const [alert, setAlert] = useState(false);
+  const [errors, setErrors] = useState();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [nonRegisteredUser, setNonRegisteredUser] = React.useState([]);
-  const [selectedIds, setSelectedIds] = React.useState([]);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [nonRegisteredUser, setNonRegisteredUser] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isDisable, setIsDisable] = useState(false);
 
   const selectAllChecked = selectedIds?.length === nonRegisteredUser?.length;
   const onPressBackButton = async () => {
@@ -70,7 +71,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
       setAlert(true);
     }
   };
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await campService.campNonRegisteredUser();
     setNonRegisteredUser(result?.data?.user);
     setLoading(false);
@@ -229,3 +230,7 @@ export default function CampList({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+CampList.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
