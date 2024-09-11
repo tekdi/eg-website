@@ -436,7 +436,7 @@ export default function List({ userTokenInfo, stateName }) {
 }
 
 List.propTypes = {
-  footerLinks: PropTypes.any,
+  stateName: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };
 

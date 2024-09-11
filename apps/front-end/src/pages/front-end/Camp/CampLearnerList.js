@@ -232,5 +232,5 @@ export default function CampList({ userTokenInfo }) {
 }
 
 CampList.propTypes = {
-  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
 };
