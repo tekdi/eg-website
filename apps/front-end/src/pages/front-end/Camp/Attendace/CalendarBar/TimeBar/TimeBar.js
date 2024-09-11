@@ -3,7 +3,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { calendar, overrideColorTheme } from "@shiksha/common-lib";
 import moment from "moment";
-
+import PropTypes from "prop-types";
 // Helper Components
 import { Display } from "./Display";
 import { Children } from "./Children";
@@ -27,4 +27,10 @@ export const TimeBar = (props) => {
       <Children type={props.type} date={date} page={props.page} />
     </Display>
   );
+};
+
+TimeBar.propTypes = {
+  type: PropTypes.any,
+  page: PropTypes.any,
+  setActiveColor: PropTypes.any,
 };

@@ -1,43 +1,35 @@
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
-  campService,
-  FrontEndTypo,
-  Layout,
-  Alert as TAlert,
-  Loading,
   Camera,
-  uploadRegistryService,
-  ImageView,
-  useLocationData,
-  CardComponent,
-  enumRegistryService,
-  CustomAlert,
+  campService,
   chunk,
+  CustomAlert,
+  enumRegistryService,
+  FrontEndTypo,
+  ImageView,
+  Layout,
+  Loading,
+  Alert as TAlert,
+  uploadRegistryService,
+  useLocationData,
 } from "@shiksha/common-lib";
-import Chip from "component/Chip";
 import moment from "moment";
 import {
   Box,
   HStack,
-  VStack,
-  Alert,
   Image,
-  Stack,
   Pressable,
-  Spinner,
   Progress,
+  Spinner,
+  Stack,
+  VStack,
 } from "native-base";
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import CampExecutionEnd from "./CampExecutionEnd";
 import CampAttendance from "./CampAttendance";
+import CampExecutionEnd from "./CampExecutionEnd";
 import CampTodayActivities from "./CampTodayActivities";
+import PropTypes from "prop-types";
 
 export default function CampExecution({
   footerLinks,
@@ -116,7 +108,7 @@ export default function CampExecution({
     (item) => {
       setActiveChip(item);
     },
-    [setActiveChip]
+    [setActiveChip],
   );
 
   useEffect(() => {
@@ -157,25 +149,6 @@ export default function CampExecution({
     setStart(true);
   }, [setStart]);
 
-  // uploadAttendencePicture from start camp
-  // const uploadAttendencePicture = async (activitiesId) => {
-  //   if (cameraFile) {
-  //     const dataQ = {
-  //       ...data,
-  //       context_id: activitiesId,
-  //       user_id: facilitator?.id,
-  //       status: "present",
-  //       reason: "camp_started",
-  //       photo_1: `${cameraFile}`,
-  //     };
-  //     await campService.markCampAttendance(dataQ);
-  //     setCameraFile();
-  //   } else {
-  //     setError("Capture Picture First");
-  //   }
-  //   setCameraUrl();
-  // };
-
   const getAccess = useCallback(async () => {
     if (
       todaysActivity?.camp_day_happening === "no" ||
@@ -202,7 +175,7 @@ export default function CampExecution({
           <VStack p={4} space={3}>
             <FrontEndTypo.H1>{t("MARK_ATTENDANCE")}</FrontEndTypo.H1>
             <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
-              "CAMP_ID"
+              "CAMP_ID",
             )} : ${campDetail?.id}`}</FrontEndTypo.H4>
             <Camera
               messageComponent={
@@ -251,13 +224,13 @@ export default function CampExecution({
                         const { loaded, total } = progressEvent;
                         let percent = Math.floor((loaded * 100) / total);
                         setProgress(percent);
-                      }
+                      },
                     );
                     if (
                       uploadDoc?.data?.insert_documents?.returning?.[0]?.name
                     ) {
                       setCameraFile(
-                        uploadDoc?.data?.insert_documents?.returning?.[0]?.name
+                        uploadDoc?.data?.insert_documents?.returning?.[0]?.name,
                       );
                     }
                     setCameraUrl({ url, file });
@@ -293,7 +266,7 @@ export default function CampExecution({
           <VStack py={6} px={4} mb={5} space="6">
             <FrontEndTypo.H2>{t("MARK_ATTENDANCE")}</FrontEndTypo.H2>
             <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
-              "CAMP_ID"
+              "CAMP_ID",
             )} : ${campDetail?.id}`}</FrontEndTypo.H4>
             <HStack justifyContent={"center"} flexWrap={"wrap"}>
               <ImageView
@@ -311,13 +284,18 @@ export default function CampExecution({
             <VStack space={4}>
               {moodList?.map((pitem) => {
                 return (
-                  <HStack justifyContent={"center"} flex="1" space={4}>
-                    {pitem?.map((item) => {
+                  <HStack
+                    justifyContent={"center"}
+                    flex="1"
+                    space={4}
+                    key={JSON.stringify(pitem)}
+                  >
+                    {pitem?.map((item, index) => {
                       return (
                         <Pressable
+                          key={index + 1}
                           flex="1"
                           alignItems={"center"}
-                          key={item}
                           borderColor="btnGray.100"
                           borderRadius="10px"
                           borderWidth="1px"
@@ -422,7 +400,7 @@ export default function CampExecution({
       analyticsPageTitle={"CAMP"}
       pageTitle={t("CAMP_EXECUTION")}
       stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
-        "CAMP_EXECUTION"
+        "CAMP_EXECUTION",
       )}`}
     >
       {!todaysActivity?.id ? (
@@ -464,18 +442,6 @@ export default function CampExecution({
                 height="71px"
                 source={{ document_id: facilitator?.profile_photo_1?.id }}
               />
-              {/* <CardComponent
-                _header={{ bg: "light.100" }}
-                _vstack={{
-                  bg: "light.100",
-                  flex: 1,
-                  pt: 2,
-                  m: 4,
-                  mb: 4,
-                }}
-              >
-                {t("YOUR_WELCOME_READY_TO_FLY")}
-              </CardComponent> */}
             </VStack>
           </Box>
           <VStack space="4">
@@ -504,7 +470,7 @@ export default function CampExecution({
                     {t("WILL_THE_CAMP_BE_CONDUCTED_TODAY")}
                   </FrontEndTypo.H3>
                   <FrontEndTypo.H4 color="grayTitleCard">{`${t(
-                    "DATE"
+                    "DATE",
                   )} : ${currectDate}`}</FrontEndTypo.H4>
                 </VStack>
                 <FrontEndTypo.Primarybutton onPress={campBegin}>
@@ -526,7 +492,7 @@ export default function CampExecution({
             title={t(
               todaysActivity?.camp_day_happening === "no"
                 ? "CAMP_LEAVE"
-                : "TODAYS_CAMP_HAS_BEEN_COMPLETED"
+                : "TODAYS_CAMP_HAS_BEEN_COMPLETED",
             )}
           />
           <FrontEndTypo.Primarybutton onPress={(e) => navigate(`/camps`)}>
@@ -537,3 +503,9 @@ export default function CampExecution({
     </Layout>
   );
 }
+
+CampExecution.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
+  setAlert: PropTypes.func,
+};

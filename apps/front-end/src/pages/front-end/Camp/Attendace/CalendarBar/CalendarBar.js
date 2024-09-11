@@ -1,6 +1,7 @@
 // Lib
 import React from "react";
 import { TimeBar } from "./TimeBar/TimeBar";
+import PropTypes from "prop-types";
 
 const CalendarBar = ({ view, ...props }) => {
   let CalendarBar = <></>;
@@ -27,3 +28,7 @@ CalendarBar.defaultProps = {
 };
 
 export default CalendarBar;
+
+CalendarBar.propTypes = {
+  view: PropTypes.string,
+};

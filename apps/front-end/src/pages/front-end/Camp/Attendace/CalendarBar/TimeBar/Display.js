@@ -2,6 +2,7 @@
 import * as React from "react";
 import { Box, HStack, useToast } from "native-base";
 import { IconByName, overrideColorTheme } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 const colors = overrideColorTheme();
 
@@ -93,4 +94,16 @@ export const Display = ({
       </HStack>
     </Box>
   );
+};
+
+Display.propTypes = {
+  children: PropTypes.any,
+  activeColor: PropTypes.any,
+  page: PropTypes.any,
+  setPage: PropTypes.func,
+  nextDisabled: PropTypes.any,
+  previousDisabled: PropTypes.any,
+  rightErrorText: PropTypes.any,
+  leftErrorText: PropTypes.any,
+  _box: PropTypes.any,
 };

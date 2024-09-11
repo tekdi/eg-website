@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from "react";
 import {
   useWindowSize,
   IconByName,
@@ -5,10 +6,9 @@ import {
   checkAadhaar,
 } from "@shiksha/common-lib";
 import { Box, VStack, HStack, Center } from "native-base";
-import React from "react";
 import { QrReader } from "react-qr-reader";
 import { useTranslation } from "react-i18next";
-import moment from "moment";
+import PropTypes from "prop-types";
 
 const App = ({
   setOtpFailedPopup,
@@ -19,22 +19,20 @@ const App = ({
   setAadhaarCompare,
   user,
 }) => {
-  const [selected, setSelected] = React.useState(false);
-  const [startScan, setStartScan] = React.useState(true);
-  const [loadingScan, setLoadingScan] = React.useState(false);
-  const [data, setData] = React.useState("");
+  const [selected, setSelected] = useState(false);
+  const [startScan, setStartScan] = useState(true);
+  const [loadingScan, setLoadingScan] = useState(false);
   const { t } = useTranslation();
   const [width, height] = useWindowSize();
-  const topElement = React.useRef(null);
-  const bottomElement = React.useRef(null);
-  const [cameraHeight, setCameraHeight] = React.useState();
-  const [cameraWidth, setCameraWidth] = React.useState();
-  const [torch, setTorch] = React.useState(false);
+  const topElement = useRef(null);
+  const bottomElement = useRef(null);
+  const [cameraHeight, setCameraHeight] = useState();
+  const [cameraWidth, setCameraWidth] = useState();
+  const [torch, setTorch] = useState(false);
 
   const handleScan = async (scanData) => {
     setLoadingScan(true);
     if (scanData && scanData !== "") {
-      setData(scanData);
       const result = await authRegistryService.aadhaarQr({
         qr_data: scanData?.text ? scanData?.text : scanData,
       });
@@ -78,10 +76,10 @@ const App = ({
   };
 
   const handleError = (err) => {
-    console.error(err);
+    console.error(err, loadingScan);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
 
     async function fetchData() {
@@ -132,8 +130,6 @@ const App = ({
                 size: "30px",
               }}
               onPress={(e) => {
-                // setPage();
-                // setOtpFailedPopup(true);
                 setStartScan(false);
               }}
             />
@@ -205,3 +201,13 @@ const App = ({
 };
 
 export default App;
+
+App.propTypes = {
+  setOtpFailedPopup: PropTypes.func,
+  setPage: PropTypes.func,
+  setError: PropTypes.func,
+  id: PropTypes.any,
+  setAttempt: PropTypes.func,
+  setAadhaarCompare: PropTypes.func,
+  user: PropTypes.any,
+};

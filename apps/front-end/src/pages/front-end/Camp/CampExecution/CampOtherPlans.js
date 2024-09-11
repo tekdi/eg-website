@@ -5,10 +5,11 @@ import {
   campService,
   enumRegistryService,
 } from "@shiksha/common-lib";
-import { VStack, HStack, ScrollView } from "native-base";
+import { VStack, ScrollView } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { RadioBtn } from "component/BaseInput";
+import PropTypes from "prop-types";
 
 const CampOtherPlans = memo(({ footerLinks, userTokenInfo }) => {
   const { t } = useTranslation();
@@ -150,3 +151,8 @@ const CampOtherPlans = memo(({ footerLinks, userTokenInfo }) => {
 });
 
 export default CampOtherPlans;
+
+CampOtherPlans.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.any,
+};

@@ -1,5 +1,5 @@
 import { FrontEndTypo } from "@shiksha/common-lib";
-import { Stack, Text, VStack } from "native-base";
+import { Stack, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

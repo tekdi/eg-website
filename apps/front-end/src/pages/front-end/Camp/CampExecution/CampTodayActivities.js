@@ -26,6 +26,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import { CampSessionPlan } from "./CampSessionPlan";
+import PropTypes from "prop-types";
 
 export default function CampTodayActivities({
   setAlert,
@@ -56,11 +57,11 @@ export default function CampTodayActivities({
     const result = await campService.getActivity(obj);
     if (result?.data?.camp_days_activities_tracker?.[0]?.misc_activities) {
       setSelectValue(
-        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
+        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || [],
       );
       setActivitiesValue(true);
       setMiscActivities(
-        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || []
+        result?.data?.camp_days_activities_tracker?.[0]?.misc_activities || [],
       );
     } else {
       setActivitiesValue(false);
@@ -104,7 +105,7 @@ export default function CampTodayActivities({
           setButtonName({ main: "main" });
         } else {
           let filteredData = data.filter(
-            (item) => item.session_tracks.length > 0
+            (item) => item.session_tracks.length > 0,
           );
           filteredData = filteredData?.[filteredData?.length - 1];
           let assessment_type = "";
@@ -132,7 +133,7 @@ export default function CampTodayActivities({
           });
           const incompleteUser = getIncompleteAssessments(
             resultScore?.data,
-            assessment_type
+            assessment_type,
           );
           if (
             incompleteUser?.learners?.data?.length > 0 &&
@@ -189,7 +190,7 @@ export default function CampTodayActivities({
       facilitator={facilitator}
       pageTitle={t("TODAYS_ACTIVITIES")}
       stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
-        "TODAYS_ACTIVITIES"
+        "TODAYS_ACTIVITIES",
       )}`}
     >
       <VStack p="4" space={4}>
@@ -311,6 +312,13 @@ export default function CampTodayActivities({
   );
 }
 
+CampTodayActivities.propTypes = {
+  setAlert: PropTypes.func,
+  activityId: PropTypes.any,
+  campType: PropTypes.string,
+  userTokenInfo: PropTypes.object,
+};
+
 const getIncompleteAssessments = (data, assessmentType) => {
   if (!data) return {};
 
@@ -328,15 +336,15 @@ const getIncompleteAssessments = (data, assessmentType) => {
   learners.forEach((learner, index) => {
     const subjectIds = jsonParse(
       learner?.program_beneficiaries?.[0]?.subjects,
-      []
+      [],
     );
 
     const eligibleSubjects = subjects_name.filter((subject) =>
-      subjectIds.includes(`${subject?.id}`)
+      subjectIds.includes(`${subject?.id}`),
     );
 
     const eligibleSubjectIds = eligibleSubjects.map(
-      (subject) => `${subject.id}`
+      (subject) => `${subject.id}`,
     );
 
     let learnerAssessment = {
@@ -347,7 +355,7 @@ const getIncompleteAssessments = (data, assessmentType) => {
     if (
       !assessmentType ||
       ["base_line", "base-line", "fa1", "fa2", "end_line", "end-line"].includes(
-        assessmentType
+        assessmentType,
       )
     ) {
       // Check base_line
@@ -366,7 +374,7 @@ const getIncompleteAssessments = (data, assessmentType) => {
       const fa1Assessments = learner.pcr_formative_assesments?.filter(
         (assessment) =>
           assessment.formative_assessment_first_learning_level &&
-          eligibleSubjectIds.includes(`${assessment?.subject_id}`)
+          eligibleSubjectIds.includes(`${assessment?.subject_id}`),
       );
 
       if (!fa1Assessments || fa1Assessments?.length < eligibleSubjects.length) {
@@ -387,7 +395,7 @@ const getIncompleteAssessments = (data, assessmentType) => {
       const fa2Assessments = learner.pcr_formative_assesments?.filter(
         (assessment) =>
           assessment.formative_assessment_second_learning_level &&
-          eligibleSubjectIds.includes(`${assessment?.subject_id}`)
+          eligibleSubjectIds.includes(`${assessment?.subject_id}`),
       );
       if (!fa2Assessments || fa2Assessments?.length < eligibleSubjects.length) {
         result["fa2"].data.push(learner);

@@ -5,6 +5,20 @@ import { useTranslation } from "react-i18next";
 import { VStack } from "native-base";
 import moment from "moment";
 import { FormatDate } from "../FormatDate";
+import PropTypes from "prop-types";
+
+const getTitle = (page) => {
+  switch (true) {
+    case page === 0:
+      return "TODAY";
+    case page === 1:
+      return "TOMORROW";
+    case page === -1:
+      return "YESTERDAY";
+    default:
+      return moment().format("dddd");
+  }
+};
 
 export const Children = ({ type, date, page }) => {
   const { t } = useTranslation();
@@ -13,9 +27,6 @@ export const Children = ({ type, date, page }) => {
       return (
         <VStack>
           <FormatDate date={date} type="Month" />
-          {/* <Text fontSize="10" fontWeight="300">
-			{t("THIS_MONTH")}
-		  </Text> */}
         </VStack>
       );
     case type === "week":
@@ -30,20 +41,17 @@ export const Children = ({ type, date, page }) => {
     default:
       return (
         <VStack>
-          <H2>
-            {page === 0
-              ? t("TODAY")
-              : page === 1
-              ? t("TOMORROW")
-              : page === -1
-              ? t("YESTERDAY")
-              : // @ts-ignore
-                moment(date).format("dddd")}
-          </H2>
+          <H2>{t(getTitle(page))}</H2>
           <Caption>
             <FormatDate date={date} />
           </Caption>
         </VStack>
       );
   }
+};
+
+Children.propTypes = {
+  type: PropTypes.any,
+  date: PropTypes.any,
+  page: PropTypes.any,
 };

@@ -1,25 +1,17 @@
+import React, { useEffect, useState } from "react";
 import {
+  arrList,
+  BodyMedium,
+  campService,
+  ConsentService,
   FrontEndTypo,
   IconByName,
   Layout,
-  campService,
-  ConsentService,
-  arrList,
-  BodyMedium,
 } from "@shiksha/common-lib";
-import {
-  HStack,
-  Pressable,
-  Image,
-  Avatar,
-  Alert,
-  VStack,
-  Progress,
-  Box,
-} from "native-base";
-import React, { useEffect, useState } from "react";
+import { Alert, Box, HStack, Pressable, Progress, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const getColor = (obj, arr) => {
   const result = arrList(obj, arr);
@@ -32,7 +24,7 @@ const getColor = (obj, arr) => {
   return color;
 };
 
-export default function CampRegistration({ userTokenInfo, footerLinks }) {
+export default function CampRegistration({ userTokenInfo }) {
   const navigate = useNavigate();
   const camp_id = useParams();
   const { t } = useTranslation();
@@ -145,8 +137,8 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       !["CAMP_VENUE_PHOTOS", "CAMP_LOCATION", "FACILITIES", "KIT"].every(
         (name) =>
           navdata.some(
-            (item) => item.Name === name && item.color === "green.500"
-          )
+            (item) => item.Name === name && item.color === "green.500",
+          ),
       )
     ) {
       setIsDisable(true);
@@ -189,6 +181,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
       stepTitle={`${
         campDetails?.type === "main" ? t("MAIN_CAMPS") : t("PCR_CAMPS")
       }/${t("PROFILE")}`}
+      facilitator={userTokenInfo?.authUser || {}}
     >
       <VStack p="4" space={4}>
         <FrontEndTypo.H1>{`${
@@ -218,7 +211,7 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
                 ],
                 facilities: [campDetails?.properties?.property_facilities],
               },
-              ["location", "camp_photo", "facilities", "kit_received"]
+              ["location", "camp_photo", "facilities", "kit_received"],
             )}
             size="sm"
             colorScheme="warning"
@@ -271,9 +264,6 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
           })}
           {campDetails?.kit_received === "yes" && (
             <Pressable
-              // bg="boxBackgroundColour.100"
-              // shadow="AlertShadow"
-              // borderRadius="10px"
               onPress={async () => {
                 navigate(`/camps/${camp_id?.id}/kit_material_details`);
               }}
@@ -327,6 +317,10 @@ export default function CampRegistration({ userTokenInfo, footerLinks }) {
   );
 }
 
+CampRegistration.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
+
 const NavigationBox = ({ NavName, camp_id, color, step, disableEdit }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -370,4 +364,12 @@ const NavigationBox = ({ NavName, camp_id, color, step, disableEdit }) => {
       </HStack>
     </Pressable>
   );
+};
+
+NavigationBox.propTypes = {
+  NavName: PropTypes.string,
+  camp_id: PropTypes.object,
+  color: PropTypes.string,
+  step: PropTypes.string,
+  disableEdit: PropTypes.bool,
 };

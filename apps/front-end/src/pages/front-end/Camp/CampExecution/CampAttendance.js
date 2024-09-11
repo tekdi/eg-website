@@ -8,13 +8,13 @@ import {
   Camera,
   Loading,
   uploadRegistryService,
-  GeoLocation,
   UserCard,
   useLocationData,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
+import PropTypes from "prop-types";
 
 const PRESENT = "present";
 const ABSENT = "absent";
@@ -100,7 +100,7 @@ export default function CampAttendancePage({
         bodyHeight -
           ref?.current?.clientHeight -
           (refBtn?.current?.clientHeight || 0) -
-          30
+          30,
       );
     } else {
       setLoadingHeight(bodyHeight);
@@ -128,7 +128,7 @@ export default function CampAttendancePage({
           }
           const result = await campService.updateCampAttendance(payLoad);
           const coruntIndex = groupUsers.findIndex(
-            (item) => item?.id === user?.id
+            (item) => item?.id === user?.id,
           );
           let newData = groupUsers;
           newData[coruntIndex]["attendances"] = [result?.attendance];
@@ -148,7 +148,7 @@ export default function CampAttendancePage({
           };
           const result = await campService.markCampAttendance(payLoad);
           const coruntIndex = groupUsers.findIndex(
-            (item) => item?.id === user?.id
+            (item) => item?.id === user?.id,
           );
           let newData = groupUsers;
           newData[coruntIndex]["attendances"] = [result?.attendance];
@@ -165,7 +165,7 @@ export default function CampAttendancePage({
         };
         const result = await campService.markCampAttendance(payLoad);
         const coruntIndex = groupUsers.findIndex(
-          (item) => item?.id === user?.id
+          (item) => item?.id === user?.id,
         );
         let newData = groupUsers;
         newData[coruntIndex]["attendances"] = [result?.attendance];
@@ -178,7 +178,7 @@ export default function CampAttendancePage({
         setUserData();
       } else {
         const coruntIndex = groupUsers.findIndex(
-          (item) => item?.id === user?.id
+          (item) => item?.id === user?.id,
         );
         if (groupUsers[coruntIndex + 1]) {
           setCameraUrl();
@@ -220,7 +220,7 @@ export default function CampAttendancePage({
           <VStack padding={"4"} space={4}>
             <FrontEndTypo.H2>{t("MARK_ATTENDANCE")}</FrontEndTypo.H2>
             <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
-              "CAMP_ID"
+              "CAMP_ID",
             )} : ${id}`}</FrontEndTypo.H4>
             <Camera
               facing={true}
@@ -315,7 +315,7 @@ export default function CampAttendancePage({
                         const { loaded, total } = progressEvent;
                         let percent = Math.floor((loaded * 100) / total);
                         setProgress(percent);
-                      }
+                      },
                     );
                     if (uploadDoc) {
                       setCameraFile(uploadDoc);
@@ -353,18 +353,9 @@ export default function CampAttendancePage({
       analyticsPageTitle={"CAMP_LEARNER_ATTENDANCE"}
       pageTitle={t("ATTENDANCE")}
       stepTitle={`${campType === "main" ? t("MAIN_CAMP") : t("PCR_CAMP")}/${t(
-        "ATTENDANCE"
+        "ATTENDANCE",
       )}`}
     >
-      {/* <GeoLocation
-        getLocation={(lat, long, err) => {
-          if (err) {
-            setError(err);
-          } else {
-            setData({ ...data, lat: `${lat}`, long: `${long}` });
-          }
-        }}
-      /> */}
       <Modal
         isOpen={error}
         avoidKeyboard
@@ -422,16 +413,16 @@ export default function CampAttendancePage({
             }}
           />
         </InfiniteScroll>
-        {/* <FrontEndTypo.Primarybutton
-          ref={refBtn}
-          onPress={(e) => navigate(`/camps/${id}/campexecution`)}
-        >
-          {t("SUBMIT")}
-        </FrontEndTypo.Primarybutton> */}
       </VStack>
     </Layout>
   );
 }
+
+CampAttendancePage.propTypes = {
+  activityId: PropTypes.any,
+  campType: PropTypes.string,
+  facilitator: PropTypes.any,
+};
 
 const List = memo(
   ({
@@ -461,10 +452,10 @@ const List = memo(
                       isEditable?.[item.id] || !item?.attendances?.[0]?.status
                         ? "white"
                         : item?.attendances?.[0]?.status === PRESENT
-                        ? "green.100"
-                        : item?.attendances?.[0]?.status === ABSENT
-                        ? "red.100"
-                        : "",
+                          ? "green.100"
+                          : item?.attendances?.[0]?.status === ABSENT
+                            ? "red.100"
+                            : "",
                   }}
                   _vstack={{ py: 2 }}
                   _image={{ size: 45, color: "gray" }}
@@ -535,5 +526,13 @@ const List = memo(
           })}
       </VStack>
     );
-  }
+  },
 );
+
+List.propTypes = {
+  groupUsers: PropTypes.any,
+  isEditable: PropTypes.any,
+  addAttendance: PropTypes.any,
+  setIsEditable: PropTypes.any,
+  uploadAttendence: PropTypes.any,
+};
