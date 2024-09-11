@@ -182,6 +182,7 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filterName, setFilterName] = useState();
+  const [title, setTitle] = useState();
   const handleRowClick = (row) => {
     if (row?.program_beneficiaries?.status === "pragati_syc_reattempt") {
       navigate(`/admin/learners/syc/${row?.id}`);
@@ -228,17 +229,30 @@ function EnrollmentVerificationList({ footerLinks }) {
     setUrlFilterApply(true);
   }, []);
 
-  useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    let { state_name } = await getSelectedProgramId();
-    setStateName(state_name);
-    let list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS;
-    if (state_name !== "RAJASTHAN") {
-      list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS?.filter(
-        (e) => e.value != "sso_id_verified",
-      );
-    }
-    setBeneficiaryStatus(list);
+  useEffect(() => {
+    const init = async () => {
+      const result = await enumRegistryService.listOfEnum();
+      let { state_name } = await getSelectedProgramId();
+      setStateName(state_name);
+      let list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS;
+      if (state_name !== "RAJASTHAN") {
+        list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS?.filter(
+          (e) => e.value != "sso_id_verified",
+        );
+      }
+      let title1;
+      if (type === "SSOID") {
+        title1 = "SSOID_VERIFICATION";
+      } else if (type === "SYC") {
+        title1 = "SYC_VERIFICATION";
+      } else {
+        title1 = "ENROLLMENT_VERIFICATION";
+      }
+      setTitle(title1);
+
+      setBeneficiaryStatus(list);
+    };
+    init();
   }, []);
 
   const setFilterObject = (data) => {
@@ -268,15 +282,7 @@ function EnrollmentVerificationList({ footerLinks }) {
             name="ArrowRightSLineIcon"
             onPress={(e) => navigate("/admin/learners")}
           />
-          <AdminTypo.H4 bold>
-            {t(
-              type === "SSOID"
-                ? "SSOID_VERIFICATION"
-                : type === "SYC"
-                  ? "SYC_VERIFICATION"
-                  : "ENROLLMENT_VERIFICATION",
-            )}
-          </AdminTypo.H4>
+          <AdminTypo.H4 bold>{t(title)}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}
