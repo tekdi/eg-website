@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { VStack } from "native-base";
 import AadharCompare from "./AadhaarCompare";
 import { FrontEndTypo } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 export default function AadhaarSuccess({
   user,
@@ -38,3 +39,10 @@ export default function AadhaarSuccess({
     </VStack>
   );
 }
+
+AadhaarSuccess.propTypes = {
+  user: PropTypes.object,
+  type: PropTypes.string,
+  location: PropTypes.object,
+  aadhaarCompare: PropTypes.object,
+};

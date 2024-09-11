@@ -10,7 +10,7 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ManualResultView from "./ManualResultView";
 
 const ExamResultView = (footerLinks) => {

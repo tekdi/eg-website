@@ -34,10 +34,10 @@ export default function View({ footerLinks }) {
   const [data, setData] = useState();
   const navigate = useNavigate();
   const [enumOptions, setEnumOptions] = useState({});
-  const [contextId, setcontextId] = useState();
-  const [auditLogs, setauditLogs] = useState([]);
-  const [auditMonth, setauditMonth] = useState([]);
-  const [auditYear, setauditYear] = useState([]);
+  const [contextId, setContextId] = useState();
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditMonth, setAuditMonth] = useState([]);
+  const [auditYear, setAuditYear] = useState([]);
   const [enrollmentSubjects, setEnrollmentSubjects] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -76,7 +76,7 @@ export default function View({ footerLinks }) {
           const month = parsedDate.format("MMMM");
           const year = parsedDate.format("YYYY");
 
-          setauditLogs((prevState) => [
+          setAuditLogs((prevState) => [
             ...prevState,
             {
               status: JSON.parse(item?.new_data),
@@ -98,11 +98,11 @@ export default function View({ footerLinks }) {
           return acc;
         },
 
-        { dates: [], months: [], years: [] }
+        { dates: [], months: [], years: [] },
       );
 
-      setauditMonth(uniqueDates?.months);
-      setauditYear(uniqueDates?.years);
+      setAuditMonth(uniqueDates?.months);
+      setAuditYear(uniqueDates?.years);
     }
   }, [contextId]);
 
@@ -132,22 +132,22 @@ export default function View({ footerLinks }) {
       setBoardName(boardName?.name);
       setData(newData?.result);
       const subjectId = jsonParse(
-        newData?.result?.program_beneficiaries?.subjects
+        newData?.result?.program_beneficiaries?.subjects,
       );
       if (subjectId?.length > 0) {
         let subjectResult = await enumRegistryService.subjectsList(value);
         const subjectNames = subjectId.map((id) => {
           const matchingSubject = subjectResult?.subjects?.find(
-            (subject) => subject.subject_id === parseInt(id)
+            (subject) => subject.subject_id === parseInt(id),
           );
           return matchingSubject ? matchingSubject.name : "Subject not found";
         });
         setEnrollmentSubjects(subjectNames);
       }
-      setcontextId(newData?.result?.program_beneficiaries?.id);
+      setContextId(newData?.result?.program_beneficiaries?.id);
       if (newData?.result?.program_beneficiaries?.documents_status) {
         setStatus(
-          JSON.parse(newData?.result?.program_beneficiaries?.documents_status)
+          JSON.parse(newData?.result?.program_beneficiaries?.documents_status),
         );
       }
       const enumData = await enumRegistryService.listOfEnum();
@@ -189,7 +189,7 @@ export default function View({ footerLinks }) {
               textOverflow="ellipsis"
             >
               {["enrolled_ip_verified", "registered_in_camp"].includes(
-                data?.program_beneficiaries?.status
+                data?.program_beneficiaries?.status,
               )
                 ? `${
                     data?.program_beneficiaries?.enrollment_first_name ?? "-"
@@ -254,7 +254,7 @@ export default function View({ footerLinks }) {
                   {data?.program_beneficiaries?.status ===
                   "enrolled_ip_verified"
                     ? data?.program_beneficiaries?.enrollment_dob
-                    : data?.dob ?? "-"}
+                    : (data?.dob ?? "-")}
                 </AdminTypo.H6>
               </HStack>
 

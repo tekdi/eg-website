@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Alert,
@@ -16,7 +16,6 @@ import {
   facilitatorRegistryService,
   Loading,
   IconByName,
-  BodyMedium,
 } from "@shiksha/common-lib";
 import AadhaarOTP from "./AadhaarOTP";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -25,40 +24,40 @@ import ManualUpload from "./ManualUpload/ManualUpload";
 import { useTranslation } from "react-i18next";
 import AadhaarSuccess from "./AadhaarSuccess";
 import Aadhaarokyc2 from "./Aadhaarokyc2";
+import PropTypes from "prop-types";
 
 export default function AdharKyc({ footerLinks }) {
   const location = useLocation();
-  const [page, setPage] = React.useState();
-  const [error, setError] = React.useState();
-  const [data, setData] = React.useState({});
-  const [user, setUser] = React.useState();
-  const [captchaImg, setCaptchaImg] = React.useState("");
-  const [loading, setLoading] = React.useState(true);
-  const [otpFailedPopup, setOtpFailedPopup] = React.useState(false);
+  const [page, setPage] = useState();
+  const [error, setError] = useState();
+  const [data, setData] = useState({});
+  const [user, setUser] = useState();
+  const [captchaImg, setCaptchaImg] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [otpFailedPopup, setOtpFailedPopup] = useState(false);
   const { id, type } = useParams();
   const navigate = useNavigate();
   const attemptCount = 0;
-  const [isQRDisabled, setIsQRDisabled] = React.useState(false);
-  const [isAadharDisabled, setIsAadharDisabled] = React.useState(false);
+  const [isQRDisabled, setIsQRDisabled] = useState(false);
+  const [isAadharDisabled, setIsAadharDisabled] = useState(false);
   const { t } = useTranslation();
-  const [aadhaarCompare, setAadhaarCompare] = React.useState();
-  const [loadingHeight, setLoadingHeight] = React.useState(0);
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [aadhaarCompare, setAadhaarCompare] = useState();
+  const [loadingHeight, setLoadingHeight] = useState(0);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (page === "aadhaar-number") {
       aadhaarInit();
     }
     setLoading(false);
     setIsQRDisabled(
       localStorage.getItem("addhar-number") < attemptCount ||
-        localStorage.getItem("addhar-qr") < attemptCount
+        localStorage.getItem("addhar-qr") < attemptCount,
     );
     setIsAadharDisabled(localStorage.getItem("addhar-number") < attemptCount);
     getUser();
   }, [page]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const typeData = type?.toLowerCase();
     if (["qr", "aadhaar-number", "upload", "okyc2"].includes(typeData)) {
       setPage(typeData);
@@ -151,20 +150,7 @@ export default function AdharKyc({ footerLinks }) {
   if (loading) {
     return <Loading />;
   }
-  // if (user?.aadhar_verified === "yes") {
-  //   return (
-  //     <Layout _footer={{ menues: footerLinks }}>
-  //       <Alert status="success" alignItems={"start"}>
-  //         <HStack alignItems="center" space="2" color>
-  //           <Alert.Icon />
-  //           <BodyMedium>
-  //             {t("YOUR_AADHAAR_VERIFICATION_IS_SUCCESSFUL")}
-  //           </BodyMedium>
-  //         </HStack>
-  //       </Alert>
-  //     </Layout>
-  //   );
-  // }
+
   return (
     <Box>
       {page === "okyc2" ? (
@@ -274,7 +260,7 @@ export default function AdharKyc({ footerLinks }) {
                         setError({
                           ...error,
                           aadhaarNumber: `${t(
-                            "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER"
+                            "AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER",
                           )}`,
                         });
                       } else {
@@ -366,7 +352,7 @@ export default function AdharKyc({ footerLinks }) {
                       <Alert.Icon />
                       <FrontEndTypo.H4>
                         {t(
-                          "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR"
+                          "WE_WILL_SEND_YOU_AN_OTP_TO_THE_MOBILE_NUMBER_LINKED_WITH_YOUR_AADHAAR",
                         )}
                       </FrontEndTypo.H4>
                     </HStack>
@@ -378,7 +364,7 @@ export default function AdharKyc({ footerLinks }) {
                 <li style={{ listStyleType: "disc" }}>
                   <FrontEndTypo.H5 color="gray.600" fontWeight="500">
                     {t(
-                      "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE"
+                      "I_AGREE_TO_DOWNLOAD_MY_AADHAAR_XML_FILE_FROM_THE_UIDAI_WEBSITE_TO_COMPLETE_AADHAAR_OFFLINE_VERIFICATION_WITH_SMALLCASE",
                     )}
                   </FrontEndTypo.H5>
                 </li>
@@ -481,6 +467,10 @@ export default function AdharKyc({ footerLinks }) {
   );
 }
 
+AdharKyc.propTypes = {
+  footerLinks: PropTypes.any,
+};
+
 const AadhaarOptions = ({
   setData,
   setOtpFailedPopup,
@@ -493,18 +483,7 @@ const AadhaarOptions = ({
   id,
 }) => {
   const { t } = useTranslation();
-  const [user, setUser] = React.useState();
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  const getUser = async () => {
-    const result = await facilitatorRegistryService.getOne({ id });
-    if (result?.id) {
-      setUser(result);
-    }
-  };
   return (
     <VStack bg="white" width={"100%"} space="5" p="5">
       <FrontEndTypo.Secondarybutton
@@ -519,32 +498,7 @@ const AadhaarOptions = ({
       >
         {t("TRY_AADHAR_NUMER_KYC")}
       </FrontEndTypo.Secondarybutton>
-      {/* <FrontEndTypo.Secondarybutton
-        isDisabled={isAadharDisabled}
-        onPress={() => {
-          setPage("qr");
-          setOtpFailedPopup(false);
-          navigate(`/aadhaar-kyc/${id}/QR`);
-        }}
-      >
-        {t("TRY_AADHAR_QR_KYC")}
-      </FrontEndTypo.Secondarybutton> */}
-      {/* {user?.aadhar_verified === "in_progress" ? (
-        <React.Fragment></React.Fragment>
-      ) : (
-        <FrontEndTypo.Secondarybutton
-          isDisabled={isQRDisabled}
-          onPress={() => {
-            setPage("upload");
-            setOtpFailedPopup(false);
-            navigate(`/aadhaar-kyc/${id}/upload`, {
-              state: redirect,
-            });
-          }}
-        >
-          {t("TRY_AADHAR_UPLOAD_KYC")}
-        </FrontEndTypo.Secondarybutton>
-      )} */}
+
       <FrontEndTypo.Primarybutton
         onPress={() => {
           navigate("/");
@@ -554,4 +508,16 @@ const AadhaarOptions = ({
       </FrontEndTypo.Primarybutton>
     </VStack>
   );
+};
+
+AadhaarOptions.propTypes = {
+  setData: PropTypes.any,
+  setOtpFailedPopup: PropTypes.any,
+  setError: PropTypes.any,
+  aadhaarInit: PropTypes.any,
+  setPage: PropTypes.any,
+  navigate: PropTypes.any,
+  isQRDisabled: PropTypes.any,
+  redirect: PropTypes.any,
+  id: PropTypes.any,
 };

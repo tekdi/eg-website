@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   aadhaarService,
   Layout,
@@ -6,9 +7,9 @@ import {
   authRegistryService,
   facilitatorRegistryService,
 } from "@shiksha/common-lib";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function Aadhaarokyc2({
   setPage,
@@ -22,8 +23,8 @@ export default function Aadhaarokyc2({
   user,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [loadingHeight, setLoadingHeight] = React.useState(0);
-  const [url, setUrl] = React.useState();
+  const [loadingHeight, setLoadingHeight] = useState(0);
+  const [url, setUrl] = useState();
   const { t } = useTranslation();
 
   const handleSubmit = async (res) => {
@@ -51,7 +52,7 @@ export default function Aadhaarokyc2({
     setLoading(false);
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (user) {
       const id = searchParams.get("id");
       const success = searchParams.get("success");
@@ -69,7 +70,7 @@ export default function Aadhaarokyc2({
     }
   }, [!user]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (url) {
       window.location.replace(url);
     }
@@ -90,3 +91,15 @@ export default function Aadhaarokyc2({
     </Layout>
   );
 }
+
+Aadhaarokyc2.propTypes = {
+  setPage: PropTypes.func,
+  setLoading: PropTypes.func,
+  error: PropTypes.object,
+  setError: PropTypes.func,
+  handalBack: PropTypes.func,
+  setAttempt: PropTypes.func,
+  footerLinks: PropTypes.array,
+  setAadhaarCompare: PropTypes.func,
+  user: PropTypes.object,
+};

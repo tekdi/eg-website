@@ -1,14 +1,15 @@
+import React, { useEffect, useState } from "react";
 import { FrontEndTypo, IconByName, ImageView } from "@shiksha/common-lib";
 import { Alert, HStack, VStack, Image, Box } from "native-base";
-import React from "react";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 export default function AadharCompare({ type, aadhaarCompare }) {
   const { t } = useTranslation();
-  const [data, setData] = React.useState([]);
-  const [isVerified, setIsVerified] = React.useState(true);
+  const [data, setData] = useState([]);
+  const [isVerified, setIsVerified] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const newData = aadhaarCompare?.data || [];
     setData(newData);
     let verData = {};
@@ -41,8 +42,8 @@ export default function AadharCompare({ type, aadhaarCompare }) {
                     ? t("YOUR_AADHAAR_UPLOAD_SUCCESSFUL")
                     : t("YOUR_AADHAAR_UPLOAD_FAILED")
                   : isVerified
-                  ? t("AADHAAR_VERIFICATION_SUCCESSFUL")
-                  : t("AADHAR_KYC_VERIFICATION_FAILED")}
+                    ? t("AADHAAR_VERIFICATION_SUCCESSFUL")
+                    : t("AADHAR_KYC_VERIFICATION_FAILED")}
               </FrontEndTypo.H4>
             </HStack>
           </HStack>
@@ -134,9 +135,14 @@ export default function AadharCompare({ type, aadhaarCompare }) {
                 <FrontEndTypo.H3 flex="1">{item?.aadhaar} </FrontEndTypo.H3>
               </HStack>
             </VStack>
-          )
+          ),
         )}
       </VStack>
     </VStack>
   );
 }
+
+AadharCompare.propTypes = {
+  type: PropTypes.string,
+  aadhaarCompare: PropTypes.object,
+};

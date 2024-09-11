@@ -1,6 +1,7 @@
 import React from "react";
-import { Box, Text, Stack, HStack, Radio, VStack } from "native-base";
+import { Box, Stack, HStack, Radio, VStack } from "native-base";
 import { AdminTypo, FloatingInput, IconByName, t } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 function Shortlisted({ status, setStatus, update, data }) {
   console.log(data);
@@ -78,3 +79,10 @@ function Shortlisted({ status, setStatus, update, data }) {
   );
 }
 export default Shortlisted;
+
+Shortlisted.propTypes = {
+  status: PropTypes.any,
+  setStatus: PropTypes.any,
+  update: PropTypes.any,
+  data: PropTypes.any,
+};
