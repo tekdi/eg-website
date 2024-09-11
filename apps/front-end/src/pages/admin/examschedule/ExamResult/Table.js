@@ -2,25 +2,18 @@ import {
   IconByName,
   AdminTypo,
   tableCustomStyles,
-  enumRegistryService,
   uploadRegistryService,
   ImageView,
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/BeneficiaryStatus";
 import { ExamChipStatus } from "component/Chip";
-import { HStack, VStack, Pressable, Button, Menu, Modal } from "native-base";
+import { HStack, VStack, Pressable, Menu, Modal } from "native-base";
 
-import React, {
-  memo,
-  useCallback,
-  useState,
-  useMemo,
-  useEffect,
-  useRef,
-} from "react";
+import React, { memo, useCallback, useState, useMemo, useRef } from "react";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const dropDown = (triggerProps, t) => {
   return (
@@ -57,7 +50,6 @@ function Table({
   errorMsg,
 }) {
   const { t } = useTranslation();
-  const [selectedData, setSelectedData] = useState();
   const [selectedRow, setSelectedRow] = useState();
   const navigate = useNavigate();
   const uplodInputRef = useRef();
@@ -181,7 +173,7 @@ function Table({
           placement="bottom right"
           trigger={(triggerProps) => dropDown(triggerProps, t)}
         >
-          {row?.beneficiary_user?.exam_results?.[0]?.length > 0 && (
+          {row?.beneficiary_user?.exam_results?.length > 0 ? (
             <Menu.Item>
               <Pressable
                 px="20px"
@@ -200,32 +192,37 @@ function Table({
                 <AdminTypo.H5>{t("VIEW")}</AdminTypo.H5>
               </Pressable>
             </Menu.Item>
+          ) : (
+            <>
+              <Menu.Item>
+                <Pressable
+                  onPress={() => {
+                    openFileUploadDialog(row);
+                  }}
+                >
+                  <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
+                </Pressable>
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
+                  navigate(
+                    `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`,
+                  );
+                }}
+              >
+                <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
+              </Menu.Item>
+            </>
           )}
-          <Menu.Item>
-            <Pressable
-              onPress={() => {
-                openFileUploadDialog(row);
-              }}
-            >
-              <AdminTypo.H5>{t("UPLOAD_PDF")}</AdminTypo.H5>
-            </Pressable>
-          </Menu.Item>
-          <Menu.Item
-            onPress={() => {
-              navigate(
-                `/admin/exams/list/${row?.beneficiary_user?.beneficiary_id}`,
-              );
-            }}
-          >
-            <AdminTypo.H5>{t("MANUAL_UPLOAD")}</AdminTypo.H5>
-          </Menu.Item>
+
           {(row?.beneficiary_user?.exam_results?.[0]?.document_id ||
             row?.beneficiary_user?.exam_result_document?.[0]?.id) && (
             <Menu.Item
               onPress={() =>
                 setOpenView(
-                  row?.beneficiary_user?.exam_results?.[0] ||
-                    row?.beneficiary_user?.exam_result_document?.[0],
+                  row?.beneficiary_user?.exam_results?.[0]?.document_id
+                    ? row?.beneficiary_user?.exam_results?.[0]
+                    : row?.beneficiary_user?.exam_result_document?.[0],
                 )
               }
             >
@@ -238,41 +235,13 @@ function Table({
     },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      const result = await enumRegistryService.statuswiseCount();
-      setSelectedData(result);
-    };
-    getData();
-  }, []);
-
   const columnsMemoized = useMemo(() => columns(t, navigate), [t, navigate]);
 
   return (
     <VStack>
       <VStack p={2} pt="0">
         <AdminTypo.H5 underline bold color="textMaroonColor.600">
-          {filter?.status === undefined || filter?.status?.length === 0 ? (
-            t("ALL") + `(${paginationTotalRows})`
-          ) : filter?.status?.[0] === "all" ? (
-            <AdminTypo.H4 bold>
-              {t("ALL") + `(${paginationTotalRows})`}
-            </AdminTypo.H4>
-          ) : (
-            filter?.status
-              ?.filter((item) => item)
-              .map(
-                (item) =>
-                  t(item).toLowerCase() +
-                  `(${
-                    selectedData
-                      ? selectedData?.find((e) => item === e.status)?.count
-                      : 0
-                  })`,
-              )
-              .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
-              .join(" , ")
-          )}
+          {t("ALL") + `(${paginationTotalRows})`}
         </AdminTypo.H5>
         <input
           accept="application/pdf"
@@ -322,7 +291,6 @@ function Table({
       <Modal isOpen={openView} size="xl" onClose={() => setOpenView()}>
         <Modal.Content>
           <Modal.CloseButton />
-
           <Modal.Body>
             <ImageView
               source={{ document_id: openView?.document_id || openView?.id }}
@@ -342,3 +310,15 @@ function Table({
 }
 
 export default memo(Table);
+
+Table.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+  setLoading: PropTypes.func,
+  height: PropTypes.any,
+  setErrorMsg: PropTypes.func,
+  errorMsg: PropTypes.any,
+};
