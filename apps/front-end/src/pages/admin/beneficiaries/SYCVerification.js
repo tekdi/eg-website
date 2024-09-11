@@ -50,6 +50,8 @@ const checkboxIcons = (value) => {
   });
 };
 
+const syc_reason_keys = ["exam_fee_date", "syc_subjects"];
+
 export default function SYCVerification({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -78,6 +80,15 @@ export default function SYCVerification({ footerLinks }) {
     const { result } = await benificiaryRegistoryService.getOne(id);
     const value = result?.program_beneficiaries?.enrolled_for_board;
     setData(result);
+    const syc_reason = result?.program_beneficiaries?.syc_reason;
+    if (Array.isArray(syc_reason)) {
+      const syc_obj = syc_reason_keys.reduce((acc, key) => {
+        acc[key] = syc_reason?.includes(key) ? "no" : "yes";
+        return acc;
+      }, {});
+      setReason(syc_obj);
+    }
+
     const { subjects } = await enumRegistryService.subjectsList(value);
     const boardName = await enumRegistryService.boardName(value);
     setBoardName(boardName?.name);
@@ -95,7 +106,7 @@ export default function SYCVerification({ footerLinks }) {
 
   const checkValidation = useCallback(() => {
     let data = {};
-    ["exam_fee_date", "syc_subjects"]
+    syc_reason_keys
       .filter((e) => !reason[e])
       .map((e) => (data = { ...data, [e]: t("PLEASE_SELECT") }));
     setError(data);
@@ -395,7 +406,7 @@ export default function SYCVerification({ footerLinks }) {
                   reason?.exam_fee_date === "no" ||
                   reason?.syc_subjects === "no"
                 }
-                onPress={(e) => submit("verified")}
+                onPress={(e) => submit("psyc_verified")}
               >
                 {t("VERIFY")}
               </AdminTypo.Successbutton>
