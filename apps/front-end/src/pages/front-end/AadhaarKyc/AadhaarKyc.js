@@ -255,7 +255,7 @@ export default function AdharKyc({ footerLinks }) {
                       if (
                         value?.length <= 12 &&
                         value &&
-                        !`${value}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+                        !`${value}`?.match(/^[2-9]\d{3}\d{4}\d{4}$/)
                       ) {
                         setError({
                           ...error,

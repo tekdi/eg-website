@@ -58,7 +58,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
 
   useEffect(() => {
     const completeItem = sessionList.filter(
-      (item) => item?.session_tracks?.[0]?.status === "complete"
+      (item) => item?.session_tracks?.[0]?.status === "complete",
     );
     const lastCompleteItem = completeItem.pop();
 
@@ -90,7 +90,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
     setSessionActive(sessionResult);
     setTotalSessionsCompleted(
       sessionResult?.lastSession?.ordering -
-        (sessionResult?.lastSession?.status === "incomplete" ? 0.5 : 0) || 0
+        (sessionResult?.lastSession?.status === "incomplete" ? 0.5 : 0) || 0,
     );
     if (resultCamp?.data?.type == "pcr") {
       //PCR Validations here
@@ -122,7 +122,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
         });
         const incompleteUser = getIncompletLeaner(
           resultScore?.data,
-          assessment_type
+          assessment_type,
         );
         if (incompleteUser?.length > 0) {
           navigate(`/camps/${id}/campexecution/activities`);
@@ -182,11 +182,11 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
                 navigate={navigate}
                 t={t}
                 show={false}
-              />
+              />,
             );
           } else {
             setError(
-              <SessionErrorMessage {...result} navigate={navigate} t={t} />
+              <SessionErrorMessage {...result} navigate={navigate} t={t} />,
             );
           }
         } else {
@@ -231,11 +231,11 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
                   navigate={navigate}
                   t={t}
                   show={false}
-                />
+                />,
               );
             } else {
               setError(
-                <SessionErrorMessage {...result} navigate={navigate} t={t} />
+                <SessionErrorMessage {...result} navigate={navigate} t={t} />,
               );
             }
           } else if (showModal) {
@@ -371,7 +371,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
         <VStack flex={1} space="5" p="5">
           <FrontEndTypo.H2>{t("SESSION")}</FrontEndTypo.H2>
           <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
-            "CAMP_ID"
+            "CAMP_ID",
           )} : ${id}`}</FrontEndTypo.H4>
           <VStack>
             <HStack space={4} alignItems={"center"}>
@@ -385,7 +385,7 @@ export default function CampSessionList({ footerLinks, userTokenInfo }) {
             <Progress
               value={calculateProgress(
                 totalSessionsCompleted,
-                sessionList?.length
+                sessionList?.length,
               )}
               size="sm"
               colorScheme="warning"
@@ -507,8 +507,11 @@ const SessionErrorMessage = ({ t, message, data, navigate, show = true }) => (
     {data && (
       <HStack flexWrap={"wrap"}>
         {data?.map((e) => (
-          <Pressable onPress={() => navigate(`/beneficiary/${e?.id}/pcrview`)}>
-            <Chip children={e?.id} />
+          <Pressable
+            key={e?.id}
+            onPress={() => navigate(`/beneficiary/${e?.id}/pcrview`)}
+          >
+            <Chip>{e?.id}</Chip>
           </Pressable>
         ))}
       </HStack>
@@ -527,13 +530,13 @@ const getIncompletLeaner = (data, type) => {
   result = learners.filter((learner) => {
     const subjectIds = jsonParse(
       learner?.program_beneficiaries?.[0]?.subjects,
-      []
+      [],
     );
 
     if (!subjectIds || subjectIds.length === 0) return false;
 
     const eligibleSubjects = subjects_name.filter((subject) =>
-      subjectIds.includes(`${subject?.id}`)
+      subjectIds.includes(`${subject?.id}`),
     );
 
     if (eligibleSubjects.length === 0) return false;
@@ -543,31 +546,32 @@ const getIncompletLeaner = (data, type) => {
     switch (type) {
       case "base-line":
         validAssessment = !learner.pcr_scores?.some(
-          (score) => score.baseline_learning_level
+          (score) => score.baseline_learning_level,
         );
         break;
 
-      case "fa1":
+      case "fa1": {
         const fa1Assessments = learner.pcr_formative_assesments?.filter(
           (assessment) =>
             assessment.formative_assessment_first_learning_level &&
-            subjectIds.includes(`${assessment?.subject_id}`)
+            subjectIds.includes(`${assessment?.subject_id}`),
         );
         validAssessment = fa1Assessments?.length < eligibleSubjects.length;
         break;
+      }
 
-      case "fa2":
+      case "fa2": {
         const fa2Assessments = learner.pcr_formative_assesments?.filter(
           (assessment) =>
             assessment.formative_assessment_second_learning_level &&
-            subjectIds.includes(`${assessment?.subject_id}`)
+            subjectIds.includes(`${assessment?.subject_id}`),
         );
         validAssessment = fa2Assessments?.length < eligibleSubjects.length;
         break;
-
+      }
       case "end-line":
         validAssessment = !learner.pcr_scores?.some(
-          (score) => score.endline_learning_level
+          (score) => score.endline_learning_level,
         );
         break;
 

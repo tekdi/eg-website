@@ -22,7 +22,7 @@ export default function Aadhaarokyc2({
   setAadhaarCompare,
   user,
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [loadingHeight, setLoadingHeight] = useState(0);
   const [url, setUrl] = useState();
   const { t } = useTranslation();

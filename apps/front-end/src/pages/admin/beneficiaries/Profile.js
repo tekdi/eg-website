@@ -539,7 +539,6 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     ].includes(data?.program_beneficiaries?.enrollment_status);
     if (hasWarning && !openWarningModal && checkNeeded) {
       setOpenWarningModal(true);
-      return;
     } else {
       navigate(`/admin/beneficiary/${id}/editEnrollmentDetails`);
     }

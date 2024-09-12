@@ -71,7 +71,6 @@ const ExamResult = React.lazy(
 //end v2 code
 
 const Dashboard = React.lazy(() => import("pages/front-end/Dashboard"));
-//const Home = React.lazy(() => import("pages/front-end/Home"));
 const LearnerProfile = React.lazy(
   () => import("pages/front-end/ag-form/LearnerProfile"),
 );

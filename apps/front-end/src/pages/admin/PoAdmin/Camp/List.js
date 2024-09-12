@@ -32,70 +32,9 @@ import {
   getFilterLocalStorage,
   getSelectedProgramId,
 } from "@shiksha/common-lib";
-import SelectProgramOrganisation from "../IP/component/SelectProgramOrganisation";
+import { campColumns } from "pages/admin/camps/CampHome";
 
 const filterName = "camp_filter";
-
-const columns = (t, navigate) => [
-  {
-    name: t("CAMP_ID"),
-    selector: (row) => row?.id,
-    sortable: true,
-    attr: "CAMP_ID",
-  },
-  {
-    name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
-    sortable: true,
-    attr: "PRERAK_ID",
-  },
-  {
-    name: t("PRERAK"),
-    selector: (row) =>
-      row?.faciltator?.user?.first_name +
-      " " +
-      row?.faciltator?.user?.last_name,
-    sortable: true,
-    attr: "PRERAK",
-  },
-  {
-    name: t("DISTRICT"),
-    selector: (row) =>
-      row?.properties?.district ? row?.properties?.district : "-",
-    sortable: true,
-    attr: "DISTRICT",
-  },
-  {
-    name: t("BLOCK"),
-    selector: (row) => (row?.properties?.block ? row?.properties?.block : "-"),
-    sortable: true,
-    attr: "BLOCK",
-  },
-  {
-    name: t("CAMP_STATUS"),
-    selector: (row) => (
-      <Pressable onPress={() => navigate(`/poadmin/camps/${row.id}`)}>
-        <CampChipStatus status={row?.group?.status} />
-      </Pressable>
-    ),
-    sortable: true,
-    wrap: true,
-    attr: "CAMP_STATUS",
-  },
-  {
-    name: t("ACTION"),
-    selector: (row) => (
-      <AdminTypo.Secondarybutton
-        my="3"
-        onPress={() => navigate(`/poadmin/camps/${row.id}`)}
-      >
-        {t("VIEW")}
-      </AdminTypo.Secondarybutton>
-    ),
-    sortable: true,
-    attr: "count",
-  },
-];
 
 function CampList({ userTokenInfo }) {
   const { t } = useTranslation();
@@ -109,7 +48,6 @@ function CampList({ userTokenInfo }) {
   const [campFilterStatus, setCampFilterStatus] = useState([]);
   const [enumOptions, setEnumOptions] = useState({});
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
-  const [cohortValue, setCohortValue] = useState();
 
   useEffect(() => {
     const urlFilter = getFilterLocalStorage(filterName);
@@ -161,7 +99,6 @@ function CampList({ userTokenInfo }) {
             <AdminTypo.H4 bold>{t("ALL_CAMPS")}</AdminTypo.H4>
           </HStack>
         </HStack>
-        <SelectProgramOrganisation getValue={(e) => setCohortValue(e)} />
       </HStack>
       <HStack>
         <Box
@@ -186,7 +123,7 @@ function CampList({ userTokenInfo }) {
                 campFilterStatus?.map((item) => {
                   return (
                     <AdminTypo.H6
-                      key={"table"}
+                      key={item}
                       color={
                         filter?.status == t(item?.status)
                           ? "textMaroonColor.600"
@@ -227,7 +164,7 @@ function CampList({ userTokenInfo }) {
                   setFilterLocalStorage(filterName, e);
                 }}
                 customStyles={tableCustomStyles}
-                columns={[...columns(t, navigate)]}
+                columns={[...campColumns(t, navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
@@ -241,13 +178,13 @@ function CampList({ userTokenInfo }) {
                   (e) => {
                     setFilter({ ...filter, limit: e, page: 1 });
                   },
-                  [setFilter, filter]
+                  [setFilter, filter],
                 )}
                 onChangePage={React.useCallback(
                   (e) => {
                     setFilter({ ...filter, page: e });
                   },
-                  [setFilter, filter]
+                  [setFilter, filter],
                 )}
                 onRowClicked={handleRowClick}
                 dense
@@ -385,7 +322,7 @@ export const Filter = ({ filter, setFilter }) => {
           : {}),
       });
     },
-    [filter, setFilterObject]
+    [filter, setFilterObject],
   );
 
   const clearFilter = () => {
@@ -394,9 +331,8 @@ export const Filter = ({ filter, setFilter }) => {
     setFacilitatorFilter({});
   };
   useEffect(async () => {
-    const { error, ...result } = await facilitatorRegistryService.searchByCamp(
-      facilitatorFilter
-    );
+    const { error, ...result } =
+      await facilitatorRegistryService.searchByCamp(facilitatorFilter);
 
     if (!error) {
       let newData;
@@ -429,7 +365,7 @@ export const Filter = ({ filter, setFilter }) => {
             {t("CLEAR_FILTER")}(
             {
               Object.keys(filter || {}).filter(
-                (e) => !["limit", "page"].includes(e)
+                (e) => !["limit", "page"].includes(e),
               ).length
             }
             )

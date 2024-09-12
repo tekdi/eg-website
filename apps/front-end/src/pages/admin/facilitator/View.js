@@ -170,7 +170,7 @@ export default function FacilitatorView({ footerLinks }) {
     if (qual?.length > 0) {
       const filterData = qualificationList?.filter((e) => {
         const qualData = qual?.find((item) => `${item}` === `${e?.id}`);
-        return qualData ? true : false;
+        return !!qualData;
       });
 
       setQualifications(filterData);

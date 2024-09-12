@@ -986,6 +986,6 @@ AlertCustom.propTypes = {
   alert: PropTypes.string,
 };
 
-App.PropTypes = {
+App.propTypes = {
   footerLinks: PropTypes.any,
 };

@@ -152,7 +152,7 @@ export default function CampRegistration({ userTokenInfo }) {
   };
 
   const disableEdit = (extra = []) =>
-    ["camp_ip_verified", ...extra].includes(campStatus) ? false : true;
+    !["camp_ip_verified", ...extra].includes(campStatus);
 
   const SubmitCampRegistration = async () => {
     setIsDisable(true);
