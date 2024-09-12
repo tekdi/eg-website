@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "../AdminBeneficiariesList";
 import { debounce } from "lodash";
 import PropTypes from "prop-types";
-const filterName = "leaner_enrollment_filter";
+const filterNameCore = "leaner_enrollment_filter";
 
 const columns = (t, navigate) => [
   {
@@ -141,14 +141,20 @@ const columns = (t, navigate) => [
   {
     name: t("ACTION"),
     selector: (row) =>
-      ["enrolled", "sso_id_enrolled"].includes(
+      ["enrolled", "sso_id_enrolled", "pragati_syc_reattempt"].includes(
         row?.program_beneficiaries?.status,
       ) &&
       !(row?.is_duplicate === "yes" && row?.is_deactivated === null) && (
         <AdminTypo.Secondarybutton
           my="3"
           onPress={() => {
-            navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+            if (
+              row?.program_beneficiaries?.status === "pragati_syc_reattempt"
+            ) {
+              navigate(`/admin/learners/syc/${row?.id}`);
+            } else {
+              navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+            }
           }}
         >
           {t("VIEW")}
@@ -175,8 +181,14 @@ function EnrollmentVerificationList({ footerLinks }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
+  const [filterName, setFilterName] = useState();
+  const [title, setTitle] = useState();
   const handleRowClick = (row) => {
-    navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+    if (row?.program_beneficiaries?.status === "pragati_syc_reattempt") {
+      navigate(`/admin/learners/syc/${row?.id}`);
+    } else {
+      navigate(`/admin/learners/enrollmentReceipt/${row?.id}`);
+    }
   };
 
   const handleOpenButtonClick = () => {
@@ -187,12 +199,17 @@ function EnrollmentVerificationList({ footerLinks }) {
     const init = async () => {
       if (urlFilterApply && stateName) {
         setLoading(true);
+        let status;
+        if (type === "SSOID" && stateName === "RAJASTHAN") {
+          status = "sso_id_enrolled";
+        } else if (type === "SYC") {
+          status = "pragati_syc_reattempt";
+        } else {
+          status = "enrolled";
+        }
         const result = await benificiaryRegistoryService.beneficiariesFilter({
           ...filter,
-          status:
-            type === "SSOID" && stateName == "RAJASTHAN"
-              ? "sso_id_enrolled"
-              : "enrolled",
+          status,
         });
         setData(result.data?.data);
         setPaginationTotalRows(
@@ -205,22 +222,37 @@ function EnrollmentVerificationList({ footerLinks }) {
   }, [filter, stateName]);
 
   useEffect(() => {
-    const urlFilter = getFilterLocalStorage(filterName);
+    const filterNameNew = `${type || "enrollment"}_${filterNameCore}`;
+    setFilterName(filterNameNew);
+    const urlFilter = getFilterLocalStorage(filterNameNew);
     setFilter({ ...filter, ...urlFilter });
     setUrlFilterApply(true);
   }, []);
 
-  useEffect(async () => {
-    const result = await enumRegistryService.listOfEnum();
-    let { state_name } = await getSelectedProgramId();
-    setStateName(state_name);
-    let list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS;
-    if (state_name !== "RAJASTHAN") {
-      list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS?.filter(
-        (e) => e.value != "sso_id_verified",
-      );
-    }
-    setBeneficiaryStatus(list);
+  useEffect(() => {
+    const init = async () => {
+      const result = await enumRegistryService.listOfEnum();
+      let { state_name } = await getSelectedProgramId();
+      setStateName(state_name);
+      let list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS;
+      if (state_name !== "RAJASTHAN") {
+        list = result?.data?.ENROLLEMENT_VERIFICATION_STATUS?.filter(
+          (e) => e.value != "sso_id_verified",
+        );
+      }
+      let title1;
+      if (type === "SSOID") {
+        title1 = "SSOID_VERIFICATION";
+      } else if (type === "SYC") {
+        title1 = "SYC_VERIFICATION";
+      } else {
+        title1 = "ENROLLMENT_VERIFICATION";
+      }
+      setTitle(title1);
+
+      setBeneficiaryStatus(list);
+    };
+    init();
   }, []);
 
   const setFilterObject = (data) => {
@@ -250,13 +282,7 @@ function EnrollmentVerificationList({ footerLinks }) {
             name="ArrowRightSLineIcon"
             onPress={(e) => navigate("/admin/learners")}
           />
-          <AdminTypo.H4 bold>
-            {t(
-              type === "SSOID"
-                ? "SSOID_VERIFICATION"
-                : "ENROLLMENT_VERIFICATION",
-            )}
-          </AdminTypo.H4>
+          <AdminTypo.H4 bold>{t(title)}</AdminTypo.H4>
         </HStack>
         <Input
           size={"xs"}
@@ -369,78 +395,72 @@ function EnrollmentVerificationList({ footerLinks }) {
             }
           >
             <VStack py={6} px={0} mb={5}>
-              <ScrollView horizontal={true} mb="2">
-                <HStack pb="2">
-                  <Text
-                    color={
-                      !filter?.enrollment_verification_status
-                        ? "textRed.400"
-                        : ""
-                    }
-                    bold={!filter?.enrollment_verification_status}
-                    cursor={"pointer"}
-                    mx={3}
-                    onPress={() => {
-                      const { enrollment_verification_status, ...newFilter } =
-                        filter;
-                      setFilterObject(newFilter);
-                    }}
-                  >
-                    {t("BENEFICIARY_ALL")}
-                    {!filter?.enrollment_verification_status &&
-                      `(${paginationTotalRows})`}
-                  </Text>
-                  {beneficiaryStatus
-                    ?.filter((e) => e?.value !== "verified")
-                    ?.map((item, key) => {
-                      return (
-                        <Text
-                          key={item?.title}
-                          color={
-                            filter?.enrollment_verification_status ==
-                            t(item?.value)
-                              ? "textRed.400"
-                              : ""
-                          }
-                          bold={
-                            filter?.enrollment_verification_status ==
-                            t(item?.value)
-                          }
-                          cursor={"pointer"}
-                          mx={3}
-                          onPress={() => {
-                            const newFilter = {
-                              ...filter,
-                              enrollment_verification_status: item?.value,
-                              page: 1,
-                            };
-                            setFilterObject(newFilter);
-                          }}
-                        >
-                          {t(`${item?.title}_LIST`)}
-                          {filter?.enrollment_verification_status ==
-                            t(item?.value) && `(${paginationTotalRows})`}
-                        </Text>
-                      );
-                    })}
-                </HStack>
-              </ScrollView>
-              <DataTable
-                customStyles={tableCustomStyles}
-                columns={[...columns(t, navigate)]}
-                data={data}
-                persistTableHead
-                progressPending={loading}
-                pagination
-                paginationServer
-                paginationTotalRows={paginationTotalRows}
-                onChangeRowsPerPage={(e) => {
-                  setFilterObject({ ...filter, limit: e, page: 1 });
+              {type !== "SYC" && (
+                <ScrollView horizontal={true} mb="2">
+                  <HStack pb="2">
+                    <Text
+                      color={
+                        !filter?.enrollment_verification_status
+                          ? "textRed.400"
+                          : ""
+                      }
+                      bold={!filter?.enrollment_verification_status}
+                      cursor={"pointer"}
+                      mx={3}
+                      onPress={() => {
+                        const { enrollment_verification_status, ...newFilter } =
+                          filter;
+                        setFilterObject(newFilter);
+                      }}
+                    >
+                      {t("BENEFICIARY_ALL")}
+                      {!filter?.enrollment_verification_status &&
+                        `(${paginationTotalRows})`}
+                    </Text>
+                    {beneficiaryStatus
+                      ?.filter((e) => e?.value !== "verified")
+                      ?.map((item, key) => {
+                        return (
+                          <Text
+                            key={item?.title}
+                            color={
+                              filter?.enrollment_verification_status ==
+                              t(item?.value)
+                                ? "textRed.400"
+                                : ""
+                            }
+                            bold={
+                              filter?.enrollment_verification_status ==
+                              t(item?.value)
+                            }
+                            cursor={"pointer"}
+                            mx={3}
+                            onPress={() => {
+                              const newFilter = {
+                                ...filter,
+                                enrollment_verification_status: item?.value,
+                                page: 1,
+                              };
+                              setFilterObject(newFilter);
+                            }}
+                          >
+                            {t(`${item?.title}_LIST`)}
+                            {filter?.enrollment_verification_status ==
+                              t(item?.value) && `(${paginationTotalRows})`}
+                          </Text>
+                        );
+                      })}
+                  </HStack>
+                </ScrollView>
+              )}
+              <Table
+                {...{
+                  data,
+                  loading,
+                  paginationTotalRows,
+                  setFilterObject,
+                  handleRowClick,
                 }}
-                onChangePage={(e) => {
-                  setFilterObject({ ...filter, page: e });
-                }}
-                onRowClicked={handleRowClick}
               />
             </VStack>
           </ScrollView>
@@ -452,6 +472,45 @@ function EnrollmentVerificationList({ footerLinks }) {
 
 EnrollmentVerificationList.propTypes = {
   footerLinks: PropTypes.any,
+};
+
+export const Table = ({
+  loading,
+  data,
+  paginationTotalRows,
+  setFilterObject,
+  handleRowClick,
+}) => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  return (
+    <DataTable
+      customStyles={tableCustomStyles}
+      columns={[...columns(t, navigate)]}
+      data={data}
+      persistTableHead
+      progressPending={loading}
+      pagination
+      paginationServer
+      paginationTotalRows={paginationTotalRows}
+      onChangeRowsPerPage={(e) => {
+        setFilterObject((filter) => ({ ...filter, limit: e, page: 1 }));
+      }}
+      onChangePage={(e) => {
+        setFilterObject((filter) => ({ ...filter, page: e }));
+      }}
+      onRowClicked={handleRowClick}
+    />
+  );
+};
+
+Table.PropTypes = {
+  loading: PropTypes.bool,
+  data: PropTypes.array,
+  paginationTotalRows: PropTypes.string,
+  setFilterObject: PropTypes.func,
+  handleRowClick: PropTypes.func,
 };
 
 export default memo(EnrollmentVerificationList);

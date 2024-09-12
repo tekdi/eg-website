@@ -232,6 +232,13 @@ export default function AdminHome({ footerLinks }) {
               </Menu.Item>
               <Menu.Item
                 onPress={() => {
+                  navigate("/admin/learners/enrollmentVerificationList/SYC");
+                }}
+              >
+                {t("SYC_VERIFICATION")}
+              </Menu.Item>
+              <Menu.Item
+                onPress={() => {
                   navigate("/admin/learners/duplicates");
                 }}
               >

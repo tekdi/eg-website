@@ -1,16 +1,19 @@
 import {
   IconByName,
   ImageView,
+  Loading,
   uploadRegistryService,
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import NotFound from "./NotFound";
 
 export default function FileView() {
   const { id } = useParams();
   const [receiptUrl, setReceiptUrl] = React.useState();
+  const [loading, setLoading] = React.useState(true);
   const [fileType, setFileType] = React.useState();
   const [height, setHeight] = React.useState(0);
   const con = React.useRef();
@@ -20,27 +23,40 @@ export default function FileView() {
     FileSaver.saveAs(`${receiptUrl?.fileUrl}`);
   };
 
-  React.useEffect(async () => {
-    const newResult = await uploadRegistryService.getOne({
-      document_id: id,
-    });
-    setReceiptUrl(newResult);
-    setFileType(newResult?.key?.split(".").pop());
-    const dataH =
-      window.innerHeight > window.outerHeight
-        ? window.outerHeight
-        : window.innerHeight;
-    const hData = dataH - (con?.current?.clientHeight + 10);
-    setHeight(hData);
+  React.useEffect(() => {
+    const init = async () => {
+      const newResult = await uploadRegistryService.getOne({
+        document_id: id,
+      });
+      if (!newResult?.error) {
+        setReceiptUrl(newResult);
+        setFileType(newResult?.key?.split(".").pop());
+        const dataH =
+          window.innerHeight > window.outerHeight
+            ? window.outerHeight
+            : window.innerHeight;
+        const hData = dataH - ((con?.current?.clientHeight || 0) + 10);
+        setHeight(hData);
+      }
+      setLoading(false);
+    };
+    init();
   }, [id]);
 
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!receiptUrl) {
+    return <NotFound />;
+  }
   return (
     <VStack>
       {fileType === "pdf" ? (
         <ImageView
           frameborder="0"
           _box={{ flex: 1 }}
-          height="100%"
+          height={height}
           width="100%"
           urlObject={receiptUrl}
           alt="aadhaar_front"

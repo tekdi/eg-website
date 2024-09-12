@@ -147,14 +147,17 @@ function Table({
     },
     {
       name: t("RESULT"),
-      selector: (row) =>
-        row?.result_upload_status === "uploaded" ? (
-          <ExamChipStatus
-            status={row?.beneficiary_user?.exam_results?.[0]?.final_result}
-          />
-        ) : (
-          <ExamChipStatus status={"yet_to_upload"} />
-        ),
+      selector: (row) => (
+        <ExamChipStatus
+          status={
+            row?.result_upload_status === "uploaded"
+              ? `${row?.beneficiary_user?.exam_results?.[0]?.final_result}`
+              : row?.result_upload_status === "assign_to_ip"
+                ? `${row?.result_upload_status}`
+                : "yet_to_upload"
+          }
+        />
+      ),
       attr: "enrollment_id",
       wrap: true,
     },
