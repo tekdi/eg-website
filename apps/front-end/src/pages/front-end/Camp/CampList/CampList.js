@@ -28,7 +28,7 @@ export default function List({ userTokenInfo, stateName }) {
   const [ipStatus, setIpStatus] = useState();
   const [campSelected, setCampSelected] = useState("");
   const [campCount, setCampCount] = useState();
-  const [chartData, SetChartData] = useState();
+  const [chartData, setChartData] = useState();
   const [leanerList, setLeanerList] = useState([]);
   const [data, setData] = useState({});
 
@@ -183,7 +183,7 @@ export default function List({ userTokenInfo, stateName }) {
       const status = item.status;
       statusCounts[status] = (statusCounts[status] || 0) + 1;
     });
-    SetChartData(statusCounts);
+    setChartData(statusCounts);
     return statusCounts;
   };
 

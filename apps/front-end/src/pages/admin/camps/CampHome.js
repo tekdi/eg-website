@@ -38,7 +38,7 @@ import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 const filterName = "camp_filter";
 
-const columns = (t, navigate) => [
+export const campColumns = (t, navigate) => [
   {
     name: t("CAMP_ID"),
     selector: (row) => row?.id,
@@ -514,7 +514,7 @@ export default function CampHome({ footerLinks, userTokenInfo }) {
                   setFilterLocalStorage(filterName, e);
                 }}
                 customStyles={tableCustomStyles}
-                columns={[...columns(t, navigate)]}
+                columns={[...campColumns(t, navigate)]}
                 persistTableHead
                 facilitator={userTokenInfo?.authUser}
                 pagination
@@ -732,7 +732,7 @@ export const Filter = ({ filter, setFilter }) => {
         block: newBlock,
         type,
       } = data?.formData || {};
-      const { district, block, type: atype, ...remainData } = filter || {};
+      const { district, block, ...remainData } = filter || {};
 
       setFilterObject({
         ...remainData,

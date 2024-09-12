@@ -35,7 +35,6 @@ export default function CampSelectedLearners() {
   const [isDisable, setIsDisable] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [canSelectUsers, setCanSelectUsers] = React.useState([]);
-  const [nonRegister, setNonRegister] = React.useState([]);
   const [selectAllChecked, setSelectAllChecked] = React.useState(false);
 
   const onPressBackButton = async () => {
@@ -89,14 +88,13 @@ export default function CampSelectedLearners() {
     let users = [];
     if (
       ["registered", "camp_ip_verified"].includes(
-        campdetails?.data?.group?.status
+        campdetails?.data?.group?.status,
       )
     ) {
       users = campdetails?.data?.group_users || [];
       setCanSelectUsers(users);
     }
     const resultNonR = result?.data?.user || [];
-    setNonRegister(resultNonR);
     const mergedData = campdetails?.data?.group_users?.concat(resultNonR);
     setUsers(mergedData);
     const ids = campdetails?.data?.group_users?.map((item) => item.id);
@@ -272,7 +270,7 @@ export default function CampSelectedLearners() {
                   ?.enrollment_last_name &&
                   ` ${modalVisible?.program_beneficiaries?.[0]?.enrollment_last_name}`}
               </FrontEndTypo.H3>
-              <Chip children={modalVisible?.id} />
+              <Chip>{modalVisible?.id}</Chip>
               <ChipStatus
                 is_duplicate={
                   modalVisible?.program_beneficiaries?.[0]?.is_duplicate

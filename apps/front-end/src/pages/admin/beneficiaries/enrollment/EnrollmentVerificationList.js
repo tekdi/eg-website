@@ -505,10 +505,10 @@ export const Table = ({
   );
 };
 
-Table.PropTypes = {
+Table.propTypes = {
   loading: PropTypes.bool,
   data: PropTypes.array,
-  paginationTotalRows: PropTypes.string,
+  paginationTotalRows: PropTypes.number,
   setFilterObject: PropTypes.func,
   handleRowClick: PropTypes.func,
 };

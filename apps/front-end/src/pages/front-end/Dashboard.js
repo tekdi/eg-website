@@ -664,6 +664,8 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                       isEventActive={isEventActive}
                       examButtonText={examButtonText}
                       floatValue={floatValue}
+                      events={events}
+                      setExamEvent={setExamEvent}
                     />
                   </VStack>
                 </Modal.Body>
@@ -690,7 +692,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                         {t("OK")}
                       </FrontEndTypo.DefaultButton>
                     )}
-                    {isEventActive?.take_test == true && (
+                    {isEventActive?.take_test === true && (
                       <FrontEndTypo.DefaultButton
                         background={"textRed.400"}
                         onPress={startTest}
@@ -1186,6 +1188,8 @@ const RenderContent = ({
   t,
   floatValue,
   certificateData,
+  events,
+  setExamEvent,
 }) => {
   switch (true) {
     case isEventActive:

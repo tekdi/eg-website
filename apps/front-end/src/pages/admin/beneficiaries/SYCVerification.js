@@ -482,7 +482,10 @@ const Body = ({ data, children }) => {
     </Alert>
   );
 };
-
+Body.propTypes = {
+  data: PropTypes.any,
+  children: PropTypes.any,
+};
 const TextInfo = ({ data, _box, _vstack, arr }) => {
   const { t } = useTranslation();
   return (
@@ -532,7 +535,12 @@ const TextInfo = ({ data, _box, _vstack, arr }) => {
     </VStack>
   );
 };
-
+TextInfo.propTypes = {
+  data: PropTypes.object,
+  _box: PropTypes.object,
+  _vstack: PropTypes.object,
+  arr: PropTypes.array,
+};
 const ValidationBox = ({ data, _vstack }) => (
   <VStack space={4} {..._vstack}>
     {data?.map((item) => (
@@ -565,8 +573,11 @@ const ValidationBox = ({ data, _vstack }) => (
     ))}
   </VStack>
 );
-
-SYCVerification.PropTypes = {
+ValidationBox.propTypes = {
+  data: PropTypes.array.isRequired,
+  _vstack: PropTypes.object,
+};
+SYCVerification.propTypes = {
   footerLinks: PropTypes.any,
 };
 
@@ -597,7 +608,7 @@ const CheckButton = ({ icons, ...props }) => {
   );
 };
 
-CheckButton.PropTypes = {
+CheckButton.propTypes = {
   icons: PropTypes.array,
   props: PropTypes.any,
 };

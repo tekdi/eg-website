@@ -14,8 +14,10 @@ export const CampSessionPlan = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [cards, setCards] = useState();
-  const getNavigatePath = (base, assessment) =>
-    `/camps/${id}/${base}${assessment ? `/${assessment}` : ""}`;
+  const getNavigatePath = (base, assessment) => {
+    const path = `/camps/${id}/${base}`;
+    return assessment ? `${path}/${assessment}` : path;
+  };
 
   useEffect(() => {
     const init = () => {
@@ -149,6 +151,7 @@ CampSessionPlan.propTypes = {
   button_list: PropTypes.any,
   sessionList: PropTypes.any,
   activityId: PropTypes.any,
+  id: PropTypes.any,
 };
 
 const calculateProgress = (completedSessions, totalSessions) => {

@@ -447,7 +447,11 @@ export default function BenificiaryProfileView({ userTokenInfo }) {
                       },
                     ]
                   : []),
-                ...(["pragati_syc", "pragati_syc_reattempt"].includes(status) &&
+                ...([
+                  "pragati_syc",
+                  "pragati_syc_reattempt",
+                  "pragati_syc_reattempt_ip_verified",
+                ].includes(status) &&
                 state_name === "RAJASTHAN" &&
                 [true, false].includes(
                   benificiary?.program_beneficiaries?.is_continued,

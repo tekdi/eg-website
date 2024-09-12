@@ -53,7 +53,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
   const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(async () => {
@@ -103,7 +103,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -178,7 +178,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
+                eventItem?.lms_test_tracking?.length < 1,
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
@@ -187,8 +187,8 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
                   data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
+                    moment(attendance.date_time).format("YYYY-MM-DD"),
+              ),
             );
 
             setCertificateData(data);
@@ -254,8 +254,8 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
               "aadhar_verified",
               "qualification_ids",
               "qua_name",
-            ]
-          )
+            ],
+          ),
         );
         //check exist user registered
         try {
@@ -308,7 +308,7 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
+        user_cohort_list?.data[0],
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -356,9 +356,8 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
     setAddMore(true);
   };
   const onSubmit = async () => {
-    const result = await benificiaryRegistoryService.createCommunityReference(
-      formData
-    );
+    const result =
+      await benificiaryRegistoryService.createCommunityReference(formData);
     if (result?.message === "Mobile number already exists") {
       const newErrors = {
         contact_number: {
@@ -497,6 +496,6 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
   );
 }
 
-CommunityView.PropTypes = {
+CommunityView.propTypes = {
   footerLinks: PropTypes.any,
 };

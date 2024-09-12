@@ -52,12 +52,11 @@ function LearnerList({ userTokenInfo }) {
   useEffect(async () => {
     if (urlFilterApply) {
       setLoading(true);
-      const result = await benificiaryRegistoryService.beneficiariesFilter(
-        filter
-      );
+      const result =
+        await benificiaryRegistoryService.beneficiariesFilter(filter);
       setData(result.data?.data);
       setPaginationTotalRows(
-        result?.data?.totalCount ? result?.data?.totalCount : 0
+        result?.data?.totalCount ? result?.data?.totalCount : 0,
       );
       setLoading(false);
     }
@@ -76,7 +75,7 @@ function LearnerList({ userTokenInfo }) {
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
   return (
-    <PoAdminLayout getRefAppBar={(e) => setRefAppBar(e)}>
+    <PoAdminLayout customWidth={Width} getRefAppBar={(e) => setRefAppBar(e)}>
       <HStack
         space={[0, 0, "2"]}
         p="2"
@@ -185,7 +184,7 @@ export const Filter = ({ filter, setFilter }) => {
       setFilter({ ...otherData, ...facilitator });
       setQueryParameters(data);
     },
-    [facilitatorFilter]
+    [facilitatorFilter],
   );
 
   const schema = useMemo(() => {
@@ -285,7 +284,7 @@ export const Filter = ({ filter, setFilter }) => {
       if (!error) {
         setIsMore(
           parseInt(`${result?.data?.currentPage}`) <
-            parseInt(`${result?.data?.totalPages}`)
+            parseInt(`${result?.data?.totalPages}`),
         );
         const newFilterData = result?.data?.data?.map((e) => ({
           value: e?.id,
@@ -318,7 +317,7 @@ export const Filter = ({ filter, setFilter }) => {
           : {}),
       });
     },
-    [filter, setFilterObject]
+    [filter, setFilterObject],
   );
 
   const clearFilter = useCallback(() => {
@@ -336,7 +335,7 @@ export const Filter = ({ filter, setFilter }) => {
 
   const debouncedHandlePrerakSearch = useCallback(
     debounce(handlePrerakSearch, 1000),
-    []
+    [],
   );
 
   return (
@@ -352,7 +351,7 @@ export const Filter = ({ filter, setFilter }) => {
               {t("CLEAR_FILTER")}(
               {
                 Object.keys(filter || {}).filter(
-                  (e) => !["limit", "page"].includes(e)
+                  (e) => !["limit", "page"].includes(e),
                 ).length
               }
               )

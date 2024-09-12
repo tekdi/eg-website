@@ -253,7 +253,7 @@ export default function BenificiaryEnrollment({ userTokenInfo }) {
   );
 }
 
-BenificiaryEnrollment.PropTypes = {
+BenificiaryEnrollment.propTypes = {
   userTokenInfo: PropTypes.any,
 };
 
@@ -283,7 +283,7 @@ const SubjectsList = ({ boardId, subjectIds }) => {
   );
 };
 
-SubjectsList.PropTypes = {
+SubjectsList.propTypes = {
   boardId: PropTypes.string,
   subjectIds: PropTypes.any,
 };
