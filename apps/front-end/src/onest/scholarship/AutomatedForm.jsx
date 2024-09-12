@@ -578,28 +578,31 @@ const AutomatedForm = () => {
     });
   };
 
-  const submitFormDetail = async (action, urlencoded) => {
+  const submitFormDetail = async (action, formData) => {
     setLoading(t("SUBMITTING"));
     trackReactGA();
 
     try {
-      const axiosResponse = await axios.create().post(action, urlencoded, {
+      // Post formData (which includes file inputs) without manually setting the Content-Type
+      const axiosResponse = await axios.create().post(action, formData, {
         headers: {
-          "Content-Type": `application/x-www-form-urlencoded`,
+          "Content-Type": "multipart/form-data", // Axios automatically manages the boundary
         },
       });
 
+      console.log("axiosResponse", axiosResponse.data);
+
       if (axiosResponse.data) {
-        localStorage.setItem("submissionId", axiosResponse.data);
+        localStorage.setItem(
+          "submissionId",
+          axiosResponse?.data?.message?.transaction_id,
+        );
         setTimeout(() => {
           let initRes = JSON.parse(localStorage.getItem("initRes"));
           confirmDetails(initRes);
-          // fetchInitDetails();
-          // getInitJson();
         }, 7000);
       }
     } catch (error) {
-      setLoading(false);
       if (
         error.hasOwnProperty("response") &&
         error.response.hasOwnProperty("data")
@@ -607,6 +610,8 @@ const AutomatedForm = () => {
         errorMessage(error?.response?.data);
       }
       console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -659,6 +664,8 @@ const AutomatedForm = () => {
 
         setIsAutoForm(true);
         const form = document.getElementsByTagName("form")[0];
+        form.enctype = "multipart/form-data"; // Ensure file uploads work correctly
+
         const inputFields = form.querySelectorAll("input");
         const btnField = form.querySelector("button");
 
@@ -675,53 +682,52 @@ const AutomatedForm = () => {
           select.classList.add("selectField");
         });
 
-        const userDataString = localStorage.getItem("userData");
-        const userData = JSON.parse(userDataString);
-        const createdDateTime = moment(userData.createdAt, "YYYY-MM-DD HH:mm");
-        const currentDateTime = moment();
-        const timeDiff = moment.duration(currentDateTime.diff(createdDateTime));
-        if (timeDiff.asSeconds() > envConfig.expiryLimit) {
-          setOpenModal(true);
-        } else if (userData !== null) {
-          const inputElements = form.querySelectorAll("input");
-          const selectElements = form.querySelectorAll("select");
+        // Mapping of form field names to userData keys
+        const mapping = {
+          "user-full-name": "name",
+          "user-date-of-birth": "birth_date",
+          "user-gender": "gender",
+          "user-email": "email",
+          "user-phone-number": "phone",
+          "user-address": "Address",
+        };
 
-          const formValues = Array.from(inputElements).reduce((acc, input) => {
-            acc[input.name] =
-              input.type === "checkbox" ? input.checked : input.value;
-            return acc;
-          }, {});
+        // Auto-fill form with user data from localStorage
+        const userData = JSON.parse(localStorage.getItem("userData"));
 
-          const selectValues = Array.from(selectElements).reduce(
-            (acc, select) => {
-              acc[select.name] = select.value;
-              return acc;
-            },
-            {},
-          );
+        if (userData) {
+          // Auto-fill input fields based on the mapping
+          inputFields.forEach((input) => {
+            const userDataKey = mapping[input.name]; // Match input name to userData key
+            if (userDataKey && userData[userDataKey] !== undefined) {
+              if (input.type === "checkbox") {
+                input.checked = userData[userDataKey];
+              } else {
+                input.value = userData[userDataKey];
+              }
+            }
+          });
 
-          const formDataObject = {
-            ...formValues,
-            ...selectValues,
-          };
-
-          localStorage.setItem("autoFormData", JSON.stringify(formDataObject));
-
-          form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const formDataTmp = new FormData(form);
-            const urlencoded = new URLSearchParams();
-
-            formDataTmp.forEach(function (value, key) {
-              urlencoded.append(key, value.toString());
-            });
-
-            submitFormDetail(form.action, formDataTmp);
+          // Auto-fill select fields (e.g., gender)
+          selectFields.forEach((select) => {
+            const userDataKey = mapping[select.name]; // Match select name to userData key
+            if (userDataKey && userData[userDataKey] !== undefined) {
+              select.value = userData[userDataKey];
+            }
           });
         }
+
+        // Attach event listener for form submission
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          // Use FormData to capture all input, including files
+          const formData = new FormData(form);
+          submitFormDetail(form.action, formData);
+        });
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error loading form:", error);
     }
   };
 

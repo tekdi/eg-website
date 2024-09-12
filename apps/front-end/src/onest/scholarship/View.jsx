@@ -70,7 +70,7 @@ function ScholarshipView() {
             ) {
               setStatus(
                 statusTrack?.responses[0]?.message?.order?.fulfillments[0]
-                  ?.state?.descriptor?.name
+                  ?.state?.descriptor?.name,
               );
               const newPayload = {
                 status:
@@ -83,7 +83,7 @@ function ScholarshipView() {
           } catch (e) {
             console.error(
               "Error constructing payload or handling response:",
-              e
+              e,
             );
           }
         })
@@ -94,7 +94,7 @@ function ScholarshipView() {
       console.log("error ::", error);
     } finally {
       setLoading(false);
-      setOpenModal(true);
+      //setOpenModal(true);
     }
   };
 
@@ -109,7 +109,7 @@ function ScholarshipView() {
       };
       let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
-        setListData(result?.data);
+        //setListData(result?.data);
         getApplicationStatus(result?.data[0].order_id, result?.data[0]?.id);
       }
     };
@@ -183,7 +183,7 @@ function ScholarshipView() {
       const data = await response.json();
       if (!data?.responses.length) {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         setJobsData(data?.responses[0]?.message?.order?.items[0]);
@@ -380,7 +380,7 @@ function ScholarshipView() {
                     state: {
                       jobDetails: jobDetails,
                     },
-                  }
+                  },
                 );
                 trackReactGA();
               }}
