@@ -232,7 +232,7 @@ const AutomatedForm = () => {
   const confirmDetails = async (customerBody1) => {
     customerBody = customerBody1;
     try {
-      //setLoading(true);
+      setLoading(true);
       let jobDetails = JSON.parse(localStorage.getItem("jobDetails"));
 
       initReqBodyJson.init[1]["context"]["action"] = "confirm";

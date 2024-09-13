@@ -154,7 +154,7 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
       }}
     >
       <VStack p="4" space={4}>
-        <Carousel
+        {/* <Carousel
           responsive={responsive}
           showDots={true}
           infinite={true}
@@ -187,7 +187,7 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
               </ImageBackground>
             );
           })}
-        </Carousel>
+        </Carousel> */}
 
         {dataConfig.constructor.name === "Object" &&
           dataArray?.map((pItem) => (
