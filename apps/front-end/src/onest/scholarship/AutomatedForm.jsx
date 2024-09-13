@@ -28,13 +28,21 @@ import { v4 as uuidv4 } from "uuid";
 // import { registerTelementry } from "../api/Apicall";
 import moment from "moment";
 
+function calculateAge(dob) {
+  const birthDate = moment(dob, "YYYY-MM-DD");
+  const currentDate = moment();
+  const age = currentDate.diff(birthDate, "years");
+  // Returns age in years
+  return age;
+}
+
 const AutomatedForm = () => {
   const { jobId, transactionId, type } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
 
@@ -116,6 +124,15 @@ const AutomatedForm = () => {
   });
 
   let customerBody;
+  let submitFormData = {
+    customer: {
+      person: {
+        tags: [],
+      },
+    },
+  };
+  let current = 1;
+  let currentXinput;
 
   const handleInputChange = (section, field, value) => {
     setFormData((prevData) => ({
@@ -134,6 +151,50 @@ const AutomatedForm = () => {
         [field]: "",
       },
     }));
+  };
+
+  const validateForm = (data) => {
+    // Implement your validation logic here
+    const errors = {
+      person: {
+        name: "",
+        gender: "",
+      },
+      contact: {
+        phone: "",
+        email: "",
+      },
+    };
+
+    // Example: Check if required fields are empty
+    if (!data.person.name) {
+      errors.person.name = t("Name_is_required");
+    }
+
+    if (!data.person.gender) {
+      errors.person.gender = t("Gender_is_required");
+    }
+
+    if (!data.contact.phone) {
+      errors.contact.phone = t("Phone_number_is_required");
+    } else if (!/^\d{10}$/.test(data.contact.phone)) {
+      errors.contact.phone = t("Phone_number_should_be_10_digits");
+    }
+
+    if (!data.contact.email) {
+      errors.contact.email = t("Email_is_required");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.email)) {
+      errors.contact.email = t("Invalid_email_address");
+    }
+
+    return errors;
+  };
+
+  const hasErrors = (errors) => {
+    // Check if there are any validation errors
+    return Object.values(errors).some((sectionErrors) =>
+      Object.values(sectionErrors).some((error) => Boolean(error)),
+    );
   };
 
   function storedOrderId(appId) {
@@ -171,7 +232,7 @@ const AutomatedForm = () => {
   const confirmDetails = async (customerBody1) => {
     customerBody = customerBody1;
     try {
-      //setLoading(true);
+      setLoading(true);
       let jobDetails = JSON.parse(localStorage.getItem("jobDetails"));
 
       initReqBodyJson.init[1]["context"]["action"] = "confirm";
@@ -212,21 +273,23 @@ const AutomatedForm = () => {
       const data = await response.json();
       // Set state and open the modal
       if (data.responses.length) {
-        const responseWithMessage = data.responses.find((response) =>
-          response.hasOwnProperty("message"),
-        );
-
-        if (responseWithMessage) {
-          setLoading(false);
-          const appId = responseWithMessage.message.order.id;
-          window?.parent?.postMessage({ orderId: appId }, "*");
-          setOrderId(appId);
-          setIsModalOpen(true);
-          storedOrderId(appId);
+        for (let i = 0; i < data.responses.length; i++) {
+          if (data.responses[i].hasOwnProperty("message")) {
+            setLoading(false);
+            let appId = data.responses[i].message.order.id;
+            window?.parent?.postMessage({ orderId: appId }, "*");
+            setOrderId(appId);
+            setMessage(message);
+            setModalOpen(true);
+            setLoading(false);
+            storedOrderId(appId);
+          }
         }
       } else {
         setLoading(false);
-        errorMessage(t("Delay_in_fetching_the_details") + `(${transactionId})`);
+        errorMessage(
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
+        );
       }
     } catch (error) {
       setLoading(false);
@@ -279,11 +342,18 @@ const AutomatedForm = () => {
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
+        /*if (data.responses[0].message.order.items[0].xinput.form.url) {
+          searchForm(data.responses[0].message.order.items[0].xinput.form.url)
+        }
+        setLoading(false);*/
+        // setjobDetails(data?.responses[0]);
         fetchInitDetails(data?.responses[0]);
       }
     } catch (error) {
       setLoading(false);
       console.error("Error fetching job details:", error);
+    } finally {
+      // setLoading(false);
     }
   };
 
@@ -305,8 +375,14 @@ const AutomatedForm = () => {
     });
   }
 
-  const fetchInitDetails = async (data) => {
+  const fetchInitDetails = async () => {
+    // const errors = validateForm(formData);
+    // if (hasErrors(errors)) {
+    //   setFormErrors(errors);
+    //   return;
+    // }
     localStorage.setItem("initRes", "");
+
     try {
       setLoading(t("APPLING"));
       let jobDetails = JSON.parse(localStorage.getItem("selectRes"))
@@ -332,6 +408,46 @@ const AutomatedForm = () => {
       // initReqBody.message.order.fulfillments[0]["customer"]['person'] = {...formData['person'] , ...JSON.parse(localStorage.getItem('autoFormData'))}
 
       initReqBody.message = jobDetails?.message;
+
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (userData) {
+        // Ensure the "order" object exists
+        if (!initReqBody.message.order) {
+          initReqBody.message.order = {};
+        }
+
+        // Ensure the "fulfillments" array exists and has at least one object
+        if (!initReqBody.message.order.fulfillments) {
+          initReqBody.message.order.fulfillments = [{}];
+        }
+
+        // Ensure the "customer" object exists in the first fulfillment
+        if (!initReqBody.message.order.fulfillments[0].customer) {
+          initReqBody.message.order.fulfillments[0].customer = {};
+        }
+
+        // Ensure the "person" object exists in the "customer"
+        if (!initReqBody.message.order.fulfillments[0].customer.person) {
+          initReqBody.message.order.fulfillments[0].customer.person = {};
+        }
+
+        // Assign values to the "person" object
+        initReqBody.message.order.fulfillments[0].customer.person.name =
+          userData?.name;
+        initReqBody.message.order.fulfillments[0].customer.person.gender =
+          userData?.gender;
+        initReqBody.message.order.fulfillments[0].customer.person.age = `${calculateAge(userData?.birth_date)}`;
+
+        // Ensure the "contact" object exists in the "customer"
+        if (!initReqBody.message.order.fulfillments[0].customer.contact) {
+          initReqBody.message.order.fulfillments[0].customer.contact = {};
+        }
+
+        // Assign values to the "contact" object
+        initReqBody.message.order.fulfillments[0].customer.contact.email =
+          userData?.email;
+        initReqBody.message.order.fulfillments[0].customer.contact.phone = `${userData?.phone || userData?.contact || userData?.["mobile number"]}`;
+      }
 
       /* if(localStorage.getItem('submissionId'))
        {
@@ -369,13 +485,27 @@ const AutomatedForm = () => {
         localStorage.setItem("initRes", JSON.stringify(data));
         if (localStorage.getItem("submissionId")) {
           confirmDetails(data);
-        } else if (
-          data?.responses[0]?.message?.order?.items[0].hasOwnProperty("xinput")
-        ) {
-          let formUrl =
-            data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
-          searchForm(formUrl);
-          setLoading(false);
+        } else {
+          if (
+            data?.responses[0]?.message?.order?.items[0].hasOwnProperty(
+              "xinput",
+            )
+          ) {
+            //   const curr = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.cur;
+            //   var max = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.max;
+            var formUrl =
+              data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
+            //   if (curr < max) {
+            searchForm(formUrl);
+            //   } else if (curr == max) {
+            //     setLoading(true);
+            //     confirmDetails();
+            //   }
+            setLoading(false);
+
+            // } else {
+            //   confirmDetails(formData);
+          }
         }
       }
     } catch (error) {
@@ -394,7 +524,7 @@ const AutomatedForm = () => {
     const getData = () => {
       setLoading(t("FETCHING_THE_DETAILS"));
       localStorage.setItem("submissionId", "");
-      let requestOptions = {
+      var requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -423,6 +553,14 @@ const AutomatedForm = () => {
         let data = JSON.parse(localStorage.getItem("selectRes"));
         if (data && data?.responses.length && jobInfo) {
           await fetchInitDetails(data?.responses[0]);
+
+          // let usrtemp = localStorage.getItem("userData");
+          /* if(usrtemp){
+       fetchInitDetails(data?.responses[0]);
+       }else{
+         setIsAutoForm(false);
+         setLoading(false);
+       }*/
         } else if (jobInfo) {
           getSelectDetails(jobInfo);
         }
@@ -440,26 +578,31 @@ const AutomatedForm = () => {
     });
   };
 
-  const submitFormDetail = async (action, urlencoded) => {
+  const submitFormDetail = async (action, formData) => {
     setLoading(t("SUBMITTING"));
     trackReactGA();
 
     try {
-      const axiosResponse = await axios.create().post(action, urlencoded, {
+      // Post formData (which includes file inputs) without manually setting the Content-Type
+      const axiosResponse = await axios.create().post(action, formData, {
         headers: {
-          "Content-Type": `application/x-www-form-urlencoded`,
+          "Content-Type": "multipart/form-data", // Axios automatically manages the boundary
         },
       });
 
+      console.log("axiosResponse", axiosResponse.data);
+
       if (axiosResponse.data) {
-        localStorage.setItem("submissionId", axiosResponse.data);
+        localStorage.setItem(
+          "submissionId",
+          axiosResponse?.data?.message?.transaction_id,
+        );
         setTimeout(() => {
           let initRes = JSON.parse(localStorage.getItem("initRes"));
           confirmDetails(initRes);
         }, 7000);
       }
     } catch (error) {
-      setLoading(false);
       if (
         error.hasOwnProperty("response") &&
         error.response.hasOwnProperty("data")
@@ -467,12 +610,14 @@ const AutomatedForm = () => {
         errorMessage(error?.response?.data);
       }
       console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const closeModal = () => {
     // Close the modal and reset state
-    setIsModalOpen(false);
+    setModalOpen(false);
     setOrderId("");
     setMessage("");
     navigate("/");
@@ -488,7 +633,6 @@ const AutomatedForm = () => {
   // Function to add submit button dynamically
   function addSubmitButton() {
     let form = document.querySelector("form");
-
     // Create submit button
     let submitBtn = document.createElement("input");
     submitBtn.type = "submit";
@@ -502,137 +646,88 @@ const AutomatedForm = () => {
 
   const searchForm = async (url) => {
     try {
-      await fetch(url, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.text();
-        })
-        .then((htmlContent) => {
-          const container = document.getElementById("formContainer");
-          if (container) {
-            container.innerHTML = htmlContent;
+      const response = await fetch(url);
 
-            if (!hasSubmitButton()) {
-              addSubmitButton();
-            }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-            setIsAutoForm(true);
-            const form = document.getElementsByTagName("form")[0];
-            const inputFields = form.querySelectorAll("input");
-            const btnField = form.querySelector("button");
+      const htmlContent = await response.text();
 
-            if (btnField) {
-              btnField.classList.add("autosubmit");
-            }
+      const container = document.getElementById("formContainer");
+      if (container) {
+        container.innerHTML = htmlContent;
 
-            // Add a CSS class to each input field
-            inputFields.forEach((input) => {
-              input.classList.add("autoInputField");
-              //input.style.border = "1px solid #000"; // Replace 'your-css-class' with the desired class name
-            });
+        if (!hasSubmitButton()) {
+          addSubmitButton();
+        }
 
-            const selectFields = form.querySelectorAll("select");
-            selectFields.forEach((select) => {
-              select.classList.add("selectField");
-            });
+        setIsAutoForm(true);
+        const form = document.getElementsByTagName("form")[0];
+        form.enctype = "multipart/form-data"; // Ensure file uploads work correctly
 
-            const userDataString = localStorage.getItem("userData");
-            const userData = JSON.parse(userDataString);
-            const createdDateTime = moment(
-              userData.createdAt,
-              "YYYY-MM-DD HH:mm",
-            );
-            const currentDateTime = moment();
-            const timeDiff = moment.duration(
-              currentDateTime.diff(createdDateTime),
-            );
-            if (timeDiff.asSeconds() > envConfig.expiryLimit) {
-              setOpenModal(true);
-            } else {
-              if (userData !== null) {
-                // Get all input elements in the HTML content
-                const inputElements = form.querySelectorAll("input");
+        const inputFields = form.querySelectorAll("input");
+        const btnField = form.querySelector("button");
 
-                // Loop through each input element
-                inputElements.forEach((input) => {
-                  // Get the name attribute of the input element
-                  const inputName = input.getAttribute("name");
-                  // Check if the input name exists in the userData
-                  if (
-                    userData &&
-                    userData[inputName] !== undefined &&
-                    input.type !== "file" &&
-                    input.type !== "radio"
-                  ) {
-                    // Set the value of the input element to the corresponding value from the userData
-                    input.value = userData[inputName];
-                  }
+        if (btnField) {
+          btnField.classList.add("autosubmit");
+        }
 
-                  if (
-                    input.type === "checkbox" &&
-                    userData[inputName] === true
-                  ) {
-                    input.checked = true;
-                  }
-
-                  if (
-                    input.type === "radio" &&
-                    userData[inputName] === input.value
-                  ) {
-                    input.checked = true;
-                  }
-                });
-
-                const selectElements = form.querySelectorAll("select");
-                // Loop through each select element
-                selectElements.forEach((select) => {
-                  // Get the name attribute of the select element
-                  const selectName = select.getAttribute("name");
-
-                  // Check if the select name exists in the userData
-                  if (userData && userData[selectName] !== undefined) {
-                    // Find the option with the corresponding value
-                    const optionToSelect = select.querySelector(
-                      `option[value="${userData[selectName]}"]`,
-                    );
-
-                    // If the option is found, set its selected attribute to true
-                    if (optionToSelect) {
-                      optionToSelect.selected = true;
-                    }
-                  }
-                });
-              }
-
-              form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const formDataTmp = new FormData(form);
-                let urlencoded = new URLSearchParams();
-
-                let formDataObject = {};
-
-                formDataTmp.forEach(function (value, key) {
-                  formDataObject[key] = value;
-                  urlencoded.append(key, value.toString());
-                });
-
-                localStorage.setItem(
-                  "autoFormData",
-                  JSON.stringify(formDataObject),
-                );
-                // setFormData({...formData['person'] , ...localStorage.getItem('autoFormData')})
-
-                submitFormDetail(form.action, formDataTmp);
-              });
-            }
-          }
+        inputFields.forEach((input) => {
+          input.classList.add("autoInputField");
         });
+
+        const selectFields = form.querySelectorAll("select");
+        selectFields.forEach((select) => {
+          select.classList.add("selectField");
+        });
+
+        // Mapping of form field names to userData keys
+        const mapping = {
+          "user-full-name": "name",
+          "user-date-of-birth": "birth_date",
+          "user-gender": "gender",
+          "user-email": "email",
+          "user-phone-number": "phone",
+          "user-address": "Address",
+        };
+
+        // Auto-fill form with user data from localStorage
+        const userData = JSON.parse(localStorage.getItem("userData"));
+
+        if (userData) {
+          // Auto-fill input fields based on the mapping
+          inputFields.forEach((input) => {
+            const userDataKey = mapping[input.name]; // Match input name to userData key
+            if (userDataKey && userData[userDataKey] !== undefined) {
+              if (input.type === "checkbox") {
+                input.checked = userData[userDataKey];
+              } else {
+                input.value = userData[userDataKey];
+              }
+            }
+          });
+
+          // Auto-fill select fields (e.g., gender)
+          selectFields.forEach((select) => {
+            const userDataKey = mapping[select.name]; // Match select name to userData key
+            if (userDataKey && userData[userDataKey] !== undefined) {
+              select.value = userData[userDataKey];
+            }
+          });
+        }
+
+        // Attach event listener for form submission
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          // Use FormData to capture all input, including files
+          const formData = new FormData(form);
+          submitFormDetail(form.action, formData);
+        });
+      }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error loading form:", error);
     }
   };
 

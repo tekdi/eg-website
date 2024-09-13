@@ -22,8 +22,8 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-
 const limit = 6;
+
 const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
@@ -49,7 +49,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
         response = await axios.post(
           configData?.apiLink_API_LIST_URL ||
             `${configData?.apiLink_API_BASE_URL}/content/search`,
-          configData?.payload || {}
+          configData?.payload || {},
         );
         if (configData.apiResponse) {
           response = configData.apiResponse(response);
@@ -60,7 +60,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
             paginateArray({
               data: response,
               filter: { page, limit, ...filter },
-            })
+            }),
           );
           setFilterData(filterToData(configData?.filters, response));
         } else {
@@ -79,7 +79,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   useEffect(() => {
     const fethcData = () => {
       setFilterCardData(
-        paginateArray({ data: cardData, filter: { page, limit, ...filter } })
+        paginateArray({ data: cardData, filter: { page, limit, ...filter } }),
       );
     };
     fethcData();
@@ -112,7 +112,10 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const fetchData = (numData) => {
     // Simulating fetching data from an API
     // In real application, replace this with actual API call
-
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Can use "auto" for an instant scroll
+    });
     // Increment page number
     const newPage = page + numData;
     setPage(newPage);
@@ -155,7 +158,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   if (loading) {
     return <Loading message={loading} />;
   }
-
+  console.log("filterCardData", filterCardData);
   return (
     <Layout
       checkUserAccess
@@ -220,7 +223,7 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
                                 label={option}
                                 _text={{ fontSize: 12, fontWeight: 500 }}
                               />
-                            )
+                            ),
                         )}
                       </Select>
                     )}
@@ -280,13 +283,13 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
         <VStack space="4" alignContent="center" p="4">
           {filterCardData?.length ? (
             filterCardData?.map((e) => (
-              <RenderCards key={e} obj={e} config={config} />
+              <RenderCards key={e?.id} obj={e} config={config} />
             ))
           ) : (
             <FrontEndTypo.H2>{getWarningMessage()}</FrontEndTypo.H2>
           )}
           {/* </InfiniteScroll> */}
-          {hasMore && filterCardData?.length > 0 && (
+          {hasMore && filterCardData?.length >= 6 && (
             <FrontEndTypo.Primarybutton onPress={(e) => fetchData(1)}>
               {t("NEXT")}
             </FrontEndTypo.Primarybutton>
@@ -300,6 +303,11 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
       </VStack>
     </Layout>
   );
+};
+
+List.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
 };
 
 const RenderCards = ({ obj, config }) => {
@@ -360,8 +368,8 @@ const RenderCards = ({ obj, config }) => {
                 __html: obj.shortDescription
                   ? obj.shortDescription
                   : obj.description
-                  ? obj.description.substring(0, 100) + "..."
-                  : "",
+                    ? obj.description.substring(0, 100) + "..."
+                    : "",
               }}
             />
           </Text>
@@ -369,6 +377,11 @@ const RenderCards = ({ obj, config }) => {
       )}
     </Pressable>
   );
+};
+
+RenderCards.propTypes = {
+  obj: PropTypes.any,
+  config: PropTypes.any,
 };
 
 const replaceUrlParam = (url, object) => {
@@ -413,31 +426,26 @@ const paginateArray = ({ data, filter }) => {
 };
 
 const filterData = ({ data, filter }) => {
-  if (!data && !Array.isArray(data)) {
+  if (!Array.isArray(data)) {
     return [];
   }
+
+  const filKeys = Object.keys(filter || {});
+
   return data.filter((item) => {
-    let resp = [];
-    const filKeys = Object.keys(filter || {});
-    filKeys?.forEach((key) => {
-      resp = [
-        ...resp,
-        filter[key] === ""
-          ? true
-          : item?.[key]?.toLowerCase().includes(filter[key]?.toLowerCase()),
-      ];
+    return filKeys.every((key) => {
+      // If filter value is an empty string, include all items for that key
+      if (filter[key] === "") {
+        return true;
+      }
+
+      // Ensure the item's value exists and perform case-insensitive match
+      return item[key]
+        ?.toString()
+        ?.toLowerCase()
+        .includes(filter[key]?.toLowerCase());
     });
-    return resp.filter((e) => e).length === filKeys?.length;
   });
 };
 
 export default List;
-
-List.propTypes = {
-  userTokenInfo: PropTypes.any,
-  footerLinks: PropTypes.any,
-};
-RenderCards.propTypes = {
-  obj: PropTypes.any,
-  config: PropTypes.any,
-};
