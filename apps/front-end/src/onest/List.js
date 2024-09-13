@@ -158,7 +158,6 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   if (loading) {
     return <Loading message={loading} />;
   }
-  console.log("filterCardData", filterCardData);
   return (
     <Layout
       checkUserAccess
