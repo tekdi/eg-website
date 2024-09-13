@@ -7,6 +7,7 @@ import { HStack, Text, VStack, View } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function TableView({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
@@ -103,3 +104,8 @@ export default function TableView({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+TableView.propTypes = {
+  footerLinks: PropTypes.array,
+  userTokenInfo: PropTypes.object,
+};

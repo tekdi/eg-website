@@ -7,7 +7,7 @@ import Home from "../Home";
 function PrerakDuties(props) {
   let { imgUrl, title, processedButton, onPress, setPage, page, onSkipPress } =
     props;
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const setBackButton = () => {
     let data = page - 1;
     setPage(data.toString());
@@ -75,6 +75,16 @@ function PrerakDuties(props) {
     </Layout>
   );
 }
+
+PrerakDuties.propTypes = {
+  imgUrl: PropTypes.string,
+  title: PropTypes.string,
+  processedButton: PropTypes.string,
+  onPress: PropTypes.func,
+  setPage: PropTypes.func,
+  page: PropTypes.string,
+  onSkipPress: PropTypes.func,
+};
 
 export default function SwiperFile({ onClick }) {
   const [page, setPage] = useState("1");

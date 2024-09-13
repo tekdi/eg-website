@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import {
   VolunteerAdminLayout as Layout,
-  getSelectedAcademicYear,
-  getSelectedProgramId,
   useWindowSize,
 } from "@shiksha/common-lib";
-import { report } from "./ReportsJson";
-import PropTypes from "prop-types";
 import { VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useParams } from "react-router-dom";
+import { report } from "./ReportsJson";
 
 export default function AdminReports({ footerLinks }) {
   const [Width, Height] = useWindowSize();

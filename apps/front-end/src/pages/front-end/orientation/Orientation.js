@@ -1,4 +1,10 @@
-import React, { Suspense, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Fullcalendar from "@fullcalendar/react";
@@ -50,28 +56,28 @@ import OrientationScreen from "./OrientationScreen";
 
 export default function Orientation({ footerLinks }) {
   const { t } = useTranslation();
-  const formRef = React.useRef();
+  const formRef = useRef();
   const calendarRef = useRef(null);
-  const [formData, setFormData] = React.useState({});
-  const [schema, setSchema] = React.useState({});
-  const [loading, setLoading] = React.useState(false);
+  const [formData, setFormData] = useState({});
+  const [schema, setSchema] = useState({});
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [reminders, setReminders] = useState();
   const navigator = useNavigate();
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [userIds, setUserIds] = React.useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [userIds, setUserIds] = useState({});
   const nowDate = new Date();
-  const [goToDate, setGoToDate] = React.useState(moment().toDate());
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [selectedAcademic, setSelectedAcademic] = React.useState();
-  const [modal, setModal] = React.useState(true);
-  const [academicYear, setAcademicYear] = React.useState();
-  const [academicData, setAcademicData] = React.useState();
-  const [eventList, setEventList] = React.useState();
-  const [programID, setProgramID] = React.useState();
-  const [programData, setProgramData] = React.useState([]);
+  const [goToDate, setGoToDate] = useState(moment().toDate());
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAcademic, setSelectedAcademic] = useState();
+  const [modal, setModal] = useState(true);
+  const [academicYear, setAcademicYear] = useState();
+  const [academicData, setAcademicData] = useState();
+  const [eventList, setEventList] = useState();
+  const [programID, setProgramID] = useState();
+  const [programData, setProgramData] = useState([]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
     setReminders(result);
     let newSchema = orientationPopupSchema;
@@ -93,7 +99,7 @@ export default function Orientation({ footerLinks }) {
     setSchema(newSchema);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       let academic_Id = await getSelectedAcademicYear();
       if (academic_Id && !_.isEmpty(academic_Id)) {
@@ -104,7 +110,7 @@ export default function Orientation({ footerLinks }) {
     fetchData();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFormData({
       ...formData,
       attendees:
@@ -299,7 +305,7 @@ export default function Orientation({ footerLinks }) {
     }
   };
 
-  const cohortData = React.useCallback(async () => {
+  const cohortData = useCallback(async () => {
     setLoading(true);
     const data = await cohortService.getAcademicYear();
     const academicYearparseData = data?.data?.[0];
@@ -317,7 +323,7 @@ export default function Orientation({ footerLinks }) {
     setLoading(false);
   }, [modalVisible]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     cohortData();
   }, [modalVisible]);
 

@@ -9,6 +9,7 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function App({ footerLinks, userTokenInfo }) {
   const [data, setData] = React.useState();
@@ -156,3 +157,8 @@ export default function App({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};
