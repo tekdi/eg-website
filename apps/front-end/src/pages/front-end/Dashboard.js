@@ -1271,6 +1271,8 @@ RenderContent.propTypes = {
   t: PropTypes.any,
   floatValue: PropTypes.any,
   certificateData: PropTypes.any,
+  events: PropTypes.any,
+  setExamEvent: PropTypes.func,
 };
 
 TableCard.propTypes = {

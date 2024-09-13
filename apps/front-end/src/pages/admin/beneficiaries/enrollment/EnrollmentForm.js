@@ -985,7 +985,3 @@ const AlertCustom = ({ alert }) => (
 AlertCustom.propTypes = {
   alert: PropTypes.string,
 };
-
-App.propTypes = {
-  footerLinks: PropTypes.any,
-};

@@ -25,6 +25,8 @@ import NotFound from "../../NotFound";
 import { ChipStatus } from "./list/ChipStatus";
 import Chip from "component/Chip";
 import { changePasswordValidation } from "v2/utils/Helper/JSHelper";
+import PropTypes from "prop-types";
+import { id } from "date-fns/locale";
 
 export default function FacilitatorView({ footerLinks }) {
   const { t } = useTranslation();
@@ -209,6 +211,10 @@ export default function FacilitatorView({ footerLinks }) {
   );
 }
 
+FacilitatorView.propTypes = {
+  footerLinks: PropTypes.array,
+};
+
 const ApproveButton = memo(({ id, data, setData }) => {
   const toast = useToast();
   const { t } = useTranslation();
@@ -291,6 +297,12 @@ const ApproveButton = memo(({ id, data, setData }) => {
     </VStack>
   );
 });
+
+ApproveButton.propTypes = {
+  id: PropTypes.string,
+  data: PropTypes.object,
+  setData: PropTypes.func,
+};
 
 const ResetPassword = memo(({ data, id }) => {
   const toast = useToast();
@@ -511,6 +523,11 @@ const ResetPassword = memo(({ data, id }) => {
   );
 });
 
+ResetPassword.propTypes = {
+  data: PropTypes.any,
+  id: PropTypes.any,
+};
+
 const AlertMessage = ({ message, ...props }) => {
   return (
     <Alert status="warning" alignItems={"start"} {...props}>
@@ -522,4 +539,8 @@ const AlertMessage = ({ message, ...props }) => {
       </HStack>
     </Alert>
   );
+};
+
+AlertMessage.propTypes = {
+  message: PropTypes.any,
 };

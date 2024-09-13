@@ -4,17 +4,15 @@ import {
   FrontEndTypo,
   IconByName,
   Layout,
-  facilitatorRegistryService,
   testRegistryService,
-  tableCustomStyles,
 } from "@shiksha/common-lib";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Button, HStack, Modal, ScrollView, VStack } from "native-base";
 import React from "react";
-import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const columns = (t, certificateDownload) => [
   {
@@ -104,7 +102,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
 
   const columnsMemoized = React.useMemo(
     () => columns(t, certificateDownload),
-    [t, certificateDownload]
+    [t, certificateDownload],
   );
 
   return (
@@ -166,9 +164,12 @@ export default function Profile({ userTokenInfo, footerLinks }) {
   );
 }
 
-const TableCard = ({ data, columns }) => {
-  const { t } = useTranslation();
+Profile.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};
 
+const TableCard = ({ data, columns }) => {
   const setData = (item) => {
     let jsonData = {};
     columns.forEach((e, key) => {
@@ -200,4 +201,9 @@ const TableCard = ({ data, columns }) => {
       ))}
     </VStack>
   );
+};
+
+TableCard.propTypes = {
+  data: PropTypes.any,
+  columns: PropTypes.any,
 };

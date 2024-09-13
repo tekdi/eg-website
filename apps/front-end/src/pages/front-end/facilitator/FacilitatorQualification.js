@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   BodyMedium,
   CardComponent,
@@ -7,10 +8,11 @@ import {
   Layout,
 } from "@shiksha/common-lib";
 import { Alert, HStack, VStack } from "native-base";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
+import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 const GetOptions = ({ array, enumType, enumApiData }) => {
   const { t } = useTranslation();
@@ -36,16 +38,22 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
   );
 };
 
+GetOptions.propTypes = {
+  array: PropTypes.array,
+  enumType: PropTypes.string,
+  enumApiData: PropTypes.object,
+};
+
 export default function FacilitatorQualification({ userTokenInfo }) {
-  const [facilitator, setFacilitator] = React.useState();
-  const [qualifications, setQualifications] = React.useState();
-  const [qualification, setQualification] = React.useState();
+  const [facilitator, setFacilitator] = useState();
+  const [qualifications, setQualifications] = useState();
+  const [qualification, setQualification] = useState();
   const navigate = useNavigate();
-  const [enumOptions, setEnumOptions] = React.useState({});
-  const [qua, setQua] = React.useState();
+  const [enumOptions, setEnumOptions] = useState({});
+  const [qua, setQua] = useState();
   const { t } = useTranslation();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const { authUser } = userTokenInfo || {};
     const { id } = authUser || {};
     const result = await getOnboardingData(id);
@@ -53,7 +61,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
     setQualification(result?.qualifications ? result?.qualifications : {});
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     const fetchEnumData = async () => {
       const data = await getIndexedDBItem(`enums`);
@@ -72,7 +80,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
     };
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const ids = JSON.parse(
       facilitator?.qualification_ids ? facilitator?.qualification_ids : "[]",
     );
@@ -160,3 +168,7 @@ export default function FacilitatorQualification({ userTokenInfo }) {
     </Layout>
   );
 }
+
+FacilitatorQualification.propTypes = {
+  userTokenInfo: PropTypes.object,
+};

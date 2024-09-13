@@ -6,21 +6,22 @@ import {
   objProps,
 } from "@shiksha/common-lib";
 import { Box, Divider, HStack, Progress, VStack } from "native-base";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
+import PropTypes from "prop-types";
 
 export default function Profile({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo || {};
   const { id } = authUser || {};
-  const [facilitator, setFacilitator] = React.useState();
+  const [facilitator, setFacilitator] = useState();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [progress, setProgress] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const percentage =
       arrList(res, [
         "device_ownership",
@@ -49,7 +50,7 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, [facilitator]);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const result = await getOnboardingData(id);
     setFacilitator(result);
   }, []);
@@ -268,3 +269,8 @@ export default function Profile({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+Profile.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};

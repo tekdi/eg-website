@@ -4,6 +4,7 @@ import { Layout, FrontEndTypo } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FileUpload } from "component/BaseInput";
+import PropTypes from "prop-types";
 
 export default function PhotoUpload({ aadhar_no, formData }) {
   const navigate = useNavigate();
@@ -80,3 +81,8 @@ export default function PhotoUpload({ aadhar_no, formData }) {
     </Layout>
   );
 }
+
+PhotoUpload.propTypes = {
+  aadhar_no: PropTypes.any,
+  formData: PropTypes.any,
+};

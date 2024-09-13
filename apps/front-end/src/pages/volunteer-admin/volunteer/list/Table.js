@@ -5,6 +5,7 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ChipStatus } from "./ChipStatus";
+import PropTypes from "prop-types";
 
 const pagination = [10, 15, 25, 50, 100];
 
@@ -26,22 +27,6 @@ const columns = (t, navigate) => [
           style={{ flexDirection: "row", justifyContent: "space-between" }}
           onPress={() => navigate(`/admin/facilitator/${row?.id}`)}
         >
-          {/* <HStack alignItems={"center"}> */}
-          {/* {row?.profile_photo_1?.name ? (
-                <ImageView
-                  urlObject={row?.profile_photo_1}
-                  alt="Alternate Text"
-                  width={"35px"}
-                  height={"35px"}
-                />
-              ) : (
-                <IconByName
-                  isDisabled
-                  name="AccountCircleLineIcon"
-                  color="gray.300"
-                  _icon={{ size: "35" }}
-                />
-              )} */}
           <AdminTypo.H6 bold word-wrap="break-word">
             {`${row?.first_name} ${row?.last_name || ""}`}
           </AdminTypo.H6>
@@ -145,13 +130,13 @@ function Table({
           (e) => {
             setFilter({ ...filter, limit: e, page: 1 });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
         onChangePage={useCallback(
           (e) => {
             setFilter({ ...filter, page: e });
           },
-          [setFilter, filter]
+          [setFilter, filter],
         )}
       />
     </VStack>
@@ -159,3 +144,12 @@ function Table({
 }
 
 export default memo(Table);
+
+Table.propTypes = {
+  filter: PropTypes.any,
+  setFilter: PropTypes.any,
+  paginationTotalRows: PropTypes.any,
+  data: PropTypes.any,
+  loading: PropTypes.bool,
+  height: PropTypes.any,
+};

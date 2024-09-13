@@ -21,6 +21,7 @@ import { getOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper.js";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
 import ProfilePhoto from "../../../v2/components/Functional/ProfilePhoto/ProfilePhoto.js";
 import FilePreview from "v2/components/Static/FilePreview/FilePreview.js";
+import PropTypes from "prop-types";
 
 export default function FacilitatorBasicDetails({ userTokenInfo }) {
   const navigate = useNavigate();
@@ -474,3 +475,7 @@ export default function FacilitatorBasicDetails({ userTokenInfo }) {
     </Layout>
   );
 }
+
+FacilitatorBasicDetails.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

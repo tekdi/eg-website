@@ -3,7 +3,6 @@ import {
   IconByName,
   VolunteerAdminLayout as Layout,
   enumRegistryService,
-  getOptions,
   setQueryParameters,
   urlData,
   useWindowSize,
@@ -79,14 +78,14 @@ export default function List({ footerLinks, userTokenInfo }) {
       });
       setQueryParameters(data);
     },
-    [setFilter, setQueryParameters]
+    [setFilter, setQueryParameters],
   );
 
   const handleSearch = useCallback(
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
-    [filter]
+    [filter],
   );
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
