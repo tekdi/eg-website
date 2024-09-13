@@ -55,6 +55,11 @@ const ConsentForm = ({ consentData, row }) => {
   );
 };
 
+ConsentForm.propTypes = {
+  consentData: PropTypes.array,
+  row: PropTypes.any,
+};
+
 const mapDirection = ({ row, data }) => {
   return (
     <a
@@ -78,7 +83,7 @@ const totalDistance = ({ row, data }) =>
     row?.lat,
     row?.long,
     data?.properties?.lat,
-    data?.properties?.long
+    data?.properties?.long,
   );
 
 const columns = (t, data, consentData) => [
@@ -181,6 +186,11 @@ const ActionButton = ({ row, t }) => {
   );
 };
 
+ActionButton.propTypes = {
+  row: PropTypes.any,
+  t: PropTypes.any,
+};
+
 export default function View({ footerLinks }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -274,8 +284,9 @@ export default function View({ footerLinks }) {
       return;
     }
     if (selectedRows?.length > 0) {
+      const { state_name } = JSON.parse(localStorage.getItem("program")) || {};
       navigate(`/admin/camps/${id}/reassign`, {
-        state: { selectedRows },
+        state: { selectedRows, stateName: state_name, type: data?.type },
       });
     }
   };
@@ -285,7 +296,7 @@ export default function View({ footerLinks }) {
       const arr = state?.selectedRows;
       setSelectedRows(arr);
     },
-    [setSelectedRows]
+    [setSelectedRows],
   );
 
   const actiondropDown = (triggerProps, t) => {
@@ -376,7 +387,7 @@ export default function View({ footerLinks }) {
             <Menu.Item
               onPress={() => {
                 navigate(
-                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`,
                 );
               }}
             >
@@ -473,7 +484,7 @@ export default function View({ footerLinks }) {
                     }
                   />
                 </HStack>
-              )
+              ),
           )}
           {data?.properties?.lat ? (
             <MapComponent
@@ -624,7 +635,7 @@ export default function View({ footerLinks }) {
         {data?.group?.status !== "inactive" && (
           <Stack>
             {!["camp_ip_verified", "camp_initiated"].includes(
-              data?.group?.status
+              data?.group?.status,
             ) && (
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.StatusButton
@@ -699,9 +710,6 @@ export default function View({ footerLinks }) {
   );
 }
 
-View.PropTypes = {
+View.propTypes = {
   footerLinks: PropTypes.any,
-  row: PropTypes.any,
-  t: PropTypes.any,
-  consentData: PropTypes.any,
 };

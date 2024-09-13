@@ -152,7 +152,7 @@ const tableStyles = {
   },
 };
 export default function ReassignCamp({ footerLinks, userTokenInfo }) {
-  const { id, user_id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -167,10 +167,13 @@ export default function ReassignCamp({ footerLinks, userTokenInfo }) {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const location = useLocation();
   const { state } = location;
-  const { selectedRows } = state || {};
+  const { selectedRows, stateName, type } = state || {};
 
   useEffect(async () => {
-    let newFilter = filter;
+    let newFilter = {
+      ...filter,
+      ...(stateName === "RAJASTHAN" ? { type } : {}),
+    };
     const qData = await campService.getCampList(newFilter);
     const filtered = qData?.camps?.filter((item) => `${item?.id}` !== `${id}`);
     setCampData(filtered);
