@@ -205,24 +205,17 @@ export default function SYCVerification({ footerLinks }) {
                   data={[
                     {
                       data: {
+                        ...(data?.program_beneficiaries || {}),
                         enrolled_for_board: boardName,
-                        status: (
-                          <ChipStatus
-                            key={"4"}
-                            is_duplicate={data?.is_duplicate}
-                            is_deactivated={data?.is_deactivated}
-                            status={data?.program_beneficiaries?.status}
-                          />
-                        ),
                       },
                       arr: [
                         {
-                          label: "STATUS",
-                          keyArr: "status",
-                        },
-                        {
                           label: "ENROLLMENT_BOARD",
                           keyArr: "enrolled_for_board",
+                        },
+                        {
+                          label: "ENROLLMENT_NUMBER",
+                          keyArr: "enrollment_number",
                         },
                         {
                           label: "NAME",
@@ -509,13 +502,7 @@ const TextInfo = ({ data, _box, _vstack, arr }) => {
           {..._box}
           maxWidth="100%" // Ensure HStack does not exceed the container width
         >
-          <AdminTypo.H4
-            flex={1}
-            color="light.400"
-            fontWeight="bold"
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
+          <AdminTypo.H4 flex={1} color="light.400" fontWeight="bold">
             {t(e?.label || "-")}
           </AdminTypo.H4>
           {e?.value ? (
