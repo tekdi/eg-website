@@ -1,19 +1,18 @@
-import { HStack, Heading, Image, VStack, Stack, Text } from "native-base";
-import { ImageBackground, StyleSheet } from "react-native";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { dataConfig } from "./card";
-import Layout from "./Layout";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
 import { chunk } from "@shiksha/common-lib";
+import moment from "moment";
+import { HStack, Heading, Image, VStack } from "native-base";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "react-multi-carousel/lib/styles.css";
+import { StyleSheet } from "react-native";
+import { useNavigate } from "react-router-dom";
 import slide2 from "./assets/images/slide-2.png";
 import slide3 from "./assets/images/slide-3.png";
 import slide4 from "./assets/images/slide-4.png";
 import slide5 from "./assets/images/slide-5.png";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import PropTypes from "prop-types";
+import { dataConfig } from "./card";
+import Layout from "./Layout";
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -132,6 +131,12 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
     );
   };
 
+  FeatureCard.propTypes = {
+    title: PropTypes.string,
+    onClick: PropTypes.func,
+    imageUrl: PropTypes.any,
+  };
+
   const handleCardClick = async (title) => {
     try {
       navigate(`/${title}`);
@@ -158,41 +163,6 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
       }}
     >
       <VStack p="4" space={4}>
-        <Carousel
-          responsive={responsive}
-          showDots={true}
-          infinite={true}
-          autoPlaySpeed={1000}
-          keyBoardControl={true}
-          customTransition="all .5"
-          transitionDuration={500}
-          containerClass="carousel-container"
-          removeArrowOnDeviceType={["tablet", "mobile", "desktop"]}
-          dotListClass="custom-dot-list-style"
-          itemClass="carousel-item-padding-40-px"
-        >
-          {CAROUSEL_LIST.map((item, i) => {
-            return (
-              <ImageBackground
-                key={`carousel-item-${item.title + i}`}
-                source={{ uri: item.bgImage }}
-                style={styles.backgroundImage}
-              >
-                <Stack space={4} p={4} alignItems="center">
-                  <Text
-                    color={"#484848"}
-                    fontSize={"16px"}
-                    fontWeight={500}
-                    width={"70%"}
-                  >
-                    {item.title}
-                  </Text>
-                </Stack>
-              </ImageBackground>
-            );
-          })}
-        </Carousel>
-
         {dataConfig.constructor.name === "Object" &&
           dataArray?.map((pItem) => (
             <HStack space={"6%"} key={pItem}>
@@ -216,8 +186,3 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
 };
 
 export default VolunteerLandingPage;
-FeatureCard.propTypes = {
-  title: PropTypes.any,
-  onClick: PropTypes.any,
-  imageUrl: PropTypes.any,
-};
