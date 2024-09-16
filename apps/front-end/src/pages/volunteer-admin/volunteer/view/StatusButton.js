@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HStack, Modal, Radio, Input, VStack, Box, Alert } from "native-base";
 import {
   H1,
@@ -18,13 +18,13 @@ const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
   return (
     <Radio.Group
-      defaultValue="1"
-      accessibilityLabel="pick a size"
       onChange={onChange}
+      accessibilityLabel="pick a size"
+      defaultValue="1"
     >
-      <HStack alignItems="center" space={3} flexWrap="wrap">
-        {items?.map((item, key) => (
-          <Radio key={item} value={item?.value} size="sm">
+      <HStack space={3} flexWrap="wrap" alignItems="center">
+        {items?.map((item) => (
+          <Radio value={item?.value} key={item} size="sm">
             {t(item?.title)}
           </Radio>
         ))}
@@ -32,17 +32,10 @@ const CRadio = ({ items, onChange }) => {
     </Radio.Group>
   );
 };
+
 CRadio.propTypes = {
   items: PropTypes.array,
   onChange: PropTypes.func,
-};
-const styles = {
-  modalxxl: {
-    maxWidth: "950px",
-    maxHeight: "440px",
-    width: "100%",
-    height: "100%",
-  },
 };
 
 export default function StatusButton({ data, setData, updateDataCallBack }) {
@@ -65,25 +58,25 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
     setIsDisable(true);
     if (data?.program_faciltator_id && status) {
       await facilitatorRegistryService.update({
-        id: data?.program_faciltator_id,
-        status: status,
         status_reason: reason,
+        status: status,
+        id: data?.program_faciltator_id,
       });
       setAlertModal(false);
       setShowModal();
-      setData({ ...data, status: status, status_reason: reason });
+      setData({ ...data, status_reason: reason, status: status });
     }
     setIsDisable(false);
   };
 
   const updateAadhaarDetails = async () => {
     setIsDisable(true);
-    const id = data?.id;
     const dob =
       okycResponse?.aadhaar_data?.dateOfBirth &&
       moment(okycResponse?.aadhaar_data?.dateOfBirth, "D-M-Y").format("Y-M-D");
-    const gender = okycResponse?.aadhaar_data?.gender;
     const Namedata = okycResponse?.aadhaar_data?.name?.split(" ");
+    const gender = okycResponse?.aadhaar_data?.gender;
+    const id = data?.id;
     const [first_name, middle_name, last_name] = Namedata || [];
     let fullName = { first_name, middle_name, last_name };
     if (!last_name || last_name === "") {
@@ -93,24 +86,30 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
     await facilitatorRegistryService.updateAadhaarOkycDetails(obj);
     updateDataCallBack && updateDataCallBack();
   };
-  React.useEffect(async () => {
-    const resultData = await enumRegistryService.listOfEnum();
-    const statusListNew = resultData?.data.FACILITATOR_STATUS.map((item) => {
-      let buttonStatus = "success";
-      let reasonStatus = false;
-      if (["rejected", "quit", "rusticate", "on_hold"].includes(item?.value)) {
-        buttonStatus = "error";
-        reasonStatus = true;
-      }
-      return {
-        status: item.value,
-        name: item.title,
-        btnStatus: buttonStatus,
-        reason: reasonStatus,
-      };
-    });
-    setStatusList(statusListNew);
-    setEnumOptions(resultData?.data);
+
+  useEffect(() => {
+    const init = async () => {
+      const resultData = await enumRegistryService.listOfEnum();
+      const statusListNew = resultData?.data.FACILITATOR_STATUS.map((item) => {
+        let buttonStatus = "success";
+        let reasonStatus = false;
+        if (
+          ["rusticate", "on_hold", "rejected", "quit"].includes(item?.value)
+        ) {
+          reasonStatus = true;
+          buttonStatus = "error";
+        }
+        return {
+          name: item.title,
+          status: item.value,
+          reason: reasonStatus,
+          btnStatus: buttonStatus,
+        };
+      });
+      setStatusList(statusListNew);
+      setEnumOptions(resultData?.data);
+    };
+    init();
   }, []);
 
   React.useEffect(() => {

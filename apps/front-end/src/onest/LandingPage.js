@@ -50,7 +50,7 @@ const responsive = {
   },
 };
 
-const LandingPage = ({ userTokenInfo, footerLinks }) => {
+const LandingPage = ({ footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
 
@@ -137,7 +137,7 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
   );
 };
 
-const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
+export const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
   const { t } = useTranslation();
 
   return (
@@ -179,7 +179,6 @@ FeatureCard.propTypes = {
 };
 
 LandingPage.propTypes = {
-  userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,
 };
 

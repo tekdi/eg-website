@@ -4,51 +4,10 @@ import { HStack, Heading, Image, VStack } from "native-base";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import "react-multi-carousel/lib/styles.css";
-import { StyleSheet } from "react-native";
 import { useNavigate } from "react-router-dom";
-import slide2 from "./assets/images/slide-2.png";
-import slide3 from "./assets/images/slide-3.png";
-import slide4 from "./assets/images/slide-4.png";
-import slide5 from "./assets/images/slide-5.png";
 import { dataConfig } from "./card";
 import Layout from "./Layout";
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    height: "74px",
-    marginBottom: "20px",
-  },
-});
-
-const CAROUSEL_LIST = [
-  { bgImage: slide2, title: "What would you like to explore today?" },
-  { bgImage: slide3, title: "Jobs & Internships" },
-  { bgImage: slide4, title: "Scholarships" },
-  { bgImage: slide5, title: "Skill Development & Learning" },
-];
-
-const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 1,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 1,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 1,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
+import { FeatureCard } from "./LandingPage";
 
 const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
@@ -98,45 +57,6 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
     footerLinks: PropTypes.any,
   };
 
-  const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
-    return (
-      <VStack
-        p="6"
-        borderWidth="1px"
-        borderColor="gray.300"
-        borderRadius="10px"
-        alignItems="center"
-        textAlign="center"
-        shadow="4"
-        onClick={onClick}
-        cursor="pointer"
-        {...props}
-      >
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            source={{ uri: imageUrl }}
-            alt={title}
-            mb="4"
-            size={"lg"}
-            height={"74px"}
-            width={"74px"}
-            color={"black"}
-          />
-        )}
-        <Heading as="h2" size="md" mb="2" fontSize={"16px"} fontWeight={"500"}>
-          {t(title) || "Untitled"}
-        </Heading>
-      </VStack>
-    );
-  };
-
-  FeatureCard.propTypes = {
-    title: PropTypes.string,
-    onClick: PropTypes.func,
-    imageUrl: PropTypes.any,
-  };
-
   const handleCardClick = async (title) => {
     try {
       navigate(`/${title}`);
@@ -163,23 +83,22 @@ const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
       }}
     >
       <VStack p="4" space={4}>
-        {dataConfig.constructor.name === "Object" &&
-          dataArray?.map((pItem) => (
-            <HStack space={"6%"} key={pItem}>
-              {pItem.map((item) => {
-                return (
-                  <FeatureCard
-                    key={item}
-                    title={item?.title}
-                    onClick={() => handleCardClick(item?.listLink)}
-                    imageUrl={item?.imageUrl}
-                    width={"47%"}
-                    height={"180px"}
-                  />
-                );
-              })}
-            </HStack>
-          ))}
+        {dataArray?.map((pItem) => (
+          <HStack space={"6%"} key={pItem}>
+            {pItem.map((item) => {
+              return (
+                <FeatureCard
+                  imageUrl={item?.imageUrl}
+                  onClick={() => handleCardClick(item?.listLink)}
+                  height={"180px"}
+                  width={"47%"}
+                  title={item?.title}
+                  key={item}
+                />
+              );
+            })}
+          </HStack>
+        ))}
       </VStack>
     </Layout>
   );
