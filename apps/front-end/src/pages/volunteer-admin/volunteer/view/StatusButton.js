@@ -213,11 +213,11 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
 
   return (
     <Box
-      display="inline-flex"
-      flexWrap="wrap"
       flexDirection="row"
-      gap="4"
+      flexWrap="wrap"
       my="2"
+      display="inline-flex"
+      gap="4"
     >
       {statusList
         ?.filter(({ status }) => disabledBtn.includes(status))
@@ -225,11 +225,11 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           <AdminTypo.StatusButton
             key={name}
             {...item}
-            status={item?.btnStatus}
             isDisabled={!disabledBtn.includes(item?.status)}
             onPress={(e) => {
               isCampExistFunction({ name, ...item });
             }}
+            status={item?.btnStatus}
           >
             {t(name)}
           </AdminTypo.StatusButton>
@@ -237,19 +237,18 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
 
       {alertModal === true && (
         <Modal
-          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
           onClose={() => setAlertModal(false)}
           size={"lg"}
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
         >
           <Modal.CloseButton />
           <Modal.Content rounded="2xl">
             <Modal.Body>
               <VStack space="3">
-                <Alert status="warning" alignItems={"start"}>
-                  <HStack alignItems="center" space="2">
+                <Alert alignItems={"start"} status="warning">
+                  <HStack space="2" alignItems="center">
                     <Alert.Icon size="lg" />
-
-                    <AdminTypo.H5 space="4" width={"100%"}>
+                    <AdminTypo.H5 width={"100%"} space="4">
                       {t("CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL")}
                     </AdminTypo.H5>
                   </HStack>
@@ -300,8 +299,8 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                     {!["yes", "okyc_ip_verified"].includes(
                       data?.aadhar_verified,
                     ) && (
-                      <Alert status="warning" alignItems={"start"}>
-                        <HStack alignItems="center" space="2">
+                      <Alert alignItems={"start"} status="warning">
+                        <HStack space="2" alignItems="center">
                           <Alert.Icon />
                           {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING")}
                         </HStack>
@@ -309,9 +308,9 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                     )}
                   </VStack>
                 ) : (
-                  <VStack p="2" flex="4">
-                    <Alert status="warning" alignItems={"start"}>
-                      <HStack alignItems="center" space="2">
+                  <VStack flex="4" p="2">
+                    <Alert alignItems={"start"} status="warning">
+                      <HStack space="2" alignItems="center">
                         <Alert.Icon />
                         {t("AADHAAR_OKYC_NOT_COMPLETED_BY_PRERAK")}
                       </HStack>
@@ -336,28 +335,28 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
       )}
       {showModal?.status !== "selected_prerak" && (
         <Modal
-          size={"xl"}
-          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
           onClose={() => setShowModal()}
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
+          size={"xl"}
         >
           <Modal.Content rounded="2xl">
             <Modal.CloseButton />
             <Modal.Header borderBottomWidth={0}>
-              <HStack alignItems="center" space={2} justifyContent="center">
+              <HStack justifyContent="center" alignItems="center" space={2}>
                 <AdminTypo.H1 color="textGreyColor.500" bold>
                   {t(showModal?.name)}
                 </AdminTypo.H1>
               </HStack>
             </Modal.Header>
-            <Modal.Body pb="5" px="5" pt="0">
+            <Modal.Body pt="0" pb="5" px="5">
               <VStack space="5">
                 {showModal?.reason ? (
                   <VStack
-                    p="5"
-                    space="5"
-                    flex={1}
-                    borderWidth="1"
                     borderColor="gray.300"
+                    p="5"
+                    borderWidth="1"
+                    flex={1}
+                    space="5"
                   >
                     <AdminTypo.H6 color="textGreyColor.500" bold>
                       {t("PLEASE_MENTION_YOUR_REASON")}
@@ -379,31 +378,23 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                       }
                     />
                     <Input
+                      placeholder={t("MENTION_YOUR_REASON")}
                       onChange={(e) => {
                         setReason(e?.target?.value);
                       }}
                       variant={"underlined"}
-                      placeholder={t("MENTION_YOUR_REASON")}
                     />
                   </VStack>
                 ) : (
-                  <AdminTypo.H1 textAlign="center" py="5">
+                  <AdminTypo.H1 py="5" textAlign="center">
                     {t("ARE_YOU_SURE")}
                   </AdminTypo.H1>
                 )}
-                <HStack width="100%" justifyContent="space-between" space={5}>
+                <HStack space={5} width="100%" justifyContent="space-between">
                   <AdminTypo.Secondarybutton onPress={() => setShowModal()}>
                     {t("CANCEL")}
                   </AdminTypo.Secondarybutton>
                   <AdminTypo.PrimaryButton
-                    isDisabled={
-                      !(
-                        (showModal?.reason &&
-                          reason &&
-                          reason?.toLowerCase() !== "other") ||
-                        (!showModal?.reason && !isDisable)
-                      )
-                    }
                     onPress={() => {
                       if (
                         (showModal?.reason &&
@@ -414,6 +405,14 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                         update(showModal?.status);
                       }
                     }}
+                    isDisabled={
+                      !(
+                        (showModal?.reason &&
+                          reason &&
+                          reason?.toLowerCase() !== "other") ||
+                        (!showModal?.reason && !isDisable)
+                      )
+                    }
                   >
                     {t(showModal?.name)}
                   </AdminTypo.PrimaryButton>
