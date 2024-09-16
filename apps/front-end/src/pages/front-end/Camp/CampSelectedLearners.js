@@ -10,9 +10,7 @@ import {
 } from "native-base";
 import {
   Layout,
-  BodyMedium,
   FrontEndTypo,
-  AdminTypo,
   IconByName,
   ImageView,
   campService,
@@ -122,23 +120,17 @@ export default function CampSelectedLearners() {
       pageTitle={t("CAMP")}
       stepTitle={t("LEARNERS_IN_CAMP")}
     >
-      <Box py={6} px={4} mb={5}>
-        <AdminTypo.H3 color={"textMaroonColor.400"}>
-          {alert && (
-            <Alert
-              status="warning"
-              alignItems={"start"}
-              mb="3"
-              mt="4"
-              width={"100%"}
-            >
+      <VStack p={4} space={4}>
+        {alert && (
+          <FrontEndTypo.H3 color={"textMaroonColor.400"}>
+            <Alert status="warning" alignItems={"start"} width={"100%"}>
               <HStack alignItems="center" space="2" color>
                 <Alert.Icon />
-                <BodyMedium>{t("SELECT_LEARNER")}</BodyMedium>
+                <FrontEndTypo.H3>{t("SELECT_LEARNER")}</FrontEndTypo.H3>
               </HStack>
             </Alert>
-          )}
-        </AdminTypo.H3>
+          </FrontEndTypo.H3>
+        )}
         <HStack
           space={2}
           paddingRight={2}
@@ -152,89 +144,97 @@ export default function CampSelectedLearners() {
             colorScheme="danger"
           />
         </HStack>
-
-        {users?.map((item) => {
-          return (
-            <CardComponent
-              _header={{ bg: "white" }}
-              _vstack={{
-                bg: "white",
-                m: "2",
-              }}
-              key={item}
-            >
-              <HStack
-                w={"100%"}
-                bg="white"
-                my={1}
-                rounded="sm"
-                alignItems={"center"}
-                justifyContent={"space-between"}
+        <VStack space={4}>
+          {users?.map((item) => {
+            return (
+              <CardComponent
+                _header={{ bg: "white" }}
+                _vstack={{
+                  bg: "white",
+                  m: "0",
+                }}
+                _body={{ pb: 3, px: 3, pt: 3 }}
+                key={item}
               >
-                <HStack justifyContent="space-between">
-                  <HStack alignItems="Center" flex="5">
+                <HStack
+                  space={1}
+                  rounded="sm"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <HStack alignItems="center" flex="1">
                     <Pressable onPress={() => setModalVisible(item)}>
                       {item?.profile_photo_1?.id ? (
                         <ImageView
                           source={{
                             uri: item?.profile_photo_1?.name,
                           }}
-                          // alt="Alternate Text"
-                          width={"45px"}
-                          height={"45px"}
+                          width="50px"
+                          height="50px"
                         />
                       ) : (
                         <IconByName
                           isDisabled
                           name="AccountCircleLineIcon"
                           color="gray.300"
-                          _icon={{ size: "51px" }}
+                          _icon={{ size: "60px" }}
                         />
                       )}
                     </Pressable>
-                    <VStack
-                      pl="2"
-                      flex="1"
-                      wordWrap="break-word"
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                    >
+
+                    {/* Text content */}
+                    <VStack pl="2" flex="1">
+                      <HStack>
+                        <Chip py="2px" px="2" m="0">
+                          <FrontEndTypo.H4
+                            color="floatingLabelColor.500"
+                            fontWeight={"600"}
+                          >
+                            {item?.id}
+                          </FrontEndTypo.H4>
+                        </Chip>
+                      </HStack>
                       <FrontEndTypo.H3 bold color="textGreyColor.800">
-                        {item?.program_beneficiaries[0]?.enrollment_first_name}
-                        {item?.program_beneficiaries[0]
-                          ?.enrollment_middle_name &&
-                          ` ${item?.program_beneficiaries[0]?.enrollment_middle_name}`}
-                        {item?.program_beneficiaries[0]?.enrollment_last_name &&
-                          ` ${item?.program_beneficiaries[0]?.enrollment_last_name}`}
+                        {[
+                          item?.program_beneficiaries[0]?.enrollment_first_name,
+                          item?.program_beneficiaries[0]
+                            ?.enrollment_middle_name,
+                          item?.program_beneficiaries[0]?.enrollment_last_name,
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                       </FrontEndTypo.H3>
-                      <FrontEndTypo.H4>{item?.district}</FrontEndTypo.H4>
-                      <FrontEndTypo.H4>{item?.block}</FrontEndTypo.H4>
-                      <FrontEndTypo.H4>{item?.village}</FrontEndTypo.H4>
+
+                      <FrontEndTypo.H4>
+                        {[item?.district, item?.block, item?.village]
+                          .filter(Boolean)
+                          .join(" ")}
+                        {/* Repeated block removed */}
+                      </FrontEndTypo.H4>
                     </VStack>
                   </HStack>
-                </HStack>
 
-                <Box maxW="121px">
-                  {!canSelectUsers.find((e) => e?.id === item?.id)?.id && (
-                    <Checkbox
-                      isChecked={selectedIds.includes(item.id)}
-                      onChange={() => handleCheckboxChange(item.id)}
-                      colorScheme="danger"
-                    />
-                  )}
-                </Box>
-              </HStack>
-            </CardComponent>
-          );
-        })}
+                  <Box maxW="121px">
+                    {!canSelectUsers.find((e) => e?.id === item?.id)?.id && (
+                      <Checkbox
+                        isChecked={selectedIds.includes(item.id)}
+                        onChange={() => handleCheckboxChange(item.id)}
+                        colorScheme="danger"
+                      />
+                    )}
+                  </Box>
+                </HStack>
+              </CardComponent>
+            );
+          })}
+        </VStack>
         <FrontEndTypo.Primarybutton
           isDisabled={isDisable}
           onPress={updateLearner}
         >
           {t("SAVE_AND_CAMP_PROFILE")}
         </FrontEndTypo.Primarybutton>
-      </Box>
+      </VStack>
       <Modal isOpen={modalVisible} avoidKeyboard size="xl">
         <Modal.Content>
           <Modal.Header textAlign={"Center"}>{t("PROFILE")}</Modal.Header>
