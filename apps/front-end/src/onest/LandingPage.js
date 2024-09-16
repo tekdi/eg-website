@@ -12,6 +12,7 @@ import slide5 from "./assets/images/slide-5.png";
 import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useTranslation } from "react-i18next";
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -58,39 +59,6 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
     const newArr = chunk(chuckArr, 2);
     setDataArray(newArr);
   }, []);
-
-  const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
-    return (
-      <VStack
-        p="6"
-        borderWidth="1px"
-        borderColor="gray.300"
-        borderRadius="10px"
-        alignItems="center"
-        textAlign="center"
-        shadow="4"
-        onClick={onClick}
-        cursor="pointer"
-        {...props}
-      >
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            source={{ uri: imageUrl }}
-            alt={title}
-            mb="4"
-            size={"lg"}
-            height={"74px"}
-            width={"74px"}
-            color={"black"}
-          />
-        )}
-        <Heading as="h2" size="md" mb="2" fontSize={"16px"} fontWeight={"500"}>
-          {t(title) || "Untitled"}
-        </Heading>
-      </VStack>
-    );
-  };
 
   const handleCardClick = async (title) => {
     try {
@@ -168,6 +136,42 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
     </Layout>
   );
 };
+
+const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
+  const { t } = useTranslation();
+
+  return (
+    <VStack
+      p="6"
+      borderWidth="1px"
+      borderColor="gray.300"
+      borderRadius="10px"
+      alignItems="center"
+      textAlign="center"
+      shadow="4"
+      onClick={onClick}
+      cursor="pointer"
+      {...props}
+    >
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          source={{ uri: imageUrl }}
+          alt={title}
+          mb="4"
+          size={"lg"}
+          height={"74px"}
+          width={"74px"}
+          color={"black"}
+        />
+      )}
+      <Heading as="h2" size="md" mb="2" fontSize={"16px"} fontWeight={"500"}>
+        {t(title) || "Untitled"}
+      </Heading>
+    </VStack>
+  );
+};
+
 FeatureCard.propTypes = {
   title: PropTypes.string,
   onClick: PropTypes.func,

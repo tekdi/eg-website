@@ -1,8 +1,6 @@
 import { VStack, Image, HStack, Box } from "native-base";
-import React from "react";
-import { useEffect, useRef, useState } from "react";
-import { FrontEndTypo, TitleCard } from "@shiksha/common-lib";
-import { useWindowSize } from "@shiksha/common-lib";
+import React, { useEffect, useRef, useState } from "react";
+import { FrontEndTypo, TitleCard, useWindowSize } from "@shiksha/common-lib";
 import { setLanguage, getLanguage } from "v2/utils/Helper/JSHelper";
 import Motif_EG from "../../../assets/Images/Logo/Motif_EG.svg";
 

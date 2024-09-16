@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import AadharCompare from "../../../front-end/AadhaarKyc/AadhaarCompare";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const CRadio = ({ items, onChange }) => {
   const { t } = useTranslation();
@@ -31,6 +32,10 @@ const CRadio = ({ items, onChange }) => {
     </Radio.Group>
   );
 };
+CRadio.propTypes = {
+  items: PropTypes.array,
+  onChange: PropTypes.func,
+};
 const styles = {
   modalxxl: {
     maxWidth: "950px",
@@ -48,7 +53,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
   const [enumOptions, setEnumOptions] = React.useState({});
   const [isCampList, setIsCampList] = React.useState();
   const [okycResponse] = React.useState(
-    JSON.parse(data?.program_faciltators?.okyc_response)
+    JSON.parse(data?.program_faciltators?.okyc_response),
   );
   const [alertModal, setAlertModal] = React.useState();
   const { t } = useTranslation();
@@ -266,12 +271,12 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                           showModal.status === "quit"
                             ? "FACILITATOR_REASONS_FOR_QUIT"
                             : showModal.status === "rusticate"
-                            ? "FACILITATOR_REASONS_FOR_RUSTICATE"
-                            : showModal.status === "rejected"
-                            ? "FACILITATOR_REASONS_FOR_REJECTED"
-                            : showModal.status === "on_hold"
-                            ? "FACILITATOR_REASONS_FOR_ON_REJECTED"
-                            : []
+                              ? "FACILITATOR_REASONS_FOR_RUSTICATE"
+                              : showModal.status === "rejected"
+                                ? "FACILITATOR_REASONS_FOR_REJECTED"
+                                : showModal.status === "on_hold"
+                                  ? "FACILITATOR_REASONS_FOR_ON_REJECTED"
+                                  : []
                         ]
                       }
                     />
@@ -342,12 +347,12 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                         user: data,
                         aadhaarCompare: checkAadhaar(
                           data,
-                          okycResponse?.aadhaar_data
+                          okycResponse?.aadhaar_data,
                         ),
                       }}
                     />
                     {!["yes", "okyc_ip_verified"].includes(
-                      data?.aadhar_verified
+                      data?.aadhar_verified,
                     ) && (
                       <Alert status="warning" alignItems={"start"}>
                         <HStack alignItems="center" space="2">
@@ -434,7 +439,7 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                     <AdminTypo.PrimaryButton
                       onPress={() =>
                         navigate(
-                          `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`
+                          `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`,
                         )
                       }
                     >
@@ -455,3 +460,9 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
     </Box>
   );
 }
+
+StatusButton.propTypes = {
+  data: PropTypes.object,
+  setData: PropTypes.func,
+  updateDataCallBack: PropTypes.func,
+};

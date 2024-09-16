@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Shortlisted from "./Shortlisted";
 
 export default function Interviewschedule() {
-  const [status, setStatus] = React.useState(false);
+  const [status, setStatus] = useState(false);
   return (
     <Stack
       flexDirection="row"

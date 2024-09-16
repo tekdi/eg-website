@@ -24,11 +24,10 @@ function ScholarshipView() {
   const { t } = useTranslation();
   const [jobInfo, setJobInfo] = useState(state?.product);
   const [jobsData, setJobsData] = useState(null);
-  const [listData, setListData] = useState([]);
+  const [listData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
   const [status, setStatus] = useState("Applied");
-  const [siteUrl] = useState(window.location.href);
   const [transactionId] = useState(uuidv4());
   const toast = useToast();
 
@@ -235,10 +234,6 @@ function ScholarshipView() {
     }
   }, []);
 
-  function encodeJsonToQueryParam(jsonData) {
-    return encodeURIComponent(JSON.stringify(jsonData));
-  }
-
   useEffect(() => {
     /* if (transactionId === undefined) {
       const uniqueId = uuidv4();
@@ -251,7 +246,7 @@ function ScholarshipView() {
     // registerTelementry(siteUrl, transactionId);
 
     // ReactGA.pageview(window.location.pathname + window.location.search);
-    var requestOptions = {
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -415,12 +410,12 @@ function ScholarshipView() {
         )}
         <Box marginTop={4}>
           {jobsData?.tags?.map((tag, index) => (
-            <Box key={index} marginBottom={3}>
+            <Box key={tag + index} marginBottom={3}>
               <Text fontSize={["sm"]} color={"black"} fontWeight={700}>
                 {tag.descriptor.name}
               </Text>
               {tag.list.map((item, itemIndex) => (
-                <div key={itemIndex}>
+                <div key={item + itemIndex}>
                   <ul style={{ marginLeft: "3rem", listStyleType: "disc" }}>
                     <li>
                       {!item?.descriptor?.name &&

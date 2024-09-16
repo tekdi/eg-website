@@ -310,12 +310,21 @@ export default function App({ facilitator, ip, onClick }) {
         );
         if (!resultCheck) {
           if (!schema?.properties?.otp) {
-            const { otp: data, ...allData } = updatedFormData || {};
-            let { mobile, otp, ...otherError } = errors || {};
+            const allData = { ...updatedFormData };
+            const otherError = { ...errors };
+
+            // Remove the `otp` key if it exists
+            delete allData.otp;
+            delete otherError.otp;
+
+            // Optionally, remove 'mobile' from otherError if necessary
+            delete otherError.mobile;
+
             setFormData(allData);
             updatedFormData = allData;
             setErrors(otherError);
           }
+
           const { status, newSchema } = await sendAndVerifyOtp(schema, {
             ...updatedFormData,
             hash: localStorage.getItem("hash"),

@@ -10,14 +10,12 @@ export function ChipStatus({ width, status, ...props }) {
   const { t } = useTranslation();
 
   useEffect(() => {
-    switch (status && status?.toLowerCase()) {
-      case "approved":
-        setColor("potentialColor");
-        setNewStatus(t("VOLUNTEER_STATUS_APPROVED"));
-        break;
-      default:
-        setNewStatus(t("VOLUNTEER_STATUS_APPLIED"));
-        setColor("appliedColor");
+    if (status && status?.toLowerCase() === "approved") {
+      setColor("potentialColor");
+      setNewStatus(t("VOLUNTEER_STATUS_APPROVED"));
+    } else {
+      setNewStatus(t("VOLUNTEER_STATUS_APPLIED"));
+      setColor("appliedColor");
     }
   }, [status]);
 
