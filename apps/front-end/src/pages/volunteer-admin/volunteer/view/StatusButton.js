@@ -235,6 +235,105 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           </AdminTypo.StatusButton>
         ))}
 
+      {alertModal === true && (
+        <Modal
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
+          onClose={() => setAlertModal(false)}
+          size={"lg"}
+        >
+          <Modal.CloseButton />
+          <Modal.Content rounded="2xl">
+            <Modal.Body>
+              <VStack space="3">
+                <Alert status="warning" alignItems={"start"}>
+                  <HStack alignItems="center" space="2">
+                    <Alert.Icon size="lg" />
+
+                    <AdminTypo.H5 space="4" width={"100%"}>
+                      {t("CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL")}
+                    </AdminTypo.H5>
+                  </HStack>
+                </Alert>
+
+                <AdminTypo.PrimaryButton
+                  isDisabled={isDisable}
+                  onPress={(e) => {
+                    update(showModal?.status);
+                    updateAadhaarDetails();
+                  }}
+                >
+                  <AdminTypo.H4 bold color="white">
+                    {t("CONFIRM")}
+                  </AdminTypo.H4>
+                </AdminTypo.PrimaryButton>
+              </VStack>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      )}
+      {showModal?.status == "selected_prerak" && (
+        <Modal
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
+          onClose={() => setShowModal()}
+          size={"xl"}
+        >
+          <Modal.CloseButton />
+          <Modal.Content rounded="2xl">
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Header alignItems="center">
+                {t("IDENTITY_VERIFICATION")}
+              </Modal.Header>
+            )}
+            <Modal.Body>
+              <VStack space={4}>
+                {data?.program_faciltators?.okyc_response ? (
+                  <VStack space="4">
+                    <AadharCompare
+                      {...{
+                        user: data,
+                        aadhaarCompare: checkAadhaar(
+                          data,
+                          okycResponse?.aadhaar_data,
+                        ),
+                      }}
+                    />
+                    {!["yes", "okyc_ip_verified"].includes(
+                      data?.aadhar_verified,
+                    ) && (
+                      <Alert status="warning" alignItems={"start"}>
+                        <HStack alignItems="center" space="2">
+                          <Alert.Icon />
+                          {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING")}
+                        </HStack>
+                      </Alert>
+                    )}
+                  </VStack>
+                ) : (
+                  <VStack p="2" flex="4">
+                    <Alert status="warning" alignItems={"start"}>
+                      <HStack alignItems="center" space="2">
+                        <Alert.Icon />
+                        {t("AADHAAR_OKYC_NOT_COMPLETED_BY_PRERAK")}
+                      </HStack>
+                    </Alert>
+                  </VStack>
+                )}
+              </VStack>
+            </Modal.Body>
+            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+              <Modal.Footer alignSelf="center">
+                <AdminTypo.PrimaryButton
+                  onPress={() => {
+                    setAlertModal(true);
+                  }}
+                >
+                  {t("CONFIRM")}
+                </AdminTypo.PrimaryButton>
+              </Modal.Footer>
+            )}
+          </Modal.Content>
+        </Modal>
+      )}
       {showModal?.status !== "selected_prerak" && (
         <Modal
           size={"xl"}
@@ -319,105 +418,6 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                     {t(showModal?.name)}
                   </AdminTypo.PrimaryButton>
                 </HStack>
-              </VStack>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
-      )}
-      {showModal?.status == "selected_prerak" && (
-        <Modal
-          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
-          onClose={() => setShowModal()}
-          size={"xl"}
-        >
-          <Modal.CloseButton />
-          <Modal.Content rounded="2xl">
-            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
-              <Modal.Header alignItems="center">
-                {t("IDENTITY_VERIFICATION")}
-              </Modal.Header>
-            )}
-            <Modal.Body>
-              <VStack space={4}>
-                {data?.program_faciltators?.okyc_response ? (
-                  <VStack space="4">
-                    <AadharCompare
-                      {...{
-                        user: data,
-                        aadhaarCompare: checkAadhaar(
-                          data,
-                          okycResponse?.aadhaar_data,
-                        ),
-                      }}
-                    />
-                    {!["yes", "okyc_ip_verified"].includes(
-                      data?.aadhar_verified,
-                    ) && (
-                      <Alert status="warning" alignItems={"start"}>
-                        <HStack alignItems="center" space="2">
-                          <Alert.Icon />
-                          {t("AADHAAR_OKYC_AADHAAR_NUMBER_IS_NOT_MATCHING")}
-                        </HStack>
-                      </Alert>
-                    )}
-                  </VStack>
-                ) : (
-                  <VStack p="2" flex="4">
-                    <Alert status="warning" alignItems={"start"}>
-                      <HStack alignItems="center" space="2">
-                        <Alert.Icon />
-                        {t("AADHAAR_OKYC_NOT_COMPLETED_BY_PRERAK")}
-                      </HStack>
-                    </Alert>
-                  </VStack>
-                )}
-              </VStack>
-            </Modal.Body>
-            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
-              <Modal.Footer alignSelf="center">
-                <AdminTypo.PrimaryButton
-                  onPress={() => {
-                    setAlertModal(true);
-                  }}
-                >
-                  {t("CONFIRM")}
-                </AdminTypo.PrimaryButton>
-              </Modal.Footer>
-            )}
-          </Modal.Content>
-        </Modal>
-      )}
-      {alertModal === true && (
-        <Modal
-          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
-          onClose={() => setAlertModal(false)}
-          size={"lg"}
-        >
-          <Modal.CloseButton />
-          <Modal.Content rounded="2xl">
-            <Modal.Body>
-              <VStack space="3">
-                <Alert status="warning" alignItems={"start"}>
-                  <HStack alignItems="center" space="2">
-                    <Alert.Icon size="lg" />
-
-                    <AdminTypo.H5 space="4" width={"100%"}>
-                      {t("CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL")}
-                    </AdminTypo.H5>
-                  </HStack>
-                </Alert>
-
-                <AdminTypo.PrimaryButton
-                  isDisabled={isDisable}
-                  onPress={(e) => {
-                    update(showModal?.status);
-                    updateAadhaarDetails();
-                  }}
-                >
-                  <AdminTypo.H4 bold color="white">
-                    {t("CONFIRM")}
-                  </AdminTypo.H4>
-                </AdminTypo.PrimaryButton>
               </VStack>
             </Modal.Body>
           </Modal.Content>
