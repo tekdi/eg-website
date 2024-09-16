@@ -248,20 +248,20 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                 <Alert alignItems={"start"} status="warning">
                   <HStack space="2" alignItems="center">
                     <Alert.Icon size="lg" />
-                    <AdminTypo.H5 width={"100%"} space="4">
+                    <AdminTypo.H5 space="4" width={"100%"}>
                       {t("CONFITMATION_MESSAGE_IN_AADHAAROKYC_MODAL")}
                     </AdminTypo.H5>
                   </HStack>
                 </Alert>
 
                 <AdminTypo.PrimaryButton
-                  isDisabled={isDisable}
                   onPress={(e) => {
                     update(showModal?.status);
                     updateAadhaarDetails();
                   }}
+                  isDisabled={isDisable}
                 >
-                  <AdminTypo.H4 bold color="white">
+                  <AdminTypo.H4 color="white" bold>
                     {t("CONFIRM")}
                   </AdminTypo.H4>
                 </AdminTypo.PrimaryButton>
@@ -272,9 +272,9 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
       )}
       {showModal?.status == "selected_prerak" && (
         <Modal
-          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
-          onClose={() => setShowModal()}
           size={"xl"}
+          onClose={() => setShowModal()}
+          isOpen={statusList?.map((e) => e?.name).includes(showModal?.name)}
         >
           <Modal.CloseButton />
           <Modal.Content rounded="2xl">
@@ -289,11 +289,11 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                   <VStack space="4">
                     <AadharCompare
                       {...{
-                        user: data,
                         aadhaarCompare: checkAadhaar(
                           data,
                           okycResponse?.aadhaar_data,
                         ),
+                        user: data,
                       }}
                     />
                     {!["yes", "okyc_ip_verified"].includes(
@@ -319,9 +319,10 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
                 )}
               </VStack>
             </Modal.Body>
-            {["okyc_ip_verified", "yes"].includes(data?.aadhar_verified) && (
+            {["yes", "okyc_ip_verified"].includes(data?.aadhar_verified) && (
               <Modal.Footer alignSelf="center">
                 <AdminTypo.PrimaryButton
+                  width="100%"
                   onPress={() => {
                     setAlertModal(true);
                   }}
@@ -423,18 +424,18 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
         </Modal>
       )}
 
-      <Modal isOpen={isCampList} onClose={() => setIsCampList()} size={"xl"}>
+      <Modal size={"xl"} isOpen={isCampList} onClose={() => setIsCampList()}>
         <Modal.CloseButton />
         <Modal.Content rounded="2xl">
           <Modal.Body>
             <Alert status="warning">{t("ALREADY_CAMP_REGISTER")}</Alert>
-            <VStack p="4" space={4}>
+            <VStack space={4} p="4">
               {isCampList?.map((e) => {
                 return (
-                  <HStack key={e} justifyContent={"space-between"}>
+                  <HStack justifyContent={"space-between"} key={e}>
                     {e?.group?.camp_name}
-
                     <AdminTypo.PrimaryButton
+                      width="100%"
                       onPress={() =>
                         navigate(
                           `/admin/camps/${e?.group?.camp?.camp_id}/reassignPrerak/${data?.id}`,
@@ -449,7 +450,10 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
             </VStack>
           </Modal.Body>
           <Modal.Footer alignSelf="center">
-            <AdminTypo.PrimaryButton onPress={() => setIsCampList()}>
+            <AdminTypo.PrimaryButton
+              width="100%"
+              onPress={() => setIsCampList()}
+            >
               {t("OK")}
             </AdminTypo.PrimaryButton>
           </Modal.Footer>
