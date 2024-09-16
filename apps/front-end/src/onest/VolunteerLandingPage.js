@@ -1,9 +1,8 @@
 import { chunk } from "@shiksha/common-lib";
 import moment from "moment";
-import { HStack, Heading, Image, VStack } from "native-base";
+import { HStack, VStack } from "native-base";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { dataConfig } from "./card";
 import Layout from "./Layout";
@@ -12,7 +11,6 @@ import { FeatureCard } from "./LandingPage";
 const VolunteerLandingPage = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const chuckArr = Object.values(dataConfig);

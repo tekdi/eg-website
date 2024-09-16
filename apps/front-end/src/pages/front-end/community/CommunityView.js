@@ -239,4 +239,5 @@ export default function CommunityView({ footerLinks, userTokenInfo }) {
 
 CommunityView.propTypes = {
   footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
 };

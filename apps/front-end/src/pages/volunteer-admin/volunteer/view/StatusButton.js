@@ -114,6 +114,9 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
 
   React.useEffect(() => {
     switch (data?.status?.toLowerCase()) {
+      case "rejected":
+        setDisabledBtn(["on_hold", "application_screened", "quit"]);
+        break;
       case "application_screened":
         setDisabledBtn([
           "rejected",
@@ -123,23 +126,20 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           "quit",
         ]);
         break;
-      case "rejected":
-        setDisabledBtn(["on_hold", "application_screened", "quit"]);
+      case "pragati_mobilizer":
+        setDisabledBtn([
+          "quit",
+          "rejected",
+          "selected_for_onboarding",
+          "rusticate",
+          "on_hold",
+        ]);
         break;
       case "shortlisted_for_orientation":
         setDisabledBtn([
           "quit",
           "rejected",
           "pragati_mobilizer",
-          "rusticate",
-          "on_hold",
-        ]);
-        break;
-      case "pragati_mobilizer":
-        setDisabledBtn([
-          "quit",
-          "rejected",
-          "selected_for_onboarding",
           "rusticate",
           "on_hold",
         ]);
@@ -153,11 +153,14 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           "on_hold",
         ]);
         break;
+      case "selected_prerak":
+        setDisabledBtn(["rejected", "quit", "rusticate"]);
+        break;
       case "selected_for_onboarding":
         setDisabledBtn(["rejected", "selected_prerak", "quit", "rusticate"]);
         break;
-      case "selected_prerak":
-        setDisabledBtn(["rejected", "quit", "rusticate"]);
+      case "rusticate":
+        setDisabledBtn(["on_hold"]);
         break;
       case "quit":
         setDisabledBtn([
@@ -168,9 +171,6 @@ export default function StatusButton({ data, setData, updateDataCallBack }) {
           "selected_for_training",
           "on_hold",
         ]);
-        break;
-      case "rusticate":
-        setDisabledBtn(["on_hold"]);
         break;
       case "on_hold":
         setDisabledBtn([
