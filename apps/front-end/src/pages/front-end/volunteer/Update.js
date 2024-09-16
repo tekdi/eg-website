@@ -345,12 +345,17 @@ export default function App() {
               const resultCheck = await checkMobileExist(newFormData?.mobile);
               if (!resultCheck) {
                 if (!schema?.properties?.otp) {
-                  const { otp: data, ...allData } = newFormData || {};
-                  setFormData(allData);
-                  newFormData = allData;
-                  let { mobile, otp, ...otherError } = errors || {};
-                  setErrors(otherError);
+                  const newFormDataWithoutOtp = { ...newFormData };
+                  const errorsWithoutOtp = { ...errors };
+
+                  // Remove the `otp` key if it exists
+                  delete newFormDataWithoutOtp.otp;
+                  delete errorsWithoutOtp.otp;
+
+                  setFormData(newFormDataWithoutOtp);
+                  setErrors(errorsWithoutOtp);
                 }
+
                 const { status, newSchema } = await sendAndVerifyOtp(schema, {
                   ...newFormData,
                   hash: localStorage.getItem("hash"),

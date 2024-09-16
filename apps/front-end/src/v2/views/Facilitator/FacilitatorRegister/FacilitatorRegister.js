@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
-  FrontEndTypo,
   facilitatorRegistryService,
   setOnboardingURLData,
 } from "@shiksha/common-lib";
@@ -18,11 +17,11 @@ import PrerakRegisterDetail from "v2/components/Functional/PrerakRegisterDetail/
 function FacilitatorRegister() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   //screen variables
   const [activeScreenName, setActiveScreenName] = useState("logoScreen");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [currentImage, setCurrentImage] = useState(0);
   const [currentForm, setCurrentForm] = useState(0);
   const [registerFormData, setRegisterFormData] = useState({});
@@ -39,14 +38,14 @@ function FacilitatorRegister() {
     async function fetchData() {
       // ...async operations
       if (id !== "") {
-        setIsloading(true);
+        setIsLoading(true);
         const data = await facilitatorRegistryService.getOrganization({ id });
         localStorage.setItem("profile_url", data?.documents?.[0]?.name);
         setIp(data);
         if (!data?.name) {
           setIsError(true);
         }
-        setIsloading(false);
+        setIsLoading(false);
       }
     }
     fetchData();
@@ -56,13 +55,13 @@ function FacilitatorRegister() {
     async function fetchData() {
       // ...async operations
       if (cohortId !== "") {
-        setIsloading(true);
+        setIsLoading(true);
         const data = await facilitatorRegistryService.getCohort({ cohortId });
         setCohortData(data);
         if (!data?.academic_year_name) {
           setIsError(true);
         }
-        setIsloading(false);
+        setIsLoading(false);
       }
     }
     fetchData();
@@ -72,13 +71,13 @@ function FacilitatorRegister() {
     async function fetchData() {
       // ...async operations
       if (programId !== "") {
-        setIsloading(true);
+        setIsLoading(true);
         const data = await facilitatorRegistryService.getProgram({ programId });
         setProgramData(data[0]);
         if (!data[0]?.program_name) {
           setIsError(true);
         }
-        setIsloading(false);
+        setIsLoading(false);
       }
     }
     fetchData();
@@ -122,14 +121,12 @@ function FacilitatorRegister() {
           setActiveScreenName("chooseLangauge");
         }, delay);
       }
-      if (activeScreenName == "chooseLangauge") {
-      }
     }
     fetchData();
   }, [activeScreenName]);
 
   const getURLParameter = async () => {
-    setIsloading(true);
+    setIsLoading(true);
     //do page load first operation
     // ...async operations
     if (
@@ -159,12 +156,12 @@ function FacilitatorRegister() {
     } else {
       setIsError(true);
     }
-    setIsloading(false);
+    setIsLoading(false);
   };
 
   //online offline detect
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(() => {

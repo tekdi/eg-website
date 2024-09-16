@@ -40,9 +40,9 @@ const AutomatedForm = () => {
   const { jobId, transactionId, type } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("Application ID");
 
@@ -124,15 +124,6 @@ const AutomatedForm = () => {
   });
 
   let customerBody;
-  let submitFormData = {
-    customer: {
-      person: {
-        tags: [],
-      },
-    },
-  };
-  let current = 1;
-  let currentXinput;
 
   const handleInputChange = (section, field, value) => {
     setFormData((prevData) => ({
@@ -151,50 +142,6 @@ const AutomatedForm = () => {
         [field]: "",
       },
     }));
-  };
-
-  const validateForm = (data) => {
-    // Implement your validation logic here
-    const errors = {
-      person: {
-        name: "",
-        gender: "",
-      },
-      contact: {
-        phone: "",
-        email: "",
-      },
-    };
-
-    // Example: Check if required fields are empty
-    if (!data.person.name) {
-      errors.person.name = t("Name_is_required");
-    }
-
-    if (!data.person.gender) {
-      errors.person.gender = t("Gender_is_required");
-    }
-
-    if (!data.contact.phone) {
-      errors.contact.phone = t("Phone_number_is_required");
-    } else if (!/^\d{10}$/.test(data.contact.phone)) {
-      errors.contact.phone = t("Phone_number_should_be_10_digits");
-    }
-
-    if (!data.contact.email) {
-      errors.contact.email = t("Email_is_required");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.email)) {
-      errors.contact.email = t("Invalid_email_address");
-    }
-
-    return errors;
-  };
-
-  const hasErrors = (errors) => {
-    // Check if there are any validation errors
-    return Object.values(errors).some((sectionErrors) =>
-      Object.values(sectionErrors).some((error) => Boolean(error)),
-    );
   };
 
   function storedOrderId(appId) {
@@ -273,14 +220,14 @@ const AutomatedForm = () => {
       const data = await response.json();
       // Set state and open the modal
       if (data.responses.length) {
-        for (let i = 0; i < data.responses.length; i++) {
-          if (data.responses[i].hasOwnProperty("message")) {
+        for (const response of data.responses) {
+          if (response.hasOwnProperty("message")) {
             setLoading(false);
-            let appId = data.responses[i].message.order.id;
+            let appId = response.message.order.id;
             window?.parent?.postMessage({ orderId: appId }, "*");
             setOrderId(appId);
-            setMessage(message);
-            setModalOpen(true);
+            setMessage(data.responses[0].message.order.state);
+            setIsModalOpen(true);
             setLoading(false);
             storedOrderId(appId);
           }
@@ -347,7 +294,7 @@ const AutomatedForm = () => {
         }
         setLoading(false);*/
         // setjobDetails(data?.responses[0]);
-        fetchInitDetails(data?.responses[0]);
+        fetchInitDetails();
       }
     } catch (error) {
       setLoading(false);
@@ -485,27 +432,23 @@ const AutomatedForm = () => {
         localStorage.setItem("initRes", JSON.stringify(data));
         if (localStorage.getItem("submissionId")) {
           confirmDetails(data);
-        } else {
-          if (
-            data?.responses[0]?.message?.order?.items[0].hasOwnProperty(
-              "xinput",
-            )
-          ) {
-            //   const curr = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.cur;
-            //   var max = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.max;
-            var formUrl =
-              data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
-            //   if (curr < max) {
-            searchForm(formUrl);
-            //   } else if (curr == max) {
-            //     setLoading(true);
-            //     confirmDetails();
-            //   }
-            setLoading(false);
+        } else if (
+          data?.responses[0]?.message?.order?.items[0].hasOwnProperty("xinput")
+        ) {
+          //   const curr = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.cur;
+          //   var max = data?.responses[0]?.message?.order?.items[0]?.xinput?.head?.index?.max;
+          const formUrl =
+            data?.responses[0]?.message?.order?.items[0]?.xinput?.form?.url;
+          //   if (curr < max) {
+          searchForm(formUrl);
+          //   } else if (curr == max) {
+          //     setLoading(true);
+          //     confirmDetails();
+          //   }
+          setLoading(false);
 
-            // } else {
-            //   confirmDetails(formData);
-          }
+          // } else {
+          //   confirmDetails(formData);
         }
       }
     } catch (error) {
@@ -524,7 +467,7 @@ const AutomatedForm = () => {
     const getData = () => {
       setLoading(t("FETCHING_THE_DETAILS"));
       localStorage.setItem("submissionId", "");
-      var requestOptions = {
+      const requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -552,7 +495,7 @@ const AutomatedForm = () => {
       const fetchData = async () => {
         let data = JSON.parse(localStorage.getItem("selectRes"));
         if (data && data?.responses.length && jobInfo) {
-          await fetchInitDetails(data?.responses[0]);
+          await fetchInitDetails();
 
           // let usrtemp = localStorage.getItem("userData");
           /* if(usrtemp){
@@ -617,7 +560,7 @@ const AutomatedForm = () => {
 
   const closeModal = () => {
     // Close the modal and reset state
-    setModalOpen(false);
+    setIsModalOpen(false);
     setOrderId("");
     setMessage("");
     navigate("/");

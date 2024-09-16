@@ -24,12 +24,11 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [formData, setFormData] = useState();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [field, setField] = useState(null);
   const [errors, setErrors] = useState({});
   const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useLocation();
-  const [learnerData, setLearnerData] = useState(user?.state);
+  const [learnerData] = useState(user?.state);
   const [subjects, setSubjects] = useState();
   const [subjectList, setSubjectList] = useState([]);
 
@@ -135,7 +134,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
               direction: "column",
               enum: sortEnums(
                 "EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.",
-                3
+                3,
               ),
             },
           },
@@ -291,7 +290,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
           name: subject?.name,
           id: subject?.id,
           selected: newFormData.SELECTED_SUBJECT_BY_LEARNER.includes(
-            subject?.id
+            subject?.id,
           )
             ? "yes"
             : "no",
@@ -306,7 +305,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   };
 
   const PostData = async (payload) => {
-    const data = await ObservationService.postBulkData(payload);
+    await ObservationService.postBulkData(payload);
     navigate("/camps/epcplearnerlist/");
   };
 
@@ -341,7 +340,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
           acc.name.push(subject.name);
           return acc;
         },
-        { id: [], name: [] }
+        { id: [], name: [] },
       );
       setSubjects(filteredSubjects);
       const obj = {
@@ -364,27 +363,27 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
       ...formData,
       HAS_LOGGED_RSOS_APP: getFieldResponseByTitle("HAS_LOGGED_RSOS_APP"),
       HAS_LOGGED_RSOS_APP_NO_REASONS: getFieldResponseByTitle(
-        "HAS_LOGGED_RSOS_APP_NO_REASONS"
+        "HAS_LOGGED_RSOS_APP_NO_REASONS",
       )
         ? `EPCP.HAS_LOGGED_RSOS_APP_NO_REASONS.${getFieldResponseByTitle(
-            "HAS_LOGGED_RSOS_APP_NO_REASONS"
+            "HAS_LOGGED_RSOS_APP_NO_REASONS",
           )}`
         : "",
 
       TOOK_EPCP_EXAM_ON_RSOS_APP: getFieldResponseByTitle(
-        "TOOK_EPCP_EXAM_ON_RSOS_APP"
+        "TOOK_EPCP_EXAM_ON_RSOS_APP",
       ),
 
       TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS: getFieldResponseByTitle(
-        "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS"
+        "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS",
       )
         ? `EPCP.TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS.${getFieldResponseByTitle(
-            "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS"
+            "TOOK_E_PCP_EXAM_ON_RSOS_APP_NO_REASONS",
           )}`
         : "",
 
       SELECTED_SUBJECT_BY_LEARNER: getFieldResponseByTitle(
-        "SELECTED_SUBJECT_BY_LEARNER"
+        "SELECTED_SUBJECT_BY_LEARNER",
       ),
     });
     setLoading(false);

@@ -24,7 +24,7 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     let flattenedArray = [];
     list?.forEach((item) => {
       item?.group?.group_users?.forEach((userObj) => {
-        const { user_id, program_beneficiaries } = userObj?.user;
+        const { user_id, program_beneficiaries } = userObj?.user || {};
         const userData = mergingData(
           {
             user_id,
@@ -34,7 +34,7 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
             group_id: item.group.group_id,
             camp_id: item.camp_id,
           },
-          report
+          report,
         );
         flattenedArray?.push(userData);
       });
@@ -49,7 +49,7 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
       let observation = "EPCP";
       const listData = await ObservationService.getCampLearnerList();
       const userIds = listData?.data?.flatMap((group) =>
-        group.group.group_users.map((user) => user.user.user_id)
+        group.group.group_users.map((user) => user.user.user_id),
       );
       const data = await ObservationService.getSubmissionData({
         id: userIds,
@@ -66,14 +66,6 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     };
     fetchData();
   }, []);
-
-  const ProcessData = (mergedArray) => {
-    const newData = mergedArray?.map((user) => {
-      const status = getStatus(user.responses);
-      return { ...user, status };
-    });
-    return newData;
-  };
 
   return (
     <Layout
@@ -161,10 +153,10 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
                         item?.status == "completed"
                           ? "green.300"
                           : item?.status == "in_progress"
-                          ? "amber.300"
-                          : item?.status == "not_started"
-                          ? "textRed.300"
-                          : "textBlack.500"
+                            ? "amber.300"
+                            : item?.status == "not_started"
+                              ? "textRed.300"
+                              : "textBlack.500"
                       }
                       size={["15px", "30px"]}
                     />
@@ -184,7 +176,7 @@ export default EpcpLearnerList;
 const mergingData = (userData, report) => {
   const responses = report?.reduce((acc, observation) => {
     const fieldResponse = observation?.field_responses?.find(
-      (response) => response.context_id === userData.user_id
+      (response) => response.context_id === userData.user_id,
     );
     if (fieldResponse) {
       acc?.push({
@@ -201,20 +193,20 @@ const mergingData = (userData, report) => {
 
 const getStatus = (responses) => {
   const HAS_LOGGED_RSOS_APP = responses?.find(
-    (response) => response.field_name === "HAS_LOGGED_RSOS_APP"
+    (response) => response.field_name === "HAS_LOGGED_RSOS_APP",
   );
   const SELECTED_SUBJECT_BY_LEARNER = responses?.find(
-    (response) => response.field_name === "SELECTED_SUBJECT_BY_LEARNER"
+    (response) => response.field_name === "SELECTED_SUBJECT_BY_LEARNER",
   );
   const TOOK_EPCP_EXAM_ON_RSOS_APP = responses?.find(
-    (response) => response.field_name === "TOOK_EPCP_EXAM_ON_RSOS_APP"
+    (response) => response.field_name === "TOOK_EPCP_EXAM_ON_RSOS_APP",
   );
   const subjectData = jsonParse(
     SELECTED_SUBJECT_BY_LEARNER?.response_value,
-    []
+    [],
   );
   const allSelectedYes = subjectData?.every(
-    (subject) => subject.selected === "yes"
+    (subject) => subject.selected === "yes",
   );
 
   if (!HAS_LOGGED_RSOS_APP) {

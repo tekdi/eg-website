@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Text, Stack, HStack, Radio, VStack } from "native-base";
+import { Box, Stack, HStack, Radio, VStack } from "native-base";
 import { AdminTypo, FloatingInput, IconByName, t } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
-function Shortlisted({ status, setStatus, update, data }) {
-  console.log(data);
+function Shortlisted({ setStatus, update }) {
   return (
     <Stack
       flexDirection="row"
@@ -71,4 +71,8 @@ function Shortlisted({ status, setStatus, update, data }) {
     </Stack>
   );
 }
+Shortlisted.propTypes = {
+  setStatus: PropTypes.func,
+  update: PropTypes.func,
+};
 export default Shortlisted;
