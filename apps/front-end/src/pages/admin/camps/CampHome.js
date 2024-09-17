@@ -74,6 +74,12 @@ const columns = (t, navigate) => [
     attr: "BLOCK",
   },
   {
+    name: t("CAMP_TYPE"),
+    selector: (row) => (row?.type === "pcr" ? t("PCR_CAMP") : t("MAIN_CAMP")),
+    sortable: true,
+    attr: "CAMP_TYPE",
+  },
+  {
     name: t("CAMP_STATUS"),
     selector: (row) => (
       <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
