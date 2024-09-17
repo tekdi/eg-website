@@ -9,6 +9,7 @@ import { VStack } from "native-base";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function PcrView({ userTokenInfo }) {
   const navigate = useNavigate();
@@ -77,16 +78,16 @@ export default function PcrView({ userTokenInfo }) {
               item={{
                 ...allScoresDetails?.fa1,
               }}
-              label={[...allScoresDetails?.subjects]}
-              arr={[...allScoresDetails?.subjects]}
+              label={[...(allScoresDetails?.subjects || [])]}
+              arr={[...(allScoresDetails?.subjects || [])]}
             />
             <CardComponent
               title={t("EVALUATION_2")}
               item={{
                 ...allScoresDetails?.fa2,
               }}
-              label={[...allScoresDetails?.subjects]}
-              arr={[...allScoresDetails?.subjects]}
+              label={[...(allScoresDetails?.subjects || [])]}
+              arr={[...(allScoresDetails?.subjects || [])]}
             />
           </VStack>
         ) : (
@@ -96,6 +97,10 @@ export default function PcrView({ userTokenInfo }) {
     </Layout>
   );
 }
+
+PcrView.propTypes = {
+  userTokenInfo: PropTypes.object,
+};
 
 const getAllScores = (data) => {
   let result = {
@@ -134,7 +139,7 @@ const getAllScores = (data) => {
         };
         return acc;
       },
-      {}
+      {},
     );
 
   data?.learnerSubject?.forEach((subject) => {

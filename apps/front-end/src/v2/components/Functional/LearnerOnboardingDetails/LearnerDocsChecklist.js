@@ -29,6 +29,7 @@ import {
 } from "native-base";
 import { useNavigate, useParams } from "react-router-dom";
 import { getIpUserInfo, setIpUserInfo } from "v2/utils/SyncHelper/SyncHelper";
+import PropTypes from "prop-types";
 
 const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
@@ -60,7 +61,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
   const [academicData, setAcademicData] = useState([]);
   const [isTodayAttendace, setIsTodayAttendace] = useState();
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(async () => {
@@ -71,7 +72,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
     setmsgshow(getBeneficaryDocumentationStatus(docStatus));
     if (data.result?.program_beneficiaries?.documents_status) {
       setStatus(
-        JSON.parse(data.result?.program_beneficiaries?.documents_status)
+        JSON.parse(data.result?.program_beneficiaries?.documents_status),
       );
     }
   }, []);
@@ -89,7 +90,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
       setButtonPress(false);
     }
     const allValuesMatch = Object.values(status).every(
-      (value) => value === "not_applicable" || value === "complete"
+      (value) => value === "not_applicable" || value === "complete",
     );
     if (keysLength === 13 && allValuesMatch) {
       setCheckList(true);
@@ -104,7 +105,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
     if (Object.keys(status).length > 0) {
       let dataOutput = await benificiaryRegistoryService.getStatusUpdate(
         id,
-        data
+        data,
       );
     }
   }, [status]);
@@ -133,12 +134,12 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
     const qData = await enumRegistryService.listOfEnum();
     const data = qData?.data?.DOCUMENT_LIST;
     const reqFilteredDocuments = data.filter(
-      (document) => document.type === "required"
+      (document) => document.type === "required",
     );
     setReqEnumData(reqFilteredDocuments);
 
     const optionalFilteredDocuments = data?.filter(
-      (document) => document.type === "optional"
+      (document) => document.type === "optional",
     );
     setOptEnumData(optionalFilteredDocuments);
   }, []);
@@ -155,7 +156,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
           enumRegistryService.getQualificationAll(),
           facilitatorRegistryService.getEditRequests(obj),
           // enumRegistryService.userInfo(),
-        ]
+        ],
       );
       const currentTime = moment().toString();
       await Promise.all([
@@ -210,7 +211,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
             c_data?.data?.filter(
               (eventItem) =>
                 eventItem?.params?.do_id?.length &&
-                eventItem?.lms_test_tracking?.length < 1
+                eventItem?.lms_test_tracking?.length < 1,
             )?.[0] || {};
           if (data) {
             setIsTodayAttendace(
@@ -219,8 +220,8 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
                   attendance.user_id == fa_id &&
                   attendance.status == "present" &&
                   data.end_date ==
-                    moment(attendance.date_time).format("YYYY-MM-DD")
-              )
+                    moment(attendance.date_time).format("YYYY-MM-DD"),
+              ),
             );
 
             setCertificateData(data);
@@ -287,8 +288,8 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
                 "aadhar_verified",
                 "qualification_ids",
                 "qua_name",
-              ]
-            )
+              ],
+            ),
           );
           let onboardingURLData = await getOnboardingURLData();
           setCohortData(onboardingURLData?.cohortData);
@@ -337,7 +338,7 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
       const user_cohort_list =
         await facilitatorRegistryService.GetFacilatorCohortList();
       let stored_response = await setSelectedAcademicYear(
-        user_cohort_list?.data[0]
+        user_cohort_list?.data[0],
       );
       setAcademicData(user_cohort_list?.data);
       setAcademicYear(user_cohort_list?.data[0]?.academic_year_id);
@@ -392,7 +393,6 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
         },
         onlyIconsShow: ["backBtn", "userInfo", "langBtn"],
         profile_url: facilitator?.profile_photo_1?.name,
-        name: [facilitator?.first_name, facilitator?.last_name].join(" "),
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
       facilitator={facilitator}
@@ -648,3 +648,8 @@ const LearnerDocsChecklist = ({ footerLinks, userTokenInfo }) => {
 };
 
 export default LearnerDocsChecklist;
+
+LearnerDocsChecklist.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};

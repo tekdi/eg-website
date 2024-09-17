@@ -3,6 +3,7 @@ import { FrontEndTypo, Layout, ObservationService } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
 import { Alert, Avatar, HStack, Pressable, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     let flattenedArray = [];
     list?.forEach((item) => {
       item?.group?.group_users?.forEach((userObj) => {
-        const { user_id, program_beneficiaries } = userObj?.user;
+        const { user_id, program_beneficiaries } = userObj?.user || {};
         const userData = mergingData(
           {
             user_id,
@@ -29,7 +30,7 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
             group_id: item.group.group_id,
             camp_id: item.camp_id,
           },
-          report
+          report,
         );
         flattenedArray?.push(userData);
       });
@@ -44,7 +45,7 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
       let observation = "EXAM_PREPARATION";
       const listData = await ObservationService.getCampLearnerList();
       const userIds = listData?.data.flatMap((group) =>
-        group.group.group_users.map((user) => user.user.user_id)
+        group.group.group_users.map((user) => user.user.user_id),
       );
       const data = await ObservationService.getSubmissionData({
         id: userIds,
@@ -150,10 +151,10 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
                         item?.status == "completed"
                           ? "green.300"
                           : item?.status == "in_progress"
-                          ? "amber.300"
-                          : item?.status == "not_started"
-                          ? "textRed.300"
-                          : "textBlack.500"
+                            ? "amber.300"
+                            : item?.status == "not_started"
+                              ? "textRed.300"
+                              : "textBlack.500"
                       }
                       size={["15px", "30px"]}
                     />
@@ -170,10 +171,15 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
 
 export default ExamLearnerList;
 
+ExamLearnerList.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
+};
+
 const mergingData = (userData, report) => {
   const responses = report?.reduce((acc, observation) => {
     const fieldResponse = observation?.field_responses?.find(
-      (response) => response.context_id === userData.user_id
+      (response) => response.context_id === userData.user_id,
     );
     if (fieldResponse) {
       acc?.push({
