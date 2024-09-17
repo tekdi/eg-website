@@ -12,7 +12,6 @@ import {
 } from "@shiksha/common-lib";
 import { Alert, Box, Button, HStack, Radio, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
 import {
   getOnboardingData,
   updateOnboardingData,
