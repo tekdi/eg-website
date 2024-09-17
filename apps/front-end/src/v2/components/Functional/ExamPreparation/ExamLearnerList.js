@@ -39,14 +39,18 @@ const ExamLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
     return flattenedArray;
   };
 
+  const getUserIds = (listData) => {
+    return listData?.data.flatMap((group) =>
+      group.group.group_users.map((user) => user.user.user_id),
+    );
+  };
+
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       let observation = "EXAM_PREPARATION";
       const listData = await ObservationService.getCampLearnerList();
-      const userIds = listData?.data.flatMap((group) =>
-        group.group.group_users.map((user) => user.user.user_id),
-      );
+      const userIds = getUserIds(listData);
       const data = await ObservationService.getSubmissionData({
         id: userIds,
         board_id:
