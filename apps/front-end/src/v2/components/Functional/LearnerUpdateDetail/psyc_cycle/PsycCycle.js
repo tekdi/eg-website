@@ -76,8 +76,8 @@ export default function PsycCycle() {
       setBeneficiary(result?.result);
       setFormData({
         ...formData,
-        exam_fee_date: data?.exam_fee_date,
-        exam_fee_document_id: data?.exam_fee_document_id,
+        exam_fee_date: data?.exam_fee_date || undefined,
+        exam_fee_document_id: data?.exam_fee_document_id || undefined,
         syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
       });
       setLoading(false);

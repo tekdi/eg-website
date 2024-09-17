@@ -55,17 +55,22 @@ const ConsentForm = ({ consentData, row }) => {
   );
 };
 
+ConsentForm.propTypes = {
+  consentData: PropTypes.array,
+  row: PropTypes.any,
+};
+
 const mapDirection = ({ row, data }) => {
   return (
     <a
       href={`https://www.google.com/maps/dir/${row?.lat},${row?.long}/'${data?.properties?.lat},${data?.properties?.long}'/`}
-      target="_blank"
       style={{ textDecoration: "none" }}
+      target="_blank"
     >
       <IconByName
         name={"MapPinLineIcon"}
-        borderWidth="1"
         borderColor="gray.300"
+        borderWidth="1"
         p="1"
         rounded="full"
       />
@@ -78,29 +83,30 @@ const totalDistance = ({ row, data }) =>
     row?.lat,
     row?.long,
     data?.properties?.lat,
-    data?.properties?.long
+    data?.properties?.long,
   );
 
 const columns = (t, data, consentData) => [
   {
     name: "Id",
     selector: (row) => row?.id,
-    wrap: true,
     width: "90px",
+    wrap: true,
   },
   {
     name: t("ENROLLMENT_NO"),
     selector: (row) => row?.program_beneficiaries[0].enrollment_number || "-",
-    wrap: true,
     minWidth: "120px",
+    wrap: true,
   },
   {
     name: t("LEARNERS_NAME"),
     minWidth: "250px",
+    wrap: true,
     selector: (row) => (
       <UserCard
+      key={row}
         _hstack={{ borderWidth: 0, p: 1 }}
-        key={row}
         title={
           <AdminTypo.H6 bold>
             {[
@@ -117,19 +123,19 @@ const columns = (t, data, consentData) => [
         }
       />
     ),
-    wrap: true,
+    
   },
   {
     name: t("CONSENT_FORM"),
     selector: (row) => ConsentForm({ t, row, consentData }),
-    wrap: true,
     minWidth: "100px",
+    wrap: true,
   },
   {
     name: t("MAP"),
     selector: (row) => mapDirection({ row, data }),
-    minWidth: "60px",
     wrap: true,
+    minWidth: "60px",
   },
   {
     name: t("DISTANCE"),
@@ -139,10 +145,10 @@ const columns = (t, data, consentData) => [
         <HStack>
           {
             <Chip
+            py="1"
               px="2"
-              py="1"
-              bg="transparent"
               _text={{ color: distance >= 3.5 ? "textRed.100" : "" }}
+              bg="transparent"
             >
               {`${distance} Km`}
             </Chip>
@@ -150,12 +156,12 @@ const columns = (t, data, consentData) => [
         </HStack>
       );
     },
-    minWidth: "160px",
     wrap: true,
+    minWidth: "160px",
   },
   {
-    minWidth: "250px",
     name: t("ACTION"),
+    minWidth: "250px",
     selector: (row) => <ActionButton {...{ row, t }} />,
   },
 ];
@@ -164,29 +170,36 @@ const ActionButton = ({ row, t }) => {
   const navigate = useNavigate();
   return (
     <AdminTypo.Secondarybutton
+    onPress={() => {
+      navigate(`/admin/beneficiary/${row?.id}`);
+    }}
       background="white"
       _text={{
-        color: "blueText.400",
         fontSize: "14px",
+        color: "blueText.400",
         fontWeight: "700",
       }}
-      my="2"
       mx="1"
-      onPress={() => {
-        navigate(`/admin/beneficiary/${row?.id}`);
-      }}
+      my="2"
+      
     >
       {t("VIEW_PROFILE")}
     </AdminTypo.Secondarybutton>
   );
 };
 
+ActionButton.propTypes = {
+  row: PropTypes.any,
+  t: PropTypes.any,
+};
+
 export default function View({ footerLinks }) {
-  const { t } = useTranslation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { id } = useParams();
   const [data, setData] = useState([]);
-  const [userData, setUserData] = useState([]);
   const [facilities, setFacilities] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [propertyFacilities, setPropertyFacilities] = useState({});
   const [properties, setProperties] = useState([]);
   const [enumOptions, setEnumOptions] = useState();
@@ -194,10 +207,9 @@ export default function View({ footerLinks }) {
   const [status, setStatus] = useState(false);
   const [errorList, setErrorList] = useState();
   const [loading, setLoading] = useState(true);
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [edit, setEdit] = useState(false);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const { id } = useParams();
-  const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [facilitator, setFacilitator] = useState({});
 
@@ -274,8 +286,9 @@ export default function View({ footerLinks }) {
       return;
     }
     if (selectedRows?.length > 0) {
+      const { state_name } = JSON.parse(localStorage.getItem("program")) || {};
       navigate(`/admin/camps/${id}/reassign`, {
-        state: { selectedRows },
+        state: { selectedRows, stateName: state_name, type: data?.type },
       });
     }
   };
@@ -285,7 +298,7 @@ export default function View({ footerLinks }) {
       const arr = state?.selectedRows;
       setSelectedRows(arr);
     },
-    [setSelectedRows]
+    [setSelectedRows],
   );
 
   const actiondropDown = (triggerProps, t) => {
@@ -376,7 +389,7 @@ export default function View({ footerLinks }) {
             <Menu.Item
               onPress={() => {
                 navigate(
-                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`
+                  `/admin/camps/${id}/reassignPrerak/${facilitator?.id}`,
                 );
               }}
             >
@@ -473,7 +486,7 @@ export default function View({ footerLinks }) {
                     }
                   />
                 </HStack>
-              )
+              ),
           )}
           {data?.properties?.lat ? (
             <MapComponent
@@ -624,7 +637,7 @@ export default function View({ footerLinks }) {
         {data?.group?.status !== "inactive" && (
           <Stack>
             {!["camp_ip_verified", "camp_initiated"].includes(
-              data?.group?.status
+              data?.group?.status,
             ) && (
               <HStack space={4} justifyContent={"center"}>
                 <AdminTypo.StatusButton
@@ -701,9 +714,6 @@ export default function View({ footerLinks }) {
 
 View.propTypes = {
   footerLinks: PropTypes.any,
-  row: PropTypes.any,
-  t: PropTypes.any,
-  consentData: PropTypes.any,
 };
 ConsentForm.propTypes = {
   row: PropTypes.any,
