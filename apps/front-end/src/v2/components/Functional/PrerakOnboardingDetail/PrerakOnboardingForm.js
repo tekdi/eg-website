@@ -4,7 +4,6 @@ import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
 import {
   facilitatorRegistryService,
-  geolocationRegistryService,
   BodyMedium,
   filterObject,
   FrontEndTypo,
@@ -79,6 +78,14 @@ export default function PrerakOnboardingForm({
     setLang(localStorage.getItem("lang"));
   }, []);
 
+  const getArrData = (arr) => {
+    return JSON.parse(arr)
+      ?.filter((e) =>
+        qualifications.find((item) => item.id == e && item.type === "teaching"),
+      )
+      ?.map((e) => `${e}`);
+  };
+
   useEffect(() => {
     setLoading(true);
 
@@ -101,15 +108,7 @@ export default function PrerakOnboardingForm({
 
             const dataF = result?.qualifications;
             const arr = result?.program_faciltators?.qualification_ids;
-            let arrData = arr
-              ? JSON.parse(arr)
-                  ?.filter((e) =>
-                    qualifications.find(
-                      (item) => item.id == e && item.type === "teaching",
-                    ),
-                  )
-                  ?.map((e) => `${e}`)
-              : [];
+            let arrData = arr ? getArrData(arr) : [];
             const newData = {
               ...dataF,
               qualification_reference_document_id:
