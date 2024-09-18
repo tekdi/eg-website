@@ -4,17 +4,14 @@ import schema1 from "./schema.js";
 import { Alert, Box, HStack } from "native-base";
 import {
   facilitatorRegistryService,
-  geolocationRegistryService,
   BodyMedium,
   filterObject,
   FrontEndTypo,
-  enumRegistryService,
   getOptions,
   validation,
   sendAndVerifyOtp,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useParams } from "react-router-dom";
 import {
   templates,
   widgets,
@@ -26,15 +23,14 @@ import { useTranslation } from "react-i18next";
 import PhotoUpload from "./PhotoUpload.js";
 import accessControl from "./AccessControl.js";
 import AadhaarNumberValidation from "./AadhaarNumberValidation.js";
-import {
-  setIndexedDBItem,
-  getIndexedDBItem,
-} from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
+import { getIndexedDBItem } from "../../../utils/Helper/JSHelper.js"; // Import your indexedDB functions
 import {
   getOnboardingData,
   updateOnboardingData,
 } from "v2/utils/OfflineHelper/OfflineHelper.js";
 import AddressOffline from "./AddressOffline.js";
+import PropTypes from "prop-types";
+import { setDistrict, setVillage, setBlock } from "utils/localHelper.js";
 
 // PrerakOnboardingForm
 export default function PrerakOnboardingForm({
@@ -62,7 +58,7 @@ export default function PrerakOnboardingForm({
   const [mobileConditon, setMobileConditon] = useState(false);
   const [fields, setFields] = useState([]);
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
 
   useEffect(() => {
@@ -82,6 +78,14 @@ export default function PrerakOnboardingForm({
     setLang(localStorage.getItem("lang"));
   }, []);
 
+  const getArrData = (arr) => {
+    return JSON.parse(arr)
+      ?.filter((e) =>
+        qualifications.find((item) => item.id == e && item.type === "teaching"),
+      )
+      ?.map((e) => `${e}`);
+  };
+
   useEffect(() => {
     setLoading(true);
 
@@ -94,10 +98,8 @@ export default function PrerakOnboardingForm({
 
           //get offline data
           const result = await getOnboardingData(id);
-          //console.log({ result });
           setFacilitator(result);
           const ListOfEnum = await getIndexedDBItem("enums");
-          // const ListOfEnum = await enumRegistryService.listOfEnum();
           if (!ListOfEnum?.error) {
             setEnumObj(ListOfEnum?.data);
           }
@@ -106,15 +108,7 @@ export default function PrerakOnboardingForm({
 
             const dataF = result?.qualifications;
             const arr = result?.program_faciltators?.qualification_ids;
-            let arrData = arr
-              ? JSON.parse(arr)
-                  ?.filter((e) =>
-                    qualifications.find(
-                      (item) => item.id == e && item.type === "teaching"
-                    )
-                  )
-                  ?.map((e) => `${e}`)
-              : [];
+            let arrData = arr ? getArrData(arr) : [];
             const newData = {
               ...dataF,
               qualification_reference_document_id:
@@ -262,7 +256,6 @@ export default function PrerakOnboardingForm({
   };
 
   const setSchemaData = (newSchema) => {
-    //window.alert(JSON.stringify(newSchema));
     setSchema(accessControl(newSchema, fields));
   };
 
@@ -286,7 +279,7 @@ export default function PrerakOnboardingForm({
           "qualification_ids",
           "qualification_master_id",
           "qualification_reference_document_id",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...constantSchema, properties, required });
     } else if (hasDiploma) {
@@ -404,7 +397,7 @@ export default function PrerakOnboardingForm({
                   valueIndex =
                     newSchema?.properties?.qualification_master_id?.enum[index];
                 }
-              }
+              },
             );
             if (
               valueIndex !== "" &&
@@ -568,12 +561,12 @@ export default function PrerakOnboardingForm({
           key,
           errors,
           message: `${t("REQUIRED_MESSAGE")} ${t(
-            schema?.properties?.[key]?.title
+            schema?.properties?.[key]?.title,
           )}`,
         });
         if (data?.[key] && !data?.[key]?.match(/^[a-zA-Z ]*$/g)) {
           errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
           );
         }
       });
@@ -601,164 +594,12 @@ export default function PrerakOnboardingForm({
       if (data?.qualification_ids.length === 0) {
         errors?.qualification_ids?.addError(
           `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.qualification_ids?.label
-          )}"`
+            schema?.properties?.qualification_ids?.label,
+          )}"`,
         );
       }
     }
     return errors;
-  };
-
-  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema?.["properties"]?.["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema?.["properties"]?.["block"]) {
-        newSchema = await setBlock({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-        setSchemaData(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema?.["properties"]?.["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema?.["properties"]?.["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchemaData(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
-  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-        state: state,
-      });
-      if (schema?.["properties"]?.["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      // if (
-      //   schema?.["properties"]?.["grampanchayat"] &&
-      //   ["BIHAR"].includes(state)
-      // ) {
-      //   newSchema = await setGramp({
-      //     state,
-      //     district,
-      //     block,
-      //     gramp,
-      //     schemaData: newSchema,
-      //   });
-      //   setSchemaData(newSchema);
-      // } else {
-      newSchema = await setVilage({
-        state,
-        district,
-        block,
-        gramp: "null",
-        schemaData: newSchema,
-      });
-      setSchemaData(newSchema);
-      // }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema?.["properties"]?.["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchemaData(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
-  // const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   setLoading(true);
-  //   if (schema?.properties?.village && block) {
-  //     const qData = await geolocationRegistryService.getGrampanchyat({
-  //       block: block,
-  //       state: state,
-  //       district: district,
-  //     });
-  //     if (schema?.["properties"]?.["grampanchayat"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "grampanchayat",
-  //         arr: qData?.gramPanchayat,
-  //         title: "grampanchayat_name",
-  //         value: "grampanchayat_name",
-  //         format: "select",
-  //       });
-  //     }
-  //     setSchemaData(newSchema);
-
-  //     if (schema?.["properties"]?.["village"] && gramp) {
-  //       newSchema = await setVilage({
-  //         state,
-  //         district,
-  //         block,
-  //         gramp,
-  //         schemaData: newSchema,
-  //       });
-  //     }
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-  //     setSchemaData(newSchema);
-  //   }
-  //   setLoading(false);
-  //   return newSchema;
-  // };
-
-  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-        state: state,
-        district: district,
-        gramp: gramp || "null",
-      });
-      if (schema?.["properties"]?.["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData?.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchemaData(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchemaData(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
   };
 
   const onChange = async (e, id) => {
@@ -784,7 +625,7 @@ export default function PrerakOnboardingForm({
           setMobileConditon(true);
         }
         if (schema?.properties?.otp) {
-          const { otp, ...properties } = schema?.properties;
+          const { otp, ...properties } = schema?.properties || {};
           const required = schema?.required.filter((item) => item !== "otp");
           setSchemaData({ ...schema, properties, required });
           setFormData((e) => {
@@ -830,7 +671,7 @@ export default function PrerakOnboardingForm({
           alternative_mobile_number: {
             __errors: [
               t(
-                "ALTERNATIVE_MOBILE_NUMBER_SHOULD_NOT_BE_SAME_AS_MOBILE_NUMBER"
+                "ALTERNATIVE_MOBILE_NUMBER_SHOULD_NOT_BE_SAME_AS_MOBILE_NUMBER",
               ),
             ],
           },
@@ -880,11 +721,12 @@ export default function PrerakOnboardingForm({
     }
 
     if (id === "root_state") {
-      await setDistric({
+      await setDistrict({
         schemaData: schema,
         state: data?.state,
         district: data?.district,
         block: data?.block,
+        setSchema,
       });
     }
 
@@ -893,11 +735,12 @@ export default function PrerakOnboardingForm({
         district: data?.district,
         block: data?.block,
         schemaData: schema,
+        setSchema,
       });
     }
 
     if (id === "root_block") {
-      await setVilage({ block: data?.block, schemaData: schema });
+      await setVillage({ block: data?.block, schemaData: schema, setSchema });
     }
 
     if (id === "root_type_of_document") {
@@ -965,10 +808,9 @@ export default function PrerakOnboardingForm({
           newFormData,
           Object.keys(schema?.properties),
           {},
-          ""
+          "",
         );
 
-        // console.log({ step, isOnline });
         if (step === "aadhaar_details" && isOnline === true) {
           await formSubmitUpdate(newdata);
           await updateOnboardingData(userid, newdata);
@@ -982,7 +824,6 @@ export default function PrerakOnboardingForm({
         } else {
           await updateOnboardingData(userid, newdata);
         }
-        //console.log("new updated Form Data", newdata);
 
         //online data submit
 
@@ -1114,3 +955,10 @@ export default function PrerakOnboardingForm({
     </Box>
   );
 }
+
+PrerakOnboardingForm.propTypes = {
+  userTokenInfo: PropTypes.any,
+  userid: PropTypes.any,
+  step: PropTypes.any,
+  navigatePage: PropTypes.any,
+};

@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import {
   BodyMedium,
   CardComponent,
-  facilitatorRegistryService,
   filterObject,
   FrontEndTypo,
   getOptions,
@@ -13,7 +12,6 @@ import {
 } from "@shiksha/common-lib";
 import { Alert, Box, Button, HStack, Radio, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import { getIndexedDBItem } from "v2/utils/Helper/JSHelper.js";
 import {
   getOnboardingData,
   updateOnboardingData,
@@ -23,6 +21,7 @@ import {
   widgets,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
 import schema1 from "./arraySchema.js";
+import PropTypes from "prop-types";
 
 // App
 export default function PrerakOnboardingArrayForm({
@@ -41,23 +40,27 @@ export default function PrerakOnboardingArrayForm({
   const { t } = useTranslation();
   const [dataExperience, setDataExperience] = useState([]);
   const [data, setData] = useState([]);
-  const [facilitator, setfacilitator] = useState();
+  const [facilitator, setFacilitator] = useState();
   const [addMore, setAddMore] = useState();
   const [keys, setKeys] = useState([]);
   const [labels, setLabels] = useState([]);
-  const [enumObj, setEnumObj] = useState();
+
+  useEffect(() => {
+    setLang(localStorage.getItem("lang"));
+  }, [localStorage.getItem("lang")]);
+
   const stepLabel =
     type === "reference_details"
       ? "REFERENCE_DETAILS"
       : type === "experience"
-      ? "WORK_DETAILS"
-      : "ADD_VOLUNTEER_EXPERIENCE";
+        ? "WORK_DETAILS"
+        : "ADD_VOLUNTEER_EXPERIENCE";
   const stepLabelList =
     type === "reference_details"
       ? "3_REFERENCE_DETAILS"
       : type === "experience"
-      ? "WORK_DETAILS"
-      : "2_VOLUNTEER_AND_WORK_DETAILS";
+        ? "WORK_DETAILS"
+        : "2_VOLUNTEER_AND_WORK_DETAILS";
 
   const stepLabelListTwo =
     type === "experience"
@@ -68,8 +71,8 @@ export default function PrerakOnboardingArrayForm({
     type === "reference_details"
       ? "REFERENCE_DETAILS"
       : type === "experience"
-      ? "ADD_ANOTHER_JOB_EXPERIENCE"
-      : "ADD_ANOTHER_VOLUNTEER_EXPERIENCE";
+        ? "ADD_ANOTHER_JOB_EXPERIENCE"
+        : "ADD_ANOTHER_VOLUNTEER_EXPERIENCE";
 
   const stepTitle = type === "experience" ? "JOB_TITLE" : "VOLUNTEER_TITLE";
   const nextPreviewStep = async (p = "n") => {
@@ -81,14 +84,14 @@ export default function PrerakOnboardingArrayForm({
     } else if (type === "reference_details") {
       navigatePage(
         `/profile/edit/work_availability_details`,
-        "work_availability_details"
+        "work_availability_details",
       );
     } else if (type === "vo_experience") {
       navigatePage(`/profile/edit/experience`, "experience");
     } else {
       navigatePage(
         `/profile/edit/qualification_details`,
-        "qualification_details"
+        "qualification_details",
       );
     }
   };
@@ -97,7 +100,6 @@ export default function PrerakOnboardingArrayForm({
       if (type == "experience") {
         setData(dataExperience);
       }
-      //console.log("dataExperience", dataExperience);
     }
   }, [facilitator]);
 
@@ -168,15 +170,15 @@ export default function PrerakOnboardingArrayForm({
         const refPro =
           newSchema?.properties["reference_details"]?.["properties"];
         let newKeys = Object.keys(newSchema?.properties).filter(
-          (e) => e !== "reference_details"
+          (e) => e !== "reference_details",
         );
 
         let newLabels = newKeys.map((e) =>
           newSchema?.properties?.[e]?.label
             ? newSchema?.properties?.[e]?.label
             : newSchema?.properties?.[e]?.title
-            ? newSchema?.properties?.[e]?.title
-            : ""
+              ? newSchema?.properties?.[e]?.title
+              : "",
         );
 
         if (refPro) {
@@ -186,18 +188,13 @@ export default function PrerakOnboardingArrayForm({
             refPro?.[e]?.label
               ? refPro?.[e]?.label
               : refPro?.[e]?.title
-              ? refPro?.[e]?.title
-              : ""
+                ? refPro?.[e]?.title
+                : "",
           );
           newLabels = [...newLabels, ...refLabels];
         }
         setLabels(newLabels);
         setKeys(newKeys);
-
-        const ListOfEnum = await getIndexedDBItem("enums");
-        if (!ListOfEnum?.error) {
-          setEnumObj(ListOfEnum);
-        }
       }
 
       await getData();
@@ -215,7 +212,7 @@ export default function PrerakOnboardingArrayForm({
       //get offline data
       setLoading(true);
       const result = await getOnboardingData(id);
-      setfacilitator(result);
+      setFacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
       } else if (type === "vo_experience") {
@@ -225,21 +222,6 @@ export default function PrerakOnboardingArrayForm({
       }
       setDataExperience(result?.experience);
       setLoading(false);
-    }
-  };
-
-  const formSubmitUpdate = async (data, overide) => {
-    const id = userid;
-    if (id) {
-      setLoading(true);
-      const result = await facilitatorRegistryService.profileStapeUpdate({
-        ...data,
-        ...(overide || {}),
-        id: id,
-      });
-      await getData();
-      setLoading(false);
-      return result;
     }
   };
 
@@ -253,7 +235,7 @@ export default function PrerakOnboardingArrayForm({
           });
           if (result) {
             errors?.reference_details?.contact_number?.addError(
-              `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`
+              `${t("PLEASE_ENTER_VALID_10_DIGIT_NUMBER")}`,
             );
           }
         }
@@ -266,11 +248,11 @@ export default function PrerakOnboardingArrayForm({
           item?.[key]?.replace(/\s/g, "") === ""
         ) {
           errors?.[key]?.addError(
-            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+            `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
           );
         } else if (key === "description" && item?.[key].length > 200) {
           errors?.[key]?.addError(
-            `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`
+            `${t("MAX_LENGHT_200")} ${t(schema?.properties?.[key]?.title)}`,
           );
         }
       }
@@ -283,7 +265,7 @@ export default function PrerakOnboardingArrayForm({
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -291,7 +273,6 @@ export default function PrerakOnboardingArrayForm({
       } else if (error.name === "enum") {
         error.message = `${t("SELECT_MESSAGE")}`;
       } else if (["format", "type"].includes(error.name)) {
-        const { format, type } = error?.params ? error?.params : {};
         let message = "REQUIRED_MESSAGE";
         if (["format", "type"].includes("email")) {
           message = "PLEASE_ENTER_VALID_EMAIL";
@@ -303,7 +284,7 @@ export default function PrerakOnboardingArrayForm({
 
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t(message)} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t(message)}`;
@@ -369,16 +350,6 @@ export default function PrerakOnboardingArrayForm({
         "status",
         "unique_key",
       ]);
-
-      //online data submit
-      /*await formSubmitUpdate({
-        ...newdata,
-        page_type:
-          type === "reference_details"
-            ? "reference_details"
-            : "work_experience_details",
-        type,
-      });*/
       //offline data submit
       await updateOnboardingData(userid, {
         ...newdata,
@@ -390,7 +361,7 @@ export default function PrerakOnboardingArrayForm({
       //get offline data
       setLoading(true);
       const result = await getOnboardingData(userid);
-      setfacilitator(result);
+      setFacilitator(result);
       if (type === "reference_details") {
         setData(result?.references);
       } else if (type === "vo_experience") {
@@ -419,24 +390,6 @@ export default function PrerakOnboardingArrayForm({
       status: "update",
     });
     setAddMore(true);
-  };
-
-  const onDelete = async (deletedata) => {
-    //online delete
-    /*if (type === "reference_details") {
-      await facilitatorRegistryService.referenceDelete({ id });
-    } else {
-      await facilitatorRegistryService.experienceDelete({ id });
-    }*/
-    //offline delete
-    await updateOnboardingData(userid, {
-      ...deletedata,
-      type,
-      arr_id: deletedata?.id,
-      status: "delete",
-    });
-
-    setData(data.filter((e) => e.id !== deletedata.id));
   };
 
   const onClickSubmit = (bool) => {
@@ -528,7 +481,6 @@ export default function PrerakOnboardingArrayForm({
                               : {}),
                           }}
                           onEdit={(e) => onEdit(e)}
-                          // onDelete={(e) => onDelete(e)}
                           arr={[
                             "role_title",
                             "organization",
@@ -571,7 +523,6 @@ export default function PrerakOnboardingArrayForm({
                               : {}),
                           }}
                           onEdit={(e) => onEdit(e)}
-                          // onDelete={(e) => onDelete(e)}
                           arr={keys}
                           label={labels}
                           title={`${t("WORK_EXPERIENCE")} ${index + 1}`}
@@ -674,3 +625,10 @@ export default function PrerakOnboardingArrayForm({
     </>
   );
 }
+
+PrerakOnboardingArrayForm.propTypes = {
+  userTokenInfo: PropTypes.any,
+  userid: PropTypes.any,
+  type: PropTypes.any,
+  navigatePage: PropTypes.any,
+};
