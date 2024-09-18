@@ -1,7 +1,6 @@
 import {
   AdminLayout as Layout,
   AdminTypo,
-  benificiaryRegistoryService,
   FrontEndTypo,
   tableCustomStyles,
   campService,
