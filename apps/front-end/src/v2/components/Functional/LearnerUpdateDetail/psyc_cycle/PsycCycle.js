@@ -268,6 +268,10 @@ export default function PsycCycle() {
             mt="3"
             type="submit"
             isLoading={btnLoading}
+            isDisabled={
+              beneficiary?.program_beneficiaries?.status ===
+              "pragati_syc_reattempt_ip_verified"
+            }
             onPress={() => {
               if (formRef.current.validateForm()) {
                 formRef?.current?.submit();
