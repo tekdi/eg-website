@@ -193,9 +193,14 @@ export function arraysAreEqual(array1, array2) {
 export function generateUniqueRandomNumber() {
   // Get the current timestamp
   const timestamp = Date.now().toString();
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+
+  // Use the secure random number
+  const random = array[0] / (0xffffffff + 1); // Generates a random number between 0 and 1
 
   // Generate a random number between 0 and 9999
-  const randomNumber = Math.floor(Math.random() * 10000);
+  const randomNumber = Math.floor(random * 10000);
 
   // Concatenate the timestamp with the random number
   const uniqueNumber = timestamp + randomNumber;

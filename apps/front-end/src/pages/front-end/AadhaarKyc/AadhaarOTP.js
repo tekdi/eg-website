@@ -31,7 +31,12 @@ export default function AdharOTP({
   });
 
   const generateCode = () => {
-    const random = Math.random();
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+
+    // Use the secure random number
+    const random = array[0] / (0xffffffff + 1); // Generates a random number between 0 and 1
+
     setData({ ...data, securityCode: Math.floor(1000 + random * 9000) });
   };
 
