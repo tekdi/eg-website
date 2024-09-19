@@ -41,22 +41,22 @@ const filterName = "camp_filter";
 const columns = (t, navigate) => [
   {
     name: t("CAMP_ID"),
-    selector: (row) => row?.id,
-    sortable: true,
     attr: "CAMP_ID",
+    sortable: true,
+    selector: (row) => row?.id,
   },
   {
     name: t("PRERAK_ID"),
-    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
     sortable: true,
+    selector: (row) => row?.faciltator?.user?.faciltator_id || " - ",
     attr: "PRERAK_ID",
   },
   {
     name: t("PRERAK"),
     selector: (row) =>
-      row?.faciltator?.user?.first_name +
-      " " +
-      row?.faciltator?.user?.last_name,
+      [row?.faciltator?.user?.first_name, row?.faciltator?.user?.last_name]
+        .filter(Boolean)
+        .join(" "),
     sortable: true,
     attr: "PRERAK",
   },
@@ -64,25 +64,31 @@ const columns = (t, navigate) => [
     name: t("DISTRICT"),
     selector: (row) =>
       row?.properties?.district ? row?.properties?.district : "-",
-    sortable: true,
     attr: "DISTRICT",
+    sortable: true,
   },
   {
     name: t("BLOCK"),
     selector: (row) => (row?.properties?.block ? row?.properties?.block : "-"),
-    sortable: true,
     attr: "BLOCK",
+    sortable: true,
+  },
+  {
+    name: t("CAMP_TYPE"),
+    selector: (row) => (row?.type === "pcr" ? t("PCR_CAMP") : t("MAIN_CAMP")),
+    attr: "CAMP_TYPE",
+    sortable: true,
   },
   {
     name: t("CAMP_STATUS"),
+    attr: "CAMP_STATUS",
     selector: (row) => (
       <Pressable onPress={() => navigate(`/admin/camps/${row.id}`)}>
         <CampChipStatus status={row?.group?.status} />
       </Pressable>
     ),
-    sortable: true,
     wrap: true,
-    attr: "CAMP_STATUS",
+    sortable: true,
   },
   {
     name: t("ACTION"),
@@ -94,8 +100,8 @@ const columns = (t, navigate) => [
         {t("VIEW")}
       </AdminTypo.Secondarybutton>
     ),
-    sortable: true,
     attr: "count",
+    sortable: true,
   },
 ];
 
