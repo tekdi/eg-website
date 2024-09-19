@@ -24,7 +24,7 @@ const FileUpload = ({ value, onChange, schema, uiSchema }) => {
     isReduce,
   } = schema || {};
 
-  const { readonly } = uiSchema || {};
+  const { ["ui:readonly"]: readonly } = uiSchema || {};
 
   const uplodInputRef = useRef();
   const [loading, setLoading] = useState(false);
@@ -52,7 +52,7 @@ const FileUpload = ({ value, onChange, schema, uiSchema }) => {
         const { loaded, total } = progressEvent;
         let percent = Math.floor((loaded * 100) / total);
         setProgress(percent);
-      }
+      },
     );
     setLoading(false);
     const document_id = result?.data?.insert_documents?.returning?.[0]?.id;
@@ -89,8 +89,8 @@ const FileUpload = ({ value, onChange, schema, uiSchema }) => {
             ) {
               setErrors(
                 ` ${imageWidth} X ${imageHeight} ${t(
-                  "IMAGE_DIMENSIONS_MESSAGE"
-                )}`
+                  "IMAGE_DIMENSIONS_MESSAGE",
+                )}`,
               );
             } else {
               uplaodFile(file);
@@ -192,10 +192,13 @@ const FileUpload = ({ value, onChange, schema, uiSchema }) => {
             )}
           </Box>
           <Pressable
+            opacity={readonly ? 0.5 : 1}
             justifyContent={"center"}
             flex="1"
             onPress={(e) => {
-              uplodInputRef?.current?.click();
+              if (!readonly) {
+                uplodInputRef?.current?.click();
+              }
             }}
             alignItems="center"
             p="2"

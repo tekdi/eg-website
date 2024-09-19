@@ -44,14 +44,21 @@ export default function PsycCycle() {
   const [lang, setLang] = useState(localStorage.getItem("lang"));
   const [btnLoading, setBtnLoading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [beneficiary, setBeneficiary] = useState();
   const navigate = useNavigate();
 
   const uiSchema = {
     syc_subjects: {
       "ui:widget": "MultiCheckSubject",
+      "ui:readonly":
+        beneficiary?.program_beneficiaries?.status ===
+        "pragati_syc_reattempt_ip_verified",
     },
     exam_fee_date: {
       "ui:widget": "alt-date",
+      "ui:readonly":
+        beneficiary?.program_beneficiaries?.status ===
+        "pragati_syc_reattempt_ip_verified",
       "ui:options": {
         hideNowButton: true,
         hideClearButton: true,
@@ -63,16 +70,22 @@ export default function PsycCycle() {
         // help: `date bitween ${getFormattedDateRange()}`,
       },
     },
+    exam_fee_document_id: {
+      "ui:readonly":
+        beneficiary?.program_beneficiaries?.status ===
+        "pragati_syc_reattempt_ip_verified",
+    },
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await benificiaryRegistoryService.getOne(id);
       const data = result?.result?.program_beneficiaries;
+      setBeneficiary(result?.result);
       setFormData({
         ...formData,
-        exam_fee_date: data?.exam_fee_date,
-        exam_fee_document_id: data?.exam_fee_document_id,
+        exam_fee_date: data?.exam_fee_date || undefined,
+        exam_fee_document_id: data?.exam_fee_document_id || undefined,
         syc_subjects: JSON.parse(data?.syc_subjects || "[]"),
       });
       setLoading(false);
@@ -255,6 +268,10 @@ export default function PsycCycle() {
             mt="3"
             type="submit"
             isLoading={btnLoading}
+            isDisabled={
+              beneficiary?.program_beneficiaries?.status ===
+              "pragati_syc_reattempt_ip_verified"
+            }
             onPress={() => {
               if (formRef.current.validateForm()) {
                 formRef?.current?.submit();
