@@ -12,6 +12,7 @@ import LearnerFormUpdate from "v2/components/Functional/LearnerOnboardingDetails
 import PcrDetails from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrDetails";
 import PcrView from "v2/components/Functional/LearnerOnboardingDetails/PCRDetails/PcrView";
 import PsycCycle from "v2/components/Functional/LearnerUpdateDetail/psyc_cycle/PsycCycle";
+import PropTypes from "prop-types";
 
 export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
   const { type } = useParams();
@@ -106,3 +107,8 @@ export default function BeneficiaryOnboarding({ userTokenInfo, footerLinks }) {
 
   return <>{renderOnboardStep()}</>;
 }
+
+BeneficiaryOnboarding.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};

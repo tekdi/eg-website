@@ -8,6 +8,7 @@ import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
+import PropTypes from "prop-types";
 
 const FileUpload = ({ value, onChange, schema, uiSchema }) => {
   const {
@@ -235,3 +236,10 @@ const FileUpload = ({ value, onChange, schema, uiSchema }) => {
 };
 
 export default FileUpload;
+
+FileUpload.propTypes = {
+  value: PropTypes.any,
+  schema: PropTypes.any,
+  onChange: PropTypes.func,
+  uiSchema: PropTypes.any,
+};

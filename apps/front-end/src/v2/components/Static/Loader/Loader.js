@@ -1,6 +1,8 @@
-import { VStack, Image, Spinner } from "native-base";
+import { VStack, Spinner } from "native-base";
 import React from "react";
 import { FrontEndTypo } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
+
 export default function Loader({ message = "Loading..." }) {
   return (
     <VStack space={2} alignItems={"center"}>
@@ -11,14 +13,6 @@ export default function Loader({ message = "Loading..." }) {
           style={{ width: "100px", height: "100px" }}
           size={""}
         />
-        {/* <Image
-          source={{
-            uri: "/gif/loader.gif",
-          }}
-          alt="loader.gif"
-          width={"210px"}
-          height={"110px"}
-        /> */}
         <FrontEndTypo.H1 color="textMaroonColor.500" bold>
           {message}
         </FrontEndTypo.H1>
@@ -26,3 +20,7 @@ export default function Loader({ message = "Loading..." }) {
     </VStack>
   );
 }
+
+Loader.propTypes = {
+  message: PropTypes.string,
+};

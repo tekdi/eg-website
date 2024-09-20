@@ -1,9 +1,9 @@
-import { Center, VStack, Image } from "native-base";
+import { Center, VStack } from "native-base";
 import React from "react";
 import { FrontEndTypo } from "@shiksha/common-lib";
-import getWindowSize from "v2/utils/Helper/JSHelper";
+import useWindowSize from "v2/utils/Helper/JSHelper";
 export default function CenterMessage({ message = "Loading..." }) {
-  const [width, height] = getWindowSize();
+  const [width, height] = useWindowSize();
 
   return (
     <Center

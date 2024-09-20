@@ -1,44 +1,25 @@
-import {
-  FrontEndTypo,
-  IconByName,
-  uploadRegistryService,
-} from "@shiksha/common-lib";
+import { FrontEndTypo, IconByName } from "@shiksha/common-lib";
 import { Box, HStack, Pressable, Progress, Spinner, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
-import { convertImageToBase64 } from "../FormBaseInput";
 import FilePreview from "../../FilePreview/FilePreview";
 import { convertFileToBase64 } from "v2/utils/Helper/JSHelper";
-import { size } from "lodash";
+import PropTypes from "prop-types";
 
 const OfflineFileUpload = ({ value, onChange, schema }) => {
-  const {
-    label,
-    title,
-    uploadTitle,
-    userId,
-    document_type,
-    document_sub_type,
-    iconComponent,
-    width,
-    height,
-    dimensionsValidation,
-  } = schema || {};
+  const { label, title, uploadTitle, width, height, dimensionsValidation } =
+    schema || {};
 
   const uplodInputRef = useRef();
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [progress] = useState(0);
   const [errors, setErrors] = useState();
   const [file, setFile] = useState();
   const { t } = useTranslation();
   const uploadProfile = async (file) => {
     setLoading(true);
     const base64String = await convertFileToBase64(file);
-    //console.log("base64String", base64String);
-    value = base64String;
-    /*console.log("value", value);
-    console.log("schema", schema);*/
     onChange(base64String);
     setFile(base64String);
     setLoading(false);
@@ -73,8 +54,8 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
             ) {
               setErrors(
                 ` ${imageWidth} X ${imageHeight} ${t(
-                  "IMAGE_DIMENSIONS_MESSAGE"
-                )}`
+                  "IMAGE_DIMENSIONS_MESSAGE",
+                )}`,
               );
             } else {
               uplaodFile(file);
@@ -231,3 +212,9 @@ const OfflineFileUpload = ({ value, onChange, schema }) => {
 };
 
 export default OfflineFileUpload;
+
+OfflineFileUpload.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  schema: PropTypes.any,
+};

@@ -1,8 +1,8 @@
 import { BodyLarge, IconByName } from "@shiksha/common-lib";
 import { Box, Button, HStack, Image, Modal } from "native-base";
 import React, { useState } from "react";
-import getWindowSize from "v2/utils/Helper/JSHelper";
 import LanguageChange from "../../../assets/Images/Icon/LanguageChange.png";
+import PropTypes from "prop-types";
 
 export default function PageHqeader({
   t,
@@ -12,7 +12,6 @@ export default function PageHqeader({
   showLangChange,
   funLangChange,
 }) {
-  const [width, height] = getWindowSize();
   const [helpModal, setHelpModal] = useState(false);
   return (
     <Box
@@ -35,7 +34,7 @@ export default function PageHqeader({
         {..._backBtn}
         onPress={() => funBackButton()}
       />
-      {showLangChange ? (
+      {showLangChange && (
         <Button
           py="1"
           px="2"
@@ -54,10 +53,8 @@ export default function PageHqeader({
             height={"30px"}
           />
         </Button>
-      ) : (
-        <React.Fragment />
       )}
-      {showHelpButton ? (
+      {showHelpButton && (
         <>
           <Button
             py="1"
@@ -97,7 +94,7 @@ export default function PageHqeader({
                     { icon: "CellphoneLineIcon", name: "CALL_MY_IP" },
                   ].map((item, index) => (
                     <Box
-                      key={index}
+                      key={item?.name + index}
                       p="4"
                       flex="1"
                       borderWidth="1"
@@ -122,9 +119,16 @@ export default function PageHqeader({
             </Modal.Content>
           </Modal>
         </>
-      ) : (
-        <React.Fragment />
       )}
     </Box>
   );
 }
+
+PageHqeader.propTypes = {
+  t: PropTypes.func,
+  showHelpButton: PropTypes.bool,
+  funBackButton: PropTypes.func,
+  _backBtn: PropTypes.object,
+  showLangChange: PropTypes.bool,
+  funLangChange: PropTypes.func,
+};
