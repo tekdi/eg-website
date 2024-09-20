@@ -526,7 +526,7 @@ RadioBtn.propTypes = {
 };
 
 // rjsf custom Aadhaar field
-export const Aadhaar = (props) => {
+export const Aadhaar = ({ ...props }) => {
   const { t } = useTranslation();
   return (
     <VStack space="10">
@@ -556,6 +556,10 @@ export const Aadhaar = (props) => {
       />
     </VStack>
   );
+};
+
+Aadhaar.propTypes = {
+  schema: PropTypes.any,
 };
 
 // rjsf custom select field
@@ -665,7 +669,7 @@ ReadOnly.propTypes = {
   schema: PropTypes.any,
 };
 
-export const Location = ({ value, onChange, required, schema }) => {
+export const Location = ({ value, onChange, schema }) => {
   const { lat, long } = schema || {};
   const { t } = useTranslation();
   const [latData, longData, error] = useLocationData() || [];
@@ -705,7 +709,6 @@ export const Location = ({ value, onChange, required, schema }) => {
 Location.propTypes = {
   value: PropTypes.any,
   onChange: PropTypes.any,
-  required: PropTypes.any,
   schema: PropTypes.any,
 };
 
