@@ -21,6 +21,7 @@ import {
   BaseInputTemplate,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // App
 export default function ReferenceDetails({ ip }) {
@@ -141,7 +142,7 @@ export default function ReferenceDetails({ ip }) {
     if (data?.referencefullname?.contact_number) {
       if (data?.referencefullname?.contact_number.toString()?.length !== 10) {
         errors.referencefullname.contact_number.addError(
-          t("MINIMUM_LENGTH_IS_10")
+          t("MINIMUM_LENGTH_IS_10"),
         );
       }
       if (
@@ -151,7 +152,7 @@ export default function ReferenceDetails({ ip }) {
         )
       ) {
         errors.referencefullname.contact_number.addError(
-          t("PLEASE_ENTER_VALID_NUMBER")
+          t("PLEASE_ENTER_VALID_NUMBER"),
         );
       }
     }
@@ -162,7 +163,7 @@ export default function ReferenceDetails({ ip }) {
         data?.referencefullname?.first_name?.replaceAll(" ", "") === ""
       ) {
         errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
 
@@ -171,13 +172,13 @@ export default function ReferenceDetails({ ip }) {
         !data?.referencefullname?.[key]?.match(/^[a-zA-Z ]*$/g)
       ) {
         errors?.[`referencefullname`]?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
 
       if (key === "relation" && data?.relation?.replaceAll(" ", "") === "") {
         errors?.[`referencefullname`]?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
     });
@@ -189,7 +190,7 @@ export default function ReferenceDetails({ ip }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -312,3 +313,7 @@ export default function ReferenceDetails({ ip }) {
     </Layout>
   );
 }
+
+ReferenceDetails.propTypes = {
+  ip: PropTypes.any,
+};

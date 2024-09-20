@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./Schema/SchemaUpdate.js";
@@ -24,47 +24,48 @@ import {
   jsonParse,
 } from "@shiksha/common-lib";
 import moment from "moment";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   templates,
   widgets,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
-import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
+import { setDistrict, setBlock, setVillage } from "utils/localHelper.js";
 
 // App
 
 export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
   const { authUser } = userTokenInfo;
   const { t } = useTranslation();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [fixedSchema, setFixedSchema] = React.useState({});
-  const [cameraModal, setCameraModal] = React.useState(false);
-  const [credentials, setCredentials] = React.useState();
-  const [cameraUrl, setCameraUrl] = React.useState();
-  const [submitBtn, setSubmitBtn] = React.useState();
-  const [addBtn, setAddBtn] = React.useState(t("YES"));
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [fixedSchema, setFixedSchema] = useState({});
+  const [cameraModal, setCameraModal] = useState(false);
+  const [credentials, setCredentials] = useState();
+  const [cameraUrl, setCameraUrl] = useState();
+  const [submitBtn, setSubmitBtn] = useState();
+  const [addBtn, setAddBtn] = useState(t("YES"));
   const formRef = React.useRef();
   const uplodInputRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [yearsRange, setYearsRange] = React.useState([1980, 2030]);
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
-  const [userId, setuserId] = React.useState();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [yearsRange, setYearsRange] = useState([1980, 2030]);
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
+  const [userId, setUserId] = useState();
   const location = useLocation();
-  const [agroute, setagroute] = React.useState(location?.state?.route);
-  const [loading, setLoading] = React.useState(true);
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [agroute, setAgroute] = useState(location?.state?.route);
+  const [loading, setLoading] = useState(true);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const id = useParams();
 
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
-    setuserId(id?.id);
+  useEffect(async () => {
+    setUserId(id?.id);
     const { result } = await benificiaryRegistoryService.getOne(id?.id);
     let programSelected = jsonParse(localStorage.getItem("program"));
 
@@ -101,7 +102,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
           undefined,
         type_of_support_needed:
           getUniqueArray(
-            result?.program_beneficiaries?.type_of_support_needed
+            result?.program_beneficiaries?.type_of_support_needed,
           ) || undefined,
       });
     }
@@ -201,7 +202,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     }
   }
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
@@ -236,7 +237,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const ListOfEnum = await enumRegistryService.listOfEnum();
     const lastYear = await benificiaryRegistoryService.lastYear();
 
@@ -306,7 +307,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "type_of_learner",
             "learning_level",
             "reason_of_leaving_education",
-          ].includes(item)
+          ].includes(item),
         );
 
         setSchema({ ...newSchema, properties, required });
@@ -323,7 +324,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "previous_school_type",
             "reason_of_leaving_education",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...newSchema, properties, required });
       } else if (
@@ -344,7 +345,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "reason_of_leaving_education",
             "education_10th_date",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...newSchema, properties, required });
       } else if (formData?.type_of_learner === "stream_2_mainstream_syc") {
@@ -362,7 +363,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "reason_of_leaving_education",
             "education_10th_exam_year",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...newSchema, properties, required });
       } else {
@@ -380,7 +381,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "previous_school_type",
             "reason_of_leaving_education",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...newSchema, properties, required });
       }
@@ -421,7 +422,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     setLoading(false);
   }, [page]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       if (schema?.properties?.district) {
         let programSelected = jsonParse(localStorage.getItem("program"));
@@ -436,12 +437,13 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             value: "state_name",
           });
         }
-        newSchema = await setDistric({
+        newSchema = await setDistrict({
           schemaData: newSchema,
           state: programSelected?.state_name,
           district: formData?.district,
           block: formData?.block,
           // gramp: formData?.grampanchayat,
+          setSchema,
         });
         setSchema(newSchema);
       }
@@ -451,7 +453,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
 
   // Type Of Student
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -505,7 +507,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
       ) {
         errors?.aadhar_token?.addError(
-          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`
+          `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`,
         );
       }
     }
@@ -522,7 +524,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         data?.grampanchayat === null
       ) {
         errors?.[key]?.addError(
-          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`
+          `${t("REQUIRED_MESSAGE")} ${t(schema?.properties?.[key]?.title)}`,
         );
       }
     });
@@ -535,7 +537,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -548,151 +550,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
 
       return error;
     });
-  };
-
-  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({
-          gramp,
-          state,
-          district,
-          block,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-        state: state,
-      });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      // if (
-      //   schema?.["properties"]?.["grampanchayat"] &&
-      //   ["BIHAR"].includes(state)
-      // ) {
-      //   newSchema = await setGramp({
-      //     state,
-      //     district,
-      //     block,
-      //     gramp,
-      //     schemaData: newSchema,
-      //   });
-      //   setSchema(newSchema);
-      // } else {
-      newSchema = await setVilage({
-        state,
-        district,
-        block,
-        gramp: "null",
-        schemaData: newSchema,
-      });
-      setSchema(newSchema);
-      // }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    return newSchema;
-  };
-
-  // const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   if (schema?.properties?.village && block) {
-  //     const qData = await geolocationRegistryService.getGrampanchyat({
-  //       block: block,
-  //       state: state,
-  //       district: district,
-  //     });
-  //     if (schema?.["properties"]?.["grampanchayat"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "grampanchayat",
-  //         arr: qData?.gramPanchayat,
-  //         title: "grampanchayat_name",
-  //         value: "grampanchayat_name",
-  //         format: "select",
-  //       });
-  //     }
-  //     setSchema(newSchema);
-
-  //     if (schema?.["properties"]?.["village"] && gramp) {
-  //       newSchema = await setVilage({
-  //         state,
-  //         district,
-  //         block,
-  //         gramp,
-  //         schemaData: newSchema,
-  //       });
-  //     }
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-  //     setSchema(newSchema);
-  //   }
-  //   setLoading(false);
-  //   return newSchema;
-  // };
-
-  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-        state: state,
-        district: district,
-        gramp: gramp || "null",
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData?.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    return newSchema;
   };
 
   const onChange = async (e, id) => {
@@ -716,7 +573,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     }
 
     if (id === "root_state") {
-      await setDistric({
+      await setDistrict({
         schemaData: schema,
         state: data?.state,
         district: data?.district,
@@ -729,11 +586,12 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
         district: data?.district,
         block: null,
         schemaData: schema,
+        setSchema,
       });
     }
 
     if (id === "root_block") {
-      await setVilage({ block: data?.block, schemaData: schema });
+      await setVillage({ block: data?.block, schemaData: schema, setSchema });
     }
 
     if (id === "root_grampanchayat") {
@@ -750,7 +608,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     if (id === "root_address") {
       if (
         !data?.address?.match(
-          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/
+          /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{}|\\:;"'<>,.?/\s]*$/,
         ) &&
         data?.address !== null
       ) {
@@ -790,7 +648,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "previous_school_type",
             "reason_of_leaving_education",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...fixedSchema, properties, required });
       } else if (data?.type_of_learner === "never_enrolled") {
@@ -808,7 +666,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "type_of_learner",
             "learning_level",
             "reason_of_leaving_education",
-          ].includes(item)
+          ].includes(item),
         );
 
         setSchema({ ...fixedSchema, properties, required });
@@ -823,7 +681,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "previous_school_type",
             "reason_of_leaving_education",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...fixedSchema, properties, required });
       } else if (
@@ -844,7 +702,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "reason_of_leaving_education",
             "education_10th_date",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...fixedSchema, properties, required });
       } else if (data?.type_of_learner === "stream_2_mainstream_syc") {
@@ -862,7 +720,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             "reason_of_leaving_education",
             "education_10th_exam_year",
             "learning_level",
-          ].includes(item)
+          ].includes(item),
         );
         setSchema({ ...fixedSchema, properties, required });
       }
@@ -1079,7 +937,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     const properties = schema1.properties;
     const newSteps = Object.keys(properties);
     const onPressBackButton = async () => {
-      setagroute(false);
+      setAgroute(false);
       setPage(newSteps[4]);
       setSchema(properties[newSteps[4]]);
     };
@@ -1259,3 +1117,8 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     </Layout>
   );
 }
+
+LearnerFormUpdate.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};

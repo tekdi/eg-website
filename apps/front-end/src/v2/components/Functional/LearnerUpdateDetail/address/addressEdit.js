@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -23,30 +23,32 @@ import {
   widgets,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
+import { setDistrict, setBlock, setVillage } from "utils/localHelper.js";
+import PropTypes from "prop-types";
 
 // App
 export default function AddressEdit({ ip }) {
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState();
-  const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState();
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
-  const [fields, setFields] = React.useState([]);
+  const [fields, setFields] = useState([]);
   const onPressBackButton = async () => {
     navigate(`/beneficiary/profile/${userId}`);
   };
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [isDisable, setIsDisable] = useState(false);
   const [searchParams] = useSearchParams();
   const redirectLink = searchParams.get("redirectLink");
 
   //getting data
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData?.result;
     const { lat, long } = finalData;
@@ -112,7 +114,7 @@ export default function AddressEdit({ ip }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     if (schema?.properties?.district) {
       const qData = await geolocationRegistryService.getStates();
       let newSchema = schema;
@@ -125,12 +127,13 @@ export default function AddressEdit({ ip }) {
           value: "state_name",
         });
       }
-      newSchema = await setDistric({
+      newSchema = await setDistrict({
         schemaData: newSchema,
         state: programSelected?.state_name,
         district: formData?.district,
         block: formData?.block,
         // gramp: formData?.grampanchayat,
+        setSchema,
       });
       setSchemaData(newSchema);
     }
@@ -141,7 +144,7 @@ export default function AddressEdit({ ip }) {
     // formData?.grampanchayat,
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -203,153 +206,6 @@ export default function AddressEdit({ ip }) {
     });
   };
 
-  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.district && state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schema["properties"]["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schema["properties"]["block"]) {
-        newSchema = await setBlock({
-          gramp,
-          state,
-          district,
-          block,
-          schemaData: newSchema,
-        });
-        setSchemaData(newSchema);
-      }
-    } else {
-      newSchema = getOptions(newSchema, { key: "district", arr: [] });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      }
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchemaData(newSchema);
-    }
-    return newSchema;
-  };
-
-  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-        state: state,
-      });
-      if (schema["properties"]["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-
-      // if (
-      //   schema?.["properties"]?.["grampanchayat"] &&
-      //   ["BIHAR"].includes(state)
-      // ) {
-      //   newSchema = await setGramp({
-      //     state,
-      //     district,
-      //     block,
-      //     gramp,
-      //     schemaData: newSchema,
-      //   });
-      //   setSchemaData(newSchema);
-      // } else {
-      newSchema = await setVilage({
-        state,
-        district,
-        block,
-        // gramp: "null",
-        schemaData: newSchema,
-      });
-      setSchemaData(newSchema);
-      // }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchemaData(newSchema);
-    }
-    return newSchema;
-  };
-
-  // const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   setIsDisable(true);
-  //   if (schema?.properties?.village && block) {
-  //     const qData = await geolocationRegistryService.getGrampanchyat({
-  //       block: block,
-  //       state: state,
-  //       district: district,
-  //     });
-  //     if (schema?.["properties"]?.["grampanchayat"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "grampanchayat",
-  //         arr: qData?.gramPanchayat,
-  //         title: "grampanchayat_name",
-  //         value: "grampanchayat_name",
-  //         format: "select",
-  //       });
-  //     }
-  //     setSchemaData(newSchema);
-
-  //     if (schema?.["properties"]?.["village"] && gramp) {
-  //       newSchema = await setVilage({
-  //         state,
-  //         district,
-  //         block,
-  //         gramp,
-  //         schemaData: newSchema,
-  //       });
-  //     }
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-  //     setSchemaData(newSchema);
-  //   }
-  //   setIsDisable(false);
-  //   return newSchema;
-  // };
-
-  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
-    let newSchema = schemaData;
-    if (schema?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-        state: state,
-        district: district,
-        gramp: gramp || "null",
-      });
-      if (schema["properties"]["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchemaData(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchemaData(newSchema);
-    }
-    return newSchema;
-  };
-
   const onChange = async (e, id) => {
     const data = e.formData;
     setErrors();
@@ -369,11 +225,12 @@ export default function AddressEdit({ ip }) {
         district: data?.district,
         block: null,
         schemaData: schema,
+        setSchema,
       });
     }
 
     if (id === "root_block") {
-      await setVilage({ block: data?.block, schemaData: schema });
+      await setVillage({ block: data?.block, schemaData: schema, setSchema });
     }
 
     if (id === "root_grampanchayat") {
@@ -523,3 +380,7 @@ export default function AddressEdit({ ip }) {
     </Layout>
   );
 }
+
+AddressEdit.propTypes = {
+  ip: PropTypes.any,
+};

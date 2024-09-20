@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Image, VStack } from "native-base";
 import { FrontEndTypo } from "@shiksha/common-lib";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileUpload } from "component/BaseInput";
 import { OfflineFileUpload } from "v2/components/Static/FormBaseInput/FormBaseInput";
 import { updateOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
-import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+
+PhotoUpload.propTypes = {
+  userid: PropTypes.any,
+  facilitator: PropTypes.any,
+  formData: PropTypes.any,
+  navigatePage: PropTypes.any,
+};
 
 export default function PhotoUpload({
   userid,
   facilitator,
-  aadhar_no,
   formData,
   navigatePage,
 }) {
@@ -22,20 +27,12 @@ export default function PhotoUpload({
 
   React.useEffect(() => {
     if (page >= 4) {
-      // Uncomment if Aadhaar is required.
-
-      // if (!aadhar_no || aadhar_no === "") {
-      //   navigatePage(`/profile/edit/aadhaar_details`, "aadhaar_details");
-      // } else {
-      //   navigatePage(`/profile`, "");
-      // }
-
       navigatePage(`/profile`, "");
     } else {
       setFileValue(
         facilitator?.[`profile_photo_${page}`]?.base64
           ? facilitator[`profile_photo_${page}`].base64
-          : ""
+          : "",
       );
     }
   }, [page, formData]);

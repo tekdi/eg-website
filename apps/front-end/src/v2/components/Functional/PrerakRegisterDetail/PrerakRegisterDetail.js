@@ -36,12 +36,23 @@ import {
   templates,
   transformErrors,
 } from "../../Static/FormBaseInput/FormBaseInput.js";
-import { getIndexedDBItem, getLanguage } from "v2/utils/Helper/JSHelper.js";
+import { getLanguage } from "v2/utils/Helper/JSHelper.js";
 import PageLayout from "v2/components/Static/PageLayout/PageLayout.js";
 import Loader from "v2/components/Static/Loader/Loader.js";
 import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
 import moment from "moment";
-import { tr } from "date-fns/locale";
+import PropTypes from "prop-types";
+import { setDistrict, setBlock, setVillage } from "utils/localHelper.js";
+
+PrerakRegisterDetail.propTypes = {
+  t: PropTypes.any,
+  currentForm: PropTypes.any,
+  setCurrentForm: PropTypes.any,
+  registerFormData: PropTypes.any,
+  setRegisterFormData: PropTypes.any,
+  ip: PropTypes.any,
+  showIntroductionOfProject: PropTypes.any,
+};
 
 export default function PrerakRegisterDetail({
   t,
@@ -121,7 +132,7 @@ export default function PrerakRegisterDetail({
   const [formData, setFormData] = useState({});
   const [schema, setSchema] = useState({});
   const [alert, setAlert] = useState();
-  const [allQualifictions, setAllQualifications] = useState([]);
+  const [allQualifications, setAllQualifications] = useState([]);
 
   // Toggle consent state based on user agreement
 
@@ -205,11 +216,12 @@ export default function PrerakRegisterDetail({
             } catch (error) {}
             //add user specific state
             if (programSelected != null) {
-              newSchema = await setDistric({
+              newSchema = await setDistrict({
                 schemaData: address_details,
                 state: programSelected?.state_name,
                 district: registerFormData?.district,
                 block: registerFormData?.block,
+                setSchema,
               });
             }
           }
@@ -320,149 +332,6 @@ export default function PrerakRegisterDetail({
     return err;
   };
 
-  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (state) {
-      const qData = await geolocationRegistryService.getDistricts({
-        name: state,
-      });
-      if (schemaData?.["properties"]?.["district"]) {
-        newSchema = getOptions(newSchema, {
-          key: "district",
-          arr: qData?.districts,
-          title: "district_name",
-          value: "district_name",
-        });
-      }
-      if (schemaData?.["properties"]?.["block"]) {
-        newSchema = await setBlock({
-          state,
-          district,
-          block,
-          gramp,
-          schemaData: newSchema,
-        });
-        setSchema(newSchema);
-      }
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
-  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schemaData?.properties?.block && district) {
-      const qData = await geolocationRegistryService.getBlocks({
-        name: district,
-        state: state,
-      });
-      if (schemaData?.["properties"]?.["block"]) {
-        newSchema = getOptions(newSchema, {
-          key: "block",
-          arr: qData?.blocks,
-          title: "block_name",
-          value: "block_name",
-        });
-      }
-      // if (
-      //   schemaData?.["properties"]?.["grampanchayat"] &&
-      //   ["BIHAR"].includes(state)
-      // ) {
-      //   newSchema = await setGramp({
-      //     state,
-      //     district,
-      //     block,
-      //     gramp,
-      //     schemaData: newSchema,
-      //   });
-      //   setSchema(newSchema);
-      // } else {
-      newSchema = await setVilage({
-        state,
-        district,
-        block,
-        gramp: "null",
-        schemaData: newSchema,
-      });
-      setSchema(newSchema);
-      // }
-    } else {
-      newSchema = getOptions(newSchema, { key: "block", arr: [] });
-      if (schemaData?.["properties"]?.["village"]) {
-        newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      }
-      setSchema(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
-  // const setGramp = async ({ gramp, state, district, block, schemaData }) => {
-  //   let newSchema = schemaData;
-  //   setLoading(true);
-  //   if (schemaData?.properties?.village && block) {
-  //     const qData = await geolocationRegistryService.getGrampanchyat({
-  //       block: block,
-  //       state: state,
-  //       district: district,
-  //     });
-  //     if (schemaData?.["properties"]?.["grampanchayat"]) {
-  //       newSchema = getOptions(newSchema, {
-  //         key: "grampanchayat",
-  //         arr: qData?.gramPanchayat,
-  //         title: "grampanchayat_name",
-  //         value: "grampanchayat_name",
-  //         format: "select",
-  //       });
-  //     }
-  //     setSchema(newSchema);
-
-  //     if (schemaData?.["properties"]?.["village"] && gramp) {
-  //       newSchema = await setVilage({
-  //         state,
-  //         district,
-  //         block,
-  //         gramp,
-  //         schemaData: newSchema,
-  //       });
-  //     }
-  //   } else {
-  //     newSchema = getOptions(newSchema, { key: "grampanchayat", arr: [] });
-  //     setSchema(newSchema);
-  //   }
-  //   setLoading(false);
-  //   return newSchema;
-  // };
-
-  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
-    let newSchema = schemaData;
-    setLoading(true);
-    if (schemaData?.properties?.village && block) {
-      const qData = await geolocationRegistryService.getVillages({
-        name: block,
-        state: state,
-        district: district,
-        gramp: gramp || "null",
-      });
-      if (schemaData?.["properties"]?.["village"]) {
-        newSchema = getOptions(newSchema, {
-          key: "village",
-          arr: qData?.villages,
-          title: "village_ward_name",
-          value: "village_ward_name",
-        });
-      }
-      setSchema(newSchema);
-    } else {
-      newSchema = getOptions(newSchema, { key: "village", arr: [] });
-      setSchema(newSchema);
-    }
-    setLoading(false);
-    return newSchema;
-  };
-
   const handleCheckboxChange = (isAgree) => {
     setYesChecked(isAgree);
     setNoChecked(!isAgree);
@@ -488,7 +357,7 @@ export default function PrerakRegisterDetail({
     if (
       Object.keys(errors || {}).length > 0 &&
       Object.keys(errors || {}).filter((e) =>
-        Object.keys(schema.properties).includes(e)
+        Object.keys(schema.properties).includes(e),
       ).length > 0
     ) {
       return false;
@@ -534,8 +403,8 @@ export default function PrerakRegisterDetail({
                   data?.error?.constructor?.name === "String"
                     ? [data?.error]
                     : data?.error?.constructor?.name === "Array"
-                    ? data?.error
-                    : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
+                      ? data?.error
+                      : [t("MOBILE_NUMBER_ALREADY_EXISTS")],
               },
             };
             setErrors(newErrors);
@@ -577,10 +446,6 @@ export default function PrerakRegisterDetail({
     if (id === "root_mobile") {
       let { mobile, otp, ...otherError } = errors || {};
       setErrors(otherError);
-      //check user exist on mobile type
-      /*if (data?.mobile?.toString()?.length === 10) {
-        await checkMobileExist(data?.mobile);
-      }*/
     }
     if (id === "root_verify_mobile") {
       let { verify_mobile, otp, ...otherError } = errors || {};
@@ -588,11 +453,12 @@ export default function PrerakRegisterDetail({
     }
 
     if (id === "root_state") {
-      await setDistric({
+      await setDistrict({
         schemaData: schema,
         state: data?.state,
         district: data?.district,
         block: data?.block,
+        setSchema,
       });
     }
 
@@ -602,15 +468,17 @@ export default function PrerakRegisterDetail({
         block: data?.block,
         schemaData: schema,
         state: programData?.state_name,
+        setSchema,
       });
     }
 
     if (id === "root_block") {
-      await setVilage({
+      await setVillage({
         district: data?.district,
         block: data?.block,
         schemaData: schema,
         state: programData?.state_name,
+        setSchema,
       });
     }
 
@@ -628,7 +496,7 @@ export default function PrerakRegisterDetail({
       }
     }
     if (id === "root_qualification_master_id") {
-      const twelthId = findIdByName(allQualifictions, "12th grade");
+      const twelthId = findIdByName(allQualifications, "12th grade");
       if (data?.qualification_master_id === twelthId) {
         setAlert(t("YOU_NOT_ELIGIBLE"));
       } else {
@@ -637,8 +505,8 @@ export default function PrerakRegisterDetail({
     }
     if (id === "root_qualification_ids") {
       const noneId = findIdByName(
-        allQualifictions,
-        "TEACHING_QUALIFICATION_NONE"
+        allQualifications,
+        "TEACHING_QUALIFICATION_NONE",
       );
       if (
         formData?.qualification_ids.includes(noneId) &&
@@ -654,14 +522,14 @@ export default function PrerakRegisterDetail({
         setFormData({
           ...formData,
           qualification_ids: data?.qualification_ids?.filter(
-            (e) => e !== noneId
+            (e) => e !== noneId,
           ),
         });
       }
     }
     if (id === "root_has_diploma") {
       let newSchema = await updateSchemaBasedOnDiploma(
-        data?.has_diploma === "yes"
+        data?.has_diploma === "yes",
       );
       setSchema(newSchema);
     }
@@ -705,7 +573,7 @@ export default function PrerakRegisterDetail({
                 setIsUserExistModalText(
                   t("EXIST_LOGIN")
                     .replace("{{state}}", programData?.program_name)
-                    .replace("{{year}}", cohortData?.academic_year_name)
+                    .replace("{{year}}", cohortData?.academic_year_name),
                 );
                 setIsLoginShow(true);
                 break;
@@ -726,7 +594,7 @@ export default function PrerakRegisterDetail({
                     .replace("{{state}}", programData?.program_name)
                     .replace("{{year}}", cohortData?.academic_year_name)
                     .replace("{{old_state}}", program_data[0]?.program_name)
-                    .replace("{{old_year}}", academic_year?.academic_year_name)
+                    .replace("{{old_year}}", academic_year?.academic_year_name),
                 );
                 setOnboardingMobile(mobile);
                 setIsLoginShow(true);
@@ -744,7 +612,7 @@ export default function PrerakRegisterDetail({
                   .replace("{{state}}", programData?.program_name)
                   .replace("{{year}}", cohortData?.academic_year_name)
                   .replace("{{old_state}}", program_data[0]?.program_name)
-                  .replace("{{old_year}}", academic_year?.academic_year_name)
+                  .replace("{{old_year}}", academic_year?.academic_year_name),
               );
               setIsLoginShow(false);
               break;
@@ -767,7 +635,7 @@ export default function PrerakRegisterDetail({
                 setIsUserExistModalText(
                   t("EXIST_LOGIN")
                     .replace("{{state}}", programData?.program_name)
-                    .replace("{{year}}", cohortData?.academic_year_name)
+                    .replace("{{year}}", cohortData?.academic_year_name),
                 );
                 setIsLoginShow(true);
                 break;
@@ -788,7 +656,7 @@ export default function PrerakRegisterDetail({
                     .replace("{{state}}", programData?.program_name)
                     .replace("{{year}}", cohortData?.academic_year_name)
                     .replace("{{old_state}}", program_data[0]?.program_name)
-                    .replace("{{old_year}}", academic_year?.academic_year_name)
+                    .replace("{{old_year}}", academic_year?.academic_year_name),
                 );
                 setOnboardingMobile(mobile);
                 setIsLoginShow(true);
@@ -806,7 +674,7 @@ export default function PrerakRegisterDetail({
                   .replace("{{state}}", programData?.program_name)
                   .replace("{{year}}", cohortData?.academic_year_name)
                   .replace("{{old_state}}", program_data[0]?.program_name)
-                  .replace("{{old_year}}", academic_year?.academic_year_name)
+                  .replace("{{old_year}}", academic_year?.academic_year_name),
               );
               setIsLoginShow(false);
               break;
@@ -833,18 +701,6 @@ export default function PrerakRegisterDetail({
   const updateSchemaBasedOnDiploma = async (hasDiploma) => {
     let newSchema = {};
     if (!hasDiploma) {
-      // const constantSchema = {
-      //   ...qualification_details,
-      //   properties: {
-      //     ...qualification_details?.properties,
-      //     qualification_reference_document_id: {
-      //       ...qualification_details?.properties
-      //         ?.qualification_reference_document_id,
-      //       user_id: "{{user_id}}",
-      //       document_sub_type: "qualification_reference_document",
-      //     },
-      //   },
-      // };
       const constantSchema = qualification_details;
       const { diploma_details, ...properties } =
         constantSchema?.properties || {};
@@ -854,7 +710,7 @@ export default function PrerakRegisterDetail({
           "qualification_ids",
           "qualification_master_id",
           // "qualification_reference_document_id",
-        ].includes(item)
+        ].includes(item),
       );
       newSchema = { ...constantSchema, properties, required };
     } else if (hasDiploma) {
@@ -864,14 +720,14 @@ export default function PrerakRegisterDetail({
       const ListOfEnum = await enumRegistryService.listOfEnum();
       newSchema = getOptions(newSchema, {
         key: "qualification_master_id",
-        arr: allQualifictions,
+        arr: allQualifications,
         title: "name",
         value: "id",
         filters: { type: "qualification" },
       });
       newSchema = getOptions(newSchema, {
         key: "qualification_ids",
-        arr: allQualifictions,
+        arr: allQualifications,
         title: "name",
         value: "id",
         filters: { type: "teaching" },
@@ -1004,7 +860,7 @@ export default function PrerakRegisterDetail({
       },
       ip?.id?.toString(),
       programData?.program_id,
-      cohortData?.academic_year_id
+      cohortData?.academic_year_id,
     );
     return result;
   };
@@ -1127,8 +983,8 @@ export default function PrerakRegisterDetail({
                     {currentForm == 0
                       ? t("CONSENT_TO_SHARE_INFORMATION")
                       : currentForm < 3
-                      ? t("NEXT")
-                      : t("SEND_OTP")}
+                        ? t("NEXT")
+                        : t("SEND_OTP")}
                   </FrontEndTypo.Primarybutton>
                 </VStack>
               )}

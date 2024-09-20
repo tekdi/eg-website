@@ -6,9 +6,9 @@ import {
   organisationService,
 } from "@shiksha/common-lib";
 import { useTranslation } from "react-i18next";
-import { HStack, VStack, Radio, Input } from "native-base";
+import { HStack, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
-import { optionId } from "@rjsf/utils";
+import PropTypes from "prop-types";
 
 const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
@@ -46,10 +46,10 @@ const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
       subjectData?.data?.forEach((subject) => {
         // Filter events based on type (theory or practical)
         const practicalEvents = subject.events.filter(
-          (event) => event.type === "practical"
+          (event) => event.type === "practical",
         );
         const theoryEvents = subject.events.filter(
-          (event) => event.type === "theory"
+          (event) => event.type === "theory",
         );
 
         // Add filtered events to subjects
@@ -133,7 +133,7 @@ const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
                 <VStack borderRadius={"5px"} p={4} bg={"white"} space={4}>
                   {theorySubjects
                     ?.filter(
-                      (subjects) => subjects?.events?.[0]?.status === "publish"
+                      (subjects) => subjects?.events?.[0]?.status === "publish",
                     )
                     .sort((a, b) => {
                       // Access the start_date directly and convert them to Date objects for comparison
@@ -169,7 +169,7 @@ const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
                 <VStack borderRadius={"5px"} p={4} bg={"white"} space={4}>
                   {practicalSubjects
                     ?.filter(
-                      (subjects) => subjects?.events?.[0]?.status === "publish"
+                      (subjects) => subjects?.events?.[0]?.status === "publish",
                     )
                     .sort((a, b) => {
                       // Access the start_date directly and convert them to Date objects for comparison
@@ -216,3 +216,8 @@ const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
 };
 
 export default ViewExamSchedule;
+
+ViewExamSchedule.propTypes = {
+  footerLinks: PropTypes.array,
+  userTokenInfo: PropTypes.object,
+};

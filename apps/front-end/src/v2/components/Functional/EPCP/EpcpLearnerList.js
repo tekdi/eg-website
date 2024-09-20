@@ -8,6 +8,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Alert, Avatar, HStack, Pressable, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
@@ -172,6 +173,11 @@ const EpcpLearnerList = ({ footerLinks, userTokenInfo: { authUser } }) => {
 };
 
 export default EpcpLearnerList;
+
+EpcpLearnerList.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.any,
+};
 
 const mergingData = (userData, report) => {
   const responses = report?.reduce((acc, observation) => {

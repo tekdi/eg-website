@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FrontEndTypo, TitleCard, useWindowSize } from "@shiksha/common-lib";
 import { setLanguage, getLanguage } from "v2/utils/Helper/JSHelper";
 import Motif_EG from "../../../assets/Images/Logo/Motif_EG.svg";
+import PropTypes from "prop-types";
 
 export default function ChooseLanguage({ t, languageChanged }) {
   const [code, setCode] = useState(getLanguage() || "hi");
@@ -88,3 +89,8 @@ export default function ChooseLanguage({ t, languageChanged }) {
     </VStack>
   );
 }
+
+ChooseLanguage.propTypes = {
+  t: PropTypes.any,
+  languageChanged: PropTypes.any,
+};

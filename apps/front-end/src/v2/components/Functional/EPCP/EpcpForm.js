@@ -18,6 +18,7 @@ import {
 import { Box } from "native-base";
 import { finalPayload } from "./Payload.js";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const formRef = useRef();
@@ -439,3 +440,8 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
 };
 
 export default EpcpForm;
+
+EpcpForm.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
+};

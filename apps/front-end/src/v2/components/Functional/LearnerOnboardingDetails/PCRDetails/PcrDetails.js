@@ -1,6 +1,5 @@
 import {
   FrontEndTypo,
-  IconByName,
   Layout,
   benificiaryRegistoryService,
   enumRegistryService,
@@ -8,7 +7,6 @@ import {
 import React, { useState } from "react";
 import {
   VStack,
-  CheckIcon,
   Box,
   ScrollView,
   FormControl,
@@ -18,6 +16,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { select as Select } from "component/BaseInput";
+import PropTypes from "prop-types";
 
 const isDisabledSelect = ({ data, attr }) => {
   let result = false;
@@ -84,16 +83,16 @@ const PcrDetails = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [selectBaselineData, setselectBaselineData] = useState();
-  const [selectRapidData, setselectRapidData] = useState();
+  const [selectBaselineData, setSelectBaselineData] = useState();
+  const [selectRapidData, setSelectRapidData] = useState();
   const [pcrCreated, setPcrCreated] = useState();
   const [data, setData] = React.useState({});
   const [isDisable, setIsDisable] = React.useState(false);
 
   React.useEffect(async () => {
     const result = await enumRegistryService.listOfEnum();
-    setselectBaselineData(result?.data?.PCR_SCORES_BASELINE_AND_ENDLINE);
-    setselectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
+    setSelectBaselineData(result?.data?.PCR_SCORES_BASELINE_AND_ENDLINE);
+    setSelectRapidData(result?.data?.PCR_SCORES_RAPID_QUESTION);
   }, []);
 
   React.useEffect(async () => {
@@ -332,5 +331,11 @@ const CustomSelect = ({ data, attr, ...props }) => {
       </VStack>
     );
   }
-  return <React.Fragment />;
+  return <></>;
+};
+
+CustomSelect.propTypes = {
+  data: PropTypes.object,
+  attr: PropTypes.string,
+  schema: PropTypes.object,
 };
