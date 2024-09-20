@@ -1,15 +1,13 @@
+import React from "react";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+
+DatePicker.propTypes = {
+  filter: PropTypes.object,
+  setFilter: PropTypes.func,
+};
 
 const DatePicker = ({ filter, setFilter }) => {
-  // const [minDate, setMinDate] = useState();
-
-  // useEffect(() => {
-  //   // const date = moment().subtract(1, "months").format("YYYY-MM-DD");
-  //   const date =
-  //   setMinDate(date);
-  // }, []);
-
   const handleDateChange = (value) => {
     setFilter({ ...filter, date: value });
   };
