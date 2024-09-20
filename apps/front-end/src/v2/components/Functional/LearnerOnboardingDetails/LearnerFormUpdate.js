@@ -43,7 +43,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
   const [schema, setSchema] = useState({});
   const [fixedSchema, setFixedSchema] = useState({});
   const [cameraModal, setCameraModal] = useState(false);
-  const [credentials, setCredentials] = useState();
   const [cameraUrl, setCameraUrl] = useState();
   const [submitBtn, setSubmitBtn] = useState();
   const [addBtn, setAddBtn] = useState(t("YES"));
@@ -206,20 +205,21 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     setLoading(true);
     setFormData({ ...formData, edit_page_type: "add_contact" });
     if (page === "2") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       getLocation();
     } else if (page === "3") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "personal" });
     } else if (page === "4") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_education" });
     } else if (page === "5") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
       setFormData({ ...formData, edit_page_type: "add_other_details" });
     } else if (page === "upload") {
-      const updateDetails = await AgRegistryService.updateAg(formData, userId);
+      await AgRegistryService.updateAg(formData, userId);
     }
+
     setLoading(false);
   }, [page]);
 
@@ -780,8 +780,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       const { id } = authUser;
       let success = false;
       if (id) {
-        // const data = await formSubmitUpdate(newData);
-        // if (!_.isEmpty(data)) {
         success = true;
         // }
       } else if (page === "2") {
@@ -795,10 +793,6 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             },
           };
           setErrors(newErrors);
-        } else {
-          if (data?.username && data?.password) {
-            setCredentials(data);
-          }
         }
       } else if (page <= 1) {
         success = true;
