@@ -6,7 +6,7 @@ import {
   getSelectedProgramId,
 } from "@shiksha/common-lib";
 
-export function getWindowSize(maxWidth = "1080") {
+export function useWindowSize(maxWidth = "1080") {
   const [size, setSize] = useState([]);
 
   useLayoutEffect(() => {
@@ -36,7 +36,7 @@ export function getUserId() {
   return localStorage.getItem("id");
 }
 
-export default getWindowSize;
+export default useWindowSize;
 
 //indexed db key-val get/set functions
 

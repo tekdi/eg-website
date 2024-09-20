@@ -1,8 +1,6 @@
-import { isArray } from "lodash";
 import {
   getUserInfo,
   getUserUpdatedInfo,
-  getOnlyChanged,
   mergeOnlyChanged,
   setPrerakUpdateInfo,
   mergeExperiences,
@@ -17,26 +15,19 @@ export async function getOnboardingData(id) {
   try {
     const userGetInfo = await getUserInfo(id);
     const userUpdatedInfo = await getUserUpdatedInfo(id);
-    //console.log("userGetInfo getOnboardingData", userGetInfo);
-    //console.log("userUpdatedInfo getOnboardingData", userUpdatedInfo);
     const userMergedInfo = await mergeOnlyChanged(userGetInfo, userUpdatedInfo);
-    //console.log("userMergedInfo getOnboardingData", userMergedInfo);
     //experience
     const userMergedInfo_experience = await mergeExperiences(
       userGetInfo?.experience,
       userUpdatedInfo?.experience,
-      ""
+      "",
     );
-    /*console.log(
-      "userMergedInfo_experience getOnboardingData",
-      userMergedInfo_experience
-    );*/
     //preprocess data
     //qualification id
     let qualification_id_arr = null;
     try {
       qualification_id_arr = JSON.parse(
-        userMergedInfo?.program_faciltators?.qualification_ids
+        userMergedInfo?.program_faciltators?.qualification_ids,
       );
       if (qualification_id_arr) {
         qualification_id_arr = qualification_id_arr.map((str) => parseInt(str));
@@ -48,43 +39,41 @@ export async function getOnboardingData(id) {
     let experience = [];
     try {
       let experience_obj = userMergedInfo_experience;
-      //console.log("experience_obj", experience_obj);
-      //console.log("experience_obj.length", experience_obj.length);
       if (experience_obj) {
-        for (let i = 0; i < experience_obj.length; i++) {
+        for (const experience_obj_item of experience_obj) {
           let temp_obj_experience = {
-            id: experience_obj[i]?.id,
-            type: experience_obj[i]?.type,
-            role_title: experience_obj[i]?.role_title,
-            organization: experience_obj[i]?.organization,
-            description: experience_obj[i]?.description,
-            experience_in_years: experience_obj[i]?.experience_in_years,
-            related_to_teaching: experience_obj[i]?.related_to_teaching,
+            id: experience_obj_item?.id,
+            type: experience_obj_item?.type,
+            role_title: experience_obj_item?.role_title,
+            organization: experience_obj_item?.organization,
+            description: experience_obj_item?.description,
+            experience_in_years: experience_obj_item?.experience_in_years,
+            related_to_teaching: experience_obj_item?.related_to_teaching,
             reference: {
-              id: experience_obj[i]?.references?.id,
-              name: experience_obj[i]?.references?.name,
-              contact_number: experience_obj[i]?.references?.contact_number,
-              type_of_document: experience_obj[i]?.references?.type_of_document,
-              document_id: experience_obj[i]?.references?.documents?.base64,
+              id: experience_obj_item?.references?.id,
+              name: experience_obj_item?.references?.name,
+              contact_number: experience_obj_item?.references?.contact_number,
+              type_of_document:
+                experience_obj_item?.references?.type_of_document,
+              document_id: experience_obj_item?.references?.documents?.base64,
               document_reference: {
-                base64: experience_obj[i]?.references?.documents?.base64,
-                id: experience_obj[i]?.references?.documents?.document_id,
-                name: experience_obj[i]?.references?.documents?.name,
+                base64: experience_obj_item?.references?.documents?.base64,
+                id: experience_obj_item?.references?.documents?.document_id,
+                name: experience_obj_item?.references?.documents?.name,
                 document_sub_type:
-                  experience_obj[i]?.references?.documents?.document_sub_type,
+                  experience_obj_item?.references?.documents?.document_sub_type,
                 document_type:
-                  experience_obj[i]?.references?.documents?.document_type,
-                provider: experience_obj[i]?.references?.documents?.provider,
-                path: experience_obj[i]?.references?.documents?.path,
+                  experience_obj_item?.references?.documents?.document_type,
+                provider: experience_obj_item?.references?.documents?.provider,
+                path: experience_obj_item?.references?.documents?.path,
               },
             },
-            status: experience_obj[i]?.status,
-            unique_key: experience_obj[i]?.unique_key,
+            status: experience_obj_item?.status,
+            unique_key: experience_obj_item?.unique_key,
           };
-          //console.log("temp_obj_experience", temp_obj_experience);
-          if (experience_obj[i]?.type == "vo_experience") {
+          if (experience_obj_item?.type == "vo_experience") {
             vo_experience.push(temp_obj_experience);
-          } else if (experience_obj[i]?.type == "experience") {
+          } else if (experience_obj_item?.type == "experience") {
             experience.push(temp_obj_experience);
           }
         }
@@ -242,144 +231,224 @@ export async function updateOnboardingData(id, onboardingData) {
   let experience = [];
   let qualifications = new Object();
   //step 1 basic_details
-  onboardingData?.first_name || onboardingData?.first_name == ""
-    ? onboardingData.first_name != userInfo?.users?.first_name
-      ? (users.first_name = onboardingData.first_name)
-      : delete userUpdatedInfo?.users?.first_name
-    : null;
-  onboardingData?.last_name || onboardingData?.last_name == ""
-    ? onboardingData.last_name != userInfo?.users?.last_name
-      ? (users.last_name = onboardingData.last_name)
-      : delete userUpdatedInfo?.users?.last_name
-    : null;
-  onboardingData?.middle_name || onboardingData?.middle_name == ""
-    ? onboardingData.middle_name != userInfo?.users?.middle_name
-      ? (users.middle_name = onboardingData.middle_name)
-      : delete userUpdatedInfo?.users?.middle_name
-    : null;
-  onboardingData?.dob || onboardingData?.dob == ""
-    ? onboardingData.dob != userInfo?.users?.dob
-      ? (users.dob = onboardingData.dob)
-      : delete userUpdatedInfo?.users?.dob
-    : null;
+  if (onboardingData?.first_name || onboardingData?.first_name === "") {
+    const newFirstName = onboardingData.first_name;
+    const oldFirstName = userInfo?.users?.first_name;
+    if (newFirstName !== oldFirstName) {
+      users.first_name = newFirstName;
+    } else {
+      delete userUpdatedInfo?.users?.first_name;
+    }
+  }
+  if (onboardingData?.last_name || onboardingData?.last_name === "") {
+    if (onboardingData.last_name !== userInfo?.users?.last_name) {
+      users.last_name = onboardingData.last_name;
+    } else {
+      delete userUpdatedInfo?.users?.last_name;
+    }
+  }
+  if (onboardingData?.middle_name || onboardingData?.middle_name === "") {
+    if (onboardingData.middle_name !== userInfo?.users?.middle_name) {
+      users.middle_name = onboardingData.middle_name;
+    } else {
+      delete userUpdatedInfo?.users?.middle_name;
+    }
+  }
+  if (onboardingData?.dob || onboardingData?.dob === "") {
+    if (onboardingData.dob !== userInfo?.users?.dob) {
+      users.dob = onboardingData.dob;
+    } else {
+      delete userUpdatedInfo?.users?.dob;
+    }
+  }
   //step 2 contact_details
-  onboardingData?.mobile || onboardingData?.mobile == ""
-    ? onboardingData.mobile != userInfo?.users?.mobile
-      ? (users.mobile = onboardingData.mobile)
-      : delete userUpdatedInfo?.users?.mobile
-    : null;
-  onboardingData?.email_id || onboardingData?.email_id == ""
-    ? onboardingData.email_id != userInfo?.users?.email_id
-      ? (users.email_id = onboardingData.email_id)
-      : delete userUpdatedInfo?.users?.email_id
-    : null;
-  onboardingData?.device_type || onboardingData?.device_type == ""
-    ? onboardingData.device_type != userInfo?.core_faciltators?.device_type
-      ? (core_faciltators.device_type = onboardingData.device_type)
-      : delete userUpdatedInfo?.core_faciltators?.device_type
-    : null;
-  onboardingData?.device_ownership || onboardingData?.device_ownership == ""
-    ? onboardingData.device_ownership !=
+  if (onboardingData?.mobile || onboardingData?.mobile === "") {
+    if (onboardingData.mobile !== userInfo?.users?.mobile) {
+      users.mobile = onboardingData.mobile;
+    } else {
+      delete userUpdatedInfo?.users?.mobile;
+    }
+  }
+  if (onboardingData?.email_id || onboardingData?.email_id === "") {
+    if (onboardingData.email_id !== userInfo?.users?.email_id) {
+      users.email_id = onboardingData.email_id;
+    } else {
+      delete userUpdatedInfo?.users?.email_id;
+    }
+  }
+  if (onboardingData?.device_type || onboardingData?.device_type === "") {
+    if (
+      onboardingData.device_type !== userInfo?.core_faciltators?.device_type
+    ) {
+      core_faciltators.device_type = onboardingData.device_type;
+    } else {
+      delete userUpdatedInfo?.core_faciltators?.device_type;
+    }
+  }
+  if (
+    onboardingData?.device_ownership ||
+    onboardingData?.device_ownership === ""
+  ) {
+    if (
+      onboardingData.device_ownership !==
       userInfo?.core_faciltators?.device_ownership
-      ? (core_faciltators.device_ownership = onboardingData.device_ownership)
-      : delete userUpdatedInfo?.core_faciltators?.device_ownership
-    : null;
-  onboardingData?.has_volunteer_exp || onboardingData?.has_volunteer_exp == ""
-    ? onboardingData.has_volunteer_exp !=
+    ) {
+      core_faciltators.device_ownership = onboardingData.device_ownership;
+    } else {
+      delete userUpdatedInfo?.core_faciltators?.device_ownership;
+    }
+  }
+  if (
+    onboardingData?.has_volunteer_exp ||
+    onboardingData?.has_volunteer_exp === ""
+  ) {
+    if (
+      onboardingData.has_volunteer_exp !==
       userInfo?.core_faciltators?.has_volunteer_exp
-      ? (core_faciltators.has_volunteer_exp = onboardingData.has_volunteer_exp)
-      : delete userUpdatedInfo?.core_faciltators?.has_volunteer_exp
-    : null;
-
-  onboardingData?.has_job_exp || onboardingData?.has_job_exp == ""
-    ? onboardingData.has_job_exp != userInfo?.core_faciltators?.has_job_exp
-      ? (core_faciltators.has_job_exp = onboardingData.has_job_exp)
-      : delete userUpdatedInfo?.core_faciltators?.has_job_exp
-    : null;
-
-  onboardingData?.alternative_mobile_number ||
-  onboardingData?.alternative_mobile_number == ""
-    ? onboardingData.alternative_mobile_number !=
+    ) {
+      core_faciltators.has_volunteer_exp = onboardingData.has_volunteer_exp;
+    } else {
+      delete userUpdatedInfo?.core_faciltators?.has_volunteer_exp;
+    }
+  }
+  if (onboardingData?.has_job_exp || onboardingData?.has_job_exp === "") {
+    if (
+      onboardingData.has_job_exp !== userInfo?.core_faciltators?.has_job_exp
+    ) {
+      core_faciltators.has_job_exp = onboardingData.has_job_exp;
+    } else {
+      delete userUpdatedInfo?.core_faciltators?.has_job_exp;
+    }
+  }
+  if (
+    onboardingData?.alternative_mobile_number ||
+    onboardingData?.alternative_mobile_number === ""
+  ) {
+    if (
+      onboardingData.alternative_mobile_number !==
       userInfo?.users?.alternative_mobile_number
-      ? (users.alternative_mobile_number =
-          onboardingData.alternative_mobile_number)
-      : delete userUpdatedInfo?.users?.alternative_mobile_number
-    : null;
-  onboardingData?.aadhar_no
-    ? onboardingData.aadhar_no != userInfo?.users?.aadhar_no
-      ? (users.aadhar_no = onboardingData.aadhar_no)
-      : delete userUpdatedInfo?.users?.aadhar_no
-    : null;
+    ) {
+      users.alternative_mobile_number =
+        onboardingData.alternative_mobile_number;
+    } else {
+      delete userUpdatedInfo?.users?.alternative_mobile_number;
+    }
+  }
+  if (onboardingData?.aadhar_no) {
+    if (onboardingData.aadhar_no !== userInfo?.users?.aadhar_no) {
+      users.aadhar_no = onboardingData.aadhar_no;
+    } else {
+      delete userUpdatedInfo?.users?.aadhar_no;
+    }
+  }
   //step 3 address_details
-  onboardingData?.block || onboardingData?.block == ""
-    ? onboardingData.block != userInfo?.users?.block
-      ? (users.block = onboardingData.block)
-      : delete userUpdatedInfo?.users?.block
-    : null;
-  onboardingData?.district || onboardingData?.district == ""
-    ? onboardingData.district != userInfo?.users?.district
-      ? (users.district = onboardingData.district)
-      : delete userUpdatedInfo?.users?.district
-    : null;
-  onboardingData?.grampanchayat || onboardingData?.grampanchayat == ""
-    ? onboardingData.grampanchayat != userInfo?.users?.grampanchayat
-      ? (users.grampanchayat = onboardingData.grampanchayat)
-      : delete userUpdatedInfo?.users?.grampanchayat
-    : null;
-  onboardingData?.pincode || onboardingData?.pincode == ""
-    ? onboardingData.pincode != userInfo?.users?.pincode
-      ? (users.pincode = onboardingData.pincode)
-      : delete userUpdatedInfo?.users?.pincode
-    : null;
-  onboardingData?.state || onboardingData?.state == ""
-    ? onboardingData.state != userInfo?.users?.state
-      ? (users.state = onboardingData.state)
-      : delete userUpdatedInfo?.users?.state
-    : null;
-  onboardingData?.village || onboardingData?.village == ""
-    ? onboardingData.village != userInfo?.users?.village
-      ? (users.village = onboardingData.village)
-      : delete userUpdatedInfo?.users?.village
-    : null;
+  if (onboardingData?.block || onboardingData?.block === "") {
+    if (onboardingData.block !== userInfo?.users?.block) {
+      users.block = onboardingData.block;
+    } else {
+      delete userUpdatedInfo?.users?.block;
+    }
+  }
+  if (onboardingData?.district || onboardingData?.district === "") {
+    if (onboardingData.district !== userInfo?.users?.district) {
+      users.district = onboardingData.district;
+    } else {
+      delete userUpdatedInfo?.users?.district;
+    }
+  }
+  if (onboardingData?.grampanchayat || onboardingData?.grampanchayat === "") {
+    if (onboardingData.grampanchayat !== userInfo?.users?.grampanchayat) {
+      users.grampanchayat = onboardingData.grampanchayat;
+    } else {
+      delete userUpdatedInfo?.users?.grampanchayat;
+    }
+  }
+  if (onboardingData?.pincode || onboardingData?.pincode === "") {
+    if (onboardingData.pincode !== userInfo?.users?.pincode) {
+      users.pincode = onboardingData.pincode;
+    } else {
+      delete userUpdatedInfo?.users?.pincode;
+    }
+  }
+  if (onboardingData?.state || onboardingData?.state === "") {
+    if (onboardingData.state !== userInfo?.users?.state) {
+      users.state = onboardingData.state;
+    } else {
+      delete userUpdatedInfo?.users?.state;
+    }
+  }
+  if (onboardingData?.village || onboardingData?.village === "") {
+    if (onboardingData.village !== userInfo?.users?.village) {
+      users.village = onboardingData.village;
+    } else {
+      delete userUpdatedInfo?.users?.village;
+    }
+  }
   //step 4 personal_details
-  onboardingData?.gender || onboardingData?.gender == ""
-    ? onboardingData.gender != userInfo?.users?.gender
-      ? (users.gender = onboardingData.gender)
-      : delete userUpdatedInfo?.users?.gender
-    : null;
-  onboardingData?.marital_status || onboardingData?.marital_status == ""
-    ? onboardingData.marital_status != userInfo?.extended_users?.marital_status
-      ? (extended_users.marital_status = onboardingData.marital_status)
-      : delete userUpdatedInfo?.extended_users?.marital_status
-    : null;
-  onboardingData?.social_category || onboardingData?.social_category == ""
-    ? onboardingData.social_category !=
+  if (onboardingData?.gender || onboardingData?.gender === "") {
+    if (onboardingData.gender !== userInfo?.users?.gender) {
+      users.gender = onboardingData.gender;
+    } else {
+      delete userUpdatedInfo?.users?.gender;
+    }
+  }
+  if (onboardingData?.marital_status || onboardingData?.marital_status === "") {
+    if (
+      onboardingData.marital_status !== userInfo?.extended_users?.marital_status
+    ) {
+      extended_users.marital_status = onboardingData.marital_status;
+    } else {
+      delete userUpdatedInfo?.extended_users?.marital_status;
+    }
+  }
+  if (
+    onboardingData?.social_category ||
+    onboardingData?.social_category === ""
+  ) {
+    if (
+      onboardingData.social_category !==
       userInfo?.extended_users?.social_category
-      ? (extended_users.social_category = onboardingData.social_category)
-      : delete userUpdatedInfo?.extended_users?.social_category
-    : null;
+    ) {
+      extended_users.social_category = onboardingData.social_category;
+    } else {
+      delete userUpdatedInfo?.extended_users?.social_category;
+    }
+  }
   //step 5 reference_details
-  onboardingData?.contact_number || onboardingData?.contact_number == ""
-    ? onboardingData.contact_number != userInfo?.references?.contact_number
-      ? (references.contact_number = onboardingData.contact_number)
-      : delete userUpdatedInfo?.references?.contact_number
-    : null;
-  onboardingData?.designation || onboardingData?.designation == ""
-    ? onboardingData.designation != userInfo?.references?.designation
-      ? (references.designation = onboardingData.designation)
-      : delete userUpdatedInfo?.references?.designation
-    : null;
-  onboardingData?.name || onboardingData?.name == ""
-    ? onboardingData.name != userInfo?.references?.name
-      ? (references.name = onboardingData.name)
-      : delete userUpdatedInfo?.references?.name
-    : null;
+  if (onboardingData?.contact_number || onboardingData?.contact_number === "") {
+    if (
+      onboardingData.contact_number !== userInfo?.references?.contact_number
+    ) {
+      references.contact_number = onboardingData.contact_number;
+    } else {
+      delete userUpdatedInfo?.references?.contact_number;
+    }
+  }
+  if (onboardingData?.designation || onboardingData?.designation === "") {
+    if (onboardingData.designation !== userInfo?.references?.designation) {
+      references.designation = onboardingData.designation;
+    } else {
+      delete userUpdatedInfo?.references?.designation;
+    }
+  }
+  if (onboardingData?.name || onboardingData?.name === "") {
+    if (onboardingData.name !== userInfo?.references?.name) {
+      references.name = onboardingData.name;
+    } else {
+      delete userUpdatedInfo?.references?.name;
+    }
+  }
   //step 6 work_availability_details
-  onboardingData?.availability || onboardingData?.availability == ""
-    ? onboardingData.availability != userInfo?.program_faciltators?.availability
-      ? (program_faciltators.availability = onboardingData.availability)
-      : delete userUpdatedInfo?.program_faciltators?.availability
-    : null;
+  if (onboardingData?.availability || onboardingData?.availability === "") {
+    if (
+      onboardingData.availability !==
+      userInfo?.program_faciltators?.availability
+    ) {
+      program_faciltators.availability = onboardingData.availability;
+    } else {
+      delete userUpdatedInfo?.program_faciltators?.availability;
+    }
+  }
   //step 7 work_experience_details vo_experience //step 8 work_experience_details experience
   /* change experience CRUD */
   if (onboardingData?.role_title) {
@@ -434,8 +503,8 @@ export async function updateOnboardingData(id, onboardingData) {
         status: onboardingData?.status
           ? onboardingData.status
           : onboardingData?.arr_id
-          ? "update"
-          : "insert",
+            ? "update"
+            : "insert",
         unique_key: !onboardingData?.arr_id
           ? onboardingData?.unique_key
             ? onboardingData.unique_key
@@ -445,13 +514,16 @@ export async function updateOnboardingData(id, onboardingData) {
     }
   }
   //step 9 qualification_details
-  onboardingData?.qualification_master_id
-    ? onboardingData.qualification_master_id !=
+  if (
+    onboardingData?.qualification_master_id &&
+    onboardingData.qualification_master_id !=
       userInfo?.qualifications?.qualification_master_id
-      ? (qualifications.qualification_master_id =
-          onboardingData.qualification_master_id)
-      : delete userUpdatedInfo?.qualifications?.qualification_master_id
-    : null;
+  ) {
+    qualifications.qualification_master_id =
+      onboardingData.qualification_master_id;
+  } else {
+    delete userUpdatedInfo?.qualifications?.qualification_master_id;
+  }
   //qualification document
   if (onboardingData?.qualification_reference_document_id) {
     if (
@@ -483,7 +555,7 @@ export async function updateOnboardingData(id, onboardingData) {
         onBoard_qualification_id_arr = onboardingData?.qualification_ids;
         if (onBoard_qualification_id_arr) {
           onBoard_qualification_id_arr = onBoard_qualification_id_arr.map(
-            (str) => parseInt(str)
+            (str) => parseInt(str),
           );
         }
         onBoard_qualification_id_arr = onBoard_qualification_id_arr.toString();
@@ -496,11 +568,11 @@ export async function updateOnboardingData(id, onboardingData) {
       let userInfo_qualification_id_arr = null;
       try {
         userInfo_qualification_id_arr = JSON.parse(
-          userInfo?.program_faciltators?.qualification_ids
+          userInfo?.program_faciltators?.qualification_ids,
         );
         if (userInfo_qualification_id_arr) {
           userInfo_qualification_id_arr = userInfo_qualification_id_arr.map(
-            (str) => parseInt(str)
+            (str) => parseInt(str),
           );
         }
         userInfo_qualification_id_arr =
@@ -515,96 +587,107 @@ export async function updateOnboardingData(id, onboardingData) {
         userInfo_qualification_id_arr &&
         arraysAreEqual(
           onBoard_qualification_id_arr,
-          userInfo_qualification_id_arr
+          userInfo_qualification_id_arr,
         )
       ) {
         delete userUpdatedInfo?.program_faciltators?.qualification_ids;
       } else {
         program_faciltators.qualification_ids = JSON.stringify(
-          onboardingData.qualification_ids
+          onboardingData.qualification_ids,
         );
       }
       //diploma and its value
-      onboardingData?.has_diploma == true ||
-      onboardingData?.has_diploma == false
-        ? onboardingData.has_diploma != userInfo?.core_faciltators?.has_diploma
-          ? (core_faciltators.has_diploma = onboardingData.has_diploma)
-          : delete userUpdatedInfo?.core_faciltators?.has_diploma
-        : null;
-      onboardingData?.has_diploma == true ||
-      onboardingData?.has_diploma == false
-        ? onboardingData?.has_diploma == true
-          ? onboardingData?.diploma_details
-            ? onboardingData.diploma_details !=
-              userInfo?.core_faciltators?.diploma_details
-              ? (core_faciltators.diploma_details =
-                  onboardingData.diploma_details)
-              : delete userUpdatedInfo?.core_faciltators?.diploma_details
-            : null
-          : onboardingData?.has_diploma == false
-          ? "" != userInfo?.core_faciltators?.diploma_details
-            ? (core_faciltators.diploma_details = "")
-            : delete userUpdatedInfo?.core_faciltators?.diploma_details
-          : null
-        : null;
+      if (typeof onboardingData?.has_diploma === "boolean") {
+        if (
+          onboardingData.has_diploma != userInfo?.core_faciltators?.has_diploma
+        ) {
+          core_faciltators.has_diploma = onboardingData.has_diploma;
+        } else {
+          delete userUpdatedInfo?.core_faciltators?.has_diploma;
+        }
+      }
+      if (onboardingData?.has_diploma === true) {
+        if (onboardingData?.diploma_details) {
+          if (
+            onboardingData.diploma_details !=
+            userInfo?.core_faciltators?.diploma_details
+          ) {
+            core_faciltators.diploma_details = onboardingData.diploma_details;
+          } else {
+            delete userUpdatedInfo?.core_faciltators?.diploma_details;
+          }
+        }
+      } else if (onboardingData?.has_diploma === false) {
+        if ("" != userInfo?.core_faciltators?.diploma_details) {
+          core_faciltators.diploma_details = "";
+        } else {
+          delete userUpdatedInfo?.core_faciltators?.diploma_details;
+        }
+      }
     }
   } catch (e) {
     console.log("error in qualification", e);
   }
   //step 10 profile photo 1
-  onboardingData?.profile_photo_1?.base64
-    ? onboardingData.profile_photo_1.base64 !=
+  if (
+    onboardingData?.profile_photo_1?.base64 &&
+    onboardingData.profile_photo_1.base64 !=
       userInfo?.users?.profile_photo_1?.documents?.base64
-      ? (users.profile_photo_1 = {
-          name: onboardingData.profile_photo_1?.name,
-          documents: {
-            base64: onboardingData.profile_photo_1?.base64,
-            document_id: onboardingData.profile_photo_1?.id,
-            name: onboardingData.profile_photo_1?.name,
-            document_type: onboardingData.profile_photo_1?.document_type,
-            document_sub_type:
-              onboardingData.profile_photo_1?.document_sub_type,
-            path: onboardingData.profile_photo_1?.path,
-          },
-        })
-      : delete userUpdatedInfo?.users?.profile_photo_1
-    : null;
+  ) {
+    users.profile_photo_1 = {
+      name: onboardingData.profile_photo_1?.name,
+      documents: {
+        base64: onboardingData.profile_photo_1?.base64,
+        document_id: onboardingData.profile_photo_1?.id,
+        name: onboardingData.profile_photo_1?.name,
+        document_type: onboardingData.profile_photo_1?.document_type,
+        document_sub_type: onboardingData.profile_photo_1?.document_sub_type,
+        path: onboardingData.profile_photo_1?.path,
+      },
+    };
+  } else {
+    delete userUpdatedInfo?.users?.profile_photo_1;
+  }
   //step 11 profile photo 2
-  onboardingData?.profile_photo_2?.base64
-    ? onboardingData.profile_photo_2.base64 !=
+  if (
+    onboardingData?.profile_photo_2?.base64 &&
+    onboardingData.profile_photo_2.base64 !=
       userInfo?.users?.profile_photo_2?.documents?.base64
-      ? (users.profile_photo_2 = {
-          name: onboardingData.profile_photo_2?.name,
-          documents: {
-            base64: onboardingData.profile_photo_2?.base64,
-            document_id: onboardingData.profile_photo_2?.id,
-            name: onboardingData.profile_photo_2?.name,
-            document_type: onboardingData.profile_photo_2?.document_type,
-            document_sub_type:
-              onboardingData.profile_photo_2?.document_sub_type,
-            path: onboardingData.profile_photo_2?.path,
-          },
-        })
-      : delete userUpdatedInfo?.users?.profile_photo_2
-    : null;
+  ) {
+    users.profile_photo_2 = {
+      name: onboardingData.profile_photo_2?.name,
+      documents: {
+        base64: onboardingData.profile_photo_2?.base64,
+        document_id: onboardingData.profile_photo_2?.id,
+        name: onboardingData.profile_photo_2?.name,
+        document_type: onboardingData.profile_photo_2?.document_type,
+        document_sub_type: onboardingData.profile_photo_2?.document_sub_type,
+        path: onboardingData.profile_photo_2?.path,
+      },
+    };
+  } else {
+    delete userUpdatedInfo?.users?.profile_photo_2;
+  }
   //step 12 profile photo 3
-  onboardingData?.profile_photo_3?.base64
-    ? onboardingData.profile_photo_3.base64 !=
+  if (
+    onboardingData?.profile_photo_3?.base64 &&
+    onboardingData.profile_photo_3.base64 !=
       userInfo?.users?.profile_photo_3?.documents?.base64
-      ? (users.profile_photo_3 = {
-          name: onboardingData.profile_photo_3?.name,
-          documents: {
-            base64: onboardingData.profile_photo_3?.base64,
-            document_id: onboardingData.profile_photo_3?.id,
-            name: onboardingData.profile_photo_3?.name,
-            document_type: onboardingData.profile_photo_3?.document_type,
-            document_sub_type:
-              onboardingData.profile_photo_3?.document_sub_type,
-            path: onboardingData.profile_photo_3?.path,
-          },
-        })
-      : delete userUpdatedInfo?.users?.profile_photo_3
-    : null;
+  ) {
+    users.profile_photo_3 = {
+      name: onboardingData.profile_photo_3?.name,
+      documents: {
+        base64: onboardingData.profile_photo_3?.base64,
+        document_id: onboardingData.profile_photo_3?.id,
+        name: onboardingData.profile_photo_3?.name,
+        document_type: onboardingData.profile_photo_3?.document_type,
+        document_sub_type: onboardingData.profile_photo_3?.document_sub_type,
+        path: onboardingData.profile_photo_3?.path,
+      },
+    };
+  } else {
+    delete userUpdatedInfo?.users?.profile_photo_3;
+  }
   //merge two arrays
   //generate final object
   let temp_update_obj = {
@@ -621,12 +704,12 @@ export async function updateOnboardingData(id, onboardingData) {
   try {
     let userMergedInfo = await mergeOnlyChanged(
       userUpdatedInfo,
-      temp_update_obj
+      temp_update_obj,
     );
     let userMergedInfo_experience = await mergeExperiences(
       userUpdatedInfo?.experience,
       temp_update_obj?.experience,
-      "update"
+      "update",
     );
     userMergedInfo.experience = userMergedInfo_experience;
     //console.log("userMergedInfo", userMergedInfo);

@@ -1,8 +1,9 @@
-import { VStack, Image, HStack, Box } from "native-base";
 import React from "react";
+import { Image, HStack, Box } from "native-base";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import Plug from "../../../assets/Images/Offline/Plug.png";
 import NoConnection from "../../../assets/Images/Offline/NoConnection.jpg";
+import PropTypes from "prop-types";
 
 export default function NoInternetScreen({ t }) {
   return (
@@ -33,3 +34,7 @@ export default function NoInternetScreen({ t }) {
     </>
   );
 }
+
+NoInternetScreen.propTypes = {
+  t: PropTypes.func,
+};
