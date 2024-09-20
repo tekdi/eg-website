@@ -111,7 +111,6 @@ const ViewExamSchedule = ({ footerLinks, userTokenInfo: { authUser } }) => {
             {boardList?.boards?.map((board) => (
               <label key={board.id}>
                 <input
-                  colorScheme="red"
                   type="radio"
                   value={board.id}
                   checked={selectedId === board.id.toString()}

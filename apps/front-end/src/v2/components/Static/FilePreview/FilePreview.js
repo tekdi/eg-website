@@ -3,6 +3,19 @@ import { Avatar, Button, Image, Box, Modal, HStack, Center } from "native-base";
 import React, { useEffect, useState } from "react";
 import { IconByName, useWindowSize } from "@shiksha/common-lib";
 import { base64toBlob, getFileTypeFromBase64 } from "v2/utils/Helper/JSHelper";
+import PropTypes from "prop-types";
+
+FilePreview.propTypes = {
+  base64: PropTypes.string,
+  source: PropTypes.string,
+  borderRadius: PropTypes.number,
+  text: PropTypes.string,
+  isImageTag: PropTypes.bool,
+  isIframeTag: PropTypes.bool,
+  urlObject: PropTypes.object,
+  _box: PropTypes.object,
+  _button: PropTypes.object,
+};
 
 export default function FilePreview({
   base64,
@@ -35,7 +48,6 @@ export default function FilePreview({
         const pdfBlob = await base64toBlob(base64);
         const pdfUrl = URL.createObjectURL(pdfBlob);
         setPdf(pdfUrl);
-        //console.log("type", temp_type);
       }
     }
     fetchData();
@@ -46,7 +58,7 @@ export default function FilePreview({
       {base64 &&
         (type.includes("image") ? (
           <img
-            alt="Image not found"
+            alt="Image_not_found"
             style={{ borderRadius: borderRadius }}
             {...props}
             src={base64}
