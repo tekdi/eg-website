@@ -23,6 +23,7 @@ import {
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
+import PropTypes from "prop-types";
 
 // App
 export default function FamilyDetails({ ip }) {
@@ -412,3 +413,7 @@ export default function FamilyDetails({ ip }) {
     </Layout>
   );
 }
+
+FamilyDetails.propTypes = {
+  ip: PropTypes.any,
+};

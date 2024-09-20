@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import { Pressable, Tooltip } from "native-base";
-import React from "react";
+import PropTypes from "prop-types";
 
 export default function Clipboard({
   label,
@@ -8,9 +9,7 @@ export default function Clipboard({
   onPress,
   ...props
 }) {
-  const [messageText, setMessageText] = React.useState(
-    label ? label : `Copy to Clipboard`
-  );
+  const [messageText, setMessageText] = useState(label || `Copy to Clipboard`);
   return (
     <Tooltip closeOnClick={0} label={messageText}>
       <Pressable
@@ -29,3 +28,10 @@ export default function Clipboard({
     </Tooltip>
   );
 }
+
+Clipboard.propTypes = {
+  label: PropTypes.string,
+  text: PropTypes.string,
+  children: PropTypes.any,
+  onPress: PropTypes.func,
+};

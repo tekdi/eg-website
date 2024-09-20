@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from "react";
 import {
-  AdminTypo,
-  Layout,
   FrontEndTypo,
+  IconByName,
+  Layout,
   enumRegistryService,
   organisationService,
-  IconByName,
-  CardComponent,
 } from "@shiksha/common-lib";
-import { HStack, VStack, Radio, Stack, Pressable, Box } from "native-base";
+import { Box, HStack, Pressable, Stack, VStack } from "native-base";
+import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
-import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 import { useNavigate } from "react-router-dom";
-import CustomAccordion from "v2/components/Static/FormBaseInput/CustomAccordion";
-import MarkLearnerAttendance from "./MarkLearnerAttendance";
+import DatePicker from "v2/components/Static/FormBaseInput/DatePicker";
 
-const ExamAttendance = ({
-  userTokenInfo: { authUser },
-  footerLinks,
-  learners,
-}) => {
+const ExamAttendance = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const { t } = useTranslation();
   const [boardList, setBoardList] = useState();
   const [loading, setLoading] = useState(true);
@@ -27,7 +20,6 @@ const ExamAttendance = ({
   const [subjects, setSubjects] = useState([]);
   const [maxDate, setMaxDate] = useState();
   const [selectedBoardId, setSelectedBoardId] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
   const [learnersListData, setLearnersListData] = useState([]);
   const [noDataFound, setNoDataFound] = useState(false);
@@ -62,13 +54,12 @@ const ExamAttendance = ({
             subject.events?.[0]?.type.slice(1), // Capitalize the type
         };
       });
-      const learnersList = await organisationService.getattendanceLearnerList(
-        newData
-      );
+      const learnersList =
+        await organisationService.getattendanceLearnerList(newData);
       setNoDataFound(
         learnersList.data.find((learner) => learner.data.length > 0)
           ? false
-          : true
+          : true,
       );
       setLearnersListData(learnersList?.data);
       console.log("learnersList", learnersList?.data[0]?.data);
@@ -209,3 +200,8 @@ const ExamAttendance = ({
 };
 
 export default ExamAttendance;
+
+ExamAttendance.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
+};

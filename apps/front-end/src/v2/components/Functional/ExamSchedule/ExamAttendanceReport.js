@@ -4,6 +4,7 @@ import { VStack, Stack } from "native-base";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const ExamAttendanceReport = ({ footerLinks, userTokenInfo: { authUser } }) => {
   const [loading, setLoading] = useState(true);
@@ -121,3 +122,8 @@ const ExamAttendanceReport = ({ footerLinks, userTokenInfo: { authUser } }) => {
 };
 
 export default ExamAttendanceReport;
+
+ExamAttendanceReport.propTypes = {
+  footerLinks: PropTypes.array,
+  userTokenInfo: PropTypes.object,
+};

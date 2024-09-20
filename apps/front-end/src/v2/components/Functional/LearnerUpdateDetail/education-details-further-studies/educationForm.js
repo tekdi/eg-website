@@ -27,6 +27,7 @@ import {
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // App
 export default function App({ onClick, id }) {
@@ -180,7 +181,7 @@ export default function App({ onClick, id }) {
       if (error.name === "required") {
         if (schema?.properties?.[error?.property]?.title) {
           error.message = `${t("REQUIRED_MESSAGE")} "${t(
-            schema?.properties?.[error?.property]?.title
+            schema?.properties?.[error?.property]?.title,
           )}"`;
         } else {
           error.message = `${t("REQUIRED_MESSAGE")}`;
@@ -225,7 +226,7 @@ export default function App({ onClick, id }) {
           "previous_school_type",
           "reason_of_leaving_education",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "never_enrolled") {
@@ -243,7 +244,7 @@ export default function App({ onClick, id }) {
           "type_of_learner",
           "learning_level",
           "reason_of_leaving_education",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "already_enrolled_in_open_school") {
@@ -259,7 +260,7 @@ export default function App({ onClick, id }) {
           "previous_school_type",
           "reason_of_leaving_education",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "already_open_school_syc") {
@@ -279,7 +280,7 @@ export default function App({ onClick, id }) {
           "reason_of_leaving_education",
           "education_10th_date",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else if (newData?.type_of_learner === "stream_2_mainstream_syc") {
@@ -299,7 +300,7 @@ export default function App({ onClick, id }) {
           "reason_of_leaving_education",
           "education_10th_exam_year",
           "learning_level",
-        ].includes(item)
+        ].includes(item),
       );
       setSchemaData({ ...fixedSchema, properties, required });
     } else {
@@ -320,7 +321,7 @@ export default function App({ onClick, id }) {
       if (!Object.keys(errors).length) {
         const updateDetails = await AgRegistryService.updateAg(
           formData,
-          userId
+          userId,
         );
         if (updateDetails) {
           if (redirectLink) {
@@ -438,3 +439,8 @@ export default function App({ onClick, id }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  onClick: PropTypes.func,
+  id: PropTypes.any,
+};

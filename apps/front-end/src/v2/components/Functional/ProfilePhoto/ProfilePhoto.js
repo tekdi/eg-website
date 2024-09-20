@@ -2,11 +2,16 @@ import { IconByName } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
 import FilePreview from "v2/components/Static/FilePreview/FilePreview";
+import PropTypes from "prop-types";
+
+ProfilePhoto.propTypes = {
+  profile_photo_1: PropTypes.object,
+  editLink: PropTypes.string,
+  isProfileEdit: PropTypes.bool,
+};
 
 export default function ProfilePhoto({
   profile_photo_1,
-  profile_photo_2,
-  profile_photo_3,
   editLink,
   isProfileEdit,
 }) {
@@ -45,21 +50,6 @@ export default function ProfilePhoto({
           />
         )}
       </HStack>
-
-      {/* <HStack alignItems="center" space="6">
-        {[profile_photo_1, profile_photo_2, profile_photo_3].map(
-          (photo) =>
-            photo?.base64 && (
-              <FilePreview
-                key={photo?.id}
-                base64={photo?.base64}
-                width={"60px"}
-                height={"60px"}
-                borderRadius="50%"
-              />
-            )
-        )}
-      </HStack> */}
     </VStack>
   );
 }

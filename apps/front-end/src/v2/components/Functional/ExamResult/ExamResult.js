@@ -299,4 +299,5 @@ export default ExamResult;
 
 ExamResult.propTypes = {
   userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.any,
 };

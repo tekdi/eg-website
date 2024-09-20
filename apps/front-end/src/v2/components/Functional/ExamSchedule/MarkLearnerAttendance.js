@@ -16,20 +16,19 @@ import {
 } from "v2/utils/SyncHelper/SyncHelper";
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import moment from "moment";
+
 const MarkLearnerAttendance = ({
   footerLinks,
   userTokenInfo: { authUser },
-  subjects,
 }) => {
   const { t } = useTranslation();
   const { state } = useLocation();
   const selectedSubject = state?.subject;
   const filter = state?.filter;
   const maxDate = state?.boardList?.addedMaxDate;
-  const [accessData, SetAccessData] = useState(false);
+  const [accessData, setAccessData] = useState(false);
   const [learnerAttendance, setLearnerAttendance] = useState([]);
   const [learners, setLearners] = useState([]);
-  const [learnersData, setLearnersData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [absentModal, setAbsentModal] = useState();
   const [selectedReason, setSelectedReason] = useState("");
@@ -37,10 +36,6 @@ const MarkLearnerAttendance = ({
 
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
-
-  const handleChange = (event) => {
-    setSelectedReason(event.target.value);
-  };
 
   const absentReasonsList = [
     "LEARNER_DEATH",
@@ -64,7 +59,7 @@ const MarkLearnerAttendance = ({
         user,
         event_id,
         attendance,
-        attendance === "absent" && selectedReason
+        attendance === "absent" && selectedReason,
       );
       const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
       setLearnerAttendance(mergedPayload);
@@ -115,11 +110,9 @@ const MarkLearnerAttendance = ({
             selectedSubject?.events?.[0]?.type.slice(1), // Capitalize the type
         },
       ];
-      const LearnerList = await organisationService.getattendanceLearnerList(
-        newData
-      );
+      const LearnerList =
+        await organisationService.getattendanceLearnerList(newData);
       setLearners(LearnerList?.data?.[0]);
-      setLearnersData(LearnerList?.data?.data);
     };
     fetchData();
   }, []);
@@ -170,12 +163,12 @@ const MarkLearnerAttendance = ({
 
       const currentDateFormatted = moment().format("YYYY-MM-DD");
       const maxDateDisable = moment(currentDateFormatted, "YYYY/MM/DD").isAfter(
-        maxDate
+        maxDate,
       );
       if (maxDateDisable) {
-        SetAccessData(true);
+        setAccessData(true);
       } else {
-        SetAccessData(false);
+        setAccessData(false);
       }
       if (
         isDate &&
@@ -198,8 +191,8 @@ const MarkLearnerAttendance = ({
         user?.attendances?.[0]?.status === "present"
           ? "present"
           : user?.attendances?.[0]?.status === "absent"
-          ? "absent"
-          : "", // Determine the attendance status
+            ? "absent"
+            : "", // Determine the attendance status
     }));
 
     // Construct the new format
@@ -214,7 +207,7 @@ const MarkLearnerAttendance = ({
       const key = Object.keys(originalItem)[0];
       if (key.startsWith(`${event_id}_`)) {
         const updatedItem = original.find(
-          (item) => Object.keys(item)[0] === key
+          (item) => Object.keys(item)[0] === key,
         );
         return updatedItem || originalItem;
       } else {
@@ -229,7 +222,7 @@ const MarkLearnerAttendance = ({
       const newPayload = generateNewPayload(
         mainAttendance,
         learnerAttendance,
-        event_id
+        event_id,
       );
       setIndexedDBItem("exam_attendance", newPayload);
       setLearnerAttendance(newPayload);
@@ -248,7 +241,7 @@ const MarkLearnerAttendance = ({
 
     const finalPayload = await transformAttendanceResponse(
       matchedPayload,
-      filter?.date
+      filter?.date,
     );
     const hasBlankStatus = finalPayload?.some((item) => {
       return item.status === "";
@@ -297,9 +290,6 @@ const MarkLearnerAttendance = ({
           <FrontEndTypo.H3>{`${t("TOTAL_NUMBER_OF_STUDENTS")} : ${
             learners?.data?.length
           }`}</FrontEndTypo.H3>
-          {/* {learnersData?.length == 0 && (
-            <FrontEndTypo.H2>{t("WARNING")}</FrontEndTypo.H2>
-          )} */}
         </VStack>
         <>
           <table
@@ -339,7 +329,7 @@ const MarkLearnerAttendance = ({
                                 markAttendance(
                                   user,
                                   learners?.event_id,
-                                  "present"
+                                  "present",
                                 )
                               }
                             >
@@ -350,7 +340,7 @@ const MarkLearnerAttendance = ({
                                     CheckUserIdInPayload(
                                       user,
                                       learnerAttendance,
-                                      learners?.event_id
+                                      learners?.event_id,
                                     ) === "present"
                                       ? "#038400"
                                       : "grayColor"
@@ -365,7 +355,7 @@ const MarkLearnerAttendance = ({
                                 markAttendance(
                                   user,
                                   learners?.event_id,
-                                  "absent"
+                                  "absent",
                                 )
                               }
                             >
@@ -376,7 +366,7 @@ const MarkLearnerAttendance = ({
                                     CheckUserIdInPayload(
                                       user,
                                       learnerAttendance,
-                                      learners.event_id
+                                      learners.event_id,
                                     ) === "absent"
                                       ? "#D53546"
                                       : "grayColor"
@@ -409,7 +399,6 @@ const MarkLearnerAttendance = ({
                 px="20px"
                 onPress={() => {
                   cancelAttendance(learners?.event_id);
-                  // navigate(`/examattendance`);
                 }}
               >
                 {t("CANCEL")}
@@ -419,7 +408,6 @@ const MarkLearnerAttendance = ({
                 isDisabled={isDisable}
                 onPress={() => {
                   SaveAttendance(learners?.event_id);
-                  // navigate(`/examattendance`);
                 }}
               >
                 {t("SAVE")}
@@ -476,7 +464,7 @@ const MarkLearnerAttendance = ({
                   markAttendance(
                     absentModal?.user,
                     absentModal?.event_id,
-                    "absent"
+                    "absent",
                   );
                 }}
               >
@@ -527,6 +515,9 @@ const MarkLearnerAttendance = ({
   );
 };
 
-MarkLearnerAttendance.propTypes = {};
+MarkLearnerAttendance.propTypes = {
+  userTokenInfo: PropTypes.object,
+  footerLinks: PropTypes.array,
+};
 
 export default MarkLearnerAttendance;

@@ -3,6 +3,13 @@ import { Alert, Box, HStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+
+AddressOffline.propTypes = {
+  alert: PropTypes.string,
+  facilitator: PropTypes.object,
+  navigatePage: PropTypes.func,
+};
 
 const AddressOffline = ({ alert, facilitator, navigatePage }) => {
   const { t } = useTranslation();

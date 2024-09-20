@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconByName,
   AdminLayout as Layout,
@@ -9,12 +9,13 @@ import {
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function App({ footerLinks, userTokenInfo }) {
-  const [data, setData] = React.useState();
+  const [data, setData] = useState();
   const navigate = useNavigate();
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     setData(userTokenInfo?.authUser);
   }, []);
 
@@ -156,3 +157,8 @@ export default function App({ footerLinks, userTokenInfo }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  footerLinks: PropTypes.any,
+  userTokenInfo: PropTypes.object,
+};

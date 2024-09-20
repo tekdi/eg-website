@@ -23,11 +23,11 @@ import {
   ArrayFieldTitleTemplate,
   BaseInputTemplate,
   CustomR,
-  select,
   RadioBtn,
 } from "../../../Static/FormBaseInput/FormBaseInput.js";
 import { useTranslation } from "react-i18next";
 import accessControl from "pages/front-end/facilitator/edit/AccessControl.js";
+import PropTypes from "prop-types";
 
 // App
 export default function PersonalDetails({ ip }) {
@@ -289,3 +289,7 @@ export default function PersonalDetails({ ip }) {
     </Layout>
   );
 }
+
+PersonalDetails.propTypes = {
+  ip: PropTypes.any,
+};

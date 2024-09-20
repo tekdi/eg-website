@@ -1118,3 +1118,9 @@ const UserDataCheck = ({ missingData, setMissingData, id }) => {
     </VStack>
   );
 };
+
+UserDataCheck.propTypes = {
+  missingData: PropTypes.array,
+  setMissingData: PropTypes.func,
+  id: PropTypes.any,
+};
