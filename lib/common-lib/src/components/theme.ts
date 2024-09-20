@@ -1,6 +1,5 @@
 const fontFamily =
   localStorage.getItem('lang') === 'hi' ? "'Poppins'" : 'Poppins'
-const fontSize = localStorage.getItem('lang') === 'hi' ? '' : ''
 
 let red = {
   50: '#fef2f2',
@@ -72,8 +71,7 @@ const DEFAULT_THEME = {
     },
     Text: {
       baseStyle: {
-        fontFamily: fontFamily,
-        fontSize: fontSize
+        fontFamily: fontFamily
       }
     },
     Actionsheet: {
