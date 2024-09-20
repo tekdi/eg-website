@@ -1,6 +1,7 @@
 import { jsonParse } from "@shiksha/common-lib";
 
 let state = jsonParse(localStorage.getItem("program"));
+const regex = /^(?:(?![\u0900-\u097F])[A-Za-z\s])+\p{P}*$/;
 
 export default {
   description: "1.AG Enrollment Details",
@@ -51,8 +52,8 @@ export default {
             state?.state_name == "BIHAR"
               ? "APPLICATION_ID"
               : state?.state_name == "MADHYA PRADESH"
-              ? "ROLL_NUMBER"
-              : "ENROLLMENT_NO",
+                ? "ROLL_NUMBER"
+                : "ENROLLMENT_NO",
         },
         enrollment_mobile_no: {
           type: "string",
@@ -75,7 +76,7 @@ export default {
         enrollment_first_name: {
           type: "string",
           label: "FIRST_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+          regex,
           description:
             state?.state_name === "RAJASTHAN"
               ? "AS_PER_ENROLLMENT_RECEIPT"
@@ -84,12 +85,12 @@ export default {
         enrollment_middle_name: {
           type: ["string", "null"],
           label: "MIDDLE_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+          regex,
         },
         enrollment_last_name: {
           type: ["string", "null"],
           label: "LAST_NAME",
-          regex: /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/,
+          regex,
         },
         enrollment_dob: {
           type: "string",
@@ -120,10 +121,7 @@ export default {
           uniqueItems: true,
         },
         payment_receipt_document_id: {
-          label:
-            state?.state_name === "RAJASTHAN"
-              ? ["RECEIPT_UPLOAD"]
-              : ["RECEIPT_UPLOAD"],
+          label: "RECEIPT_UPLOAD",
           description: "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
           uploadTitle: "UPLOAD_FROM_PHONE",
           type: ["string", "number"],
