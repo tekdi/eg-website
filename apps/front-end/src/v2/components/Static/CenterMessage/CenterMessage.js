@@ -2,6 +2,11 @@ import { Center, VStack } from "native-base";
 import React from "react";
 import { FrontEndTypo } from "@shiksha/common-lib";
 import useWindowSize from "v2/utils/Helper/JSHelper";
+import PropTypes from "prop-types";
+
+CenterMessage.propTypes = {
+  message: PropTypes.string,
+};
 export default function CenterMessage({ message = "Loading..." }) {
   const [width, height] = useWindowSize();
 

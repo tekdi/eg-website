@@ -4,6 +4,11 @@ import { VStack, Stack } from "native-base";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+
+ExamResultReport.propTypes = {
+  footerLinks: PropTypes.array,
+};
 
 const ExamResultReport = ({ footerLinks }) => {
   const [loading, setLoading] = useState(true);

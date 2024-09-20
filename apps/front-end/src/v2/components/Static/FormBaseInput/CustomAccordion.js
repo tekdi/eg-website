@@ -13,11 +13,17 @@ import {
   transformAttendanceResponse,
 } from "v2/utils/SyncHelper/SyncHelper";
 import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import PropTypes from "prop-types";
+
+CustomAccordion.propTypes = {
+  data: PropTypes.array,
+  date: PropTypes.string,
+  board: PropTypes.string,
+  maxDate: PropTypes.string,
+};
 
 const CustomAccordion = ({ data, date, board, maxDate }) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [openAccordion, setOpenAccordion] = useState(null);
   const [learnerAttendance, setLearnerAttendance] = useState([]);
@@ -87,7 +93,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
 
       const currentDateFormatted = moment().format("YYYY-MM-DD");
       const maxDateDisable = moment(currentDateFormatted, "YYYY/MM/DD").isAfter(
-        maxDate
+        maxDate,
       );
       if (maxDateDisable) {
         SetAccessData(true);
@@ -116,9 +122,9 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
           user?.attendances?.[0]?.status === "present"
             ? "present"
             : user?.attendances?.[0]?.status === "absent"
-            ? "absent"
-            : "", // Determine the attendance status
-      }))
+              ? "absent"
+              : "", // Determine the attendance status
+      })),
     );
 
     // Construct the new format
@@ -169,7 +175,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
         user,
         event_id,
         attendance,
-        attendance === "absent" && selectedReason
+        attendance === "absent" && selectedReason,
       );
       const mergedPayload = mergePayloads(learnerAttendance, AttendaceData);
       setLearnerAttendance(mergedPayload);
@@ -187,7 +193,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
 
     const finalPayload = await transformAttendanceResponse(
       matchedPayload,
-      date
+      date,
     );
 
     const hasBlankStatus = finalPayload.some((item) => item.status === "");
@@ -216,7 +222,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
       const key = Object.keys(originalItem)[0];
       if (key.startsWith(`${event_id}_`)) {
         const updatedItem = original.find(
-          (item) => Object.keys(item)[0] === key
+          (item) => Object.keys(item)[0] === key,
         );
         return updatedItem || originalItem;
       } else {
@@ -231,7 +237,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
       const newPayload = generateNewPayload(
         mainAttendance,
         learnerAttendance,
-        event_id
+        event_id,
       );
       setIndexedDBItem("exam_attendance", newPayload);
       setLearnerAttendance(newPayload);
@@ -307,7 +313,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                                         markAttendance(
                                           user,
                                           subject?.event_id,
-                                          "present"
+                                          "present",
                                         )
                                       }
                                     >
@@ -318,7 +324,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                                             CheckUserIdInPayload(
                                               user,
                                               learnerAttendance,
-                                              subject.event_id
+                                              subject.event_id,
                                             ) === "present"
                                               ? "successColor"
                                               : "grayColor"
@@ -333,7 +339,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                                         markAttendance(
                                           user,
                                           subject?.event_id,
-                                          "absent"
+                                          "absent",
                                         )
                                       }
                                     >
@@ -344,7 +350,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                                             CheckUserIdInPayload(
                                               user,
                                               learnerAttendance,
-                                              subject.event_id
+                                              subject.event_id,
                                             ) === "absent"
                                               ? "dangerColor"
                                               : "grayColor"
@@ -395,7 +401,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                 </>
               )}
             </VStack>
-          )
+          ),
       )}
       {date && data?.length < 1 && (
         <FrontEndTypo.H2>{t("DATA_NOT_FOUND")}</FrontEndTypo.H2>
@@ -484,7 +490,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                   markAttendance(
                     AbsentModal?.user,
                     AbsentModal?.event_id,
-                    "absent"
+                    "absent",
                   );
                 }}
               >
