@@ -6,15 +6,12 @@ import AdminLayout from './components/admin_layout/Layout'
 // pc user
 import PCusers_layout from './components/PCusers_layout/Layout'
 import VolunteerAdminLayout from './components/volunteer-admin/Layout'
-import SearchLayout from './components/SearchLayout'
 import IconByName from './components/IconByName'
-import Widget from './components/Widget'
 import Collapsible from './components/Collapsible'
 import Menu, { SubMenu } from './components/Menu'
 import initializeI18n from './services/i18n'
 import AppShell from './components/AppShell'
 import ProgressBar from './components/ProgressBar'
-import Tab from './components/Tab'
 import Loading from './components/Loading'
 import SunbirdPlayer from './components/SunbirdPlayer'
 import * as facilitatorRegistryService from './services/facilitatorRegistryService'
@@ -71,16 +68,13 @@ export {
   AdminLayout,
   PoAdminLayout,
   PCusers_layout,
-  SearchLayout,
   IconByName,
-  Widget,
   Collapsible,
   Menu,
   SubMenu,
   initializeI18n,
   AppShell,
   ProgressBar,
-  Tab,
   Loading,
   facilitatorRegistryService,
   authRegistryService,
