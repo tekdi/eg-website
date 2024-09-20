@@ -13,7 +13,6 @@ import {
   login,
   CustomAlert,
   Loading,
-  geolocationRegistryService,
   getOptions,
   enumRegistryService,
   validation,
@@ -291,23 +290,19 @@ export default function PrerakRegisterDetail({
   };
   const validate = (data, key) => {
     let error = {};
-    switch (key) {
-      case "mobile":
-        if (
-          data?.mobile?.toString()?.length !== 10 &&
-          data?.mobile !== undefined
-        ) {
-          error = { mobile: t("MINIMUM_LENGTH_IS_10") };
-        }
-        if (
-          !(data?.mobile > 6000000000 && data?.mobile < 9999999999) &&
-          data?.mobile !== undefined
-        ) {
-          error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
-        }
-        break;
-      default:
-        break;
+    if (key === "mobile") {
+      if (
+        data?.mobile?.toString()?.length !== 10 &&
+        data?.mobile !== undefined
+      ) {
+        error = { mobile: t("MINIMUM_LENGTH_IS_10") };
+      }
+      if (
+        !(data?.mobile > 6000000000 && data?.mobile < 9999999999) &&
+        data?.mobile !== undefined
+      ) {
+        error = { mobile: t("PLEASE_ENTER_VALID_NUMBER") };
+      }
     }
     return error;
   };
