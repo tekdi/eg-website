@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { calendar } from "services/utils";
 import { IconByName } from "@shiksha/common-lib";
+import PropTypes from "prop-types";
 
 const FormatDate = ({ date, type }) => {
   if (type === "Week") {
@@ -21,6 +22,14 @@ const FormatDate = ({ date, type }) => {
   } else {
     return moment(date).format("D MMMM, Y");
   }
+};
+
+DayWiesBar.propTypes = {
+  activeColor: PropTypes.string,
+  setActiveColor: PropTypes.func,
+  page: PropTypes.number,
+  setPage: PropTypes.func,
+  _box: PropTypes.object,
 };
 
 export function DayWiesBar({
@@ -69,6 +78,18 @@ export function DayWiesBar({
   );
 }
 
+WeekWiesBar.propTypes = {
+  activeColor: PropTypes.string,
+  setActiveColor: PropTypes.func,
+  page: PropTypes.number,
+  setPage: PropTypes.func,
+  _box: PropTypes.object,
+  nextDisabled: PropTypes.any,
+  previousDisabled: PropTypes.any,
+  rightErrorText: PropTypes.any,
+  leftErrorText: PropTypes.any,
+};
+
 export function WeekWiesBar({
   activeColor,
   setActiveColor,
@@ -113,6 +134,18 @@ export function WeekWiesBar({
     </Display>
   );
 }
+
+Display.propTypes = {
+  children: PropTypes.any,
+  activeColor: PropTypes.any,
+  page: PropTypes.any,
+  setPage: PropTypes.func,
+  nextDisabled: PropTypes.any,
+  previousDisabled: PropTypes.any,
+  rightErrorText: PropTypes.any,
+  leftErrorText: PropTypes.any,
+  _box: PropTypes.any,
+};
 
 const Display = ({
   children,
