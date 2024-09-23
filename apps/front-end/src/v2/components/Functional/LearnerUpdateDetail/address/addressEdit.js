@@ -51,7 +51,7 @@ export default function AddressEdit({ ip }) {
   useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     const finalData = qData?.result;
-    const { lat, long } = finalData;
+    const { lat, long } = finalData || {};
     let programSelected = jsonParse(localStorage.getItem("program"));
     setFormData({
       ...formData,
@@ -133,7 +133,7 @@ export default function AddressEdit({ ip }) {
         district: formData?.district,
         block: formData?.block,
         // gramp: formData?.grampanchayat,
-        setSchema,
+        // setSchema,
       });
       setSchemaData(newSchema);
     }
@@ -225,12 +225,16 @@ export default function AddressEdit({ ip }) {
         district: data?.district,
         block: null,
         schemaData: schema,
-        setSchema,
+        // setSchema,
       });
     }
 
     if (id === "root_block") {
-      await setVillage({ block: data?.block, schemaData: schema, setSchema });
+      await setVillage({
+        block: data?.block,
+        schemaData: schema,
+        // setSchema,
+      });
     }
 
     if (id === "root_grampanchayat") {
@@ -260,7 +264,7 @@ export default function AddressEdit({ ip }) {
       }
     }
     if (id === "root_pincode") {
-      const regex = /^[0-9]{6}$/;
+      const regex = /^\d{6}$/;
       if (data?.pincode && !regex.test(data.pincode)) {
         const newErrors = {
           pincode: {
@@ -298,6 +302,7 @@ export default function AddressEdit({ ip }) {
   const setSchemaData = (newSchema) => {
     setSchema(accessControl(newSchema, fields));
   };
+
   return (
     <Layout
       _appBar={{
@@ -348,10 +353,6 @@ export default function AddressEdit({ ip }) {
                 onPress={() => {
                   if (formRef.current.validateForm()) {
                     formRef?.current?.submit();
-                  } else {
-                    if (formRef.current.validateForm()) {
-                      formRef?.current?.submit();
-                    }
                   }
                 }}
               >
@@ -365,10 +366,6 @@ export default function AddressEdit({ ip }) {
               onPress={() => {
                 if (formRef.current.validateForm()) {
                   formRef?.current?.submit();
-                } else {
-                  if (formRef.current.validateForm()) {
-                    formRef?.current?.submit();
-                  }
                 }
               }}
             >

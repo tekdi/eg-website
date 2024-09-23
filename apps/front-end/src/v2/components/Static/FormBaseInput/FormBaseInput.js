@@ -51,7 +51,7 @@ export function LabelNameWidget() {
     </>
   );
 }
-export function selectSubjectWidget() {
+export function SelectSubjectWidget() {
   const { t } = useTranslation();
   return (
     <Alert mt={"-30px"} status="info" alignItems={"start"}>
@@ -563,7 +563,13 @@ Aadhaar.propTypes = {
 };
 
 // rjsf custom select field
-export const select = ({ options, value, onChange, required, schema }) => {
+export const CustomSelect = ({
+  options,
+  value,
+  onChange,
+  required,
+  schema,
+}) => {
   const items = options?.enumOptions ? options?.enumOptions : [];
   const { label, title, readOnly } = schema || {};
   const { t } = useTranslation();
@@ -1123,7 +1129,7 @@ const widgets = {
   RadioBtn,
   CustomR,
   Aadhaar,
-  select,
+  select: CustomSelect,
   Textarea,
   CustomOTPBox,
   FileUpload,
@@ -1136,7 +1142,7 @@ const widgets = {
   CheckUncheck,
   //v2 widget
   LabelNameWidget,
-  selectSubjectWidget,
+  SelectSubjectWidget,
   LabelMobileWidget,
   EnrollmentLabelMobileWidget,
   LabelTimeWidget,
