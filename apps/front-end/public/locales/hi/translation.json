@@ -2260,5 +2260,6 @@
   "PSYC_DETAILS": "PSYC विवरण",
   "FUTUTRE_DATES_NOT_ALLOWED": "भविष्य की तारीख की अनुमति नहीं है",
   "DATES_NOT_ALLOWED": "तारीख की अनुमति नहीं है",
-  "FACILITATOR_STATUS_TRANSFER_AS_PC": "प्रेरक अब प्रगति कोर्डिनेटर बन गये हैं"
+  "FACILITATOR_STATUS_TRANSFER_AS_PC": "प्रेरक अब प्रगति कोर्डिनेटर बन गये हैं",
+  "FACILITATOR_REASONS_FOR_QUIT_TRANSFER_AS_PC": "प्रेरक अब प्रगति कोर्डिनेटर बन गये हैं"
 }

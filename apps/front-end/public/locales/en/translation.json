@@ -2277,5 +2277,6 @@
   "PSYC_DETAILS": "PSYC Details",
   "FUTUTRE_DATES_NOT_ALLOWED": "Fututre Dates Not Allowed",
   "DATES_NOT_ALLOWED": "Dates Not Allowed",
-  "FACILITATOR_STATUS_TRANSFER_AS_PC": "Prerak is now became a PC"
+  "FACILITATOR_STATUS_TRANSFER_AS_PC": "Prerak is now became a PC",
+  "FACILITATOR_REASONS_FOR_QUIT_TRANSFER_AS_PC": "Prerak is now became a PC"
 }
