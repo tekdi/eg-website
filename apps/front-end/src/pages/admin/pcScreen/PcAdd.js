@@ -136,7 +136,7 @@ const PcAdd = ({ footerLinks }) => {
       if (data?.mobile > 6000000000 && data?.mobile < 9999999999) {
         const mobile = data?.mobile;
         const result = await PcuserService.verifyMobilePC({ mobile });
-        if (!result?.data?.success) {
+        if (!result?.success) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
