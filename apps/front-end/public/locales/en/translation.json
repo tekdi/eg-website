@@ -2276,5 +2276,6 @@
   "RECEIPT_OF_EXAM_FEES_PAYMENT_DESCRIPTION": "Please upload a clear photo or PDF of the exam fees payment receipt.",
   "PSYC_DETAILS": "PSYC Details",
   "FUTUTRE_DATES_NOT_ALLOWED": "Fututre Dates Not Allowed",
-  "DATES_NOT_ALLOWED": "Dates Not Allowed"
+  "DATES_NOT_ALLOWED": "Dates Not Allowed",
+  "FACILITATOR_STATUS_TRANSFER_AS_PC": "Transfer as PC"
 }
