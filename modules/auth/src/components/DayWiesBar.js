@@ -24,14 +24,6 @@ const FormatDate = ({ date, type }) => {
   }
 };
 
-DayWiesBar.propTypes = {
-  activeColor: PropTypes.string,
-  setActiveColor: PropTypes.func,
-  page: PropTypes.number,
-  setPage: PropTypes.func,
-  _box: PropTypes.object,
-};
-
 export function DayWiesBar({
   activeColor,
   setActiveColor,
@@ -78,16 +70,12 @@ export function DayWiesBar({
   );
 }
 
-WeekWiesBar.propTypes = {
+DayWiesBar.propTypes = {
   activeColor: PropTypes.string,
   setActiveColor: PropTypes.func,
   page: PropTypes.number,
   setPage: PropTypes.func,
   _box: PropTypes.object,
-  nextDisabled: PropTypes.any,
-  previousDisabled: PropTypes.any,
-  rightErrorText: PropTypes.any,
-  leftErrorText: PropTypes.any,
 };
 
 export function WeekWiesBar({
@@ -135,16 +123,16 @@ export function WeekWiesBar({
   );
 }
 
-Display.propTypes = {
-  children: PropTypes.any,
-  activeColor: PropTypes.any,
-  page: PropTypes.any,
+WeekWiesBar.propTypes = {
+  activeColor: PropTypes.string,
+  setActiveColor: PropTypes.func,
+  page: PropTypes.number,
   setPage: PropTypes.func,
+  _box: PropTypes.object,
   nextDisabled: PropTypes.any,
   previousDisabled: PropTypes.any,
   rightErrorText: PropTypes.any,
   leftErrorText: PropTypes.any,
-  _box: PropTypes.any,
 };
 
 const Display = ({
@@ -217,4 +205,16 @@ const Display = ({
       </HStack>
     </Box>
   );
+};
+
+Display.propTypes = {
+  children: PropTypes.any,
+  activeColor: PropTypes.any,
+  page: PropTypes.any,
+  setPage: PropTypes.func,
+  nextDisabled: PropTypes.any,
+  previousDisabled: PropTypes.any,
+  rightErrorText: PropTypes.any,
+  leftErrorText: PropTypes.any,
+  _box: PropTypes.any,
 };
