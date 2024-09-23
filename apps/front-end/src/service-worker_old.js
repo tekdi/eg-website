@@ -38,7 +38,12 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 workbox.routing.registerNavigationRoute(
   workbox.precaching.getCacheKeyForURL("/index.html"),
   {
-    blacklist: [/^\/_/, /\/[^/?]+\.[^/]+$/],
+    blacklist: [
+      /^\/_/,
+      // This regex is safe because it will always take constant time to evaluate,
+      // regardless of the length of the URL path.
+      /^\/[^/]+(?:\.[^.]+)?$/,
+    ],
   },
 );
 

@@ -8,6 +8,7 @@ import {
   enumRegistryService,
   eventService,
   testRegistryService,
+  useLocationData,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
 import html2canvas from "html2canvas";
@@ -188,27 +189,12 @@ const scheduleCandidates = ({ t, days, certificateDownload, width }) => {
   return data;
 };
 
-const RenderAttendanceColumn = memo(({ row, event }) => {
+const RenderAttendanceColumn = memo(({ row, event, locationData }) => {
   const [attendance, setAttendance] = useState();
-  const [locationData, setLocationData] = useState("");
   const [isDisabledAttBtn, setIsDisabledAttBtn] = useState();
   const { id } = useParams();
   const [error, setError] = useState();
   const { t } = useTranslation();
-
-  const getLocation = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(successCallback, (e) => {
-        console.log(e);
-      });
-    }
-  };
-  const successCallback = (position) => {
-    // Location was provided
-    let latitude = position.coords.latitude;
-    let longitude = position.coords.longitude;
-    setLocationData({ latitude: latitude, longitude: longitude });
-  };
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -220,7 +206,6 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
         );
       });
       setAttendance(newAttendance);
-      await getLocation();
     };
     fetchAttendance();
   }, [row]);
@@ -315,7 +300,47 @@ const RenderAttendanceColumn = memo(({ row, event }) => {
   );
 });
 
-export default function Attendence({ footerLinks }) {
+export default function App(props) {
+  const { t } = useTranslation();
+  const [lat, long, locationMessage, locationLoding] = useLocationData();
+  return !(lat && long) ? (
+    <Layout
+      _appBar={{
+        isShowNotificationButton: true,
+      }}
+      _sidebar={props?.footerLinks}
+      loading={locationLoding}
+    >
+      <VStack space={4} alignItems="center">
+        <IconByName
+          name="MapPinLineIcon"
+          _icon={{ size: "100px" }}
+          color="blue.500"
+        />
+        <AdminTypo.H3 fontSize="lg" textAlign="center">
+          {t("ALLOW_LOCATION_ACCESS")}
+        </AdminTypo.H3>
+        <AdminTypo.H3 fontSize="lg" textAlign="center">
+          ({t(locationMessage)})
+        </AdminTypo.H3>
+        <AdminTypo.H3 fontSize="sm" textAlign="center" color="gray.500">
+          {t("LOCATION_SERVICES_DESCRIPTION")}
+        </AdminTypo.H3>
+        <AdminTypo.PrimaryButton
+          onPress={(e) => window.location.reload()}
+          mt="4"
+          colorScheme="blue"
+        >
+          {t("ALLOW_LOCATION_BUTTON")}
+        </AdminTypo.PrimaryButton>
+      </VStack>
+    </Layout>
+  ) : (
+    <Attendence {...props} locationData={{ lat, long }} />
+  );
+}
+
+export function Attendence({ footerLinks, locationData }) {
   const { id } = useParams();
   const { width } = useWindowDimensions();
   const navigate = useNavigate();
@@ -385,7 +410,7 @@ export default function Attendence({ footerLinks }) {
           name: t("MARK_ATTENDANCE"),
           selector: (row) => (
             <Suspense fallback="...">
-              <RenderAttendanceColumn {...{ row, event }} />
+              <RenderAttendanceColumn {...{ row, event, locationData }} />
             </Suspense>
           ),
           sortable: false,
@@ -422,6 +447,7 @@ export default function Attendence({ footerLinks }) {
               index: i,
               presentDate: `${moment(e).format("YYYY-MM-DD")}`,
             }}
+            {...{ locationData }}
             event={eventData}
           />
         </Suspense>
@@ -760,5 +786,10 @@ RenderAttendanceColumn.propTypes = {
   event: PropTypes.any,
 };
 Attendence.propTypes = {
+  footerLinks: PropTypes.any,
+  locationData: PropTypes.object,
+};
+
+App.propTypes = {
   footerLinks: PropTypes.any,
 };
