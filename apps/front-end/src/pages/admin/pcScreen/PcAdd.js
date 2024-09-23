@@ -139,8 +139,9 @@ const PcAdd = ({ footerLinks }) => {
     if (id === "root_mobile") {
       if (data?.mobile > 6000000000 && data?.mobile < 9999999999) {
         const mobile = data?.mobile;
-        const result = await facilitatorRegistryService.isUserExist({ mobile });
-        if (result?.data?.program_users) {
+        const result = await PcuserService.verifyMobilePC({ mobile });
+        console.log("result", result);
+        if (!result?.data?.success) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
