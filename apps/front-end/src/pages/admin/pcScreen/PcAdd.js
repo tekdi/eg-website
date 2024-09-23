@@ -4,10 +4,7 @@ import {
   FrontEndTypo,
   IconByName,
   AdminLayout as Layout,
-  geolocationRegistryService,
-  getOptions,
   PcuserService,
-  facilitatorRegistryService,
 } from "@shiksha/common-lib";
 import { HStack, VStack } from "native-base";
 import React, { useEffect, useRef, useState } from "react";
@@ -133,14 +130,13 @@ const PcAdd = ({ footerLinks }) => {
   const onChange = async (e, id) => {
     const data = e.formData;
     const newData = { ...formData, ...data };
-    let error = {};
     setFormData(newData);
 
     if (id === "root_mobile") {
       if (data?.mobile > 6000000000 && data?.mobile < 9999999999) {
         const mobile = data?.mobile;
-        const result = await facilitatorRegistryService.isUserExist({ mobile });
-        if (result?.data?.program_users) {
+        const result = await PcuserService.verifyMobilePC({ mobile });
+        if (!result?.success) {
           const newErrors = {
             mobile: {
               __errors: [t("MOBILE_NUMBER_ALREADY_EXISTS")],
