@@ -180,7 +180,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
 
   const uiSchema = {
     selectSubject: {
-      "ui:widget": "selectSubjectWidget",
+      "ui:widget": "SelectSubjectWidget",
     },
     SELECTED_SUBJECT_BY_LEARNER: {
       "ui:widget": "checkboxes",
