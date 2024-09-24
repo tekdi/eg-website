@@ -642,6 +642,14 @@ export const CustomSelect = ({
   );
 };
 
+CustomSelect.propTypes = {
+  options: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.any,
+  required: PropTypes.any,
+  schema: PropTypes.any,
+};
+
 // rjsf custom readOnly field
 export const ReadOnly = ({ value, _stack, required, schema }) => {
   const { title } = schema || {};

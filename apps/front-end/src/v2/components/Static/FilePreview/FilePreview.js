@@ -5,18 +5,6 @@ import { IconByName, useWindowSize } from "@shiksha/common-lib";
 import { base64toBlob, getFileTypeFromBase64 } from "v2/utils/Helper/JSHelper";
 import PropTypes from "prop-types";
 
-FilePreview.propTypes = {
-  base64: PropTypes.string,
-  source: PropTypes.string,
-  borderRadius: PropTypes.number,
-  text: PropTypes.string,
-  isImageTag: PropTypes.bool,
-  isIframeTag: PropTypes.bool,
-  urlObject: PropTypes.object,
-  _box: PropTypes.object,
-  _button: PropTypes.object,
-};
-
 export default function FilePreview({
   base64,
   source,
@@ -88,7 +76,7 @@ export default function FilePreview({
           />
         ) : isImageTag ? (
           <img
-            alt="Image not found"
+            alt="Image_not_found"
             width={"300px"}
             height={"300px"}
             {...props}
@@ -161,3 +149,18 @@ export default function FilePreview({
     </Box>
   );
 }
+
+FilePreview.propTypes = {
+  base64: PropTypes.string,
+  source: PropTypes.string,
+  borderRadius: PropTypes.number,
+  text: PropTypes.string,
+  isImageTag: PropTypes.bool,
+  isIframeTag: PropTypes.bool,
+  urlObject: PropTypes.object,
+  _box: PropTypes.object,
+  _button: PropTypes.object,
+  width: PropTypes.any,
+  height: PropTypes.any,
+  size: PropTypes.any
+};

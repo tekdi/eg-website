@@ -58,7 +58,7 @@ const customStyles = {
   },
 };
 
-const renderNameColumn = (row, t) => {
+const renderNameColumn = (row) => {
   const name = row?.first_name + " " + row?.last_name;
   const hasProfileUrl = !!row?.profile_url;
 
@@ -82,7 +82,7 @@ const renderNameColumn = (row, t) => {
     </HStack>
   );
 };
-const renderIDColumn = (row, t) => {
+const renderIDColumn = (row) => {
   const ID = row?.id;
 
   return (
@@ -92,7 +92,7 @@ const renderIDColumn = (row, t) => {
   );
 };
 
-const renderStatusColumn = (row, t) => (
+const renderStatusColumn = (row) => (
   <Text>{row?.attendances?.[0]?.rsvp || "-"}</Text>
 );
 
@@ -132,7 +132,7 @@ const scheduleCandidates = ({ t, days, certificateDownload, width }) => {
   const data = [
     {
       name: t("ID"),
-      selector: (row) => renderIDColumn(row, t),
+      selector: (row) => renderIDColumn(row),
       sortable: false,
       attr: "id",
       width: "50px",
@@ -140,14 +140,14 @@ const scheduleCandidates = ({ t, days, certificateDownload, width }) => {
     },
     {
       name: t("NAME"),
-      selector: (row) => renderNameColumn(row, t),
+      selector: (row) => renderNameColumn(row),
       sortable: false,
       wrap: true,
       attr: "name",
     },
     {
       name: t("INVITE_STATUS"),
-      selector: (row) => renderStatusColumn(row, t),
+      selector: (row) => renderStatusColumn(row),
       sortable: false,
       attr: "invite",
     },
@@ -370,7 +370,6 @@ export function Attendence({ footerLinks, locationData }) {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("l");
       pdf.addImage(imgData, "JPEG", 0, 0);
-      // pdf.output('dataurlnewwindow');
       pdf.save("download.pdf");
     });
   };
@@ -651,8 +650,6 @@ export function Attendence({ footerLinks, locationData }) {
                 <AdminTypo.Secondarybutton
                   onPress={(e) => {
                     navigate(`/admin/event/${id}/candidate`);
-                    // setShowModal(true);
-                    // setFacilitatorProfile();
                   }}
                 >
                   {t(width <= 767 ? "ADD_REMOVE" : "ADD_PARTICIPANTS")}
@@ -784,6 +781,7 @@ export function Attendence({ footerLinks, locationData }) {
 RenderAttendanceColumn.propTypes = {
   row: PropTypes.any,
   event: PropTypes.any,
+  locationData: PropTypes.any,
 };
 Attendence.propTypes = {
   footerLinks: PropTypes.any,
