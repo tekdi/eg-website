@@ -16,13 +16,6 @@ import { getIndexedDBItem, setIndexedDBItem } from "v2/utils/Helper/JSHelper";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-CustomAccordion.propTypes = {
-  data: PropTypes.array,
-  date: PropTypes.string,
-  board: PropTypes.string,
-  maxDate: PropTypes.string,
-};
-
 const CustomAccordion = ({ data, date, board, maxDate }) => {
   const { t } = useTranslation();
   const [openAccordion, setOpenAccordion] = useState(null);
@@ -505,3 +498,11 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
 };
 
 export default CustomAccordion;
+
+
+CustomAccordion.propTypes = {
+  data: PropTypes.array,
+  date: PropTypes.string,
+  board: PropTypes.string,
+  maxDate: PropTypes.string,
+};

@@ -2,11 +2,6 @@ import React from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-DatePicker.propTypes = {
-  filter: PropTypes.object,
-  setFilter: PropTypes.func,
-};
-
 const DatePicker = ({ filter, setFilter }) => {
   const handleDateChange = (value) => {
     setFilter({ ...filter, date: value });
@@ -33,3 +28,9 @@ const DatePicker = ({ filter, setFilter }) => {
 };
 
 export default DatePicker;
+
+
+DatePicker.propTypes = {
+  filter: PropTypes.object,
+  setFilter: PropTypes.func,
+};
