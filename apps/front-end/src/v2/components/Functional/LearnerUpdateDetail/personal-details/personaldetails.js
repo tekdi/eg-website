@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -32,18 +32,18 @@ import PropTypes from "prop-types";
 // App
 export default function PersonalDetails({ ip }) {
   const { t } = useTranslation();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [submitBtn, setSubmitBtn] = React.useState();
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [submitBtn, setSubmitBtn] = useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
-  const [fields, setFields] = React.useState([]);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [fields, setFields] = useState([]);
+  const [isDisable, setIsDisable] = useState(false);
   const [searchParams] = useSearchParams();
   const redirectLink = searchParams.get("redirectLink");
 
@@ -55,7 +55,7 @@ export default function PersonalDetails({ ip }) {
   };
 
   //getting data
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData?.result);
     const obj = {
@@ -71,7 +71,7 @@ export default function PersonalDetails({ ip }) {
     setFields(field || []);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let marital_status = formData?.extended_users?.marital_status;
     let social_category = formData?.extended_users?.social_category;
 
@@ -119,7 +119,7 @@ export default function PersonalDetails({ ip }) {
     }
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const ListOfEnum = await enumRegistryService.listOfEnum();
     let newSchema = schema;
     if (schema["properties"]?.["marital_status"]) {
@@ -139,7 +139,7 @@ export default function PersonalDetails({ ip }) {
       setSchemaData(newSchema);
     }
   }, [page]);
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -235,7 +235,7 @@ export default function PersonalDetails({ ip }) {
             </HStack>
           </Alert>
         ) : (
-          <React.Fragment />
+          <></>
         )}
         {page && page !== "" ? (
           <Form
@@ -283,7 +283,7 @@ export default function PersonalDetails({ ip }) {
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
-          <React.Fragment />
+          <></>
         )}
       </Box>
     </Layout>

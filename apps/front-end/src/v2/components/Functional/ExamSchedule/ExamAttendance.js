@@ -57,9 +57,7 @@ const ExamAttendance = ({ userTokenInfo: { authUser }, footerLinks }) => {
       const learnersList =
         await organisationService.getattendanceLearnerList(newData);
       setNoDataFound(
-        learnersList.data.find((learner) => learner.data.length > 0)
-          ? false
-          : true,
+        !learnersList.data.find((learner) => learner.data.length > 0),
       );
       setLearnersListData(learnersList?.data);
       console.log("learnersList", learnersList?.data[0]?.data);
@@ -188,11 +186,7 @@ const ExamAttendance = ({ userTokenInfo: { authUser }, footerLinks }) => {
             </Stack>
           )}
 
-          {noDataFound && (
-            <>
-              <FrontEndTypo.H2>{t("EXAM_WARNING")}</FrontEndTypo.H2>
-            </>
-          )}
+          {noDataFound && <FrontEndTypo.H2>{t("EXAM_WARNING")}</FrontEndTypo.H2>}
         </VStack>
       </VStack>
     </Layout>

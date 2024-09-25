@@ -13,7 +13,7 @@ export async function setPrerakOfflineInfo(id) {
     let commonHeader = await getHeaderDetails();
     setIndexedDBItem(
       `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`,
-      data?.data
+      data?.data,
     );
     setIndexedDBItem("GetSyncTime", currentTime);
     localStorage.setItem("status", data?.data?.program_faciltators?.status);
@@ -28,7 +28,7 @@ export async function setPrerakUpdateInfo(id, data) {
     let commonHeader = await getHeaderDetails();
     setIndexedDBItem(
       `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`,
-      data
+      data,
     );
     setIndexedDBItem("UpdateSyncTime", currentTime);
   } catch (error) {
@@ -47,7 +47,7 @@ export async function setIpUserInfo(id) {
     ) {
       setIndexedDBItem(
         `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`,
-        data
+        data,
       );
       setIndexedDBItem("GetSyncTime", currentTime);
     }
@@ -60,7 +60,7 @@ export async function getIpUserInfo(id) {
   try {
     let commonHeader = await getHeaderDetails();
     let ip_user_info = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`,
     );
     return ip_user_info;
   } catch (error) {
@@ -87,7 +87,7 @@ export async function checkIpUserInfo(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const editRequest = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Ip_User_Info`,
     );
     return !!editRequest;
   } catch (error) {
@@ -99,7 +99,7 @@ export async function checkGetUserInfo(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const editRequest = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`,
     );
     return !!editRequest;
   } catch (error) {
@@ -111,7 +111,7 @@ export async function checkGetUserUpdateInfo(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const editRequest = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`,
     );
     return !!editRequest;
   } catch (error) {
@@ -124,7 +124,7 @@ export async function getUserInfo(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const getUserInfo = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`,
     );
     if (getUserInfo) {
       return getUserInfo;
@@ -140,7 +140,7 @@ export async function getUserInfoNull(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const getUserInfo = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Get`,
     );
     return getUserInfo;
   } catch (error) {
@@ -152,7 +152,7 @@ export async function getUserUpdatedInfo(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const getUserInfo = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`,
     );
     if (getUserInfo) {
       return getUserInfo;
@@ -168,7 +168,7 @@ export async function getUserUpdatedInfoNull(id) {
   try {
     let commonHeader = await getHeaderDetails();
     const getUserInfo = await getIndexedDBItem(
-      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`
+      `${id}_${commonHeader?.program_id}_${commonHeader?.academic_year_id}_Update`,
     );
     return getUserInfo;
   } catch (error) {
@@ -187,7 +187,7 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
       ) {
         const updatedSubObject = await getOnlyChanged(
           MainObj[key],
-          UpdateObj[key]
+          UpdateObj[key],
         );
         if (Object.keys(updatedSubObject).length > 0) {
           NewObject[key] = updatedSubObject;
@@ -196,9 +196,9 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
         if (MainObj[key] && Array.isArray(MainObj[key])) {
           const updatedArray = MainObj[key].map((item) => {
             const updatedItem = UpdateObj[key].find(
-              (updated) => updated.id === item.id
+              (updated) => updated.id === item.id,
             );
-            return updatedItem ? updatedItem : item;
+            return updatedItem || item;
           });
           NewObject[key] = updatedArray;
         } else {
@@ -221,7 +221,7 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
     ) {
       const mergedArray = [
         ...MainObj[key].filter(
-          (item) => !UpdateObj[key].some((updated) => updated.id === item.id)
+          (item) => !UpdateObj[key].some((updated) => updated.id === item.id),
         ),
         ...UpdateObj[key],
       ];
@@ -231,46 +231,6 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
 
   return NewObject;
 }
-/*export async function mergeOnlyChanged(MainObj, UpdateObj) {
-  const NewObject = { ...MainObj };
-
-  for (const key in UpdateObj) {
-    if (UpdateObj.hasOwnProperty(key)) {
-      if (
-        typeof UpdateObj[key] === "object" &&
-        !Array.isArray(UpdateObj[key])
-      ) {
-        NewObject[key] = await mergeOnlyChanged(MainObj[key], UpdateObj[key]);
-      } else if (Array.isArray(UpdateObj[key])) {
-        if (MainObj[key] && Array.isArray(MainObj[key])) {
-          NewObject[key] = await Promise.all(
-            MainObj[key].map(async (item, index) => {
-              if (UpdateObj[key][index]) {
-                return await mergeOnlyChanged(item, UpdateObj[key][index]);
-              }
-              return item;
-            })
-          );
-        } else {
-          NewObject[key] = UpdateObj[key];
-        }
-      } else {
-        if (MainObj[key] !== UpdateObj[key]) {
-          NewObject[key] = UpdateObj[key];
-        }
-      }
-    }
-  }
-
-  //experience add
-  try {
-    var finalObj = MainObj?.experience.concat(UpdateObj?.experience);
-    //console.log("finalObj", finalObj);
-    NewObject.experience = finalObj;
-  } catch (e) {}
-
-  return NewObject;
-}*/
 
 export const mergeOnlyChanged = async (obj1, obj2) => {
   const merged = { ...obj1 };
@@ -350,10 +310,9 @@ export const StoreAttendanceToIndexDB = async (
   user,
   event_id,
   attendance,
-  selectedReason
+  selectedReason,
 ) => {
   payload = (await getIndexedDBItem("exam_attendance")) || [];
-  let users = user?.user_id;
   const key = `${event_id}_${user?.user_id}`;
   const keyReason = `${event_id}_${user?.user_id}_reason`;
   const obj = {

@@ -23,8 +23,8 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
   const [mainAttendance, setMainAttendance] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [accessData, SetAccessData] = useState(false);
-  const [AbsentModal, setAbsentModal] = useState();
+  const [accessData, setAccessData] = useState(false);
+  const [absentModal, setAbsentModal] = useState();
   const [selectedReason, setSelectedReason] = useState("");
 
   const absentReasonsList = [
@@ -89,9 +89,9 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
         maxDate,
       );
       if (maxDateDisable) {
-        SetAccessData(true);
+        setAccessData(true);
       } else {
-        SetAccessData(false);
+        setAccessData(false);
       }
       if (
         isDate &&
@@ -111,12 +111,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
       item.data.map((user) => ({
         event_id: item.event_id,
         user_id: user.user_id,
-        status:
-          user?.attendances?.[0]?.status === "present"
-            ? "present"
-            : user?.attendances?.[0]?.status === "absent"
-              ? "absent"
-              : "", // Determine the attendance status
+        status: user?.attendances?.[0]?.status || "", // Determine the attendance status
       })),
     );
 
@@ -435,7 +430,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
-      <Modal isOpen={AbsentModal} size="lg">
+      <Modal isOpen={absentModal} size="lg">
         <Modal.Content>
           <Modal.Header alignItems={"center"}>
             {t("SELECT_ABSENT_REASON")}
@@ -452,7 +447,7 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
               >
                 {absentReasonsList?.map((item, index) => {
                   return (
-                    <Radio my={2} value={item}>
+                    <Radio my={2} value={item} key={index + 1}>
                       {t(item)}
                     </Radio>
                   );
@@ -481,8 +476,8 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
                 isDisabled={!selectedReason}
                 onPress={() => {
                   markAttendance(
-                    AbsentModal?.user,
-                    AbsentModal?.event_id,
+                    absentModal?.user,
+                    absentModal?.event_id,
                     "absent",
                   );
                 }}
@@ -498,7 +493,6 @@ const CustomAccordion = ({ data, date, board, maxDate }) => {
 };
 
 export default CustomAccordion;
-
 
 CustomAccordion.propTypes = {
   data: PropTypes.array,

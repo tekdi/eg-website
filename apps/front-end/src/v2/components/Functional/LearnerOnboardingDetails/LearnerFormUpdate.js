@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./Schema/SchemaUpdate.js";
@@ -46,8 +46,8 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
   const [cameraUrl, setCameraUrl] = useState();
   const [submitBtn, setSubmitBtn] = useState();
   const [addBtn, setAddBtn] = useState(t("YES"));
-  const formRef = React.useRef();
-  const uplodInputRef = React.useRef();
+  const formRef = useRef();
+  const uplodInputRef = useRef();
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState();
@@ -998,7 +998,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             {errors?.fileSize ? (
               <H2 color="red.400">{errors?.fileSize}</H2>
             ) : (
-              <React.Fragment />
+              <></>
             )}
           </VStack>
         </VStack>
@@ -1050,7 +1050,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             </HStack>
           </Alert>
         ) : (
-          <React.Fragment />
+          <></>
         )}
 
         {page && page !== "" ? (
@@ -1065,7 +1065,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
               widgets,
               uiSchema,
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               formData,
               customValidate,
               onChange,
@@ -1105,7 +1105,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
             )}
           </Form>
         ) : (
-          <React.Fragment />
+          <></>
         )}
       </Box>
     </Layout>
