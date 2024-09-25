@@ -1,4 +1,4 @@
-import { VStack, Image } from "native-base";
+import { Image } from "native-base";
 import React from "react";
 import Logo from "../../../assets/Images/Logo/Logo.png";
 export default function LogoScreen() {

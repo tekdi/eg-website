@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
-import { Alert, Box, Button, HStack } from "native-base";
+import { Alert, Box, HStack } from "native-base";
 import {
   Layout,
   BodyMedium,
@@ -26,30 +26,30 @@ import PropTypes from "prop-types";
 // App
 export default function ReferenceDetails({ ip }) {
   const { t } = useTranslation();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [submitBtn, setSubmitBtn] = React.useState();
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [submitBtn, setSubmitBtn] = useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
-  const [isButtonLoading, setIsButtonLoading] = React.useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const onPressBackButton = async () => {
     navigate(`/beneficiary/${userId}/basicdetails`);
   };
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData.result);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let rfirst_name = formData?.references?.[0]?.first_name;
     let rmiddle_name = formData?.references?.[0]?.middle_name;
     let rlast_name = formData?.references?.[0]?.last_name;
@@ -106,7 +106,7 @@ export default function ReferenceDetails({ ip }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -307,7 +307,7 @@ export default function ReferenceDetails({ ip }) {
             </Box>
           </Form>
         ) : (
-          <React.Fragment />
+          <></>
         )}
       </Box>
     </Layout>

@@ -312,7 +312,7 @@ export default function LearnerAdhaar({ userTokenInfo, footerLinks }) {
             noHtml5Validate={true}
             {...{
               validator,
-              schema: schema ? schema : {},
+              schema: schema || {},
               formData,
               customValidate,
               onChange,

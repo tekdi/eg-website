@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import schema1 from "./schema.js";
@@ -28,20 +28,20 @@ import PropTypes from "prop-types";
 // App
 export default function FamilyDetails({ ip }) {
   const { t } = useTranslation();
-  const [page, setPage] = React.useState();
-  const [pages, setPages] = React.useState();
-  const [schema, setSchema] = React.useState({});
-  const [submitBtn, setSubmitBtn] = React.useState();
+  const [page, setPage] = useState();
+  const [pages, setPages] = useState();
+  const [schema, setSchema] = useState({});
+  const [submitBtn, setSubmitBtn] = useState();
   const formRef = React.useRef();
-  const [formData, setFormData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [alert, setAlert] = React.useState();
-  const [lang, setLang] = React.useState(localStorage.getItem("lang"));
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState();
+  const [lang, setLang] = useState(localStorage.getItem("lang"));
   const { id } = useParams();
   const userId = id;
   const navigate = useNavigate();
-  const [fields, setFields] = React.useState([]);
-  const [isDisable, setIsDisable] = React.useState(false);
+  const [fields, setFields] = useState([]);
+  const [isDisable, setIsDisable] = useState(false);
   const [searchParams] = useSearchParams();
   const redirectLink = searchParams.get("redirectLink");
 
@@ -50,7 +50,7 @@ export default function FamilyDetails({ ip }) {
   };
 
   //getting data
-  React.useEffect(async () => {
+  useEffect(async () => {
     const qData = await benificiaryRegistoryService.getOne(id);
     setFormData(qData?.result);
 
@@ -67,7 +67,7 @@ export default function FamilyDetails({ ip }) {
     setFields(field || []);
   }, []);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     let father_first_name = formData?.core_beneficiaries?.father_first_name
       ? formData?.core_beneficiaries?.father_first_name
       : "";
@@ -146,7 +146,7 @@ export default function FamilyDetails({ ip }) {
     setIsDisable(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (schema1.type === "step") {
       const properties = schema1.properties;
       const newSteps = Object.keys(properties);
@@ -354,7 +354,7 @@ export default function FamilyDetails({ ip }) {
               </HStack>
             </Alert>
           ) : (
-            <React.Fragment />
+            <></>
           )}
           {page && page !== "" ? (
             <Form
@@ -406,7 +406,7 @@ export default function FamilyDetails({ ip }) {
               </Box>
             </Form>
           ) : (
-            <React.Fragment />
+            <></>
           )}
         </Box>
       )}

@@ -358,7 +358,7 @@ export default function App({ onClick, id }) {
             </HStack>
           </Alert>
         ) : (
-          <React.Fragment />
+          <></>
         )}
         {page && page !== "" ? (
           <Form
@@ -408,7 +408,7 @@ export default function App({ onClick, id }) {
             </FrontEndTypo.Primarybutton>
           </Form>
         ) : (
-          <React.Fragment />
+          <></>
         )}
       </Box>
       <Modal

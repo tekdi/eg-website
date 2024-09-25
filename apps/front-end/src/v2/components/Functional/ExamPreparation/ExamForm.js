@@ -233,7 +233,7 @@ const EpcpForm = ({ footerLinks, userTokenInfo: { authUser } }) => {
       setErrors(newErrors);
     } else {
       const payload = finalPayload(id, formData, data);
-      const { error, data: reData } = await PostData(payload);
+      const { error } = await PostData(payload);
       if (!error) {
         navigate("/camps/exampreparation");
       } else {

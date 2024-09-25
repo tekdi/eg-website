@@ -1,43 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import { HStack, VStack, Modal, Alert, Text } from "native-base";
-import PageLayout from "v2/components/Static/PageLayout/PageLayout";
-import NoInternetScreen from "v2/components/Static/NoInternetScreen/NoInternetScreen";
-import Loader from "v2/components/Static/Loader/Loader";
+import React, { useEffect, useState } from "react";
 import {
-  getTokernUserInfo,
-  facilitatorRegistryService,
-  logout,
   BodyMedium,
   FrontEndTypo,
+  getTokernUserInfo,
+  logout,
 } from "@shiksha/common-lib";
-import PrerakOnboardingForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingForm";
+import { Alert, HStack, Modal } from "native-base";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 import PrerakOnboardingArrayForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingArrayForm";
+import PrerakOnboardingForm from "v2/components/Functional/PrerakOnboardingDetail/PrerakOnboardingForm";
+import Loader from "v2/components/Static/Loader/Loader";
+import PageLayout from "v2/components/Static/PageLayout/PageLayout";
 import {
   checkEditRequestPresent,
   checkEnumListPresent,
   checkQulificationPresent,
-  getIndexedDBItem,
   getUserId,
 } from "v2/utils/Helper/JSHelper";
 import {
-  checkIpUserInfo,
   checkGetUserInfo,
+  checkIpUserInfo,
   getIpUserInfo,
 } from "v2/utils/SyncHelper/SyncHelper";
 function FacilitatorOnboarding() {
   const { step, photoNo } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   //screen variables
   const [activeScreenName, setActiveScreenName] = useState(step);
 
   //form variable
   const token = localStorage.getItem("token");
   const [userTokenInfo, setUserTokenInfo] = useState();
-  const [userid, setuserid] = useState();
+  const [userid, setUserid] = useState();
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
   useEffect(() => {
@@ -48,7 +45,7 @@ function FacilitatorOnboarding() {
       }
       if (countLoad == 1) {
         //do page load first operation
-        setIsloading(true);
+        setIsLoading(true);
         if (token) {
           const IsPresent = await checkDataIsPresent();
           if (!IsPresent) {
@@ -61,10 +58,10 @@ function FacilitatorOnboarding() {
               window.location.reload();
             }
             setUserTokenInfo({ ...tokenData, authUser: user });
-            setuserid(id);
+            setUserid(id);
           }
         }
-        setIsloading(false);
+        setIsLoading(false);
         //end do page load first operation
         setCountLoad(2);
       } else if (countLoad == 2) {
@@ -187,7 +184,7 @@ function FacilitatorOnboarding() {
 
   //online offline detect
   const [isOnline, setIsOnline] = useState(
-    window ? window.navigator.onLine : false
+    window ? window.navigator.onLine : false,
   );
   const [modalVisible, setModalVisible] = useState(false);
 

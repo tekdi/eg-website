@@ -186,8 +186,6 @@ export default function PrerakOnboardingForm({
   }, []);
 
   const getEditAccess = async () => {
-    const id = userid;
-
     try {
       const result = await getIndexedDBItem("editRequest");
       let field;
