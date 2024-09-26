@@ -1,39 +1,31 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
 import {
   AdminTypo,
   IconByName,
-  geolocationRegistryService,
-  getSelectedProgramId,
-  getOptions,
-  tableCustomStyles,
-  cohortService,
   PcuserService,
+  geolocationRegistryService,
+  getOptions,
+  getSelectedProgramId,
+  tableCustomStyles,
 } from "@shiksha/common-lib";
-import {
-  Input,
-  HStack,
-  Stack,
-  VStack,
-  Menu,
-  Button,
-  Pressable,
-} from "native-base";
 import { ChipStatus } from "component/Chip";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import DataTable from "react-data-table-component";
+import SideColapsable from "component/SideColapsable";
 import { debounce } from "lodash";
+import { Button, HStack, Input, VStack } from "native-base";
+import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 import { MultiCheck } from "../../../component/BaseInput";
-import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8";
+import PropTypes from "prop-types";
 
-const AssignedList = ({ setPcData, setassignPrerak }) => {
+const AssignedList = ({ setPcData }) => {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
   const { id } = useParams();
   const [paginationTotalRows, setPaginationTotalRows] = useState(0);
   const [filter, setFilter] = useState({ page: 1, limit: 10 });
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isSelectable, setIsSelectable] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -152,11 +144,10 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
     });
 
     setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
     );
     setData(Apidata?.data?.facilitators);
     setPcData(Apidata?.data?.users?.[0]);
-    setassignPrerak(Apidata?.data?.preraks_assigned);
   };
 
   const fetchPrerakList = async () => {
@@ -165,7 +156,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
       ...filter,
     });
     setPaginationTotalRows(
-      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0
+      Apidata?.data?.total_count ? Apidata?.data?.total_count : 0,
     );
     setData(Apidata?.data?.program_facilitator_data);
   };
@@ -200,7 +191,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
 
   const AddRemovePrerak = async (action) => {
     const userIds = selectedRows.map(
-      (item) => item.user_id || item.facilitator_id
+      (item) => item.user_id || item.facilitator_id,
     );
     const Apidata = await PcuserService.AddRemovePrerak({
       id: id,
@@ -272,7 +263,7 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
         setIsDisable(true);
       }
     },
-    [isAddingPrerak]
+    [isAddingPrerak],
   );
 
   const handleSearch = (e) => {
@@ -303,7 +294,6 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
 
   const onChange = async (e, id) => {
     const data = e.formData;
-    const newData = { ...formData, ...data };
     setFormData(data);
     if (id === "root_district") {
       setFilter({ ...filter, district: data?.district });
@@ -323,132 +313,103 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
   }, []);
 
   return (
-    <Stack backgroundColor={"identifiedColor"} alignContent={"center"}>
-      <HStack alignItems={"center"} p={4} justifyContent={"space-between"}>
-        <AdminTypo.H6 bold color={"textGreyColor.500"}>
-          {isAddingPrerak ? t("PRERAK_LIST") : t("ASSIGNED_PRERAK_LIST")}
-        </AdminTypo.H6>
-        <HStack space={4} alignItems={"center"} justifyContent={"center"}>
-          <Input
-            size={"xs"}
-            minH="40px"
-            maxH="40px"
-            onScroll={false}
-            InputLeftElement={
-              <IconByName
-                color="coolGray.500"
-                name="SearchLineIcon"
-                isDisabled
-                pl="2"
-              />
-            }
-            value={filter.search || ""}
-            bg={"white"}
-            placeholder={t("SEARCH_BY_PRERAK_NAME")}
-            variant="outline"
-            onChange={handleSearch}
-          />
-
-          <Menu
-            w="190"
-            placement="bottom right"
-            trigger={(triggerProps) => {
-              return (
-                <Pressable
-                  accessibilityLabel="More options menu"
-                  {...triggerProps}
-                >
-                  <HStack
-                    rounded={"lg"}
-                    px={4}
-                    bg={"white"}
-                    alignItems="center"
-                    space={4}
-                  >
-                    <AdminTypo.H5>Filter</AdminTypo.H5>
-                    <IconByName
-                      pr="0"
-                      name="ArrowDownSLineIcon"
-                      isDisabled={true}
-                    />
-                  </HStack>
-                </Pressable>
-              );
+    <SideColapsable
+      isActive={filter?.district || filter?.block}
+      sideCompoent={
+        <VStack space={2}>
+          <Form
+            {...{
+              validator,
+              schema: schema || {},
+              uiSchema,
+              formData,
+              onChange,
+              //onSubmit,
+              //transformErrors,
             }}
           >
-            <VStack space={2}>
-              <Form
-                {...{
-                  //widgets,
-                  //templates,
-                  validator,
-                  schema: schema,
-                  uiSchema,
-                  formData,
-                  validator,
-                  onChange,
-                  //onSubmit,
-                  //transformErrors,
-                }}
-              >
-                <Button display={"none"} type="submit"></Button>
-              </Form>
+            <Button display={"none"} type="submit"></Button>
+          </Form>
 
-              {(filter?.district || filter?.block) && (
-                <Button variant="link" pt="3" onPress={clearFilter}>
-                  <AdminTypo.H6 color="blueText.400" underline bold>
-                    {t("CLEAR_FILTER")}
-                  </AdminTypo.H6>
-                </Button>
-              )}
-            </VStack>
-          </Menu>
-        </HStack>
-        <HStack space={4}>
-          {isCancelVisible && (
-            <AdminTypo.Secondarybutton onPress={handleCancel}>
-              {t("CANCEL")}
-            </AdminTypo.Secondarybutton>
+          {(filter?.district || filter?.block) && (
+            <Button variant="link" pt="3" onPress={clearFilter}>
+              <AdminTypo.H6 color="blueText.400" underline bold>
+                {t("CLEAR_FILTER")}
+              </AdminTypo.H6>
+            </Button>
           )}
-          {isAddingPrerak && (
-            <AdminTypo.Secondarybutton
-              icon={
-                !addPrerakCount > 0 && (
+        </VStack>
+      }
+    >
+      <VStack pt={0} p={6} bg={"identifiedColor"} minH="800px">
+        <HStack alignItems={"center"} p={4} justifyContent={"space-between"}>
+          <AdminTypo.H6 bold color={"textGreyColor.500"}>
+            {isAddingPrerak ? t("PRERAK_LIST") : t("ASSIGNED_PRERAK_LIST")}
+          </AdminTypo.H6>
+          <HStack space={4} alignItems={"center"} justifyContent={"center"}>
+            <Input
+              size={"xs"}
+              minH="40px"
+              maxH="40px"
+              onScroll={false}
+              InputLeftElement={
+                <IconByName
+                  color="coolGray.500"
+                  name="SearchLineIcon"
+                  isDisabled
+                  pl="2"
+                />
+              }
+              bg={"white"}
+              placeholder={t("SEARCH_BY_PRERAK_NAME")}
+              variant="outline"
+              onChange={debouncedHandleSearch}
+            />
+          </HStack>
+          <HStack space={4}>
+            {isCancelVisible && (
+              <AdminTypo.Secondarybutton onPress={handleCancel}>
+                {t("CANCEL")}
+              </AdminTypo.Secondarybutton>
+            )}
+            {isAddingPrerak && (
+              <AdminTypo.Secondarybutton
+                icon={
+                  !addPrerakCount > 0 && (
+                    <IconByName
+                      name="AddCircleLineIcon"
+                      color="black"
+                      size="xs"
+                    />
+                  )
+                }
+                isDisabled={isDisable}
+                onPress={handleAddPrerak}
+              >
+                {`${t("ADD_PRERAK")}${
+                  addPrerakCount > 0 ? ` (${addPrerakCount})` : ""
+                }`}
+              </AdminTypo.Secondarybutton>
+            )}
+            {isRemovePrerak && (
+              <AdminTypo.Secondarybutton
+                icon={
                   <IconByName
-                    name="AddCircleLineIcon"
+                    name="IndeterminateCircleLineIcon"
                     color="black"
                     size="xs"
                   />
-                )
-              }
-              isDisabled={isDisable}
-              onPress={handleAddPrerak}
-            >
-              {`${t("ADD_PRERAK")}${
-                addPrerakCount > 0 ? ` (${addPrerakCount})` : ""
-              }`}
-            </AdminTypo.Secondarybutton>
-          )}
-          {isRemovePrerak && (
-            <AdminTypo.Secondarybutton
-              icon={
-                <IconByName
-                  name="IndeterminateCircleLineIcon"
-                  color="black"
-                  size="xs"
-                />
-              }
-              isDisabled={isDisable}
-              onPress={handleRemovePrerak}
-            >
-              {`${t("REMOVE_PRERAK")} ${
-                removePrerakCount > 0 ? ` (${removePrerakCount})` : ""
-              }`}
-            </AdminTypo.Secondarybutton>
-          )}
+                }
+                isDisabled={isDisable}
+                onPress={handleRemovePrerak}
+              >
+                {`${t("REMOVE_PRERAK")} ${
+                  removePrerakCount > 0 ? ` (${removePrerakCount})` : ""
+                }`}
+              </AdminTypo.Secondarybutton>
+            )}
+          </HStack>
         </HStack>
-      </HStack>
-      <VStack pt={0} p={6}>
         <DataTable
           data={data}
           columns={columns(t)}
@@ -470,18 +431,22 @@ const AssignedList = ({ setPcData, setassignPrerak }) => {
               setAddPrerakCount(0);
               setRemovePrerakCount(0);
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
           onChangePage={useCallback(
             (e) => {
               setFilter({ ...filter, page: e });
             },
-            [setFilter, filter]
+            [setFilter, filter],
           )}
         />
       </VStack>
-    </Stack>
+    </SideColapsable>
   );
 };
 
 export default AssignedList;
+
+AssignedList.propTypes = {
+  setPcData: PropTypes.func,
+};
