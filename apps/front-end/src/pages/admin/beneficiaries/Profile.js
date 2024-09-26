@@ -78,8 +78,8 @@ const columns = (t) => [
           {row?.program_faciltators?.length > 0
             ? t("PRERAK")
             : row?.program_beneficiaries?.length > 0
-            ? t("LEARNER")
-            : ""}
+              ? t("LEARNER")
+              : ""}
         </AdminTypo.H5>
       </HStack>
     ),
@@ -175,7 +175,7 @@ const addressFieldsArray = [
 export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [EditButton, setEditButton] = useState(false);
-  const [selectData, setselectData] = useState([]);
+  const [selectData, setSelectData] = useState([]);
   const [status, setStatus] = useState({});
   const { id } = useParams();
   const [data, setData] = useState();
@@ -206,30 +206,24 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   const { t } = useTranslation();
   const [checkedFields, setCheckedFields] = useState([]);
   const [isDisable, setIsDisable] = useState(false);
-  const [boardName, setBoardName] = useState({});
-  const [boardId, setBoardId] = useState({});
+  const [boardName, setBoardName] = useState();
   const [jsonData, setJsonData] = useState();
   const [programUser, setProgramUser] = useState();
   const [localData, setLocalData] = useState();
-  const [publishEvent, setPublishEvent] = useState();
+  const [publishEvent, setPublishEvent] = useState(false);
   const [openWarningModal, setOpenWarningModal] = useState(false);
 
-  useEffect(() => {
-    const getSubjectList = async () => {
-      const id = boardId;
-      const subjectData = await organisationService.getSubjectList({ id });
-
-      if (Array.isArray(subjectData?.data)) {
-        const hasDraftEvent = subjectData?.data.some((subject) => {
-          return subject.events.some((event) => {
-            return event.status === "publish";
-          });
+  const getSubjectList = async (id) => {
+    const subjectData = await organisationService.getSubjectList({ id });
+    if (Array.isArray(subjectData?.data)) {
+      const hasDraftEvent = subjectData?.data.some((subject) => {
+        return subject.events.some((event) => {
+          return event.status === "publish";
         });
-        setPublishEvent(hasDraftEvent);
-      }
-    };
-    getSubjectList();
-  }, [boardId]);
+      });
+      setPublishEvent(hasDraftEvent);
+    }
+  };
 
   const GetOptions = ({ array, enumType, enumApiData }) => {
     return (
@@ -285,7 +279,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
           return acc;
         },
 
-        { dates: [], months: [], years: [] }
+        { dates: [], months: [], years: [] },
       );
 
       setAuditMonth(uniqueDates?.months);
@@ -315,19 +309,21 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       setLoading(true);
       let newData = await benificiaryRegistoryService.getOne(id);
       const value = newData?.result?.program_beneficiaries?.enrolled_for_board;
-      const boardName = await enumRegistryService.boardName(value);
-      setBoardName(boardName?.name);
-      setBoardId(boardName?.id);
+      if (value) {
+        const board_name = await enumRegistryService.boardName(value);
+        setBoardName(board_name?.name);
+        getSubjectList(board_name?.id);
+      }
       setData(newData?.result);
       setAadhaarValue(newData?.result?.aadhar_no);
       const subjectId = jsonParse(
-        newData?.result?.program_beneficiaries?.subjects
+        newData?.result?.program_beneficiaries?.subjects,
       );
       if (subjectId?.length > 0) {
         let subjectResult = await enumRegistryService.subjectsList(value);
         const subjectNames = subjectId.map((id) => {
           const matchingSubject = subjectResult?.subjects?.find(
-            (subject) => subject.subject_id === parseInt(id)
+            (subject) => subject.subject_id === parseInt(id),
           );
           return matchingSubject ? matchingSubject.name : "Subject not found";
         });
@@ -337,27 +333,26 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       setBeneficiary(newData);
       if (newData?.result?.program_beneficiaries?.documents_status) {
         setStatus(
-          JSON.parse(newData?.result?.program_beneficiaries?.documents_status)
+          JSON.parse(newData?.result?.program_beneficiaries?.documents_status),
         );
       }
       let data = await benificiaryRegistoryService.getDocumentStatus();
-      setselectData(data);
+      setSelectData(data);
       const enumData = await enumRegistryService.listOfEnum();
       setEnumOptions(enumData?.data ? enumData?.data : {});
       setBenificiaryDropoutReasons(
-        enumData?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS
+        enumData?.data?.BENEFICIARY_REASONS_FOR_DROPOUT_REASONS,
       );
       setBenificiaryReactivateReasons(enumData?.data?.REACTIVATE_REASONS);
       setBenificiaryRejectReasons(
-        enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER
+        enumData?.data?.BENEFICIARY_REASONS_FOR_REJECTING_LEARNER,
       );
       const obj = {
         edit_req_for_context: "users",
         edit_req_for_context_id: id,
       };
-      const resule = await facilitatorRegistryService?.getEditRequestDetails(
-        obj
-      );
+      const resule =
+        await facilitatorRegistryService?.getEditRequestDetails(obj);
       if (resule?.data[0]) {
         setGetRequestData(resule?.data[0]);
         const data = JSON.parse(resule?.data[0]?.fields);
@@ -384,9 +379,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       id: id,
       aadhar_no: aadhaarValue,
     };
-    const result = await benificiaryRegistoryService.updateAadhaarNumber(
-      aadhaar_no
-    );
+    const result =
+      await benificiaryRegistoryService.updateAadhaarNumber(aadhaar_no);
     if (aadhaarValue.length < 12) {
       setIsDisable(false);
       setAadhaarError("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER");
@@ -409,9 +403,8 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
       reason_for_status_update: reasonValue,
     };
 
-    const result = await benificiaryRegistoryService.learnerAdminStatusUpdate(
-      bodyData
-    );
+    const result =
+      await benificiaryRegistoryService.learnerAdminStatusUpdate(bodyData);
 
     if (result) {
       setIsDisable(true);
@@ -550,14 +543,14 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
     const { academic_year_id } = (await getSelectedAcademicYear()) || {};
     const data = userTokenInfo?.authUser?.program_users.find(
       (e) =>
-        e.program_id == program_id && e.academic_year_id == academic_year_id
+        e.program_id == program_id && e.academic_year_id == academic_year_id,
     );
     setProgramUser(data);
   }, [fetchData]);
   const enrollmentCheck = () => {
     const lastStandard = parseInt(
       data?.core_beneficiaries?.last_standard_of_education ?? "",
-      10
+      10,
     );
     const hasWarning = isNaN(lastStandard) || lastStandard < 5;
     const checkNeeded = [
@@ -595,7 +588,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
               textOverflow="ellipsis"
             >
               {["enrolled_ip_verified", "registered_in_camp"].includes(
-                data?.program_beneficiaries?.status
+                data?.program_beneficiaries?.status,
               )
                 ? `${
                     [
@@ -669,7 +662,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                   {data?.program_beneficiaries?.status ===
                   "enrolled_ip_verified"
                     ? data?.program_beneficiaries?.enrollment_dob
-                    : data?.dob ?? "-"}
+                    : (data?.dob ?? "-")}
                 </AdminTypo.H6>
               </HStack>
 
@@ -1518,7 +1511,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "registered_in_camp",
                     "sso_id_verified",
                   ].includes(data?.program_beneficiaries?.status) &&
-                    publishEvent && (
+                    !publishEvent && (
                       <IconByName
                         name="PencilLineIcon"
                         color="iconColor.200"
@@ -1528,7 +1521,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     )}
 
                   {["enrolled", "sso_id_enrolled"].includes(
-                    data?.program_beneficiaries?.status
+                    data?.program_beneficiaries?.status,
                   ) && (
                     <AdminTypo.StatusButton
                       width={"25%"}
@@ -1560,7 +1553,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     ),
                     ...getEnrollmentIds(
                       data?.program_beneficiaries?.payment_receipt_document_id,
-                      localData
+                      localData,
                     ),
                   }}
                   isHideProgressBar={true}
@@ -1582,9 +1575,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     "enrolled_for_board",
                     "enrollment_number",
                     "payment_receipt_document_id",
-                    ...(localData !== "RAJASTHAN"
-                      ? ["application_form", "application_login_id"]
-                      : ["sso_id"]),
+                    ...(localData === "RAJASTHAN" ? ["sso_id"] : []),
                   ]}
                   labels={{
                     enrollment_status: "ENROLLMENT_STATUS",
@@ -1592,18 +1583,16 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     enrollment_number:
                       localData === "RAJASTHAN"
                         ? "ENROLLMENT_NO"
-                        : "APPLICATION_ID",
-                    payment_receipt_document_id:
-                      localData === "RAJASTHAN"
-                        ? "ENROLLMENT_RECEIPT"
-                        : "PAYMENT_RECEIPTS",
-                    ...(localData !== "RAJASTHAN"
-                      ? {
-                          application_form: "APPLICATION_FORM",
-                          application_login_id:
-                            "APPLICATION_LOGIN_ID_SCREENSHOT",
-                        }
-                      : { sso_id: "SSO_ID" }),
+                        : localData === "BIHAR"
+                          ? "APPLICATION_ID"
+                          : "ROLL_NUMBER",
+                    payment_receipt_document_id: [
+                      "RAJASTHAN",
+                      "MADHYA PRADESH",
+                    ].includes(localData)
+                      ? "ENROLLMENT_RECEIPT"
+                      : "PAYMENT_RECEIPTS",
+                    ...(localData === "RAJASTHAN" ? { sso_id: "SSO_ID" } : {}),
                   }}
                   formats={{
                     payment_receipt_document_id: "FileUpload",
@@ -1611,7 +1600,6 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                     application_login_id: "FileUpload",
                   }}
                 />
-
                 <VStack
                   space={"5"}
                   w="100%"
@@ -2138,6 +2126,15 @@ const BeneficiaryJourney = ({
   );
 };
 
+BeneficiaryJourney.propTypes = {
+  data: PropTypes.any,
+  enumOptions: PropTypes.any,
+  t: PropTypes.any,
+  auditLogs: PropTypes.any,
+  auditMonth: PropTypes.any,
+  auditYear: PropTypes.any,
+};
+
 const SelectAllCheckBox = ({
   fields,
   title,
@@ -2148,27 +2145,34 @@ const SelectAllCheckBox = ({
     (e) => {
       if (!e) {
         const checkbox = checkedFields?.filter(
-          (field) => !fields.includes(field)
+          (field) => !fields.includes(field),
         );
         setCheckedFields(checkbox);
       } else {
         const checkbox = checkedFields?.filter(
-          (field) => !fields.includes(field)
+          (field) => !fields.includes(field),
         );
         setCheckedFields([...checkbox, ...fields]);
       }
     },
-    [fields, checkedFields, setCheckedFields]
+    [fields, checkedFields, setCheckedFields],
   );
 
   return <Checkbox onChange={handleCheckboxChange}>{title}</Checkbox>;
+};
+
+SelectAllCheckBox.propTypes = {
+  fields: PropTypes.any,
+  title: PropTypes.any,
+  setCheckedFields: PropTypes.any,
+  checkedFields: PropTypes.any,
 };
 
 const TitleComponent = (props) => {
   return <AdminTypo.H5 {...props} bold color="textGreyColor.550" />;
 };
 
-AgAdminProfile.PropTypes = {
+AgAdminProfile.propTypes = {
   footerLinks: PropTypes.any,
   userTokenInfo: PropTypes.any,
 };

@@ -122,14 +122,20 @@ export default function LearnerProfileView({ userTokenInfo }) {
               title: "BASIC_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerBasicDetails`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
             {
-              title: "ADD_YOUR_ADDRESS",
+              title: "ADDRESS_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerAddAddress`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
           ]}
@@ -143,35 +149,50 @@ export default function LearnerProfileView({ userTokenInfo }) {
               title: "DOCUMENT_CHECKLIST",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerDocumentDetails`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
             {
               title: "EDUCATION_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerEducationDetails`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
             {
               title: "BENEFICIARY_DISABILITY_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/disability-details`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
             {
               title: "ENROLLMENT_DETAILS",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerEnrollmentDetails`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
             {
               title: "JOURNEY_IN_PROJECT_PRAGATI",
               onPress: () =>
                 navigate(`/learners/list-view/${id}/learnerJourneyDetails`, {
-                  state: beneficiary,
+                  state: {
+                    ...beneficiary,
+                    filter: location.state?.filter || {},
+                  },
                 }),
             },
           ]}

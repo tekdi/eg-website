@@ -22,17 +22,18 @@ import {
   geolocationRegistryService,
   facilitatorRegistryService,
   enumRegistryService,
-  setQueryParameters,
-  urlData,
+  setFilterLocalStorage,
   getOptions,
   getSelectedProgramId,
   organisationService,
+  getFilterLocalStorage,
 } from "@shiksha/common-lib";
 import Table from "./Table";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../../component/BaseInput";
 import Clipboard from "component/Clipboard";
 import { debounce } from "lodash";
+const filterName = "exam_leaner_filter";
 
 const uiSchema = {
   district: {
@@ -199,7 +200,6 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
 
         setData(result.data);
         setPaginationTotalRows(result?.totalCount || 0);
-
         setTableLoading(false);
       }
     };
@@ -216,16 +216,18 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
           return data;
         }
       });
-      setQueryParameters(data);
+      setFilterLocalStorage(filterName, data);
     },
-    [setFilter, setQueryParameters]
+    [setFilter, setFilterLocalStorage],
   );
 
   useEffect(() => {
-    const arr = ["district", "block", "status"];
-    const data = urlData(arr);
-    if (Object.keys(data).find((e) => arr.includes(e))?.length) setFilter(data);
-    setUrlFilterApply(true);
+    const init = () => {
+      const urlFilter = getFilterLocalStorage(filterName);
+      setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
+      setUrlFilterApply(true);
+    };
+    init();
   }, []);
 
   const onChange = useCallback(
@@ -248,7 +250,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
       };
       setFilterObject(finalFilter);
     },
-    [filter]
+    [filter],
   );
 
   const clearFilter = useCallback(() => {
@@ -264,7 +266,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
     (e) => {
       setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
     },
-    [filter]
+    [filter],
   );
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
 
@@ -308,6 +310,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
+          value={filter?.search || ""}
           onChange={debouncedHandleSearch}
         />
 
@@ -416,7 +419,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
                         {t("CLEAR_FILTER")}(
                         {
                           Object.keys(filter || {}).filter(
-                            (e) => !["limit", "page"].includes(e)
+                            (e) => !["limit", "page"].includes(e),
                           ).length
                         }
                         )

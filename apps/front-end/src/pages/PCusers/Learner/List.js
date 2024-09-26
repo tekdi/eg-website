@@ -1,5 +1,4 @@
 import {
-  CardComponent,
   FrontEndTypo,
   IconByName,
   PCusers_layout as Layout,
@@ -8,93 +7,30 @@ import {
   benificiaryRegistoryService,
   jsonParse,
 } from "@shiksha/common-lib";
-import Chip, { ChipStatus } from "component/BeneficiaryStatus";
-import Clipboard from "component/Clipboard";
 import {
   Box,
   Checkbox,
   HStack,
   IconButton,
   Modal,
-  Pressable,
   Select,
+  Spinner,
   Stack,
   VStack,
 } from "native-base";
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
-
-const List = ({ data }) => {
-  const navigate = useNavigate();
-
-  return (
-    <VStack space="4" p="4" alignContent="center">
-      {Array.isArray(data) && data.length > 0 ? (
-        data.map((item) => (
-          <CardComponent
-            key={item?.id}
-            _body={{ px: "3", py: "3" }}
-            _vstack={{ p: 0, space: 0, flex: 1 }}
-          >
-            <Pressable
-              onPress={() =>
-                navigate(`/learner/learverProfileView/${item?.id}`)
-              }
-            >
-              <HStack justifyContent="space-between" space={1}>
-                <HStack alignItems="center" flex={[1, 2, 4]}>
-                  <VStack alignItems="center" p="1">
-                    <Chip>
-                      <Clipboard text={item?.id}>
-                        <FrontEndTypo.H2 bold>{item?.id}</FrontEndTypo.H2>
-                      </Clipboard>
-                    </Chip>
-                  </VStack>
-                  <VStack
-                    pl="2"
-                    flex="1"
-                    wordWrap="break-word"
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    <FrontEndTypo.H3 bold color="textGreyColor.800">
-                      {item?.first_name}
-                      {item?.middle_name &&
-                        item?.middle_name !== "null" &&
-                        ` ${item.middle_name}`}
-                      {item?.last_name &&
-                        item?.last_name !== "null" &&
-                        ` ${item.last_name}`}
-                    </FrontEndTypo.H3>
-                    <FrontEndTypo.H5 color="textGreyColor.800">
-                      {item?.mobile}
-                    </FrontEndTypo.H5>
-                  </VStack>
-                </HStack>
-              </HStack>
-            </Pressable>
-          </CardComponent>
-        ))
-      ) : (
-        <></>
-      )}
-    </VStack>
-  );
-};
-
-List.propTypes = {
-  data: PropTypes.object,
-};
+import { List } from "./LearnerListView";
 
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
   { label: "SORT_DESC", value: "desc" },
 ];
 
-export default function LearnerList() {
+export default function LearnerList({ userTokenInfo }) {
   const [filter, setFilter] = useState({});
   const [selectStatus, setSelectStatus] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -107,6 +43,17 @@ export default function LearnerList() {
   const [filteredData, setFilteredData] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [beneficiary, setBeneficiary] = useState(true);
+  const [loadingHeight, setLoadingHeight] = useState(0);
+  const [bodyHeight, setBodyHeight] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    if (ref?.current?.clientHeight >= 0 && bodyHeight >= 0) {
+      setLoadingHeight(bodyHeight - ref?.current?.clientHeight);
+    } else {
+      setLoadingHeight(bodyHeight);
+    }
+  }, [bodyHeight, ref]);
 
   useEffect(() => {
     const init = async () => {
@@ -114,7 +61,10 @@ export default function LearnerList() {
       try {
         const status = await benificiaryRegistoryService.getStatusList();
         setSelectStatus(status);
-        const result = await PcuserService.getPrerakList(filter);
+        const result = await PcuserService.getPrerakList({
+          ...filter,
+          limit: 100,
+        });
         const apiData = transformData(result?.facilitator_data);
         setPrerakList(apiData);
         const getSelectedPrerakList = jsonParse(
@@ -185,16 +135,27 @@ export default function LearnerList() {
   };
 
   const getLearner = async (filters) => {
-    const data = await PcuserService.getLearnerList(filters);
-    setBeneficiary(data);
+    const { currentPage, totalPages, error, ...result } =
+      await PcuserService.getLearnerList(filters);
+    if (!error) {
+      setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+      if (filters.page <= 1) {
+        setBeneficiary(result?.data);
+      } else {
+        setBeneficiary([...(beneficiary || []), ...(result?.data || [])]);
+      }
+    }
   };
 
   useEffect(() => {
-    getLearner(filter);
+    if (filter?.search || filter?.status || filter?.sortType)
+      getLearner(filter);
   }, [filter]);
 
   return (
     <Layout
+      getBodyHeight={(e) => setBodyHeight(e)}
+      facilitator={userTokenInfo?.authUser || {}}
       _appBar={{
         name: t("LEARNER_PROFILE"),
         onPressBackButton: () => {
@@ -304,84 +265,49 @@ export default function LearnerList() {
           </SelectStyle>
         </HStack>
       </VStack>
-      <Box p={4} flex={1}>
-        {filteredData.length <= 0 &&
-        beneficiary.length > 0 &&
-        (filter?.search || filter?.status || filter?.sortType) ? (
-          beneficiary?.map((item) => {
-            return (
-              <CardComponent
-                key={item?.id}
-                _body={{ px: "3", py: "3" }}
-                _vstack={{ p: 0, space: 2, flex: 1, m: 4 }}
-              >
-                <Pressable
-                  onPress={() =>
-                    navigate(`/learners/list-view/${item?.user_id}`, {
-                      state: {
-                        location: {
-                          academic: {
-                            academic_year_id: item?.academic_year_id,
-                          },
-                          prerak_id: item?.user_id,
-                          program_id: item?.program_id,
-                        },
-                      },
-                    })
-                  }
-                >
-                  <HStack justifyContent="space-between" space={1}>
-                    <HStack alignItems="center" flex={[1, 2, 4]}>
-                      <VStack alignItems="center" p="1">
-                        <Chip>
-                          <Clipboard text={item?.id}>
-                            <FrontEndTypo.H2 bold>
-                              {item?.user_id}
-                            </FrontEndTypo.H2>
-                          </Clipboard>
-                        </Chip>
-                      </VStack>
-                      <VStack
-                        wordWrap="break-word"
-                        flex="1"
-                        whiteSpace="nowrap"
-                        textOverflow="ellipsis"
-                        overflow="hidden"
-                        pl="2"
-                      >
-                        <FrontEndTypo.H3 bold color="textGreyColor.800">
-                          {[
-                            item?.first_name,
-                            item?.middle_name,
-                            item?.last_name,
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        </FrontEndTypo.H3>
-                        <FrontEndTypo.H5 color="textGreyColor.800">
-                          {item?.enrollment_number}
-                        </FrontEndTypo.H5>
-                      </VStack>
-                    </HStack>
-                    <VStack alignItems="end" flex={[1]}>
-                      <ChipStatus
-                        width="fit-content"
-                        status={item?.status}
-                        is_duplicate={item?.is_duplicate}
-                        is_deactivated={item?.is_deactivated}
-                        rounded={"sm"}
-                      />
-                    </VStack>
-                  </HStack>
-                </Pressable>
-              </CardComponent>
-            );
-          })
-        ) : filteredData.length > 0 &&
-          !filter?.search &&
-          !filter?.status &&
-          !filter?.sortType ? (
-          filteredData.map((item) => (
+      {filteredData.length <= 0 &&
+      beneficiary.length > 0 &&
+      (filter?.search || filter?.status || filter?.sortType) ? (
+        <InfiniteScroll
+          key={loadingHeight}
+          height={loadingHeight}
+          next={(e) =>
+            setFilter({
+              ...filter,
+              page: (filter?.page ? filter?.page : 1) + 1,
+            })
+          }
+          dataLength={beneficiary?.length}
+          hasMore={hasMore}
+          loader={
+            <Spinner
+              accessibilityLabel="Loading posts"
+              color="bgRed.500"
+              size="lg"
+            />
+          }
+          endMessage={
+            <FrontEndTypo.H3
+              fontWeight={"600"}
+              display="inherit"
+              textAlign="center"
+            >
+              {beneficiary?.length > 0
+                ? t("COMMON_NO_MORE_RECORDS")
+                : t("DATA_NOT_FOUND")}
+            </FrontEndTypo.H3>
+          }
+          // below props only if you need pull down functionality
+          pullDownToRefreshThreshold={50}
+        >
+          <List data={beneficiary} location={location} />
+        </InfiniteScroll>
+      ) : filteredData.length > 0 &&
+        !filter?.search &&
+        !filter?.status &&
+        !filter?.sortType ? (
+        <Box p={4} flex={1}>
+          {filteredData.map((item) => (
             <Box key={item.user_id}>
               <FrontEndTypo.H3 my={"15px"}>
                 {[
@@ -432,37 +358,37 @@ export default function LearnerList() {
                 );
               })}
             </Box>
-          ))
-        ) : (
-          <VStack paddingBottom="64px">
-            <VStack paddingLeft="16px" paddingRight="16px" space="24px">
-              <VStack alignItems="center" pt="20px">
-                {beneficiary?.profile_photo_1?.id ? (
-                  <ImageView
-                    source={{
-                      document_id: beneficiary?.profile_photo_1?.id,
-                    }}
-                    width="190px"
-                    height="190px"
-                  />
-                ) : (
-                  <IconByName
-                    name="AccountCircleLineIcon"
-                    color="gray.300"
-                    _icon={{ size: "190px" }}
-                  />
-                )}
-              </VStack>
+          ))}
+        </Box>
+      ) : (
+        <VStack paddingBottom="64px">
+          <VStack paddingLeft="16px" paddingRight="16px" space="24px">
+            <VStack alignItems="center" pt="20px">
+              {beneficiary?.profile_photo_1?.id ? (
+                <ImageView
+                  source={{
+                    document_id: beneficiary?.profile_photo_1?.id,
+                  }}
+                  width="190px"
+                  height="190px"
+                />
+              ) : (
+                <IconByName
+                  name="AccountCircleLineIcon"
+                  color="gray.300"
+                  _icon={{ size: "190px" }}
+                />
+              )}
             </VStack>
-            <FrontEndTypo.H4 textAlign="center" color="black">
-              {t("SELECT_A_PRERAK")}
-            </FrontEndTypo.H4>
-            <FrontEndTypo.H6 textAlign="center" color="black">
-              {t("SELECT_AT_LEAST_ONE_PRERAK")}
-            </FrontEndTypo.H6>
           </VStack>
-        )}
-      </Box>
+          <FrontEndTypo.H4 textAlign="center" color="black">
+            {t("SELECT_A_PRERAK")}
+          </FrontEndTypo.H4>
+          <FrontEndTypo.H6 textAlign="center" color="black">
+            {t("SELECT_AT_LEAST_ONE_PRERAK")}
+          </FrontEndTypo.H6>
+        </VStack>
+      )}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -545,4 +471,6 @@ export default function LearnerList() {
   );
 }
 
-LearnerList.propTypes = {};
+LearnerList.propTypes = {
+  userTokenInfo: PropTypes.any,
+};

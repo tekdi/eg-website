@@ -5,8 +5,7 @@ import PrerakQualification from "./PrerakQualification";
 import PropTypes from "prop-types";
 
 const PrerakProfile = ({ userTokenInfo }) => {
-  const { type, id } = useParams();
-  console.log({ type, id });
+  const { type } = useParams();
   if (type === "basicdetails") {
     return <PrerakBasicDetails userTokenInfo={userTokenInfo} />;
   } else if (type === "educationdetails") {

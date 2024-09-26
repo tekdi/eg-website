@@ -10,19 +10,20 @@ import {
   enumRegistryService,
   ImageView,
 } from "@shiksha/common-lib";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 import PropTypes from "prop-types";
 
 export default function LearnerBasicDetails({ userTokenInfo }) {
-  const { id } = useParams();
   const [benificiary, setBenificiary] = useState();
   const [enumOptions, setEnumOptions] = React.useState({});
 
   const navigate = useNavigate();
   const location = useLocation();
   const onPressBackButton = async () => {
-    navigate(`/learners/list-view/${id}`);
+    navigate(`/learners/list-view/${location?.state?.id}`, {
+      state: location?.state,
+    });
   };
 
   useEffect(async () => {

@@ -4,6 +4,8 @@ import {
   Layout,
   SelectStyle,
   benificiaryRegistoryService,
+  getFilterLocalStorage,
+  setFilterLocalStorage,
 } from "@shiksha/common-lib";
 import BeneficiaryCard from "component/Beneficiary/BeneficiaryCard";
 import { debounce } from "lodash";
@@ -13,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
+const filterName = "leaner_filter_prerak";
 
 const select2 = [
   { label: "SORT_ASC", value: "asc" },
@@ -30,6 +33,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [loadingHeight, setLoadingHeight] = useState(0);
   const [search, setSearch] = useState("");
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
   const ref = useRef(null);
   const refButton = useRef(null);
 
@@ -59,47 +63,75 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
 
   useEffect(() => {
     if (
-      ref?.current?.clientHeight >= 0 &&
-      refButton?.current?.clientHeight >= 0 &&
+      (ref?.current?.clientHeight >= 0 ||
+        refButton?.current?.clientHeight >= 0) &&
       bodyHeight >= 0
     ) {
       setLoadingHeight(
-        bodyHeight -
-          ref?.current?.clientHeight -
-          refButton?.current?.clientHeight,
+        parseInt(bodyHeight || 0) -
+          parseInt(ref?.current?.clientHeight || 0) -
+          parseInt(refButton?.current?.clientHeight || 0),
       );
     } else {
       setLoadingHeight(bodyHeight);
     }
   }, [bodyHeight, ref]);
 
-  useEffect(async () => {
-    const { search } = filter;
-    setSearch(search);
-    if (filter?.page < 2) {
-      setLoadingList(true);
-    }
-    const { currentPage, totalPages, error, ...result } =
-      await benificiaryRegistoryService.getBeneficiariesList(filter);
-    if (!error) {
-      setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
-      if (filter?.page > 1) {
-        setData([...data, ...(result.data || [])]);
-      } else {
-        setData(result.data || []);
+  useEffect(() => {
+    const init = async () => {
+      if (urlFilterApply) {
+        const { search } = filter;
+        setSearch(search);
+        if (filter?.page < 2) {
+          setLoadingList(true);
+        }
+        const { currentPage, totalPages, error, ...result } =
+          await benificiaryRegistoryService.getBeneficiariesList(filter);
+        if (!error) {
+          setHasMore(parseInt(`${currentPage}`) < parseInt(`${totalPages}`));
+          if (filter?.page > 1) {
+            setData([...data, ...(result.data || [])]);
+          } else {
+            setData(result.data || []);
+          }
+        } else {
+          setData([]);
+        }
       }
-    } else {
-      setData([]);
-    }
-    setLoadingList(false);
+      setLoadingList(false);
+    };
+    init();
   }, [filter]);
 
-  const handleSearch = (value) => {
+  const debouncedHandleSearch = useCallback((value) => {
+    // Update state immediately
     setSearch(value);
-    setFilter({ ...filter, search: value, page: 1 });
-  };
 
-  const debouncedHandleSearch = useCallback(debounce(handleSearch, 500), []);
+    // Debounced search logic
+    handleSearch(value);
+  }, []);
+
+  // Debounced function
+  const handleSearch = useCallback(
+    debounce((value) => {
+      setFilter((preFilter) => {
+        const updateSearchFilter = { ...preFilter, search: value, page: 1 };
+        setFilterLocalStorage(filterName, updateSearchFilter);
+        return updateSearchFilter;
+      });
+    }, 300),
+    [filter],
+  );
+
+  const init = useCallback(() => {
+    const urlFilter = getFilterLocalStorage(filterName);
+    setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
+    setUrlFilterApply(true);
+  }, []);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   const showAddLearner = () => {
     return (
@@ -123,9 +155,6 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
       _appBar={{
         onlyIconsShow: ["userInfo", "loginBtn", "langBtn"],
         isEnableSearchBtn: "true",
-        setSearch: (value) => {
-          setFilter({ ...filter, search: value, page: 1 });
-        },
         _box: { bg: "white", shadow: "appBarShadow" },
         exceptIconsShow: ["backBtn", "userInfo"],
       }}
@@ -166,7 +195,13 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
               selectedValue={filter?.status}
               placeholder={t("STATUS_ALL")}
               onValueChange={(nextValue) => {
-                setFilter({ ...filter, status: nextValue, page: 1 });
+                const updateSearchFilter = {
+                  ...filter,
+                  status: nextValue,
+                  page: 1,
+                };
+                setFilter(updateSearchFilter);
+                setFilterLocalStorage(filterName, updateSearchFilter);
               }}
               _selectedItem={{
                 bg: "cyan.600",
@@ -194,7 +229,13 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
               selectedValue={filter?.sortType ? filter?.sortType : ""}
               placeholder={t("SORT_BY")}
               onValueChange={(nextValue) => {
-                setFilter({ ...filter, sortType: nextValue, page: 1 });
+                const updateSearchFilter = {
+                  ...filter,
+                  sortType: nextValue,
+                  page: 1,
+                };
+                setFilter(updateSearchFilter);
+                setFilterLocalStorage(filterName, updateSearchFilter);
               }}
               _selectedItem={{
                 bg: "secondary.700",
@@ -216,13 +257,16 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
 
       {!loadingList ? (
         <InfiniteScroll
+          key={loadingHeight}
           dataLength={data?.length}
-          next={(e) =>
-            setFilter({
+          next={(e) => {
+            const updateSearchFilter = {
               ...filter,
               page: (filter?.page ? filter?.page : 1) + 1,
-            })
-          }
+            };
+            setFilter(updateSearchFilter);
+            setFilterLocalStorage(filterName, updateSearchFilter);
+          }}
           hasMore={hasMore}
           height={loadingHeight}
           loader={
@@ -259,7 +303,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
                     navigate(`/beneficiary/${item?.id}`);
                   }}
                   onPressDocCheckList={() => {
-                    navigate(`/beneficiary/${item?.id}/docschecklist`);
+                    navigate(`/beneficiary/edit/${item?.id}/docschecklist`);
                   }}
                   onPressRnroll={() => {
                     navigate(`/beneficiary/${item?.id}/enrollmentdetails`);
