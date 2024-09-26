@@ -18,13 +18,16 @@ import {
   useWindowSize,
   geolocationRegistryService,
   facilitatorRegistryService,
-  setQueryParameters,
+  setFilterLocalStorage,
+  getFilterLocalStorage,
 } from "@shiksha/common-lib";
 import Table from "./ReassignBeneficiariesListTable";
 import { useTranslation } from "react-i18next";
 import { MultiCheck } from "../../../component/BaseInput";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
+import SideColapsable from "component/SideColapsable";
+const filterName = "reassignList_filter";
 
 function CustomFieldTemplate({ id, classNames, label, required, children }) {
   return (
@@ -65,18 +68,21 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
   const [data, setData] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [blocks, setBlocks] = useState([]);
+  const [urlFilterApply, setUrlFilterApply] = useState(false);
 
   const navigate = useNavigate();
 
   // facilitator pagination
   useEffect(() => {
     const fetchLearnerStatus = async () => {
-      setLoading(true);
-      const learnerStatus =
-        await facilitatorRegistryService.learnerStatusDistribution(filter);
-      setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
-      setData(learnerStatus?.data?.data || []);
-      setLoading(false);
+      if (urlFilterApply) {
+        setLoading(true);
+        const learnerStatus =
+          await facilitatorRegistryService.learnerStatusDistribution(filter);
+        setPaginationTotalRows(learnerStatus?.data?.totalCount || 0);
+        setData(learnerStatus?.data?.data || []);
+        setLoading(false);
+      }
     };
     fetchLearnerStatus();
   }, [filter]);
@@ -107,8 +113,18 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
 
   const setFilterObject = (data) => {
     setFilter(data);
-    setQueryParameters(data);
+    setFilterLocalStorage(filterName, data);
   };
+
+  const init = useCallback(() => {
+    const urlFilter = getFilterLocalStorage(filterName);
+    setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
+    setUrlFilterApply(true);
+  }, []);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   const schema = {
     type: "object",
@@ -210,11 +226,9 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
           </HStack>
         </HStack>
       </HStack>
-      <HStack>
-        <Box
-          flex={[2, 2, 1]}
-          style={{ borderRightColor: "dividerColor", borderRightWidth: "2px" }}
-        >
+      <SideColapsable
+        isActive={filter?.district?.length || filter?.block?.length}
+        sideCompoent={
           <ScrollView
             maxH={
               Height - (refAppBar?.clientHeight + ref?.current?.clientHeight)
@@ -230,7 +244,15 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
                   </HStack>
                   <Button variant="link" pt="3" onPress={clearFilter}>
                     <AdminTypo.H6 color="blueText.400" underline bold>
-                      {t("CLEAR_FILTER")}
+                      {t("CLEAR_FILTER")} (
+                      {
+                        Object.keys(filter).filter((key) =>
+                          Array.isArray(filter[key])
+                            ? filter[key].length > 0
+                            : !!filter[key],
+                        ).length
+                      }
+                      )
                     </AdminTypo.H6>
                   </Button>
                 </HStack>
@@ -255,19 +277,16 @@ export default function AdminHome({ footerLinks, userTokenInfo }) {
               </VStack>
             </VStack>
           </ScrollView>
-        </Box>
-        <Box flex={[5, 5, 4]}>
-          <Box roundedBottom={"2xl"} py={6} px={4} mb={5}>
-            <Table
-              filter={filter}
-              setFilter={setFilterObject}
-              paginationTotalRows={paginationTotalRows}
-              data={data}
-              loading={loading}
-            />
-          </Box>
-        </Box>
-      </HStack>
+        }
+      >
+        <Table
+          filter={filter}
+          setFilter={setFilterObject}
+          paginationTotalRows={paginationTotalRows}
+          data={data}
+          loading={loading}
+        />
+      </SideColapsable>
     </Layout>
   );
 }
