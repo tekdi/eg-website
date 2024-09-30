@@ -109,6 +109,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
   const [width, Height] = useWindowSize();
   const [refAppBar, setRefAppBar] = useState();
   const ref = useRef(null);
+  const searchRef = useRef(null);
   const [schema, setSchema] = useState();
   const [filter, setFilter] = useState({});
   const [loading, setLoading] = useState(true);
@@ -205,7 +206,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
     };
 
     fetchFilteredData();
-  }, [filter]);
+  }, [JSON.stringify(filter), urlFilterApply]);
 
   const setFilterObject = useCallback(
     (data) => {
@@ -224,11 +225,14 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
   useEffect(() => {
     const init = () => {
       const urlFilter = getFilterLocalStorage(filterName);
+      if (searchRef?.current) {
+        searchRef.current.value = urlFilter?.search || "";
+      }
       setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
       setUrlFilterApply(true);
     };
     init();
-  }, []);
+  }, [searchRef?.current]);
 
   const onChange = useCallback(
     async (data) => {
@@ -256,6 +260,9 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
   const clearFilter = useCallback(() => {
     setFilter({});
     setFilterObject({});
+    if (searchRef?.current) {
+      searchRef.current.value = "";
+    }
   }, [setFilterObject]);
 
   const exportPrerakCSV = async () => {
@@ -296,6 +303,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
           </HStack>
         </HStack>
         <Input
+          ref={searchRef}
           size={"xs"}
           minH="40px"
           maxH="40px"
@@ -310,7 +318,7 @@ export default function ExamResultList({ footerLinks, userTokenInfo }) {
           }
           placeholder={t("SEARCH_BY_LEARNER_NAME")}
           variant="outline"
-          value={filter?.search || ""}
+          // value={filter?.search || ""}
           onChange={debouncedHandleSearch}
         />
 
