@@ -156,7 +156,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
       {
         const { sso_id: sso_id_1, ...properties } =
           constantSchema?.properties || {};
-        if (state_name === "RAJASTHAN") {
+        if (state_name === "RAJASTHAN" && data?.enrollment_status) {
           let { enrollment_status, enrollment_number } = properties;
           newSchema = {
             ...constantSchema,
@@ -759,7 +759,7 @@ export default function EnrollmentForm() {
         }
         break;
 
-      case "root_enrollment_status":
+      case "root_enrollment_status": {
         const updatedSchema = await setSchemaByStatus(
           data,
           fixedSchema,
@@ -769,6 +769,7 @@ export default function EnrollmentForm() {
         setSchema(updatedSchema?.newSchema);
         setErrors();
         break;
+      }
 
       case "root_subjects": {
         let { subjects, ...otherErrore } = errors || {};
