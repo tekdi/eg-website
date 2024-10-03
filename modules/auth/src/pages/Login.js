@@ -106,7 +106,6 @@ export default function Login() {
     }
 
     setErrors(arr);
-    console.log("validate boolean", arr.username || arr.password);
 
     if (arr.username || arr.password) {
       return false;
@@ -120,7 +119,6 @@ export default function Login() {
       const { error } = credentials
         ? await login({ ...credentials, lat: latData, long: longData })
         : {};
-      console.log("error", error);
       if (!error) {
         const loginData = {
           username: credentials?.username,
