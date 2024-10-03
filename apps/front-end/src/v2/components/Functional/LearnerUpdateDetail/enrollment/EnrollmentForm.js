@@ -126,10 +126,10 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
           sso_id,
           enrolled_for_board,
           enrollment_mobile_no,
-          enrollment_first_name,
           enrollment_date,
-          enrollment_last_name,
+          enrollment_first_name,
           enrollment_middle_name,
+          enrollment_last_name,
           enrollment_dob,
         } = newSchema?.properties || {};
 
@@ -142,10 +142,10 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
             type_of_enrollement,
             enrollment_mobile_no,
             sso_id,
-            enrollment_first_name,
             enrollment_date,
-            enrollment_last_name,
+            enrollment_first_name,
             enrollment_middle_name,
+            enrollment_last_name,
             enrollment_dob,
           },
           required: constantSchema?.required?.filter(
@@ -231,6 +231,17 @@ const getSubjects = async (schemaData, value) => {
     return schemaData;
   }
 };
+
+const RESTRICTED_STATUSES = [
+  "enrolled_ip_verified",
+  "registered_in_camp",
+  "sso_id_verified",
+  "10th_passed",
+  "ineligible_for_pragati_camp",
+  "pragati_syc",
+  "pragati_syc_reattempt",
+  "pragati_syc_reattempt_ip_verified",
+];
 
 // App
 export default function EnrollmentForm() {
@@ -927,17 +938,7 @@ export default function EnrollmentForm() {
   }
 
   if (
-    [
-      "enrolled_ip_verified",
-      "registered_in_camp",
-      "sso_id_verified",
-      "enrolled_ip_verified",
-      "10th_passed",
-      "ineligible_for_pragati_camp",
-      "pragati_syc",
-      "pragati_syc_reattempt",
-      "pragati_syc_reattempt_ip_verified",
-    ].includes(benificiary?.program_beneficiaries?.status) ||
+    RESTRICTED_STATUSES.includes(benificiary?.program_beneficiaries?.status) ||
     !canEdit
   ) {
     return (
