@@ -83,7 +83,7 @@ export default function Login() {
   const location = useLocation();
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const [language, setLanguage] = React.useState();
-  const [latData, longData] = useLocationData() || [];
+  const [latData = null, longData = null] = useLocationData() || [];
 
   useEffect(() => {
     setLanguage(localStorage.getItem("lang") || "en");
@@ -122,8 +122,6 @@ export default function Login() {
       if (!error) {
         const loginData = {
           username: credentials?.username,
-          lat: latData,
-          long: longData,
         };
         localStorage.setItem("loginData", JSON.stringify(loginData));
         navigate("/");
