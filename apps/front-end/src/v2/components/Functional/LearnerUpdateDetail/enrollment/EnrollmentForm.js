@@ -35,6 +35,9 @@ import {
 
 const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   let { state_name } = await getSelectedProgramId();
+  const benificiary = JSON.parse(localStorage.getItem("benificiary")) || {};
+  const beneficiaryStatus =
+    benificiary?.program_beneficiaries?.status || "identified";
   const constantSchema = fixedSchema;
   let newSchema = {};
   let newData = {};
@@ -156,7 +159,11 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
       {
         const { sso_id: sso_id_1, ...properties } =
           constantSchema?.properties || {};
-        if (state_name === "RAJASTHAN" && data?.enrollment_status) {
+
+        if (
+          state_name === "RAJASTHAN" &&
+          ["enrolled", "registered_in_neev_camp"].includes(beneficiaryStatus)
+        ) {
           let { enrollment_status, enrollment_number } = properties;
           newSchema = {
             ...constantSchema,
@@ -248,6 +255,109 @@ export default function EnrollmentForm() {
   const [canEdit, setCanEdit] = useState(true);
   const [stateName, setStateName] = useState("");
 
+  // set form data page, pages and benificiary
+  useEffect(() => {
+    const init1 = async () => {
+      const { result } = await benificiaryRegistoryService.getOne(userId);
+      setBenificiary(result);
+      localStorage.setItem("benificiary", JSON.stringify(result));
+      setMissingData(await learnerDetailsCheck({ id, benificiary: result }));
+      const { program_beneficiaries } = result || {};
+
+      if (
+        stateName === "RAJASTHAN" &&
+        ["enrolled", "registered_in_neev_camp"].includes(
+          program_beneficiaries?.status,
+        )
+      ) {
+        await checkEnrollAvailability();
+      }
+      const updatedSchema = await setSchemaByStatus(program_beneficiaries, {});
+      setFormData(updatedSchema?.newData || {});
+      let resultBoards = await enumRegistryService.boardList();
+      setBoards(resultBoards?.boards || []);
+      const properties = schema1.properties;
+      const newSteps = Object.keys(properties);
+      const newStep = newSteps[0];
+      setPage(newStep);
+      setPages(newSteps);
+    };
+    init1();
+  }, []);
+
+  // set fixedSchema, setSchema as per statue and state, dependacy on page
+  useEffect(() => {
+    const init = async () => {
+      if (page && benificiary?.program_beneficiaries && boards) {
+        const constantSchema = schema1.properties?.[page];
+        if (page === "edit_enrollement") {
+          const newSchema = await getEnrollmentStatus(
+            constantSchema,
+            benificiary?.program_beneficiaries.status,
+          );
+          setFixedSchema(newSchema);
+
+          if (
+            stateName === "RAJASTHAN" &&
+            ["enrolled", "registered_in_neev_camp"].includes(
+              benificiary?.program_beneficiaries?.status,
+            )
+          ) {
+            const { enrollment_number } = constantSchema?.properties || {};
+            const { enrollment_status } = newSchema?.properties || {};
+
+            const newSchema1 = {
+              ...constantSchema,
+              properties: {
+                enrollment_status,
+                enrollment_number,
+              },
+              required: ["enrollment_status", "enrollment_number"],
+            };
+            setSchema(newSchema1);
+          } else {
+            const updatedSchema = await setSchemaByStatus(
+              formData,
+              newSchema,
+              boards,
+            );
+            let { state_name } = await getSelectedProgramId();
+
+            if (
+              updatedSchema?.newSchema?.properties?.enrollment_number?.regex
+            ) {
+              if (state_name === "BIHAR") {
+                updatedSchema.newSchema.properties.enrollment_number.regex =
+                  /^\d{0,9}$/;
+              } else if (state_name === "MADHYA PRADESH") {
+                updatedSchema.newSchema.properties.enrollment_number.regex =
+                  /^\d{0,12}$/;
+              } else {
+                updatedSchema.newSchema.properties.enrollment_number.regex =
+                  /^\d{0,11}$/;
+              }
+            }
+            setSchema(updatedSchema?.newSchema);
+          }
+        } else {
+          if (
+            ["enrolled", "sso_id_enrolled"].includes(
+              formData?.enrollment_status,
+            )
+          ) {
+            setSchema(
+              await getSubjects(constantSchema, formData?.enrolled_for_board),
+            );
+          } else {
+            setSchema(constantSchema);
+          }
+        }
+        setLoading(false);
+      }
+    };
+    init();
+  }, [page, benificiary, boards]);
+
   useEffect(() => {
     const init = async () => {
       const { state_name } = await getSelectedProgramId();
@@ -256,22 +366,15 @@ export default function EnrollmentForm() {
     init();
   }, []);
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const checkRes =
-          await benificiaryRegistoryService.checkIsEnrollmentAvailable({
-            id,
-          });
-        if (checkRes?.data) {
-          setCanEdit(checkRes?.data?.is_enrollment);
-        }
-      } catch (error) {
-        console.log("Error", error);
-      }
-    };
-    init();
-  }, []);
+  const checkEnrollAvailability = async () => {
+    const checkRes =
+      await benificiaryRegistoryService.checkIsEnrollmentAvailable({
+        id,
+      });
+    if (checkRes?.data) {
+      setCanEdit(checkRes?.data?.is_enrollment);
+    }
+  };
 
   const [uiSchema, setUiSchema] = useState({
     subjects: {
@@ -469,98 +572,6 @@ export default function EnrollmentForm() {
     }
     return error;
   };
-
-  // set form data page, pages and benificiary
-  useEffect(() => {
-    const init1 = async () => {
-      const { result } = await benificiaryRegistoryService.getOne(userId);
-      setBenificiary(result);
-      setMissingData(await learnerDetailsCheck({ id, benificiary: result }));
-      const { program_beneficiaries } = result || {};
-      const updatedSchema = await setSchemaByStatus(program_beneficiaries, {});
-      setFormData(updatedSchema?.newData || {});
-      let resultBoards = await enumRegistryService.boardList();
-      setBoards(resultBoards?.boards || []);
-      const properties = schema1.properties;
-      const newSteps = Object.keys(properties);
-      const newStep = newSteps[0];
-      setPage(newStep);
-      setPages(newSteps);
-    };
-    init1();
-  }, []);
-
-  // set fixedSchema, setSchema as per statue and state, dependacy on page
-  useEffect(() => {
-    const init = async () => {
-      if (page && benificiary?.program_beneficiaries && boards) {
-        const constantSchema = schema1.properties?.[page];
-        if (page === "edit_enrollement") {
-          const newSchema = await getEnrollmentStatus(
-            constantSchema,
-            benificiary?.program_beneficiaries.status,
-          );
-          setFixedSchema(newSchema);
-          if (
-            stateName === "RAJASTHAN" &&
-            ["enrolled", "registered_in_neev_camp"].includes(
-              benificiary?.program_beneficiaries?.status,
-            )
-          ) {
-            const { enrollment_number } = constantSchema?.properties || {};
-            const { enrollment_status } = newSchema?.properties || {};
-
-            const newSchema1 = {
-              ...constantSchema,
-              properties: {
-                enrollment_status,
-                enrollment_number,
-              },
-              required: ["enrollment_status", "enrollment_number"],
-            };
-            setSchema(newSchema1);
-          } else {
-            const updatedSchema = await setSchemaByStatus(
-              formData,
-              newSchema,
-              boards,
-            );
-            let { state_name } = await getSelectedProgramId();
-
-            if (
-              updatedSchema?.newSchema?.properties?.enrollment_number?.regex
-            ) {
-              if (state_name === "BIHAR") {
-                updatedSchema.newSchema.properties.enrollment_number.regex =
-                  /^\d{0,9}$/;
-              } else if (state_name === "MADHYA PRADESH") {
-                updatedSchema.newSchema.properties.enrollment_number.regex =
-                  /^\d{0,12}$/;
-              } else {
-                updatedSchema.newSchema.properties.enrollment_number.regex =
-                  /^\d{0,11}$/;
-              }
-            }
-            setSchema(updatedSchema?.newSchema);
-          }
-        } else {
-          if (
-            ["enrolled", "sso_id_enrolled"].includes(
-              formData?.enrollment_status,
-            )
-          ) {
-            setSchema(
-              await getSubjects(constantSchema, formData?.enrolled_for_board),
-            );
-          } else {
-            setSchema(constantSchema);
-          }
-        }
-        setLoading(false);
-      }
-    };
-    init();
-  }, [page, benificiary, boards]);
 
   const enrollmentNumberExist = async (enrollment_number, re = false) => {
     let { state_name } = await getSelectedProgramId();
@@ -914,12 +925,19 @@ export default function EnrollmentForm() {
       </Layout>
     );
   }
-  console.log({ status: benificiary?.program_beneficiaries?.status, canEdit });
 
   if (
-    ["enrolled_ip_verified", "registered_in_camp", "sso_id_verified"].includes(
-      benificiary?.program_beneficiaries?.status,
-    ) ||
+    [
+      "enrolled_ip_verified",
+      "registered_in_camp",
+      "sso_id_verified",
+      "enrolled_ip_verified",
+      "10th_passed",
+      "ineligible_for_pragati_camp",
+      "pragati_syc",
+      "pragati_syc_reattempt",
+      "pragati_syc_reattempt_ip_verified",
+    ].includes(benificiary?.program_beneficiaries?.status) ||
     !canEdit
   ) {
     return (
