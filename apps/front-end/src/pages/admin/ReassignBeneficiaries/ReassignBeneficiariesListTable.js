@@ -75,6 +75,14 @@ const Table = ({ paginationTotalRows, loading, data, setFilter, filter }) => {
       value: "identified_ready_to_enroll",
     },
     {
+      title: "BENEFICIARY_STATUS_SSO_ID_ENROLLED",
+      value: "sso_id_enrolled",
+    },
+    {
+      title: "BENEFICIARY_STATUS_SSO_ID_VERIFIED",
+      value: "sso_id_verified",
+    },
+    {
       title: "BENEFICIARY_STATUS_ENROLLED",
       value: "enrolled",
     },
@@ -122,7 +130,9 @@ const Table = ({ paginationTotalRows, loading, data, setFilter, filter }) => {
   return (
     <VStack>
       <ScrollView horizontal mb="2">
-        <AdminTypo.H1 px="5">{t("LEARNER_DISTRIBUTION")}</AdminTypo.H1>
+        <AdminTypo.H1 px="5" pl="8">
+          {t("LEARNER_DISTRIBUTION")}
+        </AdminTypo.H1>
         <HStack pb="2">
           {beneficiaryStatus.map((item) => (
             <Text key={item.value} mx={2}>

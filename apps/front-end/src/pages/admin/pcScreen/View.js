@@ -32,7 +32,7 @@ function View() {
   const toast = useToast();
   const [data, setData] = useState();
   const [pcData, setPcData] = useState();
-  const [assignPrerak, setAssignPrerak] = useState();
+  const [assignPrerakCount, setAssignPrerakCount] = useState();
   const [dailyActivities, setDailyActivities] = useState([]);
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,6 +97,7 @@ function View() {
         page: 1,
       });
       setData(result);
+      setAssignPrerakCount(result?.data);
     };
 
     fetchData();
@@ -244,7 +245,17 @@ function View() {
         </HStack>
         <HStack alignItems={"center"} p={4} space={4}>
           <CardComponent
-            _header={{ bg: "light.100" }}
+            _header={{
+              bg: "light.100",
+              borderWidth: "1px",
+              borderBottomWidth: 0,
+              borderColor: "garyTitleCardBorder",
+              shadow: "CardComponentShadow",
+              p: "4",
+            }}
+            _body={{
+              roundedTop: 0,
+            }}
             _vstack={{ space: 0, flex: 1, bg: "light.100" }}
             _hstack={{ borderBottomWidth: 0, p: 1 }}
             item={{
@@ -333,7 +344,7 @@ function View() {
                       return (
                         <tr
                           style={{ textAlign: "center", margin: "10px 0 " }}
-                          key={index + 1}
+                          key={item?.type + index}
                         >
                           <td>{t(item?.type)}</td>
                           <td>{item?.description}</td>
@@ -488,7 +499,7 @@ function View() {
             </Modal.Footer>
           </Modal.Content>
         </Modal>
-        <AssignedList setPcData={setPcData} setAssignPrerak={setAssignPrerak} />
+        <AssignedList setPcData={setPcData} />
       </VStack>
     </AdminLayout>
   );
