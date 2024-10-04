@@ -270,6 +270,8 @@ const AssignedList = ({ setPcData }) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
+
   const setBlock = async ({ district }) => {
     let newSchema = schema;
     if (newSchema?.properties?.block && district.length > 0) {
