@@ -12,6 +12,7 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import SideColapsable from "component/SideColapsable";
+import { debounce } from "lodash";
 import { Button, HStack, Input, VStack } from "native-base";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -269,6 +270,8 @@ const AssignedList = ({ setPcData }) => {
     setFilter({ ...filter, search: e.nativeEvent.text, page: 1 });
   };
 
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 1000), []);
+
   const setBlock = async ({ district }) => {
     let newSchema = schema;
     if (newSchema?.properties?.block && district.length > 0) {
@@ -360,7 +363,7 @@ const AssignedList = ({ setPcData }) => {
               bg={"white"}
               placeholder={t("SEARCH_BY_PRERAK_NAME")}
               variant="outline"
-              onChange={handleSearch}
+              onChange={debouncedHandleSearch}
             />
           </HStack>
           <HStack space={4}>
