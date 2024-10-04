@@ -361,28 +361,30 @@ export const FieldTemplate = ({
     >
       {showTitle && showLabel && (
         <Box>
-          <label htmlFor={id}>
-            <HStack space="1" alignItems="center">
-              {schema?.label ? (
-                <FrontEndTypo.H3
-                  color="textGreyColor.900"
-                  fontWeight="600"
-                  lineHeight="30px"
-                >
-                  {t(schema?.label)}
-                </FrontEndTypo.H3>
-              ) : (
-                <FrontEndTypo.H1
-                  color="textGreyColor.900"
-                  fontWeight="600"
-                  lineHeight="30px"
-                >
-                  {t(label)}
-                </FrontEndTypo.H1>
-              )}
-              <H3 color="textRed.400">{required ? "*" : null}</H3>
-            </HStack>
-          </label>
+          {(id === "root" || schema?.label) && (
+            <label htmlFor={id}>
+              <HStack space="1" alignItems="center">
+                {schema?.label ? (
+                  <FrontEndTypo.H3
+                    color="textGreyColor.900"
+                    fontWeight="600"
+                    lineHeight="30px"
+                  >
+                    {t(schema?.label)}
+                  </FrontEndTypo.H3>
+                ) : (
+                  <FrontEndTypo.H1
+                    color="textGreyColor.900"
+                    fontWeight="600"
+                    lineHeight="30px"
+                  >
+                    {t(label)}
+                  </FrontEndTypo.H1>
+                )}
+                <H3 color="textRed.400">{required ? "*" : null}</H3>
+              </HStack>
+            </label>
+          )}
           {description?.props?.description !== "" && description}
         </Box>
       )}

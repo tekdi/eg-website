@@ -125,7 +125,7 @@ export default function BenificiaryListView({ userTokenInfo, footerLinks }) {
 
   const init = useCallback(() => {
     const urlFilter = getFilterLocalStorage(filterName);
-    setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter }));
+    setFilter((prevFilter) => ({ ...prevFilter, ...urlFilter, page: 1 }));
     setUrlFilterApply(true);
   }, []);
 
