@@ -266,7 +266,7 @@ function View() {
               }, ${pcData?.village ?? ""}${
                 pcData?.address ? `, ${pcData?.address}` : ""
               }`,
-              prerak_assigned: `${assignPrerak}`,
+              prerak_assigned: `${assignPrerakCount}`,
               user_id: `${pcData?.user_id || ""}`,
               mobile: `${pcData?.mobile || ""}`,
               email_id: `${pcData?.email_id || ""}`,

@@ -12,7 +12,6 @@ import {
 } from "@shiksha/common-lib";
 import { ChipStatus } from "component/Chip";
 import SideColapsable from "component/SideColapsable";
-import { debounce } from "lodash";
 import { Button, HStack, Input, VStack } from "native-base";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
