@@ -21,7 +21,7 @@ function FacilitatorRegister() {
   const [isError, setIsError] = useState(false);
   //screen variables
   const [activeScreenName, setActiveScreenName] = useState("logoScreen");
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [currentImage, setCurrentImage] = useState(0);
   const [currentForm, setCurrentForm] = useState(0);
   const [registerFormData, setRegisterFormData] = useState({});
