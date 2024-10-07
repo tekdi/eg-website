@@ -42,7 +42,6 @@ import Loader from "v2/components/Static/Loader/Loader.js";
 import SetConsentLang from "v2/components/Static/Consent/SetConsentLang.js";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { setDistrict, setBlock, setVillage } from "utils/localHelper.js";
 
 export default function PrerakRegisterDetail({
   t,

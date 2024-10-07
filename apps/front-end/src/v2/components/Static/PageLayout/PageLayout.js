@@ -45,7 +45,7 @@ export default function PageLayout({
           height={height}
           width={width}
         >
-          {customComponent ? customComponent : <></>}
+          {customComponent || <></>}
         </Center>
       ) : (
         <ScrollView minH={height} maxH={height} w={width} shadow={4}>
@@ -60,7 +60,7 @@ export default function PageLayout({
           ) : (
             <></>
           )}
-          {customComponent ? customComponent : <></>}
+          {customComponent || <></>}
         </ScrollView>
       )}
     </Center>
