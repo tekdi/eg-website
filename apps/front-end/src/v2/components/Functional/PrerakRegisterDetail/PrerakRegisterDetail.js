@@ -13,6 +13,7 @@ import {
   login,
   CustomAlert,
   Loading,
+  geolocationRegistryService,
   getOptions,
   enumRegistryService,
   validation,
@@ -205,12 +206,11 @@ export default function PrerakRegisterDetail({
             } catch (error) {}
             //add user specific state
             if (programSelected != null) {
-              newSchema = await setDistrict({
+              newSchema = await setDistric({
                 schemaData: address_details,
                 state: programSelected?.state_name,
                 district: registerFormData?.district,
                 block: registerFormData?.block,
-                setSchema,
               });
             }
           }
@@ -315,6 +315,99 @@ export default function PrerakRegisterDetail({
       });
     }
     return err;
+  };
+
+  const setDistric = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (state) {
+      const qData = await geolocationRegistryService.getDistricts({
+        name: state,
+      });
+      if (schemaData?.["properties"]?.["district"]) {
+        newSchema = getOptions(newSchema, {
+          key: "district",
+          arr: qData?.districts,
+          title: "district_name",
+          value: "district_name",
+        });
+      }
+      if (schemaData?.["properties"]?.["block"]) {
+        newSchema = await setBlock({
+          state,
+          district,
+          block,
+          gramp,
+          schemaData: newSchema,
+        });
+        setSchema(newSchema);
+      }
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setBlock = async ({ gramp, state, district, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schemaData?.properties?.block && district) {
+      const qData = await geolocationRegistryService.getBlocks({
+        name: district,
+        state: state,
+      });
+      if (schemaData?.["properties"]?.["block"]) {
+        newSchema = getOptions(newSchema, {
+          key: "block",
+          arr: qData?.blocks,
+          title: "block_name",
+          value: "block_name",
+        });
+      }
+      newSchema = await setVilage({
+        state,
+        district,
+        block,
+        gramp: "null",
+        schemaData: newSchema,
+      });
+      setSchema(newSchema);
+      // }
+    } else {
+      newSchema = getOptions(newSchema, { key: "block", arr: [] });
+      if (schemaData?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      }
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
+  };
+
+  const setVilage = async ({ state, district, gramp, block, schemaData }) => {
+    let newSchema = schemaData;
+    setLoading(true);
+    if (schemaData?.properties?.village && block) {
+      const qData = await geolocationRegistryService.getVillages({
+        name: block,
+        state: state,
+        district: district,
+        gramp: gramp || "null",
+      });
+      if (schemaData?.["properties"]?.["village"]) {
+        newSchema = getOptions(newSchema, {
+          key: "village",
+          arr: qData?.villages,
+          title: "village_ward_name",
+          value: "village_ward_name",
+        });
+      }
+      setSchema(newSchema);
+    } else {
+      newSchema = getOptions(newSchema, { key: "village", arr: [] });
+      setSchema(newSchema);
+    }
+    setLoading(false);
+    return newSchema;
   };
 
   const handleCheckboxChange = (isAgree) => {
@@ -438,12 +531,11 @@ export default function PrerakRegisterDetail({
     }
 
     if (id === "root_state") {
-      await setDistrict({
+      await setDistric({
         schemaData: schema,
         state: data?.state,
         district: data?.district,
         block: data?.block,
-        setSchema,
       });
     }
 
@@ -453,17 +545,15 @@ export default function PrerakRegisterDetail({
         block: data?.block,
         schemaData: schema,
         state: programData?.state_name,
-        setSchema,
       });
     }
 
     if (id === "root_block") {
-      await setVillage({
+      await setVilage({
         district: data?.district,
         block: data?.block,
         schemaData: schema,
         state: programData?.state_name,
-        setSchema,
       });
     }
 
@@ -779,22 +869,18 @@ export default function PrerakRegisterDetail({
   };
 
   const formSubmitCreate = async () => {
+    const removeSpacesIfString = (value) =>
+      typeof value === "string" ? value.replaceAll(" ", "") : "";
     let first_name = registerFormData?.first_name
-      ? typeof registerFormData.first_name === "string"
-        ? registerFormData.first_name.replaceAll(" ", "")
-        : ""
+      ? removeSpacesIfString(registerFormData.first_name)
       : "";
 
     let middle_name = registerFormData?.middle_name
-      ? typeof registerFormData.middle_name === "string"
-        ? registerFormData.middle_name.replaceAll(" ", "")
-        : ""
+      ? removeSpacesIfString(registerFormData.middle_name)
       : "";
 
     let last_name = registerFormData?.last_name
-      ? typeof registerFormData.last_name === "string"
-        ? registerFormData.last_name.replaceAll(" ", "")
-        : ""
+      ? removeSpacesIfString(registerFormData.last_name)
       : "";
 
     let lang = localStorage.getItem("lang");
@@ -880,25 +966,6 @@ export default function PrerakRegisterDetail({
             >
               {t("SIGN_UP_IN_TWO_STEPS")}
             </FrontEndTypo.H3>
-            {/* <Alert
-              status="info"
-              shadow="AlertShadow"
-              alignItems={"start"}
-              mb="3"
-              colorScheme={"infoAlert"}
-              mt="4"
-            >
-              <HStack alignItems="center" space="2" color>
-                <IconByName name="InformationLineIcon" />
-                <FrontEndTypo.H3>
-                  {programData?.program_name
-                    ? t("REGISTER_MESSAGE")
-                        .replace("{{state}}", programData?.program_name)
-                        .replace("{{year}}", cohortData?.academic_year_name)
-                    : ""}
-                </FrontEndTypo.H3>
-              </HStack>
-            </Alert> */}
             <CustomAlert
               status={""}
               title={

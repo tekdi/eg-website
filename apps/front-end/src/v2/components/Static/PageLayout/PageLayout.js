@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Center } from "native-base"; // Removed ScrollView from native-base
+import { Center, ScrollView } from "native-base";
 import useWindowSize from "v2/utils/Helper/JSHelper";
 import PageHeader from "../PageHeader/PageHeader";
 import { GATrackPageView } from "@shiksha/common-lib";
@@ -45,18 +45,10 @@ export default function PageLayout({
           height={height}
           width={width}
         >
-          {customComponent && <></>}
+          {customComponent ? customComponent : <></>}
         </Center>
       ) : (
-        <div
-          style={{
-            minHeight: height,
-            maxHeight: height,
-            width: width,
-            overflowY: "auto", // Add scroll behavior
-            boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", // Equivalent to shadow={4}
-          }}
-        >
+        <ScrollView minH={height} maxH={height} w={width} shadow={4}>
           {showAppBar ? (
             <PageHeader
               t={t}
@@ -65,18 +57,20 @@ export default function PageLayout({
               showLangChange={showLangChange}
               funLangChange={funLangChange}
             />
-          ) : null}
-          {customComponent && <></>}
-        </div>
+          ) : (
+            <></>
+          )}
+          {customComponent ? customComponent : <></>}
+        </ScrollView>
       )}
     </Center>
   );
 }
 
 PageLayout.propTypes = {
-  t: PropTypes.func,
+  t: PropTypes.any,
   isPageMiddle: PropTypes.bool,
-  customComponent: PropTypes.element,
+  customComponent: PropTypes.any,
   showAppBar: PropTypes.bool,
   showHelpButton: PropTypes.bool,
   funBackButton: PropTypes.func,
