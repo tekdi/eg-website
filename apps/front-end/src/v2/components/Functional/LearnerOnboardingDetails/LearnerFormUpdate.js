@@ -108,7 +108,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
   }, []);
 
   const onPressBackButton = async () => {
-    const data = await nextPreviewStep("p");
+    await nextPreviewStep("p");
   };
 
   const updateData = (data, deleteData = false) => {};
@@ -504,7 +504,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
     if (data?.aadhar_token) {
       if (
         data?.aadhar_token &&
-        !`${data?.aadhar_token}`?.match(/^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$/)
+        !`${data?.aadhar_token}`?.match(/^[2-9]\d{3}\d{4}\d{4}$/)
       ) {
         errors?.aadhar_token?.addError(
           `${t("AADHAAR_SHOULD_BE_12_DIGIT_VALID_NUMBER")}`,

@@ -78,7 +78,7 @@ const ExamAttendance = ({ userTokenInfo: { authUser }, footerLinks }) => {
         ...authUser,
         program_faciltators: authUser?.user_roles?.[0],
       }}
-      // loading={loading}
+      loading={loading}
       _appBar={{
         onPressBackButton,
         onlyIconsShow: ["backBtn", "langBtn"],
@@ -118,7 +118,11 @@ const ExamAttendance = ({ userTokenInfo: { authUser }, footerLinks }) => {
             ))}
           </HStack>
           {filter?.selectedId && (
-            <DatePicker setFilter={setFilter} filter={filter} />
+            <DatePicker
+              setFilter={setFilter}
+              filter={filter}
+              maxDate={maxDate}
+            />
           )}
           {filter?.date != "" && filter?.selectedId && subjects?.length > 0 && (
             <Stack space={2}>
@@ -186,7 +190,9 @@ const ExamAttendance = ({ userTokenInfo: { authUser }, footerLinks }) => {
             </Stack>
           )}
 
-          {noDataFound && <FrontEndTypo.H2>{t("EXAM_WARNING")}</FrontEndTypo.H2>}
+          {noDataFound && (
+            <FrontEndTypo.H2>{t("EXAM_WARNING")}</FrontEndTypo.H2>
+          )}
         </VStack>
       </VStack>
     </Layout>
