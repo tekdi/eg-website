@@ -21,8 +21,6 @@ import PcUsersRoutes from "./routes/PcUsersRoutes";
 import { getIndexedDBItem, getUserId } from "v2/utils/Helper/JSHelper";
 import ReactGA from "react-ga4";
 
-//TODO: separate out the theme related code from App
-
 ReactGA.initialize(process.env.REACT_APP_GA_MEASUREMENT_ID);
 initializeI18n(["translation"]);
 
@@ -93,7 +91,7 @@ function App() {
         const { academic_year_id } = await getSelectedAcademicYear();
         const { program_id } = await getSelectedProgramId();
         const IpUserInfo = await getIndexedDBItem(
-          `${fa_id}_${program_id}_${academic_year_id}_Ip_User_Info`
+          `${fa_id}_${program_id}_${academic_year_id}_Ip_User_Info`,
         );
         if (!IpUserInfo) {
           user = await facilitatorRegistryService.getInfo();

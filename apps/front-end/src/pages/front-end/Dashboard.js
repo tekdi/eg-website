@@ -658,15 +658,64 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
                 </Modal.Header>
                 <Modal.Body alignItems="center">
                   <VStack width={"100%"}>
-                    <RenderContent
-                      certificateData={certificateData}
-                      t={t}
-                      isEventActive={isEventActive}
-                      examButtonText={examButtonText}
-                      floatValue={floatValue}
-                      events={events}
-                      setExamEvent={setExamEvent}
-                    />
+                    {isEventActive ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {examButtonText}
+                      </AdminTypo.H3>
+                    ) : certificateData?.certificate_status === null ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("CERTIFICATION_IS_PENDING")}
+                      </AdminTypo.H3>
+                    ) : certificateData?.certificate_status === false &&
+                      certificateData?.score >= floatValue ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t(`TRAINING_INCOMPLETE`)}
+                        {certificateData?.score?.toFixed(2) + "%"}
+                      </AdminTypo.H3>
+                    ) : certificateData?.certificate_status === true ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t(`TRAINING_TEST_DOWNLOAD_CERTIFICATE`)}
+                        {certificateData.score?.toFixed(2) + "%"}
+                      </AdminTypo.H3>
+                    ) : certificateData?.certificate_status === false ? (
+                      <AdminTypo.H3 color="textGreyColor.500">
+                        {t("TRAINING_NOT_PASSED")}
+                      </AdminTypo.H3>
+                    ) : (
+                      events && (
+                        <TableCard
+                          setExamEvent={setExamEvent}
+                          pagination
+                          data={events}
+                          columns={[
+                            {
+                              name: `${t("EVENT_ID")} / ${t("NAME")}`,
+                              selector: (row) => `${row?.id} / ${row?.name}`,
+                            },
+                            {
+                              name: t("ATTENDANCE"),
+                              selector: (row) => {
+                                const attData = row?.attendances?.filter(
+                                  (attendance) =>
+                                    attendance.user_id == fa_id &&
+                                    attendance.status == "present" &&
+                                    row.end_date ==
+                                      moment(attendance.date_time).format(
+                                        "YYYY-MM-DD",
+                                      ),
+                                );
+                                return attData.length > 0 ? "yes" : "no";
+                              },
+                            },
+                            {
+                              name: t("EXAM_START_STATUS"),
+                              selector: (row) =>
+                                row?.params?.start_exam == "yes" ? "yes" : "no",
+                            },
+                          ]}
+                        />
+                      )
+                    )}
                   </VStack>
                 </Modal.Body>
                 <Modal.Footer alignSelf={"center"}>
@@ -867,6 +916,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
 
               <FrontEndTypo.Primarybutton
                 width="100%"
+                // onPress={(e) => navigate("/examattendance")}
                 onPress={(e) => navigate("/examschedule")}
               >
                 {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
@@ -1182,105 +1232,11 @@ const TableCard = ({ data, columns, setExamEvent }) => {
   );
 };
 
-const RenderContent = ({
-  isEventActive,
-  examButtonText,
-  t,
-  floatValue,
-  certificateData,
-  events,
-  setExamEvent,
-}) => {
-  switch (true) {
-    case isEventActive:
-      return (
-        <AdminTypo.H3 color="textGreyColor.500">{examButtonText}</AdminTypo.H3>
-      );
-
-    case certificateData?.certificate_status === null:
-      return (
-        <AdminTypo.H3 color="textGreyColor.500">
-          {t("CERTIFICATION_IS_PENDING")}
-        </AdminTypo.H3>
-      );
-
-    case certificateData?.certificate_status === false &&
-      certificateData?.score >= floatValue:
-      return (
-        <AdminTypo.H3 color="textGreyColor.500">
-          {t("TRAINING_INCOMPLETE")}
-          {certificateData?.score?.toFixed(2) + "%"}
-        </AdminTypo.H3>
-      );
-
-    case certificateData?.certificate_status === true:
-      return (
-        <AdminTypo.H3 color="textGreyColor.500">
-          {t("TRAINING_TEST_DOWNLOAD_CERTIFICATE")}
-          {certificateData.score?.toFixed(2) + "%"}
-        </AdminTypo.H3>
-      );
-
-    case certificateData?.certificate_status === false:
-      return (
-        <AdminTypo.H3 color="textGreyColor.500">
-          {t("TRAINING_NOT_PASSED")}
-        </AdminTypo.H3>
-      );
-
-    default:
-      return (
-        events && (
-          <TableCard
-            setExamEvent={setExamEvent}
-            pagination
-            data={events}
-            columns={[
-              {
-                name: `${t("EVENT_ID")} / ${t("NAME")}`,
-                selector: (row) => `${row?.id} / ${row?.name}`,
-              },
-              {
-                name: t("ATTENDANCE"),
-                selector: (row) => {
-                  const attData = row?.attendances?.filter(
-                    (attendance) =>
-                      attendance.user_id == fa_id &&
-                      attendance.status == "present" &&
-                      row.end_date ==
-                        moment(attendance.date_time).format("YYYY-MM-DD"),
-                  );
-                  return attData.length > 0 ? "yes" : "no";
-                },
-              },
-              {
-                name: t("EXAM_START_STATUS"),
-                selector: (row) =>
-                  row?.params?.start_exam == "yes" ? "yes" : "no",
-              },
-            ]}
-          />
-        )
-      );
-  }
-};
-
-RenderContent.propTypes = {
-  isEventActive: PropTypes.any,
-  examButtonText: PropTypes.string,
-  t: PropTypes.any,
-  floatValue: PropTypes.any,
-  certificateData: PropTypes.any,
-  events: PropTypes.any,
-  setExamEvent: PropTypes.func,
-};
-
 TableCard.propTypes = {
   data: PropTypes.any,
   columns: PropTypes.any,
   setExamEvent: PropTypes.any,
 };
-
 Dashboard.propTypes = {
   userTokenInfo: PropTypes.any,
   footerLinks: PropTypes.any,
