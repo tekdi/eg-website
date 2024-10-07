@@ -1,7 +1,7 @@
 import { jsonParse } from "@shiksha/common-lib";
 
 let state = jsonParse(localStorage.getItem("program"));
-const regex = /^(?:(?![\u0900-\u097F])[A-Za-z\s])+\p{P}*$/;
+const regex = /^(?!.*[\u0900-\u097F])[A-Za-z\s\p{P}]+$/;
 
 export default {
   description: "1.AG Enrollment Details",

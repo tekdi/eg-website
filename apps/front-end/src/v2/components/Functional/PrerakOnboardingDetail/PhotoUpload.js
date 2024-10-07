@@ -7,13 +7,6 @@ import { OfflineFileUpload } from "v2/components/Static/FormBaseInput/FormBaseIn
 import { updateOnboardingData } from "v2/utils/OfflineHelper/OfflineHelper";
 import PropTypes from "prop-types";
 
-PhotoUpload.propTypes = {
-  userid: PropTypes.any,
-  facilitator: PropTypes.any,
-  formData: PropTypes.any,
-  navigatePage: PropTypes.any,
-};
-
 export default function PhotoUpload({
   userid,
   facilitator,
@@ -130,3 +123,10 @@ export default function PhotoUpload({
     </VStack>
   );
 }
+
+PhotoUpload.propTypes = {
+  userid: PropTypes.any,
+  facilitator: PropTypes.any,
+  formData: PropTypes.any,
+  navigatePage: PropTypes.any,
+};

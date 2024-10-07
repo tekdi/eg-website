@@ -45,7 +45,7 @@ export default function PageLayout({
           height={height}
           width={width}
         >
-          {customComponent && <></>}
+          {customComponent || <></>}
         </Center>
       ) : (
         <ScrollView minH={height} maxH={height} w={width} shadow={4}>
@@ -60,7 +60,7 @@ export default function PageLayout({
           ) : (
             <></>
           )}
-          {customComponent && <></>}
+          {customComponent || <></>}
         </ScrollView>
       )}
     </Center>
@@ -68,9 +68,9 @@ export default function PageLayout({
 }
 
 PageLayout.propTypes = {
-  t: PropTypes.func,
+  t: PropTypes.any,
   isPageMiddle: PropTypes.bool,
-  customComponent: PropTypes.element,
+  customComponent: PropTypes.any,
   showAppBar: PropTypes.bool,
   showHelpButton: PropTypes.bool,
   funBackButton: PropTypes.func,

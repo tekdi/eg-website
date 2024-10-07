@@ -1051,6 +1051,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
                             {data?.program_beneficiaries
                               ?.learning_motivation ? (
                               <GetOptions
+                                t={t}
                                 array={
                                   data?.program_beneficiaries
                                     ?.learning_motivation
@@ -2025,7 +2026,7 @@ export default function AgAdminProfile({ footerLinks, userTokenInfo }) {
   );
 }
 
-const GetOptions = ({ array, enumType, enumApiData }) => {
+const GetOptions = ({ t, array, enumType, enumApiData }) => {
   return (
     <VStack>
       {getUniqueArray(array)?.map((item) => (
@@ -2048,6 +2049,7 @@ const GetOptions = ({ array, enumType, enumApiData }) => {
 };
 
 GetOptions.propTypes = {
+  t: PropTypes.any,
   array: PropTypes.any,
   enumType: PropTypes.any,
   enumApiData: PropTypes.any,

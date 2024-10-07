@@ -3,6 +3,7 @@ import { HStack, ScrollView, VStack, Stack } from "native-base";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DataTable from "react-data-table-component";
+import PropTypes from "prop-types";
 
 const ManualResultView = ({ data }) => {
   const { t } = useTranslation();
