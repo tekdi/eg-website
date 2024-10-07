@@ -4,12 +4,6 @@ import { useNavigate } from "react-router-dom";
 import FilePreview from "v2/components/Static/FilePreview/FilePreview";
 import PropTypes from "prop-types";
 
-ProfilePhoto.propTypes = {
-  profile_photo_1: PropTypes.object,
-  editLink: PropTypes.string,
-  isProfileEdit: PropTypes.bool,
-};
-
 export default function ProfilePhoto({
   profile_photo_1,
   editLink,
@@ -53,3 +47,9 @@ export default function ProfilePhoto({
     </VStack>
   );
 }
+
+ProfilePhoto.propTypes = {
+  profile_photo_1: PropTypes.object,
+  editLink: PropTypes.string,
+  isProfileEdit: PropTypes.bool,
+};

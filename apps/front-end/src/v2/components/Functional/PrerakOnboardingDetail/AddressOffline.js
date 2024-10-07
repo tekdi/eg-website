@@ -5,12 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-AddressOffline.propTypes = {
-  alert: PropTypes.string,
-  facilitator: PropTypes.object,
-  navigatePage: PropTypes.func,
-};
-
 const AddressOffline = ({ alert, facilitator, navigatePage }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -61,3 +55,9 @@ const AddressOffline = ({ alert, facilitator, navigatePage }) => {
 };
 
 export default AddressOffline;
+
+AddressOffline.propTypes = {
+  alert: PropTypes.string,
+  facilitator: PropTypes.object,
+  navigatePage: PropTypes.func,
+};

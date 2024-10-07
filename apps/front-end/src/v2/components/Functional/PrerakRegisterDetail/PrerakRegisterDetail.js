@@ -43,16 +43,6 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import { setDistrict, setBlock, setVillage } from "utils/localHelper.js";
 
-PrerakRegisterDetail.propTypes = {
-  t: PropTypes.any,
-  currentForm: PropTypes.any,
-  setCurrentForm: PropTypes.any,
-  registerFormData: PropTypes.any,
-  setRegisterFormData: PropTypes.any,
-  ip: PropTypes.any,
-  showIntroductionOfProject: PropTypes.any,
-};
-
 export default function PrerakRegisterDetail({
   t,
   currentForm,
@@ -1163,3 +1153,13 @@ export default function PrerakRegisterDetail({
     </>
   );
 }
+
+PrerakRegisterDetail.propTypes = {
+  t: PropTypes.any,
+  currentForm: PropTypes.any,
+  setCurrentForm: PropTypes.any,
+  registerFormData: PropTypes.any,
+  setRegisterFormData: PropTypes.any,
+  ip: PropTypes.any,
+  showIntroductionOfProject: PropTypes.any,
+};
