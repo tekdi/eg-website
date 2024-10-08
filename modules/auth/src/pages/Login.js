@@ -23,6 +23,7 @@ import {
   removeOnboardingURLData,
   removeOnboardingMobile,
   CustomAlert,
+  useLocationData,
 } from "@shiksha/common-lib";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -82,6 +83,8 @@ export default function Login() {
   const location = useLocation();
   const [isButtonLoading, setIsButtonLoading] = React.useState(false);
   const [language, setLanguage] = React.useState();
+  const [latData = null, longData = null] = useLocationData() || [];
+
   useEffect(() => {
     setLanguage(localStorage.getItem("lang") || "en");
   }, []);
@@ -113,8 +116,14 @@ export default function Login() {
   const handleLogin = async () => {
     if (validate()) {
       setIsButtonLoading(true);
-      const { error } = credentials ? await login(credentials) : {};
+      const { error } = credentials
+        ? await login({ ...credentials, lat: latData, long: longData })
+        : {};
       if (!error) {
+        const loginData = {
+          username: credentials?.username,
+        };
+        localStorage.setItem("loginData", JSON.stringify(loginData));
         navigate("/");
         navigate(0);
       } else {
