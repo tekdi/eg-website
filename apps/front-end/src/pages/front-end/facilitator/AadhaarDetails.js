@@ -7,7 +7,6 @@ import {
   facilitatorRegistryService,
   t,
   Layout,
-  ImageView,
   BodyMedium,
 } from "@shiksha/common-lib";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,6 +27,7 @@ export default function AadhaarDetails() {
       _appBar={{
         exceptIconsShow: ["menuBtn", "userInfo"],
         leftIcon: <FrontEndTypo.H2>{t("AADHAAR_DETAILS")}</FrontEndTypo.H2>,
+        onPressBackButton: () => navigate(`/profile`),
       }}
       analyticsPageTitle={"FACILITATOR_AADHAAR"}
       pageTitle={t("AADHAAR_DETAILS")}
@@ -156,67 +156,8 @@ export default function AadhaarDetails() {
                           user: facilitator,
                         }}
                       />
-                      {/* <FrontEndTypo.Secondarybutton
-                        my="4"
-                        onPress={() => {
-                          navigate(`/aadhaar-kyc/${id}/QR`);
-                        }}
-                      >
-                        {t("SCAN_QR_CODE")}
-                      </FrontEndTypo.Secondarybutton> 
-                       {facilitator?.aadhaar_verification_mode !== "upload" && (
-                        <FrontEndTypo.Secondarybutton
-                          onPress={() => {
-                            navigate(`/aadhaar-kyc/${id}/upload`, {
-                              state: `/beneficiary/${id}/aadhaardetails`,
-                            });
-                          }}
-                        >
-                          {t("AADHAR_UPLOAD_KYC")}
-                        </FrontEndTypo.Secondarybutton>
-                      )} */}
                     </VStack>
                   )}
-                {/* {facilitator?.aadhaar_verification_mode === "upload" && (
-                  <VStack space="5">
-                    <FrontEndTypo.H2 bold color="textMaroonColor.400">
-                      {t("HAVE_YOU_UPDATED_AADHAAR_CARD")}
-                    </FrontEndTypo.H2>
-                    <FrontEndTypo.H3 color="textGreyColor.100">
-                      {t(
-                        "REVERIFY_TO_MATCH_THE_AADHAAR_YOU_USED_FOR_ENROLLMENT"
-                      )}
-                    </FrontEndTypo.H3>
-
-                    <FrontEndTypo.H2>{t("FRONT_VIEW")}</FrontEndTypo.H2>
-                    {facilitator?.aadhaar_front ? (
-                      <ImageView
-                        source={{ document_id: facilitator?.aadhaar_front?.id }}
-                        alt="aadhaar_front"
-                        width="full"
-                        height="172px"
-                        borderRadius="5px"
-                        borderWidth="1px"
-                        borderColor="worksheetBoxText.100"
-                        alignSelf="Center"
-                      />
-                    ) : null}
-
-                    <FrontEndTypo.H2>{t("BACK_VIEW")}</FrontEndTypo.H2>
-                    {facilitator?.aadhaar_back ? (
-                      <ImageView
-                        source={{ document_id: facilitator?.aadhaar_back?.id }}
-                        alt="aadhaar_back"
-                        width="full"
-                        height="172px"
-                        borderRadius="5px"
-                        borderWidth="1px"
-                        borderColor="worksheetBoxText.100"
-                        alignSelf="Center"
-                      />
-                    ) : null}
-                  </VStack>
-                )} */}
               </VStack>
             )}
           </VStack>
