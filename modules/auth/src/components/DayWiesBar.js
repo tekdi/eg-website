@@ -42,6 +42,18 @@ export function DayWiesBar({
     }
   }, [page]);
 
+  let text;
+
+  if (page === 0) {
+    text = t("TODAY");
+  } else if (page === 1) {
+    text = t("TOMORROW");
+  } else if (page === -1) {
+    text = t("YESTERDAY");
+  } else {
+    text = moment(date).format("dddd");
+  }
+
   return (
     <Display
       {...{
@@ -54,13 +66,7 @@ export function DayWiesBar({
     >
       <VStack>
         <Text fontWeight={600} fontSize="16px">
-          {page === 0
-            ? t("TODAY")
-            : page === 1
-            ? t("TOMORROW")
-            : page === -1
-            ? t("YESTERDAY")
-            : moment(date).format("dddd")}
+          {text}
         </Text>
         <Text fontWeight={300} fontSize="10px">
           <FormatDate date={date} />
@@ -147,20 +153,23 @@ const Display = ({
   _box,
 }) => {
   const toast = useToast();
+  const primaryColorValue =
+    (typeof previousDisabled === "undefined" || previousDisabled === false) &&
+    activeColor
+      ? activeColor
+      : "primary.500";
+  let colorValue = "gray.400";
+
+  if (typeof nextDisabled === "undefined" || nextDisabled === false) {
+    colorValue = activeColor || "primary.500";
+  }
   return (
     <Box bg="white" p="1" {..._box}>
       <HStack justifyContent="space-between" alignItems="center" space={4}>
         <HStack space="4" alignItems="center">
           <IconByName
             size="sm"
-            color={
-              typeof previousDisabled === "undefined" ||
-              previousDisabled === false
-                ? activeColor
-                  ? activeColor
-                  : "primary.500"
-                : "gray.400"
-            }
+            color={primaryColorValue}
             name="ArrowLeftSLineIcon"
             onPress={(e) => {
               if (leftErrorText) {
@@ -182,13 +191,7 @@ const Display = ({
         <HStack space="2">
           <IconByName
             size="sm"
-            color={
-              typeof nextDisabled === "undefined" || nextDisabled === false
-                ? activeColor
-                  ? activeColor
-                  : "primary.500"
-                : "gray.400"
-            }
+            color={colorValue}
             name="ArrowRightSLineIcon"
             onPress={(e) => {
               if (rightErrorText) {

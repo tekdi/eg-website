@@ -63,9 +63,7 @@ export default function FilePreview({
         ))}
 
       {!text ? (
-        !data?.fileUrl ? (
-          <React.Fragment />
-        ) : type === "pdf" || isIframeTag ? (
+        !data?.fileUrl ? null : type === "pdf" || isIframeTag ? (
           <iframe
             style={{ border: "none" }}
             frameBorder="0"
@@ -162,5 +160,5 @@ FilePreview.propTypes = {
   _button: PropTypes.object,
   width: PropTypes.any,
   height: PropTypes.any,
-  size: PropTypes.any
+  size: PropTypes.any,
 };

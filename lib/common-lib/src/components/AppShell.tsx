@@ -74,7 +74,7 @@ function AppShell({
   }, [token, routes, otherProps?.footerLinks])
 
   if (!Object.keys(theme).length) {
-    return <React.Fragment />
+    return null
   }
 
   return (

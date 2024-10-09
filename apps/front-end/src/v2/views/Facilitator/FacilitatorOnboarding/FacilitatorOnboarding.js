@@ -50,7 +50,6 @@ function FacilitatorOnboarding() {
           const IsPresent = await checkDataIsPresent();
           if (!IsPresent) {
             const tokenData = getTokernUserInfo();
-            const { hasura } = tokenData?.resource_access || {};
             const id = getUserId();
             const { status, ...user } = await getIpUserInfo(id);
             if (`${status}` === "401") {
