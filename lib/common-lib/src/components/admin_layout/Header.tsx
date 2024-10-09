@@ -15,38 +15,30 @@ export default function Header({
   _subHeading
 }: any) {
   let newAvatar = localStorage.getItem('firstName')
-  return !isDisabledHeader ? (
-    !customeComponent ? (
-      <Box {..._box} py={7} px={5}>
-        <HStack justifyContent='space-between' alignItems='center'>
-          <VStack>
-            {subHeadingComponent ? (
-              subHeadingComponent
-            ) : (
-              <Text fontSize='12px' {..._subHeading}>
-                {subHeading}
-              </Text>
-            )}
-            {headingComponent ? (
-              headingComponent
-            ) : (
-              <Text bold fontSize='24px' {..._heading}>
-                {title}
-              </Text>
-            )}
-          </VStack>
-          {iconComponent ? (
-            iconComponent
-          ) : avatar ? (
-            <Avatar bg='amber.500' borderRadius='5px'>
-              {newAvatar?.toUpperCase().substr(0, 2)}
-              {/* <Avatar.Badge bg='green.500'  /> */}
-            </Avatar>
-          ) : null}
-        </HStack>
-      </Box>
-    ) : (
-      customeComponent
-    )
-  ) : null
+  return !isDisabledHeader
+    ? customeComponent || (
+        <Box {..._box} py={7} px={5}>
+          <HStack justifyContent='space-between' alignItems='center'>
+            <VStack>
+              {subHeadingComponent || (
+                <Text fontSize='12px' {..._subHeading}>
+                  {subHeading}
+                </Text>
+              )}
+              {headingComponent || (
+                <Text bold fontSize='24px' {..._heading}>
+                  {title}
+                </Text>
+              )}
+            </VStack>
+            {iconComponent || avatar ? (
+              <Avatar bg='amber.500' borderRadius='5px'>
+                {newAvatar?.toUpperCase().slice(0, 2)}
+                {/* <Avatar.Badge bg='green.500'  /> */}
+              </Avatar>
+            ) : null}
+          </HStack>
+        </Box>
+      )
+    : null
 }

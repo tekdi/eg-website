@@ -41,69 +41,88 @@ export default function FilePreview({
     fetchData();
   }, [base64]);
 
+  const getFilePreview = () => {
+    if (type === "pdf" || isIframeTag) {
+      return (
+        <iframe
+          style={{ border: "none", borderColor: "none" }}
+          src={data?.fileUrl}
+          title={data?.fileUrl}
+          loading="lazy"
+          {...{ width: props?.width, height: props?.height }}
+        />
+      );
+    } else if (isImageTag) {
+      return (
+        <img
+          alt="Image_not_found"
+          width={"300px"}
+          height={"300px"}
+          {...props}
+          src={base64}
+        />
+      );
+    } else {
+      return (
+        <Avatar
+          alt="Image not found"
+          {...(!props?.size ? { width: "30px", height: "30px" } : {})}
+          {...props}
+          source={{
+            ...source,
+            uri: data?.fileUrl,
+          }}
+        />
+      );
+    }
+  };
+
+  let filePreview = null;
+  if (data?.fileUrl) {
+    filePreview = getFilePreview();
+  }
+
+  const buttonOrText = data?.fileUrl ? (
+    <Button
+      variant={"link"}
+      onPress={(e) => setModalUrl(data?.fileUrl)}
+      {..._button}
+    >
+      {text}
+    </Button>
+  ) : (
+    t("NA")
+  );
+
+  const getImageOrPdfPreview = () => {
+    if (type.includes("image")) {
+      return (
+        <img
+          alt="Image_not_found"
+          style={{ borderRadius: borderRadius }}
+          {...props}
+          src={base64}
+        />
+      );
+    } else if (type.includes("application/pdf")) {
+      return (
+        <iframe
+          src={pdf}
+          width="100%"
+          height="500px"
+          title="PDF Preview"
+        ></iframe>
+      );
+    } else {
+      return t("NA");
+    }
+  };
+
   return (
     <Box {..._box}>
-      {base64 &&
-        (type.includes("image") ? (
-          <img
-            alt="Image_not_found"
-            style={{ borderRadius: borderRadius }}
-            {...props}
-            src={base64}
-          />
-        ) : type.includes("application/pdf") ? (
-          <iframe
-            src={pdf}
-            width="100%"
-            height="500px"
-            title="PDF Preview"
-          ></iframe>
-        ) : (
-          t("NA")
-        ))}
+      {base64 && getImageOrPdfPreview()}
 
-      {!text ? (
-        !data?.fileUrl ? (
-          <React.Fragment />
-        ) : type === "pdf" || isIframeTag ? (
-          <iframe
-            style={{ border: "none" }}
-            frameBorder="0"
-            src={data?.fileUrl}
-            title={data?.fileUrl}
-            loading="lazy"
-            {...{ width: props?.width, height: props?.height }}
-          />
-        ) : isImageTag ? (
-          <img
-            alt="Image_not_found"
-            width={"300px"}
-            height={"300px"}
-            {...props}
-            src={base64}
-          />
-        ) : (
-          <Avatar
-            alt="Image not found"
-            {...(!props?.size ? { width: "30px", height: "30px" } : {})}
-            {...props}
-            source={{
-              ...source,
-              uri: data?.fileUrl,
-            }}
-          />
-        )
-      ) : data?.fileUrl ? (
-        <Button
-          variant={"link"}
-          onPress={(e) => setModalUrl(data?.fileUrl)}
-          {..._button}
-        >
-          {text}
-        </Button>
-      ) : (
-        t("NA")
-      )}
+      {!text ? filePreview : buttonOrText}
 
       <Modal isOpen={modalUrl} onClose={() => setModalUrl()}>
         <Modal.Content {...{ width }} maxWidth={"80%"}>
@@ -162,5 +181,5 @@ FilePreview.propTypes = {
   _button: PropTypes.object,
   width: PropTypes.any,
   height: PropTypes.any,
-  size: PropTypes.any
+  size: PropTypes.any,
 };

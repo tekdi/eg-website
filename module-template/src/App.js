@@ -1,10 +1,9 @@
-import React, { Suspense } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from "react";
 
-import "./App.css";
-import { extendTheme, NativeBaseProvider } from "native-base";
-import { DEFAULT_THEME, AppShell } from "@shiksha/common-lib";
+import { AppShell, DEFAULT_THEME } from "@shiksha/common-lib";
+import { extendTheme } from "native-base";
 import Sample from "pages/Sample";
+import "./App.css";
 
 function App() {
   const theme = extendTheme(DEFAULT_THEME);

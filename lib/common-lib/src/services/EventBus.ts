@@ -1,8 +1,7 @@
 import postal from 'postal'
 
 class EventBus {
-  private channel = postal.channel('app_events')
-  constructor() {}
+  private readonly channel = postal.channel('app_events')
 
   public publish(topic: string, message: any) {
     this.channel.publish(topic, message)
