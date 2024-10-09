@@ -58,7 +58,7 @@ export const basicRegister = {
       type: "number",
       title: "MOBILE_NUMBER",
       format: "MobileNumber",
-      regex: /^[0-9]{0,10}$/,
+      regex: /^\d{0,10}$/,
     },
   },
 };
@@ -202,7 +202,7 @@ export const verifyOTP = {
       type: "number",
       title: "MOBILE_NUMBER",
       format: "MobileNumberReadOnly",
-      regex: /^[0-9]{0,10}$/,
+      regex: /^\d{0,10}$/,
     },
   },
 };

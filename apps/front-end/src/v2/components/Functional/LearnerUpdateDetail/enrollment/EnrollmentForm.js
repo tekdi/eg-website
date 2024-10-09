@@ -529,9 +529,9 @@ export default function EnrollmentForm() {
   const validate = (data, key) => {
     let error = {};
     switch (key) {
-      case "enrollment_mobile_no":
+      case "enrollment_mobile_no": {
         const mobile = data?.enrollment_mobile_no;
-        const regex = /^[1-9][0-9]{0,9}$/;
+        const regex = /^[1-9]\d{0,9}$/;
         if (
           !mobile ||
           !mobile?.match(regex) ||
@@ -543,12 +543,13 @@ export default function EnrollmentForm() {
           error = { [key]: t("REQUIRED_MESSAGE") };
         }
         break;
+      }
       case "enrollment_date":
         if (moment.utc(data?.enrollment_date) > moment.utc()) {
           error = { [key]: t("FUTURE_DATES_NOT_ALLOWED") };
         }
         break;
-      case "subjects":
+      case "subjects": {
         if (page === "edit_enrollement_details") {
           const countLanguageSubjects = (subjectsArr, subjects) => {
             // Convert the subjects array to a Set for faster lookups
@@ -578,6 +579,7 @@ export default function EnrollmentForm() {
           }
         }
         break;
+      }
       default:
         break;
     }
@@ -892,15 +894,14 @@ export default function EnrollmentForm() {
         (page == "edit_enrollement" &&
           !["enrolled", "sso_id_enrolled"].includes(newdata?.enrollment_status))
       ) {
-        const { success, isUserExist } =
-          await benificiaryRegistoryService.updateAg(
-            {
-              ...newdata,
-              edit_page_type: "edit_enrollement",
-              is_eligible: newFormData?.is_eligible,
-            },
-            userId,
-          );
+        const { isUserExist } = await benificiaryRegistoryService.updateAg(
+          {
+            ...newdata,
+            edit_page_type: "edit_enrollement",
+            is_eligible: newFormData?.is_eligible,
+          },
+          userId,
+        );
         if (isUserExist) {
           setNotMatched(["enrollment_number"]);
         } else {

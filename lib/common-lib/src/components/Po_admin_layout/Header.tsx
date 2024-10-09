@@ -6,7 +6,6 @@ export default function Header({
   iconComponent,
   headingComponent,
   subHeadingComponent,
-  avatar,
   subHeading,
   isDisabledHeader,
   customeComponent,
@@ -41,6 +40,6 @@ export default function Header({
       </Box>
     )
   ) : (
-    <React.Fragment />
+    <></>
   )
 }

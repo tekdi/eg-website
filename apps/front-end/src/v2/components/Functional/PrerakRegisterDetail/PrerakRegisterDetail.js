@@ -557,7 +557,7 @@ export default function PrerakRegisterDetail({
     }
 
     if (id === "root_pincode") {
-      const regex = /^[0-9]{6}$/;
+      const regex = /^\d{6}$/;
       if (data?.pincode && !regex.test(data.pincode)) {
         const newErrors = {
           pincode: {
@@ -859,11 +859,8 @@ export default function PrerakRegisterDetail({
       mobile: registerFormData?.mobile?.toString(),
       reason: "verify_mobile",
     };
-    let reset = true;
     otpData = await authRegistryService.sendOtp(sendotpBody);
-    const result = otpData?.data;
     localStorage.setItem("hash", otpData?.data?.hash);
-    // console.log(otpData)
     return otpData;
   };
 
