@@ -1,16 +1,3 @@
-const accessControl = (schema, fields) => {
-  const newSchema = { ...schema };
-  for (const field of fields) {
-    if (newSchema.properties?.[field]) {
-      if (newSchema.properties.hasOwnProperty(field)) {
-        newSchema.properties[field].readOnly = false;
-      } else {
-        const { readOnly, ...propData } = newSchema.properties[field] || {};
-        newSchema.properties[field] = propData;
-      }
-    }
-  }
-  return newSchema;
-};
+import accessControl from "v2/components/Functional/PrerakOnboardingDetail/AccessControl";
 
 export default accessControl;
