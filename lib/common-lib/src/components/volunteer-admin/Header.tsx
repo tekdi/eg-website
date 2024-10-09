@@ -42,15 +42,11 @@ export default function Header({
               {newAvatar?.toUpperCase().substr(0, 2)}
               {/* <Avatar.Badge bg='green.500'  /> */}
             </Avatar>
-          ) : (
-            <React.Fragment />
-          )}
+          ) : null}
         </HStack>
       </Box>
     ) : (
       customeComponent
     )
-  ) : (
-    <React.Fragment />
-  )
+  ) : null
 }
