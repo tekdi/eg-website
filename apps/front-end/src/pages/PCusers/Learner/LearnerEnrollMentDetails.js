@@ -77,27 +77,22 @@ export default function App({ userTokenInfo }) {
     }
 
     let arr;
-    switch (true) {
-      case isNotEnrolled:
-        arr = ["enrollment_status"];
-        break;
-      case isOtherStatus:
-        arr = ["enrollment_status", "enrolled_for_board"];
-        break;
-      default:
-        arr = getEnrollmentDetails();
+    if (isNotEnrolled) {
+      arr = ["enrollment_status"];
+    } else if (isOtherStatus) {
+      arr = ["enrollment_status", "enrolled_for_board"];
+    } else {
+      arr = getEnrollmentDetails();
     }
 
     let enrollmentIdLabel;
-    switch (stateName) {
-      case "BIHAR":
-        enrollmentIdLabel = "APPLICATION_ID";
-        break;
-      case "MADHYA PRADESH":
-        enrollmentIdLabel = "ROLL_NUMBER";
-        break;
-      default:
-        enrollmentIdLabel = "ENROLLMENT_NO";
+
+    if (stateName === "BIHAR") {
+      enrollmentIdLabel = "APPLICATION_ID";
+    } else if (stateName === "MADHYA PRADESH") {
+      enrollmentIdLabel = "ROLL_NUMBER";
+    } else {
+      enrollmentIdLabel = "ENROLLMENT_NO";
     }
 
     let cardArr = [];
