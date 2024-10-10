@@ -60,7 +60,11 @@ const UserDetailsForm = () => {
         return (
           <Box textAlign="center">
             <Text fontSize="xl">{error}</Text>
-            <Button mt={4} className="custom-button" onClick={handleBack}>
+            <Button
+              mt={4}
+              className="custom-button"
+              onClick={() => navigate("-1")}
+            >
               Go Back
             </Button>
           </Box>
