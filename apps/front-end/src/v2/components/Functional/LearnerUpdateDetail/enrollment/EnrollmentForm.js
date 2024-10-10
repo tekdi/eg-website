@@ -87,8 +87,8 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         newSchema = {
           ...constantSchema,
           properties: {
-            enrolled_for_board: efd,
             enrollment_status,
+            enrolled_for_board: efd,
           },
           required: ["enrollment_status", "enrolled_for_board"],
         };
