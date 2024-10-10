@@ -262,7 +262,7 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
       if (type == "update" && temp_update_obj?.status == "insert") {
         merged.push(temp_update_obj);
       } else if (merged.length > 0) {
-        let isPush = false;
+        let isPush = true;
         for (let j = 0; j < merged.length; j++) {
           if (
             (type == "update" &&
@@ -283,8 +283,6 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
             merged[j] = temp_update_obj;
             isPush = false;
             break;
-          } else {
-            isPush = true;
           }
         }
         if (isPush) {

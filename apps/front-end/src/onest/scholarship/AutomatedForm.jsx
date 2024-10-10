@@ -26,7 +26,6 @@ import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
-import { set } from "lodash";
 
 function calculateAge(dob) {
   const birthDate = moment(dob, "YYYY-MM-DD");
@@ -410,6 +409,15 @@ const AutomatedForm = () => {
         t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
       );
       console.error("Error submitting form:", error);
+      // Add user-facing error message
+      toast.show({
+        title: "Error",
+        status: "error",
+        description: t("An error occurred. Please try again."),
+        duration: 5000,
+      });
+      // Add retry mechanism
+      setTimeout(() => fetchInitDetails(), 5000);
     } finally {
       setLoading(false);
     }

@@ -6,7 +6,7 @@ import {
   OnestService,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import { Box, HStack, Input, VStack } from "native-base";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -81,7 +81,7 @@ export default function MyConsumptions({
         [field]: { _ilike: `%${value}%` },
       }));
     }, 2000),
-    [],
+    [setFilter],
   );
 
   const onPressBackButton = () => {
