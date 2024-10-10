@@ -28,13 +28,6 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const styles = {
-  box: {
-    background:
-      "linear-gradient(135deg, #e2f2fc -10%, #faf6f3 35%, #faf6f3 60%,#faf6f3 70%, #e2f2fc 110%)",
-  },
-};
-
 export default function Login() {
   //fetch URL data and store fix for 2 times render useEffect call
   const [countLoad, setCountLoad] = useState(0);
