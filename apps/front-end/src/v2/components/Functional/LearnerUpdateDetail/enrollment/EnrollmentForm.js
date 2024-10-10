@@ -157,8 +157,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
 
     default:
       {
-        const { sso_id: sso_id_1, ...properties } =
-          constantSchema?.properties || {};
+        const { sso_id, ...properties } = constantSchema?.properties || {};
 
         if (
           state_name === "RAJASTHAN" &&

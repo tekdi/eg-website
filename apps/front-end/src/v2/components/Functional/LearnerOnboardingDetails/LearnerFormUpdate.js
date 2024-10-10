@@ -621,7 +621,7 @@ export default function LearnerFormUpdate({ userTokenInfo, footerLinks }) {
       }
     }
     if (id === "root_pincode") {
-      const regex = /^[0-9]{6}$/;
+      const regex = /^\d{6}$/;
       if (data?.pincode && !regex.test(data.pincode)) {
         const newErrors = {
           pincode: {

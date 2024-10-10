@@ -25,8 +25,8 @@ import {
 import { dataConfig } from "onest/card";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
-// import { registerTelementry } from "../api/Apicall";
 import moment from "moment";
+import { set } from "lodash";
 
 function calculateAge(dob) {
   const birthDate = moment(dob, "YYYY-MM-DD");
@@ -55,12 +55,7 @@ const AutomatedForm = () => {
 
   const userDataString = localStorage.getItem("userData");
   const userData = JSON.parse(userDataString);
-  // const [siteUrl, setSiteUrl] = useState(window.location.href);
   const toast = useToast();
-
-  // useEffect(() => {
-  //   registerTelementry(siteUrl, transactionId);
-  // }, []);
 
   useEffect(() => {
     const url = window.location.href;
@@ -198,15 +193,6 @@ const AutomatedForm = () => {
       initReqBodyJson.init[1].message.order.items[0].xinput.form[
         "submission_id"
       ] = localStorage.getItem("submissionId");
-
-      // initReqBodyJson.init[1].message.order.provider["id"] =
-      //   jobDetails?.message?.order?.provider?.id;
-      // initReqBodyJson.init[1].message.order.items[0]["id"] =
-      //   jobDetails?.message?.order?.items[0]?.id;
-      // initReqBodyJson.init[1].message.order.fulfillments[0]["id"] =
-      //   jobDetails?.message?.order?.items[0]?.fulfillment_ids[0];
-      // initReqBodyJson.init[1].message.order.fulfillments[0]["customer"] =
-      //   customerBody.hasOwnProperty('customer') ? customerBody['customer'] : customerBody;
       const paramBody = initReqBodyJson.init[1];
 
       // Perform API call with formData
@@ -246,7 +232,7 @@ const AutomatedForm = () => {
 
   const getSelectDetails = async (jobInfo) => {
     try {
-      //setLoading(true);
+      setLoading(true);
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -289,18 +275,14 @@ const AutomatedForm = () => {
         );
       } else {
         data.responses[0]["context"]["message_id"] = uuidv4();
-        /*if (data.responses[0].message.order.items[0].xinput.form.url) {
-          searchForm(data.responses[0].message.order.items[0].xinput.form.url)
-        }
-        setLoading(false);*/
-        // setjobDetails(data?.responses[0]);
+
         fetchInitDetails();
       }
     } catch (error) {
       setLoading(false);
       console.error("Error fetching job details:", error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -323,11 +305,6 @@ const AutomatedForm = () => {
   }
 
   const fetchInitDetails = async () => {
-    // const errors = validateForm(formData);
-    // if (hasErrors(errors)) {
-    //   setFormErrors(errors);
-    //   return;
-    // }
     localStorage.setItem("initRes", "");
 
     try {
@@ -346,13 +323,6 @@ const AutomatedForm = () => {
       initReqBody["context"]["transaction_id"] = transactionId;
       initReqBody["context"]["timestamp"] = new Date().toISOString();
       initReqBody["context"]["message_id"] = uuidv4();
-      // initReqBody.message.order.provider["id"] = jobDetails?.message?.order?.provider?.id;
-      // initReqBody.message.order.items[0]["id"] = jobDetails?.message?.order?.items[0]?.id;
-      // initReqBody.message.order.fulfillments[0]["id"] = jobDetails?.message?.order?.items[0]?.fulfillment_ids[0];
-
-      // // initReqBody.message.order.fulfillments[0]["customer"]['person'] = formData['person'];
-      // initReqBody.message.order.fulfillments[0]["customer"]['contact'] = formData['contact'];
-      // initReqBody.message.order.fulfillments[0]["customer"]['person'] = {...formData['person'] , ...JSON.parse(localStorage.getItem('autoFormData'))}
 
       initReqBody.message = jobDetails?.message;
 
@@ -395,23 +365,6 @@ const AutomatedForm = () => {
           userData?.email;
         initReqBody.message.order.fulfillments[0].customer.contact.phone = `${userData?.phone || userData?.contact || userData?.["mobile number"]}`;
       }
-
-      /* if(localStorage.getItem('submissionId'))
-       {
- 
-       
-       initReqBody.message.order.items[0].xinput.form['submission_id'] = localStorage.getItem('submissionId');
- 
-       let tempString = initReqBody.message.order.items[0].xinput.form.url;
-       console.log('tempString -- ', tempString);
-       console.log('Transactionid -- ', transactionId);
- 
-       if (!tempString.match(transactionId)) {
-         errorMessage('Transaction Id and XInput form id does not match. Please try again.');
-         setLoading(false);
-         return;
-       }
-     }*/
 
       const paramBody = initReqBody;
       // Perform API call with formData
@@ -458,9 +411,7 @@ const AutomatedForm = () => {
       );
       console.error("Error submitting form:", error);
     } finally {
-      // setTimeout(() => {
-      //   setLoading(false);
-      // }, 20000);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -496,14 +447,6 @@ const AutomatedForm = () => {
         let data = JSON.parse(localStorage.getItem("selectRes"));
         if (data && data?.responses.length && jobInfo) {
           await fetchInitDetails();
-
-          // let usrtemp = localStorage.getItem("userData");
-          /* if(usrtemp){
-       fetchInitDetails(data?.responses[0]);
-       }else{
-         setIsAutoForm(false);
-         setLoading(false);
-       }*/
         } else if (jobInfo) {
           getSelectDetails(jobInfo);
         }

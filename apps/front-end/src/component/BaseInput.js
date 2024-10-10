@@ -117,12 +117,13 @@ export const ArrayFieldTemplate = ({ schema, items, formData, ...props }) => {
   const { title } = schema;
   const { t } = useTranslation();
   let addBtn = "";
-
+  const showNo = isShow !== "" ? "no" : "";
+  const value = items?.length > 0 ? "yes" : showNo;
   return (
     <Box>
       <RadioBtn
         key={items}
-        value={items?.length > 0 ? "yes" : isShow !== "" ? "no" : ""}
+        value={value}
         options={{
           enumOptions: [
             { label: t("YES"), value: "yes" },
@@ -219,11 +220,10 @@ export const FieldTemplate = ({
   ...props
 }) => {
   const { t } = useTranslation();
+  const spaceValue = schema?.label ? "4" : "0";
+  const space = id === "root" && label ? "6" : spaceValue;
   return (
-    <VStack
-      style={style}
-      space={id === "root" && label ? "6" : schema?.label ? "4" : "0"}
-    >
+    <VStack style={style} space={space}>
       {(!schema?.format ||
         !["hidden", "CheckUncheck"].includes(schema?.format)) &&
         (label || schema?.label) && (
@@ -590,10 +590,12 @@ export const HFieldTemplate = ({
 }) => {
   const { type } = schema;
   const { t } = useTranslation();
+  const spaceValue = schema?.label ? "4" : "0";
+  const space = id === "root" && label ? "10" : spaceValue;
   return (
     <HStack
       style={style}
-      space={id === "root" && label ? "10" : schema?.label ? "4" : "0"}
+      space={space}
       alignItems="flex-start"
       pl="3"
       direction={["column", "row"]}

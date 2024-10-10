@@ -43,103 +43,108 @@ const UserDetailsForm = () => {
     }
   };
 
-  return (
-    <Layout checkUserAccess>
-      {isLoading ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-          }}
-        >
-          <Box textAlign="center">
-            <Loader />
-          </Box>
-        </div>
-      ) : error ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-          }}
-        >
-          <Box textAlign="center">
-            <Text fontSize="xl">{error}</Text>
-            <Button mt={4} className="custom-button" onClick={handleBack}>
-              Go Back
-            </Button>
-          </Box>
-        </div>
-      ) : (
-        <Box
-          maxW="800px"
-          mx="auto"
-          mt="10"
-          p={{ base: "1rem", md: "1rem", lg: "2rem" }}
-        >
-          <form onSubmit={handleSubmit}>
-            <Flex mb="4">
-              <FormControl id="name" mr="2">
-                <FormLabel>Name</FormLabel>
-                <Input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl id="email">
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-            </Flex>
-            <Flex mb="4">
-              <FormControl id="phone" mr="2">
-                <FormLabel>Phone</FormLabel>
-                <Input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl id="age">
-                <FormLabel>Age</FormLabel>
-                <Input
-                  type="number"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-            </Flex>
-            <Button
-              type="submit"
-              colorScheme="green"
-              variant="solid"
-              backgroundColor="rgb(62, 97, 57)"
-              color="white"
-            >
-              Submit
-            </Button>
-          </form>
+  let content;
+  if (isLoading) {
+    content = (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <Box textAlign="center">
+          <Loader />
         </Box>
-      )}
-    </Layout>
-  );
+      </div>
+    );
+  } else if (error) {
+    content = (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <Box textAlign="center">
+          <Text fontSize="xl">{error}</Text>
+          <Button mt={4} className="custom-button" onClick={handleBack}>
+            Go Back
+          </Button>
+        </Box>
+      </div>
+    );
+  } else {
+    content = (
+      <Box
+        maxW="800px"
+        mx="auto"
+        mt="10"
+        p={{ base: "1rem", md: "1rem", lg: "2rem" }}
+      >
+        <form onSubmit={handleSubmit}>
+          <Flex mb="4">
+            <FormControl id="name" mr="2">
+              <FormLabel>Name</FormLabel>
+              <Input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+            <FormControl id="email">
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+          </Flex>
+          <Flex mb="4">
+            <FormControl id="phone" mr="2">
+              <FormLabel>Phone</FormLabel>
+              <Input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+            <FormControl id="age">
+              <FormLabel>Age</FormLabel>
+              <Input
+                type="number"
+                name="age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+          </Flex>
+          <Button
+            type="submit"
+            colorScheme="green"
+            variant="solid"
+            backgroundColor="rgb(62, 97, 57)"
+            color="white"
+          >
+            Submit
+          </Button>
+        </form>
+      </Box>
+    );
+  }
+
+  return <Layout checkUserAccess>{content}</Layout>;
 };
 
 export default UserDetailsForm;

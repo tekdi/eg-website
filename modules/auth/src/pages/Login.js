@@ -107,10 +107,7 @@ export default function Login() {
 
     setErrors(arr);
 
-    if (arr.username || arr.password) {
-      return false;
-    }
-    return true;
+    return !(arr.username || arr.password);
   };
 
   const handleLogin = async () => {

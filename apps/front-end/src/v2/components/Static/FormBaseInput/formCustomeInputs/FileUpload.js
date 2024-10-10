@@ -112,7 +112,7 @@ const FileUpload = ({ value, onChange, schema, uiSchema }) => {
     let newFile = file;
     const maxWidthOrHeight = Math.max(width || 1024, height || 768);
     // Compress the image
-    if (isReduce != false) {
+    if (isReduce) {
       const compressedImage = await imageCompression(file, {
         maxSizeMB: 0.1,
         maxWidthOrHeight,

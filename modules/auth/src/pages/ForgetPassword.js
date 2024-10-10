@@ -78,10 +78,7 @@ export default function ForgetPassword() {
     }
 
     setErrors(arr);
-    if (arr.password || arr.confirm_password) {
-      return false;
-    }
-    return true;
+    return !(arr.password || arr.confirm_password);
   };
 
   const handleLogin = async (username) => {

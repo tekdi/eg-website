@@ -204,10 +204,8 @@ export async function getOnlyChanged(MainObj, UpdateObj) {
         } else {
           NewObject[key] = UpdateObj[key];
         }
-      } else {
-        if (MainObj[key] !== UpdateObj[key]) {
-          NewObject[key] = UpdateObj[key];
-        }
+      } else if (MainObj[key] !== UpdateObj[key]) {
+        NewObject[key] = UpdateObj[key];
       }
     }
   }
@@ -260,41 +258,36 @@ export const mergeExperiences = async (get_obj, update_obj, type) => {
   }
   //compair with get
   if (update_obj && update_obj.length > 0) {
-    for (let i = 0; i < update_obj.length; i++) {
-      let temp_update_obj = update_obj[i];
+    for (const temp_update_obj of update_obj) {
       if (type == "update" && temp_update_obj?.status == "insert") {
         merged.push(temp_update_obj);
-      } else {
-        if (merged.length > 0) {
-          let isPush = false;
-          for (let j = 0; j < merged.length; j++) {
-            if (
-              (type == "update" &&
-                (temp_update_obj?.status == "delete" ||
-                  temp_update_obj?.status == "update") &&
-                temp_update_obj?.id != "" &&
-                temp_update_obj?.id == merged[j]?.id) ||
-              (type == "update" &&
-                (temp_update_obj?.status == "delete" ||
-                  temp_update_obj?.status == "update") &&
-                temp_update_obj?.id == "" &&
-                temp_update_obj?.unique_key == merged[j]?.unique_key) ||
-              (temp_update_obj?.id != "" &&
-                temp_update_obj?.id == merged[j]?.id) ||
-              (temp_update_obj?.id == "" &&
-                temp_update_obj?.unique_key == merged[j]?.unique_key)
-            ) {
-              merged[j] = temp_update_obj;
-              isPush = false;
-              break;
-            } else {
-              isPush = true;
-            }
+      } else if (merged.length > 0) {
+        let isPush = false;
+        for (let j = 0; j < merged.length; j++) {
+          if (
+            (type == "update" &&
+              (temp_update_obj?.status == "delete" ||
+                temp_update_obj?.status == "update") &&
+              temp_update_obj?.id != "" &&
+              temp_update_obj?.id == merged[j]?.id) ||
+            (type == "update" &&
+              (temp_update_obj?.status == "delete" ||
+                temp_update_obj?.status == "update") &&
+              temp_update_obj?.id == "" &&
+              temp_update_obj?.unique_key == merged[j]?.unique_key) ||
+            (temp_update_obj?.id != "" &&
+              temp_update_obj?.id == merged[j]?.id) ||
+            (temp_update_obj?.id == "" &&
+              temp_update_obj?.unique_key == merged[j]?.unique_key)
+          ) {
+            merged[j] = temp_update_obj;
+            isPush = false;
+            break;
+          } else {
+            isPush = true;
           }
-          if (isPush) {
-            merged.push(temp_update_obj);
-          }
-        } else {
+        }
+        if (isPush) {
           merged.push(temp_update_obj);
         }
       }

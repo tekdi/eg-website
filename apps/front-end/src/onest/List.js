@@ -311,6 +311,13 @@ List.propTypes = {
 
 const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
+  let description = "";
+
+  if (obj.shortDescription) {
+    description = obj.shortDescription;
+  } else if (obj.description) {
+    description = obj.description.substring(0, 100) + "...";
+  }
   return (
     <Pressable
       width={"100%"}
@@ -364,11 +371,7 @@ const RenderCards = ({ obj, config }) => {
             <strong>Description</strong>
             <div
               dangerouslySetInnerHTML={{
-                __html: obj.shortDescription
-                  ? obj.shortDescription
-                  : obj.description
-                    ? obj.description.substring(0, 100) + "..."
-                    : "",
+                __html: description,
               }}
             />
           </Text>
