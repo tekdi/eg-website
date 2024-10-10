@@ -6,7 +6,7 @@ import {
   OnestService,
 } from "@shiksha/common-lib";
 import Chip from "component/Chip";
-import { debounce, set } from "lodash";
+import { debounce } from "lodash";
 import { Box, HStack, Input, VStack } from "native-base";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
