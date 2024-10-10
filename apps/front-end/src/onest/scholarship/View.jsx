@@ -235,17 +235,6 @@ function ScholarshipView() {
   }, []);
 
   useEffect(() => {
-    /* if (transactionId === undefined) {
-      const uniqueId = uuidv4();
-      settransactionId(uniqueId); // Update state only when necessary
-
-    }else{
-      registerTelementry(siteUrl, transactionId);
-    }*/
-
-    // registerTelementry(siteUrl, transactionId);
-
-    // ReactGA.pageview(window.location.pathname + window.location.search);
     const requestOptions = {
       method: "POST",
       headers: {

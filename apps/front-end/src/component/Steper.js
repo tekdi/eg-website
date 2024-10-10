@@ -154,6 +154,8 @@ LineSteper.propTypes = {
 const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
   const nSize = parseInt(size || "40px");
   const fontSize = Math.floor(nSize / 5);
+  const isCurrentStep = stage?.index === key ? "gray.500" : "gray.400";
+  const textColor = stage?.index > key ? cColor : isCurrentStep;
   return (
     <HStack space={4}>
       <Stack
@@ -192,13 +194,7 @@ const CircalSteper = ({ steps, size, cColor, rColor, bg, per, stage }) => {
                   key={key + e?.label}
                   fontSize="8px"
                   fontWeight="400"
-                  color={
-                    stage?.index > key
-                      ? cColor
-                      : stage?.index === key
-                        ? "gray.500"
-                        : "gray.400"
-                  }
+                  color={textColor}
                 >
                   {e?.label}
                 </Text>

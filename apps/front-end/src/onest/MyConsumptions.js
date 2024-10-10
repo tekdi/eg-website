@@ -15,12 +15,6 @@ import Layout from "./Layout";
 import { dataConfig } from "./card";
 import PropTypes from "prop-types";
 
-const consumptionTypes = [
-  { label: "JOB_APPLICATIONS", value: "jobs" },
-  { label: "SCHOLARSHIP_APPLICATIONS", value: "scholarship" },
-  { label: "LEARNING_EXPERIENCES", value: "learning" },
-];
-
 const limit = 6;
 
 export default function MyConsumptions({
@@ -87,7 +81,7 @@ export default function MyConsumptions({
         [field]: { _ilike: `%${value}%` },
       }));
     }, 2000),
-    []
+    [setFilter],
   );
 
   const onPressBackButton = () => {
@@ -135,28 +129,6 @@ export default function MyConsumptions({
     >
       <VStack p="4" flexWrap="wrap" space={4}>
         <H2 color="textMaroonColor.400">{t("MY_CONSUMPTIONS")}</H2>
-        {/* <Box w="100%">
-          <Select
-            selectedValue={type}
-            minWidth="200"
-            accessibilityLabel="Choose Option"
-            placeholder="Choose Option"
-            _selectedItem={{
-              bg: "cyan.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) => setType(itemValue)}
-          >
-            {consumptionTypes.map((item) => (
-              <Select.Item
-                key={item.value}
-                label={t(item.label)}
-                value={item.value}
-              />
-            ))}
-          </Select>
-        </Box> */}
 
         <HStack justify="space-between" align="center" ref={ref} space={2}>
           <Input

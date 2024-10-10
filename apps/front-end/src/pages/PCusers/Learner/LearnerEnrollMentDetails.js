@@ -48,6 +48,53 @@ export default function App({ userTokenInfo }) {
     const enumOptions = data?.data ? data?.data : {};
     setBenificiary(learnerData);
     const stateName = learnerData?.state;
+    const enrollmentStatus =
+      learnerData?.program_beneficiaries?.enrollment_status;
+    const isNotEnrolled = ["not_enrolled"].includes(enrollmentStatus);
+    const isOtherStatus = [
+      "identified",
+      "applied_but_pending",
+      "enrollment_rejected",
+      "enrollment_awaited",
+    ].includes(enrollmentStatus);
+    const isRajasthan = stateName === "RAJASTHAN";
+
+    function getEnrollmentDetails() {
+      const baseDetails = [
+        "enrollment_status",
+        "type_of_enrollement",
+        "enrolled_for_board",
+        "enrollment_number",
+        "enrollment_mobile_no",
+        "enrollment_date",
+        "enrollment_first_name",
+        "enrollment_middle_name",
+        "enrollment_last_name",
+        "enrollment_dob",
+      ];
+
+      return isRajasthan ? [...baseDetails, "sso_id"] : baseDetails;
+    }
+
+    let arr;
+    if (isNotEnrolled) {
+      arr = ["enrollment_status"];
+    } else if (isOtherStatus) {
+      arr = ["enrollment_status", "enrolled_for_board"];
+    } else {
+      arr = getEnrollmentDetails();
+    }
+
+    let enrollmentIdLabel;
+
+    if (stateName === "BIHAR") {
+      enrollmentIdLabel = "APPLICATION_ID";
+    } else if (stateName === "MADHYA PRADESH") {
+      enrollmentIdLabel = "ROLL_NUMBER";
+    } else {
+      enrollmentIdLabel = "ENROLLMENT_NO";
+    }
+
     let cardArr = [];
     if (
       ![
@@ -61,43 +108,13 @@ export default function App({ userTokenInfo }) {
         ...cardArr,
         {
           title: "ENROLLMENT_DETAILS",
-          arr: ["not_enrolled"].includes(
-            learnerData?.program_beneficiaries?.enrollment_status,
-          )
-            ? ["enrollment_status"]
-            : [
-                  "identified",
-                  "applied_but_pending",
-                  "enrollment_rejected",
-                  "enrollment_awaited",
-                ].includes(
-                  learnerData?.program_beneficiaries?.enrollment_status,
-                )
-              ? ["enrollment_status", "enrolled_for_board"]
-              : [
-                  "enrollment_status",
-                  "type_of_enrollement",
-                  "enrolled_for_board",
-                  ...(stateName === "RAJASTHAN" ? ["sso_id"] : []),
-                  "enrollment_number",
-                  "enrollment_mobile_no",
-                  "enrollment_date",
-                  "enrollment_first_name",
-                  "enrollment_middle_name",
-                  "enrollment_last_name",
-                  "enrollment_dob",
-                ],
-
+          arr,
           label: [
             "ENROLLMENT_STATUS",
             "ENROLLMENT_TYPE",
             "BOARD_OF_ENROLLMENT",
             ...(stateName === "RAJASTHAN" ? ["SSO_ID"] : []),
-            stateName == "BIHAR"
-              ? "APPLICATION_ID"
-              : stateName == "MADHYA PRADESH"
-                ? "ROLL_NUMBER"
-                : "ENROLLMENT_NO",
+            enrollmentIdLabel,
             "MOBILE_NUMBER",
             stateName != "RAJASTHAN" ? "APPLICATION_DATE" : "ENROLLMENT_DATE",
             "FIRST_NAME",

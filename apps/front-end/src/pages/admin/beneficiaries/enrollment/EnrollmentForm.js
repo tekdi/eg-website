@@ -39,7 +39,6 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
   let newData = {};
   const keys = Object.keys(schema1?.properties || {}).reduce((acc, key) => {
     if (schema1.properties[key].properties) {
-      // acc = [...acc, ...Object.keys(schema1.properties[key].properties)];
       acc.push(...Object.keys(schema1.properties[key].properties));
     }
     return acc;

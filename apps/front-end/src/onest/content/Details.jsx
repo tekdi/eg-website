@@ -192,9 +192,9 @@ const Details = () => {
     return <Loading message={loading} />;
   }
 
-  return (
-    <>
-      {loading ? (
+  const renderContent = () => {
+    if (loading) {
+      return (
         <div
           style={{
             display: "flex",
@@ -205,7 +205,9 @@ const Details = () => {
         >
           <Box textAlign="center"></Box>
         </div>
-      ) : error ? (
+      );
+    } else if (error) {
+      return (
         <div
           style={{
             display: "flex",
@@ -228,7 +230,9 @@ const Details = () => {
             </Button>
           </Box>
         </div>
-      ) : (
+      );
+    } else {
+      return (
         <Box p={4} pt={30}>
           <Box padding={4} borderRadius={15} backgroundColor={"white"} mb={5}>
             <Heading mt={5} as="h2">
@@ -308,9 +312,11 @@ const Details = () => {
             </Box>
           )}
         </Box>
-      )}
-    </>
-  );
+      );
+    }
+  };
+
+  return <>{renderContent()}</>;
 };
 
 export default Details;

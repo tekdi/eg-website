@@ -157,7 +157,6 @@ const MediaPage = () => {
   const getSelectDetails = async (info) => {
     setLoading(true);
     try {
-      //setLoading(true);
       const response = await fetch(`${baseUrl}/select`, {
         method: "POST",
         headers: {
@@ -579,7 +578,6 @@ const MediaPage = () => {
 
   const submitFormDetail = async (action, urlencoded) => {
     setLoading(t("SUBMITTING"));
-    // trackReactGA();
     try {
       const axiosResponse = await axios.create().post(action, urlencoded, {
         headers: {
@@ -648,7 +646,7 @@ const MediaPage = () => {
             </Box>
           </div>
         ) : (
-          story.map((item, index) => {
+          story.map((item) => {
             const mediaUrl = item.media_url;
             if (item.type == "BPP-EMBEDDABLE-PLAYER") {
               if (

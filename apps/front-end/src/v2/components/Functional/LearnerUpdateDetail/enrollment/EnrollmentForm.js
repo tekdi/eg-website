@@ -87,8 +87,8 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
         newSchema = {
           ...constantSchema,
           properties: {
-            enrolled_for_board: efd,
             enrollment_status,
+            enrolled_for_board: efd,
           },
           required: ["enrollment_status", "enrolled_for_board"],
         };
@@ -157,8 +157,7 @@ const setSchemaByStatus = async (data, fixedSchema, boards = []) => {
 
     default:
       {
-        const { sso_id: sso_id_1, ...properties } =
-          constantSchema?.properties || {};
+        const { sso_id, ...properties } = constantSchema?.properties || {};
 
         if (
           state_name === "RAJASTHAN" &&
@@ -203,6 +202,14 @@ const getSubjects = async (schemaData, value) => {
       value: "subject_id",
       extra: { enumOptions: data?.subjects },
     });
+    let imageUri;
+    if (state_name === "RAJASTHAN") {
+      imageUri = "/enrollment-receipt.jpeg";
+    } else if (state_name === "BIHAR") {
+      imageUri = "/application_receipt_bihar.jpg";
+    } else {
+      imageUri = "/enrollment_receipt_mp.jpg";
+    }
     newSchema = getOptions(newSchema, {
       key: "payment_receipt_document_id",
       extra: {
@@ -210,12 +217,7 @@ const getSubjects = async (schemaData, value) => {
         iconComponent: (
           <Image
             source={{
-              uri:
-                state_name === "RAJASTHAN"
-                  ? "/enrollment-receipt.jpeg"
-                  : state_name === "BIHAR"
-                    ? "/application_receipt_bihar.jpg"
-                    : "/enrollment_receipt_mp.jpg",
+              uri: imageUri,
             }}
             height={"200px"}
             width={"124px"}
@@ -350,19 +352,12 @@ export default function EnrollmentForm() {
             }
             setSchema(updatedSchema?.newSchema);
           }
-        } else {
-          if (
-            ["enrolled", "sso_id_enrolled"].includes(
-              formData?.enrollment_status,
-            )
-          ) {
-            setSchema(
-              await getSubjects(constantSchema, formData?.enrolled_for_board),
-            );
-          } else {
-            setSchema(constantSchema);
-          }
         }
+        setSchema(
+          ["enrolled", "sso_id_enrolled"].includes(formData?.enrollment_status)
+            ? await getSubjects(constantSchema, formData?.enrolled_for_board)
+            : constantSchema,
+        );
         setLoading(false);
       }
     };
