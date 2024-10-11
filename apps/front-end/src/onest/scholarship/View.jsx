@@ -5,7 +5,6 @@ import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-// import { registerTelementry } from "../api/Apicall";
 import { dataConfig } from "../card";
 import OrderSuccessModal from "./OrderSuccessModal";
 import "./Shared.css";
@@ -24,11 +23,10 @@ function ScholarshipView() {
   const { t } = useTranslation();
   const [jobInfo, setJobInfo] = useState(state?.product);
   const [jobsData, setJobsData] = useState(null);
-  const [listData, setListData] = useState([]);
+  const [listData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [jobDetails, setJobDetails] = useState(null);
   const [status, setStatus] = useState("Applied");
-  const [siteUrl] = useState(window.location.href);
   const [transactionId] = useState(uuidv4());
   const toast = useToast();
 
@@ -70,7 +68,7 @@ function ScholarshipView() {
             ) {
               setStatus(
                 statusTrack?.responses[0]?.message?.order?.fulfillments[0]
-                  ?.state?.descriptor?.name
+                  ?.state?.descriptor?.name,
               );
               const newPayload = {
                 status:
@@ -83,7 +81,7 @@ function ScholarshipView() {
           } catch (e) {
             console.error(
               "Error constructing payload or handling response:",
-              e
+              e,
             );
           }
         })
@@ -94,7 +92,7 @@ function ScholarshipView() {
       console.log("error ::", error);
     } finally {
       setLoading(false);
-      setOpenModal(true);
+      //setOpenModal(true);
     }
   };
 
@@ -109,7 +107,7 @@ function ScholarshipView() {
       };
       let result = await OnestService.getList({ filters: data });
       if (result?.data.length) {
-        setListData(result?.data);
+        //setListData(result?.data);
         getApplicationStatus(result?.data[0].order_id, result?.data[0]?.id);
       }
     };
@@ -183,7 +181,7 @@ function ScholarshipView() {
       const data = await response.json();
       if (!data?.responses.length) {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       } else {
         setJobsData(data?.responses[0]?.message?.order?.items[0]);
@@ -235,23 +233,8 @@ function ScholarshipView() {
     }
   }, []);
 
-  function encodeJsonToQueryParam(jsonData) {
-    return encodeURIComponent(JSON.stringify(jsonData));
-  }
-
   useEffect(() => {
-    /* if (transactionId === undefined) {
-      const uniqueId = uuidv4();
-      settransactionId(uniqueId); // Update state only when necessary
-
-    }else{
-      registerTelementry(siteUrl, transactionId);
-    }*/
-
-    // registerTelementry(siteUrl, transactionId);
-
-    // ReactGA.pageview(window.location.pathname + window.location.search);
-    var requestOptions = {
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -380,7 +363,7 @@ function ScholarshipView() {
                     state: {
                       jobDetails: jobDetails,
                     },
-                  }
+                  },
                 );
                 trackReactGA();
               }}
@@ -415,12 +398,12 @@ function ScholarshipView() {
         )}
         <Box marginTop={4}>
           {jobsData?.tags?.map((tag, index) => (
-            <Box key={index} marginBottom={3}>
+            <Box key={tag + index} marginBottom={3}>
               <Text fontSize={["sm"]} color={"black"} fontWeight={700}>
                 {tag.descriptor.name}
               </Text>
               {tag.list.map((item, itemIndex) => (
-                <div key={itemIndex}>
+                <div key={item + itemIndex}>
                   <ul style={{ marginLeft: "3rem", listStyleType: "disc" }}>
                     <li>
                       {!item?.descriptor?.name &&
