@@ -21,7 +21,9 @@ import { FrontEndTypo, IconByName, Loading } from "@shiksha/common-lib";
 // import InfiniteScroll from "react-infinite-scroll-component";
 import { convertToTitleCase } from "v2/utils/Helper/JSHelper";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 const limit = 6;
+
 const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const [cardData, setCardData] = useState();
   const [filterCardData, setFilterCardData] = useState();
@@ -110,7 +112,10 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   const fetchData = (numData) => {
     // Simulating fetching data from an API
     // In real application, replace this with actual API call
-
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Can use "auto" for an instant scroll
+    });
     // Increment page number
     const newPage = page + numData;
     setPage(newPage);
@@ -165,6 +170,8 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
       _appBar={{
         onPressBackButton: handleBack,
       }}
+      analyticsPageTitle={type}
+      pageTitle={t(dataConfig[type].title)}
     >
       <HStack justify="space-between" align="center" p="4" ref={ref}>
         <Input
@@ -278,13 +285,13 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
         <VStack space="4" alignContent="center" p="4">
           {filterCardData?.length ? (
             filterCardData?.map((e) => (
-              <RenderCards key={e} obj={e} config={config} />
+              <RenderCards key={e?.id} obj={e} config={config} />
             ))
           ) : (
             <FrontEndTypo.H2>{getWarningMessage()}</FrontEndTypo.H2>
           )}
           {/* </InfiniteScroll> */}
-          {hasMore && filterCardData?.length > 0 && (
+          {hasMore && filterCardData?.length >= 6 && (
             <FrontEndTypo.Primarybutton onPress={(e) => fetchData(1)}>
               {t("NEXT")}
             </FrontEndTypo.Primarybutton>
@@ -300,8 +307,20 @@ const List = ({ userTokenInfo: { authUser }, footerLinks }) => {
   );
 };
 
+List.propTypes = {
+  userTokenInfo: PropTypes.any,
+  footerLinks: PropTypes.any,
+};
+
 const RenderCards = ({ obj, config }) => {
   const navigate = useNavigate();
+  let description = "";
+
+  if (obj.shortDescription) {
+    description = obj.shortDescription;
+  } else if (obj.description) {
+    description = obj.description.substring(0, 100) + "...";
+  }
   return (
     <Pressable
       width={"100%"}
@@ -355,11 +374,7 @@ const RenderCards = ({ obj, config }) => {
             <strong>Description</strong>
             <div
               dangerouslySetInnerHTML={{
-                __html: obj.shortDescription
-                  ? obj.shortDescription
-                  : obj.description
-                    ? obj.description.substring(0, 100) + "..."
-                    : "",
+                __html: description,
               }}
             />
           </Text>
@@ -367,6 +382,11 @@ const RenderCards = ({ obj, config }) => {
       )}
     </Pressable>
   );
+};
+
+RenderCards.propTypes = {
+  obj: PropTypes.any,
+  config: PropTypes.any,
 };
 
 const replaceUrlParam = (url, object) => {
@@ -411,21 +431,25 @@ const paginateArray = ({ data, filter }) => {
 };
 
 const filterData = ({ data, filter }) => {
-  if (!data && !Array.isArray(data)) {
+  if (!Array.isArray(data)) {
     return [];
   }
+
+  const filKeys = Object.keys(filter || {});
+
   return data.filter((item) => {
-    let resp = [];
-    const filKeys = Object.keys(filter || {});
-    filKeys?.forEach((key) => {
-      resp = [
-        ...resp,
-        filter[key] === ""
-          ? true
-          : item?.[key]?.toLowerCase().includes(filter[key]?.toLowerCase()),
-      ];
+    return filKeys.every((key) => {
+      // If filter value is an empty string, include all items for that key
+      if (filter[key] === "") {
+        return true;
+      }
+
+      // Ensure the item's value exists and perform case-insensitive match
+      return item[key]
+        ?.toString()
+        ?.toLowerCase()
+        .includes(filter[key]?.toLowerCase());
     });
-    return resp.filter((e) => e).length === filKeys?.length;
   });
 };
 
