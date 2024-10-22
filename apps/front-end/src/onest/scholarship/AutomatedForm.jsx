@@ -189,9 +189,9 @@ const AutomatedForm = () => {
       initReqBodyJson.init[1]["context"]["timestamp"] =
         new Date().toISOString();
       initReqBodyJson.init[1].message = customerBody?.responses[0]?.message;
-      initReqBodyJson.init[1].message.order.items[0].xinput.form[
-        "submission_id"
-      ] = localStorage.getItem("submissionId");
+      // initReqBodyJson.init[1].message.order.items[0].xinput.form[
+      //   "submission_id"
+      // ] = localStorage.getItem("submissionId");
       const paramBody = initReqBodyJson.init[1];
 
       // Perform API call with formData
@@ -487,10 +487,10 @@ const AutomatedForm = () => {
       console.log("axiosResponse", axiosResponse.data);
 
       if (axiosResponse.data) {
-        localStorage.setItem(
-          "submissionId",
-          axiosResponse?.data?.message?.transaction_id,
-        );
+        // localStorage.setItem(
+        //   "submissionId",
+        //   axiosResponse?.data?.message?.transaction_id,
+        // );
         setTimeout(() => {
           let initRes = JSON.parse(localStorage.getItem("initRes"));
           confirmDetails(initRes);
