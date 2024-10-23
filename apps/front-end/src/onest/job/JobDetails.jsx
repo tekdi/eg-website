@@ -79,7 +79,6 @@ function JobDetails() {
                 id,
               };
 
-              console.log(newPayload);
               await OnestService.updateApplicationStatus(newPayload);
             }
           } catch (e) {
@@ -115,7 +114,7 @@ function JobDetails() {
         getApplicationStatus(result?.data[0].order_id, result?.data[0]?.id);
       }
     };
-    fetchData();
+    //fetchData();
   }, []);
 
   function errorMessage(message) {
@@ -182,9 +181,20 @@ function JobDetails() {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        // Handle non-200 responses
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const responseText = await response.text(); // Get response as text first
+      if (!responseText) {
+        throw new Error("Response is empty");
+      }
+
+      const data = JSON.parse(responseText); // Now parse the JSON
+
       data["context"]["message_id"] = transactionId;
       setJobDetails(data);
+
       if (data?.responses[0]?.message?.order?.items[0]) {
         setJobsData(data?.responses[0]?.message?.order?.items[0]);
       } else {
@@ -192,7 +202,9 @@ function JobDetails() {
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
+
       localStorage.setItem("selectRes", JSON.stringify(data));
+
       if (!data?.responses.length) {
         errorMessage(
           t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
