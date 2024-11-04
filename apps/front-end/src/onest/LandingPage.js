@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dataConfig } from "./card";
 import Layout from "./Layout";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
 import { chunk } from "@shiksha/common-lib";
 import slide2 from "./assets/images/slide-2.png";
 import slide3 from "./assets/images/slide-3.png";
@@ -14,6 +12,7 @@ import slide5 from "./assets/images/slide-5.png";
 import PropTypes from "prop-types";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useTranslation } from "react-i18next";
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -51,49 +50,15 @@ const responsive = {
   },
 };
 
-const LandingPage = ({ userTokenInfo, footerLinks }) => {
+const LandingPage = ({ footerLinks }) => {
   const [dataArray, setDataArray] = useState([]);
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const chuckArr = Object.values(dataConfig);
     const newArr = chunk(chuckArr, 2);
     setDataArray(newArr);
   }, []);
-
-  const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
-    return (
-      <VStack
-        p="6"
-        borderWidth="1px"
-        borderColor="gray.300"
-        borderRadius="10px"
-        alignItems="center"
-        textAlign="center"
-        shadow="4"
-        onClick={onClick}
-        cursor="pointer"
-        {...props}
-      >
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            source={{ uri: imageUrl }}
-            alt={title}
-            mb="4"
-            size={"lg"}
-            height={"74px"}
-            width={"74px"}
-            color={"black"}
-          />
-        )}
-        <Heading as="h2" size="md" mb="2" fontSize={"16px"} fontWeight={"500"}>
-          {t(title) || "Untitled"}
-        </Heading>
-      </VStack>
-    );
-  };
 
   const handleCardClick = async (title) => {
     try {
@@ -131,7 +96,7 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
           {CAROUSEL_LIST.map((item, i) => {
             return (
               <ImageBackground
-                key={`carousel-item-${i}`}
+                key={`carousel-item-${item.title + i}`}
                 source={{ uri: item.bgImage }}
                 style={styles.backgroundImage}
               >
@@ -152,7 +117,7 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
 
         {dataConfig.constructor.name === "Object" &&
           dataArray?.map((pItem) => (
-            <HStack space={"6%"}>
+            <HStack space={"6%"} key={pItem}>
               {pItem.map((item) => {
                 return (
                   <FeatureCard
@@ -172,10 +137,49 @@ const LandingPage = ({ userTokenInfo, footerLinks }) => {
   );
 };
 
-LandingPage.PropTypes = {
+export const FeatureCard = ({ title, onClick, imageUrl, ...props }) => {
+  const { t } = useTranslation();
+
+  return (
+    <VStack
+      p="6"
+      borderWidth="1px"
+      borderColor="gray.300"
+      borderRadius="10px"
+      alignItems="center"
+      textAlign="center"
+      shadow="4"
+      onClick={onClick}
+      cursor="pointer"
+      {...props}
+    >
+      {imageUrl && (
+        <Image
+          src={imageUrl}
+          source={{ uri: imageUrl }}
+          alt={title}
+          mb="4"
+          size={"lg"}
+          height={"74px"}
+          width={"74px"}
+          color={"black"}
+        />
+      )}
+      <Heading as="h2" size="md" mb="2" fontSize={"16px"} fontWeight={"500"}>
+        {t(title) || "Untitled"}
+      </Heading>
+    </VStack>
+  );
+};
+
+FeatureCard.propTypes = {
   title: PropTypes.string,
   onClick: PropTypes.func,
   imageUrl: PropTypes.any,
+};
+
+LandingPage.propTypes = {
+  footerLinks: PropTypes.any,
 };
 
 export default LandingPage;
