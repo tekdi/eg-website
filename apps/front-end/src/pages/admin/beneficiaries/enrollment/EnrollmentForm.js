@@ -726,7 +726,7 @@ export default function App(footerLinks) {
 
         // Remove the dynamic key from the errors object
         const { [fieldId]: _, ...otherErrors } = errors || {};
-        
+
         // Update the errors object with the remaining keys
         setErrors(otherErrors);
         break;
@@ -797,8 +797,8 @@ export default function App(footerLinks) {
             id: newdata.payment_receipt_document_id,
             key: "payment_receipt_document_id",
           },
-          { id: newdata.application_form, key: "application_form" },
-          { id: newdata.application_login_id, key: "application_login_id" },
+          // { id: newdata.application_form, key: "application_form" },
+          // { id: newdata.application_login_id, key: "application_login_id" },
         ],
       };
 
