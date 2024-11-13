@@ -947,7 +947,7 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
           )}
           {/* Temp Comment */}
 
-          {state_name === "RAJASTHAN" && (
+          {(state_name === "RAJASTHAN" || state_name === "BIHAR") && (
             <Stack bg="bgYellowColor.400" space="6" p={4}>
               <FrontEndTypo.H2 color="textMaroonColor.400">
                 {t("LEARNER_EXAMINATION")}
@@ -963,12 +963,14 @@ export default function Dashboard({ userTokenInfo, footerLinks }) {
               >
                 {t("UPDATE_LEARNER_EXAM_ATTENDANCE")}
               </FrontEndTypo.Primarybutton>
-              <DashboardCard
-                title={"LEARNER_EXAM_RESULTS"}
-                titleDetail={"LEARNER_EXAMINATION_DETAILS"}
-                primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
-                navigation={"/examresult"}
-              />
+              {state_name === "RAJASTHAN" && (
+                <DashboardCard
+                  title={"LEARNER_EXAM_RESULTS"}
+                  titleDetail={"LEARNER_EXAMINATION_DETAILS"}
+                  primaryBtn={"UPDATE_LEARNER_EXAM_RESULTS"}
+                  navigation={"/examresult"}
+                />
+              )}
             </Stack>
           )}
           {/* Temp Comment  End*/}

@@ -45,9 +45,9 @@ export default function CampDashboard({ footerLinks, userTokenInfo }) {
     >
       <List userTokenInfo={userTokenInfo} stateName={stateName} />
       <VStack p="4" space="5">
-        {stateName === "RAJASTHAN" && (
+        {(stateName === "RAJASTHAN" || stateName === "BIHAR") && (
           <>
-            <EpcpCard />
+            {stateName === "RAJASTHAN" && <EpcpCard />}
             {/* Temp Comment */}
             <ExamPreparationCard />
             {/* Temp Comment  End*/}
