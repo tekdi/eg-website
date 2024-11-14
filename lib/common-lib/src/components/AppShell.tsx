@@ -3,8 +3,8 @@ import React from 'react'
 import AppRoutesContainer from './AppRoutesContainer'
 import { getAppshellData } from './helper'
 
-const replaySampleRateString =
-  process.env.REACT_APP_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE
+// const replaySampleRateString =
+//   process.env.REACT_APP_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE
 
 if (process.env.REACT_APP_SENTRY_ENV) {
   // Sentry.init({
