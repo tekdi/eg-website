@@ -70,7 +70,7 @@ export default {
             "APPLICATION_ID",
             state?.state_name == "MADHYA PRADESH"
               ? "ROLL_NUMBER"
-              : "ENROLLMENT_NO"
+              : "ENROLLMENT_NO",
           ),
         },
         enrollment_mobile_no: {
@@ -78,7 +78,7 @@ export default {
           label: "MOBILE_NUMBER",
           description: getLabelBasedOnState(
             "AS_PER_ENROLLMENT_RECEIPT",
-            "AS_PER_APPLICATION_RECEIPT"
+            "AS_PER_APPLICATION_RECEIPT",
           ),
           format: "MobileNumber",
         },
@@ -91,7 +91,7 @@ export default {
           ...nameProperties("FIRST"),
           description: getLabelBasedOnState(
             "AS_PER_ENROLLMENT_RECEIPT",
-            "AS_PER_APPLICATION_RECEIPT"
+            "AS_PER_APPLICATION_RECEIPT",
           ),
         },
         enrollment_middle_name: nameProperties("MIDDLE"),
@@ -101,7 +101,7 @@ export default {
           format: "alt-date",
           label: getLabelBasedOnState(
             "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
-            "DATE_OF_BIRTH_AS_PER_APPLICATION"
+            "DATE_OF_BIRTH_AS_PER_APPLICATION",
           ),
           help: "",
         },
@@ -119,30 +119,30 @@ export default {
           getLabelBasedOnState("ENROLLMENT_RECEIPT", "PAYMENT_RECEIPTS"),
           getLabelBasedOnState(
             "UPLOAD_CLEAR_AND_FULL_PHOTO_OF_ENROLLMENT_RECEIPT",
-            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
-          )
+            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA",
+          ),
         ),
-        application_form: {
-          ...fileUploadProperties(
-            "APPLICATION_FORM",
-            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
-          ),
-          format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
-        },
-        application_login_id: {
-          ...fileUploadProperties(
-            "APPLICATION_LOGIN_ID_SCREENSHOT",
-            "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
-          ),
-          isReduce: false,
-          format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
-        },
+        // application_form: {
+        //   ...fileUploadProperties(
+        //     "APPLICATION_FORM",
+        //     "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
+        //   ),
+        //   format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
+        // },
+        // application_login_id: {
+        //   ...fileUploadProperties(
+        //     "APPLICATION_LOGIN_ID_SCREENSHOT",
+        //     "PLEASE_CLEAN_CAMERA_LENSE_AND_STEADY_CAMERA"
+        //   ),
+        //   isReduce: false,
+        //   format: state?.state_name === "RAJASTHAN" ? "hidden" : "FileUpload",
+        // },
       },
     },
     edit_enrollement_details: {
       title: getLabelBasedOnState(
         "ENROLLMENT_RECEIPT_AS_PER_ENROLLMENT_RECEIPT",
-        "ENROLLMENT_RECEIPT_DETAILS"
+        "ENROLLMENT_RECEIPT_DETAILS",
       ),
       type: "object",
       required: ["enrollment_first_name", "enrollment_dob"],
@@ -152,7 +152,7 @@ export default {
           title: "FIRST_NAME",
           description: getLabelBasedOnState(
             "AS_PER_ENROLLMENT_RECEIPT",
-            "AS_PER_APPLICATION_RECEIPT"
+            "AS_PER_APPLICATION_RECEIPT",
           ),
         },
         enrollment_middle_name: {
@@ -168,7 +168,7 @@ export default {
           format: "alt-date",
           label: getLabelBasedOnState(
             "DATE_OF_BIRTH_AS_PER_ENROLLMENT",
-            "DATE_OF_BIRTH_AS_PER_APPLICATION"
+            "DATE_OF_BIRTH_AS_PER_APPLICATION",
           ),
           help: "",
         },

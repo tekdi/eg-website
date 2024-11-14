@@ -66,7 +66,7 @@ export default function List({ userTokenInfo, stateName }) {
     setNonRegisteredUser(result?.data?.user || []);
     setCampList(campList?.data);
     setCampCount(
-      campList?.data?.pcr_camp?.length + campList?.data?.camps?.length
+      campList?.data?.pcr_camp?.length + campList?.data?.camps?.length,
     );
     setLoading(false);
   }, []);
@@ -97,11 +97,11 @@ export default function List({ userTokenInfo, stateName }) {
       const listData = await ObservationService.getCampLearnerList();
       const flattenedList = flattenList(listData?.data);
       const userIds = listData?.data?.flatMap((group) =>
-        group.group.group_users.map((user) => user.user.user_id)
+        group.group.group_users.map((user) => user.user.user_id),
       );
       const data = await ObservationService.getSubmissionData(
         userIds,
-        observation
+        observation,
       );
 
       const report = data?.data?.[0]?.observation_fields;
@@ -117,7 +117,7 @@ export default function List({ userTokenInfo, stateName }) {
       const userData = { ...user };
       const responses = report?.reduce((acc, observation) => {
         const fieldResponse = observation?.field_responses?.find(
-          (response) => response.context_id === user?.user_id
+          (response) => response.context_id === user?.user_id,
         );
         if (fieldResponse) {
           acc.push({
@@ -220,7 +220,7 @@ export default function List({ userTokenInfo, stateName }) {
         {/* Alert if you have community members and do not have status */}
         {data?.length >= 2 &&
           !["selected_for_onboarding", "selected_prerak"].includes(
-            ipStatus
+            ipStatus,
           ) && (
             <CustomAlert status={"warning"} title={t("CAMP_ACCESS_ERROR")} />
           )}
@@ -236,7 +236,7 @@ export default function List({ userTokenInfo, stateName }) {
             // background={"bgYellowColor.400"}
           >
             {["selected_for_onboarding", "selected_prerak"].includes(
-              ipStatus
+              ipStatus,
             ) && (
               <VStack>
                 {communityLength >= 2 ? (
@@ -286,7 +286,7 @@ export default function List({ userTokenInfo, stateName }) {
                                         ?.enrollment_first_name
                                         ? item?.program_beneficiaries[0]?.enrollment_first_name?.substring(
                                             0,
-                                            2
+                                            2,
                                           )
                                         : "NA"}
                                     </Avatar>
@@ -368,7 +368,7 @@ export default function List({ userTokenInfo, stateName }) {
           </VStack>
         )}
       </VStack>
-      {stateName === "RAJASTHAN" && (
+      {(stateName === "RAJASTHAN" || stateName === "BIHAR") && (
         <Chart chartType="PieChart" data={statusArray} options={options} />
       )}
       <Modal
@@ -383,7 +383,7 @@ export default function List({ userTokenInfo, stateName }) {
             <VStack space={4}>
               <Stack alignItems={"center"}>
                 <FrontEndTypo.H4 bold color="textGreyColor.750">{`${t(
-                  "CAMP_ID"
+                  "CAMP_ID",
                 )} : ${campSelected?.id}`}</FrontEndTypo.H4>
               </Stack>
               <FrontEndTypo.Primarybutton
@@ -397,7 +397,7 @@ export default function List({ userTokenInfo, stateName }) {
                   : t("MAIN_CAMP_PROFILE")}
               </FrontEndTypo.Primarybutton>
               {["registered", "camp_ip_verified"].includes(
-                campSelected?.group?.status
+                campSelected?.group?.status,
               ) && (
                 <Stack space={4}>
                   <FrontEndTypo.Secondarybutton

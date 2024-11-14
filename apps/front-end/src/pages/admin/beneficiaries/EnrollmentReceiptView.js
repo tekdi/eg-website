@@ -450,7 +450,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                     >
                       {t("PAYMENT_RECEIPTS")}
                     </ActiveButton>
-                    <ActiveButton
+                    {/* <ActiveButton
                       isActive={
                         receiptUrl?.doc_id === paymentDocId?.application_form
                       }
@@ -459,8 +459,8 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       }}
                     >
                       {t("APPLICATION_FORM")}
-                    </ActiveButton>
-                    <ActiveButton
+                    </ActiveButton> */}
+                    {/* <ActiveButton
                       isActive={
                         receiptUrl?.doc_id ===
                         paymentDocId?.application_login_id
@@ -470,7 +470,7 @@ export default function EnrollmentReceiptView({ footerLinks }) {
                       }}
                     >
                       {t("APPLICATION_LOGIN_ID_SS")}
-                    </ActiveButton>
+                    </ActiveButton> */}
                   </HStack>
                 )}
                 {isButtonLoading ? (

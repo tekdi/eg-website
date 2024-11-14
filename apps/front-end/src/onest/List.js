@@ -399,15 +399,18 @@ const filterToData = (data, arr) => {
   arr?.forEach((item) => {
     data?.forEach((key) => {
       if (item?.[key]) {
-        const countData = result?.[key]?.indexOf(item?.[key]);
-        if (!countData || countData < 1) {
-          result = { ...result, [key]: [...(result[key] || []), item?.[key]] };
+        if (!result[key]) {
+          result[key] = [];
+        }
+        if (!result[key].includes(item[key])) {
+          result[key].push(item[key]);
         }
       }
     });
   });
   return result;
 };
+
 
 const paginateArray = ({ data, filter }) => {
   const paginatedArrays = [];
