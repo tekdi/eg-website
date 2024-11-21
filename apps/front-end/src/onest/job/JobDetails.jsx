@@ -4,7 +4,6 @@ import ReactGA from "react-ga4";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-// import { registerTelementry } from "../api/Apicall";
 import { FrontEndTypo, Loading, OnestService } from "@shiksha/common-lib";
 import axios from "axios";
 import { dataConfig } from "../card";
@@ -27,12 +26,11 @@ function JobDetails() {
   const [jobInfo, setJobInfo] = useState(state?.product);
   const [jobsData, setJobsData] = useState(null);
   const [jobDetails, setJobDetails] = useState(null);
-  const [siteUrl, setSiteUrl] = useState(window.location.href);
   const [listData, setListData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [status, setStatus] = useState("Applied");
 
-  let [transactionId, settransactionId] = useState(state?.transactionId);
+  let [transactionId, setTransactionId] = useState(state?.transactionId);
   const toast = useToast();
 
   const closeModal = () => {
@@ -72,7 +70,7 @@ function JobDetails() {
             ) {
               setStatus(
                 statusTrack?.responses[0]?.message?.order?.fulfillments[0]
-                  ?.state?.descriptor?.name
+                  ?.state?.descriptor?.name,
               );
               const newPayload = {
                 status:
@@ -81,13 +79,12 @@ function JobDetails() {
                 id,
               };
 
-              console.log(newPayload);
               await OnestService.updateApplicationStatus(newPayload);
             }
           } catch (e) {
             console.error(
               "Error constructing payload or handling response:",
-              e
+              e,
             );
           }
         })
@@ -117,7 +114,7 @@ function JobDetails() {
         getApplicationStatus(result?.data[0].order_id, result?.data[0]?.id);
       }
     };
-    fetchData();
+    //fetchData();
   }, []);
 
   function errorMessage(message) {
@@ -184,20 +181,33 @@ function JobDetails() {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        // Handle non-200 responses
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const responseText = await response.text(); // Get response as text first
+      if (!responseText) {
+        throw new Error("Response is empty");
+      }
+
+      const data = JSON.parse(responseText); // Now parse the JSON
+
       data["context"]["message_id"] = transactionId;
       setJobDetails(data);
+
       if (data?.responses[0]?.message?.order?.items[0]) {
         setJobsData(data?.responses[0]?.message?.order?.items[0]);
       } else {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
+
       localStorage.setItem("selectRes", JSON.stringify(data));
+
       if (!data?.responses.length) {
         errorMessage(
-          t("Delay_in_fetching_the_details") + "(" + transactionId + ")"
+          t("Delay_in_fetching_the_details") + "(" + transactionId + ")",
         );
       }
     } catch (error) {
@@ -236,44 +246,23 @@ function JobDetails() {
     if (params["utm_source"]) {
       localStorage.setItem("utm_source", params["utm_source"]);
     }
-
-    const jsonData = {
-      name: "Alice Joy",
-      gender: "Female",
-      phone: "9877665544",
-      email: "alice@gmail.com",
-      "Education Qualification": "BE",
-      "Work Experience": "4",
-      "Are you really interested in applying for the job and working for this job": true,
-    };
-
-    const jsonString = JSON.stringify(jsonData);
-    const jsonQueryParam = btoa(jsonString);
-
-    const urlTmp = `${window.location.origin}?jsonData=${jsonQueryParam}`;
-
     const urlParams = new URLSearchParams(window.location.search);
     const jsonDataParam = urlParams.get("jsonData");
 
     if (jsonDataParam) {
       let jsonData = atob(jsonDataParam);
-      // let jsonData = decodeURIComponent(jsonDataParam);
       localStorage.setItem("userData", jsonData);
     }
   }, []);
 
-  function encodeJsonToQueryParam(jsonData) {
-    return encodeURIComponent(JSON.stringify(jsonData));
-  }
-
   useEffect(() => {
     if (transactionId === undefined) {
-      settransactionId(uuidv4()); // Update state only when necessary
+      setTransactionId(uuidv4()); // Update state only when necessary
     } else {
       // registerTelementry(siteUrl, transactionId);
 
       // ReactGA.pageview(window.location.pathname + window.location.search);
-      var requestOptions = {
+      let requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -335,12 +324,6 @@ function JobDetails() {
           <HStack marginTop={"1"} marginLeft={1}>
             {(jobInfo?.city || jobInfo?.state) && (
               <div style={{ display: "flex" }}>
-                {/* <Icon
-                  as={MdLocationPin}
-                  boxSize={4}
-                  marginTop={1}
-                  marginRight={1}
-                />{" "} */}
                 <Text fontSize={["xs", "sm"]}>{jobInfo?.city}</Text>
                 {jobInfo?.city && jobInfo?.state ? (
                   <Text fontSize={["xs", "sm"]}>, {jobInfo?.state}</Text>
@@ -352,12 +335,6 @@ function JobDetails() {
           </HStack>
           <HStack marginTop={"1"} marginLeft={1}>
             <div style={{ display: "flex" }}>
-              {/* <Icon
-                as={FaBriefcase}
-                boxSize={4}
-                marginRight={1}
-                marginTop={1}
-              /> */}
               {jobInfo?.work_mode ? (
                 <Text color="gray.700" fontSize={["xs", "sm"]}>
                   {jobInfo?.work_mode}
@@ -379,7 +356,6 @@ function JobDetails() {
             color={"blue"}
             style={{ display: "flex" }}
           >
-            {/* <Icon as={FaRupeeSign} boxSize={4} marginTop={1} /> */}
             {jobInfo?.salary ? (
               <Text fontSize={["xs", "sm"]}>{jobInfo?.salary}</Text>
             ) : (
@@ -415,7 +391,7 @@ function JobDetails() {
                     state: {
                       jobDetails: jobDetails,
                     },
-                  }
+                  },
                 );
                 trackReactGA();
               }}
@@ -453,12 +429,12 @@ function JobDetails() {
           )}
           <Box marginTop={4}>
             {jobsData?.tags?.map((tag, index) => (
-              <Box key={index} marginBottom={3}>
+              <Box key={index + tag} marginBottom={3}>
                 <Text fontSize={["sm"]} color={"black"} fontWeight={700}>
                   {tag.descriptor.name}
                 </Text>
                 {tag.list.map((item, itemIndex) => (
-                  <div key={itemIndex}>
+                  <div key={itemIndex + item}>
                     <ul style={{ marginLeft: "3rem", listStyleType: "disc" }}>
                       <li>
                         {!item?.descriptor?.name &&
