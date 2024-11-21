@@ -27,6 +27,7 @@ import {
 } from "@shiksha/common-lib";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useWindowDimensions } from "react-native-web";
 
 const styles = {
   box: {
@@ -75,7 +76,8 @@ export default function Login() {
 
   const { t } = useTranslation();
   const [ref, setRef] = React.useState(null);
-  const [width, height] = useWindowSize();
+  const [height] = useWindowSize();
+  const { width } = useWindowDimensions();
   const [credentials, setCredentials] = useState();
   const [errors, setErrors] = React.useState({});
   const [showPassword, setShowPassword] = React.useState(false);
@@ -151,9 +153,14 @@ export default function Login() {
       getRefAppBar={(e) => setRef(e)}
     >
       <VStack bg="bgGreyColor.200" minH={height - ref?.clientHeight} space="1">
-        <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
+        {/* <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" pt="6">
           {t("LOGIN")}
-        </FrontEndTypo.H1>
+        </FrontEndTypo.H1> */}
+        {/* {width >= 676 && width <= 1080 && (
+          <FrontEndTypo.H1 color="textMaroonColor.400" ml="6" mt="6">
+            {t("LOGIN")}
+          </FrontEndTypo.H1>
+        )} */}
         {isUserRegisterExist && (
           <Box py={6} px={4} mb={5}>
             <Alert
@@ -177,17 +184,20 @@ export default function Login() {
             </Alert>
           </Box>
         )}
-
         <Image
           alignSelf="center"
           source={{
-            uri: `/images/logos/${language}/educate-girls-pragati-300X300.png`,
+            uri: `/images/logos/${language}/Motiflogo300*300.svg`,
           }}
           alt="Educate Girls"
           resizeMode="contain"
-          size={200}
+          size={750}
+          w={width}
         />
         <VStack space={5} p="5">
+          <FrontEndTypo.H1 color="textMaroonColor.400" mt={"-30px"}>
+            {t("LOGIN")}
+          </FrontEndTypo.H1>
           <CustomAlert
             title={t("ENTER_USERNAME_PASSWORD_SENT_ON_MOBILE")}
             status={"info"}
@@ -210,6 +220,7 @@ export default function Login() {
               </VStack>
             </Alert>
           )}
+
           <form>
             <VStack space="2">
               <FormControl isRequired isInvalid={"username" in errors}>
