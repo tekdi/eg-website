@@ -2262,5 +2262,6 @@
   "FUTUTRE_DATES_NOT_ALLOWED": "भविष्य की तारीख की अनुमति नहीं है",
   "DATES_NOT_ALLOWED": "तारीख की अनुमति नहीं है",
   "FACILITATOR_STATUS_TRANSFER_AS_PC": "प्रेरक अब प्रगति कोर्डिनेटर बन गये हैं",
-  "FACILITATOR_REASONS_FOR_QUIT_TRANSFER_AS_PC": "प्रेरक अब प्रगति कोर्डिनेटर बन गये हैं"
+  "FACILITATOR_REASONS_FOR_QUIT_TRANSFER_AS_PC": "प्रेरक अब प्रगति कोर्डिनेटर बन गये हैं",
+  "USER_DISABLED_FOR_STATE":"यह एप्लिकेशन बंद कर दी गयी है, मेनेजर से सूचना मिलने के बाद नयी एप्लिकेशन पर काम शुरू करे |"
 }
